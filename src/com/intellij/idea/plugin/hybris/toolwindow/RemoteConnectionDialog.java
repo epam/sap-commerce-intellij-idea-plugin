@@ -10,6 +10,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.document.listener.SimpleDocume
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.components.OnOffButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +38,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
     private JLabel hacWebrootLabel;
     private JTextField hacWebrootTextField;
     private JTextField displayNameTextField;
+    private OnOffButton sslButton;
+    private JLabel sslLabel;
     private Project myProject;
     private HybrisRemoteConnectionSettings mySettings;
 
@@ -56,6 +59,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
         hacWebrootTextField.setText(mySettings.getHacWebroot());
         loginTextField.setText(mySettings.getHacLogin());
         passwordField.setText(mySettings.getHacPassword());
+        sslButton.setSelected(mySettings.isSsl());
 
         final SimpleDocumentListener saveSettingsDocumentListener = new SimpleDocumentListener() {
             @Override
@@ -76,6 +80,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
         hacWebrootTextField.addActionListener(action->saveSettings());
         loginTextField.addActionListener(action->saveSettings());
         passwordField.addActionListener(action->saveSettings());
+        sslButton.addActionListener(action->saveSettings());
         testConnectionButton.addActionListener(action->testConnection());
     }
 
@@ -102,6 +107,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
     }
 
     private void saveSettings() {
+        mySettings.setSsl(sslButton.isSelected());
+        sslButton.updateUI();
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setHostIP(projectIpTextField.getText());
         mySettings.setPort(projectPortTextField.getText());
@@ -117,5 +124,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         return contentPane;
+    }
+
+    private void createUIComponents() {
     }
 }

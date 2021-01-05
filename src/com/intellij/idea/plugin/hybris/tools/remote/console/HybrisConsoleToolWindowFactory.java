@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console;
 
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -37,7 +38,7 @@ public class HybrisConsoleToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public boolean shouldBeAvailable(@NotNull final Project project) {
-        return true;
+        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
     }
 
     @Override

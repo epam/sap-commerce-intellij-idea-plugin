@@ -21,6 +21,15 @@ public class HybrisRemoteConnectionSettings implements Serializable {
     protected String hacPassword;
     protected String generatedURL;
     protected Type type;
+    protected boolean isSsl;
+
+    public boolean isSsl() {
+        return isSsl;
+    }
+
+    public void setSsl(final boolean ssl) {
+        isSsl = ssl;
+    }
 
     public String getUuid() {
         return uuid;
