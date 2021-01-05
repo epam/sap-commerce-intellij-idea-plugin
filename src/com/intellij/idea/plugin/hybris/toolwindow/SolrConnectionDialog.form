@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.intellij.idea.plugin.hybris.toolwindow.SolrConnectionDialog">
-  <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="9" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="10" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="181" y="206" width="515" height="273"/>
+      <xy x="181" y="206" width="515" height="321"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -36,7 +36,7 @@
       </component>
       <component id="261a7" class="javax.swing.JTextField" binding="loginTextField">
         <constraints>
-          <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
+          <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -44,7 +44,7 @@
       </component>
       <component id="43b52" class="javax.swing.JLabel" binding="loginNameLabel">
         <constraints>
-          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.solr.login"/>
@@ -52,7 +52,7 @@
       </component>
       <component id="7f77a" class="javax.swing.JLabel" binding="passwordLabel">
         <constraints>
-          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.solr.pswd"/>
@@ -60,7 +60,7 @@
       </component>
       <component id="a0058" class="javax.swing.JPasswordField" binding="passwordField">
         <constraints>
-          <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
+          <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -101,7 +101,7 @@
       </component>
       <component id="818cc" class="javax.swing.JLabel" binding="hacWebrootLabel">
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.solr.webroot.label"/>
@@ -109,7 +109,7 @@
       </component>
       <component id="1ffa1" class="javax.swing.JTextField" binding="solrWebrootTextField">
         <constraints>
-          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -117,7 +117,7 @@
       </component>
       <component id="6a7a0" class="javax.swing.JButton" binding="testConnectionButton" default-binding="true">
         <constraints>
-          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.hac.test.connection.button"/>
@@ -137,6 +137,22 @@
         </constraints>
         <properties>
           <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.diplay.name.label"/>
+        </properties>
+      </component>
+      <component id="1276" class="javax.swing.JLabel" binding="sslLabel">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text resource-bundle="i18n/HybrisBundle" key="hybris.toolwindow.ssl.label"/>
+        </properties>
+      </component>
+      <component id="4b835" class="com.intellij.ui.components.OnOffButton" binding="sslButton">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <selected value="true"/>
         </properties>
       </component>
     </children>

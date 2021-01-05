@@ -11,6 +11,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.components.OnOffButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +41,8 @@ public class SolrConnectionDialog extends DialogWrapper {
     private JTextField loginTextField;
     private JTextField solrIpTextField;
     private JLabel projectIpLabel;
+    private OnOffButton sslButton;
+    private JLabel sslLabel;
     private Project myProject;
     private HybrisRemoteConnectionSettings mySettings;
 
@@ -60,6 +63,7 @@ public class SolrConnectionDialog extends DialogWrapper {
         solrWebrootTextField.setText(mySettings.getSolrWebroot());
         loginTextField.setText(mySettings.getAdminLogin());
         passwordField.setText(mySettings.getAdminPassword());
+        sslButton.setSelected(mySettings.isSolrSsl());
 
         final SimpleDocumentListener saveSettingsDocumentListener = new SimpleDocumentListener() {
             @Override
@@ -80,6 +84,7 @@ public class SolrConnectionDialog extends DialogWrapper {
         solrWebrootTextField.addActionListener(action->saveSettings());
         loginTextField.addActionListener(action->saveSettings());
         passwordField.addActionListener(action->saveSettings());
+        sslButton.addActionListener(action->saveSettings());
         testConnectionButton.addActionListener(action->testConnection());
     }
 
@@ -103,6 +108,7 @@ public class SolrConnectionDialog extends DialogWrapper {
     }
 
     private void saveSettings() {
+        mySettings.setSolrSsl(sslButton.isSelected());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setType(HybrisRemoteConnectionSettings.Type.SOLR);
         mySettings.setHostIP(solrIpTextField.getText());

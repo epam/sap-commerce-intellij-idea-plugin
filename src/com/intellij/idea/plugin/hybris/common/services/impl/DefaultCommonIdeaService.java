@@ -206,8 +206,11 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         if (settings == null) {
             settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project);
         }
-        if (!settings.getHostIP().startsWith("http")) {
-            sb.append("https://");
+        if (settings.isSolrSsl()) {
+            sb.append(HybrisConstants.HTTPS_PROTOCOL);
+        }
+        else {
+            sb.append(HybrisConstants.HTTP_PROTOCOL);
         }
         sb.append(settings.getHostIP());
         sb.append(":");
@@ -233,24 +236,14 @@ public class DefaultCommonIdeaService implements CommonIdeaService {
         }
         final String ip = settings.getHostIP();
         StringBuilder sb = new StringBuilder();
-        final Properties localProperties = getLocalProperties(project);
-        String sslPort = HybrisConstants.DEFAULT_TOMCAT_SSL_PORT;
-        if (localProperties != null) {
-            sslPort = localProperties.getProperty(HybrisConstants.TOMCAT_SSL_PORT_KEY, HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
-        }
-        String port = settings.getPort();
-        if (port == null || port.isEmpty()) {
-            port = sslPort;
-        }
-        if (settings.isSsl()) {
+        if (settings.isHacSsl()) {
             sb.append(HybrisConstants.HTTPS_PROTOCOL);
         } else {
             sb.append(HybrisConstants.HTTP_PROTOCOL);
         }
         sb.append(ip);
         sb.append(HybrisConstants.URL_PORT_DELIMITER);
-        sb.append(port);
-
+        sb.append(settings.getPort());
         return sb.toString();
     }
 

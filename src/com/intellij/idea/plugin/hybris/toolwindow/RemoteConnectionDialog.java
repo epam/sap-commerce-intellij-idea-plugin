@@ -59,7 +59,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
         hacWebrootTextField.setText(mySettings.getHacWebroot());
         loginTextField.setText(mySettings.getHacLogin());
         passwordField.setText(mySettings.getHacPassword());
-        sslButton.setSelected(mySettings.isSsl());
+        sslButton.setSelected(mySettings.isHacSsl());
 
         final SimpleDocumentListener saveSettingsDocumentListener = new SimpleDocumentListener() {
             @Override
@@ -107,8 +107,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
     }
 
     private void saveSettings() {
-        mySettings.setSsl(sslButton.isSelected());
-        sslButton.updateUI();
+        mySettings.setHacSsl(sslButton.isSelected());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setHostIP(projectIpTextField.getText());
         mySettings.setPort(projectPortTextField.getText());
