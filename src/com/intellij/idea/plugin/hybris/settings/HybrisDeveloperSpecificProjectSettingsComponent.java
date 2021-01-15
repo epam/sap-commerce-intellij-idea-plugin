@@ -81,6 +81,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
         item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
         item.setHacLogin("admin");
         item.setHacPassword("nimda");
+        item.setHacSsl(true);
         item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
         return item;
     }
@@ -95,7 +96,8 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
         item.setSolrWebroot("solr");
         item.setAdminLogin("solradmin");
         item.setAdminPassword("admin123");
-        item.setGeneratedURL(CommonIdeaService.getInstance().getHostSolrUrl(project, item));
+        item.setSolrSsl(true);
+        item.setGeneratedURL(CommonIdeaService.getInstance().getSolrUrl(project, item));
         return item;
     }
 }

@@ -57,15 +57,11 @@ public interface CommonIdeaService {
         return ServiceManager.getService(CommonIdeaService.class);
     }
 
-    String getHostHacUrl(@NotNull Project project);
+    String getActiveHacUrl(@NotNull Project project);
 
     String getHostHacUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings mySettings);
 
-    String getHostUrl(@NotNull final Project project);
-
-    String getHostUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings);
-
-    String getHostSolrUrl(Project project, HybrisRemoteConnectionSettings item);
+    String getSolrUrl(Project project, HybrisRemoteConnectionSettings settings);
 
     String getBackofficeWebInfLib(Project project);
 

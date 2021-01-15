@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.util.Objects;
 
 import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
@@ -42,11 +43,12 @@ public class RemoteConnectionDialog extends DialogWrapper {
     private JLabel sslLabel;
     private Project myProject;
     private HybrisRemoteConnectionSettings mySettings;
+    private HybrisRemoteConnectionSettings setting;
 
     public RemoteConnectionDialog(
-        @Nullable final Project project,
-        @Nullable final Component parentComponent,
-        @NotNull final HybrisRemoteConnectionSettings settings
+            @Nullable final Project project,
+            @Nullable final Component parentComponent,
+            @NotNull final HybrisRemoteConnectionSettings settings
     ) {
         super(project, parentComponent, false, PROJECT);
         myProject = project;
@@ -55,41 +57,53 @@ public class RemoteConnectionDialog extends DialogWrapper {
         displayNameTextField.setText(mySettings.getDisplayName());
         projectIpTextField.setText(mySettings.getHostIP());
         projectPortTextField.setText(mySettings.getPort());
-        ((PlainDocument)projectPortTextField.getDocument()).setDocumentFilter(new UnsignedIntegerDocumentFilter());
+        ((PlainDocument) projectPortTextField.getDocument()).setDocumentFilter(new UnsignedIntegerDocumentFilter());
         hacWebrootTextField.setText(mySettings.getHacWebroot());
         loginTextField.setText(mySettings.getHacLogin());
         passwordField.setText(mySettings.getHacPassword());
         sslButton.setSelected(mySettings.isHacSsl());
+        setting = new HybrisRemoteConnectionSettings();
+        saveSettings(settings);
+
+        final SimpleDocumentListener validateDocumentListener = new SimpleDocumentListener() {
+            @Override
+            public void update(final DocumentEvent e) {
+                validateParams();
+            }
+        };
 
         final SimpleDocumentListener saveSettingsDocumentListener = new SimpleDocumentListener() {
             @Override
             public void update(final DocumentEvent e) {
-                saveSettings();
+                saveSettings(setting);
             }
         };
 
-        saveSettings();
+        validateParams();
         init();
 
+        projectPortTextField.getDocument().addDocumentListener(validateDocumentListener);
+        projectIpTextField.getDocument().addDocumentListener(validateDocumentListener);
         displayNameTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         projectIpTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         projectPortTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         hacWebrootTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
-        displayNameTextField.addActionListener(action->saveSettings());
-        projectIpTextField.addActionListener(action->saveSettings());
-        hacWebrootTextField.addActionListener(action->saveSettings());
-        loginTextField.addActionListener(action->saveSettings());
-        passwordField.addActionListener(action->saveSettings());
-        sslButton.addActionListener(action->saveSettings());
-        testConnectionButton.addActionListener(action->testConnection());
+        displayNameTextField.addActionListener(action->saveSettings(setting));
+        projectIpTextField.addActionListener(action->saveSettings(setting));
+        hacWebrootTextField.addActionListener(action->saveSettings(setting));
+        loginTextField.addActionListener(action->saveSettings(setting));
+        passwordField.addActionListener(action->saveSettings(setting));
+        sslButton.addActionListener(action->saveSettings(setting));
+
+        Objects.requireNonNull(getButton(getOKAction())).addActionListener(action->saveSettings(mySettings));
+        testConnectionButton.addActionListener(action -> testConnection());
     }
 
     private void testConnection() {
-        saveSettings();
-
+        saveSettings(setting);
         HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
-        final String errorMessage = hybrisHacHttpClient.login(myProject, mySettings);
-        final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject, mySettings);
+        final String errorMessage = hybrisHacHttpClient.login(myProject, setting);
+        final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject, setting);
 
         final NotificationType type;
         final String message;
@@ -102,11 +116,11 @@ public class RemoteConnectionDialog extends DialogWrapper {
         }
 
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type, null
+                HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type, null
         ).notify(myProject);
     }
 
-    private void saveSettings() {
+    private void saveSettings(HybrisRemoteConnectionSettings mySettings) {
         mySettings.setHacSsl(sslButton.isSelected());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setHostIP(projectIpTextField.getText());
@@ -123,6 +137,15 @@ public class RemoteConnectionDialog extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         return contentPane;
+    }
+
+    private void validateParams() {
+        testConnectionButton
+                .setEnabled(!projectPortTextField.getText().isEmpty()
+                        && !projectIpTextField.getText().isEmpty());
+
+        getOKAction().setEnabled(!projectPortTextField.getText().isEmpty()
+                && !projectIpTextField.getText().isEmpty());
     }
 
     private void createUIComponents() {

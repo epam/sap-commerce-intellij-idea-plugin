@@ -15,318 +15,258 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.common.services.impl
 
-package com.intellij.idea.plugin.hybris.common.services.impl;
-
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.Version;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TYPING_EDITOR_ACTIONS;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.UNDO_REDO_EDITOR_ACTIONS;
-import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.Hybris;
-import static com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.SOLR;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.Version
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import java.lang.NumberFormatException
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import java.lang.StringBuilder
+import com.intellij.idea.plugin.hybris.common.services.impl.DefaultCommonIdeaService
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettings
+import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.Validate
+import java.io.File
+import java.io.FileReader
+import java.io.IOException
+import java.util.*
+import java.util.function.Consumer
+import java.util.function.Supplier
+import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 
 /**
  * Created 10:24 PM 10 February 2016.
  *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
+ * @author Alexander Bartash <AlexanderBartash></AlexanderBartash>@gmail.com>
  */
-public class DefaultCommonIdeaService implements CommonIdeaService {
-    private static final Logger LOG = Logger.getInstance(DefaultCommonIdeaService.class);
-    private static final Version _1905 = Version.parseVersion("1905.0");
-
-    private final CommandProcessor commandProcessor;
-
-
-    public DefaultCommonIdeaService(@NotNull final CommandProcessor commandProcessor) {
-        Validate.notNull(commandProcessor);
-
-        this.commandProcessor = commandProcessor;
+class DefaultCommonIdeaService(commandProcessor: CommandProcessor) : CommonIdeaService {
+    private val commandProcessor: CommandProcessor
+    override fun isTypingActionInProgress(): Boolean {
+        val isTyping = StringUtils.equalsAnyIgnoreCase(
+                commandProcessor.currentCommandName, *HybrisConstants.TYPING_EDITOR_ACTIONS
+        )
+        val isUndoOrRedo = StringUtils.startsWithAny(
+                commandProcessor.currentCommandName, *HybrisConstants.UNDO_REDO_EDITOR_ACTIONS
+        )
+        return isTyping || isUndoOrRedo
     }
 
-    @Override
-    public boolean isTypingActionInProgress() {
-        final boolean isTyping = StringUtils.equalsAnyIgnoreCase(
-            this.commandProcessor.getCurrentCommandName(), TYPING_EDITOR_ACTIONS
-        );
-
-        final boolean isUndoOrRedo = StringUtils.startsWithAny(
-            this.commandProcessor.getCurrentCommandName(), UNDO_REDO_EDITOR_ACTIONS
-        );
-
-        return isTyping || isUndoOrRedo;
-    }
-
-    @Override
-    @NotNull
-    public Optional<String> getHybrisDirectory(@NotNull final Project project) {
-        Validate.notNull(project);
-
+    override fun getHybrisDirectory(project: Project): Optional<String> {
         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-                       .map(HybrisProjectSettingsComponent::getState)
-                       .map(HybrisProjectSettings::getHybrisDirectory);
+                .map { it.state}
+                .map { it.hybrisDirectory }
     }
 
-    @Override
-    @NotNull
-    public Optional<String> getCustomDirectory(@NotNull final Project project) {
-        Validate.notNull(project);
-
+    override fun getCustomDirectory(project: Project): Optional<String> {
         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-                       .map(HybrisProjectSettingsComponent::getState)
-                       .map(HybrisProjectSettings::getCustomDirectory);
+                .map { it.state }
+                .map { it.customDirectory }
     }
 
-
-
-    @Override
-    public boolean isHybrisProject(@NotNull final Project project) {
-        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
+    override fun isHybrisProject(project: Project): Boolean {
+        return HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
     }
 
-    @Override
-    public boolean isOutDatedHybrisProject(@NotNull final Project project) {
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
-        final String version = hybrisProjectSettings.getImportedByVersion();
-        if (version == null) {
-            return true;
+    override fun isOutDatedHybrisProject(project: Project): Boolean {
+        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+                .state
+        val version = hybrisProjectSettings.importedByVersion ?: return true
+        val versionParts = version.split("\\.").toTypedArray()
+        if (versionParts.size < 2) {
+            return true
         }
-        final String[] versionParts = version.split("\\.");
-        if (versionParts.length < 2) {
-            return true;
-        }
-        final String majorVersion = versionParts[0];
-        final String minorVersion = versionParts[1];
-        try {
-            final int majorVersionNumber = Integer.parseInt(majorVersion);
-            final int minorVersionNumber = Integer.parseInt(minorVersion);
-            final int versionNumber = majorVersionNumber * 100 + minorVersionNumber;
-            return versionNumber < 900;
-        } catch (NumberFormatException nfe) {
-            return true;
+        val majorVersion = versionParts[0]
+        val minorVersion = versionParts[1]
+        return try {
+            val majorVersionNumber = majorVersion.toInt()
+            val minorVersionNumber = minorVersion.toInt()
+            val versionNumber = majorVersionNumber * 100 + minorVersionNumber
+            versionNumber < 900
+        } catch (nfe: NumberFormatException) {
+            true
         }
     }
 
-    @Override
-    public boolean isPotentiallyHybrisProject(@NotNull final Project project) {
-        final Module[] modules = ModuleManager.getInstance(project).getModules();
-        if (modules.length == 0) {
-            return false;
+    override fun isPotentiallyHybrisProject(project: Project): Boolean {
+        val modules = ModuleManager.getInstance(project).modules
+        if (modules.isEmpty()) {
+            return false
         }
-        final ArrayList<String> moduleNames = Arrays.stream(modules)
-                                                    .map(Module::getName)
-                                                    .collect(Collectors.toCollection(ArrayList::new));
-
-        final Collection<String> acceleratorNames = Arrays.asList("*cockpits", "*core", "*facades", "*storefront");
+        val moduleNames = modules.map { it.name }
+        val acceleratorNames: Collection<String> = listOf("*cockpits", "*core", "*facades", "*storefront")
         if (matchAllModuleNames(acceleratorNames, moduleNames)) {
-            return true;
+            return true
         }
-        final Collection<String> webservicesNames = Arrays.asList("*hmc", "hmc", "platform");
-        return matchAllModuleNames(webservicesNames, moduleNames);
+        val webservicesNames: Collection<String> = listOf("*hmc", "hmc", "platform")
+        return matchAllModuleNames(webservicesNames, moduleNames)
     }
 
-    @Override
-    public PlatformHybrisModuleDescriptor getPlatformDescriptor(final HybrisProjectDescriptor hybrisProjectDescriptor) {
-        return (PlatformHybrisModuleDescriptor) hybrisProjectDescriptor
-            .getFoundModules()
-            .stream()
-            .filter(e -> e instanceof PlatformHybrisModuleDescriptor)
-            .findAny()
-            .orElse(null);
+    override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor {
+        return hybrisProjectDescriptor.foundModules
+                .first { e: HybrisModuleDescriptor? -> e is PlatformHybrisModuleDescriptor } as PlatformHybrisModuleDescriptor
+
+
     }
 
-    @Override
-    public String getHostHacUrl(@NotNull final Project project) {
-        return getHostHacUrl(project, null);
+    override fun getActiveHacUrl(project: Project): String {
+        return HybrisDeveloperSpecificProjectSettingsComponent
+                .getInstance(project)
+                .getActiveHybrisRemoteConnectionSettings(project)
+                .let { getUrl(it) }
     }
 
-    @Override
-    public String getHostHacUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
-        final StringBuilder sb = new StringBuilder();
-
-        // First try to get the HAC webroot from the project settings, fallback to local props if not set in settings;
-        // For a remote server configured with hac on the root context, use / in the tool settings
+    override fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
+        var settings = settings
         if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
+            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+                    .getActiveHybrisRemoteConnectionSettings(project)
         }
-        sb.append(getHostUrl(project, settings));
-        String hac = settings.getHacWebroot();
-        if (StringUtils.isEmpty(hac)) {
-            final Properties localProperties = getLocalProperties(project);
-            if (localProperties != null) {
-                hac = localProperties.getProperty(HybrisConstants.HAC_WEBROOT_KEY);
-            }
-        }
-
-        if (hac != null) {
-            sb.append('/');
-            sb.append(StringUtils.strip(hac, " /"));
-        }
-
-        final String result = sb.toString();
-
-        LOG.debug("Calculated hostHacURL=" + result);
-
-        return result;
+        return getUrl(settings)
     }
 
-    @Override
-    public String getHostSolrUrl(final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
-        final StringBuilder sb = new StringBuilder();
-
+    override fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
+        var settings = settings
+        val sb = StringBuilder()
         if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project);
+            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+                    .getActiveSolrConnectionSettings(project)
         }
-        if (settings.isSolrSsl()) {
-            sb.append(HybrisConstants.HTTPS_PROTOCOL);
-        }
-        else {
-            sb.append(HybrisConstants.HTTP_PROTOCOL);
-        }
-        sb.append(settings.getHostIP());
-        sb.append(":");
-        sb.append(settings.getPort());
-        sb.append("/");
-        sb.append(settings.getSolrWebroot());
-        final String result = sb.toString();
-
-        LOG.debug("Calculated host SOLR URL=" + result);
-
-        return result;
-    }
-
-    @Override
-    public String getHostUrl(@NotNull final Project project) {
-        return getHostUrl(project, null);
-    }
-
-    @Override
-    public String getHostUrl(@NotNull final Project project, @Nullable HybrisRemoteConnectionSettings settings) {
-        if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
-        }
-        final String ip = settings.getHostIP();
-        StringBuilder sb = new StringBuilder();
-        if (settings.isHacSsl()) {
-            sb.append(HybrisConstants.HTTPS_PROTOCOL);
+        if (settings!!.isSolrSsl) {
+            sb.append(HybrisConstants.HTTPS_PROTOCOL)
         } else {
-            sb.append(HybrisConstants.HTTP_PROTOCOL);
+            sb.append(HybrisConstants.HTTP_PROTOCOL)
         }
-        sb.append(ip);
-        sb.append(HybrisConstants.URL_PORT_DELIMITER);
-        sb.append(settings.getPort());
-        return sb.toString();
+        sb.append(settings.hostIP)
+        sb.append(":")
+        sb.append(settings.port)
+        sb.append("/")
+        sb.append(settings.solrWebroot)
+        val result = sb.toString()
+        LOG.debug("Calculated host SOLR URL=$result")
+        return result
     }
 
-
-    private boolean is2019plus(final Project project) {
-        final String hybrisVersion = HybrisProjectSettingsComponent.getInstance(project).getState().getHybrisVersion();
-
+    private fun is2019plus(project: Project): Boolean {
+        val hybrisVersion = HybrisProjectSettingsComponent.getInstance(project).state.hybrisVersion
         if (StringUtils.isBlank(hybrisVersion)) {
-            return false;
+            return false
         }
-        Version projectVersion = Version.parseVersion(hybrisVersion);
-        return projectVersion.compareTo(_1905) >= 0;
+        val projectVersion = Version.parseVersion(hybrisVersion)
+        return projectVersion.compareTo(_1905) >= 0
     }
 
-    @Override
-    public String getBackofficeWebInfLib(final Project project) {
-        return is2019plus(project) ? HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019 : HybrisConstants.BACKOFFICE_WEB_INF_LIB;
+    override fun getBackofficeWebInfLib(project: Project): String {
+        return if (is2019plus(project)) HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019 else HybrisConstants.BACKOFFICE_WEB_INF_LIB
     }
 
-    @Override
-    public String getBackofficeWebInfClasses(final Project project) {
-        return is2019plus(project) ? HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019 : HybrisConstants.BACKOFFICE_WEB_INF_CLASSES;
+    override fun getBackofficeWebInfClasses(project: Project): String {
+        return if (is2019plus(project)) HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019 else HybrisConstants.BACKOFFICE_WEB_INF_CLASSES
     }
 
-    @Override
-    public void fixRemoteConnectionSettings(final Project project) {
-        HybrisDeveloperSpecificProjectSettingsComponent developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
-        HybrisDeveloperSpecificProjectSettings state = developerSpecificSettings.getState();
+    override fun fixRemoteConnectionSettings(project: Project) {
+        val developerSpecificSettings = HybrisDeveloperSpecificProjectSettingsComponent
+                .getInstance(project)
+        val state = developerSpecificSettings.state
         if (state != null) {
-            List<HybrisRemoteConnectionSettings> connectionList = state.getRemoteConnectionSettingsList();
-            connectionList.stream().forEach(it->{
-                if (it.getType() == null) {
-                    it.setType(Hybris);
+            val connectionList = state.remoteConnectionSettingsList
+            connectionList.forEach(Consumer {
+                if (it.type == null) {
+                    it.type = HybrisRemoteConnectionSettings.Type.Hybris
                 }
-            });
-            final List<HybrisRemoteConnectionSettings> remoteList = connectionList
-                .stream().filter(it -> it.getType() == Hybris).collect(Collectors.toList());
+            })
+            val remoteList = connectionList
+                    .stream().filter { it.type == HybrisRemoteConnectionSettings.Type.Hybris }.collect(Collectors.toList())
             if (remoteList.isEmpty()) {
-                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(project);
-                connectionList.add(newSettings);
-                state.setActiveRemoteConnectionID(newSettings.getUuid());
+                val newSettings = developerSpecificSettings.getDefaultHybrisRemoteConnectionSettings(
+                        project)
+                connectionList.add(newSettings)
+                state.activeRemoteConnectionID = newSettings.uuid
             }
-            final List<HybrisRemoteConnectionSettings> solrList = connectionList
-                .stream().filter(it -> it.getType() == SOLR).collect(Collectors.toList());
+            val solrList = connectionList
+                    .stream().filter { it.type == HybrisRemoteConnectionSettings.Type.SOLR }.collect(Collectors.toList())
             if (solrList.isEmpty()) {
-                HybrisRemoteConnectionSettings newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(project);
-                connectionList.add(newSettings);
-                state.setActiveSolrConnectionID(newSettings.getUuid());
+                val newSettings = developerSpecificSettings.getDefaultSolrRemoteConnectionSettings(
+                        project)
+                connectionList.add(newSettings)
+                state.activeSolrConnectionID = newSettings.uuid
             }
         }
     }
 
-    private Properties getLocalProperties(final Project project) {
-        final String configDir = HybrisProjectSettingsComponent.getInstance(project).getState().getConfigDirectory();
-        if (configDir == null) {
-            return null;
-        }
-        final File propFile = new File(configDir, HybrisConstants.LOCAL_PROPERTIES);
+    private fun getLocalProperties(project: Project): Properties? {
+        val configDir = HybrisProjectSettingsComponent.getInstance(project).state.configDirectory ?: return null
+        val propFile = File(configDir, HybrisConstants.LOCAL_PROPERTIES)
         if (!propFile.exists()) {
-            return null;
+            return null
         }
-        final Properties prop = new Properties();
-        try (final FileReader fr = new FileReader(propFile)) {
-            prop.load(fr);
-            return prop;
-        } catch (IOException e) {
-            LOG.info(e.getMessage(), e);
+        val prop = Properties()
+        try {
+            FileReader(propFile).use { fr ->
+                prop.load(fr)
+                return prop
+            }
+        } catch (e: IOException) {
+            LOG.info(e.message, e)
         }
-        return null;
+        return null
     }
 
-    private boolean matchAllModuleNames(
-        @NotNull final Collection<String> namePatterns,
-        @NotNull final Collection<String> moduleNames
-    ) {
+    private fun matchAllModuleNames(
+            namePatterns: Collection<String>,
+            moduleNames: Collection<String>
+    ): Boolean {
         return namePatterns.stream()
-                          .allMatch(pattern -> matchModuleName(pattern, moduleNames));
+                .allMatch { pattern: String -> matchModuleName(pattern, moduleNames) }
     }
 
-    private boolean matchModuleName(@NotNull final String pattern, final Collection<String> moduleNames) {
-        String regex = ("\\Q" + pattern + "\\E").replace("*", "\\E.*\\Q");
+    private fun matchModuleName(pattern: String, moduleNames: Collection<String>): Boolean {
+        val regex = Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))
         return moduleNames.stream()
-                          .parallel()
-                          .anyMatch(p -> p.matches(regex));
+                .parallel()
+                .anyMatch { p: String -> p.matches(regex) }
+    }
+
+    private fun getUrl(settings: HybrisRemoteConnectionSettings?): String {
+        val ip = settings!!.hostIP
+        val sb = StringBuilder()
+        if (settings.isHacSsl) {
+            sb.append(HybrisConstants.HTTPS_PROTOCOL)
+        } else {
+            sb.append(HybrisConstants.HTTP_PROTOCOL)
+        }
+        sb.append(ip)
+        sb.append(HybrisConstants.URL_PORT_DELIMITER)
+        sb.append(settings.port)
+        val hac = settings.hacWebroot
+        if (StringUtils.isNoneBlank(hac)) {
+            sb.append('/')
+            sb.append(StringUtils.strip(hac, " /"))
+        }
+        val result = sb.toString()
+        LOG.debug("Calculated hostHacURL=$result")
+        return result
+    }
+
+    companion object {
+        private val LOG = Logger.getInstance(DefaultCommonIdeaService::class.java)
+        private val _1905 = Version.parseVersion("1905.0")
+    }
+
+    init {
+        Validate.notNull(commandProcessor)
+        this.commandProcessor = commandProcessor
     }
 }

@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.util.Objects;
 
 import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
@@ -45,11 +46,12 @@ public class SolrConnectionDialog extends DialogWrapper {
     private JLabel sslLabel;
     private Project myProject;
     private HybrisRemoteConnectionSettings mySettings;
+    private HybrisRemoteConnectionSettings setting;
 
     public SolrConnectionDialog(
-        @Nullable final Project project,
-        @Nullable final Component parentComponent,
-        @NotNull final HybrisRemoteConnectionSettings settings
+            @Nullable final Project project,
+            @Nullable final Component parentComponent,
+            @NotNull final HybrisRemoteConnectionSettings settings
     ) {
         super(project, parentComponent, false, PROJECT);
         myProject = project;
@@ -64,42 +66,58 @@ public class SolrConnectionDialog extends DialogWrapper {
         loginTextField.setText(mySettings.getAdminLogin());
         passwordField.setText(mySettings.getAdminPassword());
         sslButton.setSelected(mySettings.isSolrSsl());
+        setting = new HybrisRemoteConnectionSettings();
+        saveSettings(settings);
+
+        final SimpleDocumentListener validateListener = new SimpleDocumentListener() {
+            @Override
+            public void update(final DocumentEvent e) {
+                validateParams();
+            }
+        };
 
         final SimpleDocumentListener saveSettingsDocumentListener = new SimpleDocumentListener() {
             @Override
             public void update(final DocumentEvent e) {
-                saveSettings();
+                saveSettings(setting);
             }
         };
 
-        saveSettings();
+        validateParams();
+        saveSettings(setting);
         init();
+
+        solrIpTextField.getDocument().addDocumentListener(validateListener);
+        solrPortTextField.getDocument().addDocumentListener(validateListener);
 
         displayNameTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         solrIpTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         solrPortTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
         solrWebrootTextField.getDocument().addDocumentListener(saveSettingsDocumentListener);
-        displayNameTextField.addActionListener(action->saveSettings());
-        solrIpTextField.addActionListener(action->saveSettings());
-        solrWebrootTextField.addActionListener(action->saveSettings());
-        loginTextField.addActionListener(action->saveSettings());
-        passwordField.addActionListener(action->saveSettings());
-        sslButton.addActionListener(action->saveSettings());
-        testConnectionButton.addActionListener(action->testConnection());
+        displayNameTextField.addActionListener(action->saveSettings(setting));
+        solrIpTextField.addActionListener(action->saveSettings(setting));
+        solrWebrootTextField.addActionListener(action->saveSettings(setting));
+        loginTextField.addActionListener(action->saveSettings(setting));
+        passwordField.addActionListener(action->saveSettings(setting));
+        sslButton.addActionListener(action->saveSettings(setting));
+
+
+        Objects.requireNonNull(getButton(getOKAction())).addActionListener(action->saveSettings(mySettings));
+        testConnectionButton.addActionListener(action -> testConnection());
     }
 
     private void testConnection() {
-        saveSettings();
+        saveSettings(setting);
         String message;
         NotificationType type;
         try {
-            SolrHttpClient.getInstance(myProject).listOfCores(myProject, mySettings);
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR" , mySettings.getGeneratedURL());
+            SolrHttpClient.getInstance(myProject).listOfCores(myProject, setting);
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR" , setting.getGeneratedURL());
             type = NotificationType.INFORMATION;
         } catch (Exception e) {
             LOG.warn(e.getMessage(), e);
             type = NotificationType.WARNING;
-            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", mySettings.getGeneratedURL(), e.getMessage());
+            message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", setting.getGeneratedURL(), e.getMessage());
         }
 
         NotificationUtil.NOTIFICATION_GROUP.createNotification(
@@ -107,7 +125,7 @@ public class SolrConnectionDialog extends DialogWrapper {
         ).notify(myProject);
     }
 
-    private void saveSettings() {
+    private void saveSettings(HybrisRemoteConnectionSettings mySettings) {
         mySettings.setSolrSsl(sslButton.isSelected());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setType(HybrisRemoteConnectionSettings.Type.SOLR);
@@ -116,9 +134,18 @@ public class SolrConnectionDialog extends DialogWrapper {
         mySettings.setSolrWebroot(solrWebrootTextField.getText());
         mySettings.setAdminLogin(loginTextField.getText());
         mySettings.setAdminPassword(new String(passwordField.getPassword()));
-        final String previewUrl = CommonIdeaService.getInstance().getHostSolrUrl(myProject, mySettings);
+        final String previewUrl = CommonIdeaService.getInstance().getSolrUrl(myProject, mySettings);
         projectUrlPreviewValueLabel.setText(previewUrl);
         mySettings.setGeneratedURL(previewUrl);
+    }
+
+    private void validateParams() {
+        testConnectionButton
+                .setEnabled(!solrPortTextField.getText().isEmpty()
+                        && !solrIpTextField.getText().isEmpty());
+
+        getOKAction().setEnabled(!solrPortTextField.getText().isEmpty()
+                && !solrIpTextField.getText().isEmpty());
     }
 
     @Nullable

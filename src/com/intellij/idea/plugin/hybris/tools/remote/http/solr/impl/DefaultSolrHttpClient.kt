@@ -54,10 +54,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
                 .runCatching { process(buildHttpSolrClient(solrConnectionSettings.generatedURL)) }
                 .map { parseCoreResponse(it) }
                 .getOrElse {
-                    when (it) {
-                        is SolrServerException -> emptyArray()
-                        else -> throw it
-                    }
+                    throw it
                 }
     }
 

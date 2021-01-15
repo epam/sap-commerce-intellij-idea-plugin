@@ -143,10 +143,10 @@
       </component>
       <component id="6c8d4" class="com.intellij.ui.components.OnOffButton" binding="sslButton">
         <constraints>
-          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <selected value="true"/>
+          <selected value="false"/>
         </properties>
       </component>
       <component id="ba58e" class="javax.swing.JLabel" binding="sslLabel">

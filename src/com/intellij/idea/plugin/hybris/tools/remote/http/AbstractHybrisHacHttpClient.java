@@ -70,7 +70,7 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     public String login(@NotNull Project project, @NotNull HybrisRemoteConnectionSettings settings) {
-        String hostHacURL = getHostHacURL(project);
+        String hostHacURL = getHostHacURL(project,settings);
         sessionId = getSessionId(hostHacURL);
         if (sessionId == null) {
             return "Unable to obtain sessionId for "+hostHacURL;
@@ -165,8 +165,8 @@ public abstract class AbstractHybrisHacHttpClient {
         return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, SC_SERVICE_UNAVAILABLE, reasonPhrase));
     }
 
-    public String getHostHacURL(Project project) {
-        return CommonIdeaService.getInstance().getHostHacUrl(project);
+    public String getHostHacURL(final Project project) {
+        return CommonIdeaService.getInstance().getActiveHacUrl(project);
     }
 
     public String getHostHacURL(Project project, HybrisRemoteConnectionSettings settings) {
