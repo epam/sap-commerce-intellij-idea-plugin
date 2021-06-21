@@ -541,6 +541,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
 
+        if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
+            LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
+            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+
+            // scan for ext directories
+            scanSubrirectories(moduleRootMap, acceptOnlyHybrisModules, rootProjectDirectory.toPath(), progressListenerProcessor);
+            return;
+        }
+
         if (!acceptOnlyHybrisModules) {
             if (hybrisProjectService.isGradleModule(rootProjectDirectory) && !FileUtil.filesEqual(
                 rootProjectDirectory,
@@ -560,10 +569,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 return;
             }
 
-            if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
-                LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
+            if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
                 rootProjectDirectory,
                 rootDirectory
             )) {
