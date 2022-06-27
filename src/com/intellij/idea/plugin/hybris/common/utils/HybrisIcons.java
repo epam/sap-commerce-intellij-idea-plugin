@@ -50,6 +50,7 @@ public interface HybrisIcons {
     Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     Icon BEAN = getIcon("/icons/beanIcon.svg");
     Icon LOCALIZED = getIcon("/icons/localized.svg");
+    Icon INTERCEPTOR = getIcon("/icons/interceptor.svg");
 
     Icon MACROS = getIcon("/icons/macros.png");
     
