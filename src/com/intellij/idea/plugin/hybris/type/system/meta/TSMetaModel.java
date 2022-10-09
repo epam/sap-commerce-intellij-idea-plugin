@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaClassImpl;
-import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +33,7 @@ import java.util.stream.Stream;
 public interface TSMetaModel {
 
     void collectReferencesForSourceType(
-        @NotNull TSMetaClassImpl source,
+        @NotNull TSMetaClass source,
         @NotNull Collection<TSMetaReference.ReferenceEnd> out
     );
 
@@ -80,9 +78,6 @@ public interface TSMetaModel {
 
     @Nullable
     TSMetaClass findMetaClassForDom(@NotNull ItemType dom);
-
-    @Nullable
-    TSMetaAtomic findOrCreateAtomicType(@NotNull AtomicType atomicType);
 
     List<TSMetaReference> findRelationByName(@NotNull final String name);
 }

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -31,4 +32,6 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
 
     @NotNull
     Collection<? extends TSMetaEnumValue> findValueByName(@NotNull String name);
+
+    void createValue(@NotNull EnumValue domEnumValue);
 }

@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -34,6 +37,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.stubs.index.DomElementClassIndex;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -113,49 +117,54 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
         Optional.ofNullable(rootWrapper).map(DomFileElement::getRootElement)
             .ifPresent(items -> {
-                items.getItemTypes().getItemTypes().forEach(this::processItemType);
+                items.getItemTypes().getItemTypes().forEach(itemType -> processItemType(psiFile, itemType));
                 items.getItemTypes().getTypeGroups().stream()
                      .flatMap(tg -> tg.getItemTypes().stream())
-                     .forEach(this::processItemType);
+                     .forEach(itemType -> processItemType(psiFile, itemType));
 
-                items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
-                items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
-                items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
-                items.getRelations().getRelations().forEach(this::processRelationType);
+                items.getEnumTypes().getEnumTypes().forEach(enumType -> processEnumType(psiFile, enumType));
+                items.getAtomicTypes().getAtomicTypes().forEach(atomicType -> processAtomicType(psiFile, atomicType));
+                items.getCollectionTypes().getCollectionTypes().forEach(collectionType -> processCollectionType(psiFile, collectionType));
+                items.getRelations().getRelations().forEach(relation -> processRelationType(psiFile, relation));
             });
 
         //continue visiting
         return true;
     }
 
-    private void processRelationType(final Relation relation) {
-        myResult.findOrCreateReference(myResult, relation);
+    private void processRelationType(final PsiFile psiFile, final Relation relation) {
+        TSMetaService.Companion.getInstance(myProject)
+                               .findOrCreate(myResult, psiFile, relation);
     }
 
-    private void processAtomicType(final AtomicType atomicType) {
-        myResult.findOrCreateAtomicType(atomicType);
+    private void processAtomicType(final PsiFile psiFile, final AtomicType atomicType) {
+        TSMetaService.Companion.getInstance(myProject)
+                               .findOrCreate(myResult, psiFile, atomicType);
     }
 
-    private void processEnumType(final @NotNull EnumType enumType) {
-        final TSMetaEnumImpl aEnum = myResult.findOrCreateEnum(enumType);
+    private void processEnumType(final PsiFile psiFile, final @NotNull EnumType enumType) {
+        final TSMetaEnum aEnum = TSMetaService.Companion.getInstance(myProject)
+                                                        .findOrCreate(myResult, psiFile, enumType);
 
-        if (aEnum != null) {
-            enumType.getValues().forEach(aEnum::createValue);
-        }
+        if (aEnum == null) return;
+
+        enumType.getValues().forEach(aEnum::createValue);
     }
 
-    private void processCollectionType(final @NotNull CollectionType collectionType) {
-        myResult.findOrCreateCollection(myResult, collectionType);
+    private void processCollectionType(final PsiFile psiFile, final @NotNull CollectionType collectionType) {
+        TSMetaService.Companion.getInstance(myProject)
+                               .findOrCreate(myResult, psiFile, collectionType);
     }
 
-    private void processItemType(final @NotNull ItemType itemType) {
-        final TSMetaClassImpl metaclass = myResult.findOrCreateClass(myResult, itemType);
-        if (metaclass == null) {
-            //can't be registered, misses the code
-            return;
-        }
+    private void processItemType(final PsiFile psiFile, final @NotNull ItemType itemType) {
+        final TSMetaClass metaclass = TSMetaService.Companion.getInstance(myProject)
+                                                             .findOrCreate(myResult, psiFile, itemType);
 
-        itemType.getAttributes().getAttributes()
-                .forEach(metaclass::createProperty);
+        if (metaclass == null) return;
+
+        itemType.getAttributes().getAttributes().stream()
+                .map(domAttribute -> new TSMetaPropertyImpl(metaclass, domAttribute))
+                .filter(property -> StringUtils.isNotBlank(property.getName()))
+                .forEach(property -> metaclass.addProperty(property.getName().trim(), property));
     }
 }

@@ -26,21 +26,11 @@ import com.intellij.psi.PsiFile
 
 class TSMetaService {
 
-    private fun extractName(dom: ItemType): String? = dom.code.value
-    private fun extractName(dom: EnumType): String? = dom.code.value
-    private fun extractName(dom: CollectionType): String? = dom.code.value
-    private fun extractName(dom: Relation): String? = dom.code.value
-    private fun extractName(dom: AtomicType): String? = dom.clazz.value
-
-    private fun registerReferenceEnd(psiFile: PsiFile, ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
-        if (!targetEnd.isNavigable) return
-
-        val ownerTypeName = ownerEnd.typeName
-
-        if (!StringUtil.isEmpty(ownerTypeName)) {
-            TSMetaCache.getInstance(psiFile).referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
-        }
-    }
+    fun extractName(dom: ItemType): String? = dom.code.value
+    fun extractName(dom: EnumType): String? = dom.code.value
+    fun extractName(dom: CollectionType): String? = dom.code.value
+    fun extractName(dom: Relation): String? = dom.code.value
+    fun extractName(dom: AtomicType): String? = dom.clazz.value
 
     fun findOrCreate(metaModel: TSMetaModel, psiFile: PsiFile, domItemType: ItemType): TSMetaClass? {
         val name = extractName(domItemType) ?: return null
@@ -57,7 +47,7 @@ class TSMetaService {
         return impl
     }
 
-    fun findOrCreate(psiFile: PsiFile, domEnumType: EnumType): TSMetaEnum? {
+    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domEnumType: EnumType): TSMetaEnum? {
         val name = extractName(domEnumType) ?: return null
         val enums = TSMetaCache.getInstance(psiFile).getMetaType<TSMetaEnum>(MetaType.META_ENUM)
         var impl = enums[name]
@@ -69,7 +59,7 @@ class TSMetaService {
         return impl
     }
 
-    fun findOrCreate(psiFile: PsiFile, atomicType: AtomicType): TSMetaAtomic? {
+    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, atomicType: AtomicType): TSMetaAtomic? {
         val clazzName = extractName(atomicType) ?: return null
 
         return TSMetaCache.getInstance(psiFile).getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
@@ -77,7 +67,7 @@ class TSMetaService {
             { key: String -> TSMetaAtomicImpl(key, atomicType) }
     }
 
-    fun findOrCreateCollection(metaModel : TSMetaModel, psiFile: PsiFile, domCollectionType: CollectionType): TSMetaCollection? {
+    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domCollectionType: CollectionType): TSMetaCollection? {
         val name = extractName(domCollectionType) ?: return null
 
         return TSMetaCache.getInstance(psiFile).getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
@@ -85,7 +75,7 @@ class TSMetaService {
             { key: String? -> TSMetaCollectionImpl(metaModel, key, domCollectionType) }
     }
 
-    fun findOrCreateReference(metaModel : TSMetaModel, psiFile: PsiFile, domRelationType: Relation) : TSMetaReference? {
+    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domRelationType: Relation) : TSMetaReference? {
         val name = extractName(domRelationType)
         val typeCode = domRelationType.deployment.typeCode.stringValue
 
@@ -99,6 +89,16 @@ class TSMetaService {
                 impl
             }
 
+    }
+
+    private fun registerReferenceEnd(psiFile: PsiFile, ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
+        if (!targetEnd.isNavigable) return
+
+        val ownerTypeName = ownerEnd.typeName
+
+        if (!StringUtil.isEmpty(ownerTypeName)) {
+            TSMetaCache.getInstance(psiFile).referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
+        }
     }
 
     companion object {

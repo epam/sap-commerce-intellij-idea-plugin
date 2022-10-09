@@ -23,11 +23,9 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomService;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +45,7 @@ import java.util.stream.Stream;
  */
 public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass {
 
-    private final NoCaseMultiMap<TSMetaPropertyImpl> myProperties = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaProperty> myProperties = new NoCaseMultiMap<>();
 
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
@@ -89,7 +87,9 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
     @NotNull
     @Override
     public Stream<? extends ItemType> retrieveAllDomsStream() {
-        return myAllDoms.stream().map(DomAnchor::retrieveDomElement).filter(Objects::nonNull);
+        return myAllDoms.stream()
+                        .map(DomAnchor::retrieveDomElement)
+                        .filter(Objects::nonNull);
     }
 
     @Override
@@ -98,11 +98,9 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
         return myMetaModel;
     }
 
-    void createProperty(final @NotNull Attribute domAttribute) {
-        final TSMetaPropertyImpl result = new TSMetaPropertyImpl(this, domAttribute);
-        if (StringUtils.isNotBlank(result.getName())) {
-            myProperties.putValue(result.getName().trim(), result);
-        }
+    @Override
+    public void addProperty(final String key, final TSMetaProperty property) {
+        myProperties.putValue(key, property);
     }
 
     @NotNull

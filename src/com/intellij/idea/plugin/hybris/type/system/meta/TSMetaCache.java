@@ -50,8 +50,7 @@ public final class TSMetaCache {
                 if (metaCache == null) {
                     metaCache = CachedValuesManager.getManager(psiFile.getProject()).createCachedValue(
                         () -> ApplicationManager.getApplication().runReadAction(
-                            (Computable<CachedValueProvider.Result<TSMetaCache>>) () -> CachedValueProvider.Result.create(
-                                new TSMetaCache())
+                            (Computable<CachedValueProvider.Result<TSMetaCache>>) () -> CachedValueProvider.Result.create(new TSMetaCache(), psiFile)
                         ), false
                     );
                     psiFile.putUserData(key, metaCache);

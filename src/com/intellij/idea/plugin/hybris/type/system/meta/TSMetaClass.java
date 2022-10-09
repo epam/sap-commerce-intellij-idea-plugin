@@ -38,6 +38,8 @@ public interface TSMetaClass extends TSMetaClassifier<ItemType> {
     @NotNull
     TSMetaModel getMetaModel();
 
+    void addProperty(final String key, TSMetaProperty property);
+
     @NotNull
     Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
 

@@ -53,7 +53,8 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
         return new ArrayList<>(name2ValueObj.get(name));
     }
 
-    void createValue(final @NotNull EnumValue domEnumValue) {
+    @Override
+    public void createValue(final @NotNull EnumValue domEnumValue) {
         final TSMetaEnumValueImpl result = new TSMetaEnumValueImpl(this, domEnumValue);
 
         if (result.getName() != null) {
