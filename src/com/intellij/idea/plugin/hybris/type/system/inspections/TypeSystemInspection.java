@@ -44,31 +44,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
+public abstract class TypeSystemInspection extends LocalInspectionTool {
 
-public class XmlRuleInspection extends LocalInspectionTool {
-
-    private static final Logger LOG = Logger.getInstance(XmlRuleInspection.class);
+    private static final Logger LOG = Logger.getInstance(TypeSystemInspection.class);
     // TODO : extract TS Meta related cache to own class, ensure that it is cleaned after processing
     private static final Map<MetaType, CaseInsensitiveMap<String, TSMetaClassifier<? extends DomElement>>> META_CACHE = new ConcurrentHashMap<>();
-    private static volatile Map<String, XmlRule> myRules;
-    private final Object lock = new Object();
 
     @SuppressWarnings("unchecked")
     public static <T> CaseInsensitiveMap<String, T> getMetaType(final MetaType metaType) {
         return (CaseInsensitiveMap<String, T>) META_CACHE.computeIfAbsent(metaType, mt -> new CaseInsensitiveMap<>());
     }
+
+    protected abstract String getNameQuery();
 
     @Nullable
     @Override
@@ -89,24 +84,26 @@ public class XmlRuleInspection extends LocalInspectionTool {
                 return null;
             }
 
-            final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject()).getCurrentProfile();
+            final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject())
+                                                                                 .getCurrentProfile();
             final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
-            final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(HighlightDisplayKey.find(getShortName()), file);
-            final XmlRule rule = getRules(file).get(getID());
-
-            if (rule == null) {
-                return new ProblemDescriptor[0];
-            }
+            final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(
+                HighlightDisplayKey.find(getShortName()),
+                file
+            );
 
             final List<ProblemDescriptor> result = new ArrayList<>();
-//            final Instant from = Instant.now();
-//            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
+            final Instant from = Instant.now();
+            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
             try {
-                validateOneRule(rule, sharedContext, result, ruleLevel);
+                validateOneRule(sharedContext, result, ruleLevel);
             } catch (XPathExpressionException e) {
                 result.add(this.createValidationFailedProblem(sharedContext, xmlFile, e));
             }
-//            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(from, Instant.now()));
+            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
+                from,
+                Instant.now()
+            ));
 
             return result.toArray(new ProblemDescriptor[result.size()]);
         } finally {
@@ -114,26 +111,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
         }
     }
 
-    @NotNull
-    private Map<String, XmlRule> getRules(final @NotNull PsiFile file) {
-        if (myRules == null) {
-            synchronized (lock) {
-                if (myRules == null) {
-                    try {
-                        myRules = loadRules();
-                    } catch (IOException e) {
-                        LOG.error("Error loading ruleset", e);
-                        myRules = Collections.emptyMap();
-                    }
-                }
-            }
-        }
-
-        return myRules;
-    }
-
     protected void validateOneRule(
-        @NotNull final XmlRule rule,
         @NotNull final ValidateContext context,
         @NotNull final Collection<? super ProblemDescriptor> output,
         @NotNull final HighlightDisplayLevel ruleLevel
@@ -141,11 +119,11 @@ public class XmlRuleInspection extends LocalInspectionTool {
     throws XPathExpressionException {
         final XPathService xPathService = ApplicationManager.getApplication().getService(XPathService.class);
 
-        final NodeList selection = xPathService.computeNodeSet(rule.getSelectionXPath(), context.getDocument());
+        final NodeList selection = xPathService.computeNodeSet(getSelectionQuery(), context.getDocument());
         for (int i = 0; i < selection.getLength(); i++) {
             final Node nextSelected = selection.item(i);
-            boolean passed = xPathService.computeBoolean(rule.getTestXPath(), nextSelected);
-            if (rule.isFailOnTestQuery()) {
+            boolean passed = xPathService.computeBoolean(getTestQuery(), nextSelected);
+            if (isFailOnTestQuery()) {
                 passed = !passed;
             }
             if (!passed) {
@@ -169,14 +147,12 @@ public class XmlRuleInspection extends LocalInspectionTool {
         );
     }
 
-    private Map<String, XmlRule> loadRules() throws IOException {
-        try (final InputStream input = this.getClass().getClassLoader().getResourceAsStream(RULESET_XML)) {
-            if (input == null) {
-                throw new IOException("Ruleset file is not found");
-            }
-            return new XmlRuleParser().parseRules(new BufferedInputStream(input)).stream()
-                .collect(Collectors.toMap(XmlRule::getID, rule -> rule));
-        }
+    protected abstract String getSelectionQuery();
+
+    protected abstract String getTestQuery();
+
+    protected boolean isFailOnTestQuery() {
+        return false;
     }
 
     protected ProblemDescriptor createProblem(

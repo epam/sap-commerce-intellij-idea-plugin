@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection;
+import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
@@ -80,7 +80,7 @@ class TSMetaModelImpl implements TSMetaModel {
             return null;
         }
         final String typeCode = domItemType.getDeployment().getTypeCode().getStringValue();
-        final CaseInsensitiveMap<String, TSMetaClassImpl> classes = XmlRuleInspection.getMetaType(MetaType.META_CLASS);
+        final CaseInsensitiveMap<String, TSMetaClassImpl> classes = TypeSystemInspection.getMetaType(MetaType.META_CLASS);
         TSMetaClassImpl impl = classes.get(name);
         if (impl == null) {
             impl = new TSMetaClassImpl(this, name, typeCode, domItemType);
@@ -97,7 +97,7 @@ class TSMetaModelImpl implements TSMetaModel {
         if (StringUtil.isEmpty(name)) {
             return null;
         }
-        final CaseInsensitiveMap<String, TSMetaEnumImpl> enums = XmlRuleInspection.getMetaType(MetaType.META_ENUM);
+        final CaseInsensitiveMap<String, TSMetaEnumImpl> enums = TypeSystemInspection.getMetaType(MetaType.META_ENUM);
         TSMetaEnumImpl impl = enums.get(name);
         if (impl == null) {
             impl = new TSMetaEnumImpl(name, domEnumType);
@@ -115,8 +115,8 @@ class TSMetaModelImpl implements TSMetaModel {
             return null;
         }
 
-        return XmlRuleInspection.<TSMetaCollectionImpl>getMetaType(MetaType.META_COLLECTION)
-                                .computeIfAbsent(name, key -> new TSMetaCollectionImpl(key, domCollectionType));
+        return TypeSystemInspection.<TSMetaCollectionImpl>getMetaType(MetaType.META_COLLECTION)
+                                   .computeIfAbsent(name, key -> new TSMetaCollectionImpl(key, domCollectionType));
     }
 
     @Nullable
@@ -126,8 +126,8 @@ class TSMetaModelImpl implements TSMetaModel {
             return null;
         }
 
-        return XmlRuleInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION)
-                                .computeIfAbsent(name, key -> {
+        return TypeSystemInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION)
+                                   .computeIfAbsent(name, key -> {
                                     final String typeCode = domRelationType.getDeployment().getTypeCode().getStringValue();
                                     final TSMetaReference impl = new TSMetaReferenceImpl(name, typeCode, domRelationType);
                                     registerReferenceEnd(impl.getSource(), impl.getTarget());
@@ -160,25 +160,25 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaClass> getMetaClassesStream() {
-        return XmlRuleInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).values().stream();
+        return TypeSystemInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).values().stream();
     }
 
     @NotNull
     @Override
     public Stream<? extends TSMetaReference> getMetaRelationsStream() {
-        return XmlRuleInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION).values().stream();
+        return TypeSystemInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION).values().stream();
     }
 
     @NotNull
     @Override
     public Stream<? extends TSMetaAtomic> getMetaAtomicStream() {
-        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).values().stream();
+        return TypeSystemInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaClass findMetaClassByName(@NotNull final String name) {
-        return XmlRuleInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).get(name);
+        return TypeSystemInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).get(name);
     }
 
     @Nullable
@@ -192,19 +192,19 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaEnum> getMetaEnumsStream() {
-        return XmlRuleInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).values().stream();
+        return TypeSystemInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaEnum findMetaEnumByName(@NotNull final String name) {
-        return XmlRuleInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).get(name);
+        return TypeSystemInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).get(name);
     }
 
     @Nullable
     @Override
     public TSMetaAtomic findMetaAtomicByName(@NotNull final String name) {
-        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).get(name);
+        return TypeSystemInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).get(name);
     }
 
     @Nullable
@@ -220,13 +220,13 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaCollection> getMetaCollectionsStream() {
-        return XmlRuleInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).values().stream();
+        return TypeSystemInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaCollection findMetaCollectionByName(@NotNull final String name) {
-        return XmlRuleInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).get(name);
+        return TypeSystemInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).get(name);
     }
 
     @Nullable
@@ -234,7 +234,7 @@ class TSMetaModelImpl implements TSMetaModel {
     public TSMetaAtomic findOrCreateAtomicType(@NotNull final AtomicType atomicType) {
         final String clazzName = atomicType.getClazz().getValue();
 
-        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC)
-                                .computeIfAbsent(clazzName, key -> new TSMetaAtomicImpl(key, atomicType));
+        return TypeSystemInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC)
+                                   .computeIfAbsent(clazzName, key -> new TSMetaAtomicImpl(key, atomicType));
     }
 }
