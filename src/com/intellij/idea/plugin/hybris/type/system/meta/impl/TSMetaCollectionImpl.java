@@ -18,9 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,8 +31,11 @@ import java.util.Optional;
 
 public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> implements TSMetaCollection {
 
-    public TSMetaCollectionImpl(final String name, final CollectionType dom) {
+    private final TSMetaModel myMetaModel;
+
+    public TSMetaCollectionImpl(final TSMetaModel model, final String name, final CollectionType dom) {
         super(name, dom);
+        myMetaModel = model;
     }
 
     @Nullable
@@ -42,8 +48,8 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     @Override
     public Type getType() {
         return Optional.ofNullable(retrieveDom())
-            .map(dom -> dom.getType().getValue())
-            .orElse(null);
+                       .map(dom -> dom.getType().getValue())
+                       .orElse(null);
     }
 
     @Nullable
@@ -54,4 +60,10 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
                        .orElse(null);
     }
 
+    @Nullable
+    @Override
+    public TSMetaClassifier<? extends DomElement> getElementType() {
+        final String typeName = getElementTypeName();
+        return typeName == null ? null : myMetaModel.findMetaClassifierByName(typeName);
+    }
 }

@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-class CaseInsensitive {
+public class CaseInsensitive {
 
     @NotNull
     public static String eraseCase(final @NotNull String key) {

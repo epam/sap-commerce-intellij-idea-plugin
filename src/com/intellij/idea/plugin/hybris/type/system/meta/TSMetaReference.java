@@ -46,9 +46,12 @@ public interface TSMetaReference extends TSMetaClassifier<Relation> {
         @NotNull
         TSMetaReference getOwningReference();
 
+        @Nullable TSMetaClassifier<?> resolveType();
+
         @Nullable
         RelationElement retrieveDom();
 
+        @NotNull TSMetaModel getMetaModel();
     }
 
 }

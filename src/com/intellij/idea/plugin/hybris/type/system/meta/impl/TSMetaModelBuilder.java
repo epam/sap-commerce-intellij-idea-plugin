@@ -129,7 +129,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processRelationType(final Relation relation) {
-        myResult.findOrCreateReference(relation);
+        myResult.findOrCreateReference(myResult, relation);
     }
 
     private void processAtomicType(final AtomicType atomicType) {
@@ -145,11 +145,11 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processCollectionType(final @NotNull CollectionType collectionType) {
-        myResult.findOrCreateCollection(collectionType);
+        myResult.findOrCreateCollection(myResult, collectionType);
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
-        final TSMetaClassImpl metaclass = myResult.findOrCreateClass(itemType);
+        final TSMetaClassImpl metaclass = myResult.findOrCreateClass(myResult, itemType);
         if (metaclass == null) {
             //can't be registered, misses the code
             return;

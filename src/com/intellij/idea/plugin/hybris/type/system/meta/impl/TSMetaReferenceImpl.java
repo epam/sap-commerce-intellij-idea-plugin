@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaReference {
+public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaReference {
 
     private final ReferenceEndImpl mySourceEnd;
     private final ReferenceEndImpl myTargetEnd;
@@ -37,14 +39,15 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     public TSMetaReferenceImpl(
+        final @NotNull TSMetaModel metaModel,
         final String name,
         final String typeCode,
         final @NotNull Relation dom
     ) {
         super(name, dom);
         myTypeCode = typeCode;
-        mySourceEnd = new ReferenceEndImpl(this, dom.getSourceElement());
-        myTargetEnd = new ReferenceEndImpl(this, dom.getTargetElement());
+        mySourceEnd = new ReferenceEndImpl(metaModel, this, dom.getSourceElement());
+        myTargetEnd = new ReferenceEndImpl(metaModel, this, dom.getTargetElement());
     }
 
     protected static String extractName(final @NotNull Relation domRelation) {
@@ -70,6 +73,7 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
 
     private static class ReferenceEndImpl implements ReferenceEnd {
 
+        private final TSMetaModel myMetaModel;
         private final DomAnchor<RelationElement> myDomAnchor;
         private final TSMetaReference myOwner;
         private final String myTypeName;
@@ -77,10 +81,12 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
         private final boolean myNavigatable;
 
         public ReferenceEndImpl(
+            final @NotNull TSMetaModel metaModel,
             final @NotNull TSMetaReference owner,
             final @NotNull RelationElement dom
         ) {
             myOwner = owner;
+            myMetaModel = metaModel;
             myDomAnchor = DomService.getInstance().createAnchor(dom);
             myTypeName = StringUtil.notNullize(dom.getType().getStringValue());
             myRole = StringUtil.notNullize(dom.getQualifier().getStringValue());
@@ -91,6 +97,12 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
         @Override
         public String getTypeName() {
             return myTypeName;
+        }
+
+        @Nullable
+        @Override
+        public TSMetaClassifier<?> resolveType() {
+            return myMetaModel.findMetaClassByName(getTypeName());
         }
 
         @Nullable
@@ -116,5 +128,10 @@ class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaRe
             return myOwner;
         }
 
+        @NotNull
+        @Override
+        public TSMetaModel getMetaModel() {
+            return myMetaModel;
+        }
     }
 }

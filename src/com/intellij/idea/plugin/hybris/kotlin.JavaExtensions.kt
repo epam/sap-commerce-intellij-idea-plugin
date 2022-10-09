@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -16,19 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta.impl;
+package com.intellij.idea.plugin.hybris
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
-import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-public class TSMetaAtomicImpl extends TSMetaEntityImpl<AtomicType> implements TSMetaAtomic {
-
-    public TSMetaAtomicImpl(final String name, final AtomicType dom) {
-        super(name, dom);
-    }
-
+fun HashMap<String, TSMetaClass>.putInsensitive(k: String, v: TSMetaClass) {
+    this[k.lowercase()] = v
 }
+
+fun HashMap<String, TSMetaClass>.getInsensitive(k: String, v: TSMetaClass): TSMetaClass? = this[k.lowercase()]

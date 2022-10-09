@@ -18,9 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection;
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
@@ -46,19 +45,19 @@ import java.util.stream.Stream;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass {
+public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass {
 
     private final NoCaseMultiMap<TSMetaPropertyImpl> myProperties = new NoCaseMultiMap<>();
 
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
-    private final TSMetaModelImpl myMetaModel;
+    private final TSMetaModel myMetaModel;
     private final String myTypeCode;
 
     private String myExtendedMetaClassName = null;
 
     public TSMetaClassImpl(
-        final @NotNull TSMetaModelImpl model,
+        final @NotNull TSMetaModel model,
         final @NotNull String name,
         final String typeCode,
         final @NotNull ItemType dom
@@ -95,7 +94,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
 
     @Override
     @NotNull
-    public TSMetaModelImpl getMetaModel() {
+    public TSMetaModel getMetaModel() {
         return myMetaModel;
     }
 
@@ -198,7 +197,9 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
     ) {
         Optional.ofNullable(getRealExtendedMetaClassName())
                 .filter(aName -> !visitedParents.contains(aName))
-                .map(name -> TypeSystemInspection.<TSMetaClassImpl>getMetaType(MetaType.META_CLASS).get(name))
+                .map(myMetaModel::findMetaClassByName)
+                .filter(TSMetaClassImpl.class::isInstance)
+                .map(TSMetaClassImpl.class::cast)
                 .ifPresent(parent -> {
                     visitedParents.add(parent.getName());
                     visitor.accept(parent);
@@ -209,7 +210,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
     private String getRealExtendedMetaClassName() {
         return myExtendedMetaClassName == null ? IMPLICIT_SUPER_CLASS_NAME : myExtendedMetaClassName;
     }
-    
+
     @Nullable
     @Override
     public String getExtendedMetaClassName() {

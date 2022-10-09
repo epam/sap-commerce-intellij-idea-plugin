@@ -27,8 +27,6 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ex.InspectionProfileImpl;
 import com.intellij.codeInspection.ex.InspectionProfileWrapper;
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -36,8 +34,6 @@ import com.intellij.profile.codeInspection.ProjectInspectionProfileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.util.xml.DomElement;
-import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Node;
@@ -49,19 +45,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class TypeSystemInspection extends LocalInspectionTool {
 
     private static final Logger LOG = Logger.getInstance(TypeSystemInspection.class);
-    // TODO : extract TS Meta related cache to own class, ensure that it is cleaned after processing
-    private static final Map<MetaType, CaseInsensitiveMap<String, TSMetaClassifier<? extends DomElement>>> META_CACHE = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unchecked")
-    public static <T> CaseInsensitiveMap<String, T> getMetaType(final MetaType metaType) {
-        return (CaseInsensitiveMap<String, T>) META_CACHE.computeIfAbsent(metaType, mt -> new CaseInsensitiveMap<>());
-    }
 
     protected abstract String getNameQuery();
 
@@ -107,7 +94,7 @@ public abstract class TypeSystemInspection extends LocalInspectionTool {
 
             return result.toArray(new ProblemDescriptor[result.size()]);
         } finally {
-            META_CACHE.clear();
+//            META_CACHE.clear();
         }
     }
 
