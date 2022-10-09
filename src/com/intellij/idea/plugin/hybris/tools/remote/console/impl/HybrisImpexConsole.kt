@@ -21,12 +21,20 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisChooseInstanceAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionToolbar
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -36,6 +44,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import org.apache.commons.lang.StringUtils
 import java.awt.BorderLayout
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
@@ -70,10 +79,11 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
             }
         }
         catalogVersionLabel.border = EmptyBorder(0, 10, 0, 5)
-        panel.add(catalogVersionLabel)
-        panel.add(catalogVersionComboBox)
         legacyModeLabel.border = EmptyBorder(0, 10, 0, 5)
         legacyModeCheckbox.border = EmptyBorder(0, 0, 0, 5)
+
+        panel.add(catalogVersionLabel)
+        panel.add(catalogVersionComboBox)
         panel.add(legacyModeLabel)
         panel.add(legacyModeCheckbox)
 
@@ -94,6 +104,12 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         }
         return HybrisHacHttpClient.getInstance(project).importImpex(project, settings)
     }
+
+    override fun title(): String = "Impex"
+
+    override fun tip(): String = "Impex Console"
+
+    override fun icon(): Icon = HybrisIcons.IMPEX_FILE
 
     fun validate(text: String): HybrisHttpResult {
         val settings = mutableMapOf(

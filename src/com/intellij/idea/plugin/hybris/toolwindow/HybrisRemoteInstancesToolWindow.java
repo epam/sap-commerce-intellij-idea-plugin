@@ -1,10 +1,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
@@ -12,13 +11,11 @@ import com.intellij.openapi.ui.popup.IPopupChooserBuilder;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.ListUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,25 +28,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
+public class HybrisRemoteInstancesToolWindow implements DumbAware {
 
-    private ToolWindow myToolWindow;
     private Project myProject;
     private JPanel myToolWindowContent;
     private JPanel connectionPanel;
     private MyListPanel myListPanel;
     private ListCellRenderer myListCellRenderer = null;
 
-
-    @Override
-    public void createToolWindowContent(
-        @NotNull final Project project, @NotNull final ToolWindow toolWindow
-    ) {
-        myToolWindow = toolWindow;
+    public HybrisRemoteInstancesToolWindow(@NotNull final Project project) {
         myProject = project;
-        ContentFactory contentFactory = ContentFactory.getInstance();
-        Content content = contentFactory.createContent(myToolWindowContent, "", false);
-        toolWindow.getContentManager().addContent(content);
         project.getMessageBus().connect(project).subscribe(
             HybrisDeveloperSpecificProjectSettingsListener.TOPIC,
             new HybrisDeveloperSpecificProjectSettingsListener(){
@@ -62,6 +50,14 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         loadSettings();
     }
 
+    public Content createToolWindowContent(final ToolWindow toolWindow) {
+        final Content content = toolWindow.getContentManager().getFactory().createContent(myToolWindowContent, "Remote Instances", false);
+        content.setIcon(AllIcons.RunConfigurations.Remote);
+        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true);
+
+        return content;
+    }
+
     private void loadSettings() {
         final HybrisDeveloperSpecificProjectSettingsComponent instance = HybrisDeveloperSpecificProjectSettingsComponent
             .getInstance(myProject);
@@ -69,14 +65,8 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         myListPanel.setInitialList(connectionList);
     }
 
-
-    @Override
-    public boolean shouldBeAvailable(@NotNull final Project project) {
-        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
-    }
-
     private void createUIComponents() {
-        myListPanel = new MyListPanel(HybrisI18NBundleUtils.message("hybris.toolwindow.remote.label"), new ArrayList<>());
+        myListPanel = new MyListPanel(null, new ArrayList<>());
         connectionPanel = myListPanel;
     }
 
@@ -218,8 +208,4 @@ public class HybrisToolWindow implements ToolWindowFactory, DumbAware {
         HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getState().setRemoteConnectionSettingsList(myListPanel.getData());
     }
 
-    @Override
-    public boolean isApplicable(@NotNull final Project project) {
-        return HybrisProjectSettingsComponent.getInstance(project).getState().isHybrisProject();
-    }
 }

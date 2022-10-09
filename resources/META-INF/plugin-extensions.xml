@@ -1,13 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <toolWindow
-            id="Hybris"
-            icon="/icons/grayHybrisIcon.svg"
-            anchor="right"
-            secondary="true"
-            factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindow"/>
-
         <notificationGroup displayType="BALLOON" id="Hybris"/>
 
     </extensions>

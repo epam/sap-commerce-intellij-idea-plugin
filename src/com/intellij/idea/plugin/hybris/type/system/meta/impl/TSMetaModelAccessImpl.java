@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
@@ -62,7 +63,7 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
     @Override
     public synchronized TSMetaModel getTypeSystemMeta(@Nullable final PsiFile contextFile) {
-        if (contextFile == null || !TSMetaModelBuilder.isTsFile(contextFile)) {
+        if (contextFile == null || !TypeSystemUtils.isTsFile(contextFile)) {
             return myCachedValue.getValue();
         }
         final TSMetaModelImpl externalModel = doGetExternalModel(contextFile);
@@ -87,7 +88,7 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
     @Override
     public synchronized TSMetaModel getExternalTypeSystemMeta(@NotNull final PsiFile contextFile) {
-        return TSMetaModelBuilder.isTsFile(contextFile) ? doGetExternalModel(contextFile) : myCachedValue.getValue();
+        return TypeSystemUtils.isTsFile(contextFile) ? doGetExternalModel(contextFile) : myCachedValue.getValue();
     }
 
     @NotNull

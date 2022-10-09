@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -28,9 +29,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import icons.JetgroovyIcons
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
 import java.awt.FlowLayout
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
@@ -73,4 +76,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
         val timeout = Integer.valueOf(timeoutSpinner.value.toString()) * 1000
         return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, query, commitCheckbox.isSelected, timeout)
     }
+
+    override fun title(): String = "Groovy Scripting"
+
+    override fun tip(): String = "Groovy Console"
+
+    override fun icon(): Icon = JetgroovyIcons.Groovy.Groovy_16x16
 }

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -38,6 +39,7 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
@@ -90,4 +92,10 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
     override fun execute(query: String): HybrisHttpResult {
         return monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
     }
+
+    override fun title(): String = "Impex Monitor"
+
+    override fun tip(): String = "Last imported Impex files"
+
+    override fun icon(): Icon = HybrisIcons.TYPE_SYSTEM
 }

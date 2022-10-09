@@ -22,9 +22,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.xml.DomManager;
 import com.intellij.util.xml.GenericAttributeValue;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -96,5 +98,12 @@ public final class TypeSystemUtils {
                 return StringUtils.isBlank(value) ? null : Boolean.valueOf(value);
             }
         }
+    }
+
+    public static boolean isTsFile(@NotNull final PsiFile file) {
+        return file instanceof XmlFile && DomManager.getDomManager(file.getProject()).getFileElement(
+            (XmlFile) file,
+            Items.class
+        ) != null;
     }
 }

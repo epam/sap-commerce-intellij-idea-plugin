@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
@@ -32,6 +33,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.awt.Insets
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
@@ -99,4 +101,10 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
                         query
                 )
     }
+
+    override fun title(): String = "Flexible Search"
+
+    override fun tip(): String = "Flexible Search Console"
+
+    override fun icon(): Icon = HybrisIcons.FS_FILE
 }

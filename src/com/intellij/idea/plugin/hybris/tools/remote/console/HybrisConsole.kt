@@ -7,6 +7,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import java.util.concurrent.TimeUnit
+import javax.swing.Icon
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -18,6 +19,12 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     }
 
     abstract fun execute(query: String): HybrisHttpResult
+
+    abstract fun title(): String
+
+    abstract fun tip(): String
+
+    open fun icon(): Icon? = null
 
     open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
 

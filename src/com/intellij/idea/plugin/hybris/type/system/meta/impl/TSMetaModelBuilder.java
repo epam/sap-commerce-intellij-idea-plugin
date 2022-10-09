@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -101,13 +100,6 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
         return myFiles;
     }
 
-    public static boolean isTsFile(@NotNull final PsiFile file) {
-        return file instanceof XmlFile && DomManager.getDomManager(file.getProject()).getFileElement(
-            (XmlFile) file,
-            Items.class
-        ) != null;
-    }
-
     @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
     @Override
     public boolean process(final PsiFile psiFile) {
@@ -118,19 +110,19 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
         }
         myFiles.add(psiFile);
         final DomFileElement<Items> rootWrapper = myDomManager.getFileElement((XmlFile) psiFile, Items.class);
-        final Items items = Optional.ofNullable(rootWrapper).map(DomFileElement::getRootElement).orElse(null);
 
-        if (items != null) {
-            items.getItemTypes().getItemTypes().forEach(this::processItemType);
-            items.getItemTypes().getTypeGroups().stream()
-                 .flatMap(tg -> tg.getItemTypes().stream())
-                 .forEach(this::processItemType);
+        Optional.ofNullable(rootWrapper).map(DomFileElement::getRootElement)
+            .ifPresent(items -> {
+                items.getItemTypes().getItemTypes().forEach(this::processItemType);
+                items.getItemTypes().getTypeGroups().stream()
+                     .flatMap(tg -> tg.getItemTypes().stream())
+                     .forEach(this::processItemType);
 
-            items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
-            items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
-            items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
-            items.getRelations().getRelations().forEach(this::processRelationType);
-        }
+                items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
+                items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
+                items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
+                items.getRelations().getRelations().forEach(this::processRelationType);
+            });
 
         //continue visiting
         return true;

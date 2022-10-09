@@ -44,7 +44,10 @@
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.HybrisTypeSystemToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.HybrisTypeSystemViewSettings"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
@@ -64,7 +67,7 @@
 
     <actions>
         <group id="HybrisToolsActions"
-               text="hybris"
+               text="Hybris"
                icon="/icons/hybrisIcon.png"
                popup="true"
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
@@ -85,8 +88,8 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Hybris Console" icon="/icons/grayHybrisIcon.svg" anchor="bottom"
-                    factoryClass="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory"/>
+        <toolWindow id="Hybris" icon="/icons/grayHybrisIcon.svg" anchor="bottom"
+                    factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 
     <extensionPoints>

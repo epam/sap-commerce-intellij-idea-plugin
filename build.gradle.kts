@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.7.0"
+    id("org.jetbrains.intellij") version "1.9.0"
 }
 
 sourceSets.main {
@@ -66,6 +66,10 @@ tasks {
             apiVersion = kotlinApiVersion
             languageVersion = kotlinApiVersion
         }
+    }
+
+    buildSearchableOptions {
+        enabled = false
     }
 
     runIde {

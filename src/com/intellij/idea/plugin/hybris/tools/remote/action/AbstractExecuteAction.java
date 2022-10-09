@@ -1,9 +1,9 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -25,7 +25,7 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
 
     protected abstract String getConsoleName();
 
-    protected void doExecute(final HybrisConsolePanel consolePanel) {
+    protected void doExecute(final HybrisConsolesPanel consolePanel) {
         consolePanel.execute();
     }
 
@@ -39,11 +39,11 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
                 content = editor.getDocument().getText();
             }
 
-            final HybrisConsolePanelView consolePanelView = ServiceManager.getService(
+            final HybrisConsolesToolWindow consolePanelView = ServiceManager.getService(
                 e.getProject(),
-                HybrisConsolePanelView.class
+                HybrisConsolesToolWindow.class
             );
-            final HybrisConsolePanel consolePanel = consolePanelView.getConsolePanel();
+            final HybrisConsolesPanel consolePanel = consolePanelView.getConsolesPanel();
 
             final HybrisConsole console = consolePanel.findConsole(getConsoleName());
             if (console == null) {
@@ -55,7 +55,7 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
             doExecute(consolePanel);
 
             ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(
-                HybrisConsoleToolWindowFactory.ID);
+                HybrisToolWindowFactory.ID);
             toolWindow.activate(null);
         }
     }

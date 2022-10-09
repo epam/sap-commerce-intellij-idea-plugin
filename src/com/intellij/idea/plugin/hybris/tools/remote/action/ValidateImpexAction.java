@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSOLE_TITLE;
 
@@ -29,7 +29,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSO
 public class ValidateImpexAction extends AbstractExecuteAction  {
 
     @Override
-    protected void doExecute(final HybrisConsolePanel consolePanel) {
+    protected void doExecute(final HybrisConsolesPanel consolePanel) {
         consolePanel.validateImpex();
     }
 

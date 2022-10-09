@@ -24,9 +24,9 @@ import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleToolWindowFactory;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanel;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -102,7 +102,7 @@ public final class CopyFileToHybrisConsoleUtils {
     }
 
     private static HybrisConsole getHybrisConsole(Project project, String consoleTitle) {
-        var hybrisConsolePanel = HybrisConsolePanelView.Companion.getInstance(project).getConsolePanel();
+        var hybrisConsolePanel = HybrisConsolesToolWindow.Companion.getInstance(project).getConsolesPanel();
         return hybrisConsolePanel.findConsole(consoleTitle);
     }
 
@@ -138,8 +138,8 @@ public final class CopyFileToHybrisConsoleUtils {
         return ObjectUtils.getIfNull(selectionPaths, () -> new TreePath[0]);
     }
 
-    private static HybrisConsolePanel getHybrisConsolePanel(Project project) {
-        return HybrisConsolePanelView.Companion.getInstance(project).getConsolePanel();
+    private static HybrisConsolesPanel getHybrisConsolePanel(Project project) {
+        return HybrisConsolesToolWindow.Companion.getInstance(project).getConsolesPanel();
     }
 
     private static String getTextFromHybrisConsole(Project project, HybrisConsole hybrisConsole) {
@@ -160,7 +160,7 @@ public final class CopyFileToHybrisConsoleUtils {
     }
 
     private static void openHybrisConsole(Project project) {
-        var toolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisConsoleToolWindowFactory.ID);
+        var toolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
         if (toolWindow != null) {
             toolWindow.activate(null);
         }

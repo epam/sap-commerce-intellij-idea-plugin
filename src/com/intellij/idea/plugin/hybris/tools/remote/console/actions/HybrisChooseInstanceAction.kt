@@ -5,7 +5,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE_IC
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type.SOLR
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolePanelView
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -21,7 +21,7 @@ class HybrisChooseInstanceAction : AnAction(
         val project = getEventProject(e) ?: return
         val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state ?: return
         val list = state.remoteConnectionSettingsList
-        val consoleType = HybrisConsolePanelView.getInstance(project).consolePanel.getActiveConsole().connectionType()
+        val consoleType = HybrisConsolesToolWindow.getInstance(project).consolesPanel.getActiveConsole().connectionType()
         val currentList = list.filter {it.type == consoleType}.toList()
         val options:Array<String> = currentList.stream().map { it.toString() }.toArray<String> { length -> arrayOfNulls(length)}
         val active = if (consoleType == SOLR) {

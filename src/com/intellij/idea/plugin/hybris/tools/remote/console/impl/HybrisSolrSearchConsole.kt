@@ -22,6 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.NotificationUtil
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -48,10 +49,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Insets
 import java.util.*
-import javax.swing.JButton
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
+import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.SOLR_SEARCH_CONSOLE_TITLE, PlainTextLanguage.INSTANCE) {
@@ -164,6 +162,12 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     override fun execute(query: String): HybrisHttpResult {
         return HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
     }
+
+    override fun title(): String = "Solr Search"
+
+    override fun tip(): String = "Solr Search Console"
+
+    override fun icon(): Icon = HybrisIcons.Console.SOLR
 
     private fun buildSolrQueryObject(query: String): Optional<SolrQueryObject> {
         return Optional.ofNullable(coresComboBox.selectedItem)

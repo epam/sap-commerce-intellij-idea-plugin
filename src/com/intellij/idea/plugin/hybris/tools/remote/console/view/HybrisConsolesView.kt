@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleProvider
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
@@ -14,7 +13,6 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.castSafelyTo
-import icons.JetgroovyIcons.Groovy.Groovy_16x16
 import java.awt.BorderLayout
 import javax.swing.Icon
 import javax.swing.JPanel
@@ -24,7 +22,7 @@ import javax.swing.SwingConstants.TOP
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
         //NOP
@@ -44,16 +42,11 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val toolbarActions = DefaultActionGroup()
         val actionManager = ActionManager.getInstance()
-        actionToolbar = actionManager.createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false)
+        actionToolbar = actionManager.createActionToolbar("Hybris.Consoles.ContextMenu", toolbarActions, false)
 
         val panel = JPanel(BorderLayout())
 
-        hybrisTabs = HybrisTabs(impexConsole,
-                groovyConsole,
-                monitorConsole,
-                flexibleSearchConsole,
-                solrSearchConsole,
-                project, TOP)
+        hybrisTabs = HybrisTabs(project, TOP, arrayOf(impexConsole, groovyConsole, monitorConsole, flexibleSearchConsole, solrSearchConsole))
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
         actionToolbar.setTargetComponent(hybrisTabs.component)
@@ -114,22 +107,14 @@ class HybrisConsolePanel(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 }
 
-class HybrisTabs(impexConsole: HybrisImpexConsole,
-                 groovyConsole: HybrisGroovyConsole,
-                 impexMonitorConsole: HybrisImpexMonitorConsole,
-                 flexibleSearchConsole: HybrisFlexibleSearchConsole,
-                 solrSearchConsole: HybrisSolrSearchConsole,
-                 project: Project,
-                 tabPlacement: Int) : JBTabsPaneImpl(project, tabPlacement, Disposable { }) {
+class HybrisTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole>) : JBTabsPaneImpl(project, tabPlacement, Disposable { }) {
 
     private val consoles = arrayListOf<HybrisConsole>()
 
     init {
-        addConsoleTab("Impex", HybrisIcons.IMPEX_FILE, impexConsole, "Impex Console")
-        addConsoleTab("Groovy Scripting", Groovy_16x16, groovyConsole, "Groovy Console")
-        addConsoleTab("Impex Monitor", HybrisIcons.TYPE_SYSTEM, impexMonitorConsole, "Last imported Impex files")
-        addConsoleTab("Flexible Search", HybrisIcons.FS_FILE, flexibleSearchConsole, "Flexible Search Console")
-        addConsoleTab("Solr Search", HybrisIcons.Console.SOLR, solrSearchConsole, "Solr Search Console")
+        defaultConsoles.forEach {
+            addConsoleTab(it.title(), it.icon(), it, it.tip())
+        }
 
         for (extension in HybrisConsoleProvider.EP_NAME.extensions) {
             val console = extension.createConsole(project)

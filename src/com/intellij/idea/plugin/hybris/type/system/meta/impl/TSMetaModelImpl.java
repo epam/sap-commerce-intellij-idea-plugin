@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
@@ -39,8 +40,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +54,10 @@ import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.empty
  */
 class TSMetaModelImpl implements TSMetaModel {
 
+    private enum MetaType {
+        META_CLASS, META_REFERENCE, META_ENUM, META_COLLECTION, META_ATOMIC
+    }
+
     private NoCaseMap<TSMetaClassImpl> myClasses;
     private NoCaseMap<TSMetaReferenceImpl> myRelations;
     private NoCaseMap<TSMetaEnumImpl> myEnums;
@@ -58,6 +65,8 @@ class TSMetaModelImpl implements TSMetaModel {
     private NoCaseMap<TSMetaAtomicImpl> myAtomics;
     private NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName;
     private final List<TSMetaModelImpl> myBaseModels;
+
+    private static final Map<MetaType, NoCaseMap<TSMetaClassifier>> CACHE = new ConcurrentHashMap<>();
 
     public TSMetaModelImpl() {
         this(Collections.emptyList());
