@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -52,7 +53,7 @@ public abstract class AbstractImpexTableFormatAction extends EditorAction {
     ) {
         super.update(editor, presentation, dataContext);
         final VirtualFile file = dataContext.getData(CommonDataKeys.VIRTUAL_FILE);
-        final boolean enabled = file != null && file.getName().endsWith(".impex");
+        final boolean enabled = file != null && file.getName().endsWith(HybrisConstants.HYBRIS_IMPEX_XML_FILE_ENDING);
         presentation.setEnabledAndVisible(enabled);
     }
 }

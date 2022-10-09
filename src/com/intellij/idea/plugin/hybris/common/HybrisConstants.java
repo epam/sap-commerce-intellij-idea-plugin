@@ -178,6 +178,7 @@ public interface HybrisConstants {
 
     String HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml";
     String HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml";
+    String HYBRIS_IMPEX_XML_FILE_ENDING = ".impex";
     String RULESET_XML = "ruleset.xml";
 
     String BACKOFFICE_WEB_INF_LIB = toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib");

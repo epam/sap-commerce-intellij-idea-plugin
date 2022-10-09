@@ -33,6 +33,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +67,7 @@ class TSMetaModelImpl implements TSMetaModel {
     private NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName;
     private final List<TSMetaModelImpl> myBaseModels;
 
-    private static final Map<MetaType, NoCaseMap<TSMetaClassifier>> CACHE = new ConcurrentHashMap<>();
+    private static final Map<MetaType, NoCaseMap<TSMetaClassifier<? extends DomElement>>> CACHE = new ConcurrentHashMap<>();
 
     public TSMetaModelImpl() {
         this(Collections.emptyList());

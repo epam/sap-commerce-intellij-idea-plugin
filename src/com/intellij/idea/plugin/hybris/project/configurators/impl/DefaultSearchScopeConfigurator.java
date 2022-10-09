@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_IMPEX_XML_FILE_ENDING;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_GROUP_PREFIX;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_Y_PREFIX;
 
@@ -95,7 +98,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         }
         newScopes.add(new NamedScope(
             SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.all.ts.files"),
-            new FilePatternPackageSet(null, "*//*-items.xml")
+            new FilePatternPackageSet(null, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
 
@@ -109,7 +112,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     @NotNull
     public static FilePatternPackageSet createCustomTSFilesPattern() {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
-        return new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*-items.xml");
+        return new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING);
     }
 
     @NotNull
@@ -117,15 +120,15 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
-            "*//*-items.xml"
+            "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING
         );
         final FilePatternPackageSet beansFilePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
-            "*//*-beans.xml"
+            "*//*" + HYBRIS_BEANS_XML_FILE_ENDING
         );
         final FilePatternPackageSet impexFilePatternPackageSet = new FilePatternPackageSet(
             SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
-            "*//*.impex"
+            "*//*" + HYBRIS_IMPEX_XML_FILE_ENDING
         );
         return UnionPackageSet.create(
             UnionPackageSet.create(tsFilePatternPackageSet, beansFilePatternPackageSet),
