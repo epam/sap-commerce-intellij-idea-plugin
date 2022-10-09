@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,7 @@ import java.util.Map;
 public interface HybrisConsoleRegionsCache {
 
     static HybrisConsoleRegionsCache getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, HybrisConsoleRegionsCache.class);
+        return project.getService(HybrisConsoleRegionsCache.class);
     }
 
     Map<String, Region> getRegions();

@@ -24,7 +24,7 @@ import com.intellij.diagram.DiagramRelationshipInfoAdapter;
 import com.intellij.diagram.presentation.DiagramLineType;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.ModificationTracker;
 import org.jetbrains.annotations.Contract;
@@ -48,7 +48,7 @@ public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
     private final Map<String, BpDiagramFileNode> nodesMap = new HashMap<String, BpDiagramFileNode>();
 
     public BpDiagramDataModel(final Project project, final BpGraphNode rootBpGraphNode) {
-        super(project, ServiceManager.getService(BpDiagramProvider.class));
+        super(project, ApplicationManager.getApplication().getService(BpDiagramProvider.class));
 
         for (BpGraphNode bpGraphNode : rootBpGraphNode.getNodesMap().values()) {
             final BpDiagramFileNode bpDiagramFileNode = new BpDiagramFileNode(bpGraphNode);

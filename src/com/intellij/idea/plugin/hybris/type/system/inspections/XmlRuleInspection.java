@@ -18,17 +18,26 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections;
 
+import com.intellij.codeHighlighting.HighlightDisplayLevel;
+import com.intellij.codeInsight.daemon.HighlightDisplayKey;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ex.InspectionProfileImpl;
+import com.intellij.codeInspection.ex.InspectionProfileWrapper;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.profile.codeInspection.ProjectInspectionProfileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.xml.DomElement;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Node;
@@ -40,15 +49,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RULESET_XML;
 
 public class XmlRuleInspection extends LocalInspectionTool {
 
     private static final Logger LOG = Logger.getInstance(XmlRuleInspection.class);
+    // TODO : extract TS Meta related cache to own class, ensure that it is cleaned after processing
+    private static final Map<MetaType, CaseInsensitiveMap<String, TSMetaClassifier<? extends DomElement>>> META_CACHE = new ConcurrentHashMap<>();
+    private static volatile Map<String, XmlRule> myRules;
+    private final Object lock = new Object();
 
-    private XmlRule[] myRules;
+    @SuppressWarnings("unchecked")
+    public static <T> CaseInsensitiveMap<String, T> getMetaType(final MetaType metaType) {
+        return (CaseInsensitiveMap<String, T>) META_CACHE.computeIfAbsent(metaType, mt -> new CaseInsensitiveMap<>());
+    }
 
     @Nullable
     @Override
@@ -57,52 +77,69 @@ public class XmlRuleInspection extends LocalInspectionTool {
         final @NotNull InspectionManager manager,
         final boolean isOnTheFly
     ) {
-        if (!TypeSystemUtils.isTypeSystemXmlFile(file)) {
-            return null;
-        }
-        final XmlFile xmlFile = (XmlFile) file;
-
-        if (!TypeSystemValidationUtils.isCustomExtensionFile(file)) {
-            return null;
-        }
-
-        final ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
-        if (sharedContext == null) {
-            return null;
-        }
-
-        final List<ProblemDescriptor> result = new ArrayList<>();
-        for (XmlRule nextRule : this.getRules()) {
-            try {
-                this.validateOneRule(nextRule, sharedContext, result);
-            } catch (XPathExpressionException e) {
-                result.add(this.createValidationFailedProblem(sharedContext, xmlFile, nextRule, e));
+        try {
+            if (!TypeSystemUtils.isTypeSystemXmlFile(file) || !TypeSystemValidationUtils.isCustomExtensionFile(file)) {
+                return null;
             }
-        }
 
-        return result.toArray(new ProblemDescriptor[result.size()]);
+            final XmlFile xmlFile = (XmlFile) file;
+
+            final ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
+            if (sharedContext == null) {
+                return null;
+            }
+
+            final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject()).getCurrentProfile();
+            final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
+            final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(HighlightDisplayKey.find(getShortName()), file);
+            final XmlRule rule = getRules(file).get(getID());
+
+            if (rule == null) {
+                return new ProblemDescriptor[0];
+            }
+
+            final List<ProblemDescriptor> result = new ArrayList<>();
+//            final Instant from = Instant.now();
+//            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
+            try {
+                validateOneRule(rule, sharedContext, result, ruleLevel);
+            } catch (XPathExpressionException e) {
+                result.add(this.createValidationFailedProblem(sharedContext, xmlFile, e));
+            }
+//            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(from, Instant.now()));
+
+            return result.toArray(new ProblemDescriptor[result.size()]);
+        } finally {
+            META_CACHE.clear();
+        }
     }
 
     @NotNull
-    private XmlRule[] getRules() {
-        if (this.myRules == null) {
-            try {
-                this.myRules = this.loadRules();
-            } catch (IOException e) {
-                LOG.error("Error loading ruleset", e);
-                this.myRules = new XmlRule[0];
+    private Map<String, XmlRule> getRules(final @NotNull PsiFile file) {
+        if (myRules == null) {
+            synchronized (lock) {
+                if (myRules == null) {
+                    try {
+                        myRules = loadRules();
+                    } catch (IOException e) {
+                        LOG.error("Error loading ruleset", e);
+                        myRules = Collections.emptyMap();
+                    }
+                }
             }
         }
 
-        return this.myRules;
+        return myRules;
     }
 
     protected void validateOneRule(
         @NotNull final XmlRule rule,
         @NotNull final ValidateContext context,
-        @NotNull final Collection<? super ProblemDescriptor> output
-    ) throws XPathExpressionException {
-        final XPathService xPathService = ServiceManager.getService(XPathService.class);
+        @NotNull final Collection<? super ProblemDescriptor> output,
+        @NotNull final HighlightDisplayLevel ruleLevel
+    )
+    throws XPathExpressionException {
+        final XPathService xPathService = ApplicationManager.getApplication().getService(XPathService.class);
 
         final NodeList selection = xPathService.computeNodeSet(rule.getSelectionXPath(), context.getDocument());
         for (int i = 0; i < selection.getLength(); i++) {
@@ -112,7 +149,7 @@ public class XmlRuleInspection extends LocalInspectionTool {
                 passed = !passed;
             }
             if (!passed) {
-                output.add(this.createProblem(context, nextSelected, rule));
+                output.add(createProblem(context, nextSelected, ruleLevel));
             }
         }
     }
@@ -120,56 +157,56 @@ public class XmlRuleInspection extends LocalInspectionTool {
     protected ProblemDescriptor createValidationFailedProblem(
         @NotNull final ValidateContext context,
         @NotNull final PsiElement file,
-        @NotNull final XmlRule failedRule,
         @NotNull final Exception failure
     ) {
 
         return context.getManager().createProblemDescriptor(
             file,
-            "XmlRule '" + failedRule.getID() + "' has failed to validate: " + failure.getMessage(),
+            "XmlRule '" + getID() + "' has failed to validate: " + failure.getMessage(),
             true,
             ProblemHighlightType.GENERIC_ERROR,
             context.isOnTheFly()
         );
     }
 
-    private XmlRule[] loadRules() throws IOException {
-        try (InputStream input = this.getClass().getClassLoader().getResourceAsStream(RULESET_XML)) {
+    private Map<String, XmlRule> loadRules() throws IOException {
+        try (final InputStream input = this.getClass().getClassLoader().getResourceAsStream(RULESET_XML)) {
             if (input == null) {
                 throw new IOException("Ruleset file is not found");
             }
-            final List<XmlRule> rules = new XmlRuleParser().parseRules(new BufferedInputStream(input));
-            return rules.toArray(new XmlRule[rules.size()]);
+            return new XmlRuleParser().parseRules(new BufferedInputStream(input)).stream()
+                .collect(Collectors.toMap(XmlRule::getID, rule -> rule));
         }
     }
 
     protected ProblemDescriptor createProblem(
-            @NotNull final ValidateContext context,
-            @NotNull final Node problemNode,
-            @NotNull final XmlRule rule
+        @NotNull final ValidateContext context,
+        @NotNull final Node problemNode,
+        @NotNull final HighlightDisplayLevel ruleLevel
     ) {
         final PsiElement problemPsi = context.mapNodeToPsi(problemNode);
-        final ProblemHighlightType highlightType = this.computePriority(rule);
+        final ProblemHighlightType highlightType = computePriority(ruleLevel);
 
-        final LocalQuickFix[] fixes = ItemsXmlQuickFixManager.getQuickFixes(rule, problemNode);
+        final LocalQuickFix[] fixes = ItemsXmlQuickFixManager.getQuickFixes(problemNode, getID());
         return context.getManager().createProblemDescriptor(
-                problemPsi,
-                rule.getDescription(),
-                true,
-                highlightType,
-                context.isOnTheFly(),
-                fixes
+            problemPsi,
+            getDisplayName(),
+            true,
+            highlightType,
+            context.isOnTheFly(),
+            fixes
         );
     }
 
     @NotNull
-    protected ProblemHighlightType computePriority(@NotNull final XmlRule rule) {
-        switch (rule.getPriority()) {
-            case LOW:
-                return ProblemHighlightType.WEAK_WARNING;
-            default:
-                return ProblemHighlightType.ERROR;
+    protected ProblemHighlightType computePriority(final @NotNull HighlightDisplayLevel ruleLevel) {
+        if (HighlightDisplayLevel.WEAK_WARNING.equals(ruleLevel)) {
+            return ProblemHighlightType.WEAK_WARNING;
+        } else if (HighlightDisplayLevel.WARNING.equals(ruleLevel)) {
+            return ProblemHighlightType.WARNING;
         }
+
+        return ProblemHighlightType.ERROR;
     }
 
 }

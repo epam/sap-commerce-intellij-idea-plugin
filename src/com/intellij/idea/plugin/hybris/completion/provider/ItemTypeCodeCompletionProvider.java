@@ -25,7 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
 import org.apache.commons.lang3.Validate;
@@ -41,7 +41,7 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
 
     @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return ServiceManager.getService(ItemTypeCodeCompletionProvider.class);
+        return ApplicationManager.getApplication().getService(ItemTypeCodeCompletionProvider.class);
     }
 
     @Override

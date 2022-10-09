@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -54,7 +54,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return ServiceManager.getService(ImpexHeaderItemTypeAttributeNameCompletionProvider.class);
+        return ApplicationManager.getApplication().getService(ImpexHeaderItemTypeAttributeNameCompletionProvider.class);
     }
 
     @Override

@@ -34,7 +34,7 @@ import com.intellij.idea.plugin.hybris.business.process.jaxb.Wait;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -61,7 +61,7 @@ public class DefaultBpGraphService implements BpGraphService {
     public BpGraphNode buildGraphFromXmlFile(@NotNull final VirtualFile virtualFile) throws UnmarshalException {
         Validate.notNull(virtualFile);
 
-        final BpJaxbService bpJaxbService = ServiceManager.getService(BpJaxbService.class);
+        final BpJaxbService bpJaxbService = ApplicationManager.getApplication().getService(BpJaxbService.class);
 
         final Process process = bpJaxbService.unmarshallBusinessProcessXml(VfsUtil.virtualToIoFile(virtualFile));
 

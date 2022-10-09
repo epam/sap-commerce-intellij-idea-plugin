@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -84,9 +83,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     @Override
     public String getRelativePath() {
-        final VirtualFileSystemService virtualFileSystemService = ServiceManager.getService(
-            VirtualFileSystemService.class
-        );
+        final VirtualFileSystemService virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService.class);
 
         final File projectRootDir = this.getRootProjectDescriptor().getRootDirectory();
         final File moduleRootDir = this.getRootDirectory();

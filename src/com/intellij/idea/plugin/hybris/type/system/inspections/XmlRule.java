@@ -23,33 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 public interface XmlRule {
 
-    enum Priority {
-        HIGH, MEDIUM, LOW;
-
-        @Nullable
-        public static Priority fromAcronym(final String acronym) {
-            switch (acronym) {
-                case "H":
-                    return HIGH;
-                case "M":
-                    return MEDIUM;
-                case "L":
-                    return LOW;
-                default:
-                    return null;
-            }
-        }
-
-    }
-
     @NotNull
     String getID();
-
-    @NotNull
-    String getDescription();
-
-    @NotNull
-    Priority getPriority();
 
     @Nullable
     String getSelectionXPath();

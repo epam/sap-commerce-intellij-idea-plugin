@@ -37,12 +37,11 @@ public final class ItemsXmlQuickFixManager {
     private ItemsXmlQuickFixManager() {
     }
 
-    public static LocalQuickFix[] getQuickFixes(final XmlRule rule, final Node problemNode) {
+    public static LocalQuickFix[] getQuickFixes(final Node problemNode, final @NotNull String id) {
         // ! No sense to generate more than 5 quick fixes
         final LocalQuickFix[] fixes = new LocalQuickFix[5];
-        final String ruleID = rule.getID();
 
-        switch (ruleID) {
+        switch (id) {
             case MANDATORY_FIELD_MUST_HAVE_INITIAL_VALUE:
             case IMMUTABLE_FIELD_MUST_HAVE_INITIAL_VALUE:
                 fixes[0] = new XmlAddTagQuickFix("defaultvalue", "", null, null);

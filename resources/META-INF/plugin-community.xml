@@ -1,21 +1,9 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <localInspection language="XML"
-                         groupPath="hybris"
-                         groupName="[y] hybris Type System"
-                         level="ERROR"
-                         enabledByDefault="true"
-                         shortName="TSVBased"
-                         bundle="i18n.HybrisBundle"
-                         key="hybris.inspection.tsv.key"
-                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.XPathService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
 
     </extensions>
 
-    <application-components>
-    </application-components>
 </idea-plugin>

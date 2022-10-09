@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,7 @@ import java.util.Map;
 public interface RegionService {
 
     static RegionService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, RegionService.class);
+        return project.getService(RegionService.class);
     }
 
     Region findOrCreate(final String name);

@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -85,7 +85,7 @@ public abstract class TypeSystemValidationUtils {
 
     protected static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
         // at least it needs to have hybris flag
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
         return commonIdeaService.isHybrisProject(project);
     }
 

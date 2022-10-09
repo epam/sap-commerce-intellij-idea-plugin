@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.business.process.jaxb.Split;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Wait;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.model.BpGenericAction;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class BpDiagramFileNode extends DiagramNodeBase<BpGraphNode> {
     private final BpGraphNode diagramNode;
 
     public BpDiagramFileNode(final BpGraphNode file) {
-        super(ServiceManager.getService(BpDiagramProvider.class));
+        super(ApplicationManager.getApplication().getService(BpDiagramProvider.class));
         this.diagramNode = file;
     }
 

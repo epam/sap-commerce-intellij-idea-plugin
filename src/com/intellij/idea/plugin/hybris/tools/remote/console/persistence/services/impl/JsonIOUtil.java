@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.service
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
@@ -45,7 +44,7 @@ public class JsonIOUtil {
     }
 
     static JsonIOUtil getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, JsonIOUtil.class);
+        return project.getService(JsonIOUtil.class);
     }
 
     public <T> void persistData(@NotNull final Path destination, @NotNull final T data) {

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,7 @@ import java.nio.file.Path;
 public interface RegionPersistenceService {
 
     static RegionPersistenceService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, RegionPersistenceService.class);
+        return project.getService(RegionPersistenceService.class);
     }
 
     void writeRegionData(Path destination, String regionName);

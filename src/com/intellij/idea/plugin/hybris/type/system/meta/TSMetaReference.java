@@ -41,9 +41,6 @@ public interface TSMetaReference extends TSMetaClassifier<Relation> {
         @NotNull
         String getTypeName();
 
-        @Nullable
-        TSMetaClassifier<?> resolveType();
-
         boolean isNavigable();
 
         @NotNull
@@ -52,8 +49,6 @@ public interface TSMetaReference extends TSMetaClassifier<Relation> {
         @Nullable
         RelationElement retrieveDom();
 
-        @NotNull
-        TSMetaModel getMetaModel();
     }
 
 }

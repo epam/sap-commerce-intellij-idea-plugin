@@ -34,7 +34,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +90,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull HybrisConfiguratorCache cache
     ) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
         final ConfigHybrisModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
 

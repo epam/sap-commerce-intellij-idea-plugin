@@ -49,10 +49,6 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         myResolvesToClass = resolvesToClass;
     }
 
-    public boolean canResolveTo(final @NotNull Object dom) {
-        return myResolvesToClass.isInstance(dom);
-    }
-
     public Class<? extends DOM> getResolvesToClass() {
         return myResolvesToClass;
     }
@@ -104,12 +100,10 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         @NotNull final Function<? super D, GenericAttributeValue<?>> attribute
     ) {
 
-        return
-            Optional.ofNullable(dom)
+        return Optional.ofNullable(dom)
                     .map(attribute)
                     .map(GenericAttributeValue::getXmlAttributeValue)
                     .orElse(null);
-
     }
 
     protected static <D extends DomElement, R> R useAttributeValue(
@@ -117,11 +111,9 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         @NotNull final Function<? super D, GenericAttributeValue<R>> attribute
     ) {
 
-        return
-            Optional.ofNullable(dom)
+        return Optional.ofNullable(dom)
                     .map(attribute)
                     .map(GenericAttributeValue::getValue)
                     .orElse(null);
-
     }
 }

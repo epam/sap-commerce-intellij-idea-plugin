@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -66,7 +66,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public SyntaxHighlighter getHighlighter() {
-        return ServiceManager.getService(FlexibleSearchSyntaxHighlighter.class);
+        return ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter.class);
     }
 
     @NotNull

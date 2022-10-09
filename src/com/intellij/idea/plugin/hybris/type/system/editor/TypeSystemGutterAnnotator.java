@@ -84,7 +84,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
                                         ? "Alternative Definitions"
                                         : "Alternative Definition")
                     .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                    .install(annotationHolder, psiElement);
+                    .createGutterIcon(annotationHolder, psiElement);
             }
 
             final Optional<TSMetaClass> firstExtender = findFirstExtendingMetaClass(itemType);
@@ -97,7 +97,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
                     .setTarget(itemType)
                     .setAlignment(GutterIconRenderer.Alignment.LEFT)
                     .setTooltipText("Has subtypes")
-                    .install(annotationHolder, psiElement);
+                    .createGutterIcon(annotationHolder, psiElement);
             }
         }
     }

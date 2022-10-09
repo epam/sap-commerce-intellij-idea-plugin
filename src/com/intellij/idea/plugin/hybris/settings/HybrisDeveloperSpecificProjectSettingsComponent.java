@@ -3,7 +3,6 @@ package com.intellij.idea.plugin.hybris.settings;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
@@ -26,7 +25,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent
     private HybrisDeveloperSpecificProjectSettings state = new HybrisDeveloperSpecificProjectSettings();
 
     public static HybrisDeveloperSpecificProjectSettingsComponent getInstance(@NotNull final Project project) {
-        return ServiceManager.getService(project, HybrisDeveloperSpecificProjectSettingsComponent.class);
+        return project.getService(HybrisDeveloperSpecificProjectSettingsComponent.class);
     }
 
     @Nullable

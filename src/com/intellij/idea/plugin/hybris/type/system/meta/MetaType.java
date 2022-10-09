@@ -16,19 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
+package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
-
-public interface ConsolePersistenceService {
-
-    static ConsolePersistenceService getInstance(@NotNull Project project) {
-        return project.getService(ConsolePersistenceService.class);
-    }
-
-    void loadPersistedQueries();
-
-    void persistQueryRegions();
-
+public enum MetaType {
+    META_CLASS, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC
 }

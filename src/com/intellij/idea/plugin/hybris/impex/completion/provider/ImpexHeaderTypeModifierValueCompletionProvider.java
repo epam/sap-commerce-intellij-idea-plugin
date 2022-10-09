@@ -31,7 +31,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -53,7 +53,7 @@ public class ImpexHeaderTypeModifierValueCompletionProvider extends CompletionPr
 
     @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return ServiceManager.getService(ImpexHeaderTypeModifierValueCompletionProvider.class);
+        return ApplicationManager.getApplication().getService(ImpexHeaderTypeModifierValueCompletionProvider.class);
     }
 
     @Override

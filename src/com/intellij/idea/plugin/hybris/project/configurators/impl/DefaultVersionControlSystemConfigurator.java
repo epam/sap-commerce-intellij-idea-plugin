@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
@@ -46,7 +45,7 @@ public class DefaultVersionControlSystemConfigurator implements VersionControlSy
         @NotNull final Project project
     ) {
         final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
-        final VcsRootDetector rootDetector = ServiceManager.getService(project, VcsRootDetector.class);
+        final VcsRootDetector rootDetector = project.getService(VcsRootDetector.class);
         final Set<VcsRoot> detectedRoots = new HashSet<>(rootDetector.detect());
         for (File vcs: hybrisProjectDescriptor.getDetectedVcs()) {
             detectedRoots.addAll(rootDetector.detect(VfsUtil.findFileByIoFile(vcs, true)));

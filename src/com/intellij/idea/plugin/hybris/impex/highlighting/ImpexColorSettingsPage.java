@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -42,7 +42,6 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_MARKER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BOOLEAN;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMA;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PROPERTY_COMMENT;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_PATH_DELIMITER;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DIGIT;
@@ -64,12 +63,12 @@ import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighte
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PARAMETERS_SEPARATOR;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PROPERTY_COMMENT;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ROUND_BRACKETS;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SINGLE_STRING;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.VALUE_SUBTYPE;
 import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.WARNINGS_ATTRIBUTES;
-import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.FUNCTION_CALL;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 
@@ -123,7 +122,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public SyntaxHighlighter getHighlighter() {
-        return ServiceManager.getService(ImpexSyntaxHighlighter.class);
+        return ApplicationManager.getApplication().getService(ImpexSyntaxHighlighter.class);
     }
 
     @NotNull

@@ -1,13 +1,12 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
@@ -39,10 +38,7 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
                 content = editor.getDocument().getText();
             }
 
-            final HybrisConsolesToolWindow consolePanelView = ServiceManager.getService(
-                e.getProject(),
-                HybrisConsolesToolWindow.class
-            );
+            final HybrisConsolesToolWindow consolePanelView = e.getProject().getService(HybrisConsolesToolWindow.class);
             final HybrisConsolesPanel consolePanel = consolePanelView.getConsolesPanel();
 
             final HybrisConsole console = consolePanel.findConsole(getConsoleName());

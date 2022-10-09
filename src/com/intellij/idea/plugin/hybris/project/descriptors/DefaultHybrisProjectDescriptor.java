@@ -31,7 +31,7 @@ import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorB
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -217,7 +217,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 return configHybrisModuleDescriptor;
             }
         }
-        final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+        final HybrisProjectService hybrisProjectService = ApplicationManager.getApplication().getService(HybrisProjectService.class);
 
         if (hybrisProjectService.isConfigModule(configDir)) {
             try {
@@ -387,9 +387,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.isGroupModules());
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
-            HybrisModuleDescriptorFactory.class
-        );
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ApplicationManager.getApplication().getService(HybrisModuleDescriptorFactory.class);
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
@@ -523,7 +521,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        final HybrisProjectService hybrisProjectService = ServiceManager.getService(HybrisProjectService.class);
+        final HybrisProjectService hybrisProjectService = ApplicationManager.getApplication().getService(HybrisProjectService.class);
 
         if (hybrisProjectService.hasVCS(rootProjectDirectory)) {
             LOG.info("Detected version control service " + rootProjectDirectory.getAbsolutePath());
@@ -1009,7 +1007,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected Set<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ServiceManager.getService(
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ApplicationManager.getApplication().getService(
             HybrisModuleDescriptorFactory.class
         );
 

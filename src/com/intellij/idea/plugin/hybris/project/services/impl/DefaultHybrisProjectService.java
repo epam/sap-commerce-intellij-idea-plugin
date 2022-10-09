@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +84,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         Validate.notNull(file);
         final File extDir = rootProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null) {
-            final VirtualFileSystemService virtualFSService = ServiceManager.getService(
+            final VirtualFileSystemService virtualFSService = ApplicationManager.getApplication().getService(
                 VirtualFileSystemService.class
             );
             if (virtualFSService.fileContainsAnother(extDir, file)) {

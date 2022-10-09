@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.xml.DomElement;
@@ -31,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 public interface TSMetaModelAccess {
 
     static TSMetaModelAccess getInstance(final Project project) {
-        return ServiceManager.getService(project, TSMetaModelAccess.class);
+        return project.getService(TSMetaModelAccess.class);
     }
 
     static TSMetaModelAccess getInstance(final DomElement domElement) {

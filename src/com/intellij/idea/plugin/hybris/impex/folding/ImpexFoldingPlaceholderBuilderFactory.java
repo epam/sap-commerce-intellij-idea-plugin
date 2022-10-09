@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.folding;
 import com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.impex.folding.smart.SmartImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 
 /**
  * Created 22:45 29 March 2015
@@ -36,8 +36,8 @@ public final class ImpexFoldingPlaceholderBuilderFactory {
 
     public static ImpexFoldingPlaceholderBuilder getPlaceholderBuilder() {
         return isUseSmartFolding()
-            ? ServiceManager.getService(SmartImpexFoldingPlaceholderBuilder.class)
-            : ServiceManager.getService(DefaultImpexFoldingPlaceholderBuilder.class);
+            ? ApplicationManager.getApplication().getService(SmartImpexFoldingPlaceholderBuilder.class)
+            : ApplicationManager.getApplication().getService(DefaultImpexFoldingPlaceholderBuilder.class);
     }
 
     private static boolean isUseSmartFolding() {

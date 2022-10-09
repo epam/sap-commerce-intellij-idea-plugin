@@ -31,7 +31,9 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class XmlRuleParser {
 
@@ -44,7 +46,7 @@ public class XmlRuleParser {
             final RulesHandler handler = new RulesHandler();
             parser.parse(input, handler);
 
-            final List<XmlRuleImpl> rules = handler.getRules();
+            final List<XmlRule> rules = handler.getRules();
             final List<XmlRule> result = new ArrayList<>(rules.size());
             result.addAll(rules);
 
@@ -56,10 +58,10 @@ public class XmlRuleParser {
 
     private static class RulesHandler extends DefaultHandler {
 
-        private List<XmlRuleImpl> myRules = new ArrayList<>();
+        private final List<XmlRule> myRules = new ArrayList<>();
 
-        public List<XmlRuleImpl> getRules() {
-            return this.myRules;
+        public List<XmlRule> getRules() {
+            return Collections.unmodifiableList(myRules);
         }
 
         @Override
@@ -73,71 +75,64 @@ public class XmlRuleParser {
             if ("rule".equals(qName)) {
                 final String type = attributes.getValue("type");
                 if ("XPATH".equals(type)) {
-                    final XmlRuleImpl rule = this.createRule(attributes);
-                    if (rule != null) {
-                        rule.validate(LOG);
-                        this.myRules.add(rule);
-                    }
+                    createRule(attributes).ifPresent(rule -> {
+                        validate(rule);
+                        myRules.add(rule);
+                    });
                 }
             }
         }
 
-        private
-        @Nullable
-        XmlRuleImpl createRule(final Attributes attrs) {
+
+        public boolean validate(final XmlRule rule) {
+            boolean isValid = this.validateNotNull("Missing name XPath", rule.getNameXPath());
+            isValid &= this.validateNotNull("Missing selection XPath", rule.getSelectionXPath());
+            isValid &= this.validateNotNull("Missing test XPath", rule.getTestXPath());
+            return isValid;
+        }
+
+        private boolean validateNotNull(@NotNull final String problem, @Nullable final String subj) {
+            boolean isValid = true;
+            if (subj == null || subj.isEmpty()) {
+                LOG.warn(problem + ": " + this);
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        private Optional<XmlRuleImpl> createRule(final Attributes attrs) {
             final String id = attrs.getValue("id");
-            final XmlRule.Priority priority = XmlRule.Priority.fromAcronym(attrs.getValue("priority"));
             if (id == null) {
                 LOG.warn("XPath validation rule without ID found, ignored: " + attrs);
-                return null;
-            }
-            if (priority == null) {
-                LOG.warn("XPath validation rule without Priority found, assuming LOW, id: " + id + ": " + attrs);
-                return null;
+                return Optional.empty();
             }
 
-            String description = attrs.getValue("description");
-            if (description == null || description.isEmpty()) {
-                description = "Unknown Problem";
-                LOG.warn("XPath validation rule without description, assuming '" + description +
-                         "', id: " + id + ": " + attrs);
-            }
-
-            final XmlRuleImpl result = new XmlRuleImpl(id, priority, description);
+            final XmlRuleImpl result = new XmlRuleImpl(id);
 
             result.setSelectionXPath(attrs.getValue("selectionQuery"));
             result.setFailOnTestQuery(attrs.getValue("failOnTestQuery"));
             result.setTestXPath(attrs.getValue("testQuery"));
             result.setNameXPath(attrs.getValue("nameQuery"));
 
-            return result;
+            return Optional.of(result);
         }
     }
 
     private static class XmlRuleImpl implements XmlRule {
 
         private final String myId;
-        private final Priority myPriority;
-        private final String myDescription;
         private String myNameXPath;
         private String mySelectionXPath;
         private String myTestXPath;
         private boolean failOnTestQuery;
 
-        public XmlRuleImpl(
-            @NotNull final String id,
-            @NotNull final Priority priority,
-            @NotNull final String description
-        ) {
+        public XmlRuleImpl(@NotNull final String id) {
             this.myId = id;
-            this.myPriority = priority;
-            this.myDescription = description;
         }
 
-        @NotNull
         @Override
-        public Priority getPriority() {
-            return this.myPriority;
+        public String toString() {
+            return this.getClass().getSimpleName() + " for :" + this.getID();
         }
 
         @NotNull
@@ -146,13 +141,6 @@ public class XmlRuleParser {
             return this.myId;
         }
 
-        @NotNull
-        @Override
-        public String getDescription() {
-            return this.myDescription;
-        }
-
-        @Nullable
         @Override
         public String getNameXPath() {
             return this.myNameXPath;
@@ -182,6 +170,7 @@ public class XmlRuleParser {
             this.mySelectionXPath = selectionXPath;
         }
 
+        @Override
         public boolean isFailOnTestQuery() {
             return failOnTestQuery;
         }
@@ -190,31 +179,6 @@ public class XmlRuleParser {
             this.failOnTestQuery = Boolean.parseBoolean(failOnTestQuery);
         }
 
-        public boolean validate(final Logger logger) {
-            boolean isValid = this.validateNotNull("Missing name XPath", this.getNameXPath(), logger);
-            isValid &= this.validateNotNull("Missing selection XPath", this.getSelectionXPath(), logger);
-            isValid &= this.validateNotNull("Missing test XPath", this.getTestXPath(), logger);
-            return isValid;
-        }
-
-        private boolean validateNotNull(
-            @NotNull final String problem,
-            @Nullable final String subj,
-            @NotNull final Logger logger
-        ) {
-            boolean isValid = true;
-            if (subj == null || subj.isEmpty()) {
-                logger.warn(problem + ": " + this);
-                isValid = false;
-            }
-            return isValid;
-        }
-
-        @Override
-        public String toString() {
-            return this.getClass().getSimpleName() + " for :" + this.getID();
-        }
     }
-
 
 }

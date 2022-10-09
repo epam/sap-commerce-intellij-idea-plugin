@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.business.process.diagram.impl;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -55,7 +55,7 @@ public class DefaultBpDiagramVfsResolver implements BpDiagramVfsResolver {
     public BpGraphNode resolveElementByFQN(final String s, final Project project) {
         final VirtualFile virtualFile = VirtualFileManager.getInstance().findFileByUrl(s);
 
-        final BpGraphService bpGraphService = ServiceManager.getService(BpGraphService.class);
+        final BpGraphService bpGraphService = ApplicationManager.getApplication().getService(BpGraphService.class);
 
         try {
             return null == virtualFile ? null : bpGraphService.buildGraphFromXmlFile(virtualFile);

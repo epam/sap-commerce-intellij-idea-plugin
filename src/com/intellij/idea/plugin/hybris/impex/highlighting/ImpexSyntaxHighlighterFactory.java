@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
@@ -30,7 +30,7 @@ public class ImpexSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
     public SyntaxHighlighter getSyntaxHighlighter(final Project project, final VirtualFile virtualFile) {
-        return ServiceManager.getService(ImpexSyntaxHighlighter.class);
+        return ApplicationManager.getApplication().getService(ImpexSyntaxHighlighter.class);
     }
 
 }

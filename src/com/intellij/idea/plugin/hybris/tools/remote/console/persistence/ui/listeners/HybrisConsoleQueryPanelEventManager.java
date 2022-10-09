@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +29,7 @@ public class HybrisConsoleQueryPanelEventManager {
     private List<HybrisConsoleEventListener> listeners = new ArrayList<>();
 
     public static HybrisConsoleQueryPanelEventManager getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, HybrisConsoleQueryPanelEventManager.class);
+        return project.getService(HybrisConsoleQueryPanelEventManager.class);
     }
 
     public void addListener(HybrisConsoleEventListener listener) {

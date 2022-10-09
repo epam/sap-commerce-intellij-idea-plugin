@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
@@ -196,9 +198,7 @@ class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMetaClass 
     ) {
         Optional.ofNullable(getRealExtendedMetaClassName())
                 .filter(aName -> !visitedParents.contains(aName))
-                .map(myMetaModel::findMetaClassByName)
-                .filter(TSMetaClassImpl.class::isInstance)
-                .map(TSMetaClassImpl.class::cast)
+                .map(name -> XmlRuleInspection.<TSMetaClassImpl>getMetaType(MetaType.META_CLASS).get(name))
                 .ifPresent(parent -> {
                     visitedParents.add(parent.getName());
                     visitor.accept(parent);

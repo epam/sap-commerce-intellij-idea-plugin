@@ -18,14 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.inspections.XmlRuleInspection;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMap;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
@@ -33,7 +33,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.xml.DomElement;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,10 +41,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,19 +53,8 @@ import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.empty
  */
 class TSMetaModelImpl implements TSMetaModel {
 
-    private enum MetaType {
-        META_CLASS, META_REFERENCE, META_ENUM, META_COLLECTION, META_ATOMIC
-    }
-
-    private NoCaseMap<TSMetaClassImpl> myClasses;
-    private NoCaseMap<TSMetaReferenceImpl> myRelations;
-    private NoCaseMap<TSMetaEnumImpl> myEnums;
-    private NoCaseMap<TSMetaCollectionImpl> myCollections;
-    private NoCaseMap<TSMetaAtomicImpl> myAtomics;
     private NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName;
     private final List<TSMetaModelImpl> myBaseModels;
-
-    private static final Map<MetaType, NoCaseMap<TSMetaClassifier<? extends DomElement>>> CACHE = new ConcurrentHashMap<>();
 
     public TSMetaModelImpl() {
         this(Collections.emptyList());
@@ -75,51 +62,6 @@ class TSMetaModelImpl implements TSMetaModel {
 
     public TSMetaModelImpl(@NotNull final Collection<TSMetaModelImpl> baseModels) {
         myBaseModels = new ArrayList<>(baseModels);
-    }
-
-    @NotNull
-    private synchronized NoCaseMap<TSMetaClassImpl> getClasses() {
-        if (myClasses == null) {
-            myClasses = new NoCaseMap<>();
-            myBaseModels.forEach(model -> myClasses.putAll(model.getClasses()));
-        }
-        return myClasses;
-    }
-
-    @NotNull
-    private synchronized NoCaseMap<TSMetaReferenceImpl> getRelations() {
-        if (myRelations == null) {
-            myRelations = new NoCaseMap<>();
-            myBaseModels.forEach(model -> myRelations.putAll(model.getRelations()));
-        }
-        return myRelations;
-    }
-
-    @NotNull
-    private synchronized NoCaseMap<TSMetaEnumImpl> getEnums() {
-        if (myEnums == null) {
-            myEnums = new NoCaseMap<>();
-            myBaseModels.forEach(model -> myEnums.putAll(model.getEnums()));
-        }
-        return myEnums;
-    }
-
-    @NotNull
-    private synchronized NoCaseMap<TSMetaCollectionImpl> getCollections() {
-        if (myCollections == null) {
-            myCollections = new NoCaseMap<>();
-            myBaseModels.forEach(model -> myCollections.putAll(model.getCollections()));
-        }
-        return myCollections;
-    }
-
-    @NotNull
-    private synchronized NoCaseMap<TSMetaAtomicImpl> getAtomics() {
-        if (myAtomics == null) {
-            myAtomics = new NoCaseMap<>();
-            myBaseModels.forEach(model -> myAtomics.putAll(model.getAtomics()));
-        }
-        return myAtomics;
     }
 
     @NotNull
@@ -138,7 +80,7 @@ class TSMetaModelImpl implements TSMetaModel {
             return null;
         }
         final String typeCode = domItemType.getDeployment().getTypeCode().getStringValue();
-        final NoCaseMap<TSMetaClassImpl> classes = getClasses();
+        final CaseInsensitiveMap<String, TSMetaClassImpl> classes = XmlRuleInspection.getMetaType(MetaType.META_CLASS);
         TSMetaClassImpl impl = classes.get(name);
         if (impl == null) {
             impl = new TSMetaClassImpl(this, name, typeCode, domItemType);
@@ -155,7 +97,7 @@ class TSMetaModelImpl implements TSMetaModel {
         if (StringUtil.isEmpty(name)) {
             return null;
         }
-        final NoCaseMap<TSMetaEnumImpl> enums = getEnums();
+        final CaseInsensitiveMap<String, TSMetaEnumImpl> enums = XmlRuleInspection.getMetaType(MetaType.META_ENUM);
         TSMetaEnumImpl impl = enums.get(name);
         if (impl == null) {
             impl = new TSMetaEnumImpl(name, domEnumType);
@@ -172,13 +114,9 @@ class TSMetaModelImpl implements TSMetaModel {
         if (StringUtil.isEmpty(name)) {
             return null;
         }
-        final NoCaseMap<TSMetaCollectionImpl> collections = getCollections();
-        TSMetaCollectionImpl impl = collections.get(name);
-        if (impl == null) {
-            impl = new TSMetaCollectionImpl(this, name, domCollectionType);
-            collections.put(name, impl);
-        }
-        return impl;
+
+        return XmlRuleInspection.<TSMetaCollectionImpl>getMetaType(MetaType.META_COLLECTION)
+                                .computeIfAbsent(name, key -> new TSMetaCollectionImpl(key, domCollectionType));
     }
 
     @Nullable
@@ -188,17 +126,14 @@ class TSMetaModelImpl implements TSMetaModel {
             return null;
         }
 
-        final NoCaseMap<TSMetaReferenceImpl> relations = getRelations();
-        final String typeCode = domRelationType.getDeployment().getTypeCode().getStringValue();
-
-        TSMetaReferenceImpl impl = relations.get(name);
-        if (impl == null) {
-            impl = new TSMetaReferenceImpl(this, name, typeCode, domRelationType);
-            registerReferenceEnd(impl.getSource(), impl.getTarget());
-            registerReferenceEnd(impl.getTarget(), impl.getSource());
-            relations.put(name, impl);
-        }
-        return impl;
+        return XmlRuleInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION)
+                                .computeIfAbsent(name, key -> {
+                                    final String typeCode = domRelationType.getDeployment().getTypeCode().getStringValue();
+                                    final TSMetaReference impl = new TSMetaReferenceImpl(name, typeCode, domRelationType);
+                                    registerReferenceEnd(impl.getSource(), impl.getTarget());
+                                    registerReferenceEnd(impl.getTarget(), impl.getSource());
+                                    return impl;
+                                });
     }
 
     private void registerReferenceEnd(
@@ -225,25 +160,25 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaClass> getMetaClassesStream() {
-        return getClasses().values().stream();
+        return XmlRuleInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).values().stream();
     }
 
     @NotNull
     @Override
     public Stream<? extends TSMetaReference> getMetaRelationsStream() {
-        return getRelations().values().stream();
+        return XmlRuleInspection.<TSMetaReference>getMetaType(MetaType.META_RELATION).values().stream();
     }
 
     @NotNull
     @Override
     public Stream<? extends TSMetaAtomic> getMetaAtomicStream() {
-        return getAtomics().values().stream();
+        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaClass findMetaClassByName(@NotNull final String name) {
-        return getClasses().get(name);
+        return XmlRuleInspection.<TSMetaClass>getMetaType(MetaType.META_CLASS).get(name);
     }
 
     @Nullable
@@ -257,19 +192,19 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaEnum> getMetaEnumsStream() {
-        return getEnums().values().stream();
+        return XmlRuleInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaEnum findMetaEnumByName(@NotNull final String name) {
-        return getEnums().get(name);
+        return XmlRuleInspection.<TSMetaEnum>getMetaType(MetaType.META_ENUM).get(name);
     }
 
     @Nullable
     @Override
     public TSMetaAtomic findMetaAtomicByName(@NotNull final String name) {
-        return getAtomics().get(name);
+        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC).get(name);
     }
 
     @Nullable
@@ -285,26 +220,21 @@ class TSMetaModelImpl implements TSMetaModel {
     @NotNull
     @Override
     public Stream<? extends TSMetaCollection> getMetaCollectionsStream() {
-        return getCollections().values().stream();
+        return XmlRuleInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).values().stream();
     }
 
     @Nullable
     @Override
     public TSMetaCollection findMetaCollectionByName(@NotNull final String name) {
-        return getCollections().get(name);
+        return XmlRuleInspection.<TSMetaCollection>getMetaType(MetaType.META_COLLECTION).get(name);
     }
 
     @Nullable
     @Override
     public TSMetaAtomic findOrCreateAtomicType(@NotNull final AtomicType atomicType) {
         final String clazzName = atomicType.getClazz().getValue();
-        final NoCaseMap<TSMetaAtomicImpl> atomics = getAtomics();
-        final TSMetaAtomicImpl tsMetaAtomic = atomics.get(clazzName);
-        if (tsMetaAtomic == null) {
-            TSMetaAtomic atomic = new TSMetaAtomicImpl(clazzName, atomicType);
-            atomics.put(clazzName, (TSMetaAtomicImpl) atomic);
-            return atomic;
-        }
-        return tsMetaAtomic;
+
+        return XmlRuleInspection.<TSMetaAtomic>getMetaType(MetaType.META_ATOMIC)
+                                .computeIfAbsent(clazzName, key -> new TSMetaAtomicImpl(key, atomicType));
     }
 }

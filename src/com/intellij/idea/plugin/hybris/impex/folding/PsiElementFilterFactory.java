@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.folding;
 import com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter;
 import com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.util.PsiElementFilter;
 
 /**
@@ -37,8 +37,8 @@ public final class PsiElementFilterFactory {
 
     public static PsiElementFilter getPsiElementFilter() {
         return isUseSmartFolding()
-            ? ServiceManager.getService(SmartFoldingBlocksFilter.class)
-            : ServiceManager.getService(DefaultFoldingBlocksFilter.class);
+            ? ApplicationManager.getApplication().getService(SmartFoldingBlocksFilter.class)
+            : ApplicationManager.getApplication().getService(DefaultFoldingBlocksFilter.class);
     }
 
     private static boolean isUseSmartFolding() {

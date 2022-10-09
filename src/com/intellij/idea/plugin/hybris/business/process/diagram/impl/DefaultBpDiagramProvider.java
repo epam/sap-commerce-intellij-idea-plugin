@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElement
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramProvider;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramVfsResolver;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -56,12 +56,12 @@ public class DefaultBpDiagramProvider extends BpDiagramProvider {
 
     @Override
     public DiagramElementManager<BpGraphNode> getElementManager() {
-        return ServiceManager.getService(BpDiagramElementManager.class);
+        return ApplicationManager.getApplication().getService(BpDiagramElementManager.class);
     }
 
     @Override
     public DiagramVfsResolver<BpGraphNode> getVfsResolver() {
-        return ServiceManager.getService(BpDiagramVfsResolver.class);
+        return ApplicationManager.getApplication().getService(BpDiagramVfsResolver.class);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class DefaultBpDiagramProvider extends BpDiagramProvider {
 
     @Override
     public DiagramColorManager getColorManager() {
-        return ServiceManager.getService(BpDiagramColorManager.class);
+        return ApplicationManager.getApplication().getService(BpDiagramColorManager.class);
     }
 }

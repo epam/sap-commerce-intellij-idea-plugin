@@ -32,22 +32,13 @@
         <xs:extension base="xs:string">
             <xs:attribute name="type" type="ruleType" use="required"/>
             <xs:attribute name="id" type="xs:string" use="required"/>
-            <xs:attribute name="description" type="xs:string" use="required"/>
-            <xs:attribute name="priority" type="rulePriority" use="required"/>
             <xs:attribute name="selectionQuery" type="xs:string"/>
+            <xs:attribute name="failOnTestQuery" type="xs:boolean"/>
             <xs:attribute name="testQuery" type="xs:string"/>
             <xs:attribute name="nameQuery" type="xs:string"/>
         </xs:extension>
     </xs:simpleContent>
 </xs:complexType>
-
-<xs:simpleType name="rulePriority">
-    <xs:restriction base="xs:string">
-        <xs:enumeration value="H"/>
-        <xs:enumeration value="M"/>
-        <xs:enumeration value="L"/>
-    </xs:restriction>
-</xs:simpleType>
 
 <xs:simpleType name="ruleType">
     <xs:restriction base="xs:string">

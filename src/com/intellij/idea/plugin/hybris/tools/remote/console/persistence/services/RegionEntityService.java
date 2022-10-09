@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.RegionEntity;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +28,7 @@ import java.util.Optional;
 public interface RegionEntityService {
 
     static RegionEntityService getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, RegionEntityService.class);
+        return project.getService(RegionEntityService.class);
     }
 
     <T> RegionEntity<T> save(String regionName, String entityName, T entityBody);

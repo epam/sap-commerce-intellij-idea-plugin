@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -40,7 +40,7 @@ public class HybrisApplicationSettingsComponent implements PersistentStateCompon
 
     @NotNull
     public static HybrisApplicationSettingsComponent getInstance() {
-        return ServiceManager.getService(HybrisApplicationSettingsComponent.class);
+        return ApplicationManager.getApplication().getService(HybrisApplicationSettingsComponent.class);
     }
 
     @NotNull

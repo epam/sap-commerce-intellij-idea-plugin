@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
@@ -28,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
@@ -41,7 +41,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.TestRunConfiguratio
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,8 +57,8 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
-        final FacetConfigurator springFacetConfigurator = ServiceManager.getService(SpringFacetConfigurator.class);
-        final FacetConfigurator webFacetConfigurator = ServiceManager.getService(WebFacetConfigurator.class);
+        final FacetConfigurator springFacetConfigurator = ApplicationManager.getApplication().getService(SpringFacetConfigurator.class);
+        final FacetConfigurator webFacetConfigurator = ApplicationManager.getApplication().getService(WebFacetConfigurator.class);
 
         final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(2);
 
@@ -76,9 +76,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public SpringConfigurator getSpringConfigurator() {
-        final SpringConfigurator springConfigurator = ServiceManager.getService(
-            DefaultSpringConfigurator.class
-        );
+        final SpringConfigurator springConfigurator = ApplicationManager.getApplication().getService(DefaultSpringConfigurator.class);
 
         return (null == springConfigurator) ? new DummySpringConfigurator() : springConfigurator;
     }
@@ -86,115 +84,115 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public ModulesDependenciesConfigurator getModulesDependenciesConfigurator() {
-        return ServiceManager.getService(ModulesDependenciesConfigurator.class);
+        return ApplicationManager.getApplication().getService(ModulesDependenciesConfigurator.class);
     }
 
     @NotNull
     @Override
     public CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator() {
-        return ServiceManager.getService(CompilerOutputPathsConfigurator.class);
+        return ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator.class);
     }
 
     @NotNull
     @Override
     public ContentRootConfigurator getRegularContentRootConfigurator() {
-        return ServiceManager.getService(RegularContentRootConfigurator.class);
+        return ApplicationManager.getApplication().getService(RegularContentRootConfigurator.class);
     }
 
     @NotNull
     @Override
     public ContentRootConfigurator getReadOnlyContentRootConfigurator() {
-        return ServiceManager.getService(ReadOnlyContentRootConfigurator.class);
+        return ApplicationManager.getApplication().getService(ReadOnlyContentRootConfigurator.class);
     }
 
     @NotNull
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
-        return ServiceManager.getService(LibRootsConfigurator.class);
+        return ApplicationManager.getApplication().getService(LibRootsConfigurator.class);
     }
 
     @NotNull
     @Override
     public GroupModuleConfigurator getGroupModuleConfigurator() {
-        return ServiceManager.getService(GroupModuleConfigurator.class);
+        return ApplicationManager.getApplication().getService(GroupModuleConfigurator.class);
     }
 
     @NotNull
     @Override
     public JavadocModuleConfigurator getJavadocModuleConfigurator() {
-        return ServiceManager.getService(JavadocModuleConfigurator.class);
+        return ApplicationManager.getApplication().getService(JavadocModuleConfigurator.class);
     }
 
     @NotNull
     @Override
     public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
-        return ServiceManager.getService(ModuleSettingsConfigurator.class);
+        return ApplicationManager.getApplication().getService(ModuleSettingsConfigurator.class);
     }
 
     @NotNull
     @Override
     public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
-        return ServiceManager.getService(VersionControlSystemConfigurator.class);
+        return ApplicationManager.getApplication().getService(VersionControlSystemConfigurator.class);
     }
 
     @NotNull
     @Override
     public RunConfigurationConfigurator getDebugRunConfigurationConfigurator() {
-        return ServiceManager.getService(DebugRunConfigurationConfigurator.class);
+        return ApplicationManager.getApplication().getService(DebugRunConfigurationConfigurator.class);
     }
 
     @Nullable
     @Override
     public RunConfigurationConfigurator getTestRunConfigurationConfigurator() {
-        return ServiceManager.getService(TestRunConfigurationConfigurator.class);
+        return ApplicationManager.getApplication().getService(TestRunConfigurationConfigurator.class);
     }
 
     @Nullable
     @Override
     public AntConfigurator getAntConfigurator() {
-        return ServiceManager.getService(AntConfigurator.class);
+        return ApplicationManager.getApplication().getService(AntConfigurator.class);
     }
 
     @Nullable
     @Override
     public MavenConfigurator getMavenConfigurator() {
-        return ServiceManager.getService(MavenConfigurator.class);
+        return ApplicationManager.getApplication().getService(MavenConfigurator.class);
     }
 
     @Nullable
     @Override
     public EclipseConfigurator getEclipseConfigurator() {
-        return ServiceManager.getService(EclipseConfigurator.class);
+        return ApplicationManager.getApplication().getService(EclipseConfigurator.class);
     }
 
     @Nullable
     @Override
     public GradleConfigurator getGradleConfigurator() {
-        return ServiceManager.getService(GradleConfigurator.class);
+        return ApplicationManager.getApplication().getService(GradleConfigurator.class);
     }
 
     @NotNull
     @Override
     public SearchScopeConfigurator getSearchScopeConfigurator() {
-        return ServiceManager.getService(SearchScopeConfigurator.class);
+        return ApplicationManager.getApplication().getService(SearchScopeConfigurator.class);
     }
 
     @Nullable
     @Override
     public DataSourcesConfigurator getDataSourcesConfigurator() {
-        return ServiceManager.getService(DataSourcesConfigurator.class);
+        return ApplicationManager.getApplication().getService(DataSourcesConfigurator.class);
     }
 
     @Nullable
     @Override
     public JavaCompilerConfigurator getCompilerConfigurator() {
-        return ServiceManager.getService(JavaCompilerConfigurator.class);
+        return ApplicationManager.getApplication().getService(JavaCompilerConfigurator.class);
     }
 
     @NotNull
     @Override
     public LoadedConfigurator getLoadedConfigurator() {
-        return ServiceManager.getService(LoadedConfigurator.class);
+        return ApplicationManager.getApplication().getService(LoadedConfigurator.class);
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

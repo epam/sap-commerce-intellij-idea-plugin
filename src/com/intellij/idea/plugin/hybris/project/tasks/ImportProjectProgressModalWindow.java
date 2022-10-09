@@ -65,7 +65,6 @@ import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -86,8 +85,6 @@ import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
@@ -337,7 +334,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final Project project,
         final List<HybrisModuleDescriptor> modules
     ) {
-        final ProjectDictionaryState dictionaryState = ServiceManager.getService(project, ProjectDictionaryState.class);
+        final ProjectDictionaryState dictionaryState = project.getService(ProjectDictionaryState.class);
         final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
         projectDictionary.getEditableWords();//ensure dictionaries exist
         EditableDictionary hybrisDictionary = projectDictionary.getDictionaries().stream()

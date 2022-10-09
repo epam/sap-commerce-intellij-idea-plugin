@@ -35,7 +35,6 @@ import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
@@ -99,7 +98,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
                 );
             }
 
-            final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+            final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
             if (!commonIdeaService.isHybrisProject(project)) {
                 return;
             }
@@ -157,7 +156,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
     }
 
     private void resetSpringGeneralSettings(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
         if (commonIdeaService.isHybrisProject(project)) {
             if (isPluginActive(SPRING_PLUGIN_ID)) {
                 SpringGeneralSettings springGeneralSettings = SpringGeneralSettings.getInstance(project);
@@ -168,7 +167,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
     }
 
     private void registerAntListener(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
         if (commonIdeaService.isHybrisProject(project)) {
             if (isPluginActive(ANT_SUPPORT_PLUGIN_ID)) {
                 HybrisAntBuildListener.registerAntListener(project);
@@ -177,7 +176,7 @@ public class HybrisProjectManagerListener implements ProjectManagerListener, Dis
     }
 
     private boolean isOldHybrisProject(final Project project) {
-        final CommonIdeaService commonIdeaService = ServiceManager.getService(CommonIdeaService.class);
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
         if (commonIdeaService.isHybrisProject(project)) {
             return commonIdeaService.isOutDatedHybrisProject(project);
         } else {

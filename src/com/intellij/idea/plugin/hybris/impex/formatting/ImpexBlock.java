@@ -26,7 +26,7 @@ import com.intellij.formatting.SpacingBuilder;
 import com.intellij.formatting.Wrap;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
@@ -101,10 +101,10 @@ public class ImpexBlock extends AbstractBlock {
 
         if (impexCodeStyleSettings.TABLIFY) {
 
-            return ServiceManager.getService(TableAlignmentStrategy.class);
+            return ApplicationManager.getApplication().getService(TableAlignmentStrategy.class);
         }
 
-        return ServiceManager.getService(ColumnsAlignmentStrategy.class);
+        return ApplicationManager.getApplication().getService(ColumnsAlignmentStrategy.class);
     }
 
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {
