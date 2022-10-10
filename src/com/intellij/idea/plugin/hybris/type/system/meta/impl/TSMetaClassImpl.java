@@ -19,10 +19,9 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
@@ -51,20 +50,17 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
 
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
-    private final TSMetaModel myMetaModel;
     private final String myTypeCode;
 
     private String myExtendedMetaClassName = null;
 
     public TSMetaClassImpl(
         final Project project,
-        final TSMetaModel model,
         final String name,
         final String typeCode,
         final @NotNull ItemType dom
     ) {
         super(project, name, dom);
-        myMetaModel = model;
         myTypeCode = typeCode;
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
         registerExtends(dom);
@@ -93,12 +89,6 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
         return myAllDoms.stream()
                         .map(DomAnchor::retrieveDomElement)
                         .filter(Objects::nonNull);
-    }
-
-    @Override
-    @NotNull
-    public TSMetaModel getMetaModel() {
-        return myMetaModel;
     }
 
     @Override
@@ -155,7 +145,7 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
     @Override
     public Stream<? extends TSMetaReference.ReferenceEnd> getReferenceEndsStream(final boolean includeInherited) {
         final LinkedList<TSMetaReference.ReferenceEnd> result = new LinkedList<>();
-        final Consumer<TSMetaClassImpl> visitor = mc -> TSMetaService.Companion.getInstance(getProject()).collectReferencesForSourceType(mc, result);
+        final Consumer<TSMetaClassImpl> visitor = mc -> TSMetaModelService.Companion.getInstance(getProject()).collectReferencesForSourceType(mc, result);
         if (includeInherited) {
             walkInheritance(visitor);
         } else {
@@ -198,7 +188,7 @@ public class TSMetaClassImpl extends TSMetaEntityImpl<ItemType> implements TSMet
     ) {
         Optional.ofNullable(getRealExtendedMetaClassName())
                 .filter(aName -> !visitedParents.contains(aName))
-                .map(name -> TSMetaService.Companion.getInstance(getProject()).findMetaClassByName(name))
+                .map(name -> TSMetaModelService.Companion.getInstance(getProject()).findMetaClassByName(name))
                 .filter(TSMetaClassImpl.class::isInstance)
                 .map(TSMetaClassImpl.class::cast)
                 .ifPresent(parent -> {

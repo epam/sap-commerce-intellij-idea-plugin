@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Relation
 import com.intellij.lang.ASTNode
@@ -40,14 +40,14 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val lookingForName = element.text.replace("!", "")
-        val res0 = Optional.ofNullable(TSMetaService.getInstance(project).findMetaClassByName(lookingForName))
+        val res0 = Optional.ofNullable(TSMetaModelService.getInstance(project).findMetaClassByName(lookingForName))
                 .map { it.retrieveAllDomsStream() }
                 .orElse(Stream.empty())
                 .map { ItemTypeResolveResult(it) }
                 .collect(Collectors.toList())
 
 
-        val res1 = TSMetaService.getInstance(project).findRelationByName(lookingForName)
+        val res1 = TSMetaModelService.getInstance(project).findRelationByName(lookingForName)
                 .distinctBy { it.name }
                 .map { it.retrieveDom() }
                 .map { RelationResolveResult(it) }

@@ -35,9 +35,6 @@ public interface TSMetaClass extends TSMetaClassifier<ItemType> {
     @Nullable
     String getExtendedMetaClassName();
 
-    @NotNull
-    TSMetaModel getMetaModel();
-
     void addProperty(final String key, TSMetaProperty property);
 
     @NotNull

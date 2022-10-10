@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,31 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaModel {
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive;
+import com.intellij.openapi.Disposable;
+import com.intellij.util.xml.DomElement;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public final class TSMetaModel implements Disposable {
+
+    private final Map<MetaType, Map<String, TSMetaClassifier<? extends DomElement>>> myMetaCache = new ConcurrentHashMap<>();
+    private final CaseInsensitive.NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName = new CaseInsensitive.NoCaseMultiMap<>();
+
+    @SuppressWarnings("unchecked")
+    public <T> Map<String, T> getMetaType(final MetaType metaType) {
+        return (Map<String, T>) myMetaCache.computeIfAbsent(metaType, mt -> new CaseInsensitiveMap<>());
+    }
+
+    public CaseInsensitive.NoCaseMultiMap<TSMetaReference.ReferenceEnd> getReferencesBySourceTypeName() {
+        return myReferencesBySourceTypeName;
+    }
+
+    @Override
+    public void dispose() {
+        myMetaCache.clear();
+        myReferencesBySourceTypeName.clear();
+    }
 }

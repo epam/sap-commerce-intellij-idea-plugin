@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.psi.PsiElement
@@ -38,7 +38,7 @@ import java.util.*
 class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemReferenceBase<ImpexParameter>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val metaService = TSMetaService.getInstance(project)
+        val metaService = TSMetaModelService.getInstance(project)
         val featureName = element.text.trim()
         val typeName = findItemTypeReference()
         val metaClass = metaService.findMetaClassByName(typeName)

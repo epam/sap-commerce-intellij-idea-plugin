@@ -27,7 +27,7 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.stream.Collectors
 
-class TSMetaService(val myProject: Project) {
+class TSMetaModelService(val myProject: Project) {
 
     private fun extractName(dom: ItemType): String? = dom.code.value
     private fun extractName(dom: EnumType): String? = dom.code.value
@@ -35,14 +35,14 @@ class TSMetaService(val myProject: Project) {
     private fun extractName(dom: Relation): String? = dom.code.value
     private fun extractName(dom: AtomicType): String? = dom.clazz.value
 
-    fun findOrCreate(metaModel: TSMetaModel, domItemType: ItemType): TSMetaClass? {
+    fun findOrCreate(domItemType: ItemType): TSMetaClass? {
         val name = extractName(domItemType) ?: return null
         val typeCode = domItemType.deployment.typeCode.stringValue
-        val classes = cache().getMetaType<TSMetaClassImpl>(MetaType.META_CLASS)
+        val classes = metaModel().getMetaType<TSMetaClassImpl>(MetaType.META_CLASS)
         var impl = classes[name]
 
         if (impl == null) {
-            impl = TSMetaClassImpl(myProject, metaModel, name, typeCode, domItemType)
+            impl = TSMetaClassImpl(myProject, name, typeCode, domItemType)
             classes[name] = impl
         } else {
             impl.addDomRepresentation(domItemType)
@@ -52,7 +52,7 @@ class TSMetaService(val myProject: Project) {
 
     fun findOrCreate(domEnumType: EnumType): TSMetaEnum? {
         val name = extractName(domEnumType) ?: return null
-        val enums = cache().getMetaType<TSMetaEnum>(MetaType.META_ENUM)
+        val enums = metaModel().getMetaType<TSMetaEnum>(MetaType.META_ENUM)
         var impl = enums[name]
 
         if (impl == null) {
@@ -65,28 +65,28 @@ class TSMetaService(val myProject: Project) {
     fun findOrCreate(atomicType: AtomicType): TSMetaAtomic? {
         val clazzName = extractName(atomicType) ?: return null
 
-        return cache().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
+        return metaModel().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
             .computeIfAbsent(clazzName)
             { key: String -> TSMetaAtomicImpl(myProject, key, atomicType) }
     }
 
-    fun findOrCreate(metaModel: TSMetaModel, domCollectionType: CollectionType): TSMetaCollection? {
+    fun findOrCreate(domCollectionType: CollectionType): TSMetaCollection? {
         val name = extractName(domCollectionType) ?: return null
 
-        return cache().getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
+        return metaModel().getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
             .computeIfAbsent(name)
-            { key: String? -> TSMetaCollectionImpl(myProject, metaModel, key, domCollectionType) }
+            { key: String? -> TSMetaCollectionImpl(myProject, key, domCollectionType) }
     }
 
-    fun findOrCreate(metaModel: TSMetaModel, domRelationType: Relation) : TSMetaReference? {
+    fun findOrCreate(domRelationType: Relation) : TSMetaReference? {
         val name = extractName(domRelationType)
         val typeCode = domRelationType.deployment.typeCode.stringValue
 
         if (name == null || typeCode == null) return null
 
-        return cache().getMetaType<TSMetaReference>(MetaType.META_RELATION)
+        return metaModel().getMetaType<TSMetaReference>(MetaType.META_RELATION)
             .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaReference = TSMetaReferenceImpl(myProject, metaModel, key, typeCode, domRelationType)
+                val impl: TSMetaReference = TSMetaReferenceImpl(myProject, key, typeCode, domRelationType)
                 registerReferenceEnd(impl.source, impl.target)
                 registerReferenceEnd(impl.target, impl.source)
                 impl
@@ -94,10 +94,9 @@ class TSMetaService(val myProject: Project) {
 
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): List<T> = cache().getMetaType<T>(metaType).values as List<T>
+    fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): Collection<T> = metaModel().getMetaType<T>(metaType).values
 
-    fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = cache().getMetaType<T>(metaType)[name]
+    fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = metaModel().getMetaType<T>(metaType)[name]
 
     fun findMetaClassForDom(dom: ItemType): TSMetaClass? = findMetaClassByName(extractName(dom))
 
@@ -110,7 +109,7 @@ class TSMetaService(val myProject: Project) {
     fun findMetaCollectionByName(name: String): TSMetaCollection? = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
 
     fun findRelationByName(name: String) : List<TSMetaReference> {
-        return CollectionUtils.emptyCollectionIfNull(cache().referencesBySourceTypeName.values()).stream()
+        return CollectionUtils.emptyCollectionIfNull(metaModel().referencesBySourceTypeName.values()).stream()
             .filter { obj: Any? -> Objects.nonNull(obj) }
             .map { referenceEnd: ReferenceEnd -> referenceEnd.owningReference }
             .filter { ref: TSMetaReference -> name == ref.name }
@@ -129,10 +128,11 @@ class TSMetaService(val myProject: Project) {
     }
 
     fun collectReferencesForSourceType(source: TSMetaClass, out: MutableCollection<ReferenceEnd?>) {
-        out.addAll(cache().referencesBySourceTypeName[source.name])
+        out.addAll(metaModel().referencesBySourceTypeName[source.name])
     }
 
-    private fun cache(): TSMetaCache = TSMetaModelAccess.getInstance(myProject).metaCache
+    private fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.META_MODEL_CACHE_KEY)
+        ?: TSMetaModelAccess.getInstance(myProject).metaModel
 
     private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
         if (!targetEnd.isNavigable) return
@@ -140,13 +140,13 @@ class TSMetaService(val myProject: Project) {
         val ownerTypeName = ownerEnd.typeName
 
         if (!StringUtil.isEmpty(ownerTypeName)) {
-            cache().referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
+            metaModel().referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
         }
     }
 
     companion object {
-        fun getInstance(project: Project): TSMetaService {
-            return project.getService(TSMetaService::class.java) as TSMetaService
+        fun getInstance(project: Project): TSMetaModelService {
+            return project.getService(TSMetaModelService::class.java) as TSMetaModelService
         }
     }
 }

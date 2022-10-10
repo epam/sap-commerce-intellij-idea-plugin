@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttributeValue;
@@ -39,10 +39,10 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
     private final Class<? extends DOM> myResolvesToClass;
 
     protected abstract DOM searchForName(
-        @NotNull String name, @NotNull ConvertContext context, TSMetaService meta
+        @NotNull String name, @NotNull ConvertContext context, TSMetaModelService meta
     );
 
-    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, TSMetaService meta);
+    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, TSMetaModelService meta);
 
     public TypeSystemConverterBase(@NotNull final Class<? extends DOM> resolvesToClass) {
         myResolvesToClass = resolvesToClass;
@@ -92,8 +92,8 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         return searchAll(context, getMetaService(context));
     }
 
-    protected TSMetaService getMetaService(final ConvertContext context) {
-        return TSMetaService.Companion.getInstance(context.getProject());
+    protected TSMetaModelService getMetaService(final ConvertContext context) {
+        return TSMetaModelService.Companion.getInstance(context.getProject());
     }
 
     protected static <D extends DomElement> XmlAttributeValue navigateToValue(

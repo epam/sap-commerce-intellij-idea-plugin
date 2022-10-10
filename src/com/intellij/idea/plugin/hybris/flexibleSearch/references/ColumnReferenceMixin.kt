@@ -3,7 +3,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.lang.ASTNode
@@ -50,7 +50,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
     private fun hasPrefix(element: FlexibleSearchColumnReference) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
 
     private fun findReference(itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
-        val metaService = TSMetaService.getInstance(project)
+        val metaService = TSMetaModelService.getInstance(project)
         val metaClass = itemType
                 .map { it.text.replace("!", "") }
                 .map { metaService.findMetaClassByName(it) }

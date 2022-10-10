@@ -30,9 +30,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase.TypeSystemResolveResult;
 import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.Indexes;
@@ -124,15 +122,10 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             }
             //it also may be in the separate representation
 
-            final TSMetaClass merged = TSMetaService.Companion.getInstance(myHolder.getProject()).findMetaClassForDom(domItemType);
+            final TSMetaClass merged = TSMetaModelService.Companion.getInstance(myHolder.getProject()).findMetaClassForDom(domItemType);
             return merged != null && merged.retrieveAllDomsStream()
                                            .filter(it -> !domItemType.equals(it))
                                            .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));
-        }
-
-        @NotNull
-        private TSMetaModel getTypeSystemMeta() {
-            return TSMetaModelAccess.getInstance(myHolder.getProject()).getTypeSystemMeta();
         }
 
         private static boolean hasLocalIndexForAttribute(

@@ -20,40 +20,14 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CaseInsensitive {
 
     @NotNull
     public static String eraseCase(final @NotNull String key) {
         return key.toLowerCase();
-    }
-
-    public static class NoCaseMap<V> {
-
-        private final Map<String, V> myMap = new HashMap<>();
-
-        public void put(final @NotNull String key, final @Nullable V value) {
-            myMap.put(eraseCase(key), value);
-        }
-
-        public void putAll(@NotNull final NoCaseMap<V> map) {
-            myMap.putAll(map.myMap);
-        }
-
-        @Nullable
-        public V get(final @NotNull String key) {
-            return myMap.get(eraseCase(key));
-        }
-
-        @NotNull
-        public Collection<V> values() {
-            return myMap.values();
-        }
     }
 
     public static class NoCaseMultiMap<V> {
@@ -64,10 +38,6 @@ public class CaseInsensitive {
             myMultiMap.putValue(eraseCase(key), value);
         }
 
-        public void putAllValues(@NotNull final NoCaseMultiMap<V> map) {
-            myMultiMap.putAllValues(map.myMultiMap);
-        }
-
         @NotNull
         public Collection<? extends V> values() {
             return myMultiMap.values();
@@ -76,6 +46,10 @@ public class CaseInsensitive {
         @NotNull
         public Collection<? extends V> get(final @NotNull String key) {
             return myMultiMap.get(eraseCase(key));
+        }
+
+        public void clear() {
+            myMultiMap.clear();
         }
 
     }

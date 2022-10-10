@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -45,7 +45,7 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
 
     @Override
     protected AtomicType searchForName(
-        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaService meta
+        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelService meta
     ) {
         return Optional.ofNullable(meta.findMetaAtomicByName(name))
                        .map(TSMetaAtomic::retrieveDom)
@@ -54,7 +54,7 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
 
     @Override
     protected Collection<? extends AtomicType> searchAll(
-        @NotNull final ConvertContext context, final TSMetaService meta
+        @NotNull final ConvertContext context, final TSMetaModelService meta
     ) {
         return meta.<TSMetaAtomic>getAll(MetaType.META_ATOMIC).stream()
                    .map(TSMetaAtomic::retrieveDom)

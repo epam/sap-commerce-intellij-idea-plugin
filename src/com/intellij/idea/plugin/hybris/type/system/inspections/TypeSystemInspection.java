@@ -40,8 +40,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,43 +57,39 @@ public abstract class TypeSystemInspection extends LocalInspectionTool {
         final @NotNull InspectionManager manager,
         final boolean isOnTheFly
     ) {
-        try {
-            if (!TypeSystemUtils.isTypeSystemXmlFile(file) || !TypeSystemValidationUtils.isCustomExtensionFile(file)) {
-                return null;
-            }
-
-            final XmlFile xmlFile = (XmlFile) file;
-
-            final ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
-            if (sharedContext == null) {
-                return null;
-            }
-
-            final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject())
-                                                                                 .getCurrentProfile();
-            final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
-            final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(
-                HighlightDisplayKey.find(getShortName()),
-                file
-            );
-
-            final List<ProblemDescriptor> result = new ArrayList<>();
-            final Instant from = Instant.now();
-            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
-            try {
-                validateOneRule(sharedContext, result, ruleLevel);
-            } catch (XPathExpressionException e) {
-                result.add(this.createValidationFailedProblem(sharedContext, xmlFile, e));
-            }
-            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
-                from,
-                Instant.now()
-            ));
-
-            return result.toArray(new ProblemDescriptor[result.size()]);
-        } finally {
-//            META_CACHE.clear();
+        if (!TypeSystemUtils.isTypeSystemXmlFile(file) || !TypeSystemValidationUtils.isCustomExtensionFile(file)) {
+            return null;
         }
+
+        final XmlFile xmlFile = (XmlFile) file;
+
+        final ValidateContext sharedContext = ValidateContextImpl.createFileContext(manager, isOnTheFly, xmlFile);
+        if (sharedContext == null) {
+            return null;
+        }
+
+        final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject())
+                                                                             .getCurrentProfile();
+        final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
+        final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(
+            HighlightDisplayKey.find(getShortName()),
+            file
+        );
+
+        final List<ProblemDescriptor> result = new ArrayList<>();
+//            final Instant from = Instant.now();
+//            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
+        try {
+            validateOneRule(sharedContext, result, ruleLevel);
+        } catch (XPathExpressionException e) {
+            result.add(this.createValidationFailedProblem(sharedContext, xmlFile, e));
+        }
+//            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
+//                from,
+//                Instant.now()
+//            ));
+
+        return result.toArray(new ProblemDescriptor[result.size()]);
     }
 
     protected void validateOneRule(

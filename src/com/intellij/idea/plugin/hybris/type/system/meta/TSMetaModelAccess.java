@@ -19,10 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
 import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -38,25 +35,7 @@ public interface TSMetaModelAccess {
         return getInstance(domElement.getXmlElement().getProject());
     }
 
-    /**
-     * Please don't use this method to access TS model from components working on TS XML files.
-     * It initiates full rebuilding of the model if any TS XML file was changed since last call.
-     * Use getTypeSystemMeta(PsiFile) and getExternalTypeSystemMeta(PsiFile) instead.
-     */
-    TSMetaModel getTypeSystemMeta();
+    TSMetaModel getMetaModel();
 
-    TSMetaCache getMetaCache();
-
-    /**
-     * Optimized version of getTypeSystemMeta() for using from components working on TS XML files.
-     * @param contextFile only affects if it is a TS XML file.
-     */
-    TSMetaModel getTypeSystemMeta(@Nullable PsiFile contextFile);
-
-    /**
-     * Returns TS model built from all TS XML files excluding the file passed
-     * @param contextFile only affects if it is a TS XML file.
-     */
-    TSMetaModel getExternalTypeSystemMeta(@NotNull PsiFile contextFile);
 }
 

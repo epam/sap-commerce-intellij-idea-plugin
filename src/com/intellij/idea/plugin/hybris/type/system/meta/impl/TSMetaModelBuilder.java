@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -40,7 +40,6 @@ import com.intellij.util.xml.stubs.index.DomElementClassIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -53,54 +52,12 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
     private final Project myProject;
     private final DomManager myDomManager;
-    private final Set<VirtualFile> myFilesToExclude;
 
-    private TSMetaModelImpl myResult;
-    private boolean myProcessEnabled;
     private final Set<PsiFile> myFiles = new HashSet<>();
 
-    public TSMetaModelBuilder(final @NotNull Project project) {
-        this(project, Collections.emptyList());
-    }
-
-    public TSMetaModelBuilder(final @NotNull Project project, boolean processEnabled) {
-        this(project, Collections.emptyList(), processEnabled);
-    }
-
-    public TSMetaModelBuilder(
-        @NotNull final Project project,
-        @NotNull final Collection<VirtualFile> filesToExclude
-    ) {
-        this(project, filesToExclude, true);
-    }
-
-    public TSMetaModelBuilder(
-        @NotNull final Project project,
-        @NotNull final Collection<VirtualFile> filesToExclude,
-        final boolean processEnabled
-    ) {
+    public TSMetaModelBuilder(final Project project) {
         myProject = project;
         myDomManager = DomManager.getDomManager(project);
-        myFilesToExclude = new HashSet<>(filesToExclude);
-        myProcessEnabled = processEnabled;
-    }
-
-    @NotNull
-    public TSMetaModelImpl buildModel() {
-        myResult = new TSMetaModelImpl(myProject);
-        myFiles.clear();
-
-        StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            Items.class.getName(),
-            myProject,
-            ProjectScope.getAllScope(myProject),
-            PsiFile.class,
-            this
-        );
-        final TSMetaModelImpl result = myResult;
-        myResult = null;
-        return result;
     }
 
     public Set<PsiFile> collectFiles() {
@@ -114,22 +71,12 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
             PsiFile.class,
             this
         );
-        return myFiles;
-    }
-
-    @NotNull
-    public TSMetaModelImpl buildModelForFile(@NotNull final PsiFile file) {
-        myResult = new TSMetaModelImpl(myProject);
-        myFiles.clear();
-        process(file);
-        final TSMetaModelImpl result = myResult;
-        myResult = null;
-        return result;
+        return Collections.unmodifiableSet(myFiles);
     }
 
     @NotNull
     public Set<PsiFile> getFiles() {
-        return myFiles;
+        return Collections.unmodifiableSet(myFiles);
     }
 
     @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
@@ -137,47 +84,41 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     public boolean process(final PsiFile psiFile) {
         final VirtualFile vFile = psiFile.getVirtualFile();
 
-        if (vFile == null || myFilesToExclude.contains(vFile)) {
+        if (vFile == null) {
             return true;
         }
         myFiles.add(psiFile);
 
-        if (!myProcessEnabled) {
-            return true;
-        }
-
         final DomFileElement<Items> rootWrapper = myDomManager.getFileElement((XmlFile) psiFile, Items.class);
 
-        Optional.ofNullable(rootWrapper).map(DomFileElement::getRootElement)
-            .ifPresent(items -> {
-                items.getItemTypes().getItemTypes().forEach(this::processItemType);
-                items.getItemTypes().getTypeGroups().stream()
-                     .flatMap(tg -> tg.getItemTypes().stream())
-                     .forEach(this::processItemType);
+        Optional.ofNullable(rootWrapper)
+                .map(DomFileElement::getRootElement)
+                .ifPresent(items -> {
+                    items.getItemTypes().getItemTypes().forEach(this::processItemType);
+                    items.getItemTypes().getTypeGroups().stream()
+                         .flatMap(tg -> tg.getItemTypes().stream())
+                         .forEach(this::processItemType);
 
-                items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
-                items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
-                items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
-                items.getRelations().getRelations().forEach(this::processRelationType);
-            });
+                    items.getEnumTypes().getEnumTypes().forEach(this::processEnumType);
+                    items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
+                    items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
+                    items.getRelations().getRelations().forEach(this::processRelationType);
+                });
 
         //continue visiting
         return true;
     }
 
     private void processRelationType(final Relation relation) {
-        TSMetaService.Companion.getInstance(myProject)
-                               .findOrCreate(myResult, relation);
+        TSMetaModelService.Companion.getInstance(myProject).findOrCreate(relation);
     }
 
     private void processAtomicType(final AtomicType atomicType) {
-        TSMetaService.Companion.getInstance(myProject)
-                               .findOrCreate(atomicType);
+        TSMetaModelService.Companion.getInstance(myProject).findOrCreate(atomicType);
     }
 
     private void processEnumType(final @NotNull EnumType enumType) {
-        final TSMetaEnum aEnum = TSMetaService.Companion.getInstance(myProject)
-                                                        .findOrCreate(enumType);
+        final TSMetaEnum aEnum = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(enumType);
 
         if (aEnum == null) return;
 
@@ -185,13 +126,11 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processCollectionType(final @NotNull CollectionType collectionType) {
-        TSMetaService.Companion.getInstance(myProject)
-                               .findOrCreate(myResult, collectionType);
+        TSMetaModelService.Companion.getInstance(myProject).findOrCreate(collectionType);
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
-        final TSMetaClass metaclass = TSMetaService.Companion.getInstance(myProject)
-                                                             .findOrCreate(myResult, itemType);
+        final TSMetaClass metaclass = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(itemType);
 
         if (metaclass == null) return;
 

@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -84,7 +84,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         @NotNull final CompletionResultSet resultSet
     ) {
 
-        final TSMetaService metaService = TSMetaService.Companion.getInstance(project);
+        final TSMetaModelService metaService = TSMetaModelService.Companion.getInstance(project);
         final String itemTypeCode = headerTypeName.getText();
         final Optional<TSMetaClass> metaClass = Optional.ofNullable(metaService.findMetaClassByName(itemTypeCode));
 

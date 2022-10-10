@@ -25,9 +25,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
 import com.intellij.javaee.JavaeeIcons.PARAMETER_ICON
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
@@ -99,14 +98,14 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             itemTypeCode: String,
             resultSet: CompletionResultSet
     ) {
-        val metaClass = Optional.ofNullable(TSMetaService.getInstance(project).findMetaClassByName(itemTypeCode))
+        val metaClass = Optional.ofNullable(TSMetaModelService.getInstance(project).findMetaClassByName(itemTypeCode))
 
         val currentPrefix = resultSet.prefixMatcher.prefix
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
         metaClass
                 .map { meta -> meta.getPropertiesStream(true) }
-                .orElse(Stream.empty<TSMetaProperty>())
+                .orElse(Stream.empty())
                 .map<LookupElementBuilder> { prop ->
                     val name = prop.name ?: return@map null
 

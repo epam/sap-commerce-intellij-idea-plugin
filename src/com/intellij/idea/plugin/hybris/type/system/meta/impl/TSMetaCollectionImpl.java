@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
@@ -33,11 +32,8 @@ import java.util.Optional;
 
 public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> implements TSMetaCollection {
 
-    private final TSMetaModel myMetaModel;
-
-    public TSMetaCollectionImpl(final Project project, final TSMetaModel model, final String name, final CollectionType dom) {
+    public TSMetaCollectionImpl(final Project project, final String name, final CollectionType dom) {
         super(project, name, dom);
-        myMetaModel = model;
     }
 
     @Nullable
@@ -66,6 +62,6 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     @Override
     public TSMetaClassifier<? extends DomElement> getElementType() {
         final String typeName = getElementTypeName();
-        return typeName == null ? null : TSMetaService.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
+        return typeName == null ? null : TSMetaModelService.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
     }
 }
