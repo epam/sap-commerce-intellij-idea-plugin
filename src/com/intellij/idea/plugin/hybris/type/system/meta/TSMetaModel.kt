@@ -15,34 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.meta
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap
+import com.intellij.openapi.Disposable
+import com.intellij.util.xml.DomElement
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive;
-import com.intellij.openapi.Disposable;
-import com.intellij.util.xml.DomElement;
-import org.apache.commons.collections4.map.CaseInsensitiveMap;
+class TSMetaModel : Disposable {
+    private val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<out DomElement?>>> = ConcurrentHashMap()
+    val referencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-public final class TSMetaModel implements Disposable {
-
-    private final Map<MetaType, Map<String, TSMetaClassifier<? extends DomElement>>> myMetaCache = new ConcurrentHashMap<>();
-    private final CaseInsensitive.NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName = new CaseInsensitive.NoCaseMultiMap<>();
-
-    @SuppressWarnings("unchecked")
-    public <T> Map<String, T> getMetaType(final MetaType metaType) {
-        return (Map<String, T>) myMetaCache.computeIfAbsent(metaType, mt -> new CaseInsensitiveMap<>());
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> {
+        Object().toString().lowercase()
+        return myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap()  } as ConcurrentMap<String, T>
     }
 
-    public CaseInsensitive.NoCaseMultiMap<TSMetaReference.ReferenceEnd> getReferencesBySourceTypeName() {
-        return myReferencesBySourceTypeName;
-    }
-
-    @Override
-    public void dispose() {
-        myMetaCache.clear();
-        myReferencesBySourceTypeName.clear();
+    override fun dispose() {
+        myMetaCache.clear()
+        referencesBySourceTypeName.clear()
     }
 }

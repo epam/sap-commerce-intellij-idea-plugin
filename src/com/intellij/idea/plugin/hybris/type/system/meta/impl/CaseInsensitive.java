@@ -22,6 +22,10 @@ import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class CaseInsensitive {
 
@@ -39,12 +43,12 @@ public class CaseInsensitive {
         }
 
         @NotNull
-        public Collection<? extends V> values() {
+        public Collection<V> values() {
             return myMultiMap.values();
         }
 
         @NotNull
-        public Collection<? extends V> get(final @NotNull String key) {
+        public Collection<V> get(final @NotNull String key) {
             return myMultiMap.get(eraseCase(key));
         }
 
@@ -54,5 +58,57 @@ public class CaseInsensitive {
 
     }
 
+    public static class CaseInsensitiveConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
+
+        private static final long serialVersionUID = 4394959693646791943L;
+        private final transient Object nullKey = new Object();
+
+        @Override
+        public V get(final Object key) {
+            return super.get(convertKey(key));
+        }
+
+        @Override
+        public void putAll(final Map<? extends K, ? extends V> map) {
+            for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
+                put(e.getKey(), e.getValue());
+            }
+        }
+
+        @Override
+        public V put(@NotNull final K key, @NotNull final V value) {
+            return super.put(convertKey(key), value);
+        }
+
+        @Override
+        public V putIfAbsent(final K key, final V value) {
+            return super.putIfAbsent(convertKey(key), value);
+        }
+
+        @Override
+        public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
+            return super.computeIfAbsent(convertKey(key), mappingFunction);
+        }
+
+        @Override
+        public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return super.computeIfPresent(convertKey(key), remappingFunction);
+        }
+
+        @Override
+        public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+            return super.compute(convertKey(key), remappingFunction);
+        }
+
+        @SuppressWarnings("unchecked")
+        protected <T> T convertKey(final Object key) {
+            if (key != null) {
+                return (T) key.toString().toLowerCase();
+            }
+            return (T) nullKey;
+        }
+    }
+
 
 }
+

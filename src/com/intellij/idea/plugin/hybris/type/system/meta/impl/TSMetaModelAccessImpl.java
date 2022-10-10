@@ -53,7 +53,6 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
                                                                                    .stream()
                                                                                    .filter(Objects::nonNull)
                                                                                    .toArray();
-                    LOG.warn("Type System Cache COMPLETED - " + Thread.currentThread().getId());
                     return CachedValueProvider.Result.create(param, dependencies.length == 0 ? ModificationTracker.EVER_CHANGED : dependencies);
                 }), false);
     }
@@ -76,7 +75,6 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
         try {
             // we have to put and remove new cache from the user data here due fact that process can be cancelled and cached object may stay in obsolete state
             writeLock.lock();
-            LOG.warn("Type System Cache STARTED - " + Thread.currentThread().getId());
 
             final TSMetaModel newMetaModel = new TSMetaModel();
             myProject.putUserData(META_MODEL_CACHE_KEY, newMetaModel);
