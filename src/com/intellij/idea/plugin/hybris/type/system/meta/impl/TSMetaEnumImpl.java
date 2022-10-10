@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnumValue;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
 
     private final NoCaseMultiMap<TSMetaEnumValueImpl> name2ValueObj = new NoCaseMultiMap<>();
 
-    public TSMetaEnumImpl(final String name, final EnumType dom) {
-        super(name, dom);
+    public TSMetaEnumImpl(final Project project, final String name, final EnumType dom) {
+        super(project, name, dom);
     }
 
     public static String extractName(@NotNull final EnumType domEnumType) {
@@ -55,7 +56,7 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
 
     @Override
     public void createValue(final @NotNull EnumValue domEnumValue) {
-        final TSMetaEnumValueImpl result = new TSMetaEnumValueImpl(this, domEnumValue);
+        final TSMetaEnumValueImpl result = new TSMetaEnumValueImpl(getProject(), this, domEnumValue);
 
         if (result.getName() != null) {
             name2ValueObj.putValue(result.getName(), result);

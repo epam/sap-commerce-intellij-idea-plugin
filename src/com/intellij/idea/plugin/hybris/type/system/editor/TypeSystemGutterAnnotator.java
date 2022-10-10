@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.type.system.editor;
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
@@ -115,10 +115,10 @@ public class TypeSystemGutterAnnotator implements Annotator {
         if (psiFile == null) {
             return Collections.emptyList();
         }
-        final TSMetaModel externalModel = TSMetaModelAccess.getInstance(psiFile.getProject()).
-            getExternalTypeSystemMeta(psiFile);
 
-        return Optional.ofNullable(externalModel.findMetaClassForDom(source))
+        final TSMetaClass metaClass = TSMetaService.Companion.getInstance(psiFile.getProject()).findMetaClassForDom(source);
+
+        return Optional.ofNullable(metaClass)
                        .map(TSMetaClass::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .filter(dom -> !dom.equals(source))
@@ -155,15 +155,13 @@ public class TypeSystemGutterAnnotator implements Annotator {
         if (psiFile == null) {
             return Stream.empty();
         }
-        final TSMetaModel metaModel = TSMetaModelAccess.getInstance(psiFile.getProject()).getTypeSystemMeta(psiFile);
-        final TSMetaClass sourceMeta = metaModel.findMetaClassForDom(source);
+        final TSMetaService metaService = TSMetaService.Companion.getInstance(psiFile.getProject());
+        final TSMetaClass sourceMeta = metaService.findMetaClassForDom(source);
 
         if (sourceMeta == null) {
             return Stream.empty();
         }
-        return metaModel
-            .getMetaClassesStream()
-            .map(TSMetaClass.class::cast)
+        return metaService.<TSMetaClass>getAll(MetaType.META_CLASS).stream()
             .filter(meta -> sourceMeta.getName().equals(meta.getExtendedMetaClassName()));
     }
 

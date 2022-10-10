@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCache;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
@@ -34,82 +35,101 @@ import com.intellij.psi.util.CachedValuesManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class TSMetaModelAccessImpl implements TSMetaModelAccess {
 
-    private static final Key<CachedValue<TSMetaModelImpl>> EXTERNAL_MODEL_CACHE_KEY = Key.create(
-        "EXTERNAL_TS_MODEL_CACHE");
-    private static final Key<CachedValue<TSMetaModelImpl>> FILE_MODEL_CACHE_KEY = Key.create("FILE_TS_MODEL_CACHE");
+    private static final Key<CachedValue<TSMetaModel>> EXTERNAL_MODEL_CACHE_KEY = Key.create("EXTERNAL_TS_MODEL_CACHE");
+    private static final Key<CachedValue<TSMetaModel>> FILE_MODEL_CACHE_KEY = Key.create("FILE_TS_MODEL_CACHE");
 
-    private final CachedValue<TSMetaModel> myCachedValue;
+    private final CachedValue<TSMetaModel> myCachedMetaModel;
+    private final CachedValue<TSMetaCache> myMetaCache;
 
     public TSMetaModelAccessImpl(@NotNull final Project project) {
-        myCachedValue = CachedValuesManager.getManager(project).createCachedValue(
+        myCachedMetaModel = CachedValuesManager.getManager(project).createCachedValue(
             () -> ApplicationManager.getApplication().runReadAction(
                 (Computable<CachedValueProvider.Result<TSMetaModel>>) () -> {
 
-                    final TSMetaModelBuilder builder = new TSMetaModelBuilder(project);
-                    final TSMetaModelImpl model = builder.buildModel();
+                    final TSMetaModelBuilder builder = new TSMetaModelBuilder(project, false);
+                    final TSMetaModel model = builder.buildModel();
                     final Object[] dependencies = builder.getFiles().stream()
                                                          .filter(Objects::nonNull)
                                                          .toArray();
                     return CachedValueProvider.Result.create(model, dependencies.length == 0 ? ModificationTracker.EVER_CHANGED: dependencies);
                 }), false);
+
+        myMetaCache = CachedValuesManager.getManager(project).createCachedValue(
+            () -> ApplicationManager.getApplication().runReadAction(
+                (Computable<CachedValueProvider.Result<TSMetaCache>>) () -> {
+
+                    final Object[] dependencies = new TSMetaModelBuilder(project, false).collectFiles().stream()
+                                                         .filter(Objects::nonNull)
+                                                         .toArray();
+                    final TSMetaCache metaCache = new TSMetaCache();
+                    return CachedValueProvider.Result.create(metaCache, dependencies.length == 0 ? ModificationTracker.EVER_CHANGED: dependencies);
+                }), false);
+
+
+        // init meta cache on Service creation
+        myMetaCache.getValue();
+    }
+
+    @Override
+    public TSMetaCache getMetaCache() {
+        return myMetaCache.getValue();
     }
 
     @Override
     public synchronized TSMetaModel getTypeSystemMeta(@Nullable final PsiFile contextFile) {
         if (contextFile == null || !TypeSystemUtils.isTsFile(contextFile)) {
-            return myCachedValue.getValue();
+            return myCachedMetaModel.getValue();
         }
-        final TSMetaModelImpl externalModel = doGetExternalModel(contextFile);
+        doGetExternalModel(contextFile);
         final Project project = contextFile.getProject();
-        CachedValue<TSMetaModelImpl> fileModelCache = contextFile.getUserData(FILE_MODEL_CACHE_KEY);
+        CachedValue<TSMetaModel> fileModelCache = contextFile.getUserData(FILE_MODEL_CACHE_KEY);
 
         if (fileModelCache == null) {
             fileModelCache = CachedValuesManager.getManager(project).createCachedValue(
                 () -> ApplicationManager.getApplication().runReadAction(
-                    (Computable<CachedValueProvider.Result<TSMetaModelImpl>>) () -> {
+                    (Computable<CachedValueProvider.Result<TSMetaModel>>) () -> {
 
                         final TSMetaModelBuilder builder = new TSMetaModelBuilder(project);
-                        final TSMetaModelImpl modelForFile = builder.buildModelForFile(contextFile);
-                        return CachedValueProvider.Result.create(modelForFile, contextFile);
+                        final TSMetaModel modelForFile = builder.buildModelForFile(contextFile);
+                        return CachedValueProvider.Result.createSingleDependency(modelForFile, contextFile);
 
                     }), false);
             contextFile.putUserData(FILE_MODEL_CACHE_KEY, fileModelCache);
         }
-        final TSMetaModelImpl fileModel = fileModelCache.getValue();
-        return new TSMetaModelImpl(Arrays.asList(externalModel, fileModel));
+        fileModelCache.getValue();
+        return new TSMetaModelImpl(project);
     }
 
     @Override
     public synchronized TSMetaModel getExternalTypeSystemMeta(@NotNull final PsiFile contextFile) {
-        return TypeSystemUtils.isTsFile(contextFile) ? doGetExternalModel(contextFile) : myCachedValue.getValue();
+        return TypeSystemUtils.isTsFile(contextFile) ? doGetExternalModel(contextFile) : myCachedMetaModel.getValue();
     }
 
     @NotNull
-    private TSMetaModelImpl doGetExternalModel(final @NotNull PsiFile contextFile) {
+    private TSMetaModel doGetExternalModel(final @NotNull PsiFile contextFile) {
         final PsiFile originalFile = contextFile.getOriginalFile();
         final VirtualFile vFile = originalFile.getVirtualFile();
         final Project project = originalFile.getProject();
-        CachedValue<TSMetaModelImpl> externalModelCache = originalFile.getUserData(EXTERNAL_MODEL_CACHE_KEY);
+        CachedValue<TSMetaModel> externalModelCache = originalFile.getUserData(EXTERNAL_MODEL_CACHE_KEY);
 
         if (externalModelCache == null) {
 
             externalModelCache = CachedValuesManager.getManager(project).createCachedValue(
                 () -> ApplicationManager.getApplication().runReadAction(
-                    (Computable<CachedValueProvider.Result<TSMetaModelImpl>>) () -> {
+                    (Computable<CachedValueProvider.Result<TSMetaModel>>) () -> {
 
                         final List<VirtualFile> excludes = vFile == null
                             ? Collections.emptyList()
                             : Collections.singletonList(vFile);
 
                         final TSMetaModelBuilder builder = new TSMetaModelBuilder(project, excludes);
-                        final TSMetaModelImpl model = builder.buildModel();
+                        final TSMetaModel model = builder.buildModel();
                         return CachedValueProvider.Result.create(model, builder.getFiles());
 
                     }), false);

@@ -25,7 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
@@ -65,11 +65,11 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             resultSet: CompletionResultSet
     ) {
 
-        val meta = TSMetaModelAccess.getInstance(project).typeSystemMeta
+        val metaService = TSMetaService.getInstance(project)
 
-        val metaClass = meta.findMetaClassByName(typeName)
+        val metaClass = metaService.findMetaClassByName(typeName)
         if (metaClass == null) {
-            val metaEnum = meta.findMetaEnumByName(typeName)
+            val metaEnum = metaService.findMetaEnumByName(typeName)
             if (metaEnum != null) {
                 resultSet.addElement(LookupElementBuilder.create("code").withIcon(HybrisIcons.TYPE_SYSTEM))
             }

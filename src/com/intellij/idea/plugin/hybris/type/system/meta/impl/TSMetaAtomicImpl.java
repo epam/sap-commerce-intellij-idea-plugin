@@ -21,14 +21,15 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 public class TSMetaAtomicImpl extends TSMetaEntityImpl<AtomicType> implements TSMetaAtomic {
 
-    public TSMetaAtomicImpl(final String name, final AtomicType dom) {
-        super(name, dom);
+    public TSMetaAtomicImpl(final Project project, final String name, final AtomicType dom) {
+        super(project, name, dom);
     }
 
 }

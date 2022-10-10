@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomService;
@@ -29,10 +30,12 @@ import org.jetbrains.annotations.Nullable;
 class TSMetaEntityImpl<D extends DomElement> {
 
     private final String myName;
+    private final Project myProject;
 
     private final DomAnchor<D> myDomAnchor;
 
-    public TSMetaEntityImpl(final String name, final D dom) {
+    public TSMetaEntityImpl(final Project myProject, final String name, final D dom) {
+        this.myProject = myProject;
         myDomAnchor = DomService.getInstance().createAnchor(dom);
         myName = name;
     }
@@ -45,5 +48,9 @@ class TSMetaEntityImpl<D extends DomElement> {
     @Nullable
     public D retrieveDom() {
         return myDomAnchor.retrieveDomElement();
+    }
+
+    public Project getProject() {
+        return myProject;
     }
 }

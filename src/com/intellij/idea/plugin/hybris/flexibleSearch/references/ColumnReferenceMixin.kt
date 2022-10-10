@@ -1,14 +1,9 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnReference
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchFromClause
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchQuerySpecification
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReference
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.lang.ASTNode
@@ -18,7 +13,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.xml.DomElement
-import java.util.Optional
+import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -45,20 +40,20 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference) : TypeSystemReferenceBase<FlexibleSearchColumnReference>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val meta = typeSystemMeta
         val featureName = element.text.replace("!", "")
         if (hasPrefix(element)) {
-            return findReference(meta, deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
+            return findReference(deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
         }
-        return findReference(meta, findItemTypeReference(), featureName)
+        return findReference(findItemTypeReference(), featureName)
     }
 
     private fun hasPrefix(element: FlexibleSearchColumnReference) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
 
-    private fun findReference(meta: TSMetaModel, itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
+    private fun findReference(itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
+        val metaService = TSMetaService.getInstance(project)
         val metaClass = itemType
                 .map { it.text.replace("!", "") }
-                .map { meta.findMetaClassByName(it) }
+                .map { metaService.findMetaClassByName(it) }
 
         if (!metaClass.isPresent) {
             return ResolveResult.EMPTY_ARRAY

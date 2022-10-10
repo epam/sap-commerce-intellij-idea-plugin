@@ -18,8 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttributeValue;
@@ -40,10 +39,10 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
     private final Class<? extends DOM> myResolvesToClass;
 
     protected abstract DOM searchForName(
-        @NotNull String name, @NotNull ConvertContext context, @NotNull TSMetaModel meta
+        @NotNull String name, @NotNull ConvertContext context, TSMetaService meta
     );
 
-    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, @NotNull TSMetaModel meta);
+    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, TSMetaService meta);
 
     public TypeSystemConverterBase(@NotNull final Class<? extends DOM> resolvesToClass) {
         myResolvesToClass = resolvesToClass;
@@ -84,15 +83,17 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         if (StringUtil.isEmpty(s)) {
             return null;
         }
-        return searchForName(s, context, TSMetaModelAccess.getInstance(context.getProject()).
-            getTypeSystemMeta(context.getFile()));
+        return searchForName(s, context, getMetaService(context));
     }
 
     @NotNull
     @Override
     public final Collection<? extends DOM> getVariants(final ConvertContext context) {
-        return searchAll(context, TSMetaModelAccess.getInstance(context.getProject()).
-            getTypeSystemMeta(context.getFile()));
+        return searchAll(context, getMetaService(context));
+    }
+
+    protected TSMetaService getMetaService(final ConvertContext context) {
+        return TSMetaService.Companion.getInstance(context.getProject());
     }
 
     protected static <D extends DomElement> XmlAttributeValue navigateToValue(

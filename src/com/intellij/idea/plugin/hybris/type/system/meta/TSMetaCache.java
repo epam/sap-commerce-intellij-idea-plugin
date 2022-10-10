@@ -19,13 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.xml.DomElement;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 
@@ -36,30 +29,6 @@ public final class TSMetaCache {
 
     private final Map<MetaType, CaseInsensitiveMap<String, TSMetaClassifier<? extends DomElement>>> metaCache = new ConcurrentHashMap<>();
     private final CaseInsensitive.NoCaseMultiMap<TSMetaReference.ReferenceEnd> myReferencesBySourceTypeName = new CaseInsensitive.NoCaseMultiMap<>();
-
-    private TSMetaCache() {
-
-    }
-
-    public static TSMetaCache getInstance(final PsiFile psiFile) {
-        final Key<CachedValue<TSMetaCache>> key = Key.create(psiFile.getName());
-        CachedValue<TSMetaCache> metaCache = psiFile.getUserData(key);
-
-        if (metaCache == null) {
-            synchronized (psiFile) {
-                if (metaCache == null) {
-                    metaCache = CachedValuesManager.getManager(psiFile.getProject()).createCachedValue(
-                        () -> ApplicationManager.getApplication().runReadAction(
-                            (Computable<CachedValueProvider.Result<TSMetaCache>>) () -> CachedValueProvider.Result.create(new TSMetaCache(), psiFile)
-                        ), false
-                    );
-                    psiFile.putUserData(key, metaCache);
-                }
-            }
-        }
-
-        return metaCache.getValue();
-    }
 
     @SuppressWarnings("unchecked")
     public <T> CaseInsensitiveMap<String, T> getMetaType(final MetaType metaType) {

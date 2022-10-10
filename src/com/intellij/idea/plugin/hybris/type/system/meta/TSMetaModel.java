@@ -18,66 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
 public interface TSMetaModel {
 
-    void collectReferencesForSourceType(
-        @NotNull TSMetaClass source,
-        @NotNull Collection<TSMetaReference.ReferenceEnd> out
-    );
-
-    @NotNull
-    Stream<? extends TSMetaClass> getMetaClassesStream();
-
-    @NotNull
-    Stream<? extends TSMetaAtomic> getMetaAtomicStream();
-
-    @NotNull
-    Stream<? extends TSMetaEnum> getMetaEnumsStream();
-
-    @NotNull
-    Stream<? extends TSMetaCollection> getMetaCollectionsStream();
-
-    @NotNull
-    Stream<? extends TSMetaReference> getMetaRelationsStream();
-
-    @Nullable
-    default TSMetaClassifier<? extends DomElement> findMetaClassifierByName(final @NotNull String name) {
-        TSMetaClassifier<? extends DomElement> result = findMetaClassByName(name);
-        if (result == null) {
-            result = findMetaCollectionByName(name);
-        }
-        if (result == null) {
-            result = findMetaEnumByName(name);
-        }
-        return result;
-    }
-
-    @Nullable
-    TSMetaClass findMetaClassByName(@NotNull String name);
-
-    @Nullable
-    TSMetaEnum findMetaEnumByName(@NotNull String name);
-
-    @Nullable
-    TSMetaAtomic findMetaAtomicByName(@NotNull String name);
-
-    @Nullable
-    TSMetaCollection findMetaCollectionByName(@NotNull String name);
-
-    @Nullable
-    TSMetaClass findMetaClassForDom(@NotNull ItemType dom);
-
-    List<TSMetaReference> findRelationByName(@NotNull final String name);
 }

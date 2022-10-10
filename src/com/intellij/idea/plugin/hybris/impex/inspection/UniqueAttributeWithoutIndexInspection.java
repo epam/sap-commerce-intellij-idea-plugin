@@ -32,6 +32,7 @@ import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidat
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.Indexes;
@@ -122,7 +123,8 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
                 return true;
             }
             //it also may be in the separate representation
-            TSMetaClass merged = getTypeSystemMeta().findMetaClassForDom(domItemType);
+
+            final TSMetaClass merged = TSMetaService.Companion.getInstance(myHolder.getProject()).findMetaClassForDom(domItemType);
             return merged != null && merged.retrieveAllDomsStream()
                                            .filter(it -> !domItemType.equals(it))
                                            .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));

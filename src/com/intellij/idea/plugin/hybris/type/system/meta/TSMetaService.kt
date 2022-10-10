@@ -17,29 +17,32 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
+import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference.ReferenceEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.*
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.PsiFile
+import com.intellij.util.xml.DomElement
+import java.util.*
+import java.util.stream.Collectors
 
-class TSMetaService {
+class TSMetaService(val myProject: Project) {
 
-    fun extractName(dom: ItemType): String? = dom.code.value
-    fun extractName(dom: EnumType): String? = dom.code.value
-    fun extractName(dom: CollectionType): String? = dom.code.value
-    fun extractName(dom: Relation): String? = dom.code.value
-    fun extractName(dom: AtomicType): String? = dom.clazz.value
+    private fun extractName(dom: ItemType): String? = dom.code.value
+    private fun extractName(dom: EnumType): String? = dom.code.value
+    private fun extractName(dom: CollectionType): String? = dom.code.value
+    private fun extractName(dom: Relation): String? = dom.code.value
+    private fun extractName(dom: AtomicType): String? = dom.clazz.value
 
-    fun findOrCreate(metaModel: TSMetaModel, psiFile: PsiFile, domItemType: ItemType): TSMetaClass? {
+    fun findOrCreate(metaModel: TSMetaModel, domItemType: ItemType): TSMetaClass? {
         val name = extractName(domItemType) ?: return null
         val typeCode = domItemType.deployment.typeCode.stringValue
-        val classes = TSMetaCache.getInstance(psiFile).getMetaType<TSMetaClassImpl>(MetaType.META_CLASS)
+        val classes = cache().getMetaType<TSMetaClassImpl>(MetaType.META_CLASS)
         var impl = classes[name]
 
         if (impl == null) {
-            impl = TSMetaClassImpl(metaModel, name, typeCode, domItemType)
+            impl = TSMetaClassImpl(myProject, metaModel, name, typeCode, domItemType)
             classes[name] = impl
         } else {
             impl.addDomRepresentation(domItemType)
@@ -47,57 +50,97 @@ class TSMetaService {
         return impl
     }
 
-    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domEnumType: EnumType): TSMetaEnum? {
+    fun findOrCreate(domEnumType: EnumType): TSMetaEnum? {
         val name = extractName(domEnumType) ?: return null
-        val enums = TSMetaCache.getInstance(psiFile).getMetaType<TSMetaEnum>(MetaType.META_ENUM)
+        val enums = cache().getMetaType<TSMetaEnum>(MetaType.META_ENUM)
         var impl = enums[name]
 
         if (impl == null) {
-            impl = TSMetaEnumImpl(name, domEnumType)
+            impl = TSMetaEnumImpl(myProject, name, domEnumType)
             enums[name] = impl
         }
         return impl
     }
 
-    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, atomicType: AtomicType): TSMetaAtomic? {
+    fun findOrCreate(atomicType: AtomicType): TSMetaAtomic? {
         val clazzName = extractName(atomicType) ?: return null
 
-        return TSMetaCache.getInstance(psiFile).getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
+        return cache().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
             .computeIfAbsent(clazzName)
-            { key: String -> TSMetaAtomicImpl(key, atomicType) }
+            { key: String -> TSMetaAtomicImpl(myProject, key, atomicType) }
     }
 
-    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domCollectionType: CollectionType): TSMetaCollection? {
+    fun findOrCreate(metaModel: TSMetaModel, domCollectionType: CollectionType): TSMetaCollection? {
         val name = extractName(domCollectionType) ?: return null
 
-        return TSMetaCache.getInstance(psiFile).getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
+        return cache().getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
             .computeIfAbsent(name)
-            { key: String? -> TSMetaCollectionImpl(metaModel, key, domCollectionType) }
+            { key: String? -> TSMetaCollectionImpl(myProject, metaModel, key, domCollectionType) }
     }
 
-    fun findOrCreate(metaModel : TSMetaModel, psiFile: PsiFile, domRelationType: Relation) : TSMetaReference? {
+    fun findOrCreate(metaModel: TSMetaModel, domRelationType: Relation) : TSMetaReference? {
         val name = extractName(domRelationType)
         val typeCode = domRelationType.deployment.typeCode.stringValue
 
         if (name == null || typeCode == null) return null
 
-        return TSMetaCache.getInstance(psiFile).getMetaType<TSMetaReference>(MetaType.META_RELATION)
+        return cache().getMetaType<TSMetaReference>(MetaType.META_RELATION)
             .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaReference = TSMetaReferenceImpl(metaModel, key, typeCode, domRelationType)
-                registerReferenceEnd(psiFile, impl.source, impl.target)
-                registerReferenceEnd(psiFile, impl.target, impl.source)
+                val impl: TSMetaReference = TSMetaReferenceImpl(myProject, metaModel, key, typeCode, domRelationType)
+                registerReferenceEnd(impl.source, impl.target)
+                registerReferenceEnd(impl.target, impl.source)
                 impl
             }
 
     }
 
-    private fun registerReferenceEnd(psiFile: PsiFile, ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
+    @Suppress("UNCHECKED_CAST")
+    fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): List<T> = cache().getMetaType<T>(metaType).values as List<T>
+
+    fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = cache().getMetaType<T>(metaType)[name]
+
+    fun findMetaClassForDom(dom: ItemType): TSMetaClass? = findMetaClassByName(extractName(dom))
+
+    fun findMetaClassByName(name: String?): TSMetaClass? =  findMetaByName<TSMetaClass>(MetaType.META_CLASS, name)
+
+    fun findMetaEnumByName(name: String): TSMetaEnum? = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
+
+    fun findMetaAtomicByName(name: String): TSMetaAtomic? = findMetaByName<TSMetaAtomic>(MetaType.META_ATOMIC, name)
+
+    fun findMetaCollectionByName(name: String): TSMetaCollection? = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
+
+    fun findRelationByName(name: String) : List<TSMetaReference> {
+        return CollectionUtils.emptyCollectionIfNull(cache().referencesBySourceTypeName.values()).stream()
+            .filter { obj: Any? -> Objects.nonNull(obj) }
+            .map { referenceEnd: ReferenceEnd -> referenceEnd.owningReference }
+            .filter { ref: TSMetaReference -> name == ref.name }
+            .collect(Collectors.toList())
+    }
+
+    fun findMetaClassifierByName(name: String): TSMetaClassifier<out DomElement>? {
+        var result: TSMetaClassifier<out DomElement>? = findMetaClassByName(name)
+        if (result == null) {
+            result = findMetaCollectionByName(name)
+        }
+        if (result == null) {
+            result = findMetaEnumByName(name)
+        }
+        return result
+    }
+
+    fun collectReferencesForSourceType(source: TSMetaClass, out: MutableCollection<ReferenceEnd?>) {
+        out.addAll(cache().referencesBySourceTypeName[source.name])
+    }
+
+    private fun cache(): TSMetaCache = TSMetaModelAccess.getInstance(myProject).metaCache
+
+    private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
         if (!targetEnd.isNavigable) return
 
         val ownerTypeName = ownerEnd.typeName
 
         if (!StringUtil.isEmpty(ownerTypeName)) {
-            TSMetaCache.getInstance(psiFile).referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
+            cache().referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
         }
     }
 

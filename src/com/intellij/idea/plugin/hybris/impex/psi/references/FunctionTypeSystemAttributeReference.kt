@@ -22,15 +22,15 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
-import java.util.Objects
+import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -38,13 +38,14 @@ import java.util.Objects
 class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemReferenceBase<ImpexParameter>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val meta = typeSystemMeta
+        val metaService = TSMetaService.getInstance(project)
         val featureName = element.text.trim()
         val typeName = findItemTypeReference()
-        val metaClass = meta.findMetaClassByName(typeName)
+        val metaClass = metaService.findMetaClassByName(typeName)
 
         if (metaClass == null) {
-            val metaEnum = meta.findMetaEnumByName(findItemTypeReference())
+            // TODO: why call this method seconds time?
+            val metaEnum = metaService.findMetaEnumByName(findItemTypeReference())
             if (metaEnum != null) {
                 val result = metaEnum.retrieveDom()
                 return arrayOf(EnumResolveResult(result))

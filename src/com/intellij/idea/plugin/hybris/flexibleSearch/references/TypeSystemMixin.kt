@@ -3,13 +3,14 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaService
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Relation
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
-import java.util.Optional
+import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -38,15 +39,15 @@ abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), 
 class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBase<FlexibleSearchTableName>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val meta = typeSystemMeta
         val lookingForName = element.text.replace("!", "")
-        val res0 = Optional.ofNullable(meta.findMetaClassByName(lookingForName))
+        val res0 = Optional.ofNullable(TSMetaService.getInstance(project).findMetaClassByName(lookingForName))
                 .map { it.retrieveAllDomsStream() }
                 .orElse(Stream.empty())
                 .map { ItemTypeResolveResult(it) }
                 .collect(Collectors.toList())
 
-        val res1 = meta.findRelationByName(lookingForName)
+
+        val res1 = TSMetaService.getInstance(project).findRelationByName(lookingForName)
                 .distinctBy { it.name }
                 .map { it.retrieveDom() }
                 .map { RelationResolveResult(it) }

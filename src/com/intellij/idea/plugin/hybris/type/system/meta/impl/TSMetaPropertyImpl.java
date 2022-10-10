@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +34,8 @@ class TSMetaPropertyImpl extends TSMetaEntityImpl<Attribute> implements TSMetaPr
     private final boolean myDeprecated;
     @Nullable private final String myType;
 
-    public TSMetaPropertyImpl(final @NotNull TSMetaClass owner, final @NotNull Attribute dom) {
-        super(extractPropertyName(dom), dom);
+    public TSMetaPropertyImpl(final Project project, final @NotNull TSMetaClass owner, final @NotNull Attribute dom) {
+        super(project, extractPropertyName(dom), dom);
         myMetaClass = owner;
         myDeprecated = extractDeprecated(dom);
         myType = dom.getType().getStringValue();

@@ -45,6 +45,8 @@ public interface TSMetaModelAccess {
      */
     TSMetaModel getTypeSystemMeta();
 
+    TSMetaCache getMetaCache();
+
     /**
      * Optimized version of getTypeSystemMeta() for using from components working on TS XML files.
      * @param contextFile only affects if it is a TS XML file.
