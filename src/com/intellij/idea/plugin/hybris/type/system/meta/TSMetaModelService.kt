@@ -78,7 +78,7 @@ class TSMetaModelService(val myProject: Project) {
             { key: String? -> TSMetaCollectionImpl(myProject, key, domCollectionType) }
     }
 
-    fun findOrCreate(domRelationType: Relation) : TSMetaReference? {
+    fun findOrCreate(domRelationType: Relation): TSMetaReference? {
         val name = extractName(domRelationType)
         val typeCode = domRelationType.deployment.typeCode.stringValue
 
@@ -100,7 +100,7 @@ class TSMetaModelService(val myProject: Project) {
 
     fun findMetaClassForDom(dom: ItemType): TSMetaClass? = findMetaClassByName(extractName(dom))
 
-    fun findMetaClassByName(name: String?): TSMetaClass? =  findMetaByName<TSMetaClass>(MetaType.META_CLASS, name)
+    fun findMetaClassByName(name: String?): TSMetaClass? = findMetaByName<TSMetaClass>(MetaType.META_CLASS, name)
 
     fun findMetaEnumByName(name: String): TSMetaEnum? = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
 
@@ -108,7 +108,7 @@ class TSMetaModelService(val myProject: Project) {
 
     fun findMetaCollectionByName(name: String): TSMetaCollection? = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
 
-    fun findRelationByName(name: String) : List<TSMetaReference> {
+    fun findRelationByName(name: String): List<TSMetaReference> {
         return CollectionUtils.emptyCollectionIfNull(metaModel().referencesBySourceTypeName.values()).stream()
             .filter { obj: Any? -> Objects.nonNull(obj) }
             .map { referenceEnd: ReferenceEnd -> referenceEnd.owningReference }
@@ -131,6 +131,10 @@ class TSMetaModelService(val myProject: Project) {
         out.addAll(metaModel().referencesBySourceTypeName[source.name])
     }
 
+    /**
+     * Meta Model will be present in user data during re-creation of the TSMetaModel cache object
+     * to eliminate recursion invocation of the TSMetaModel creation by the same Thread
+     */
     private fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.META_MODEL_CACHE_KEY)
         ?: TSMetaModelAccess.getInstance(myProject).metaModel
 

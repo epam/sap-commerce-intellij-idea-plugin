@@ -24,12 +24,14 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 import static com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil.ENUM_TYPE_TAG_NAME;
 import static com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil.ITEM_TYPE_TAG_NAME;
@@ -46,32 +48,40 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
         @NotNull final PsiElement element,
         @NotNull final Collection<? super RelatedItemLineMarkerInfo<?>> result
     ) {
-        if (element instanceof PsiClass) {
-            final PsiClass psiClass = (PsiClass) element;
-            if ((psiClass.getName() != null && psiClass.getName().endsWith("Model") ||
-                 (psiClass.getSuperClass() != null && psiClass.getSuperClass()
-                                                              .getName() != null && psiClass.getSuperClass()
-                                                                                            .getName()
-                                                                                            .startsWith("Generated")))) {
+        if (!(element instanceof PsiClass)) return;
 
-                final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
-                if (!list.isEmpty()) {
-                    createTargetsWithGutterIcon(result, psiClass, list);
-                }
-            } else if (psiClass.getImplementsListTypes().length > 0) {
-                final boolean anyMatch = Arrays.stream(psiClass.getImplementsListTypes()).anyMatch(
-                    psiClassType -> "HybrisEnumValue".equals(psiClassType.getClassName())
-                );
+        final PsiClass psiClass = (PsiClass) element;
+        if (shouldProcessItemType(psiClass)) {
+            final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
+            if (!list.isEmpty()) {
+                createTargetsWithGutterIcon(result, psiClass, list);
+            }
+        } else if (shouldProcessEnum(psiClass)) {
+            final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
 
-                if (anyMatch) {
-                    final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
-
-                    if (!list.isEmpty()) {
-                        createTargetsWithGutterIcon(result, psiClass, list);
-                    }
-                }
+            if (!list.isEmpty()) {
+                createTargetsWithGutterIcon(result, psiClass, list);
             }
         }
+    }
+
+    private boolean shouldProcessItemType(final PsiClass psiClass) {
+        return psiClass.getName() != null && psiClass.getName().endsWith("Model")
+               || (psiClass.getSuperClass() != null
+                   && psiClass.getSuperClass().getName() != null
+                   && psiClass.getSuperClass().getName().startsWith("Generated"));
+    }
+
+    private boolean shouldProcessEnum(final PsiClass psiClass) {
+        final PsiClassType[] implementsListTypes = psiClass.getImplementsListTypes();
+
+        for (final PsiClassType implementsListType : implementsListTypes) {
+            if ("HybrisEnumValue".equals(implementsListType.getClassName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void createTargetsWithGutterIcon(
@@ -79,21 +89,14 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
         final PsiClass psiClass,
         final Collection<XmlElement> list
     ) {
-        final NavigationGutterIconBuilder builder
-            = NavigationGutterIconBuilder.create(HybrisIcons.TYPE_SYSTEM).setTargets(list);
+        final RelatedItemLineMarkerInfo<PsiElement> lineMarkerInfo = NavigationGutterIconBuilder
+            .create(HybrisIcons.TYPE_SYSTEM)
+            .setTargets(list)
+            .setEmptyPopupText(HybrisI18NBundleUtils.message("hybris.gutter.navigate.no.matching.beans"))
+            .setPopupTitle(HybrisI18NBundleUtils.message("hybris.gutter.bean.class.navigate.choose.class.title"))
+            .setTooltipText(HybrisI18NBundleUtils.message("hybris.gutter.item.class.tooltip.navigate.declaration"))
+            .createLineMarkerInfo(Objects.requireNonNull(psiClass.getNameIdentifier()));
 
-        builder.setEmptyPopupText(HybrisI18NBundleUtils.message(
-            "hybris.gutter.navigate.no.matching.beans"
-        ));
-
-        builder.setPopupTitle(HybrisI18NBundleUtils.message(
-            "hybris.gutter.bean.class.navigate.choose.class.title"
-        ));
-        builder.setTooltipText(HybrisI18NBundleUtils.message(
-            "hybris.gutter.item.class.tooltip.navigate.declaration"
-        ));
-        PsiIdentifier nameIdentifier = psiClass.getNameIdentifier();
-        RelatedItemLineMarkerInfo<?> lineMarkerInfo = builder.createLineMarkerInfo(nameIdentifier);
         result.add(lineMarkerInfo);
     }
 }

@@ -134,21 +134,21 @@ public class TypeSystemGutterAnnotator implements Annotator {
 
     @NotNull
     private Optional<TSMetaClass> findFirstExtendingMetaClass(@NotNull final ItemType source) {
-        return getExtendingMetaClassNamesStream(source).stream().findAny();
+        return getExtendingMetaClassNames(source).stream().findAny();
     }
 
     @NotNull
     private Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
-        return getExtendingMetaClassNamesStream(source).stream()
-            .flatMap(TSMetaClass::retrieveAllDomsStream)
-            .map(ItemType::getCode)
-            .map(GenericAttributeValue::getXmlAttributeValue)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        return getExtendingMetaClassNames(source).stream()
+                                                 .flatMap(TSMetaClass::retrieveAllDomsStream)
+                                                 .map(ItemType::getCode)
+                                                 .map(GenericAttributeValue::getXmlAttributeValue)
+                                                 .filter(Objects::nonNull)
+                                                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private List<TSMetaClass> getExtendingMetaClassNamesStream(@NotNull final ItemType source) {
+    private List<TSMetaClass> getExtendingMetaClassNames(@NotNull final ItemType source) {
         final String code = source.getCode().getStringValue();
 
         if (StringUtil.isEmpty(code)) {

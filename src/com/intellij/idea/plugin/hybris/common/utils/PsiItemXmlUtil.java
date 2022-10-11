@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemTypes;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
@@ -37,9 +36,10 @@ import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,56 +59,58 @@ public final class PsiItemXmlUtil {
     public static List<XmlElement> findTags(final PsiClass psiClass, final String tagName) {
         final Project project = psiClass.getProject();
         final String psiClassName = psiClass.getName();
+
         if (psiClassName == null) {
             throw new IllegalStateException("class name must not be a null");
         }
         final String searchName = cleanSearchName(psiClassName);
 
-        final Collection<VirtualFile> files =
-            FilenameIndex.getAllFilesByExt(project, "xml", GlobalSearchScope.allScope(project)).stream()
-                         .filter(file -> file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
-                         .collect(Collectors.toList());
+        return FilenameIndex.getAllFilesByExt(project, "xml", GlobalSearchScope.allScope(project)).stream()
+                            .filter(file -> file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
+                            .map(file -> (XmlFile) PsiManager.getInstance(project).findFile(file))
+                            .filter(Objects::nonNull)
+                            .map(xmlFile -> {
+                                final DomManager manager = DomManager.getDomManager(project);
+                                return manager.getFileElement(xmlFile, DomElement.class);
+                            })
+                            .filter(Objects::nonNull)
+                            .map(DomFileElement::getRootElement)
+                            .filter(Items.class::isInstance)
+                            .map(Items.class::cast)
+                            .<List<XmlElement>>map(root -> {
+                                switch (tagName) {
+                                    case ITEM_TYPE_TAG_NAME:
+                                        return findItems(searchName, root);
+                                    case ENUM_TYPE_TAG_NAME:
+                                        return findEnums(searchName, root);
+                                    default:
+                                        return Collections.emptyList();
+                                }
+                            })
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList());
+    }
 
-        final List<XmlElement> result = new ArrayList<>();
+    private static List<XmlElement> findEnums(final String searchName, final Items root) {
+        final EnumTypes sourceItems = root.getEnumTypes();
+        final List<EnumType> enumTypes = sourceItems.getEnumTypes();
+        return enumTypes.stream()
+                        .filter(itemType -> searchName.equals(itemType.getCode().getValue()))
+                        .map(DomElement::getXmlElement)
+                        .collect(Collectors.toList());
+    }
 
-        for (VirtualFile file : files) {
-            final XmlFile xmlFile = (XmlFile) PsiManager.getInstance(project).findFile(file);
-
-            if (xmlFile != null) {
-                final DomManager manager = DomManager.getDomManager(project);
-                final DomFileElement<DomElement> domFile = manager.getFileElement(xmlFile);
-                assert domFile != null;
-                final DomElement domRootElement = domFile.getRootElement();
-                if (domRootElement instanceof Items) {
-                    final Items root = (Items) domRootElement;
-
-                    if (ITEM_TYPE_TAG_NAME.equals(tagName)) {
-                        final ItemTypes sourceItems = root.getItemTypes();
-                        final List<ItemType> itemTypes = sourceItems.getItemTypes();
-                        final Stream<ItemType> streamItemTypes = itemTypes.stream();
-                        final Stream<ItemType> streamItemGroups =
-                            sourceItems.getTypeGroups()
-                                       .stream()
-                                       .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
-                                       .collect(Collectors.toList()).stream();
-                        result.addAll(Stream.concat(streamItemTypes, streamItemGroups)
-                                            .filter(itemType ->
-                                                        searchName.equals(itemType.getCode().getValue()))
-                                            .map(DomElement::getXmlElement)
-                                            .collect(Collectors.toList()));
-                    } else if (ENUM_TYPE_TAG_NAME.equals(tagName)) {
-                        final EnumTypes sourceItems = root.getEnumTypes();
-                        final List<EnumType> enumTypes = sourceItems.getEnumTypes();
-                        result.addAll(enumTypes.stream()
-                                               .filter(itemType ->
-                                                           searchName.equals(itemType.getCode().getValue()))
-                                               .map(DomElement::getXmlElement)
-                                               .collect(Collectors.toList()));
-                    }
-                }
-            }
-        }
-        return result;
+    private static List<XmlElement> findItems(final String searchName, final Items root) {
+        final ItemTypes sourceItems = root.getItemTypes();
+        final List<ItemType> itemTypes = sourceItems.getItemTypes();
+        final Stream<ItemType> streamItemTypes = itemTypes.stream();
+        final Stream<ItemType> streamItemGroups = sourceItems.getTypeGroups().stream()
+                                                             .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
+                                                             .collect(Collectors.toList()).stream();
+        return Stream.concat(streamItemTypes, streamItemGroups)
+                     .filter(itemType -> searchName.equals(itemType.getCode().getValue()))
+                     .map(DomElement::getXmlElement)
+                     .collect(Collectors.toList());
     }
 
     private static String cleanSearchName(@NotNull final String searchName) {
