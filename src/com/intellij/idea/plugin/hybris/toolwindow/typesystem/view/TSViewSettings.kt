@@ -29,11 +29,10 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisTypeSystemView")
 @Storage(StoragePathMacros.WORKSPACE_FILE)
-class HybrisTypeSystemViewSettings(project: Project) : PersistentStateComponent<HybrisTypeSystemViewSettings.Settings> {
+class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings.Settings> {
 
     private val myMessageBus: MessageBus
     private val mySettings: Settings
-    val topic: Topic<Listener> = Topic("Hybris Type System View settings", Listener::class.java)
 
     init {
         mySettings = Settings()
@@ -41,27 +40,55 @@ class HybrisTypeSystemViewSettings(project: Project) : PersistentStateComponent<
     }
 
     fun fireSettingsChanged(changeType: ChangeType) {
-        myMessageBus.syncPublisher(topic).settingsChanged(changeType)
+        myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType)
     }
 
-    fun isShowModules(): Boolean = mySettings.showModules
+    fun isShowOnlyCustom(): Boolean = mySettings.showCustomOnly
 
-    fun setShowModules(state: Boolean) {
-        mySettings.showModules = state
+    fun setShowOnlyCustom(state: Boolean) {
+        mySettings.showCustomOnly = state
+    }
+
+    fun isShowMetaClasses(): Boolean = mySettings.showMetaClasses
+
+    fun setShowMetaClasses(state: Boolean) {
+        mySettings.showMetaClasses = state
+    }
+
+    fun isShowMetaRelations(): Boolean = mySettings.showMetaRelations
+
+    fun setShowMetaRelations(state: Boolean) {
+        mySettings.showMetaRelations = state
+    }
+
+    fun isShowMetaEnums(): Boolean = mySettings.showMetaEnums
+
+    fun setShowMetaEnums(state: Boolean) {
+        mySettings.showMetaEnums = state
+    }
+
+    fun isShowMetaCollections(): Boolean = mySettings.showMetaCollections
+
+    fun setShowMetaCollections(state: Boolean) {
+        mySettings.showMetaCollections = state
+    }
+
+    fun isShowMetaAtomics(): Boolean = mySettings.showMetaAtomics
+
+    fun setShowMetaAtomics(state: Boolean) {
+        mySettings.showMetaAtomics = state
     }
 
     override fun getState(): Settings = mySettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
 
     class Settings {
-        var showModules = true
-        var showFilesets = true
-        var showFiles = true
-        var showImplicitBeans = true
-        var showInfrastructureBeans = true
-        var showDoc = true
-        var showGraph = true
-        var beanDetailsProportion = -1.0f
+        var showCustomOnly = true
+        var showMetaClasses = true
+        var showMetaRelations = true
+        var showMetaEnums = true
+        var showMetaCollections = true
+        var showMetaAtomics = true
     }
 
     enum class ChangeType {
@@ -73,8 +100,10 @@ class HybrisTypeSystemViewSettings(project: Project) : PersistentStateComponent<
     }
 
     companion object {
-        fun getInstance(project: Project): HybrisTypeSystemViewSettings {
-            return project.getService(HybrisTypeSystemViewSettings::class.java) as HybrisTypeSystemViewSettings
+        val TOPIC: Topic<Listener> = Topic("Hybris Type System View settings", Listener::class.java)
+
+        fun getInstance(project: Project): TSViewSettings {
+            return project.getService(TSViewSettings::class.java) as TSViewSettings
         }
     }
 }

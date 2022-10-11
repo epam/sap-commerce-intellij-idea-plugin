@@ -18,18 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem
 
-import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.HybrisTypeSystemViewSettings
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.ToggleAction
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSView
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindow
+import com.intellij.ui.content.Content
 
-class ShowModulesAction(val settings: HybrisTypeSystemViewSettings) :
-    ToggleAction("Show modules", null, AllIcons.Actions.GroupByModule) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowModules()
+class TSToolWindow(val project: Project) : Disposable {
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowModules(state)
+    companion object {
+        fun getInstance(project: Project): TSToolWindow = project.getService(TSToolWindow::class.java)
     }
 
+    fun createToolWindowContent(toolWindow: ToolWindow): Content {
+        val content = toolWindow.contentManager.factory.createContent(TSView(project), "Type System", true)
+        content.icon = HybrisIcons.TYPE_SYSTEM
+        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+        return content
+    }
+
+    override fun dispose() {
+    }
 }

@@ -27,7 +27,7 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.stream.Collectors
 
-class TSMetaModelService(val myProject: Project) {
+class TSMetaModelService(private val myProject: Project) {
 
     private fun extractName(dom: ItemType): String? = dom.code.value
     private fun extractName(dom: EnumType): String? = dom.code.value
@@ -135,7 +135,7 @@ class TSMetaModelService(val myProject: Project) {
      * Meta Model will be present in user data during re-creation of the TSMetaModel cache object
      * to eliminate recursion invocation of the TSMetaModel creation by the same Thread
      */
-    private fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.META_MODEL_CACHE_KEY)
+    fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.META_MODEL_CACHE_KEY)
         ?: TSMetaModelAccess.getInstance(myProject).metaModel
 
     private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
