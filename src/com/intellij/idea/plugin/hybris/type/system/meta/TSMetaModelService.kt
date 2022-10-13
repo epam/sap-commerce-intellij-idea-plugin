@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.*
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.project.Project
@@ -34,73 +34,94 @@ class TSMetaModelService(private val myProject: Project) {
     private fun extractName(dom: CollectionType): String? = dom.code.value
     private fun extractName(dom: Relation): String? = dom.code.value
     private fun extractName(dom: AtomicType): String? = dom.clazz.value
+    private fun extractName(dom: MapType): String? = dom.code.value
 
-    fun findOrCreate(domItemType: ItemType): TSMetaClass? {
-        val name = extractName(domItemType) ?: return null
-        val typeCode = domItemType.deployment.typeCode.stringValue
-        val classes = metaModel().getMetaType<TSMetaClassImpl>(MetaType.META_CLASS)
-        var impl = classes[name]
+    fun findOrCreate(dom: ItemType): TSMetaItem? {
+        val name = extractName(dom) ?: return null
+        val typeCode = dom.deployment.typeCode.stringValue
+        val items = metaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)
+        var impl = items[name]
 
         if (impl == null) {
-            impl = TSMetaClassImpl(myProject, name, typeCode, domItemType)
-            classes[name] = impl
+            impl = TSMetaItemImpl(
+                myProject,
+                name,
+                typeCode,
+                dom
+            )
+            items[name] = impl
         } else {
-            impl.addDomRepresentation(domItemType)
+            impl.addDomRepresentation(dom)
         }
         return impl
     }
 
-    fun findOrCreate(domEnumType: EnumType): TSMetaEnum? {
-        val name = extractName(domEnumType) ?: return null
+    fun findOrCreate(dom: EnumType): TSMetaEnum? {
+        val name = extractName(dom) ?: return null
         val enums = metaModel().getMetaType<TSMetaEnum>(MetaType.META_ENUM)
         var impl = enums[name]
 
         if (impl == null) {
-            impl = TSMetaEnumImpl(myProject, name, domEnumType)
+            impl = TSMetaEnumImpl(myProject, name, dom)
             enums[name] = impl
         }
         return impl
     }
 
-    fun findOrCreate(atomicType: AtomicType): TSMetaAtomic? {
-        val clazzName = extractName(atomicType) ?: return null
+    fun findOrCreate(dom: AtomicType): TSMetaAtomic? {
+        val clazzName = extractName(dom) ?: return null
 
         return metaModel().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
             .computeIfAbsent(clazzName)
-            { key: String -> TSMetaAtomicImpl(myProject, key, atomicType) }
+            { key: String -> TSMetaAtomicImpl(myProject, key, dom) }
     }
 
-    fun findOrCreate(domCollectionType: CollectionType): TSMetaCollection? {
-        val name = extractName(domCollectionType) ?: return null
+    fun findOrCreate(dom: CollectionType): TSMetaCollection? {
+        val name = extractName(dom) ?: return null
 
         return metaModel().getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
             .computeIfAbsent(name)
-            { key: String? -> TSMetaCollectionImpl(myProject, key, domCollectionType) }
+            { key: String? -> TSMetaCollectionImpl(myProject, key, dom) }
     }
 
-    fun findOrCreate(domRelationType: Relation): TSMetaReference? {
-        val name = extractName(domRelationType)
-        val typeCode = domRelationType.deployment.typeCode.stringValue
+    fun findOrCreate(dom: Relation): TSMetaRelation? {
+        val name = extractName(dom)
+        val typeCode = dom.deployment.typeCode.stringValue
 
         if (name == null || typeCode == null) return null
 
-        return metaModel().getMetaType<TSMetaReference>(MetaType.META_RELATION)
+        return metaModel().getMetaType<TSMetaRelation>(MetaType.META_RELATION)
             .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaReference = TSMetaReferenceImpl(myProject, key, typeCode, domRelationType)
+                val impl: TSMetaRelation = TSMetaRelationImpl(myProject, key, typeCode, dom)
                 registerReferenceEnd(impl.source, impl.target)
                 registerReferenceEnd(impl.target, impl.source)
                 impl
             }
+    }
 
+    fun findOrCreate(dom: MapType): TSMetaMap? {
+        val name = extractName(dom) ?: return null
+
+        val maps = metaModel().getMetaType<TSMetaMap>(MetaType.META_MAP)
+        var map = maps[name]
+
+        if (map == null) {
+            map = TSMetaMapImpl(myProject, name, dom)
+            maps[name] = map
+        } else {
+            map.addDomRepresentation(dom)
+        }
+
+        return map;
     }
 
     fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): Collection<T> = metaModel().getMetaType<T>(metaType).values
 
-    fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = metaModel().getMetaType<T>(metaType)[name]
+    private fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = metaModel().getMetaType<T>(metaType)[name]
 
-    fun findMetaClassForDom(dom: ItemType): TSMetaClass? = findMetaClassByName(extractName(dom))
+    fun findMetaItemForDom(dom: ItemType): TSMetaItem? = findMetaItemByName(extractName(dom))
 
-    fun findMetaClassByName(name: String?): TSMetaClass? = findMetaByName<TSMetaClass>(MetaType.META_CLASS, name)
+    fun findMetaItemByName(name: String?): TSMetaItem? = findMetaByName<TSMetaItem>(MetaType.META_ITEM, name)
 
     fun findMetaEnumByName(name: String): TSMetaEnum? = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
 
@@ -108,16 +129,16 @@ class TSMetaModelService(private val myProject: Project) {
 
     fun findMetaCollectionByName(name: String): TSMetaCollection? = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
 
-    fun findRelationByName(name: String): List<TSMetaReference> {
-        return CollectionUtils.emptyCollectionIfNull(metaModel().referencesBySourceTypeName.values()).stream()
+    fun findMetaMapByName(name: String): TSMetaMap? = findMetaByName<TSMetaMap>(MetaType.META_MAP, name)
+
+    fun findRelationByName(name: String): List<TSMetaRelation> = CollectionUtils.emptyCollectionIfNull(metaModel().getReferences().values()).stream()
             .filter { obj: Any? -> Objects.nonNull(obj) }
             .map { referenceEnd: ReferenceEnd -> referenceEnd.owningReference }
-            .filter { ref: TSMetaReference -> name == ref.name }
+            .filter { ref: TSMetaRelation -> name == ref.name }
             .collect(Collectors.toList())
-    }
 
     fun findMetaClassifierByName(name: String): TSMetaClassifier<out DomElement>? {
-        var result: TSMetaClassifier<out DomElement>? = findMetaClassByName(name)
+        var result: TSMetaClassifier<out DomElement>? = findMetaItemByName(name)
         if (result == null) {
             result = findMetaCollectionByName(name)
         }
@@ -127,15 +148,15 @@ class TSMetaModelService(private val myProject: Project) {
         return result
     }
 
-    fun collectReferencesForSourceType(source: TSMetaClass, out: MutableCollection<ReferenceEnd?>) {
-        out.addAll(metaModel().referencesBySourceTypeName[source.name])
+    fun collectReferencesForSourceType(source: TSMetaItem, out: MutableCollection<ReferenceEnd?>) {
+        out.addAll(metaModel().getReference(source.name))
     }
 
     /**
      * Meta Model will be present in user data during re-creation of the TSMetaModel cache object
      * to eliminate recursion invocation of the TSMetaModel creation by the same Thread
      */
-    fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.META_MODEL_CACHE_KEY)
+    fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.GLOBAL_META_MODEL_CACHE_KEY)
         ?: TSMetaModelAccess.getInstance(myProject).metaModel
 
     private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
@@ -144,7 +165,7 @@ class TSMetaModelService(private val myProject: Project) {
         val ownerTypeName = ownerEnd.typeName
 
         if (!StringUtil.isEmpty(ownerTypeName)) {
-            metaModel().referencesBySourceTypeName.putValue(ownerTypeName, targetEnd)
+            metaModel().getReferences().putValue(ownerTypeName, targetEnd)
         }
     }
 

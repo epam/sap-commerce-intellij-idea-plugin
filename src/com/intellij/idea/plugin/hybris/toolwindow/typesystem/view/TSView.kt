@@ -18,15 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.view
 
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.panels.TSPanel
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSPanel
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.openapi.util.Disposer
 import com.intellij.ui.FinderRecursivePanel
-
 
 class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
@@ -44,9 +43,13 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
         myProject = project
         mySettings = TSViewSettings(myProject)
         myRootPanel = TSPanel(myProject, myItemsViewActionGroup)
-        myRootPanel.initPanel()
-        setContent(myRootPanel)
-        Disposer.register(this, myRootPanel)
+//        myRootPanel.initPanel()
+//        setContent(myRootPanel)
+
+        val pane = TSTreePanel(myProject)
+        setContent(pane);
+
+//        Disposer.register(this, myRootPanel)
 
         installToolbar()
         installSettingsListener()
@@ -83,12 +86,17 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
         add(ShowOnlyCustomAction(mySettings))
         addSeparator()
-        add(ShowMetaClassesAction(mySettings))
-        add(ShowMetaCollectionsAction(mySettings))
+        add(ShowMetaItemsAction(mySettings))
         add(ShowMetaEnumsAction(mySettings))
+        add(ShowMetaCollectionsAction(mySettings))
+        add(ShowMetaMapsAction(mySettings))
         add(ShowMetaRelationsAction(mySettings))
         add(ShowMetaAtomicsAction(mySettings))
         this
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = 74100584202830949L
     }
 
 }

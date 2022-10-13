@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
 import org.jetbrains.annotations.NotNull;
@@ -32,32 +32,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
+public class MapTypeConverter extends TypeSystemConverterBase<MapType> {
 
-    public ItemTypeConverter() {
-        super(ItemType.class);
+    public MapTypeConverter() {
+        super(MapType.class);
     }
 
     @Override
-    protected ItemType searchForName(
-        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelService meta
-    ) {
-        return Optional.ofNullable(meta.findMetaItemByName(name))
-                       .map(TSMetaItem::retrieveAllDomsStream)
+    protected MapType searchForName(@NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelService meta) {
+        return Optional.ofNullable(meta.findMetaMapByName(name))
+                       .map(TSMetaMap::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .findFirst()
                        .orElse(null);
     }
 
     @Override
-    protected Collection<? extends ItemType> searchAll(
-        @NotNull final ConvertContext context, final TSMetaModelService meta
-    ) {
-        return meta.<TSMetaItem>getAll(MetaType.META_ITEM).stream()
-                   .map(TSMetaItem::retrieveAllDomsStream)
+    protected Collection<? extends MapType> searchAll(@NotNull final ConvertContext context, final TSMetaModelService meta) {
+        return meta.<TSMetaMap>getAll(MetaType.META_MAP).stream()
+                   .map(TSMetaMap::retrieveAllDomsStream)
                    .map(Stream::findFirst)
                    .filter(Optional::isPresent)
                    .map(Optional::get)
@@ -66,13 +59,13 @@ public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
 
     @Nullable
     @Override
-    public String toString(@Nullable final ItemType t, final ConvertContext context) {
-        return useAttributeValue(t, ItemType::getCode);
+    public String toString(@Nullable final MapType t, final ConvertContext context) {
+        return useAttributeValue(t, MapType::getCode);
     }
 
     @Nullable
     @Override
-    public PsiElement getPsiElement(@Nullable final ItemType resolvedValue) {
-        return navigateToValue(resolvedValue, ItemType::getCode);
+    public PsiElement getPsiElement(@Nullable final MapType resolvedValue) {
+        return navigateToValue(resolvedValue, MapType::getCode);
     }
 }

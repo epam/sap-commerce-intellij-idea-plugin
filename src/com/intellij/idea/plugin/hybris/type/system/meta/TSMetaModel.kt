@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap
 import com.intellij.openapi.Disposable
@@ -27,16 +27,26 @@ import java.util.concurrent.ConcurrentMap
 
 class TSMetaModel : Disposable {
     private val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<out DomElement?>>> = ConcurrentHashMap()
-    val referencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
+    private val myReferencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> {
-        Object().toString().lowercase()
         return myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap()  } as ConcurrentMap<String, T>
     }
 
+    fun getReference(name : String?): Collection<ReferenceEnd?> = (if (name == null) emptyList() else getReferences()[name])
+
+    fun getMetaTypes() = myMetaCache;
+
+    fun getReferences() = myReferencesBySourceTypeName;
+
     override fun dispose() {
         myMetaCache.clear()
-        referencesBySourceTypeName.clear()
+        myReferencesBySourceTypeName.clear()
+    }
+
+    fun merge(externalMetaModel: TSMetaModel) {
+        externalMetaModel.getMetaTypes().forEach { (metaType, cache) -> getMetaType<Any>(metaType).putAll(cache) }
+        getReferences().putAllValues(externalMetaModel.getReferences());
     }
 }

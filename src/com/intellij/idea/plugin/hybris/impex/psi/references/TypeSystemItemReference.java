@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
@@ -50,10 +50,10 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final TSMetaModelService meta = getMetaService();
         final String lookingForName = getElement().getText();
-        final Optional<TSMetaClass> metaClass = searchInMetaClasses(meta, lookingForName);
-        if (metaClass.isPresent()) {
-            return metaClass
-                .map(TSMetaClass::retrieveAllDomsStream)
+        final Optional<TSMetaItem> metaItem = searchInMetaItems(meta, lookingForName);
+        if (metaItem.isPresent()) {
+            return metaItem
+                .map(TSMetaItem::retrieveAllDomsStream)
                 .orElse(Stream.empty())
                 .map(ItemTypeResolveResult::new)
                 .toArray(ResolveResult[]::new);
@@ -68,8 +68,8 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
         return ResolveResult.EMPTY_ARRAY;
     }
 
-    private Optional<TSMetaClass> searchInMetaClasses(final TSMetaModelService meta, final String lookingForName) {
-        return Optional.ofNullable(meta.findMetaClassByName(lookingForName));
+    private Optional<TSMetaItem> searchInMetaItems(final TSMetaModelService meta, final String lookingForName) {
+        return Optional.ofNullable(meta.findMetaItemByName(lookingForName));
     }
 
     private static class ItemTypeResolveResult implements TypeSystemResolveResult {

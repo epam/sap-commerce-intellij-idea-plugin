@@ -40,7 +40,7 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val lookingForName = element.text.replace("!", "")
-        val res0 = Optional.ofNullable(TSMetaModelService.getInstance(project).findMetaClassByName(lookingForName))
+        val res0 = Optional.ofNullable(TSMetaModelService.getInstance(project).findMetaItemByName(lookingForName))
                 .map { it.retrieveAllDomsStream() }
                 .orElse(Stream.empty())
                 .map { ItemTypeResolveResult(it) }

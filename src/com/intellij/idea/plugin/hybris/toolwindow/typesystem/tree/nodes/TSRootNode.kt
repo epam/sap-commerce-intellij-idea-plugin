@@ -16,29 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.typesystem
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSView
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindow
-import com.intellij.ui.content.Content
+import com.intellij.ui.SimpleTextAttributes
 
+class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
 
-class TSToolWindow(val myProject: Project) : Disposable {
+    override fun dispose() = Unit
+    override fun getName() = "root"
 
-    companion object {
-        fun getInstance(project: Project): TSToolWindow = project.getService(TSToolWindow::class.java)
+    override fun update(project: Project, presentation: PresentationData) {
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(TSView(myProject), "Type System", true)
-        content.icon = HybrisIcons.TYPE_SYSTEM
-        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-        return content
-    }
-
-    override fun dispose() {
-    }
+    override fun getChildren(): Collection<TSNode> = TSMetaModelService.getInstance(myProject).metaModel()
+        .getMetaTypes().keys
+        .map { TSMetaTypeNode(this, it) }
+        .sortedBy { it.name }
 }

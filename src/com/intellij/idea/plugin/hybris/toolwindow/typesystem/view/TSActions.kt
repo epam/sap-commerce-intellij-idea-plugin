@@ -32,11 +32,20 @@ class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show On
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaClassesAction(val settings: TSViewSettings) : ToggleAction("Show Classes", null, AllIcons.Actions.GroupByClass) {
+class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction("Show Items", null, AllIcons.Actions.GroupByClass) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaClasses()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItems()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaClasses(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaItems(state)
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction("Show Maps", null, AllIcons.Actions.GroupByPackage) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaMaps()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaMaps(state)
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }

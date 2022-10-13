@@ -16,8 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
-public enum MetaType {
-    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP
+import com.intellij.icons.AllIcons
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.project.Project
+import com.intellij.ui.SimpleTextAttributes
+
+class TSMetaEnumNode(parent: TSNode, private val meta: TSMetaEnum) : TSNode(parent), Disposable {
+
+    override fun dispose() = Unit
+    override fun getName() = meta.name ?: "-- no name --"
+
+    override fun update(project: Project, presentation: PresentationData) {
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(AllIcons.Nodes.Enum)
+    }
+
 }

@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -86,10 +86,10 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
         final TSMetaModelService metaService = TSMetaModelService.Companion.getInstance(project);
         final String itemTypeCode = headerTypeName.getText();
-        final Optional<TSMetaClass> metaClass = Optional.ofNullable(metaService.findMetaClassByName(itemTypeCode));
+        final Optional<TSMetaItem> metaItem = Optional.ofNullable(metaService.findMetaItemByName(itemTypeCode));
 
-        metaClass
-            .map(meta -> meta.getPropertiesStream(true))
+        metaItem
+            .map(meta -> meta.getProperties(true).stream())
             .orElse(Stream.empty())
             .map(prop -> {
                 final String name = prop.getName();
@@ -107,7 +107,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             .filter(Objects::nonNull)
             .forEach(resultSet::addElement);
 
-        metaClass
+        metaItem
             .map(meta -> meta.getReferenceEndsStream(true))
             .orElse(Stream.empty())
             .map(ref -> LookupElementBuilder.create(ref.getRole()).withIcon(HybrisIcons.TYPE_SYSTEM))

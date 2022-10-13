@@ -36,7 +36,7 @@ class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings
 
     init {
         mySettings = Settings()
-        myMessageBus = project.getMessageBus()
+        myMessageBus = project.messageBus
     }
 
     fun fireSettingsChanged(changeType: ChangeType) {
@@ -49,10 +49,16 @@ class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings
         mySettings.showCustomOnly = state
     }
 
-    fun isShowMetaClasses(): Boolean = mySettings.showMetaClasses
+    fun isShowMetaItems(): Boolean = mySettings.showMetaItems
 
-    fun setShowMetaClasses(state: Boolean) {
-        mySettings.showMetaClasses = state
+    fun setShowMetaItems(state: Boolean) {
+        mySettings.showMetaItems = state
+    }
+
+    fun isShowMetaMaps(): Boolean = mySettings.showMetaMaps
+
+    fun setShowMetaMaps(state: Boolean) {
+        mySettings.showMetaMaps = state
     }
 
     fun isShowMetaRelations(): Boolean = mySettings.showMetaRelations
@@ -84,11 +90,12 @@ class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings
 
     class Settings {
         var showCustomOnly = true
-        var showMetaClasses = true
+        var showMetaItems = true
         var showMetaRelations = true
         var showMetaEnums = true
         var showMetaCollections = true
         var showMetaAtomics = true
+        var showMetaMaps = true
     }
 
     enum class ChangeType {

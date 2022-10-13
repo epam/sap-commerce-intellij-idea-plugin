@@ -18,26 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaProperty {
+import java.util.stream.Stream;
 
-    @Nullable
-    String getName();
-
-    @Nullable
-    Attribute retrieveDom();
-
-    boolean isDeprecated();
-
-    @Nullable
-    String getType();
+public interface TSMetaMap extends TSMetaClassifier<MapType> {
 
     @NotNull
-    TSMetaItem getMetaItem();
+    String getArgumentType();
+
+    @NotNull
+    String getReturnType();
+
+    void addDomRepresentation(@NotNull MapType anotherDom);
+
+    @NotNull
+    Stream<? extends MapType> retrieveAllDomsStream();
 }

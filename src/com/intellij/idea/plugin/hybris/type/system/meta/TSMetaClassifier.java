@@ -25,5 +25,4 @@ public interface TSMetaClassifier<DOM extends DomElement> {
     String getName();
 
     DOM retrieveDom();
-
 }

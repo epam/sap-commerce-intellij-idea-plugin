@@ -51,20 +51,20 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
 
     private fun findReference(itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
         val metaService = TSMetaModelService.getInstance(project)
-        val metaClass = itemType
+        val metaItem = itemType
                 .map { it.text.replace("!", "") }
-                .map { metaService.findMetaClassByName(it) }
+                .map { metaService.findMetaItemByName(it) }
 
-        if (!metaClass.isPresent) {
+        if (!metaItem.isPresent) {
             return ResolveResult.EMPTY_ARRAY
         }
 
-        val attributes = metaClass.get()
+        val attributes = metaItem.get()
                 .findPropertiesByName(refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { AttributeResolveResult(it) }.toList()
 
-        val relations = metaClass.get()
+        val relations = metaItem.get()
                 .findReferenceEndsByRole(refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { RelationElementResolveResult(it) }

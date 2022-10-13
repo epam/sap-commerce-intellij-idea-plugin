@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaReference;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.openapi.project.Project;
@@ -32,14 +32,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements TSMetaReference {
+public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TSMetaRelation {
 
-    private final ReferenceEndImpl mySourceEnd;
-    private final ReferenceEndImpl myTargetEnd;
+    private final ReferenceEnd mySourceEnd;
+    private final ReferenceEnd myTargetEnd;
     private final String myTypeCode;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public TSMetaReferenceImpl(
+    public TSMetaRelationImpl(
         final Project project,
         final String name,
         final String typeCode,
@@ -49,10 +49,6 @@ public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements T
         myTypeCode = typeCode;
         mySourceEnd = new ReferenceEndImpl(project, this, dom.getSourceElement());
         myTargetEnd = new ReferenceEndImpl(project, this, dom.getTargetElement());
-    }
-
-    protected static String extractName(final @NotNull Relation domRelation) {
-        return domRelation.getCode().getValue();
     }
 
     @Override
@@ -76,14 +72,14 @@ public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements T
 
         private final Project myProject;
         private final DomAnchor<RelationElement> myDomAnchor;
-        private final TSMetaReference myOwner;
+        private final TSMetaRelation myOwner;
         private final String myTypeName;
         private final String myRole;
         private final boolean myNavigatable;
 
         public ReferenceEndImpl(
             final Project project,
-            final @NotNull TSMetaReference owner,
+            final @NotNull TSMetaRelation owner,
             final @NotNull RelationElement dom
         ) {
             myProject = project;
@@ -103,7 +99,7 @@ public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements T
         @Nullable
         @Override
         public TSMetaClassifier<?> resolveType() {
-            return TSMetaModelService.Companion.getInstance(myProject).findMetaClassByName(getTypeName());
+            return TSMetaModelService.Companion.getInstance(myProject).findMetaItemByName(getTypeName());
         }
 
         @Nullable
@@ -125,7 +121,7 @@ public class TSMetaReferenceImpl extends TSMetaEntityImpl<Relation> implements T
 
         @NotNull
         @Override
-        public TSMetaReference getOwningReference() {
+        public TSMetaRelation getOwningReference() {
             return myOwner;
         }
 

@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface TSMetaReference extends TSMetaClassifier<Relation> {
+public interface TSMetaRelation extends TSMetaClassifier<Relation> {
 
     String getTypeCode();
 
@@ -44,7 +44,7 @@ public interface TSMetaReference extends TSMetaClassifier<Relation> {
         boolean isNavigable();
 
         @NotNull
-        TSMetaReference getOwningReference();
+        TSMetaRelation getOwningReference();
 
         @Nullable TSMetaClassifier<?> resolveType();
 

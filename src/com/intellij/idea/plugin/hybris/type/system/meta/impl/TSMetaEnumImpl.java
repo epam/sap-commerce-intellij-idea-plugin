@@ -38,10 +38,6 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
         super(project, name, dom);
     }
 
-    public static String extractName(@NotNull final EnumType domEnumType) {
-        return domEnumType.getCode().getValue();
-    }
-
     @NotNull
     @Override
     public Stream<? extends TSMetaEnumValue> getValuesStream() {

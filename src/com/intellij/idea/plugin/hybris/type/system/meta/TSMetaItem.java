@@ -23,36 +23,39 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public interface TSMetaClass extends TSMetaClassifier<ItemType> {
+public interface TSMetaItem extends TSMetaClassifier<ItemType> {
 
     String IMPLICIT_SUPER_CLASS_NAME = "GenericItem";
 
     @Nullable
-    String getExtendedMetaClassName();
+    String getExtendedMetaItemName();
 
     void addProperty(final String key, TSMetaProperty property);
 
     @NotNull
-    Stream<? extends TSMetaProperty> getPropertiesStream(boolean includeInherited);
+    List<? extends TSMetaProperty> getProperties(boolean includeInherited);
 
     @NotNull
     Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
 
     @NotNull
-    Collection<? extends TSMetaReference.ReferenceEnd> findReferenceEndsByRole(
+    Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(
         @NotNull String role,
         boolean includeInherited
     );
 
     @NotNull
-    Stream<? extends TSMetaReference.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
+    Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
 
     String getTypeCode();
+
+    void addDomRepresentation(@NotNull ItemType anotherDom);
 
     @NotNull
     Stream<? extends ItemType> retrieveAllDomsStream();

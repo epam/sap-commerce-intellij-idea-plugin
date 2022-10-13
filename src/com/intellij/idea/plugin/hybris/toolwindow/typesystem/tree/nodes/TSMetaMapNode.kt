@@ -16,29 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.typesystem
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSView
+import com.intellij.icons.AllIcons
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindow
-import com.intellij.ui.content.Content
+import com.intellij.ui.SimpleTextAttributes
 
+class TSMetaMapNode(parent: TSNode, private val meta: TSMetaMap) : TSNode(parent), Disposable {
 
-class TSToolWindow(val myProject: Project) : Disposable {
+    override fun dispose() = Unit
+    override fun getName() = meta.name ?: "-- no name --"
 
-    companion object {
-        fun getInstance(project: Project): TSToolWindow = project.getService(TSToolWindow::class.java)
+    override fun update(project: Project, presentation: PresentationData) {
+        presentation.setIcon(AllIcons.Nodes.Plugin)
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.locationString = "${meta.argumentType} : ${meta.returnType}"
     }
 
-    fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(TSView(myProject), "Type System", true)
-        content.icon = HybrisIcons.TYPE_SYSTEM
-        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-        return content
-    }
-
-    override fun dispose() {
-    }
 }

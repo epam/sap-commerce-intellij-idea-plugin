@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase.TypeSystemResolveResult;
 import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
@@ -122,7 +122,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             }
             //it also may be in the separate representation
 
-            final TSMetaClass merged = TSMetaModelService.Companion.getInstance(myHolder.getProject()).findMetaClassForDom(domItemType);
+            final TSMetaItem merged = TSMetaModelService.Companion.getInstance(myHolder.getProject()).findMetaItemForDom(domItemType);
             return merged != null && merged.retrieveAllDomsStream()
                                            .filter(it -> !domItemType.equals(it))
                                            .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));

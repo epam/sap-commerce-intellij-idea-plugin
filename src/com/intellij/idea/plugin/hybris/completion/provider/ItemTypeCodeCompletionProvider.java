@@ -24,7 +24,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -58,7 +58,7 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         }
         result = result.caseInsensitive();
 
-        TSMetaModelService.Companion.getInstance(project).<TSMetaClass>getAll(MetaType.META_CLASS).stream()
+        TSMetaModelService.Companion.getInstance(project).<TSMetaItem>getAll(MetaType.META_ITEM).stream()
                                     .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                                     .forEach(result::addElement);
     }

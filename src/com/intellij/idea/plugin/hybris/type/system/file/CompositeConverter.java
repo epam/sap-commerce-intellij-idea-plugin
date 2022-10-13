@@ -102,7 +102,8 @@ public class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
                 new EnumTypeConverter(),
                 new ItemTypeConverter(),
                 new CollectionTypeConverter(),
-                new AtomicTypeConverter()
+                new AtomicTypeConverter(),
+                new MapTypeConverter()
             );
         }
 

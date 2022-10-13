@@ -18,14 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
+import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -52,15 +53,24 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
     private final Project myProject;
     private final DomManager myDomManager;
+    private boolean processEnabled = true;
 
     private final Set<PsiFile> myFiles = new HashSet<>();
 
-    public TSMetaModelBuilder(final Project project) {
+    private TSMetaModelBuilder(final Project project) {
         myProject = project;
         myDomManager = DomManager.getDomManager(project);
     }
 
-    public Set<PsiFile> collectFiles() {
+    public static TSMetaModelBuilder prepare(final Project project) {
+        return new TSMetaModelBuilder(project);
+    }
+
+    /**
+     * This method will collect all items xml files and process each of them
+     * Should be used only in combination with myProject.putUserData(META_MODEL_CACHE_KEY, newMetaModel);
+     */
+    public Set<PsiFile> processAll() {
         myFiles.clear();
 
         StubIndex.getInstance().processElements(
@@ -74,11 +84,37 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
         return Collections.unmodifiableSet(myFiles);
     }
 
+    /**
+     * This method will collect all items xml files without processing them
+     */
+    public Set<PsiFile> collectDependencies() {
+        try {
+            myFiles.clear();
+            processEnabled = false;
+
+            StubIndex.getInstance().processElements(
+                DomElementClassIndex.KEY,
+                Items.class.getName(),
+                myProject,
+                ProjectScope.getAllScope(myProject),
+                PsiFile.class,
+                this
+            );
+            return Collections.unmodifiableSet(myFiles);
+        } finally {
+            processEnabled = true;
+        }
+    }
+
     @NotNull
     public Set<PsiFile> getFiles() {
         return Collections.unmodifiableSet(myFiles);
     }
 
+    /**
+     * This method will process single items xml file if processEnabled flag is enabled
+     * Should be used only in combination with myProject.putUserData(META_MODEL_CACHE_KEY, newMetaModel);
+     */
     @SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
     @Override
     public boolean process(final PsiFile psiFile) {
@@ -88,6 +124,10 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
             return true;
         }
         myFiles.add(psiFile);
+
+        if (!processEnabled) {
+            return true;
+        }
 
         final DomFileElement<Items> rootWrapper = myDomManager.getFileElement((XmlFile) psiFile, Items.class);
 
@@ -103,6 +143,7 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
                     items.getAtomicTypes().getAtomicTypes().forEach(this::processAtomicType);
                     items.getCollectionTypes().getCollectionTypes().forEach(this::processCollectionType);
                     items.getRelations().getRelations().forEach(this::processRelationType);
+                    items.getMapTypes().getMapTypes().forEach(this::processMapType);
                 });
 
         //continue visiting
@@ -111,6 +152,10 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
     private void processRelationType(final Relation relation) {
         TSMetaModelService.Companion.getInstance(myProject).findOrCreate(relation);
+    }
+
+    private void processMapType(final MapType mapType) {
+        TSMetaModelService.Companion.getInstance(myProject).findOrCreate(mapType);
     }
 
     private void processAtomicType(final AtomicType atomicType) {
@@ -130,13 +175,13 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
-        final TSMetaClass metaclass = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(itemType);
+        final TSMetaItem metaItems = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(itemType);
 
-        if (metaclass == null) return;
+        if (metaItems == null) return;
 
         itemType.getAttributes().getAttributes().stream()
-                .map(domAttribute -> new TSMetaPropertyImpl(myProject, metaclass, domAttribute))
+                .map(domAttribute -> new TSMetaPropertyImpl(myProject, metaItems, domAttribute))
                 .filter(property -> StringUtils.isNotBlank(property.getName()))
-                .forEach(property -> metaclass.addProperty(property.getName().trim(), property));
+                .forEach(property -> metaItems.addProperty(property.getName().trim(), property));
     }
 }

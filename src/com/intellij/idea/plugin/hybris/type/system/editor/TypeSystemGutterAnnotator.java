@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.editor;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
@@ -88,7 +88,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
                 .createGutterIcon(annotationHolder, psiElement);
         }
 
-        final Optional<TSMetaClass> firstExtender = findFirstExtendingMetaClass(itemType);
+        final Optional<TSMetaItem> firstExtender = findFirstExtendingMetaClass(itemType);
 
         if (firstExtender.isPresent()) {
             NavigationGutterIconBuilder
@@ -117,14 +117,14 @@ public class TypeSystemGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
 
-        final TSMetaClass metaClass = TSMetaModelService.Companion.getInstance(psiFile.getProject()).findMetaClassForDom(source);
+        final TSMetaItem metaItem = TSMetaModelService.Companion.getInstance(psiFile.getProject()).findMetaItemForDom(source);
 
-        if (metaClass == null) {
+        if (metaItem == null) {
             return Collections.emptyList();
         }
 
-        return Optional.of(metaClass)
-                       .map(TSMetaClass::retrieveAllDomsStream)
+        return Optional.of(metaItem)
+                       .map(TSMetaItem::retrieveAllDomsStream)
                        .orElse(Stream.empty())
                        .filter(dom -> !dom.equals(source))
                        .map(ItemType::getCode)
@@ -133,14 +133,14 @@ public class TypeSystemGutterAnnotator implements Annotator {
     }
 
     @NotNull
-    private Optional<TSMetaClass> findFirstExtendingMetaClass(@NotNull final ItemType source) {
-        return getExtendingMetaClassNames(source).stream().findAny();
+    private Optional<TSMetaItem> findFirstExtendingMetaClass(@NotNull final ItemType source) {
+        return getExtendingMetaItemsNames(source).stream().findAny();
     }
 
     @NotNull
     private Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
-        return getExtendingMetaClassNames(source).stream()
-                                                 .flatMap(TSMetaClass::retrieveAllDomsStream)
+        return getExtendingMetaItemsNames(source).stream()
+                                                 .flatMap(TSMetaItem::retrieveAllDomsStream)
                                                  .map(ItemType::getCode)
                                                  .map(GenericAttributeValue::getXmlAttributeValue)
                                                  .filter(Objects::nonNull)
@@ -148,7 +148,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
     }
 
     @NotNull
-    private List<TSMetaClass> getExtendingMetaClassNames(@NotNull final ItemType source) {
+    private List<TSMetaItem> getExtendingMetaItemsNames(@NotNull final ItemType source) {
         final String code = source.getCode().getStringValue();
 
         if (StringUtil.isEmpty(code)) {
@@ -161,15 +161,15 @@ public class TypeSystemGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
         final TSMetaModelService metaService = TSMetaModelService.Companion.getInstance(psiFile.getProject());
-        final TSMetaClass metaClass = metaService.findMetaClassForDom(source);
+        final TSMetaItem metaItem = metaService.findMetaItemForDom(source);
 
-        if (metaClass == null) {
+        if (metaItem == null) {
             return Collections.emptyList();
         }
 
-        return metaService.<TSMetaClass>getAll(MetaType.META_CLASS).stream()
-            .filter(meta -> metaClass.getName().equals(meta.getExtendedMetaClassName()))
-            .collect(Collectors.toList());
+        return metaService.<TSMetaItem>getAll(MetaType.META_ITEM).stream()
+                          .filter(meta -> metaItem.getName().equals(meta.getExtendedMetaItemName()))
+                          .collect(Collectors.toList());
     }
 
 

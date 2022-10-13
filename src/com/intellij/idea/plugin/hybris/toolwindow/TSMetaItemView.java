@@ -19,13 +19,12 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.util.ui.ColumnInfo;
@@ -34,20 +33,17 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TSMetaClassView implements DumbAware {
+public class TSMetaItemView {
 
     private JPanel contentPane;
-    private JTextField myDescription;
     private JComboBox<String> myExtends;
     private JTextField myJaloClass;
-    private JTextField myDeployment;
-    private JTabbedPane myTabs;
-    private JPanel myDetailsTab;
-    private JPanel myAttributesTab;
-    private JPanel myCustomPropertiesTab;
+    private JTextField myDeploymentTable;
+    private JTextField myDeploymentTypeCode;
     private JTextField myCode;
     private JTable myAttributes;
     private JTable myCustomAttributes;
@@ -56,30 +52,38 @@ public class TSMetaClassView implements DumbAware {
     private JCheckBox mySingleton;
     private JCheckBox myJaloonly;
     private JCheckBox myGenerate;
+    private JPanel myDetailsContent;
+    private JTextPane myDescription;
 
-    public static JPanel create(final Project project, final TSMetaClass source) {
-        final TSMetaClassView view = new TSMetaClassView();
+    public static JPanel create(final Project project, final TSMetaItem source) {
+        final TSMetaItemView view = new TSMetaItemView();
+
         final ItemType dom = source.retrieveDom();
 
         final ListTableModel<TSMetaProperty> attributesModel = new ListTableModel<>();
-        final List<TSMetaProperty> attributes = source.getPropertiesStream(false)
+        final List<TSMetaProperty> attributes = source.getProperties(false).stream()
                                                       .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
                                                       .collect(Collectors.toList());
         attributesModel.setItems(attributes);
         final ColumnInfo[] columnInfos = Stream.of("code", "type", "redeclare", "defaultValue")
-                                               .map(column -> new ColumnInfo<TSMetaProperty, String>(column) {
+                                               .map(column -> new ColumnInfo<TSMetaProperty, Object>(column) {
 
                                                    @Override
-                                                   public @Nullable String valueOf(final TSMetaProperty s) {
-                                                       final Attribute attribute = s.retrieveDom();
+                                                   public @Nullable Object valueOf(final TSMetaProperty metaProperty) {
+                                                       final Attribute attribute = metaProperty.retrieveDom();
 
                                                        switch (getName()) {
-                                                           case "code": return s.getName();
-                                                           case "type": return s.getType();
-                                                           case "redeclare": return String.valueOf(Boolean.TRUE.equals(attribute.getRedeclare().getValue()));
+                                                           case "code": return metaProperty.getName();
+                                                           case "type": return metaProperty.getType();
+                                                           case "redeclare": return Boolean.TRUE.equals(attribute.getRedeclare().getValue());
                                                            case "defaultValue": return attribute.getDefaultValue().getValue();
                                                            default: return null;
                                                        }
+                                                   }
+
+                                                   @Override
+                                                   public boolean isCellEditable(final TSMetaProperty tsMetaProperty) {
+                                                       return true;
                                                    }
                                                })
                                                .collect(Collectors.toList())
@@ -87,21 +91,23 @@ public class TSMetaClassView implements DumbAware {
         attributesModel.setColumnInfos(columnInfos);
 
         final CollectionComboBoxModel<String> extendClasses = new CollectionComboBoxModel<>();
-        final List<String> listItems = TSMetaModelService.Companion.getInstance(project).metaModel()
-                                                                   .<TSMetaClass>getMetaType(MetaType.META_CLASS)
-                                                                   .values().stream()
-                                                                   .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
-                                                                   .filter(item -> !item.equals(source))
-                                                                   .map(TSMetaClassifier::getName)
-                                                                   .collect(Collectors.toList());
-        extendClasses.add(listItems);
+        TSMetaModelService.Companion.getInstance(project).metaModel()
+                                    .<TSMetaItem>getMetaType(MetaType.META_ITEM)
+                                    .values().stream()
+                                    .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
+                                    .filter(item -> !item.equals(source))
+                                    .map(TSMetaClassifier::getName)
+                                    .forEach(extendClasses::add);
         view.myExtends.setModel(extendClasses);
-        view.myExtends.setSelectedItem(source.getName());
+        view.myExtends.setSelectedItem(dom.getExtends().getStringValue() == null ? "GenericItem" : dom.getExtends().getStringValue());
         view.myAttributes.setModel(attributesModel);
-        view.myCode.setText(dom.getExtends().getStringValue());
-        view.myDescription.setText(dom.getDescription().toString());
+        view.myCode.setText(dom.getCode().getStringValue());
+        Optional.ofNullable(dom.getDescription().getXmlTag())
+                .map(description -> description.getValue().getText())
+                .ifPresent(text -> view.myDescription.setText(text));
         view.myJaloClass.setText(dom.getJaloclass().getStringValue());
-        view.myDeployment.setText(dom.getDeploymentAttr().getStringValue());
+        view.myDeploymentTable.setText(dom.getDeployment().getTable().getStringValue());
+        view.myDeploymentTypeCode.setText(dom.getDeployment().getTypeCode().getStringValue());
         view.myAbstract.setSelected(Boolean.TRUE.equals(dom.getAbstract().getValue()));
         view.myAutocreate.setSelected(Boolean.TRUE.equals(dom.getAutoCreate().getValue()));
         view.myGenerate.setSelected(Boolean.TRUE.equals(dom.getGenerate().getValue()));

@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.typesystem.panels
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.toolwindow.TSMetaClassView
+import com.intellij.idea.plugin.hybris.toolwindow.TSMetaItemView
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClass
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
@@ -32,28 +32,26 @@ class TSPanel(
     private val myProject: Project,
     private val myActionGroup: DefaultActionGroup,
     myGroupId: String = "HybrisTypeSystemPanel"
-) : FinderRecursivePanel<TSMetaClass>(myProject, myGroupId) {
+) : FinderRecursivePanel<TSMetaItem>(myProject, myGroupId) {
 
     init {
         isNonBlockingLoad = true
     }
 
-    override fun getListItems(): List<TSMetaClass> {
+    override fun getListItems(): List<TSMetaItem> {
         val sortedBy = ArrayList(
-            TSMetaModelService.getInstance(myProject).metaModel().getMetaType<TSMetaClass>(MetaType.META_CLASS).values
+            TSMetaModelService.getInstance(myProject).metaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM).values
         )
             .sortedBy { it.name }
 
         return sortedBy;
     }
 
-    override fun hasChildren(t: TSMetaClass): Boolean = false
+    override fun hasChildren(t: TSMetaItem): Boolean = false
 
-    override fun getItemText(t: TSMetaClass): String = t.name
+    override fun getItemText(t: TSMetaItem): String = t.name!!
 
-    override fun createRightComponent(t: TSMetaClass): JComponent? {
-        return TSMetaClassView.create(myProject, t)
-    }
+    override fun createRightComponent(t: TSMetaItem): JComponent? = TSMetaItemView.create(myProject, t)
 
     private fun settings(): TSViewSettings = TSViewSettings.getInstance(myProject)
 }

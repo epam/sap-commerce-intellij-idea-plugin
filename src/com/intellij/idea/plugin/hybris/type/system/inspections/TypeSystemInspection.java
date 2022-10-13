@@ -30,6 +30,7 @@ import com.intellij.codeInspection.ex.InspectionProfileWrapper;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.Computable;
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,28 +69,24 @@ public abstract class TypeSystemInspection extends LocalInspectionTool {
             return null;
         }
 
-        final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject())
-                                                                             .getCurrentProfile();
-        final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
-        final HighlightDisplayLevel ruleLevel = inspectProfile.getErrorLevel(
-            HighlightDisplayKey.find(getShortName()),
-            file
-        );
+        final HighlightDisplayLevel ruleLevel = getHighlightDisplayLevel(file, manager);
 
-        final List<ProblemDescriptor> result = new ArrayList<>();
+        return ApplicationManager.getApplication().runReadAction((Computable<ProblemDescriptor[]>) () -> {
+            final List<ProblemDescriptor> result = new ArrayList<>();
 //            final Instant from = Instant.now();
 //            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
-        try {
-            validateOneRule(sharedContext, result, ruleLevel);
-        } catch (XPathExpressionException e) {
-            result.add(this.createValidationFailedProblem(sharedContext, xmlFile, e));
-        }
+            try {
+                validateOneRule(sharedContext, result, ruleLevel);
+            } catch (XPathExpressionException e) {
+                result.add(createValidationFailedProblem(sharedContext, xmlFile, e));
+            }
 //            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
 //                from,
 //                Instant.now()
 //            ));
 
-        return result.toArray(new ProblemDescriptor[result.size()]);
+            return result.toArray(new ProblemDescriptor[result.size()]);
+        });
     }
 
     protected void validateOneRule(
@@ -164,6 +161,17 @@ public abstract class TypeSystemInspection extends LocalInspectionTool {
         }
 
         return ProblemHighlightType.ERROR;
+    }
+
+    @NotNull
+    private HighlightDisplayLevel getHighlightDisplayLevel(
+        final @NotNull PsiFile file,
+        final @NotNull InspectionManager manager
+    ) {
+        final InspectionProfileImpl profile = ProjectInspectionProfileManager.getInstance(manager.getProject())
+                                                                             .getCurrentProfile();
+        final InspectionProfileWrapper inspectProfile = new InspectionProfileWrapper(profile);
+        return inspectProfile.getErrorLevel(HighlightDisplayKey.find(getShortName()), file);
     }
 
 }

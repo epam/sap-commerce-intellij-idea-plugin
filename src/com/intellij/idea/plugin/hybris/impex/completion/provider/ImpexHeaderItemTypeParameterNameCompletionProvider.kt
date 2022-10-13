@@ -67,14 +67,14 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
 
         val metaService = TSMetaModelService.getInstance(project)
 
-        val metaClass = metaService.findMetaClassByName(typeName)
-        if (metaClass == null) {
+        val metaItem = metaService.findMetaItemByName(typeName)
+        if (metaItem == null) {
             val metaEnum = metaService.findMetaEnumByName(typeName)
             if (metaEnum != null) {
                 resultSet.addElement(LookupElementBuilder.create("code").withIcon(HybrisIcons.TYPE_SYSTEM))
             }
         } else {
-            metaClass.getPropertiesStream(true)
+            metaItem.getProperties(true)
                     .map { prop ->
                         val name = prop.name
                         val builder = LookupElementBuilder
@@ -87,7 +87,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .filter { Objects.nonNull(it) }
                     .forEach { resultSet.addElement(it) }
 
-            metaClass.getReferenceEndsStream(true)
+            metaItem.getReferenceEndsStream(true)
                     .map { ref -> LookupElementBuilder.create(ref.getRole()).withIcon(HybrisIcons.TYPE_SYSTEM) }
                     .forEach { resultSet.addElement(it) }
 

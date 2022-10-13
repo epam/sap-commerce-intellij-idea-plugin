@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -35,12 +34,6 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     public TSMetaCollectionImpl(final Project project, final String name, final CollectionType dom) {
         super(project, name, dom);
     }
-
-    @Nullable
-    public static String extractName(final @NotNull CollectionType dom) {
-        return dom.getCode().getValue();
-    }
-
 
     @Nullable
     @Override
@@ -62,6 +55,8 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     @Override
     public TSMetaClassifier<? extends DomElement> getElementType() {
         final String typeName = getElementTypeName();
-        return typeName == null ? null : TSMetaModelService.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
+        return typeName == null
+            ? null
+            : TSMetaModelService.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
     }
 }
