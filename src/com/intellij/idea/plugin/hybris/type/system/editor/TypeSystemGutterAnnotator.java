@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -129,6 +131,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
                        .orElse(Stream.empty())
                        .filter(dom -> !dom.equals(source))
                        .map(ItemType::getCode)
+                       .sorted(compareByModuleName())
                        .map(GenericAttributeValue::getXmlAttributeValue)
                        .collect(Collectors.toList());
     }
@@ -143,6 +146,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
         return getExtendingMetaItemsNames(source).stream()
                                                  .flatMap(TSMetaItem::retrieveAllDomsStream)
                                                  .map(ItemType::getCode)
+                                                 .sorted(compareByModuleName())
                                                  .map(GenericAttributeValue::getXmlAttributeValue)
                                                  .filter(Objects::nonNull)
                                                  .collect(Collectors.toList());
@@ -171,6 +175,11 @@ public class TypeSystemGutterAnnotator implements Annotator {
         return metaService.<TSMetaItem>getAll(MetaType.META_ITEM).stream()
                           .filter(meta -> metaItem.getName().equals(meta.getExtendedMetaItemName()))
                           .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private static Comparator<GenericAttributeValue<String>> compareByModuleName() {
+        return (o1, o2) -> Comparing.compare(o1.getModule(), o2.getModule(), (m1, m2) -> m1.getName().compareToIgnoreCase(m2.getName()));
     }
 
 
