@@ -74,7 +74,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                 resultSet.addElement(LookupElementBuilder.create("code").withIcon(HybrisIcons.TYPE_SYSTEM))
             }
         } else {
-            metaItem.getProperties(true)
+            metaItem.getAttributes(true)
                     .map { prop ->
                         val name = prop.name
                         val builder = LookupElementBuilder

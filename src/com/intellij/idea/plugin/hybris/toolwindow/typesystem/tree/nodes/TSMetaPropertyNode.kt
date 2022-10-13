@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaPropertyNode(parent: TSMetaItemNode, private val meta: TSMetaProperty) : TSNode(parent), Disposable {
+class TSMetaPropertyNode(parent: TSMetaItemNode, private val meta: TSMetaAttribute) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"

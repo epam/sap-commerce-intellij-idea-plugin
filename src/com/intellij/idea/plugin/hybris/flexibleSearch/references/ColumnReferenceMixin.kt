@@ -60,7 +60,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
         }
 
         val attributes = metaItem.get()
-                .findPropertiesByName(refName, true)
+                .findAttributesByName(refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { AttributeResolveResult(it) }.toList()
 

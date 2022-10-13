@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.editor;
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
@@ -81,9 +82,12 @@ public class TypeSystemGutterAnnotator implements Annotator {
         final Collection<? extends PsiElement> alternativeDoms = findAlternativeDoms(itemType);
         if (!alternativeDoms.isEmpty()) {
             NavigationGutterIconBuilder
-                .create(AllIcons.Actions.Forward, this::findAlternativeDoms)
+                // no recalculation for alternative doms
+                .create(AllIcons.Actions.Forward, it -> alternativeDoms)
                 .setTarget(itemType)
-                .setTooltipText(alternativeDoms.size() > 1 ? "Alternative Definitions" : "Alternative Definition")
+                .setTooltipText(alternativeDoms.size() > 1
+                                    ? HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinitions")
+                                    : HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinition"))
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                 .createGutterIcon(annotationHolder, psiElement);
         }
@@ -92,10 +96,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
 
         if (firstExtender.isPresent()) {
             NavigationGutterIconBuilder
-                .create(
-                    AllIcons.Gutter.OverridenMethod,
-                    this::findAllExtendingXmlAttributes
-                )
+                .create(AllIcons.Gutter.OverridenMethod, this::findAllExtendingXmlAttributes)
                 .setTarget(itemType)
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .setTooltipText("Has subtypes")

@@ -21,10 +21,10 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -114,9 +114,9 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         }
 
         final List<ResolveResult> result = metaItem.get()
-                                                   .findPropertiesByName(featureName, true)
+                                                   .findAttributesByName(featureName, true)
                                                    .stream()
-                                                   .map(TSMetaProperty::retrieveDom)
+                                                   .map(TSMetaAttribute::retrieveDom)
                                                    .filter(Objects::nonNull)
                                                    .map(AttributeResolveResult::new)
                                                    .collect(Collectors.toCollection(LinkedList::new));

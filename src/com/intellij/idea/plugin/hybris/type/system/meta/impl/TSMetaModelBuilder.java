@@ -67,24 +67,6 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     /**
-     * This method will collect all items xml files and process each of them
-     * Should be used only in combination with myProject.putUserData(META_MODEL_CACHE_KEY, newMetaModel);
-     */
-    public Set<PsiFile> processAll() {
-        myFiles.clear();
-
-        StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            Items.class.getName(),
-            myProject,
-            ProjectScope.getAllScope(myProject),
-            PsiFile.class,
-            this
-        );
-        return Collections.unmodifiableSet(myFiles);
-    }
-
-    /**
      * This method will collect all items xml files without processing them
      */
     public Set<PsiFile> collectDependencies() {
@@ -179,9 +161,10 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
 
         if (metaItems == null) return;
 
+        // TODO: add support for Attribute anchors + navigation
         itemType.getAttributes().getAttributes().stream()
-                .map(domAttribute -> new TSMetaPropertyImpl(myProject, metaItems, domAttribute))
-                .filter(property -> StringUtils.isNotBlank(property.getName()))
-                .forEach(property -> metaItems.addProperty(property.getName().trim(), property));
+                .map(domAttribute -> new TSMetaAttributeImpl(myProject, metaItems, domAttribute))
+                .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
+                .forEach(attribute -> metaItems.addAttribute(attribute.getName().trim(), attribute));
     }
 }

@@ -26,15 +26,13 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 class TSMetaModel : Disposable {
-    private val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<out DomElement?>>> = ConcurrentHashMap()
+    private val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<DomElement?>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> {
-        return myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap()  } as ConcurrentMap<String, T>
-    }
+    fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> = myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-    fun getReference(name : String?): Collection<ReferenceEnd?> = (if (name == null) emptyList() else getReferences()[name])
+    fun getReference(name: String?): Collection<ReferenceEnd?> = (if (name == null) emptyList() else getReferences()[name])
 
     fun getMetaTypes() = myMetaCache;
 
@@ -46,7 +44,24 @@ class TSMetaModel : Disposable {
     }
 
     fun merge(externalMetaModel: TSMetaModel) {
-        externalMetaModel.getMetaTypes().forEach { (metaType, cache) -> getMetaType<Any>(metaType).putAll(cache) }
+        externalMetaModel.getMetaTypes().forEach { (metaType, cache) ->
+            run {
+                val globalCache = getMetaType<TSMetaClassifier<DomElement?>>(metaType)
+
+                cache.forEach { (key, metaClassifier) ->
+                    val globalMetaClassifier = globalCache[key]
+
+                    if (globalMetaClassifier != null
+                        && globalMetaClassifier is TSMetaSelfMerge<DomElement?>
+                        && metaClassifier is TSMetaSelfMerge<DomElement?>) {
+                        globalMetaClassifier.merge(metaClassifier)
+                    } else {
+                        globalCache[key] = metaClassifier
+                    }
+
+                }
+            }
+        }
         getReferences().putAllValues(externalMetaModel.getReferences());
     }
 }

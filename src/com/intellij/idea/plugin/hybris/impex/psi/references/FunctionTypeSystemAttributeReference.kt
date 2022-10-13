@@ -52,7 +52,7 @@ class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemRe
             }
         } else {
             val result = metaItem
-                    .findPropertiesByName(featureName, true)
+                    .findAttributesByName(featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { AttributeResolveResult(it!!) }

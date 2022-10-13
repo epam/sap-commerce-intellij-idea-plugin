@@ -18,26 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.util.xml.DomElement;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
-public interface TSMetaProperty {
+public interface TSMetaSelfMerge<DOM extends DomElement> extends TSMetaClassifier<DOM> {
 
-    @Nullable
-    String getName();
-
-    @Nullable
-    Attribute retrieveDom();
-
-    boolean isDeprecated();
-
-    @Nullable
-    String getType();
-
-    @NotNull
-    TSMetaItem getMetaItem();
+    void merge(TSMetaSelfMerge<DOM> another);
 }

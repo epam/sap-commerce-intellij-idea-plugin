@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,26 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-public enum MetaType {
-    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP, META_ATTRIBUTE, META_INDEX
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
+ */
+public interface TSMetaAttribute {
+
+    @Nullable
+    String getName();
+
+    @Nullable
+    Attribute retrieveDom();
+
+    boolean isDeprecated();
+
+    @Nullable
+    String getType();
+
+    @NotNull
+    TSMetaItem getMetaItem();
 }

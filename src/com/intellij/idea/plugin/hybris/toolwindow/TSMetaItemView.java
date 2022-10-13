@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
@@ -60,16 +60,16 @@ public class TSMetaItemView {
 
         final ItemType dom = source.retrieveDom();
 
-        final ListTableModel<TSMetaProperty> attributesModel = new ListTableModel<>();
-        final List<TSMetaProperty> attributes = source.getProperties(false).stream()
-                                                      .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
-                                                      .collect(Collectors.toList());
+        final ListTableModel<TSMetaAttribute> attributesModel = new ListTableModel<>();
+        final List<TSMetaAttribute> attributes = source.getAttributes(false).stream()
+                                                       .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
+                                                       .collect(Collectors.toList());
         attributesModel.setItems(attributes);
         final ColumnInfo[] columnInfos = Stream.of("code", "type", "redeclare", "defaultValue")
-                                               .map(column -> new ColumnInfo<TSMetaProperty, Object>(column) {
+                                               .map(column -> new ColumnInfo<TSMetaAttribute, Object>(column) {
 
                                                    @Override
-                                                   public @Nullable Object valueOf(final TSMetaProperty metaProperty) {
+                                                   public @Nullable Object valueOf(final TSMetaAttribute metaProperty) {
                                                        final Attribute attribute = metaProperty.retrieveDom();
 
                                                        switch (getName()) {
@@ -82,7 +82,7 @@ public class TSMetaItemView {
                                                    }
 
                                                    @Override
-                                                   public boolean isCellEditable(final TSMetaProperty tsMetaProperty) {
+                                                   public boolean isCellEditable(final TSMetaAttribute tsMetaProperty) {
                                                        return true;
                                                    }
                                                })

@@ -23,15 +23,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
-public interface TSMetaMap extends TSMetaClassifier<MapType> {
+public interface TSMetaMap extends TSMetaSelfMerge<MapType> {
 
     @NotNull
     String getArgumentType();
 
     @NotNull
     String getReturnType();
-
-    void addDomRepresentation(@NotNull MapType anotherDom);
 
     @NotNull
     Stream<? extends MapType> retrieveAllDomsStream();

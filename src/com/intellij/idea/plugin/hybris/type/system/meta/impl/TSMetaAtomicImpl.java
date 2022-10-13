@@ -31,5 +31,4 @@ public class TSMetaAtomicImpl extends TSMetaEntityImpl<AtomicType> implements TS
     public TSMetaAtomicImpl(final Project project, final String name, final AtomicType dom) {
         super(project, name, dom);
     }
-
 }

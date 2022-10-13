@@ -33,10 +33,10 @@ class TSMetaItemNode(parent: TSNode, private val meta: TSMetaItem) : TSNode(pare
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(AllIcons.Nodes.Class)
-        presentation.locationString = "extends ${meta.extendedMetaItemName}"
+        presentation.locationString = "extends ${meta.extendedMetaItemName ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME}"
     }
 
-    override fun getChildren(): Collection<TSMetaPropertyNode> = meta.getProperties(false)
+    override fun getChildren(): Collection<TSMetaPropertyNode> = meta.getAttributes(false)
         .map { TSMetaPropertyNode(this, it) }
         .sortedBy { it.name }
 

@@ -89,7 +89,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final Optional<TSMetaItem> metaItem = Optional.ofNullable(metaService.findMetaItemByName(itemTypeCode));
 
         metaItem
-            .map(meta -> meta.getProperties(true).stream())
+            .map(meta -> meta.getAttributes(true).stream())
             .orElse(Stream.empty())
             .map(prop -> {
                 final String name = prop.getName();

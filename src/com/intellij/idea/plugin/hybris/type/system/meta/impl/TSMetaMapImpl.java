@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
@@ -44,8 +45,7 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
     }
 
-    @Override
-    public void addDomRepresentation(final @NotNull MapType anotherDom) {
+    protected void addDomRepresentation(final @NotNull MapType anotherDom) {
         myAllDoms.add(DomService.getInstance().createAnchor(anotherDom));
     }
 
@@ -64,5 +64,10 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
         return myAllDoms.stream()
                         .map(DomAnchor::retrieveDomElement)
                         .filter(Objects::nonNull);
+    }
+
+    @Override
+    public void merge(final TSMetaSelfMerge<MapType> another) {
+        addDomRepresentation(another.retrieveDom());
     }
 }

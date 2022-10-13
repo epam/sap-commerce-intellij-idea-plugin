@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -28,14 +28,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-class TSMetaPropertyImpl extends TSMetaEntityImpl<Attribute> implements TSMetaProperty {
+class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements TSMetaAttribute {
 
     private final TSMetaItem myMetaItem;
     private final boolean myDeprecated;
     @Nullable private final String myType;
 
-    public TSMetaPropertyImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom) {
-        super(project, extractPropertyName(dom), dom);
+    public TSMetaAttributeImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom) {
+        super(project, extractName(dom), dom);
         myMetaItem = owner;
         myDeprecated = extractDeprecated(dom);
         myType = dom.getType().getStringValue();
@@ -65,7 +65,7 @@ class TSMetaPropertyImpl extends TSMetaEntityImpl<Attribute> implements TSMetaPr
     }
 
     @Nullable
-    private static String extractPropertyName(final Attribute dom) {
+    private static String extractName(final Attribute dom) {
         return dom.getQualifier().getValue();
     }
 

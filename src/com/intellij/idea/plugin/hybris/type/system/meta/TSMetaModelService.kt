@@ -27,6 +27,10 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.stream.Collectors
 
+/**
+ * Each "findOrCreate" method should find metaType only when it is already defined for the same items.xml file.
+ * In such a case self-merge will be performed to ensure consistency between all anchors
+ */
 class TSMetaModelService(private val myProject: Project) {
 
     private fun extractName(dom: ItemType): String? = dom.code.value
@@ -43,15 +47,10 @@ class TSMetaModelService(private val myProject: Project) {
         var impl = items[name]
 
         if (impl == null) {
-            impl = TSMetaItemImpl(
-                myProject,
-                name,
-                typeCode,
-                dom
-            )
+            impl = TSMetaItemImpl(myProject, name, typeCode, dom)
             items[name] = impl
         } else {
-            impl.addDomRepresentation(dom)
+            impl.merge(TSMetaItemImpl(myProject, name, typeCode, dom))
         }
         return impl
     }
@@ -109,7 +108,7 @@ class TSMetaModelService(private val myProject: Project) {
             map = TSMetaMapImpl(myProject, name, dom)
             maps[name] = map
         } else {
-            map.addDomRepresentation(dom)
+            map.merge(TSMetaMapImpl(myProject, name, dom))
         }
 
         return map;

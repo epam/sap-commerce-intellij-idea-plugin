@@ -29,20 +29,20 @@ import java.util.stream.Stream;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public interface TSMetaItem extends TSMetaClassifier<ItemType> {
+public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
 
     String IMPLICIT_SUPER_CLASS_NAME = "GenericItem";
 
     @Nullable
     String getExtendedMetaItemName();
 
-    void addProperty(final String key, TSMetaProperty property);
+    void addAttribute(final String key, TSMetaAttribute attribute);
 
     @NotNull
-    List<? extends TSMetaProperty> getProperties(boolean includeInherited);
+    List<? extends TSMetaAttribute> getAttributes(boolean includeInherited);
 
     @NotNull
-    Collection<? extends TSMetaProperty> findPropertiesByName(@NotNull String name, boolean includeInherited);
+    Collection<? extends TSMetaAttribute> findAttributesByName(@NotNull String name, boolean includeInherited);
 
     @NotNull
     Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(
@@ -54,8 +54,6 @@ public interface TSMetaItem extends TSMetaClassifier<ItemType> {
     Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
 
     String getTypeCode();
-
-    void addDomRepresentation(@NotNull ItemType anotherDom);
 
     @NotNull
     Stream<? extends ItemType> retrieveAllDomsStream();

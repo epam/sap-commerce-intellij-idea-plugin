@@ -104,7 +104,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
         metaItem
-                .map { meta -> meta.getProperties(true).stream() }
+                .map { meta -> meta.getAttributes(true).stream() }
                 .orElse(Stream.empty())
                 .map<LookupElementBuilder> { prop ->
                     val name = prop.name ?: return@map null

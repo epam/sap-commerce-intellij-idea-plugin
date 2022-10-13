@@ -21,6 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
+import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -62,6 +64,7 @@ public interface MapType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("argumenttype")
     @Required
+    @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getArgumentType();
 
 
@@ -77,6 +80,7 @@ public interface MapType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("returntype")
     @Required
+    @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getReturnType();
 
 

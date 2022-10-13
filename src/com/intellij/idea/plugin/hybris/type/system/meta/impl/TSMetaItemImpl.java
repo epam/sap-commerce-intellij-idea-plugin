@@ -18,10 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
  */
 public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMetaItem {
 
-    private final NoCaseMultiMap<TSMetaProperty> myProperties = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaAttribute> myAttributes = new NoCaseMultiMap<>();
 
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
@@ -72,8 +73,7 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         return myTypeCode;
     }
 
-    @Override
-    public void addDomRepresentation(final @NotNull ItemType anotherDom) {
+    protected void addDomRepresentation(final @NotNull ItemType anotherDom) {
         myAllDoms.add(DomService.getInstance().createAnchor(anotherDom));
         registerExtends(anotherDom);
     }
@@ -94,46 +94,46 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    public void addProperty(final String key, final TSMetaProperty property) {
-        myProperties.putValue(key, property);
+    public void addAttribute(final String key, final TSMetaAttribute attribute) {
+        myAttributes.putValue(key, attribute);
     }
 
     @Override
     @NotNull
-    public List<? extends TSMetaProperty> getProperties(final boolean includeInherited) {
-        final LinkedList<TSMetaProperty> result = new LinkedList<>();
+    public List<? extends TSMetaAttribute> getAttributes(final boolean includeInherited) {
+        final LinkedList<TSMetaAttribute> result = new LinkedList<>();
         if (includeInherited) {
-            walkInheritance(meta -> meta.collectOwnProperties(result));
+            walkInheritance(meta -> meta.collectOwnAttributes(result));
         } else {
-            this.collectOwnProperties(result);
+            this.collectOwnAttributes(result);
         }
         return result;
     }
 
-    private void collectOwnProperties(@NotNull final Collection<TSMetaProperty> output) {
-        output.addAll(myProperties.values());
+    private void collectOwnAttributes(@NotNull final Collection<TSMetaAttribute> output) {
+        output.addAll(myAttributes.values());
     }
 
     @NotNull
     @Override
-    public Collection<? extends TSMetaProperty> findPropertiesByName(
+    public Collection<? extends TSMetaAttribute> findAttributesByName(
         @NotNull final String name,
         final boolean includeInherited
     ) {
-        final LinkedList<TSMetaProperty> result = new LinkedList<>();
+        final LinkedList<TSMetaAttribute> result = new LinkedList<>();
         if (includeInherited) {
-            walkInheritance(meta -> meta.collectOwnPropertiesByName(name, result));
+            walkInheritance(meta -> meta.collectOwnAttributesByName(name, result));
         } else {
-            this.collectOwnPropertiesByName(name, result);
+            this.collectOwnAttributesByName(name, result);
         }
         return result;
     }
 
-    private void collectOwnPropertiesByName(
+    private void collectOwnAttributesByName(
         @NotNull final String name,
-        @NotNull final Collection<TSMetaProperty> output
+        @NotNull final Collection<TSMetaAttribute> output
     ) {
-        output.addAll(myProperties.get(name));
+        output.addAll(myAttributes.get(name));
     }
 
     @NotNull
@@ -203,4 +203,8 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         return myExtendedMetaItemName;
     }
 
+    @Override
+    public void merge(final TSMetaSelfMerge<ItemType> another) {
+        addDomRepresentation(another.retrieveDom());
+    }
 }
