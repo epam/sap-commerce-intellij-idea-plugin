@@ -17,13 +17,34 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.model.ItemType
+import com.intellij.idea.plugin.hybris.type.system.model.Items
+import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
+import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import java.util.stream.Collectors
 
-class DeploymentForSubclassesOfAbstractClasses : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype[@extends = //itemtype/@code and //itemtype[@extends='GenericItem' and @abstract='true']]"
+class DeploymentForSubclassesOfAbstractClasses : AbstractTypeSystemInspection() {
 
-    override fun getTestQuery(): String = "count(./deployment) = 1"
+    override fun checkItems(items: Items, holder: DomElementAnnotationHolder, helper: DomHighlightingHelper, severity: HighlightSeverity) {
+        items.itemTypes.stream.forEach { checkItemType(it, holder, severity) }
+    }
 
-    override fun getNameQuery(): String = "./@code"
+    private fun checkItemType(it: ItemType, holder: DomElementAnnotationHolder, severity: HighlightSeverity) {
+        val metaItem = TSMetaModelAccess.getInstance(it).metaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
+            ?: return
 
+        val count = metaItem.extends
+            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
+            .map { it.deployment }
+            .filter { it.exists() }
+            .count()
+        if (count > 1) {
+            holder.createProblem(it, severity, displayName)
+        }
+    }
 }

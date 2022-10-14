@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class DeploymentTableMustExistForManyToManyRelation : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//relation[sourceElement[@cardinality='many']][targetElement[@cardinality='many']]"
 
-class TypeNameMustNotStartWithGenerated : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype|//enumtype|//relation"
-
-    override fun getTestQuery(): String = "not(starts-with(translate(./@code, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 'GENERATED'))"
+    override fun getTestQuery(): String = "count(./deployment) > 0"
 
     override fun getNameQuery(): String = "./@code"
 

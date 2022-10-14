@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class BooleanFieldCannotBeOptional : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[@type='java.lang.Boolean']"
 
-class UseOfUnoptimizedAttributesIsNotRecommended : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[modifiers[@dontOptimize = 'true']]"
-
-    override fun getTestQuery(): String = "1 = 0 "
+    override fun getTestQuery(): String = "./modifiers/@optional = 'false' or count(./defaultvalue) > 0"
 
     override fun getNameQuery(): String = "../../@code|./@qualifier"
 

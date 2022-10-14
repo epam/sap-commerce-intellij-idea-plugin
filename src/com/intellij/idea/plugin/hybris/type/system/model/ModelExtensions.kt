@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+package com.intellij.idea.plugin.hybris.type.system.model
 
-class RelationshipQualifierNameMustStartWithLowercaseLetter : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//relation/sourceElement|//relation/targetElement"
+import java.util.stream.Stream
 
-    override fun getTestQuery(): String = "substring(./@qualifier, 1, 1) = translate(substring(./@qualifier, 1, 1), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
-
-    override fun getNameQuery(): String = "../@code|./@qualifier"
-
-}
+val ItemTypes.stream: Stream<ItemType>
+    get() {
+        return Stream.of(itemTypes.stream(), typeGroups.stream().flatMap { it.itemTypes.stream() })
+            .flatMap { it }
+    }

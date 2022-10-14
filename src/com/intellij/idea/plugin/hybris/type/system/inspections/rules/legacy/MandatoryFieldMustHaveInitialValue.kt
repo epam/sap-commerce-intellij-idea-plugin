@@ -15,15 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-class ListsInRelationShouldBeAvoided : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//relation/sourceElement[@cardinality='many']|//relation/targetElement[@cardinality='many']"
+class MandatoryFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[modifiers[@optional='false']]"
 
-    override fun getTestQuery(): String = "./@collectiontype = 'set' or count(./@collectiontype) = 0"
+    override fun getTestQuery(): String = "./modifiers/@initial = 'true' or count(./defaultvalue) > 0"
 
-    override fun getNameQuery(): String = "../@code|./@qualifier"
+    override fun getNameQuery(): String = "../../@code|./@qualifier"
 
 }

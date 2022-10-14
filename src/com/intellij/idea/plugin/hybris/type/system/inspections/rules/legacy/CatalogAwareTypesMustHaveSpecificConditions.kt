@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class CatalogAwareTypesMustHaveSpecificConditions : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/custom-properties/property[@name='catalogItemType']"
 
-class OrderingOfRelationShouldBeAvoided : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//relation/sourceElement[@cardinality='many']|//relation/targetElement[@cardinality='many']"
+    override fun getTestQuery(): String = "count(./value) = 1"
 
-    override fun getTestQuery(): String = "./@ordered = 'false' or count(./@ordered) = 0"
-
-    override fun getNameQuery(): String = "../@code|./@qualifier"
+    override fun getNameQuery(): String = "../../@code"
 
 }

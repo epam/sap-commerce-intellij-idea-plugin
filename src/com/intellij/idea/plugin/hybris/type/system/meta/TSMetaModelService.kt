@@ -155,7 +155,7 @@ class TSMetaModelService(private val myProject: Project) {
      * Meta Model will be present in user data during re-creation of the TSMetaModel cache object
      * to eliminate recursion invocation of the TSMetaModel creation by the same Thread
      */
-    fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.GLOBAL_META_MODEL_CACHE_KEY)
+    private fun metaModel(): TSMetaModel = myProject.getUserData(TSMetaModelAccessImpl.GLOBAL_META_MODEL_CACHE_KEY)
         ?: TSMetaModelAccess.getInstance(myProject).metaModel
 
     private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {

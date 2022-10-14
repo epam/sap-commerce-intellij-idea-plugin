@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class JaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype[@autocreate='false' and @generate='false']"
 
-class TypeNameMustStartWithUppercaseLetter : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype|//enumtype|//relation"
-
-    override fun getTestQuery(): String = "substring(./@code, 1, 1) = translate(substring(./@code, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
+    override fun getTestQuery(): String = "self::node()[not (@jaloclass)]"
 
     override fun getNameQuery(): String = "./@code"
 

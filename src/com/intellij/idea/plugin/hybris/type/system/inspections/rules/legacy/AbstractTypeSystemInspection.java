@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.inspections;
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy;
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel;
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
@@ -27,6 +27,11 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ex.InspectionProfileImpl;
 import com.intellij.codeInspection.ex.InspectionProfileWrapper;
+import com.intellij.idea.plugin.hybris.type.system.inspections.ItemsXmlQuickFixManager;
+import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
+import com.intellij.idea.plugin.hybris.type.system.inspections.ValidateContext;
+import com.intellij.idea.plugin.hybris.type.system.inspections.ValidateContextImpl;
+import com.intellij.idea.plugin.hybris.type.system.inspections.XPathService;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -41,13 +46,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class TypeSystemInspection extends LocalInspectionTool {
+public abstract class AbstractTypeSystemInspection extends LocalInspectionTool {
 
-    private static final Logger LOG = Logger.getInstance(TypeSystemInspection.class);
+    private static final Logger LOG = Logger.getInstance(AbstractTypeSystemInspection.class);
 
     protected abstract String getNameQuery();
 
@@ -73,17 +80,17 @@ public abstract class TypeSystemInspection extends LocalInspectionTool {
 
         return ApplicationManager.getApplication().runReadAction((Computable<ProblemDescriptor[]>) () -> {
             final List<ProblemDescriptor> result = new ArrayList<>();
-//            final Instant from = Instant.now();
-//            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
+            final Instant from = Instant.now();
+            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
             try {
                 validateOneRule(sharedContext, result, ruleLevel);
             } catch (XPathExpressionException e) {
                 result.add(createValidationFailedProblem(sharedContext, xmlFile, e));
             }
-//            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
-//                from,
-//                Instant.now()
-//            ));
+            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
+                from,
+                Instant.now()
+            ));
 
             return result.toArray(new ProblemDescriptor[result.size()]);
         });

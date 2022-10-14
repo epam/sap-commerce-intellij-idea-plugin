@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
@@ -91,7 +91,7 @@ public class TSMetaItemView {
         attributesModel.setColumnInfos(columnInfos);
 
         final CollectionComboBoxModel<String> extendClasses = new CollectionComboBoxModel<>();
-        TSMetaModelService.Companion.getInstance(project).metaModel()
+        TSMetaModelAccess.getInstance(project).getMetaModel()
                                     .<TSMetaItem>getMetaType(MetaType.META_ITEM)
                                     .values().stream()
                                     .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))

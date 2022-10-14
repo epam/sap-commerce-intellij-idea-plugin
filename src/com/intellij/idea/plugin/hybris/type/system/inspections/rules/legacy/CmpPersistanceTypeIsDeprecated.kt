@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class CmpPersistanceTypeIsDeprecated : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute"
 
-class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//relation/deployment"
+    override fun getTestQuery(): String = "count(./persistence) = 0 or ./persistence/@type != 'cmp'"
 
-    override fun getTestQuery(): String = "./@typecode > 10000"
-
-    override fun getNameQuery(): String = "./@code"
+    override fun getNameQuery(): String = "../../@code|./@qualifier"
 
 }

@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class RelationshipQualifierNameMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//relation/sourceElement|//relation/targetElement"
 
-class TypeCodeReservedForLegacyXPrintExtension : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/deployment"
+    override fun getTestQuery(): String = "substring(./@qualifier, 1, 1) = translate(substring(./@qualifier, 1, 1), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
 
-    override fun getTestQuery(): String = "./@typecode > 24399 and ./@typecode < 24600"
-
-    override fun getNameQuery(): String = "../@code"
-
-    override fun isFailOnTestQuery(): Boolean = true
+    override fun getNameQuery(): String = "../@code|./@qualifier"
 
 }

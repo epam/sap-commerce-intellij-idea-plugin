@@ -44,13 +44,13 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val entries = TSMetaModelService.getInstance(myProject).metaModel().getMetaType<TSMetaClassifier<DomElement>>(metaType).values.size
+        val entries = TSMetaModelAccess.getInstance(myProject).metaModel.getMetaType<TSMetaClassifier<DomElement>>(metaType).values.size
         if (entries > 0) {
             presentation.locationString = "$entries"
         }
     }
 
-    override fun getChildren(): Collection<TSNode?> = TSMetaModelService.getInstance(myProject).metaModel()
+    override fun getChildren(): Collection<TSNode?> = TSMetaModelAccess.getInstance(myProject).metaModel
             .getMetaType<TSMetaClassifier<DomElement>>(metaType).values
             .map {
                 when (it) {

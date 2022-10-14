@@ -43,8 +43,8 @@ class TSMetaModel : Disposable {
         myReferencesBySourceTypeName.clear()
     }
 
-    fun merge(externalMetaModel: TSMetaModel) {
-        externalMetaModel.getMetaTypes().forEach { (metaType, cache) ->
+    fun merge(another: TSMetaModel) {
+        another.getMetaTypes().forEach { (metaType, cache) ->
             run {
                 val globalCache = getMetaType<TSMetaClassifier<DomElement?>>(metaType)
 
@@ -62,6 +62,6 @@ class TSMetaModel : Disposable {
                 }
             }
         }
-        getReferences().putAllValues(externalMetaModel.getReferences());
+        getReferences().putAllValues(another.getReferences());
     }
 }

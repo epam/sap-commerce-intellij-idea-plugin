@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class ListsInRelationShouldBeAvoided : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//relation/sourceElement[@cardinality='many']|//relation/targetElement[@cardinality='many']"
 
-class TypeCodeReservedForProcessingExtension : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/deployment"
+    override fun getTestQuery(): String = "./@collectiontype = 'set' or count(./@collectiontype) = 0"
 
-    override fun getTestQuery(): String = "./@typecode > 32699 and ./@typecode < 32800"
-
-    override fun getNameQuery(): String = "../@code"
-
-    override fun isFailOnTestQuery(): Boolean = true
+    override fun getNameQuery(): String = "../@code|./@qualifier"
 
 }

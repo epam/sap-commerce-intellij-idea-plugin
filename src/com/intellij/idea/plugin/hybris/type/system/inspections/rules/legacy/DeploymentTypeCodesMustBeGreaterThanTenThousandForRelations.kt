@@ -15,16 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//relation/deployment"
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+    override fun getTestQuery(): String = "./@typecode > 10000"
 
-class MandatoryFieldMustHaveInitialValue : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[modifiers[@optional='false']]"
-
-    override fun getTestQuery(): String = "./modifiers/@initial = 'true' or count(./defaultvalue) > 0"
-
-    override fun getNameQuery(): String = "../../@code|./@qualifier"
+    override fun getNameQuery(): String = "./@code"
 
 }

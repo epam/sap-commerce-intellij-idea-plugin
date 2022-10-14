@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype|//enumtype|//relation"
 
-class TypeCodeReservedForPrintExtension : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/deployment"
+    override fun getTestQuery(): String = "substring(./@code, 1, 1) = translate(substring(./@code, 1, 1), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"
 
-    override fun getTestQuery(): String = "(./@typecode > 23399 and ./@typecode < 23500) or (./@typecode > 238999 and ./@typecode < 24000)"
-
-    override fun getNameQuery(): String = "../@code"
-
-    override fun isFailOnTestQuery(): Boolean = true
+    override fun getNameQuery(): String = "./@code"
 
 }

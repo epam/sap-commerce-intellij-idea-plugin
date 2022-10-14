@@ -47,7 +47,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedList;
 
-class ValidateContextImpl implements ValidateContext {
+public class ValidateContextImpl implements ValidateContext {
 
     private final InspectionManager inspectionManager;
     @NotNull

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -35,6 +36,8 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
 
     @Nullable
     String getExtendedMetaItemName();
+
+    Set<TSMetaItem> getExtends();
 
     void addAttribute(final String key, TSMetaAttribute attribute);
 

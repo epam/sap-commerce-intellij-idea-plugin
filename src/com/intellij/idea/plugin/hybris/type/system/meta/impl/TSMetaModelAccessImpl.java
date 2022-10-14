@@ -95,21 +95,18 @@ public class TSMetaModelAccessImpl implements TSMetaModelAccess {
         try {
             // we have to put and remove new cache from the user data here due fact that process can be cancelled and cached object may stay in obsolete state
             writeLock.lock();
-            return DumbService.getInstance(myProject).runReadActionInSmartMode(new Computable<TSMetaModel>() {
+            // this operation have to be completed only once index is ready
+            return DumbService.getInstance(myProject).runReadActionInSmartMode(() -> {
+                final var globalMetaModel = new TSMetaModel();
 
-                @Override
-                public TSMetaModel compute() {
-                    final var globalMetaModel = new TSMetaModel();
+                TSMetaModelBuilder.prepare(myProject).collectDependencies()
+                                  .stream()
+                                  .filter(Objects::nonNull)
+                                  .map(TSMetaModelAccessImpl.this::retrieveSingleMetaModelPerFile)
+                                  .map(TSMetaModelAccessImpl.this::retrieveSingleMetaModel)
+                                  .forEach(globalMetaModel::merge);
 
-                    TSMetaModelBuilder.prepare(myProject).collectDependencies()
-                                      .stream()
-                                      .filter(Objects::nonNull)
-                                      .map(TSMetaModelAccessImpl.this::retrieveSingleMetaModelPerFile)
-                                      .map(TSMetaModelAccessImpl.this::retrieveSingleMetaModel)
-                                      .forEach(globalMetaModel::merge);
-
-                    return myGlobalMetaModel.getValue(globalMetaModel);
-                }
+                return myGlobalMetaModel.getValue(globalMetaModel);
             });
         } finally {
             // reset user data cache, it is required only for new Meta Cache proper creation

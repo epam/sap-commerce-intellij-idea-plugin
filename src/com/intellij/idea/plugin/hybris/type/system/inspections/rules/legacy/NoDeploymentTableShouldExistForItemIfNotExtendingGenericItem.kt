@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype[@extends!='GenericItem']"
 
-class ConditionForUniqueKeyAttributeQualifier : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[concat('\"',@qualifier,'\"')=//itemtype/custom-properties/property[@name='uniqueKeyAttributeQualifier']/value/text()]"
+    override fun getTestQuery(): String = "count(./deployment) = 0"
 
-    override fun getTestQuery(): String = "./modifiers[@optional='false' and @unique='true']"
-
-    override fun getNameQuery(): String = "./@qualifier"
+    override fun getNameQuery(): String = "./@code"
 
 }

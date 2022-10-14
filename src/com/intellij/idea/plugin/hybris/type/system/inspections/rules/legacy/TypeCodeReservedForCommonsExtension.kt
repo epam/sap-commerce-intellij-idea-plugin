@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class TypeCodeReservedForCommonsExtension : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/deployment"
 
-class ImmutableFieldMustHaveInitialValue : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[modifiers[@write='false'] and persistence[@type!='dynamic']]"
+    override fun getTestQuery(): String = "./@typecode > 13199 and ./@typecode < 13300"
 
-    override fun getTestQuery(): String = "./modifiers/@initial = 'true' or count(./defaultvalue) > 0"
+    override fun getNameQuery(): String = "../@code"
 
-    override fun getNameQuery(): String = "../../@code|./@qualifier"
+    override fun isFailOnTestQuery(): Boolean = true
 
 }

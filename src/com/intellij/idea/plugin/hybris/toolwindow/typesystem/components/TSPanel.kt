@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.TSMetaItemView
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
 import com.intellij.ui.FinderRecursivePanel
@@ -40,7 +40,7 @@ class TSPanel(
 
     override fun getListItems(): List<TSMetaItem> {
         val sortedBy = ArrayList(
-            TSMetaModelService.getInstance(myProject).metaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM).values
+            TSMetaModelAccess.getInstance(myProject).metaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
         )
             .sortedBy { it.name }
 

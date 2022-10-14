@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,25 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-package com.intellij.idea.plugin.hybris.type.system.inspections;
+class DeploymentTypeCodeMustBeGreaterThanTenThousand : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/deployment"
 
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+    override fun getTestQuery(): String = "./@typecode > 10000"
 
-public interface ValidateContext {
+    override fun getNameQuery(): String = "../@code"
 
-    boolean isOnTheFly();
-
-    @NotNull
-    Document getDocument();
-
-    @NotNull
-    InspectionManager getManager();
-
-    @NotNull
-    PsiElement mapNodeToPsi(@NotNull Node xmlNode);
 }

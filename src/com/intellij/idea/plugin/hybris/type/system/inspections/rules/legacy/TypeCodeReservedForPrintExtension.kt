@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class TypeCodeReservedForPrintExtension : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/deployment"
 
-class CatalogAwareTypesMustHaveSpecificConditions : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/custom-properties/property[@name='catalogItemType']"
+    override fun getTestQuery(): String = "(./@typecode > 23399 and ./@typecode < 23500) or (./@typecode > 238999 and ./@typecode < 24000)"
 
-    override fun getTestQuery(): String = "count(./value) = 1"
+    override fun getNameQuery(): String = "../@code"
 
-    override fun getNameQuery(): String = "../../@code"
+    override fun isFailOnTestQuery(): Boolean = true
 
 }

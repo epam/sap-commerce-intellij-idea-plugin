@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class TypeNameMustNotStartWithGenerated : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype|//enumtype|//relation"
 
-class BooleanFieldCannotBeOptional : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/attributes/attribute[@type='java.lang.Boolean']"
+    override fun getTestQuery(): String = "not(starts-with(translate(./@code, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 'GENERATED'))"
 
-    override fun getTestQuery(): String = "./modifiers/@optional = 'false' or count(./defaultvalue) > 0"
-
-    override fun getNameQuery(): String = "../../@code|./@qualifier"
+    override fun getNameQuery(): String = "./@code"
 
 }

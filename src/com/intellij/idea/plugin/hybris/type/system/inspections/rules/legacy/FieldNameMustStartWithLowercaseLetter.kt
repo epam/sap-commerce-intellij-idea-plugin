@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
-
-class JaloPersistanceTypeIsDeprecated : TypeSystemInspection() {
+class FieldNameMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
     override fun getSelectionQuery(): String = "//itemtype/attributes/attribute"
 
-    override fun getTestQuery(): String = "count(./persistence) = 0 or ./persistence/@type != 'jalo'"
+    override fun getTestQuery(): String = "substring(./@qualifier, 1, 1) = translate(substring(./@qualifier, 1, 1), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
 
     override fun getNameQuery(): String = "../../@code|./@qualifier"
 

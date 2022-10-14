@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -34,7 +34,7 @@ class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getChildren(): Collection<TSNode> = TSMetaModelService.getInstance(myProject).metaModel()
+    override fun getChildren(): Collection<TSNode> = TSMetaModelAccess.getInstance(myProject).metaModel
         .getMetaTypes().keys
         .map { TSMetaTypeNode(this, it) }
         .sortedBy { it.name }

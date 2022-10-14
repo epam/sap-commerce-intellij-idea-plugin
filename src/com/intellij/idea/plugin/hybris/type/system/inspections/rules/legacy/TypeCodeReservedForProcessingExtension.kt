@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemInspection
+class TypeCodeReservedForProcessingExtension : AbstractTypeSystemInspection() {
+    override fun getSelectionQuery(): String = "//itemtype/deployment"
 
-class NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem : TypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype[@extends!='GenericItem']"
+    override fun getTestQuery(): String = "./@typecode > 32699 and ./@typecode < 32800"
 
-    override fun getTestQuery(): String = "count(./deployment) = 0"
+    override fun getNameQuery(): String = "../@code"
 
-    override fun getNameQuery(): String = "./@code"
+    override fun isFailOnTestQuery(): Boolean = true
 
 }
