@@ -21,8 +21,10 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.project.Project
+import com.intellij.ui.tree.LeafState
+import com.intellij.ui.tree.LeafState.Supplier
 
-abstract class TSNode : PresentableNodeDescriptor<TSNode?> {
+abstract class TSNode : PresentableNodeDescriptor<TSNode?>, Supplier {
     protected constructor(project: Project) : super(project, null)
     protected constructor(parent: TSNode) : super(parent.project, parent)
 
@@ -40,5 +42,7 @@ abstract class TSNode : PresentableNodeDescriptor<TSNode?> {
     }
 
     override fun toString(): String = name
+
+    override fun getLeafState(): LeafState = LeafState.ASYNC
 
 }

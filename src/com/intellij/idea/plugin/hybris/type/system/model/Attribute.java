@@ -21,7 +21,6 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
-import com.intellij.idea.plugin.hybris.type.system.converter.AttributeHandlerReferenceConverter;
 import com.intellij.idea.plugin.hybris.type.system.converter.AttributeReferenceConverter;
 import com.intellij.idea.plugin.hybris.type.system.file.CompositeConverter;
 import com.intellij.util.xml.Convert;

@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.tree.LeafState
 
 class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
 
@@ -38,4 +39,6 @@ class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
         .getMetaTypes().keys
         .map { TSMetaTypeNode(this, it) }
         .sortedBy { it.name }
+
+    override fun getLeafState(): LeafState = LeafState.ALWAYS
 }

@@ -19,7 +19,12 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.ide.IdeBundle
+import com.intellij.idea.plugin.hybris.toolwindow.TSMetaItemView
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTreeModel
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSMetaItemNode
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSNode
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
@@ -28,13 +33,25 @@ import com.intellij.ui.components.JBScrollPane
 class TSTreePanel(
     val myProject: Project,
     myGroupId: String = "HybrisTypeSystemTreePanel"
-) : OnePixelSplitter() {
+) : OnePixelSplitter(), Disposable {
     private var myTree = TSTree(myProject)
     private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
 
     init {
         firstComponent = JBScrollPane(myTree)
         secondComponent = myDefaultPanel
+
+        myTree.addTreeSelectionListener { tls ->
+            val path = tls.newLeadSelectionPath
+            val component = path.lastPathComponent
+            if (component is TSTreeModel.Node && component.userObject is TSNode) {
+                secondComponent = myDefaultPanel
+
+                when (val tsNode = component.userObject) {
+                    is TSMetaItemNode -> secondComponent = TSMetaItemView.create(myProject, tsNode.meta)
+                }
+            }
+        }
     }
 
     companion object {

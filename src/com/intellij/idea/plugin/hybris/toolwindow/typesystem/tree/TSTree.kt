@@ -32,6 +32,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeModel
 import javax.swing.tree.TreePath
 
+private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
 class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
@@ -40,11 +41,6 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         isRootVisible = false
         model = buildTreeModel(TSRootNode(this))
 
-        val tree = this
-        addTreeSelectionListener { _ ->
-            val node = tree.lastSelectedPathComponent;
-
-        }
         TreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
                 is TSNode -> return@Convertor uObj.name
@@ -63,7 +59,7 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
     private fun buildTreeModel(root: TSNode): TreeModel {
         val model = TSTreeModel(myProject, root)
-        return AsyncTreeModel(model, SEARCH_CAN_EXPAND, this)
+        return AsyncTreeModel(model, SHOW_LOADING_NODE, this)
     }
 
     override fun dispose() {

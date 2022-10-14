@@ -18,89 +18,49 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.TSMetaItemViewDataSupplier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.CollectionComboBoxModel;
-import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.ListTableModel;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.Key;
+import com.intellij.ui.components.JBCheckBox;
+import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBTabbedPane;
+import com.intellij.ui.components.JBTextArea;
+import com.intellij.ui.components.JBTextField;
+import com.intellij.ui.table.JBTable;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TSMetaItemView {
 
-    private JPanel contentPane;
+    private static final Key<Integer> ACTIVE_TAB_INDEX = Key.create("TSMETAITEMVIEW_ACTIVE_INDEX");
+    private JBPanel contentPane;
     private JComboBox<String> myExtends;
-    private JTextField myJaloClass;
-    private JTextField myDeploymentTable;
-    private JTextField myDeploymentTypeCode;
-    private JTextField myCode;
-    private JTable myAttributes;
-    private JTable myCustomAttributes;
-    private JCheckBox myAbstract;
-    private JCheckBox myAutocreate;
-    private JCheckBox mySingleton;
-    private JCheckBox myJaloonly;
-    private JCheckBox myGenerate;
-    private JPanel myDetailsContent;
-    private JTextPane myDescription;
+    private JBTextField myJaloClass;
+    private JBTextField myDeploymentTable;
+    private JBTextField myDeploymentTypeCode;
+    private JBTextField myCode;
+    private JBTable myAttributes;
+    private JBTable myCustomAttributes;
+    private JBCheckBox myAbstract;
+    private JBCheckBox myAutocreate;
+    private JBCheckBox mySingleton;
+    private JBCheckBox myJaloonly;
+    private JBCheckBox myGenerate;
+    private JBPanel myDetailsContent;
+    private JBTextArea myDescription;
+    private JBTabbedPane myTabs;
 
     public static JPanel create(final Project project, final TSMetaItem source) {
         final TSMetaItemView view = new TSMetaItemView();
 
         final ItemType dom = source.retrieveDom();
 
-        final ListTableModel<TSMetaAttribute> attributesModel = new ListTableModel<>();
-        final List<TSMetaAttribute> attributes = source.getAttributes(false).stream()
-                                                       .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
-                                                       .collect(Collectors.toList());
-        attributesModel.setItems(attributes);
-        final ColumnInfo[] columnInfos = Stream.of("code", "type", "redeclare", "defaultValue")
-                                               .map(column -> new ColumnInfo<TSMetaAttribute, Object>(column) {
+        TSMetaItemViewDataSupplier.Companion.getInstance(project).initAttributesTable(view.myAttributes, source);
+        TSMetaItemViewDataSupplier.Companion.getInstance(project).initExtends(view.myExtends, source);
 
-                                                   @Override
-                                                   public @Nullable Object valueOf(final TSMetaAttribute metaProperty) {
-                                                       final Attribute attribute = metaProperty.retrieveDom();
-
-                                                       switch (getName()) {
-                                                           case "code": return metaProperty.getName();
-                                                           case "type": return metaProperty.getType();
-                                                           case "redeclare": return Boolean.TRUE.equals(attribute.getRedeclare().getValue());
-                                                           case "defaultValue": return attribute.getDefaultValue().getValue();
-                                                           default: return null;
-                                                       }
-                                                   }
-
-                                                   @Override
-                                                   public boolean isCellEditable(final TSMetaAttribute tsMetaProperty) {
-                                                       return true;
-                                                   }
-                                               })
-                                               .collect(Collectors.toList())
-                                               .toArray(new ColumnInfo[]{});
-        attributesModel.setColumnInfos(columnInfos);
-
-        final CollectionComboBoxModel<String> extendClasses = new CollectionComboBoxModel<>();
-        TSMetaModelAccess.getInstance(project).getMetaModel()
-                                    .<TSMetaItem>getMetaType(MetaType.META_ITEM)
-                                    .values().stream()
-                                    .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
-                                    .filter(item -> !item.equals(source))
-                                    .map(TSMetaClassifier::getName)
-                                    .forEach(extendClasses::add);
-        view.myExtends.setModel(extendClasses);
-        view.myExtends.setSelectedItem(dom.getExtends().getStringValue() == null ? "GenericItem" : dom.getExtends().getStringValue());
-        view.myAttributes.setModel(attributesModel);
         view.myCode.setText(dom.getCode().getStringValue());
         Optional.ofNullable(dom.getDescription().getXmlTag())
                 .map(description -> description.getValue().getText())
@@ -114,6 +74,14 @@ public class TSMetaItemView {
         view.mySingleton.setSelected(Boolean.TRUE.equals(dom.getSingleton().getValue()));
         view.myJaloonly.setSelected(Boolean.TRUE.equals(dom.getJaloOnly().getValue()));
 
+        Optional.ofNullable(project.<Integer>getUserData(ACTIVE_TAB_INDEX))
+                .ifPresent(previouslySelectedIndex -> view.myTabs.setSelectedIndex(previouslySelectedIndex));
+        view.myTabs.addChangeListener(e -> {
+            final Object source1 = e.getSource();
+            if (source1 instanceof JTabbedPane) {
+                project.putUserData(ACTIVE_TAB_INDEX, ((JTabbedPane) source1).getSelectedIndex());
+            }
+        });
 
         return view.contentPane;
     }

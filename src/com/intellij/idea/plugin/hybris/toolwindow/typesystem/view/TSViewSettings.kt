@@ -89,7 +89,7 @@ class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
 
     class Settings {
-        var showCustomOnly = true
+        var showCustomOnly = false
         var showMetaItems = true
         var showMetaRelations = true
         var showMetaEnums = true

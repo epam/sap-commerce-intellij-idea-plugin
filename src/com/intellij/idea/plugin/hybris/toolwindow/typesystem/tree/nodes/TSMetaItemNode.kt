@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemNode(parent: TSNode, private val meta: TSMetaItem) : TSNode(parent), Disposable {
+class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
@@ -36,8 +36,8 @@ class TSMetaItemNode(parent: TSNode, private val meta: TSMetaItem) : TSNode(pare
         presentation.locationString = "extends ${meta.extendedMetaItemName ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME}"
     }
 
-    override fun getChildren(): Collection<TSMetaPropertyNode> = meta.getAttributes(false)
-        .map { TSMetaPropertyNode(this, it) }
+    override fun getChildren(): Collection<TSMetaAttributeNode> = meta.getAttributes(false)
+        .map { TSMetaAttributeNode(this, it) }
         .sortedBy { it.name }
 
 }

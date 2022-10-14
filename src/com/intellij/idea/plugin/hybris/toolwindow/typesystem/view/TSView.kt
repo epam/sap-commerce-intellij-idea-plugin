@@ -18,19 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.view
 
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSPanel
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.ui.FinderRecursivePanel
+import com.intellij.openapi.util.Disposer
 
 class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     var myProject: Project
-    var myRootPanel: FinderRecursivePanel<*>
     val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     val mySettings: TSViewSettings
@@ -42,14 +40,10 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
     init {
         myProject = project
         mySettings = TSViewSettings(myProject)
-        myRootPanel = TSPanel(myProject, myItemsViewActionGroup)
-//        myRootPanel.initPanel()
-//        setContent(myRootPanel)
-
         val pane = TSTreePanel(myProject)
         setContent(pane);
 
-//        Disposer.register(this, myRootPanel)
+        Disposer.register(this, pane)
 
         installToolbar()
         installSettingsListener()
@@ -80,18 +74,20 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
     }
 
     private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
+        add(ShowOnlyCustomAction(mySettings))
+        addSeparator()
         this
     }
 
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
         add(ShowOnlyCustomAction(mySettings))
         addSeparator()
-        add(ShowMetaItemsAction(mySettings))
-        add(ShowMetaEnumsAction(mySettings))
-        add(ShowMetaCollectionsAction(mySettings))
-        add(ShowMetaMapsAction(mySettings))
-        add(ShowMetaRelationsAction(mySettings))
-        add(ShowMetaAtomicsAction(mySettings))
+//        add(ShowMetaItemsAction(mySettings))
+//        add(ShowMetaEnumsAction(mySettings))
+//        add(ShowMetaCollectionsAction(mySettings))
+//        add(ShowMetaMapsAction(mySettings))
+//        add(ShowMetaRelationsAction(mySettings))
+//        add(ShowMetaAtomicsAction(mySettings))
         this
     }
 
