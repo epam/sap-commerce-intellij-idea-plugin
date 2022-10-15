@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaCustomProperty {
@@ -33,6 +32,4 @@ public interface TSMetaCustomProperty {
     @Nullable
     String getValue();
 
-    @NotNull
-    TSMetaItem getMetaItem();
 }

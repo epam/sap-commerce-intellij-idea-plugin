@@ -32,6 +32,9 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaItemServiceImpl"/>
+
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
 

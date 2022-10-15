@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_DEPRECATED = "D"
@@ -37,7 +38,7 @@ class TSMetaItemAttributesTable : AbstractTSTable<TSMetaItem, TSMetaAttribute>()
     override fun getFixedWidthColumnNames() = listOf(COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
 
     override fun createModel(): ListTableModel<TSMetaAttribute> = with(ListTableModel<TSMetaAttribute>()) {
-        items = myOwner.getAttributes(true)
+        items = TSMetaItemService.getInstance(myProject).getAttributes(myOwner, true)
             .sortedBy { it.name }
 
         columnInfos = arrayOf(
@@ -49,37 +50,37 @@ class TSMetaItemAttributesTable : AbstractTSTable<TSMetaItem, TSMetaAttribute>()
             ),
             createColumn(
                 name = COLUMN_REDECLARE,
-                valueProvider = { attr -> attr.retrieveDom()?.redeclare?.value ?: false },
+                valueProvider = { attr -> attr.isRedeclare },
                 columnClass = Boolean::class.java,
                 tooltip = "Redeclare"
             ),
             createColumn(
                 name = COLUMN_AUTO_CREATE,
-                valueProvider = { attr -> attr.retrieveDom()?.autoCreate?.value ?: false },
+                valueProvider = { attr -> attr.isAutoCreate },
                 columnClass = Boolean::class.java,
                 tooltip = "Autocreate"
             ),
             createColumn(
                 name = COLUMN_GENERATE,
-                valueProvider = { attr -> attr.retrieveDom()?.generate?.value ?: false },
+                valueProvider = { attr -> attr.isGenerate },
                 columnClass = Boolean::class.java,
                 tooltip = "Generate"
             ),
             createColumn(
                 name = COLUMN_QUALIFIER,
-                valueProvider = { attr -> attr.retrieveDom()?.qualifier?.stringValue ?: "" }
+                valueProvider = { attr -> attr.name ?: "" }
             ),
             createColumn(
                 name = COLUMN_TYPE,
-                valueProvider = { attr -> attr.retrieveDom()?.type?.stringValue ?: "" }
-            ),
-            createColumn(
-                name = COLUMN_DEFAULT_VALUE,
-                valueProvider = { attr -> attr.retrieveDom()?.defaultValue?.stringValue ?: "" }
+                valueProvider = { attr -> attr.type ?: "" }
             ),
             createColumn(
                 name = COLUMN_DESCRIPTION,
-                valueProvider = { attr -> attr.retrieveDom()?.description?.xmlTag?.value?.text ?: "" }
+                valueProvider = { attr -> attr.description ?: "" }
+            ),
+            createColumn(
+                name = COLUMN_DEFAULT_VALUE,
+                valueProvider = { attr -> attr.defaultValue ?: "" }
             )
         )
 

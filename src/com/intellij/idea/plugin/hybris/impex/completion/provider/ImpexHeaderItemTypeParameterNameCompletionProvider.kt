@@ -25,7 +25,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
@@ -64,8 +65,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             typeName: String,
             resultSet: CompletionResultSet
     ) {
-
-        val metaService = TSMetaModelService.getInstance(project)
+        val metaService = TSMetaModelAccess.getInstance(project)
 
         val metaItem = metaService.findMetaItemByName(typeName)
         if (metaItem == null) {
@@ -74,7 +74,8 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                 resultSet.addElement(LookupElementBuilder.create("code").withIcon(HybrisIcons.TYPE_SYSTEM))
             }
         } else {
-            metaItem.getAttributes(true)
+            val metaItemService = TSMetaItemService.getInstance(project)
+            metaItemService.getAttributes(metaItem, true)
                     .map { prop ->
                         val name = prop.name
                         val builder = LookupElementBuilder
@@ -87,8 +88,8 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .filter { Objects.nonNull(it) }
                     .forEach { resultSet.addElement(it) }
 
-            metaItem.getReferenceEndsStream(true)
-                    .map { ref -> LookupElementBuilder.create(ref.getRole()).withIcon(HybrisIcons.TYPE_SYSTEM) }
+            metaItemService.getReferenceEndsStream(metaItem, true)
+                    .map { ref -> LookupElementBuilder.create(ref.role).withIcon(HybrisIcons.TYPE_SYSTEM) }
                     .forEach { resultSet.addElement(it) }
 
         }

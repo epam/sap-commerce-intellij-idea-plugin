@@ -18,13 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -37,29 +35,13 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
     @Nullable
     String getExtendedMetaItemName();
 
-    Set<TSMetaItem> getExtends();
-
     void addAttribute(String key, TSMetaAttribute attribute);
 
     void addCustomProperty(String key, TSMetaCustomProperty customProperty);
 
-    @NotNull
-    List<? extends TSMetaAttribute> getAttributes(boolean includeInherited);
+    CaseInsensitive.NoCaseMultiMap<TSMetaAttribute> getAttributes();
 
-    @NotNull
-    List<? extends TSMetaCustomProperty> getCustomProperties(boolean includeInherited);
-
-    @NotNull
-    Collection<? extends TSMetaAttribute> findAttributesByName(@NotNull String name, boolean includeInherited);
-
-    @NotNull
-    Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(
-        @NotNull String role,
-        boolean includeInherited
-    );
-
-    @NotNull
-    Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(boolean includeInherited);
+    CaseInsensitive.NoCaseMultiMap<TSMetaCustomProperty> getCustomAttributes();
 
     String getTypeCode();
 

@@ -22,7 +22,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.psi.PsiElement
@@ -38,7 +39,7 @@ import java.util.*
 class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemReferenceBase<ImpexParameter>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val metaService = TSMetaModelService.getInstance(project)
+        val metaService = TSMetaModelAccess.getInstance(project)
         val featureName = element.text.trim()
         val typeName = findItemTypeReference()
         val metaItem = metaService.findMetaItemByName(typeName)
@@ -51,13 +52,13 @@ class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemRe
                 return arrayOf(EnumResolveResult(result))
             }
         } else {
-            val result = metaItem
-                    .findAttributesByName(featureName, true)
+            val result = TSMetaItemService.getInstance(project)
+                    .findAttributesByName(metaItem, featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { AttributeResolveResult(it!!) }
 
-            metaItem.findReferenceEndsByRole(featureName, true)
+            TSMetaItemService.getInstance(project).findReferenceEndsByRole(metaItem, featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { RelationElementResolveResult(it!!) }

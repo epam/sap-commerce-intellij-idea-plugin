@@ -41,7 +41,7 @@ class TSMetaItemExtendsCombobox : JComboBox<String>() {
     }
 
     private fun createModel(meta: TSMetaItem): CollectionComboBoxModel<String> = with(CollectionComboBoxModel<String>()) {
-        TSMetaModelAccess.getInstance(myProject).metaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
+        TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM).values
             .filter { it != meta }
             .map { it.name }
             .sortedBy { it }

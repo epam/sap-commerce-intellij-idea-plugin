@@ -20,23 +20,36 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import java.util.stream.Collectors
 
 class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
 
-    override fun checkItems(items: Items, holder: DomElementAnnotationHolder, helper: DomHighlightingHelper, severity: HighlightSeverity) {
-        items.itemTypes.stream.forEach { checkItemType(it, holder, severity) }
+    override fun checkItems(
+        project: Project,
+        items: Items,
+        holder: DomElementAnnotationHolder,
+        helper: DomHighlightingHelper,
+        severity: HighlightSeverity
+    ) {
+        items.itemTypes.stream.forEach { checkItemType(it, project, holder, severity) }
     }
 
-    private fun checkItemType(it: ItemType, holder: DomElementAnnotationHolder, severity: HighlightSeverity) {
-        val metaItem = TSMetaModelAccess.getInstance(it).metaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
+    private fun checkItemType(
+        it: ItemType,
+        project: Project,
+        holder: DomElementAnnotationHolder,
+        severity: HighlightSeverity
+    ) {
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
             ?: return
 
         val isAbstract = metaItem.retrieveAllDomsStream()
@@ -48,7 +61,7 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
             return
         }
 
-        val countExtends = metaItem.extends
+        val countExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
             .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
             .map { it.deployment }
             .filter { it.exists() }

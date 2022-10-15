@@ -3,7 +3,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.lang.ASTNode
@@ -50,7 +51,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
     private fun hasPrefix(element: FlexibleSearchColumnReference) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
 
     private fun findReference(itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
-        val metaService = TSMetaModelService.getInstance(project)
+        val metaService = TSMetaModelAccess.getInstance(project)
         val metaItem = itemType
                 .map { it.text.replace("!", "") }
                 .map { metaService.findMetaItemByName(it) }
@@ -59,13 +60,13 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
             return ResolveResult.EMPTY_ARRAY
         }
 
-        val attributes = metaItem.get()
-                .findAttributesByName(refName, true)
+        val attributes = TSMetaItemService.getInstance(project)
+                .findAttributesByName(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { AttributeResolveResult(it) }.toList()
 
-        val relations = metaItem.get()
-                .findReferenceEndsByRole(refName, true)
+        val relations = TSMetaItemService.getInstance(project)
+                .findReferenceEndsByRole(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { RelationElementResolveResult(it) }
 

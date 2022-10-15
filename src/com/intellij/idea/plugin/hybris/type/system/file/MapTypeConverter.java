@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -39,7 +39,7 @@ public class MapTypeConverter extends TypeSystemConverterBase<MapType> {
     }
 
     @Override
-    protected MapType searchForName(@NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelService meta) {
+    protected MapType searchForName(@NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelAccess meta) {
         return Optional.ofNullable(meta.findMetaMapByName(name))
                        .map(TSMetaMap::retrieveAllDomsStream)
                        .orElse(Stream.empty())
@@ -48,7 +48,7 @@ public class MapTypeConverter extends TypeSystemConverterBase<MapType> {
     }
 
     @Override
-    protected Collection<? extends MapType> searchAll(@NotNull final ConvertContext context, final TSMetaModelService meta) {
+    protected Collection<? extends MapType> searchAll(@NotNull final ConvertContext context, final TSMetaModelAccess meta) {
         return meta.<TSMetaMap>getAll(MetaType.META_MAP).stream()
                    .map(TSMetaMap::retrieveAllDomsStream)
                    .map(Stream::findFirst)

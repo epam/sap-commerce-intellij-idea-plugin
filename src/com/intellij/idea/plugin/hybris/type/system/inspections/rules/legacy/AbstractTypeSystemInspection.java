@@ -28,7 +28,6 @@ import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ex.InspectionProfileImpl;
 import com.intellij.codeInspection.ex.InspectionProfileWrapper;
 import com.intellij.idea.plugin.hybris.type.system.inspections.ItemsXmlQuickFixManager;
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
 import com.intellij.idea.plugin.hybris.type.system.inspections.ValidateContext;
 import com.intellij.idea.plugin.hybris.type.system.inspections.ValidateContextImpl;
 import com.intellij.idea.plugin.hybris.type.system.inspections.XPathService;
@@ -65,7 +64,7 @@ public abstract class AbstractTypeSystemInspection extends LocalInspectionTool {
         final @NotNull InspectionManager manager,
         final boolean isOnTheFly
     ) {
-        if (!TypeSystemUtils.isTypeSystemXmlFile(file) || !TypeSystemValidationUtils.isCustomExtensionFile(file)) {
+        if (!TypeSystemUtils.isTypeSystemXmlFile(file) || !TypeSystemUtils.isCustomExtensionFile(file)) {
             return null;
         }
 

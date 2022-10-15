@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -40,7 +40,7 @@ public class CollectionTypeConverter extends TypeSystemConverterBase<CollectionT
 
     @Override
     protected CollectionType searchForName(
-        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelService meta
+        @NotNull final String name, @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
         return Optional.ofNullable(meta.findMetaCollectionByName(name))
                        .map(TSMetaCollection::retrieveDom)
@@ -49,7 +49,7 @@ public class CollectionTypeConverter extends TypeSystemConverterBase<CollectionT
 
     @Override
     protected Collection<? extends CollectionType> searchAll(
-        @NotNull final ConvertContext context, final TSMetaModelService meta
+        @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
         return meta.<TSMetaCollection>getAll(MetaType.META_COLLECTION).stream()
                    .map(TSMetaCollection::retrieveDom)

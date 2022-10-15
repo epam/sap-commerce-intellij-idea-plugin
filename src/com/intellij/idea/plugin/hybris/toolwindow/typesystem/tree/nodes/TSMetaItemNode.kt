@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -37,15 +38,16 @@ class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Dis
     }
 
     override fun getChildren(): Collection<TSNode> {
-        val customProperties: List<TSNode> = meta.getCustomProperties(false)
+        val metaItemService = TSMetaItemService.getInstance(myProject)
+        val customProperties = metaItemService.getCustomProperties(meta,false)
             .map { TSMetaCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
-        val attributes: List<TSNode> = meta.getAttributes(false)
+        val attributes = metaItemService.getAttributes(meta, false)
             .map { TSMetaAttributeNode(this, it) }
             .sortedBy { it.name }
 
-        return customProperties.plus(attributes)
+        return customProperties + attributes
     }
 
 }

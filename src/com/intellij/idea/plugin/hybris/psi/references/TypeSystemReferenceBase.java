@@ -18,7 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.psi.references;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -59,8 +60,13 @@ public abstract class TypeSystemReferenceBase<PSI extends PsiElement> extends Ps
     }
 
     @NotNull
-    protected final TSMetaModelService getMetaService() {
-        return TSMetaModelService.Companion.getInstance(getProject());
+    protected final TSMetaModelAccess getMetaModelAccess() {
+        return TSMetaModelAccess.Companion.getInstance(getProject());
+    }
+
+    @NotNull
+    protected final TSMetaItemService getMetaItemService() {
+        return TSMetaItemService.getInstance(getProject());
     }
 
     public interface TypeSystemResolveResult extends ResolveResult {

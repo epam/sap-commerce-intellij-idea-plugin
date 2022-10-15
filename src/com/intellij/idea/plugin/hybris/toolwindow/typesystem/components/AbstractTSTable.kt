@@ -34,7 +34,7 @@ import javax.swing.table.TableColumn
 
 abstract class AbstractTSTable<Owner : Any, Item> : JBTable() {
 
-    private lateinit var myProject: Project
+    lateinit var myProject: Project
     lateinit var myOwner: Owner
 
     init {

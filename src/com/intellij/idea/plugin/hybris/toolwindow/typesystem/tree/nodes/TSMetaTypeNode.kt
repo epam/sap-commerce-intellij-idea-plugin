@@ -41,16 +41,17 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
             MetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
             MetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
             MetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
+            else -> Unit
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val entries = TSMetaModelAccess.getInstance(myProject).metaModel.getMetaType<TSMetaClassifier<DomElement>>(metaType).values.size
+        val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSMetaClassifier<DomElement>>(metaType).values.size
         if (entries > 0) {
             presentation.locationString = "$entries"
         }
     }
 
-    override fun getChildren(): Collection<TSNode?> = TSMetaModelAccess.getInstance(myProject).metaModel
+    override fun getChildren(): Collection<TSNode?> = TSMetaModelAccess.getInstance(myProject).getMetaModel()
             .getMetaType<TSMetaClassifier<DomElement>>(metaType).values
             .map {
                 when (it) {

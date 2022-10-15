@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
@@ -32,17 +30,9 @@ import com.intellij.util.xml.DomService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -58,15 +48,9 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     private volatile Set<TSMetaItem> parents;
 
     private final String myTypeCode;
+    private String myExtendedMetaItemName;
 
-    private String myExtendedMetaItemName = null;
-
-    public TSMetaItemImpl(
-        final Project project,
-        final String name,
-        final String typeCode,
-        final @NotNull ItemType dom
-    ) {
+    public TSMetaItemImpl(final Project project, final String name, final String typeCode, final @NotNull ItemType dom) {
         super(project, name, dom);
         myTypeCode = typeCode;
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
@@ -97,103 +81,19 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    @NotNull
-    public List<? extends TSMetaAttribute> getAttributes(final boolean includeInherited) {
-        final LinkedList<TSMetaAttribute> result = new LinkedList<>();
-        if (includeInherited) {
-            walkInheritance(meta -> meta.collectOwnAttributes(result));
-        } else {
-            this.collectOwnAttributes(result);
-        }
-        return result;
+    public NoCaseMultiMap<TSMetaAttribute> getAttributes() {
+        return myAttributes;
     }
 
     @Override
-    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final boolean includeInherited) {
-        final LinkedList<TSMetaCustomProperty> result = new LinkedList<>();
-        if (includeInherited) {
-            walkInheritance(meta -> meta.collectOwnCustomProperties(result));
-        } else {
-            this.collectOwnCustomProperties(result);
-        }
-        return result;
-    }
-
-    @NotNull
-    @Override
-    public Collection<? extends TSMetaAttribute> findAttributesByName(
-        @NotNull final String name,
-        final boolean includeInherited
-    ) {
-        final LinkedList<TSMetaAttribute> result = new LinkedList<>();
-        if (includeInherited) {
-            final Consumer<TSMetaItemImpl> visitor = meta -> meta.collectOwnAttributesByName(name, result);
-            walkInheritance(visitor);
-        } else {
-            this.collectOwnAttributesByName(name, result);
-        }
-        return result;
-    }
-
-    @NotNull
-    @Override
-    public Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(final boolean includeInherited) {
-        final LinkedList<TSMetaRelation.ReferenceEnd> result = new LinkedList<>();
-        final Consumer<TSMetaItemImpl> visitor = mc -> TSMetaModelService.Companion.getInstance(getProject()).collectReferencesForSourceType(mc, result);
-        if (includeInherited) {
-            walkInheritance(visitor);
-        } else {
-            visitor.accept(this);
-        }
-        return result.stream();
-    }
-
-    @NotNull
-    @Override
-    public Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(
-        @NotNull final String role, final boolean includeInherited
-    ) {
-        final String targetRoleNoCase = role.toLowerCase();
-        return getReferenceEndsStream(includeInherited)
-            .filter(ref -> ref.getRole().equalsIgnoreCase(targetRoleNoCase))
-            .collect(Collectors.toList());
+    public NoCaseMultiMap<TSMetaCustomProperty> getCustomAttributes() {
+        return myCustomProperties;
     }
 
     @Nullable
     @Override
     public String getExtendedMetaItemName() {
         return myExtendedMetaItemName;
-    }
-
-    @Override
-    public Set<TSMetaItem> getExtends() {
-        if (parents == null) {
-            synchronized (lock) {
-                if (parents == null) {
-                    final Set<TSMetaItem> tempParents = new LinkedHashSet<>();
-                    final Set<String> visitedParents = new HashSet<>();
-                    Optional<TSMetaItemImpl> metaItem = getTsMetaItem(this, visitedParents);
-
-                    while (metaItem.isPresent()) {
-                        tempParents.add(metaItem.get());
-                        metaItem = getTsMetaItem(metaItem.get(), visitedParents);
-                    }
-
-                    parents = tempParents;
-                }
-            }
-        }
-
-        return Collections.unmodifiableSet(parents);
-    }
-
-    @NotNull
-    private Optional<TSMetaItemImpl> getTsMetaItem(final TSMetaItemImpl metaItem, final Set<String> visitedParents) {
-        return Optional.of(metaItem.getRealExtendedMetaItemName())
-                       .filter(aName -> !visitedParents.contains(aName))
-                       .map(name -> TSMetaModelService.Companion.getInstance(getProject()).findMetaItemByName(name))
-                       .filter(TSMetaItemImpl.class::isInstance)
-                       .map(TSMetaItemImpl.class::cast);
     }
 
     @Override
@@ -213,47 +113,4 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         }
     }
 
-    private void collectOwnAttributes(@NotNull final Collection<TSMetaAttribute> output) {
-        output.addAll(myAttributes.values());
-    }
-
-    private void collectOwnCustomProperties(@NotNull final Collection<TSMetaCustomProperty> output) {
-        output.addAll(myCustomProperties.values());
-    }
-
-    private void collectOwnAttributesByName(@NotNull final String name, @NotNull final Collection<TSMetaAttribute> output) {
-        output.addAll(myAttributes.get(name));
-    }
-
-    /**
-     * Iteratively applies given consumer for this class and all its super-classes.
-     * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
-     */
-    private void walkInheritance(@NotNull final Consumer<TSMetaItemImpl> visitor) {
-        final Set<String> visited = new HashSet<>();
-        visited.add(getName());
-        visitor.accept(this);
-        doWalkInheritance(visited, visitor);
-    }
-
-    /**
-     * Iteratively applies given consumer for inheritance chain, <strong>starting from the super-class</strong>.
-     * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
-     */
-    private void doWalkInheritance(@NotNull final Set<String> visitedParents, @NotNull final Consumer<TSMetaItemImpl> visitor) {
-        Optional.of(getRealExtendedMetaItemName())
-                .filter(aName -> !visitedParents.contains(aName))
-                .map(name -> TSMetaModelService.Companion.getInstance(getProject()).findMetaItemByName(name))
-                .filter(TSMetaItemImpl.class::isInstance)
-                .map(TSMetaItemImpl.class::cast)
-                .ifPresent(parent -> {
-                    visitedParents.add(parent.getName());
-                    visitor.accept(parent);
-                    parent.doWalkInheritance(visitedParents, visitor);
-                });
-    }
-
-    private String getRealExtendedMetaItemName() {
-        return myExtendedMetaItemName == null ? IMPLICIT_SUPER_CLASS_NAME : myExtendedMetaItemName;
-    }
 }

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
@@ -57,6 +57,6 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
         final String typeName = getElementTypeName();
         return typeName == null
             ? null
-            : TSMetaModelService.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
+            : TSMetaModelAccess.Companion.getInstance(getProject()).findMetaClassifierByName(typeName);
     }
 }

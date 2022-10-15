@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
@@ -31,9 +33,26 @@ public interface TSMetaAttribute {
     String getName();
 
     @Nullable
+    String getDescription();
+
+    @Nullable
+    String getDefaultValue();
+
+    @Nullable
     Attribute retrieveDom();
 
     boolean isDeprecated();
+
+    boolean isAutoCreate();
+
+    boolean isRedeclare();
+
+    boolean isGenerate();
+
+    void addCustomProperty(String key, TSMetaCustomProperty customProperty);
+
+    @NotNull
+    List<? extends TSMetaCustomProperty> getCustomProperties(boolean includeInherited);
 
     @Nullable
     String getType();

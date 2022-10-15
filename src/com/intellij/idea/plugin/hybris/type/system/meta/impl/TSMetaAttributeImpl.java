@@ -19,26 +19,49 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.openapi.project.Project;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements TSMetaAttribute {
+public class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements TSMetaAttribute {
 
     private final TSMetaItem myMetaItem;
+    private final CaseInsensitive.NoCaseMultiMap<TSMetaCustomProperty> myCustomProperties = new CaseInsensitive.NoCaseMultiMap<>();
     private final boolean myDeprecated;
+    private final boolean myAutoCreate;
+    private final boolean myGenerate;
+    private final boolean myRedeclare;
+    private final String myDescription;
+    private final String myDefaultValue;
     @Nullable private final String myType;
 
     public TSMetaAttributeImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom) {
         super(project, extractName(dom), dom);
         myMetaItem = owner;
         myDeprecated = extractDeprecated(dom);
+        myRedeclare = Boolean.TRUE.equals(dom.getRedeclare().getValue());
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myType = dom.getType().getStringValue();
+        myDescription = Optional.ofNullable(dom.getDescription().getXmlTag())
+            .map(xmlTag -> xmlTag.getValue().getText())
+            .orElse(null);
+        myDefaultValue = dom.getDefaultValue().getStringValue();
+        dom.getCustomProperties().getProperties().stream()
+                .map(domAttribute -> new TSMetaCustomPropertyImpl(project, domAttribute))
+                .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
+                .forEach(attribute -> addCustomProperty(attribute.getName().trim(), attribute));
     }
 
     @Override
@@ -52,10 +75,47 @@ class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements TSMetaA
         return myDeprecated;
     }
 
+    @Override
+    public boolean isAutoCreate() {
+        return myAutoCreate;
+    }
+
+    @Override
+    public boolean isRedeclare() {
+        return myRedeclare;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public void addCustomProperty(final String key, final TSMetaCustomProperty customProperty) {
+        myCustomProperties.putValue(key, customProperty);
+    }
+
+    @Override
+    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final boolean includeInherited) {
+        return new LinkedList<>(myCustomProperties.values());
+    }
+
     @Nullable
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    @Nullable
+    @Override
+    public String getDescription() {
+        return myDescription;
+    }
+
+    @Nullable
+    @Override
+    public String getDefaultValue() {
+        return myDefaultValue;
     }
 
     @NotNull

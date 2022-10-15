@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveRe
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.psi.PsiElement;
@@ -48,7 +48,7 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
-        final TSMetaModelService meta = getMetaService();
+        final TSMetaModelAccess meta = getMetaModelAccess();
         final String lookingForName = getElement().getText();
         final Optional<TSMetaItem> metaItem = searchInMetaItems(meta, lookingForName);
         if (metaItem.isPresent()) {
@@ -68,7 +68,7 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
         return ResolveResult.EMPTY_ARRAY;
     }
 
-    private Optional<TSMetaItem> searchInMetaItems(final TSMetaModelService meta, final String lookingForName) {
+    private Optional<TSMetaItem> searchInMetaItems(final TSMetaModelAccess meta, final String lookingForName) {
         return Optional.ofNullable(meta.findMetaItemByName(lookingForName));
     }
 

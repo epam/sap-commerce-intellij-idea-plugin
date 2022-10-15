@@ -25,8 +25,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.javaee.JavaeeIcons.PARAMETER_ICON
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
@@ -98,13 +98,13 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             itemTypeCode: String,
             resultSet: CompletionResultSet
     ) {
-        val metaItem = Optional.ofNullable(TSMetaModelService.getInstance(project).findMetaItemByName(itemTypeCode))
+        val metaItem = Optional.ofNullable(TSMetaModelAccess.getInstance(project).findMetaItemByName(itemTypeCode))
 
         val currentPrefix = resultSet.prefixMatcher.prefix
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
         metaItem
-                .map { meta -> meta.getAttributes(true).stream() }
+                .map { meta -> TSMetaItemService.getInstance(project).getAttributes(meta,true).stream() }
                 .orElse(Stream.empty())
                 .map<LookupElementBuilder> { prop ->
                     val name = prop.name ?: return@map null
@@ -119,8 +119,8 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 .filter { Objects.nonNull(it) }
                 .forEach { emptyPrefixResultSet.addElement(it) }
         metaItem
-                .map { meta -> meta.getReferenceEndsStream(true) }
-                .orElse(Stream.empty<TSMetaRelation.ReferenceEnd>())
+                .map { meta -> TSMetaItemService.getInstance(project).getReferenceEndsStream(meta, true) }
+                .orElse(Stream.empty())
                 .map { ref ->
                     LookupElementBuilder
                             .create(ref.role)

@@ -17,51 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap
-import com.intellij.openapi.Disposable
-import com.intellij.util.xml.DomElement
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
+import com.intellij.openapi.module.Module
+import com.intellij.psi.PsiFile
 
-class TSMetaModel : Disposable {
-    private val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<DomElement?>>> = ConcurrentHashMap()
-    private val myReferencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
+class TSMetaModel(
+    private val module: Module,
+    private val psiFile: PsiFile,
+    private val custom: Boolean
+) : AbstractTSMetaModel() {
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> = myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
-
-    fun getReference(name: String?): Collection<ReferenceEnd?> = (if (name == null) emptyList() else getReferences()[name])
-
-    fun getMetaTypes() = myMetaCache;
-
-    fun getReferences() = myReferencesBySourceTypeName;
-
-    override fun dispose() {
-        myMetaCache.clear()
-        myReferencesBySourceTypeName.clear()
-    }
-
-    fun merge(another: TSMetaModel) {
-        another.getMetaTypes().forEach { (metaType, cache) ->
-            run {
-                val globalCache = getMetaType<TSMetaClassifier<DomElement?>>(metaType)
-
-                cache.forEach { (key, metaClassifier) ->
-                    val globalMetaClassifier = globalCache[key]
-
-                    if (globalMetaClassifier != null
-                        && globalMetaClassifier is TSMetaSelfMerge<DomElement?>
-                        && metaClassifier is TSMetaSelfMerge<DomElement?>) {
-                        globalMetaClassifier.merge(metaClassifier)
-                    } else {
-                        globalCache[key] = metaClassifier
-                    }
-
-                }
-            }
-        }
-        getReferences().putAllValues(another.getReferences());
-    }
 }

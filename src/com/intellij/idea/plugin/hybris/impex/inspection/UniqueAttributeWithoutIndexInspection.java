@@ -28,13 +28,13 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase.TypeSystemResolveResult;
-import com.intellij.idea.plugin.hybris.type.system.inspections.TypeSystemValidationUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.Indexes;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -109,7 +109,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             return Optional.ofNullable(attribute)
                            .map(DomElement::getXmlElement)
                            .map(XmlElement::getContainingFile)
-                           .map(TypeSystemValidationUtils::isCustomExtensionFile)
+                           .map(TypeSystemUtils::isCustomExtensionFile)
                            .orElse(false);
         }
 
@@ -122,7 +122,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             }
             //it also may be in the separate representation
 
-            final TSMetaItem merged = TSMetaModelService.Companion.getInstance(myHolder.getProject()).findMetaItemForDom(domItemType);
+            final TSMetaItem merged = TSMetaModelAccess.Companion.getInstance(myHolder.getProject()).findMetaItemForDom(domItemType);
             return merged != null && merged.retrieveAllDomsStream()
                                            .filter(it -> !domItemType.equals(it))
                                            .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));

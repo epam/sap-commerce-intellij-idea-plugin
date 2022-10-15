@@ -49,8 +49,6 @@
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService"/>
-
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
     </extensions>

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_NAME = "Name"
@@ -30,7 +31,7 @@ class TSMetaItemCustomPropertiesTable : AbstractTSTable<TSMetaItem, TSMetaCustom
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_VALUE)
 
     override fun createModel(): ListTableModel<TSMetaCustomProperty> = with(ListTableModel<TSMetaCustomProperty>()) {
-        items = myOwner.getCustomProperties(true)
+        items = TSMetaItemService.getInstance(myProject).getCustomProperties(myOwner, true)
             .sortedBy { it.name }
 
         columnInfos = arrayOf(

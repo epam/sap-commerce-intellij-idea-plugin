@@ -25,7 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
@@ -58,9 +58,9 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         }
         result = result.caseInsensitive();
 
-        TSMetaModelService.Companion.getInstance(project).<TSMetaItem>getAll(MetaType.META_ITEM).stream()
-                                    .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
-                                    .forEach(result::addElement);
+        TSMetaModelAccess.Companion.getInstance(project).<TSMetaItem>getAll(MetaType.META_ITEM).stream()
+                                   .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
+                                   .forEach(result::addElement);
     }
 
     @Nullable

@@ -35,7 +35,7 @@ class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getChildren(): Collection<TSNode> = TSMetaModelAccess.getInstance(myProject).metaModel
+    override fun getChildren(): Collection<TSNode> = TSMetaModelAccess.getInstance(myProject).getMetaModel()
         .getMetaTypes().keys
         .map { TSMetaTypeNode(this, it) }
         .sortedBy { it.name }

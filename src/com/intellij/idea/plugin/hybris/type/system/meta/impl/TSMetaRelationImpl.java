@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
@@ -99,7 +99,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         @Nullable
         @Override
         public TSMetaClassifier<?> resolveType() {
-            return TSMetaModelService.Companion.getInstance(myProject).findMetaItemByName(getTypeName());
+            return TSMetaModelAccess.Companion.getInstance(myProject).findMetaItemByName(getTypeName());
         }
 
         @Nullable

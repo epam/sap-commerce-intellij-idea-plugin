@@ -23,6 +23,7 @@ import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.Project
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.xml.DomFileElement
@@ -36,11 +37,18 @@ abstract class AbstractTypeSystemInspection : DomElementsInspection<Items>(Items
     override fun checkFileElement(domFileElement: DomFileElement<Items>, holder: DomElementAnnotationHolder) {
         val helper = DomElementAnnotationsManager.getInstance(domFileElement.manager.project).highlightingHelper
         val problemHighlightType = getProblemHighlightType(domFileElement.file)
+        val project = domFileElement.file.project
 
-        checkItems(domFileElement.rootElement, holder, helper, problemHighlightType.severity)
+        checkItems(project, domFileElement.rootElement, holder, helper, problemHighlightType.severity)
     }
 
-    abstract fun checkItems(items: Items, holder: DomElementAnnotationHolder, helper: DomHighlightingHelper, severity: HighlightSeverity)
+    abstract fun checkItems(
+        project: Project,
+        items: Items,
+        holder: DomElementAnnotationHolder,
+        helper: DomHighlightingHelper,
+        severity: HighlightSeverity
+    )
 
     private fun getProblemHighlightType(file: PsiFile): HighlightDisplayLevel {
         val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile

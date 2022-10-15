@@ -19,10 +19,18 @@
 package com.intellij.idea.plugin.hybris.type.system.utils;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
@@ -31,6 +39,10 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+
+import static com.intellij.openapi.util.io.FileUtil.normalize;
 
 /**
  * Created 6:46 PM 18 September 2016.
@@ -105,5 +117,74 @@ public final class TypeSystemUtils {
             (XmlFile) file,
             Items.class
         ) != null;
+    }
+
+    public static boolean isCustomExtensionFile(@NotNull final PsiFile file) {
+        if (!isTsFile(file)) {
+            return false;
+        }
+
+        final VirtualFile vFile = file.getVirtualFile();
+        return vFile != null && isCustomExtensionFile(vFile, file.getProject());
+    }
+
+    @Nullable
+    public static Module getModuleForFile(@NotNull final PsiFile file) {
+        if (!isTsFile(file)) {
+            return null;
+        }
+
+        final VirtualFile vFile = file.getVirtualFile();
+
+        if (vFile == null) {
+            return null;
+        }
+
+        return ModuleUtilCore.findModuleForFile(vFile, file.getProject());
+
+    }
+
+    public static boolean isCustomExtensionFile(@NotNull final VirtualFile file, @NotNull final Project project) {
+        final Module module = ModuleUtilCore.findModuleForFile(file, project);
+
+        if (null == module) {
+            return false;
+        }
+        final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
+
+        if (descriptorTypeName == null) {
+            if (shouldCheckFilesWithoutHybrisSettings(project)) {
+                return estimateIsCustomExtension(file);
+            }
+            return false;
+        }
+
+        final HybrisModuleDescriptorType descriptorType = HybrisModuleDescriptorType.valueOf(descriptorTypeName);
+        return descriptorType == HybrisModuleDescriptorType.CUSTOM;
+    }
+
+    /*
+     * This method disqualifies known hybris extensions
+     */
+    private static boolean estimateIsCustomExtension(@NotNull final VirtualFile file) {
+        final File itemsFile = VfsUtilCore.virtualToIoFile(file);
+        final String itemsFilePath = normalize(itemsFile.getAbsolutePath());
+
+        if (itemsFilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))) {
+            return false;
+        }
+        if (itemsFilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019))) {
+            return false;
+        }
+        if (itemsFilePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX))) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
+        // at least it needs to have hybris flag
+        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
+        return commonIdeaService.isHybrisProject(project);
     }
 }

@@ -23,7 +23,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
@@ -120,7 +120,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
 
-        final TSMetaItem metaItem = TSMetaModelService.Companion.getInstance(psiFile.getProject()).findMetaItemForDom(source);
+        final TSMetaItem metaItem = TSMetaModelAccess.Companion.getInstance(psiFile.getProject()).findMetaItemForDom(source);
 
         if (metaItem == null) {
             return Collections.emptyList();
@@ -165,7 +165,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
         if (psiFile == null) {
             return Collections.emptyList();
         }
-        final TSMetaModelService metaService = TSMetaModelService.Companion.getInstance(psiFile.getProject());
+        final TSMetaModelAccess metaService = TSMetaModelAccess.Companion.getInstance(psiFile.getProject());
         final TSMetaItem metaItem = metaService.findMetaItemForDom(source);
 
         if (metaItem == null) {

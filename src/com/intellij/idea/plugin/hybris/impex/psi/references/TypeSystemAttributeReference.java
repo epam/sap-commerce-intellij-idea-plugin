@@ -24,7 +24,8 @@ import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -67,20 +68,21 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-        if (indicator.isCanceled()) {
+        if (indicator == null || indicator.isCanceled()) {
             return ResolveResult.EMPTY_ARRAY;
         }
-        final TSMetaModelService meta = getMetaService();
+        final TSMetaModelAccess metaModelAccess = getMetaModelAccess();
+        final TSMetaItemService metaItemService = getMetaItemService();
         final String featureName = getElement().getText().trim();
 
-        List<ResolveResult> result = tryResolveForItemType(meta, featureName);
+        List<ResolveResult> result = tryResolveForItemType(metaModelAccess, metaItemService, featureName);
 
         if (result == null) {
-            result = tryResolveForRelationType(meta, featureName);
+            result = tryResolveForRelationType(metaModelAccess, featureName);
         }
 
         if (result == null) {
-            result = tryResolveForEnumType(meta, featureName);
+            result = tryResolveForEnumType(metaModelAccess, featureName);
         }
 
         if (result == null) {
@@ -90,7 +92,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return result.toArray(new ResolveResult[0]);
     }
 
-    private List<ResolveResult> tryResolveForEnumType(final TSMetaModelService meta, final String featureName) {
+    private List<ResolveResult> tryResolveForEnumType(final TSMetaModelAccess meta, final String featureName) {
         final Optional<TSMetaEnum> metaEnum = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
                                                                                   .map(meta::findMetaEnumByName);
         if (!metaEnum.isPresent()) {
@@ -106,32 +108,35 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return null;
     }
 
-    private List<ResolveResult> tryResolveForItemType(final TSMetaModelService meta, final String featureName) {
+    private List<ResolveResult> tryResolveForItemType(final TSMetaModelAccess meta,
+                                                      final TSMetaItemService metaItemService,
+                                                      final String featureName) {
         final Optional<TSMetaItem> metaItem = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
                                                                                    .map(meta::findMetaItemByName);
         if (!metaItem.isPresent()) {
             return null;
         }
 
-        final List<ResolveResult> result = metaItem.get()
-                                                   .findAttributesByName(featureName, true)
-                                                   .stream()
-                                                   .map(TSMetaAttribute::retrieveDom)
-                                                   .filter(Objects::nonNull)
-                                                   .map(AttributeResolveResult::new)
-                                                   .collect(Collectors.toCollection(LinkedList::new));
+        final List<ResolveResult> result = metaItemService
+                                                            .findAttributesByName(metaItem.get(), featureName, true)
+                                                            .stream()
+                                                            .map(TSMetaAttribute::retrieveDom)
+                                                            .filter(Objects::nonNull)
+                                                            .map(AttributeResolveResult::new)
+                                                            .collect(Collectors.toCollection(LinkedList::new));
 
-        metaItem.get().findReferenceEndsByRole(featureName, true)
-                .stream()
-                .map(TSMetaRelation.ReferenceEnd::retrieveDom)
-                .filter(Objects::nonNull)
-                .map(RelationElementResolveResult::new)
-                .collect(Collectors.toCollection(() -> result));
+        metaItemService.findReferenceEndsByRole(metaItem.get(), featureName, true)
+                         .stream()
+                         .map(TSMetaRelation.ReferenceEnd::retrieveDom)
+                         .filter(Objects::nonNull)
+                         .map(RelationElementResolveResult::new)
+                         .collect(Collectors.toCollection(() -> result));
 
         return result;
     }
 
-    private List<ResolveResult> tryResolveForRelationType(final TSMetaModelService meta, final String featureName) {
+    private List<ResolveResult> tryResolveForRelationType(final TSMetaModelAccess meta,
+                                                          final String featureName) {
         final Optional<List<TSMetaRelation>> metaReferences = findHeaderItemTypeName(getElement())
             .map(PsiElement::getText)
             .map(meta::findRelationByName);
