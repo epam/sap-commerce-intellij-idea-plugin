@@ -16,97 +16,87 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.ide.ui.search.SearchUtil
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.openapi.project.Project
-import com.intellij.ui.*
+import com.intellij.ui.BooleanTableCellRenderer
+import com.intellij.ui.ColoredTableCellRenderer
+import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.TableSpeedSearch
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 import java.awt.Dimension
-import java.awt.FontMetrics
-import javax.swing.JComboBox
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
-class TSMetaItemViewDataSupplier(private val myProject: Project) {
+private const val ATTRIBUTES_COLUMN_REDECLARE = "R"
+private const val ATTRIBUTES_COLUMN_AUTO_CREATE = "A"
+private const val ATTRIBUTES_COLUMN_GENERATE = "G"
+private const val ATTRIBUTES_COLUMN_TYPE = "Type"
+private const val ATTRIBUTES_COLUMN_DEFAULT_VALUE = "Default value"
+private const val ATTRIBUTES_COLUMN_DESCRIPTION = "Description"
+private const val ATTRIBUTES_COLUMN_QUALIFIER = "Qualifier"
 
-    fun initAttributesTable(table: JBTable, meta: TSMetaItem) = with(table) {
-        val search = TableSpeedSearch(table)
+class TSMetaItemAttributesTable(private val myProject: Project, private val myMeta: TSMetaItem) : JBTable() {
+
+    init {
+        val search = TableSpeedSearch(this)
 
         setShowGrid(false)
         setDefaultRenderer(Boolean::class.java, BooleanTableCellRenderer());
 
         intercellSpacing = Dimension(0, 0)
-        model = getListTableModel(meta)
+        model = createModel()
 
-        getColumn("Qualifier").cellRenderer = Renderer(search)
-        getColumn("Description").cellRenderer = Renderer(search)
+        getColumn(ATTRIBUTES_COLUMN_QUALIFIER).cellRenderer = Renderer(search)
+        getColumn(ATTRIBUTES_COLUMN_DESCRIPTION).cellRenderer = Renderer(search)
 
-        arrayOf("Redeclare", "Autocreate", "Generate")
-            .forEach { setFixedColumnWidth(getColumn(it), table, it)}
-
-        this
+        arrayOf(ATTRIBUTES_COLUMN_REDECLARE, ATTRIBUTES_COLUMN_AUTO_CREATE, ATTRIBUTES_COLUMN_GENERATE)
+            .forEach { setFixedColumnWidth(getColumn(it), this, it)}
     }
 
-    fun initExtends(comboBox: JComboBox<String>, meta: TSMetaItem) = with(comboBox) {
-        val dom = meta.retrieveDom()
-
-        model = getExtends(meta)
-        selectedItem = dom.extends.stringValue ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME
-
-        this
-    }
-
-    private fun getExtends(meta: TSMetaItem): CollectionComboBoxModel<String> = with(CollectionComboBoxModel<String>()) {
-        TSMetaModelAccess.getInstance(myProject).metaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
-            .filter { it != meta }
-            .map { it.name }
-            .sortedBy { it }
-            .forEach { add(it) }
-
-        this
-    }
-
-    private fun getListTableModel(meta: TSMetaItem): ListTableModel<TSMetaAttribute> = with(ListTableModel<TSMetaAttribute>()) {
-        items = meta.getAttributes(true)
+    private fun createModel(): ListTableModel<TSMetaAttribute> = with(ListTableModel<TSMetaAttribute>()) {
+        items = myMeta.getAttributes(true)
             .sortedBy { it.name }
 
         columnInfos = arrayOf(
             createColumn(
-                name = "Redeclare",
+                name = ATTRIBUTES_COLUMN_REDECLARE,
                 valueProvider = { attr -> attr.retrieveDom()?.redeclare?.value ?: false },
-                columnClass = Boolean::class.java
+                columnClass = Boolean::class.java,
+                tooltip = "Redeclare"
             ),
             createColumn(
-                name = "Autocreate",
+                name = ATTRIBUTES_COLUMN_AUTO_CREATE,
                 valueProvider = { attr -> attr.retrieveDom()?.autoCreate?.value ?: false },
-                columnClass = Boolean::class.java),
-            createColumn(
-                name = "Generate",
-                valueProvider = { attr -> attr.retrieveDom()?.generate?.value ?: false },
-                columnClass = Boolean::class.java
+                columnClass = Boolean::class.java,
+                tooltip = "Autocreate"
             ),
             createColumn(
-                name = "Qualifier",
+                name = ATTRIBUTES_COLUMN_GENERATE,
+                valueProvider = { attr -> attr.retrieveDom()?.generate?.value ?: false },
+                columnClass = Boolean::class.java,
+                tooltip = "Generate"
+            ),
+            createColumn(
+                name = ATTRIBUTES_COLUMN_QUALIFIER,
                 valueProvider = { attr -> attr.retrieveDom()?.qualifier?.stringValue ?: "" }
             ),
             createColumn(
-                name ="Type",
+                name = ATTRIBUTES_COLUMN_TYPE,
                 valueProvider = { attr -> attr.retrieveDom()?.type?.stringValue ?: "" }
             ),
             createColumn(
-                name = "Default value",
+                name = ATTRIBUTES_COLUMN_DEFAULT_VALUE,
                 valueProvider = { attr -> attr.retrieveDom()?.defaultValue?.stringValue ?: "" }
             ),
             createColumn(
-                name = "Description",
+                name = ATTRIBUTES_COLUMN_DESCRIPTION,
                 valueProvider = { attr -> attr.retrieveDom()?.description?.xmlTag?.value?.text ?: "" }
             )
         )
@@ -115,8 +105,9 @@ class TSMetaItemViewDataSupplier(private val myProject: Project) {
     }
 
     private fun setFixedColumnWidth(column: TableColumn, table : JTable, text: String) = with(column) {
-        val fontMetrics: FontMetrics = table.getFontMetrics(table.font)
-        val width = fontMetrics.stringWidth(" $text ") + JBUIScale.scale(4)
+        val width = table
+            .getFontMetrics(table.font)
+            .stringWidth(" $text ") + JBUIScale.scale(4)
 
         preferredWidth = width
         minWidth = width
@@ -127,15 +118,17 @@ class TSMetaItemViewDataSupplier(private val myProject: Project) {
     }
 
     private fun createColumn(
-        name : String,
-        valueProvider : (TSMetaAttribute) -> Any,
-        columnClass : Class<*> = String::class.java
+        name: String,
+        valueProvider: (TSMetaAttribute) -> Any,
+        columnClass: Class<*> = String::class.java,
+        tooltip: String? = null
     ) = object : ColumnInfo<TSMetaAttribute, Any>(name) {
-            override fun valueOf(item: TSMetaAttribute) = valueProvider.invoke(item)
-            override fun isCellEditable(item: TSMetaAttribute) = true
-            override fun getColumnClass(): Class<*> = columnClass
+        override fun valueOf(item: TSMetaAttribute) = valueProvider.invoke(item)
+        override fun isCellEditable(item: TSMetaAttribute) = false
+        override fun getColumnClass(): Class<*> = columnClass
+        override fun getTooltipText(): String? = tooltip
 //            override fun setValue(item: TSMetaAttribute, value: String) = property.set(item, value)
-        }
+    }
 
     private class Renderer(private val search: TableSpeedSearch) : ColoredTableCellRenderer() {
         override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
@@ -149,8 +142,6 @@ class TSMetaItemViewDataSupplier(private val myProject: Project) {
     }
 
     companion object {
-        fun getInstance(project: Project): TSMetaItemViewDataSupplier {
-            return project.getService(TSMetaItemViewDataSupplier::class.java) as TSMetaItemViewDataSupplier
-        }
+        private const val serialVersionUID: Long = -8940844594498853578L
     }
 }

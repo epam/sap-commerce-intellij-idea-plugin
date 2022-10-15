@@ -30,7 +30,6 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
 
     var myProject: Project
     val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
-    val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     val mySettings: TSViewSettings
 
     override fun dispose() {
@@ -71,12 +70,6 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
 //                    this@SpringBeansView.myRootPanel.updateRightComponent(true)
 //                }
 //            })
-    }
-
-    private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
-        add(ShowOnlyCustomAction(mySettings))
-        addSeparator()
-        this
     }
 
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {

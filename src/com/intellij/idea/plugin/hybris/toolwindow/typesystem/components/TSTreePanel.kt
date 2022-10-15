@@ -33,7 +33,7 @@ import com.intellij.ui.components.JBScrollPane
 class TSTreePanel(
     val myProject: Project,
     myGroupId: String = "HybrisTypeSystemTreePanel"
-) : OnePixelSplitter(), Disposable {
+) : OnePixelSplitter(false, 0.25f), Disposable {
     private var myTree = TSTree(myProject)
     private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
 
@@ -48,7 +48,7 @@ class TSTreePanel(
                 secondComponent = myDefaultPanel
 
                 when (val tsNode = component.userObject) {
-                    is TSMetaItemNode -> secondComponent = TSMetaItemView.create(myProject, tsNode.meta)
+                    is TSMetaItemNode -> secondComponent = TSMetaItemView(myProject, tsNode.meta).content
                 }
             }
         }

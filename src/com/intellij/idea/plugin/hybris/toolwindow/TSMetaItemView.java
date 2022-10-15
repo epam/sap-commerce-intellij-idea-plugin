@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow;
 
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.TSMetaItemViewDataSupplier;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemExtendsCombobox;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemTabbedPane;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTabbedPane;
@@ -35,8 +36,10 @@ import java.util.Optional;
 
 public class TSMetaItemView {
 
-    private static final Key<Integer> ACTIVE_TAB_INDEX = Key.create("TSMETAITEMVIEW_ACTIVE_INDEX");
-    private JBPanel contentPane;
+    private final Project myProject;
+    private final TSMetaItem myMeta;
+
+    private JBPanel myContentPane;
     private JComboBox<String> myExtends;
     private JBTextField myJaloClass;
     private JBTextField myDeploymentTable;
@@ -49,41 +52,42 @@ public class TSMetaItemView {
     private JBCheckBox mySingleton;
     private JBCheckBox myJaloonly;
     private JBCheckBox myGenerate;
-    private JBPanel myDetailsContent;
     private JBTextArea myDescription;
     private JBTabbedPane myTabs;
 
-    public static JPanel create(final Project project, final TSMetaItem source) {
-        final TSMetaItemView view = new TSMetaItemView();
+    public TSMetaItemView(final Project project, final TSMetaItem meta) {
+        this.myProject = project;
+        this.myMeta = meta;
 
-        final ItemType dom = source.retrieveDom();
-
-        TSMetaItemViewDataSupplier.Companion.getInstance(project).initAttributesTable(view.myAttributes, source);
-        TSMetaItemViewDataSupplier.Companion.getInstance(project).initExtends(view.myExtends, source);
-
-        view.myCode.setText(dom.getCode().getStringValue());
-        Optional.ofNullable(dom.getDescription().getXmlTag())
-                .map(description -> description.getValue().getText())
-                .ifPresent(text -> view.myDescription.setText(text));
-        view.myJaloClass.setText(dom.getJaloclass().getStringValue());
-        view.myDeploymentTable.setText(dom.getDeployment().getTable().getStringValue());
-        view.myDeploymentTypeCode.setText(dom.getDeployment().getTypeCode().getStringValue());
-        view.myAbstract.setSelected(Boolean.TRUE.equals(dom.getAbstract().getValue()));
-        view.myAutocreate.setSelected(Boolean.TRUE.equals(dom.getAutoCreate().getValue()));
-        view.myGenerate.setSelected(Boolean.TRUE.equals(dom.getGenerate().getValue()));
-        view.mySingleton.setSelected(Boolean.TRUE.equals(dom.getSingleton().getValue()));
-        view.myJaloonly.setSelected(Boolean.TRUE.equals(dom.getJaloOnly().getValue()));
-
-        Optional.ofNullable(project.<Integer>getUserData(ACTIVE_TAB_INDEX))
-                .ifPresent(previouslySelectedIndex -> view.myTabs.setSelectedIndex(previouslySelectedIndex));
-        view.myTabs.addChangeListener(e -> {
-            final Object source1 = e.getSource();
-            if (source1 instanceof JTabbedPane) {
-                project.putUserData(ACTIVE_TAB_INDEX, ((JTabbedPane) source1).getSelectedIndex());
-            }
-        });
-
-        return view.contentPane;
+        initData();
     }
 
+    private void initData() {
+        final ItemType dom = myMeta.retrieveDom();
+
+        ((TSMetaItemTabbedPane) myTabs).init();
+
+        myCode.setText(dom.getCode().getStringValue());
+        Optional.ofNullable(dom.getDescription().getXmlTag())
+                .map(description -> description.getValue().getText())
+                .ifPresent(text -> myDescription.setText(text));
+        myJaloClass.setText(dom.getJaloclass().getStringValue());
+        myDeploymentTable.setText(dom.getDeployment().getTable().getStringValue());
+        myDeploymentTypeCode.setText(dom.getDeployment().getTypeCode().getStringValue());
+        myAbstract.setSelected(Boolean.TRUE.equals(dom.getAbstract().getValue()));
+        myAutocreate.setSelected(Boolean.TRUE.equals(dom.getAutoCreate().getValue()));
+        myGenerate.setSelected(Boolean.TRUE.equals(dom.getGenerate().getValue()));
+        mySingleton.setSelected(Boolean.TRUE.equals(dom.getSingleton().getValue()));
+        myJaloonly.setSelected(Boolean.TRUE.equals(dom.getJaloOnly().getValue()));
+    }
+
+    public JBPanel getContent() {
+        return myContentPane;
+    }
+
+    private void createUIComponents() {
+        myAttributes = new TSMetaItemAttributesTable(myProject, myMeta);
+        myExtends = new TSMetaItemExtendsCombobox(myProject, myMeta);
+        myTabs = new TSMetaItemTabbedPane(myProject, myMeta);
+    }
 }
