@@ -36,8 +36,16 @@ class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Dis
         presentation.locationString = "extends ${meta.extendedMetaItemName ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME}"
     }
 
-    override fun getChildren(): Collection<TSMetaAttributeNode> = meta.getAttributes(false)
-        .map { TSMetaAttributeNode(this, it) }
-        .sortedBy { it.name }
+    override fun getChildren(): Collection<TSNode> {
+        val customProperties: List<TSNode> = meta.getCustomProperties(false)
+            .map { TSMetaCustomPropertyNode(this, it) }
+            .sortedBy { it.name }
+
+        val attributes: List<TSNode> = meta.getAttributes(false)
+            .map { TSMetaAttributeNode(this, it) }
+            .sortedBy { it.name }
+
+        return customProperties.plus(attributes)
+    }
 
 }

@@ -39,10 +39,15 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
 
     Set<TSMetaItem> getExtends();
 
-    void addAttribute(final String key, TSMetaAttribute attribute);
+    void addAttribute(String key, TSMetaAttribute attribute);
+
+    void addCustomProperty(String key, TSMetaCustomProperty customProperty);
 
     @NotNull
     List<? extends TSMetaAttribute> getAttributes(boolean includeInherited);
+
+    @NotNull
+    List<? extends TSMetaCustomProperty> getCustomProperties(boolean includeInherited);
 
     @NotNull
     Collection<? extends TSMetaAttribute> findAttributesByName(@NotNull String name, boolean includeInherited);

@@ -25,9 +25,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.CollectionComboBoxModel
 import javax.swing.JComboBox
 
-class TSMetaItemExtendsCombobox(private val myProject: Project, private val myMeta: TSMetaItem) : JComboBox<String>() {
+class TSMetaItemExtendsCombobox : JComboBox<String>() {
 
-    init {
+    private lateinit var myProject: Project
+    private lateinit var myMeta: TSMetaItem
+
+    fun init(project: Project, meta: TSMetaItem) {
+        myProject = project
+        myMeta = meta
+
         val dom = myMeta.retrieveDom()
 
         model = createModel(myMeta)

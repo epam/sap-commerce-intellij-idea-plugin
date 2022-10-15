@@ -26,9 +26,15 @@ import javax.swing.JTabbedPane
 
 private val ACTIVE_TAB_INDEX = Key.create<Int>("TS_META_ITEM_VIEW_ACTIVE_INDEX")
 
-class TSMetaItemTabbedPane(private val myProject: Project, private val myMeta: TSMetaItem) : JBTabbedPane() {
+class TSMetaItemTabbedPane : JBTabbedPane() {
 
-    fun init() {
+    private lateinit var myProject: Project
+    private lateinit var myMeta: TSMetaItem
+
+    fun init(project: Project, meta: TSMetaItem) {
+        myProject = project
+        myMeta = meta
+
         // We have to check user data before registering new listener to ensure that first tab will not be always preselected
         val previouslySelectedTabIndex = myProject.getUserData(ACTIVE_TAB_INDEX)
         if (previouslySelectedTabIndex != null) {

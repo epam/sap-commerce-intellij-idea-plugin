@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemExtendsCombobox;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemTabbedPane;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
@@ -65,7 +66,10 @@ public class TSMetaItemView {
     private void initData() {
         final ItemType dom = myMeta.retrieveDom();
 
-        ((TSMetaItemTabbedPane) myTabs).init();
+        ((TSMetaItemAttributesTable) myAttributes).init(myProject, myMeta);
+        ((TSMetaItemCustomPropertiesTable) myCustomAttributes).init(myProject, myMeta);
+        ((TSMetaItemExtendsCombobox) myExtends).init(myProject, myMeta);
+        ((TSMetaItemTabbedPane) myTabs).init(myProject, myMeta);
 
         myCode.setText(dom.getCode().getStringValue());
         Optional.ofNullable(dom.getDescription().getXmlTag())
@@ -86,8 +90,9 @@ public class TSMetaItemView {
     }
 
     private void createUIComponents() {
-        myAttributes = new TSMetaItemAttributesTable(myProject, myMeta);
-        myExtends = new TSMetaItemExtendsCombobox(myProject, myMeta);
-        myTabs = new TSMetaItemTabbedPane(myProject, myMeta);
+        myAttributes = new TSMetaItemAttributesTable();
+        myCustomAttributes = new TSMetaItemCustomPropertiesTable();
+        myExtends = new TSMetaItemExtendsCombobox();
+        myTabs = new TSMetaItemTabbedPane();
     }
 }

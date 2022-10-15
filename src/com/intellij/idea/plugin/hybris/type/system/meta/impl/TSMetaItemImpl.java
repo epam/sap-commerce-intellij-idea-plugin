@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
@@ -50,6 +51,7 @@ import java.util.stream.Stream;
 public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMetaItem {
 
     private final NoCaseMultiMap<TSMetaAttribute> myAttributes = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaCustomProperty> myCustomProperties = new NoCaseMultiMap<>();
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
     private final Object lock = new Object();
 
@@ -90,6 +92,11 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
+    public void addCustomProperty(final String key, final TSMetaCustomProperty customProperty) {
+        myCustomProperties.putValue(key, customProperty);
+    }
+
+    @Override
     @NotNull
     public List<? extends TSMetaAttribute> getAttributes(final boolean includeInherited) {
         final LinkedList<TSMetaAttribute> result = new LinkedList<>();
@@ -97,6 +104,17 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
             walkInheritance(meta -> meta.collectOwnAttributes(result));
         } else {
             this.collectOwnAttributes(result);
+        }
+        return result;
+    }
+
+    @Override
+    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final boolean includeInherited) {
+        final LinkedList<TSMetaCustomProperty> result = new LinkedList<>();
+        if (includeInherited) {
+            walkInheritance(meta -> meta.collectOwnCustomProperties(result));
+        } else {
+            this.collectOwnCustomProperties(result);
         }
         return result;
     }
@@ -197,6 +215,10 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
 
     private void collectOwnAttributes(@NotNull final Collection<TSMetaAttribute> output) {
         output.addAll(myAttributes.values());
+    }
+
+    private void collectOwnCustomProperties(@NotNull final Collection<TSMetaCustomProperty> output) {
+        output.addAll(myCustomProperties.values());
     }
 
     private void collectOwnAttributesByName(@NotNull final String name, @NotNull final Collection<TSMetaAttribute> output) {

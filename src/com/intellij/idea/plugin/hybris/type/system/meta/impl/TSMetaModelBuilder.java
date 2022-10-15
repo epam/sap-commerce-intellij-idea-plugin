@@ -157,14 +157,19 @@ public class TSMetaModelBuilder implements Processor<PsiFile> {
     }
 
     private void processItemType(final @NotNull ItemType itemType) {
-        final TSMetaItem metaItems = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(itemType);
+        final TSMetaItem metaItem = TSMetaModelService.Companion.getInstance(myProject).findOrCreate(itemType);
 
-        if (metaItems == null) return;
+        if (metaItem == null) return;
 
         // TODO: add support for Attribute anchors + navigation
         itemType.getAttributes().getAttributes().stream()
-                .map(domAttribute -> new TSMetaAttributeImpl(myProject, metaItems, domAttribute))
+                .map(domAttribute -> new TSMetaAttributeImpl(myProject, metaItem, domAttribute))
                 .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
-                .forEach(attribute -> metaItems.addAttribute(attribute.getName().trim(), attribute));
+                .forEach(attribute -> metaItem.addAttribute(attribute.getName().trim(), attribute));
+
+        itemType.getCustomProperties().getProperties().stream()
+                .map(domAttribute -> new TSMetaCustomPropertyImpl(myProject, metaItem, domAttribute))
+                .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
+                .forEach(attribute -> metaItem.addCustomProperty(attribute.getName().trim(), attribute));
     }
 }
