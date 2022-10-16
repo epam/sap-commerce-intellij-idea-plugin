@@ -38,10 +38,10 @@ public class TSMetaIndexView {
     private JBTextField myDeploymentTable;
     private JBTextField myDeploymentTypeCode;
     private JBCheckBox myAbstract;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox myGenerate;
     private JBCheckBox mySingleton;
-    private JBCheckBox myJaloonly;
+    private JBCheckBox myJaloOnly;
 
     public TSMetaIndexView(final Project project) {
         this.myProject = project;

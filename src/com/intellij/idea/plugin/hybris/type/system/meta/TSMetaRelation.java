@@ -37,7 +37,7 @@ public interface TSMetaRelation extends TSMetaClassifier<Relation> {
 
     boolean isLocalized();
 
-    boolean isAutocreate();
+    boolean isAutoCreate();
 
     boolean isGenerate();
 

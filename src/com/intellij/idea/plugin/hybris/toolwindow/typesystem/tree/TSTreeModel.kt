@@ -19,11 +19,12 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSNode
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.BaseTreeModel
 import javax.swing.tree.DefaultMutableTreeNode
 
-class TSTreeModel(private val myProject: Project, private val root: TSNode) : BaseTreeModel<TSTreeModel.Node>() {
+class TSTreeModel(private val myProject: Project, private val root: TSNode) : BaseTreeModel<TSTreeModel.Node>(), Disposable {
 
     override fun getRoot() = Node(root)
 
@@ -41,6 +42,11 @@ class TSTreeModel(private val myProject: Project, private val root: TSNode) : Ba
 
         return emptyList();
 
+    }
+
+    fun reload() {
+        treeNodesChanged(null, null, null)
+        treeStructureChanged(null, null, null)
     }
 
     class Node(private val tsNode : TSNode?) : DefaultMutableTreeNode(tsNode) {

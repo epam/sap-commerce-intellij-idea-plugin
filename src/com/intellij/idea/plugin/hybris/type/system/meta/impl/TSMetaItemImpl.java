@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaDeployment;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -46,19 +48,31 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     private final NoCaseMultiMap<TSMetaIndex> myIndexes = new NoCaseMultiMap<>();
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
-    private final String myTypeCode;
+    private final TSMetaDeployment<TSMetaItem> myDeployment;
     private String myExtendedMetaItemName;
+    private final boolean myAbstract;
+    private final boolean myAutoCreate;
+    private final boolean myGenerate;
+    private final boolean mySingleton;
+    private final boolean myJaloOnly;
+    private final String myJaloClass;
+    private final String myDescription;
 
-    public TSMetaItemImpl(final Project project, final String name, final String typeCode, final @NotNull ItemType dom) {
+    @SuppressWarnings("ThisEscapedInObjectConstruction")
+    public TSMetaItemImpl(final Project project, final String name, final @NotNull ItemType dom) {
         super(project, name, dom);
-        myTypeCode = typeCode;
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
         registerExtends(dom);
-    }
-
-    @Override
-    public String getTypeCode() {
-        return myTypeCode;
+        myAbstract = Boolean.TRUE.equals(dom.getAbstract().getValue());
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        mySingleton = Boolean.TRUE.equals(dom.getSingleton().getValue());
+        myJaloOnly = Boolean.TRUE.equals(dom.getJaloOnly().getValue());
+        myJaloClass = dom.getJaloclass().getStringValue();
+        myDescription = Optional.ofNullable(dom.getDescription().getXmlTag())
+                                .map(description -> description.getValue().getText())
+                                .orElse(null);
+        myDeployment = new TSMetaDeploymentImpl<>(project, this, dom.getDeployment());
     }
 
     @NotNull
@@ -110,6 +124,11 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         addDomRepresentation(another.retrieveDom());
     }
 
+    @Override
+    public TSMetaDeployment<TSMetaItem> getDeployment() {
+        return myDeployment;
+    }
+
     protected void addDomRepresentation(final @NotNull ItemType anotherDom) {
         myAllDoms.add(DomService.getInstance().createAnchor(anotherDom));
         registerExtends(anotherDom);
@@ -122,4 +141,38 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         }
     }
 
+    @Override
+    public boolean isAbstract() {
+        return myAbstract;
+    }
+
+    @Override
+    public boolean isAutoCreate() {
+        return myAutoCreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return mySingleton;
+    }
+
+    @Override
+    public boolean isJaloOnly() {
+        return myJaloOnly;
+    }
+
+    @Override
+    public String getJaloClass() {
+        return myJaloClass;
+    }
+
+    @Override
+    public String getDescription() {
+        return myDescription;
+    }
 }

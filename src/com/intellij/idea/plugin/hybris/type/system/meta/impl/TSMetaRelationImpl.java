@@ -40,7 +40,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
     private final TSMetaRelationElement myTargetEnd;
     private final TSMetaDeployment<TSMetaRelation> myDeployment;
     private final boolean myLocalized;
-    private final boolean myAutocreate;
+    private final boolean myAutoCreate;
     private final boolean myGenerate;
     private final String myDescription;
 
@@ -51,13 +51,13 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         final @NotNull Relation dom
     ) {
         super(project, name, dom);
+        myLocalized = Boolean.TRUE.equals(dom.getLocalized().getValue());
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myDescription = dom.getDescription().getStringValue();
         mySourceEnd = new TSMetaRelationElementImpl(project, this, dom.getSourceElement());
         myTargetEnd = new TSMetaRelationElementImpl(project, this, dom.getTargetElement());
         myDeployment = new TSMetaDeploymentImpl<>(project, this, dom.getDeployment());
-        myLocalized = Boolean.TRUE.equals(dom.getLocalized().getValue());
-        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
-        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
-        myDescription = dom.getDescription().getStringValue();
     }
 
     @Override
@@ -83,8 +83,8 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
     }
 
     @Override
-    public boolean isAutocreate() {
-        return myAutocreate;
+    public boolean isAutoCreate() {
+        return myAutoCreate;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         private final String myType;
         private final String myQualifier;
         private final String myDescription;
-        private final String myMetatype;
+        private final String myMetaType;
         private final boolean myNavigable;
         private final boolean myOrdered;
         private final Cardinality myCardinality;
@@ -121,7 +121,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
             myOrdered = Boolean.TRUE.equals(dom.getOrdered().getValue());
             myDescription = dom.getDescription().getStringValue();
             myCardinality = dom.getCardinality().getValue();
-            myMetatype = dom.getMetaType().getStringValue();
+            myMetaType = dom.getMetaType().getStringValue();
             myCollectionType = Optional.ofNullable(dom.getCollectionType().getValue()).orElse(Type.COLLECTION);
             myModifiers = new TSMetaModifiersImpl<>(project, dom.getModifiers());
         }
@@ -177,7 +177,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
 
         @Override
         public String getMetaType() {
-            return myMetatype;
+            return myMetaType;
         }
 
         @Override

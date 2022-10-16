@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.CreationMode;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.openapi.project.Project;
@@ -32,14 +33,16 @@ import java.util.stream.Collectors;
 
 public class TSMetaIndexImpl extends TSMetaEntityImpl<Index> implements TSMetaIndex {
 
+    private final TSMetaItem myOwner;
     private final boolean myRemove;
     private final boolean myReplace;
     private final boolean myUnique;
     private final Set<String> myKeys;
     private final CreationMode myCreationMode;
 
-    public TSMetaIndexImpl(final Project project, final @NotNull Index dom) {
+    public TSMetaIndexImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Index dom) {
         super(project, extractName(dom), dom);
+        myOwner = owner;
         myRemove = Boolean.TRUE.equals(dom.getRemove().getValue());
         myReplace = Boolean.TRUE.equals(dom.getReplace().getValue());
         myUnique = Boolean.TRUE.equals(dom.getUnique().getValue());
@@ -83,5 +86,10 @@ public class TSMetaIndexImpl extends TSMetaEntityImpl<Index> implements TSMetaIn
     @Override
     public CreationMode getCreationMode() {
         return myCreationMode;
+    }
+
+    @Override
+    public TSMetaItem getOwner() {
+        return myOwner;
     }
 }

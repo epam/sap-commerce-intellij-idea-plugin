@@ -64,7 +64,7 @@ public class TSMetaRelationView {
     private void initData(final TSMetaRelation myMeta) {
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
-        myAutocreate.setSelected(myMeta.isAutocreate());
+        myAutocreate.setSelected(myMeta.isAutoCreate());
         myLocalized.setSelected(myMeta.isLocalized());
         myGenerate.setSelected(myMeta.isGenerate());
 

@@ -30,7 +30,7 @@ public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
     @Nullable
     String getElementType();
 
-    boolean isAutocreate();
+    boolean isAutoCreate();
 
     boolean isGenerate();
 }

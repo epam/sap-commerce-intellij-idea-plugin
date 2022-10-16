@@ -34,7 +34,7 @@ public class TSMetaCollectionView {
     private final Project myProject;
 
     private JBPanel myContentPane;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox myGenerate;
     private ComboBox<Type> myType;
     private JBTextField myCode;
@@ -48,7 +48,7 @@ public class TSMetaCollectionView {
         myCode.setText(myMeta.getName());
         myType.setSelectedItem(myMeta.getType());
         myElementType.setText(myMeta.getElementType());
-        myAutocreate.setSelected(myMeta.isAutocreate());
+        myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
     }
 

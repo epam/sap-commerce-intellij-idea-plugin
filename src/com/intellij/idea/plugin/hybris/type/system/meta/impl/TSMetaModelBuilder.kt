@@ -44,15 +44,14 @@ class TSMetaModelBuilder(
 
     private fun findOrCreate(dom: ItemType): TSMetaItem? {
         val name = extractName(dom) ?: return null
-        val typeCode = dom.deployment.typeCode.stringValue
         val items = myMetaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM)
         var impl = items[name]
 
         if (impl == null) {
-            impl = TSMetaItemImpl(myProject, name, typeCode, dom)
+            impl = TSMetaItemImpl(myProject, name, dom)
             items[name] = impl
         } else {
-            impl.merge(TSMetaItemImpl(myProject, name, typeCode, dom))
+            impl.merge(TSMetaItemImpl(myProject, name, dom))
         }
         return impl
     }
@@ -137,7 +136,7 @@ class TSMetaModelBuilder(
             .forEach { prop -> meta.addCustomProperty(prop.name!!.trim { it <= ' ' }, prop) }
 
         type.indexes.indexes
-            .map { TSMetaIndexImpl(myProject, it) }
+            .map { TSMetaIndexImpl(myProject, meta, it) }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { index -> meta.addIndex(index.name!!.trim { it <= ' ' }, index) }
     }

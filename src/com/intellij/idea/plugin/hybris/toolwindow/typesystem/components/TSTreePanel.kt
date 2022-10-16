@@ -23,8 +23,16 @@ import com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTreeModel
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.*
+import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.type.system.meta.TSListener
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl
+import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.AppUIExecutor
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiTreeChangeEvent
+import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
@@ -62,6 +70,73 @@ class TSTreePanel(
                 }
             }
         }
+
+        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSListener {
+            override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+                AppUIExecutor.onUiThread().expireWith(myTree).submit {
+                    secondComponent = myDefaultPanel;
+                    myTree.update()
+                }
+            }
+        })
+
+        PsiManager.getInstance(myProject).addPsiTreeChangeListener(object : PsiTreeChangeListener {
+            override fun beforeChildAddition(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun beforeChildRemoval(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun beforeChildReplacement(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun beforeChildMovement(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun beforeChildrenChange(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun beforePropertyChange(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun childAdded(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun childRemoved(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun childReplaced(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun childrenChanged(event: PsiTreeChangeEvent) {
+                if (event.file == null) {
+                    return
+                }
+                if (TypeSystemUtils.isTsFile(event.file!!)) {
+//                    myTree.update()
+                }
+
+                println(event)
+            }
+
+            override fun childMoved(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+            override fun propertyChanged(event: PsiTreeChangeEvent) {
+                println(event)
+            }
+
+        }, this)
     }
 
     companion object {

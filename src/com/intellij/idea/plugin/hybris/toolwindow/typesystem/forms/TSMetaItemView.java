@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaIt
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -30,7 +29,6 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 
 import javax.swing.*;
-import java.util.Optional;
 
 public class TSMetaItemView {
 
@@ -46,9 +44,9 @@ public class TSMetaItemView {
     private JBTable myCustomProperties;
     private JBTable myIndexes;
     private JBCheckBox myAbstract;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
-    private JBCheckBox myJaloonly;
+    private JBCheckBox myJaloOnly;
     private JBCheckBox myGenerate;
     private JTextPane myDescription;
 
@@ -57,24 +55,20 @@ public class TSMetaItemView {
     }
 
     private void initData(final TSMetaItem myMeta) {
-        final ItemType dom = myMeta.retrieveDom();
-
         ((TSMetaItemAttributesTable) myAttributes).init(myProject, myMeta);
         ((TSMetaItemCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
         ((TSMetaItemIndexesTable) myIndexes).init(myProject, myMeta);
 
-        myCode.setText(dom.getCode().getStringValue());
-        Optional.ofNullable(dom.getDescription().getXmlTag())
-                .map(description -> description.getValue().getText())
-                .ifPresent(text -> myDescription.setText(text));
-        myJaloClass.setText(dom.getJaloclass().getStringValue());
-        myDeploymentTable.setText(dom.getDeployment().getTable().getStringValue());
-        myDeploymentTypeCode.setText(dom.getDeployment().getTypeCode().getStringValue());
-        myAbstract.setSelected(Boolean.TRUE.equals(dom.getAbstract().getValue()));
-        myAutocreate.setSelected(Boolean.TRUE.equals(dom.getAutoCreate().getValue()));
-        myGenerate.setSelected(Boolean.TRUE.equals(dom.getGenerate().getValue()));
-        mySingleton.setSelected(Boolean.TRUE.equals(dom.getSingleton().getValue()));
-        myJaloonly.setSelected(Boolean.TRUE.equals(dom.getJaloOnly().getValue()));
+        myCode.setText(myMeta.getName());
+        myDescription.setText(myMeta.getDescription());
+        myJaloClass.setText(myMeta.getJaloClass());
+        myDeploymentTable.setText(myMeta.getDeployment().getTable());
+        myDeploymentTypeCode.setText(myMeta.getDeployment().getTypeCode());
+        myAbstract.setSelected(myMeta.isAbstract());
+        myAutoCreate.setSelected(myMeta.isAutoCreate());
+        myGenerate.setSelected(myMeta.isGenerate());
+        mySingleton.setSelected(myMeta.isSingleton());
+        myJaloOnly.setSelected(myMeta.isJaloOnly());
         myExtends.setText(myMeta.getExtendedMetaItemName());
     }
 

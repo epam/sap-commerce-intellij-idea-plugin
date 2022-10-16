@@ -47,9 +47,22 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
 
     CaseInsensitive.NoCaseMultiMap<TSMetaIndex> getIndexes();
 
-    String getTypeCode();
-
     @NotNull
     Stream<? extends ItemType> retrieveAllDomsStream();
 
+    TSMetaDeployment<TSMetaItem> getDeployment();
+
+    boolean isAbstract();
+
+    boolean isAutoCreate();
+
+    boolean isGenerate();
+
+    boolean isSingleton();
+
+    boolean isJaloOnly();
+
+    String getJaloClass();
+
+    String getDescription();
 }

@@ -36,10 +36,10 @@ public class TSMetaAttributeView {
     private JBTextField myExtends;
     private JBTextField myCode;
     private JBCheckBox myGenerate;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox myAbstract;
     private JBCheckBox mySingleton;
-    private JBCheckBox myJaloonly;
+    private JBCheckBox myJalOonly;
 
     public TSMetaAttributeView(final Project project) {
         this.myProject = project;

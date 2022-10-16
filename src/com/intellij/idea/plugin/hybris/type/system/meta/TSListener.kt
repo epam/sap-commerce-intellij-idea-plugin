@@ -15,16 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.openapi.module.Module
-import com.intellij.psi.PsiFile
+interface TSListener {
 
-class TSMetaModel(
-    private val module: Module,
-    val psiFile: PsiFile,
-    private val custom: Boolean
-) : AbstractTSMetaModel() {
-
-    override fun toString(): String = "Module: ${module.name} | psi file: ${psiFile.name}"
+    fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel)
 }

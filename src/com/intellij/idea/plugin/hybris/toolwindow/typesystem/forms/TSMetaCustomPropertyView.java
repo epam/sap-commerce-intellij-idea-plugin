@@ -37,9 +37,9 @@ public class TSMetaCustomPropertyView {
     private JBTextField myCode;
     private JBCheckBox myGenerate;
     private JBCheckBox myAbstract;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
-    private JBCheckBox myJaloonly;
+    private JBCheckBox myJaloOnly;
 
     public TSMetaCustomPropertyView(final Project project) {
         this.myProject = project;

@@ -41,4 +41,6 @@ public interface TSMetaIndex {
     boolean isUnique();
 
     CreationMode getCreationMode();
+
+    TSMetaItem getOwner();
 }

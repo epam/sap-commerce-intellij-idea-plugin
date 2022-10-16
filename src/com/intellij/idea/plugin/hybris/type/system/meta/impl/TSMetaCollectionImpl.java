@@ -28,14 +28,14 @@ import java.util.Optional;
 
 public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> implements TSMetaCollection {
 
-    private final boolean myAutocreate;
+    private final boolean myAutoCreate;
     private final boolean myGenerate;
     private final String myElementType;
     private final Type myType;
 
     public TSMetaCollectionImpl(final Project project, final String name, final CollectionType dom) {
         super(project, name, dom);
-        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myElementType = dom.getElementType().getStringValue();
         myType = Optional.ofNullable(dom.getType().getValue())
@@ -55,8 +55,8 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     }
 
     @Override
-    public boolean isAutocreate() {
-        return myAutocreate;
+    public boolean isAutoCreate() {
+        return myAutoCreate;
     }
 
     @Override

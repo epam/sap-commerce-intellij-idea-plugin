@@ -37,9 +37,11 @@ private const val SEARCH_CAN_EXPAND = true
 
 class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
+    private val myTreeModel = TSTreeModel(myProject, TSRootNode(this))
+
     init {
         isRootVisible = false
-        model = buildTreeModel(TSRootNode(this))
+        model = buildTreeModel()
 
         TreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
@@ -49,19 +51,22 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         }, SEARCH_CAN_EXPAND)
     }
 
+    fun update() {
+        myTreeModel.reload()
+    }
+
     override fun getData(dataId: @NonNls String): Any? {
         return null
     }
 
-    companion object {
-        private const val serialVersionUID: Long = -4523404713991136984L
-    }
-
-    private fun buildTreeModel(root: TSNode): TreeModel {
-        val model = TSTreeModel(myProject, root)
-        return AsyncTreeModel(model, SHOW_LOADING_NODE, this)
+    private fun buildTreeModel(): TreeModel {
+        return AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
     }
 
     override fun dispose() {
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -4523404713991136984L
     }
 }

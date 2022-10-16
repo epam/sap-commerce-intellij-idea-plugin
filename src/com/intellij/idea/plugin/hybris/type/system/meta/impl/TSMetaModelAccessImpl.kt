@@ -31,6 +31,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -51,19 +52,22 @@ import java.util.stream.Collectors
  */
 class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess {
 
+    private val myMessageBus = myProject.messageBus
+
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         { ApplicationManager.getApplication().runReadAction(
                 Computable {
-                    val psiFiles = TSMetaModelCollector(myProject).collectDependencies()
+                    val metaModels = TSMetaModelCollector(myProject).collectDependencies()
                         .filter { obj: PsiFile? -> Objects.nonNull(obj) }
                         .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
-                    val dependencies = psiFiles.toTypedArray()
-                    val metaModels = psiFiles
                         .map { obj: CachedValue<TSMetaModel> -> obj.value }
 
+                    val dependencies = metaModels
+                        .map { it.psiFile }
+                        .toTypedArray()
                     val globalMetaModel = TSGlobalMetaModel().merge(metaModels)
 
-                    CachedValueProvider.Result.create(globalMetaModel, if (dependencies.isEmpty()) ModificationTracker.EVER_CHANGED else dependencies)
+                    CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
                 } as Computable<CachedValueProvider.Result<TSGlobalMetaModel>>)
         }, false
     )
@@ -132,8 +136,10 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     private fun writeMetaModelWithLock(): TSGlobalMetaModel {
         try {
             writeLock.lock()
+            val globalMetaModel = myGlobalMetaModel.value
+            myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
 
-            return myGlobalMetaModel.value
+            return globalMetaModel
         } finally {
             writeLock.unlock()
         }
@@ -162,6 +168,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     companion object {
+        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()

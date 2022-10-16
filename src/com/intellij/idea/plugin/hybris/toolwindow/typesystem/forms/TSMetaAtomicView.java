@@ -29,7 +29,7 @@ public class TSMetaAtomicView {
     private final Project myProject;
 
     private JBPanel myContentPane;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox myGenerate;
     private JBTextField myClass;
     private JBTextField myExtends;
@@ -40,7 +40,7 @@ public class TSMetaAtomicView {
 
     private void initData(final TSMetaAtomic myMeta) {
         myClass.setText(myMeta.getName());
-        myAutocreate.setSelected(myMeta.isAutocreate());
+        myAutoCreate.setSelected(myMeta.isAutocreate());
         myGenerate.setSelected(myMeta.isGenerate());
         myExtends.setText(myMeta.getExtends());
     }
