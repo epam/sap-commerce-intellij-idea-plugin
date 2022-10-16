@@ -33,4 +33,10 @@ public interface TSMetaMap extends TSMetaSelfMerge<MapType> {
 
     @NotNull
     Stream<? extends MapType> retrieveAllDomsStream();
+
+    boolean isAutocreate();
+
+    boolean isGenerate();
+
+    boolean isRedeclare();
 }

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbService
@@ -93,7 +93,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     override fun findRelationByName(name: String?): List<TSMetaRelation> = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values()).stream()
         .filter { obj: Any? -> Objects.nonNull(obj) }
-        .map { referenceEnd: ReferenceEnd -> referenceEnd.owningReference }
+        .map { metaRelationElement -> metaRelationElement.owningRelation }
         .filter { ref: TSMetaRelation -> name == ref.name }
         .collect(Collectors.toList())
 
@@ -108,7 +108,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return result
     }
 
-    override fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<ReferenceEnd?>) {
+    override fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelationElement?>) {
         out.addAll(getMetaModel().getReference(source.name))
     }
 
@@ -120,6 +120,9 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     private fun readMetaModelWithLock(): TSGlobalMetaModel {
         try {
             readLock.lock()
+            if (lock.isWriteLocked && writeLock.isHeldByCurrentThread) {
+                throw IllegalStateException("Same thread cannot be used to read and write TypeSystem Model, double check all getters")
+            }
             return myGlobalMetaModel.value
         } finally {
             readLock.unlock()

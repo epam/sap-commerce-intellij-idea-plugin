@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -30,7 +30,7 @@ interface TSMetaModelAccess {
     }
 
     fun getMetaModel(): TSGlobalMetaModel
-    fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<ReferenceEnd?>)
+    fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelationElement?>)
     fun findMetaClassifierByName(name: String?): TSMetaClassifier<out DomElement>?
     fun findRelationByName(name: String?): List<TSMetaRelation>
     fun findMetaMapByName(name: String?): TSMetaMap?

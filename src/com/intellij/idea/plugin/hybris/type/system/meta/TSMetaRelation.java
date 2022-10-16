@@ -18,39 +18,60 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
+import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaRelation extends TSMetaClassifier<Relation> {
 
-    String getTypeCode();
+    TSMetaDeployment<TSMetaRelation> getDeployment();
 
     @NotNull
-    ReferenceEnd getSource();
+    TSMetaRelationElement getSource();
 
     @NotNull
-    ReferenceEnd getTarget();
+    TSMetaRelationElement getTarget();
 
-    interface ReferenceEnd {
+    boolean isLocalized();
+
+    boolean isAutocreate();
+
+    boolean isGenerate();
+
+    String getDescription();
+
+    interface TSMetaRelationElement extends TSMetaClassifier<RelationElement>{
 
         @NotNull
-        String getRole();
+        String getQualifier();
 
         @NotNull
-        String getTypeName();
+        String getType();
 
         boolean isNavigable();
 
         @NotNull
-        TSMetaRelation getOwningReference();
+        TSMetaRelation getOwningRelation();
 
-        @Nullable TSMetaClassifier<?> resolveType();
+        TSMetaModifiers<TSMetaRelationElement> getModifiers();
 
         @Nullable
         RelationElement retrieveDom();
 
+        Cardinality getCardinality();
+
+        @Nullable
+        String getDescription();
+
+        Type getCollectionType();
+
+        @Nullable
+        String getMetaType();
+
+        boolean isOrdered();
     }
 
 }

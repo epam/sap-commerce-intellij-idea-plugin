@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap
 import com.intellij.openapi.Disposable
@@ -27,12 +27,12 @@ import java.util.concurrent.ConcurrentMap
 
 open class AbstractTSMetaModel : Disposable {
     internal val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<DomElement?>>> = ConcurrentHashMap()
-    internal val myReferencesBySourceTypeName = NoCaseMultiMap<ReferenceEnd>()
+    internal val myReferencesBySourceTypeName = NoCaseMultiMap<TSMetaRelationElement>()
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getMetaType(metaType: MetaType): ConcurrentMap<String, T> = myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-    fun getReference(name: String?): Collection<ReferenceEnd?> = (if (name == null) emptyList() else getReferences()[name])
+    fun getReference(name: String?): Collection<TSMetaRelationElement?> = (if (name == null) emptyList() else getReferences()[name])
 
     fun getMetaTypes() = myMetaCache;
 

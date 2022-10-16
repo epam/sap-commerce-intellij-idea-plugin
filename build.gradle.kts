@@ -20,7 +20,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.7.0"
+    // upgrade to 1.9.1 once released due https://youtrack.jetbrains.com/issue/IDEA-298989
+    id("org.jetbrains.intellij") version "1.9.0"
 }
 
 sourceSets.main {
@@ -60,12 +61,24 @@ intellij {
 
 tasks {
 
+    setupDependencies {
+        doLast {
+            // Fixes IDEA-298989.
+            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
+        }
+    }
+
     withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = sourceVersion
             apiVersion = kotlinApiVersion
             languageVersion = kotlinApiVersion
         }
+    }
+
+    // TODO: remove before final commit
+    buildSearchableOptions {
+        enabled = false
     }
 
     runIde {

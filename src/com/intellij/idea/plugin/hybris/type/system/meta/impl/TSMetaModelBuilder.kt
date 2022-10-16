@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.ReferenceEnd
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -86,14 +86,11 @@ class TSMetaModelBuilder(
     }
 
     private fun findOrCreate(dom: Relation): TSMetaRelation? {
-        val name = extractName(dom)
-        val typeCode = dom.deployment.typeCode.stringValue
-
-        if (name == null || typeCode == null) return null
+        val name = extractName(dom) ?: return null
 
         return myMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION)
             .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaRelation = TSMetaRelationImpl(myProject, key, typeCode, dom)
+                val impl: TSMetaRelation = TSMetaRelationImpl(myProject, key, dom)
                 registerReferenceEnd(impl.source, impl.target)
                 registerReferenceEnd(impl.target, impl.source)
                 impl
@@ -116,10 +113,10 @@ class TSMetaModelBuilder(
         return map;
     }
 
-    private fun registerReferenceEnd(ownerEnd: ReferenceEnd, targetEnd: ReferenceEnd) {
+    private fun registerReferenceEnd(ownerEnd: TSMetaRelationElement, targetEnd: TSMetaRelationElement) {
         if (!targetEnd.isNavigable) return
 
-        val ownerTypeName = ownerEnd.typeName
+        val ownerTypeName = ownerEnd.type
 
         if (!StringUtil.isEmpty(ownerTypeName)) {
             myMetaModel.getReferences().putValue(ownerTypeName, targetEnd)
@@ -138,6 +135,11 @@ class TSMetaModelBuilder(
             .map { TSMetaCustomPropertyImpl(myProject, it) }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { prop -> meta.addCustomProperty(prop.name!!.trim { it <= ' ' }, prop) }
+
+        type.indexes.indexes
+            .map { TSMetaIndexImpl(myProject, it) }
+            .filter { StringUtils.isNotBlank(it.name) }
+            .forEach { index -> meta.addIndex(index.name!!.trim { it <= ' ' }, index) }
     }
 
     private fun build(type: EnumType) {

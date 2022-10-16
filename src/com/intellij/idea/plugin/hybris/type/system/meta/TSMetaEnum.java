@@ -34,4 +34,14 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
     Collection<? extends TSMetaEnumValue> findValueByName(@NotNull String name);
 
     void createValue(@NotNull EnumValue domEnumValue);
+
+    boolean isAutocreate();
+
+    boolean isGenerate();
+
+    boolean isDynamic();
+
+    String getDescription();
+
+    String getJaloclass();
 }

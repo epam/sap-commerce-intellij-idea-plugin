@@ -34,6 +34,10 @@ class TSMetaEntityImpl<D extends DomElement> {
 
     private final DomAnchor<D> myDomAnchor;
 
+    public TSMetaEntityImpl(final Project myProject, final D dom) {
+        this(myProject, null, dom);
+    }
+
     public TSMetaEntityImpl(final Project myProject, final String name, final D dom) {
         this.myProject = myProject;
         myDomAnchor = DomService.getInstance().createAnchor(dom);

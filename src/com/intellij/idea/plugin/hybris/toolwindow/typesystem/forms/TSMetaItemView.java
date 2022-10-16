@@ -16,19 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow;
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemExtendsCombobox;
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemTabbedPane;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
-import com.intellij.ui.components.JBTabbedPane;
-import com.intellij.ui.components.JBTextArea;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 
@@ -38,38 +35,33 @@ import java.util.Optional;
 public class TSMetaItemView {
 
     private final Project myProject;
-    private final TSMetaItem myMeta;
 
     private JBPanel myContentPane;
-    private JComboBox<String> myExtends;
+    private JBTextField myExtends;
     private JBTextField myJaloClass;
     private JBTextField myDeploymentTable;
     private JBTextField myDeploymentTypeCode;
     private JBTextField myCode;
     private JBTable myAttributes;
-    private JBTable myCustomAttributes;
+    private JBTable myCustomProperties;
+    private JBTable myIndexes;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutocreate;
     private JBCheckBox mySingleton;
     private JBCheckBox myJaloonly;
     private JBCheckBox myGenerate;
-    private JBTextArea myDescription;
-    private JBTabbedPane myTabs;
+    private JTextPane myDescription;
 
-    public TSMetaItemView(final Project project, final TSMetaItem meta) {
+    public TSMetaItemView(final Project project) {
         this.myProject = project;
-        this.myMeta = meta;
-
-        initData();
     }
 
-    private void initData() {
+    private void initData(final TSMetaItem myMeta) {
         final ItemType dom = myMeta.retrieveDom();
 
         ((TSMetaItemAttributesTable) myAttributes).init(myProject, myMeta);
-        ((TSMetaItemCustomPropertiesTable) myCustomAttributes).init(myProject, myMeta);
-        ((TSMetaItemExtendsCombobox) myExtends).init(myProject, myMeta);
-        ((TSMetaItemTabbedPane) myTabs).init(myProject, myMeta);
+        ((TSMetaItemCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
+        ((TSMetaItemIndexesTable) myIndexes).init(myProject, myMeta);
 
         myCode.setText(dom.getCode().getStringValue());
         Optional.ofNullable(dom.getDescription().getXmlTag())
@@ -83,16 +75,18 @@ public class TSMetaItemView {
         myGenerate.setSelected(Boolean.TRUE.equals(dom.getGenerate().getValue()));
         mySingleton.setSelected(Boolean.TRUE.equals(dom.getSingleton().getValue()));
         myJaloonly.setSelected(Boolean.TRUE.equals(dom.getJaloOnly().getValue()));
+        myExtends.setText(myMeta.getExtendedMetaItemName());
     }
 
-    public JBPanel getContent() {
+    public JBPanel getContent(final TSMetaItem meta) {
+        initData(meta);
+
         return myContentPane;
     }
 
     private void createUIComponents() {
         myAttributes = new TSMetaItemAttributesTable();
-        myCustomAttributes = new TSMetaItemCustomPropertiesTable();
-        myExtends = new TSMetaItemExtendsCombobox();
-        myTabs = new TSMetaItemTabbedPane();
+        myCustomProperties = new TSMetaItemCustomPropertiesTable();
+        myIndexes = new TSMetaItemIndexesTable();
     }
 }

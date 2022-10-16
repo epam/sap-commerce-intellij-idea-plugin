@@ -26,7 +26,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaCollectionNode(parent: TSNode, private val meta: TSMetaCollection) : TSNode(parent), Disposable {
+class TSMetaCollectionNode(parent: TSNode, val meta: TSMetaCollection) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.retrieveDom().code.stringValue ?: "-- no name --"

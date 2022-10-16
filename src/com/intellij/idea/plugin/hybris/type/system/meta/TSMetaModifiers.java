@@ -18,19 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
-import com.intellij.idea.plugin.hybris.type.system.model.Type;
-import org.jetbrains.annotations.Nullable;
+public interface TSMetaModifiers<T extends TSMetaClassifier<?>> {
 
-public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
+    boolean isRead();
+    boolean isWrite();
+    boolean isSearch();
+    boolean isOptional();
+    boolean isPrivate();
+    boolean isInitial();
+    boolean isRemovable();
+    boolean isPartOf();
+    boolean isUnique();
+    boolean isDoNotOptimize();
+    boolean isEncrypted();
 
-    @Nullable
-    Type getType();
-
-    @Nullable
-    String getElementType();
-
-    boolean isAutocreate();
-
-    boolean isGenerate();
 }

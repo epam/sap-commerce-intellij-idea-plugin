@@ -33,9 +33,19 @@ import java.util.stream.Stream;
 public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMetaEnum {
 
     private final NoCaseMultiMap<TSMetaEnumValueImpl> name2ValueObj = new NoCaseMultiMap<>();
+    private final boolean myAutocreate;
+    private final boolean myGenerate;
+    private final boolean myDynamic;
+    private final String myDescription;
+    private final String myJaloclass;
 
     public TSMetaEnumImpl(final Project project, final String name, final EnumType dom) {
         super(project, name, dom);
+        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myDynamic = Boolean.TRUE.equals(dom.getDynamic().getValue());
+        myDescription = dom.getDescription().getStringValue();
+        myJaloclass = dom.getJaloClass().getStringValue();
     }
 
     @NotNull
@@ -59,4 +69,28 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
         }
     }
 
+    @Override
+    public boolean isAutocreate() {
+        return myAutocreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return myDynamic;
+    }
+
+    @Override
+    public String getDescription() {
+        return myDescription;
+    }
+
+    @Override
+    public String getJaloclass() {
+        return myJaloclass;
+    }
 }

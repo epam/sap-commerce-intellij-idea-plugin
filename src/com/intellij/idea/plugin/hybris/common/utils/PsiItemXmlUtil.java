@@ -95,7 +95,7 @@ public final class PsiItemXmlUtil {
         final EnumTypes sourceItems = root.getEnumTypes();
         final List<EnumType> enumTypes = sourceItems.getEnumTypes();
         return enumTypes.stream()
-                        .filter(itemType -> searchName.equals(itemType.getCode().getValue()))
+                        .filter(itemType -> searchName.equals(itemType.getCode().getStringValue()))
                         .map(DomElement::getXmlElement)
                         .collect(Collectors.toList());
     }
@@ -108,7 +108,7 @@ public final class PsiItemXmlUtil {
                                                              .flatMap(typeGroup -> typeGroup.getItemTypes().stream())
                                                              .collect(Collectors.toList()).stream();
         return Stream.concat(streamItemTypes, streamItemGroups)
-                     .filter(itemType -> searchName.equals(itemType.getCode().getValue()))
+                     .filter(itemType -> searchName.equals(itemType.getCode().getStringValue()))
                      .map(DomElement::getXmlElement)
                      .collect(Collectors.toList());
     }

@@ -47,7 +47,7 @@ public class TSMetaCustomPropertyImpl extends TSMetaEntityImpl<CustomProperty> i
 
     @Nullable
     private static String extractName(final CustomProperty dom) {
-        return dom.getName().getValue();
+        return dom.getName().getStringValue();
     }
 
 }

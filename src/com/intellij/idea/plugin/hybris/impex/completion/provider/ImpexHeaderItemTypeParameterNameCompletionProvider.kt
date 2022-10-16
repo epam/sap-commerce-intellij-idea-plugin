@@ -89,7 +89,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .forEach { resultSet.addElement(it) }
 
             metaItemService.getReferenceEndsStream(metaItem, true)
-                    .map { ref -> LookupElementBuilder.create(ref.role).withIcon(HybrisIcons.TYPE_SYSTEM) }
+                    .map { ref -> LookupElementBuilder.create(ref.qualifier).withIcon(HybrisIcons.TYPE_SYSTEM) }
                     .forEach { resultSet.addElement(it) }
 
         }

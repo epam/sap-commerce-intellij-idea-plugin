@@ -127,7 +127,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
 
         metaItemService.findReferenceEndsByRole(metaItem.get(), featureName, true)
                          .stream()
-                         .map(TSMetaRelation.ReferenceEnd::retrieveDom)
+                         .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                          .filter(Objects::nonNull)
                          .map(RelationElementResolveResult::new)
                          .collect(Collectors.toCollection(() -> result));
@@ -148,7 +148,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         if (SOURCE_ATTRIBUTE_NAME.equals(featureName)) {
             return emptyIfNull(references).stream()
                                           .map(TSMetaRelation::getSource)
-                                          .map(TSMetaRelation.ReferenceEnd::retrieveDom)
+                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                                           .filter(Objects::nonNull)
                                           .map(RelationElementResolveResult::new)
                                           .collect(Collectors.toList());
@@ -156,7 +156,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         if (TARGET_ATTRIBUTE_NAME.equals(featureName)) {
             return emptyIfNull(references).stream()
                                           .map(TSMetaRelation::getTarget)
-                                          .map(TSMetaRelation.ReferenceEnd::retrieveDom)
+                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                                           .filter(Objects::nonNull)
                                           .map(RelationElementResolveResult::new)
                                           .collect(Collectors.toList());

@@ -22,4 +22,9 @@ import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 
 public interface TSMetaAtomic extends TSMetaClassifier<AtomicType> {
 
+    boolean isAutocreate();
+
+    boolean isGenerate();
+
+    String getExtends();
 }

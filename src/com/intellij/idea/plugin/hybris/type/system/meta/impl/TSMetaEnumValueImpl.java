@@ -17,7 +17,7 @@ public class TSMetaEnumValueImpl extends TSMetaEntityImpl<EnumValue> implements 
 
     @Nullable
     private static String extractEnumValueName(@NotNull final EnumValue dom) {
-        return dom.getCode().getValue();
+        return dom.getCode().getStringValue();
     }
 
 }

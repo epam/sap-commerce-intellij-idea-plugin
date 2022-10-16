@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
@@ -55,6 +56,18 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
             walkInheritance(meta, visitor);
         } else {
             collectOwnAttributes(meta, result);
+        }
+        return result;
+    }
+
+    @Override
+    public List<? extends TSMetaIndex> getIndexes(final TSMetaItem meta, final boolean includeInherited) {
+        final List<TSMetaIndex> result = new LinkedList<>();
+        if (includeInherited) {
+            final Consumer<TSMetaItem> visitor = parent -> collectOwnIndexes(parent, result);
+            walkInheritance(meta, visitor);
+        } else {
+            collectOwnIndexes(meta, result);
         }
         return result;
     }
@@ -98,8 +111,8 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(final TSMetaItem meta, final boolean includeInherited) {
-        final LinkedList<TSMetaRelation.ReferenceEnd> result = new LinkedList<>();
+    public Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(final TSMetaItem meta, final boolean includeInherited) {
+        final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
         final Consumer<TSMetaItem> visitor = mc -> TSMetaModelAccess.Companion.getInstance(myProject).collectReferencesForSourceType(mc, result);
         if (includeInherited) {
             walkInheritance(meta, visitor);
@@ -110,12 +123,12 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(
+    public Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(
         final TSMetaItem meta, @NotNull final String role, final boolean includeInherited
     ) {
         final String targetRoleNoCase = role.toLowerCase();
         return getReferenceEndsStream(meta, includeInherited)
-            .filter(ref -> ref.getRole().equalsIgnoreCase(targetRoleNoCase))
+            .filter(ref -> ref.getQualifier().equalsIgnoreCase(targetRoleNoCase))
             .collect(Collectors.toList());
     }
 
@@ -127,6 +140,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
 
     private void collectOwnAttributes(final TSMetaItem meta, @NotNull final Collection<TSMetaAttribute> output) {
         output.addAll(meta.getAttributes().values());
+    }
+
+    private void collectOwnIndexes(final TSMetaItem meta, @NotNull final Collection<TSMetaIndex> output) {
+        output.addAll(meta.getIndexes().values());
     }
 
     private void collectOwnCustomProperties(final TSMetaItem meta, @NotNull final Collection<TSMetaCustomProperty> output) {

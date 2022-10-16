@@ -126,13 +126,13 @@ public class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements 
 
     @Nullable
     private static String extractName(final Attribute dom) {
-        return dom.getQualifier().getValue();
+        return dom.getQualifier().getStringValue();
     }
 
     private boolean extractDeprecated(@NotNull final Attribute dom) {
         final String name = getName();
         return name != null && dom.getModel().getSetters().stream().anyMatch(
-            setter -> name.equals(setter.getName().getValue()) &&
+            setter -> name.equals(setter.getName().getStringValue()) &&
                       Boolean.TRUE.equals(setter.getDeprecated().getValue()));
     }
 

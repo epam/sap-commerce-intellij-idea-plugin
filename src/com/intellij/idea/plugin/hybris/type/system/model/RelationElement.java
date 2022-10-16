@@ -122,7 +122,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("collectiontype")
-    GenericAttributeValue<String> getCollectionType();
+    GenericAttributeValue<Type> getCollectionType();
 
 
     /**

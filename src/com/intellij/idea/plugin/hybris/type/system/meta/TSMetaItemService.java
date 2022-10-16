@@ -34,14 +34,16 @@ public interface TSMetaItemService {
 
     List<? extends TSMetaAttribute> getAttributes(TSMetaItem meta, boolean includeInherited);
 
+    List<? extends TSMetaIndex> getIndexes(TSMetaItem meta, boolean includeInherited);
+
     List<? extends TSMetaCustomProperty> getCustomProperties(TSMetaItem meta, boolean includeInherited);
 
     Collection<? extends TSMetaAttribute> findAttributesByName(TSMetaItem meta, String name, boolean includeInherited);
 
     Set<TSMetaItem> getExtends(TSMetaItem meta);
 
-    Stream<? extends TSMetaRelation.ReferenceEnd> getReferenceEndsStream(TSMetaItem meta, boolean includeInherited);
+    Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(TSMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSMetaRelation.ReferenceEnd> findReferenceEndsByRole(TSMetaItem meta, @NotNull String role, boolean includeInherited);
+    Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(TSMetaItem meta, @NotNull String role, boolean includeInherited);
 
 }

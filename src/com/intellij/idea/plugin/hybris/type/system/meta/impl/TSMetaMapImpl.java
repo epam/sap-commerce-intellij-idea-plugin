@@ -33,14 +33,20 @@ import java.util.stream.Stream;
 
 public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMap {
 
-    private final String argumentType;
-    private final String returnType;
+    private final String myArgumentType;
+    private final String myReturnType;
+    private final boolean myAutocreate;
+    private final boolean myGenerate;
+    private final boolean myRedeclare;
     private final Set<DomAnchor<MapType>> myAllDoms = new LinkedHashSet<>();
 
     public TSMetaMapImpl(final Project myProject, final String name, final MapType dom) {
         super(myProject, name, dom);
-        this.argumentType = dom.getArgumentType().getStringValue();
-        this.returnType = dom.getReturnType().getStringValue();
+        myArgumentType = dom.getArgumentType().getStringValue();
+        myReturnType = dom.getReturnType().getStringValue();
+        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myRedeclare = Boolean.TRUE.equals(dom.getRedeclare().getValue());
 
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
     }
@@ -51,12 +57,12 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
 
     @Override
     public @NotNull String getArgumentType() {
-        return argumentType;
+        return myArgumentType;
     }
 
     @Override
     public @NotNull String getReturnType() {
-        return returnType;
+        return myReturnType;
     }
 
     @Override
@@ -64,6 +70,21 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
         return myAllDoms.stream()
                         .map(DomAnchor::retrieveDomElement)
                         .filter(Objects::nonNull);
+    }
+
+    @Override
+    public boolean isAutocreate() {
+        return myAutocreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public boolean isRedeclare() {
+        return myRedeclare;
     }
 
     @Override

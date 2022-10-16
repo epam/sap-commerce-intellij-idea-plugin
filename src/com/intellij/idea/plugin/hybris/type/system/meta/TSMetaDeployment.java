@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,19 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
-import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
-import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import org.jetbrains.annotations.Nullable;
 
-public interface TSMetaCollection extends TSMetaClassifier<CollectionType> {
+public interface TSMetaDeployment<T extends TSMetaClassifier<?>> {
 
     @Nullable
-    Type getType();
+    String getTable();
 
     @Nullable
-    String getElementType();
+    String getPropertyTable();
 
-    boolean isAutocreate();
+    @Nullable
+    String getTypeCode();
 
-    boolean isGenerate();
+    T getOwner();
+
 }

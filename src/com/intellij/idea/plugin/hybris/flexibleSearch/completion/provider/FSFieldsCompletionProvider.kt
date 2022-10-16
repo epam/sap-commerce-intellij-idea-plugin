@@ -123,8 +123,8 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 .orElse(Stream.empty())
                 .map { ref ->
                     LookupElementBuilder
-                            .create(ref.role)
-                            .withTypeText(ref.typeName)
+                            .create(ref.qualifier)
+                            .withTypeText(ref.type)
                             .withIcon(HybrisIcons.TYPE_SYSTEM)
                 }
                 .forEach { emptyPrefixResultSet.addElement(it) }

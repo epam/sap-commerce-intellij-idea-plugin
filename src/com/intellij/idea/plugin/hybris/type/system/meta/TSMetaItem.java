@@ -39,9 +39,13 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
 
     void addCustomProperty(String key, TSMetaCustomProperty customProperty);
 
+    void addIndex(String key, TSMetaIndex index);
+
     CaseInsensitive.NoCaseMultiMap<TSMetaAttribute> getAttributes();
 
     CaseInsensitive.NoCaseMultiMap<TSMetaCustomProperty> getCustomAttributes();
+
+    CaseInsensitive.NoCaseMultiMap<TSMetaIndex> getIndexes();
 
     String getTypeCode();
 

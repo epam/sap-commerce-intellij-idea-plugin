@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
@@ -42,10 +43,8 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
 
     private final NoCaseMultiMap<TSMetaAttribute> myAttributes = new NoCaseMultiMap<>();
     private final NoCaseMultiMap<TSMetaCustomProperty> myCustomProperties = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaIndex> myIndexes = new NoCaseMultiMap<>();
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
-    private final Object lock = new Object();
-
-    private volatile Set<TSMetaItem> parents;
 
     private final String myTypeCode;
     private String myExtendedMetaItemName;
@@ -81,6 +80,11 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
+    public void addIndex(final String key, final TSMetaIndex index) {
+        myIndexes.putValue(key, index);
+    }
+
+    @Override
     public NoCaseMultiMap<TSMetaAttribute> getAttributes() {
         return myAttributes;
     }
@@ -88,6 +92,11 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     @Override
     public NoCaseMultiMap<TSMetaCustomProperty> getCustomAttributes() {
         return myCustomProperties;
+    }
+
+    @Override
+    public NoCaseMultiMap<TSMetaIndex> getIndexes() {
+        return myIndexes;
     }
 
     @Nullable

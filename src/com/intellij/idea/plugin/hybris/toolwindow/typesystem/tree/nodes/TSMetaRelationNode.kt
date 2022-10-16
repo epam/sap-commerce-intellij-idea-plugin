@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaRelationNode(parent: TSNode, private val meta: TSMetaRelation) : TSNode(parent), Disposable {
+class TSMetaRelationNode(parent: TSNode, val meta: TSMetaRelation) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.retrieveDom().code.stringValue ?: "-- no name --"
@@ -33,7 +33,7 @@ class TSMetaRelationNode(parent: TSNode, private val meta: TSMetaRelation) : TSN
     override fun update(project: Project, presentation: PresentationData) {
         presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = "${meta.source.typeName} > ${meta.target.typeName}"
+        presentation.locationString = "${meta.source.type} > ${meta.target.type}"
     }
 
 }

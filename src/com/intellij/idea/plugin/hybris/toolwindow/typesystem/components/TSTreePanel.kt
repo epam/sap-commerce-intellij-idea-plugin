@@ -19,11 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.toolwindow.TSMetaItemView
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSMetaItemNode
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSNode
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
@@ -36,6 +35,12 @@ class TSTreePanel(
 ) : OnePixelSplitter(false, 0.25f), Disposable {
     private var myTree = TSTree(myProject)
     private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
+    private val myMetaItemView: TSMetaItemView by lazy { TSMetaItemView(myProject) }
+    private val myMetaEnumView: TSMetaEnumView by lazy { TSMetaEnumView(myProject) }
+    private val myMetaAtomicView: TSMetaAtomicView by lazy { TSMetaAtomicView(myProject) }
+    private val myMetaCollectionView: TSMetaCollectionView by lazy { TSMetaCollectionView(myProject) }
+    private val myMetaRelationView: TSMetaRelationView by lazy { TSMetaRelationView(myProject) }
+    private val myMetaMapView: TSMetaMapView by lazy { TSMetaMapView(myProject) }
 
     init {
         firstComponent = JBScrollPane(myTree)
@@ -43,12 +48,17 @@ class TSTreePanel(
 
         myTree.addTreeSelectionListener { tls ->
             val path = tls.newLeadSelectionPath
-            val component = path.lastPathComponent
-            if (component is TSTreeModel.Node && component.userObject is TSNode) {
+            val component = path?.lastPathComponent
+            if (component != null && component is TSTreeModel.Node && component.userObject is TSNode) {
                 secondComponent = myDefaultPanel
 
                 when (val tsNode = component.userObject) {
-                    is TSMetaItemNode -> secondComponent = TSMetaItemView(myProject, tsNode.meta).content
+                    is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(tsNode.meta)
+                    is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(tsNode.meta)
+                    is TSMetaAtomicNode -> secondComponent = myMetaAtomicView.getContent(tsNode.meta)
+                    is TSMetaCollectionNode -> secondComponent = myMetaCollectionView.getContent(tsNode.meta)
+                    is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
+                    is TSMetaMapNode -> secondComponent = myMetaMapView.getContent(tsNode.meta)
                 }
             }
         }

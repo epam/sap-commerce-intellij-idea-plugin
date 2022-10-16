@@ -28,7 +28,29 @@ import com.intellij.openapi.project.Project;
  */
 public class TSMetaAtomicImpl extends TSMetaEntityImpl<AtomicType> implements TSMetaAtomic {
 
+    private final boolean myAutocreate;
+    private final boolean myGenerate;
+    private final String myExtends;
+
     public TSMetaAtomicImpl(final Project project, final String name, final AtomicType dom) {
         super(project, name, dom);
+        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+        myExtends = dom.getExtends().getStringValue();
+    }
+
+    @Override
+    public boolean isAutocreate() {
+        return myAutocreate;
+    }
+
+    @Override
+    public boolean isGenerate() {
+        return myGenerate;
+    }
+
+    @Override
+    public String getExtends() {
+        return myExtends;
     }
 }
