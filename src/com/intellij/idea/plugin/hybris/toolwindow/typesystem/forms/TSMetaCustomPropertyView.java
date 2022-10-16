@@ -40,8 +40,6 @@ public class TSMetaCustomPropertyView {
     private JBCheckBox myAutocreate;
     private JBCheckBox mySingleton;
     private JBCheckBox myJaloonly;
-    private JBTextField myDeploymentTable;
-    private JBTextField myDeploymentTypeCode;
 
     public TSMetaCustomPropertyView(final Project project) {
         this.myProject = project;

@@ -9,7 +9,7 @@
       <size top="5" left="10" bottom="10" right="5"/>
     </border>
     <children>
-      <grid id="5324c" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="5324c" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="North"/>
         <properties/>
@@ -61,48 +61,33 @@
             </constraints>
             <properties/>
           </component>
-          <grid id="d15c9" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="3b264" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="2" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
-            <border type="empty"/>
+            <border type="etched" title="Flags">
+              <font style="1"/>
+            </border>
             <children>
-              <hspacer id="659b1">
+              <component id="9f6b8" class="com.intellij.ui.components.JBCheckBox" binding="myAutocreate">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
-              </hspacer>
-              <grid id="3b264" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+                <properties>
+                  <text value="autocreate"/>
+                </properties>
+              </component>
+              <component id="bfeb1" class="com.intellij.ui.components.JBCheckBox" binding="myGenerate">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties/>
-                <border type="empty" title="Flags">
-                  <font style="1"/>
-                </border>
-                <children>
-                  <component id="9f6b8" class="com.intellij.ui.components.JBCheckBox" binding="myAutocreate">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="autocreate"/>
-                    </properties>
-                  </component>
-                  <component id="bfeb1" class="com.intellij.ui.components.JBCheckBox" binding="myGenerate">
-                    <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <selected value="false"/>
-                      <text value="generate"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
+                <properties>
+                  <selected value="false"/>
+                  <text value="generate"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>

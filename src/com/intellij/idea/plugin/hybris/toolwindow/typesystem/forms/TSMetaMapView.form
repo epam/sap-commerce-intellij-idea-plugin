@@ -2,20 +2,20 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.TSMetaMapView">
   <grid id="27dc6" class="com.intellij.ui.components.JBPanel" binding="myContentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="612" height="409"/>
+      <xy x="20" y="20" width="548" height="532"/>
     </constraints>
     <properties/>
     <border type="empty">
       <size top="5" left="10" bottom="10" right="5"/>
     </border>
     <children>
-      <grid id="ae123" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="2d126" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="North"/>
         <properties/>
         <border type="empty"/>
         <children>
-          <grid id="51259" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="fdaf9" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
@@ -23,7 +23,7 @@
             <properties/>
             <border type="empty"/>
             <children>
-              <component id="a40df" class="javax.swing.JLabel">
+              <component id="60e28" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -31,7 +31,7 @@
                   <text value="Argument Type"/>
                 </properties>
               </component>
-              <component id="1578e" class="javax.swing.JLabel">
+              <component id="16244" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -39,7 +39,7 @@
                   <text value="Code"/>
                 </properties>
               </component>
-              <component id="be651" class="com.intellij.ui.components.JBTextField" binding="myCode">
+              <component id="65028" class="com.intellij.ui.components.JBTextField" binding="myCode">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -47,7 +47,7 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="bcbe1" class="com.intellij.ui.components.JBTextField" binding="myArgumentType">
+              <component id="2d6f4" class="com.intellij.ui.components.JBTextField" binding="myArgumentType">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -55,7 +55,7 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="1e7ba" class="javax.swing.JLabel">
+              <component id="c6ea5" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -63,7 +63,7 @@
                   <text value="Return Type"/>
                 </properties>
               </component>
-              <component id="7aa9a" class="com.intellij.ui.components.JBTextField" binding="myReturnType">
+              <component id="6a46c" class="com.intellij.ui.components.JBTextField" binding="myReturnType">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
@@ -71,57 +71,42 @@
                 </constraints>
                 <properties/>
               </component>
-              <grid id="f33a0" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="90896" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
-                <border type="empty"/>
+                <border type="etched" title="Flags">
+                  <font style="1"/>
+                </border>
                 <children>
-                  <hspacer id="a953f">
+                  <component id="e1699" class="com.intellij.ui.components.JBCheckBox" binding="myAutocreate">
                     <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
-                  </hspacer>
-                  <grid id="e73ea" class="com.intellij.ui.components.JBPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <properties>
+                      <text value="autocreate"/>
+                    </properties>
+                  </component>
+                  <component id="ef261" class="com.intellij.ui.components.JBCheckBox" binding="myRedeclare">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
-                    <properties/>
-                    <border type="empty" title="Flags">
-                      <font style="1"/>
-                    </border>
-                    <children>
-                      <component id="400e2" class="com.intellij.ui.components.JBCheckBox" binding="myAutocreate">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="autocreate"/>
-                        </properties>
-                      </component>
-                      <component id="ac023" class="com.intellij.ui.components.JBCheckBox" binding="myGenerate">
-                        <constraints>
-                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <selected value="false"/>
-                          <text value="generate"/>
-                        </properties>
-                      </component>
-                      <component id="bc2b9" class="com.intellij.ui.components.JBCheckBox" binding="myRedeclare">
-                        <constraints>
-                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <selected value="false"/>
-                          <text value="redeclare"/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
+                    <properties>
+                      <selected value="false"/>
+                      <text value="redeclare"/>
+                    </properties>
+                  </component>
+                  <component id="1caf1" class="com.intellij.ui.components.JBCheckBox" binding="myGenerate">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <selected value="false"/>
+                      <text value="generate"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
             </children>

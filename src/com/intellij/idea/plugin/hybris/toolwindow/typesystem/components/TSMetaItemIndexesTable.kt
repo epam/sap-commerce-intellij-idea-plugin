@@ -46,11 +46,6 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaIndex>() {
 
         columnInfos = arrayOf(
             createColumn(
-                name = COLUMN_NAME,
-                valueProvider = { attr -> attr.name ?: "" },
-                columnClass = String::class.java
-            ),
-            createColumn(
                 name = COLUMN_REMOVE,
                 valueProvider = { attr -> attr.isRemove },
                 columnClass = Boolean::class.java,
@@ -67,6 +62,11 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaIndex>() {
                 valueProvider = { attr -> attr.isUnique },
                 columnClass = Boolean::class.java,
                 tooltip = "Unique"
+            ),
+            createColumn(
+                name = COLUMN_NAME,
+                valueProvider = { attr -> attr.name ?: "" },
+                columnClass = String::class.java
             ),
             createColumn(
                 name = COLUMN_CREATION_MODE,

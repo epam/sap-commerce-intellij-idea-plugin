@@ -18,40 +18,31 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import icons.DatabaseIcons
 
-class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Disposable {
+class TSMetaIndexNode(parent: TSMetaItemNode, private val meta: TSMetaIndex) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(AllIcons.Nodes.Class)
-        presentation.locationString = "extends ${meta.extendedMetaItemName ?: TSMetaItem.IMPLICIT_SUPER_CLASS_NAME}"
-    }
+        presentation.locationString = meta.keys.joinToString()
 
-    override fun getChildren(): Collection<TSNode> {
-        val metaItemService = TSMetaItemService.getInstance(myProject)
-        val indexes = metaItemService.getIndexes(meta,false)
-            .map { TSMetaIndexNode(this, it) }
-            .sortedBy { it.name }
+        presentation.setIcon(DatabaseIcons.Index)
+        if (meta.isUnique) {
+            presentation.setIcon(DatabaseIcons.IndexUnique)
+        } else if (meta.isReplace) {
+            presentation.setIcon(DatabaseIcons.IndexFun)
+        } else if (meta.isRemove) {
+            presentation.setIcon(DatabaseIcons.IndexCluster)
+        }
 
-        val customProperties = metaItemService.getCustomProperties(meta,false)
-            .map { TSMetaCustomPropertyNode(this, it) }
-            .sortedBy { it.name }
-
-        val attributes = metaItemService.getAttributes(meta, false)
-            .map { TSMetaAttributeNode(this, it) }
-            .sortedBy { it.name }
-
-        return indexes + customProperties + attributes
     }
 
 }

@@ -45,8 +45,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -79,17 +77,17 @@ public abstract class AbstractTypeSystemInspection extends LocalInspectionTool {
 
         return ApplicationManager.getApplication().runReadAction((Computable<ProblemDescriptor[]>) () -> {
             final List<ProblemDescriptor> result = new ArrayList<>();
-            final Instant from = Instant.now();
-            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
+//            final Instant from = Instant.now();
+//            LOG.warn(Thread.currentThread().getId() + " - [STARTED] Rule " + getID());
             try {
                 validateOneRule(sharedContext, result, ruleLevel);
             } catch (XPathExpressionException e) {
                 result.add(createValidationFailedProblem(sharedContext, xmlFile, e));
             }
-            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
-                from,
-                Instant.now()
-            ));
+//            LOG.warn(Thread.currentThread().getId() + " - [COMPLETED] Rule " + getID() + " took " + Duration.between(
+//                from,
+//                Instant.now()
+//            ));
 
             return result.toArray(new ProblemDescriptor[result.size()]);
         });

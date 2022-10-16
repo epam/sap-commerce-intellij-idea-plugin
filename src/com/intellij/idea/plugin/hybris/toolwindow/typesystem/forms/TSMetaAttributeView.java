@@ -40,8 +40,6 @@ public class TSMetaAttributeView {
     private JBCheckBox myAbstract;
     private JBCheckBox mySingleton;
     private JBCheckBox myJaloonly;
-    private JBTextField myDeploymentTable;
-    private JBTextField myDeploymentTypeCode;
 
     public TSMetaAttributeView(final Project project) {
         this.myProject = project;
