@@ -35,8 +35,6 @@ public class TSMetaIndexView {
     private JTextPane myDescription;
     private JBTextField myExtends;
     private JBTextField myCode;
-    private JBTextField myDeploymentTable;
-    private JBTextField myDeploymentTypeCode;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox myGenerate;
