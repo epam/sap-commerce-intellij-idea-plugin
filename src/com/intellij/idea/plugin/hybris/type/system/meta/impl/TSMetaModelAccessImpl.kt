@@ -55,21 +55,20 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     private val myMessageBus = myProject.messageBus
 
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
-        { ApplicationManager.getApplication().runReadAction(
-                Computable {
-                    val metaModels = TSMetaModelCollector(myProject).collectDependencies()
-                        .filter { obj: PsiFile? -> Objects.nonNull(obj) }
-                        .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
-                        .map { obj: CachedValue<TSMetaModel> -> obj.value }
+        {
+            val metaModels = TSMetaModelCollector(myProject).collectDependencies()
+                .filter { obj: PsiFile? -> Objects.nonNull(obj) }
+                .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
+                .map { obj: CachedValue<TSMetaModel> -> obj.value }
 
-                    val dependencies = metaModels
-                        .map { it.psiFile }
-                        .toTypedArray()
-                    val globalMetaModel = TSGlobalMetaModel().merge(metaModels)
+            val dependencies = metaModels
+                .map { it.psiFile }
+                .toTypedArray()
+            val globalMetaModel = TSGlobalMetaModel().merge(metaModels)
 
-                    CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
-                } as Computable<CachedValueProvider.Result<TSGlobalMetaModel>>)
-        }, false
+            CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+        }
+        , false
     )
 
     override fun getMetaModel(): TSGlobalMetaModel {

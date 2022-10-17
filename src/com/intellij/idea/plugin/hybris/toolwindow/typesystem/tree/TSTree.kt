@@ -29,7 +29,6 @@ import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import org.jetbrains.annotations.NonNls
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.TreeModel
 import javax.swing.tree.TreePath
 
 private const val SHOW_LOADING_NODE = true
@@ -41,7 +40,7 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
     init {
         isRootVisible = false
-        model = buildTreeModel()
+        model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
 
         TreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
@@ -57,10 +56,6 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
     override fun getData(dataId: @NonNls String): Any? {
         return null
-    }
-
-    private fun buildTreeModel(): TreeModel {
-        return AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
     }
 
     override fun dispose() {
