@@ -18,11 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.util.xml.DomElement;
 
 public interface TSMetaClassifier<DOM extends DomElement> {
 
+    Module getModule();
     String getName();
 
     DOM retrieveDom();
+
+    boolean isCustom();
 }

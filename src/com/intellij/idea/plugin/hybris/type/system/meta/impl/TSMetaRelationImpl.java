@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xml.DomAnchor;
@@ -45,19 +46,15 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
     private final String myDescription;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public TSMetaRelationImpl(
-        final Project project,
-        final String name,
-        final @NotNull Relation dom
-    ) {
-        super(project, name, dom);
+    public TSMetaRelationImpl(final Module module, final Project project, final String name, final @NotNull Relation dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myLocalized = Boolean.TRUE.equals(dom.getLocalized().getValue());
         myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myDescription = dom.getDescription().getStringValue();
-        mySourceEnd = new TSMetaRelationElementImpl(project, this, dom.getSourceElement());
-        myTargetEnd = new TSMetaRelationElementImpl(project, this, dom.getTargetElement());
-        myDeployment = new TSMetaDeploymentImpl<>(project, this, dom.getDeployment());
+        mySourceEnd = new TSMetaRelationElementImpl(module, project, this, dom.getSourceElement(), custom);
+        myTargetEnd = new TSMetaRelationElementImpl(module, project, this, dom.getTargetElement(), custom);
+        myDeployment = new TSMetaDeploymentImpl<>(module, project, this, dom.getDeployment(), custom);
     }
 
     @Override
@@ -111,8 +108,8 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         private final Cardinality myCardinality;
         private final Type myCollectionType;
 
-        public TSMetaRelationElementImpl(final Project project, final @NotNull TSMetaRelation owner, final @NotNull RelationElement dom) {
-            super(project, dom);
+        public TSMetaRelationElementImpl(final Module module, final Project project, final @NotNull TSMetaRelation owner, final @NotNull RelationElement dom, final boolean custom) {
+            super(module, project, dom, custom);
             myOwner = owner;
             myDomAnchor = DomService.getInstance().createAnchor(dom);
             myType = StringUtil.notNullize(dom.getType().getStringValue());
@@ -123,7 +120,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
             myCardinality = dom.getCardinality().getValue();
             myMetaType = dom.getMetaType().getStringValue();
             myCollectionType = Optional.ofNullable(dom.getCollectionType().getValue()).orElse(Type.COLLECTION);
-            myModifiers = new TSMetaModifiersImpl<>(project, dom.getModifiers());
+            myModifiers = new TSMetaModifiersImpl<>(module, project, dom.getModifiers(), custom);
         }
 
         @NotNull

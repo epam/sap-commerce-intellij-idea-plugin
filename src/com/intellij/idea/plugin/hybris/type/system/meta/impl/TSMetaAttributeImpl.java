@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,8 +47,8 @@ public class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements 
     private final String myDefaultValue;
     @Nullable private final String myType;
 
-    public TSMetaAttributeImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom) {
-        super(project, extractName(dom), dom);
+    public TSMetaAttributeImpl(final Module module, final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom, final boolean custom) {
+        super(module, project, extractName(dom), dom, custom);
         myMetaItem = owner;
         myDeprecated = extractDeprecated(dom);
         myRedeclare = Boolean.TRUE.equals(dom.getRedeclare().getValue());
@@ -59,7 +60,7 @@ public class TSMetaAttributeImpl extends TSMetaEntityImpl<Attribute> implements 
             .orElse(null);
         myDefaultValue = dom.getDefaultValue().getStringValue();
         dom.getCustomProperties().getProperties().stream()
-                .map(domAttribute -> new TSMetaCustomPropertyImpl(project, domAttribute))
+                .map(domAttribute -> new TSMetaCustomPropertyImpl(module, project, domAttribute, custom))
                 .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
                 .forEach(attribute -> addCustomProperty(attribute.getName().trim(), attribute));
     }

@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.TSTreeModel
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.*
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.type.system.meta.TSListener
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl
@@ -34,7 +35,7 @@ import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 
 class TSTreePanel(
-    val myProject: Project,
+    private val myProject: Project,
     myGroupId: String = "HybrisTypeSystemTreePanel"
 ) : OnePixelSplitter(false, 0.25f), Disposable {
     private var myTree = TSTree(myProject)
@@ -71,11 +72,13 @@ class TSTreePanel(
             override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                 AppUIExecutor.onUiThread().expireWith(myTree).submit {
                     secondComponent = myDefaultPanel;
-                    myTree.update()
+                    myTree.update(TSViewSettings.ChangeType.FULL)
                 }
             }
         })
     }
+
+    fun update(changeType: TSViewSettings.ChangeType) = myTree.update(changeType)
 
     companion object {
         private const val serialVersionUID: Long = 4773839682466559598L

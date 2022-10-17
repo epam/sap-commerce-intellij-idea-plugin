@@ -43,9 +43,9 @@ public class TSMetaEnumView {
     private void initData(final TSMetaEnum myMeta) {
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
-        myJaloClass.setText(myMeta.getJaloclass());
+        myJaloClass.setText(myMeta.getJaloClass());
         myDynamic.setSelected(myMeta.isDynamic());
-        myAutocreate.setSelected(myMeta.isAutocreate());
+        myAutocreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
     }
 

@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomService;
@@ -59,8 +60,8 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     private final String myDescription;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public TSMetaItemImpl(final Project project, final String name, final @NotNull ItemType dom) {
-        super(project, name, dom);
+    public TSMetaItemImpl(final Module module, final Project project, final String name, final @NotNull ItemType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myAllDoms.add(DomService.getInstance().createAnchor(dom));
         registerExtends(dom);
         myAbstract = Boolean.TRUE.equals(dom.getAbstract().getValue());
@@ -68,11 +69,11 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         mySingleton = Boolean.TRUE.equals(dom.getSingleton().getValue());
         myJaloOnly = Boolean.TRUE.equals(dom.getJaloOnly().getValue());
-        myJaloClass = dom.getJaloclass().getStringValue();
+        myJaloClass = dom.getJaloClass().getStringValue();
         myDescription = Optional.ofNullable(dom.getDescription().getXmlTag())
                                 .map(description -> description.getValue().getText())
                                 .orElse(null);
-        myDeployment = new TSMetaDeploymentImpl<>(project, this, dom.getDeployment());
+        myDeployment = new TSMetaDeploymentImpl<>(module, project, this, dom.getDeployment(), custom);
     }
 
     @NotNull

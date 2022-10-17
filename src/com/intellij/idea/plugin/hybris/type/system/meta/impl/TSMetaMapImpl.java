@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomService;
@@ -40,8 +41,8 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
     private final boolean myRedeclare;
     private final Set<DomAnchor<MapType>> myAllDoms = new LinkedHashSet<>();
 
-    public TSMetaMapImpl(final Project myProject, final String name, final MapType dom) {
-        super(myProject, name, dom);
+    public TSMetaMapImpl(final Module module, final Project project, final String name, final MapType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myArgumentType = dom.getArgumentType().getStringValue();
         myReturnType = dom.getReturnType().getStringValue();
         myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());

@@ -48,10 +48,10 @@ class TSMetaModelBuilder(
         var impl = items[name]
 
         if (impl == null) {
-            impl = TSMetaItemImpl(myProject, name, dom)
+            impl = TSMetaItemImpl(myModule, myProject, name, dom, myCustom)
             items[name] = impl
         } else {
-            impl.merge(TSMetaItemImpl(myProject, name, dom))
+            impl.merge(TSMetaItemImpl(myModule, myProject, name, dom, myCustom))
         }
         return impl
     }
@@ -62,7 +62,7 @@ class TSMetaModelBuilder(
         var impl = enums[name]
 
         if (impl == null) {
-            impl = TSMetaEnumImpl(myProject, name, dom)
+            impl = TSMetaEnumImpl(myModule, myProject, name, dom, myCustom)
             enums[name] = impl
         }
         return impl
@@ -73,7 +73,7 @@ class TSMetaModelBuilder(
 
         return myMetaModel.getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
             .computeIfAbsent(clazzName)
-            { key: String -> TSMetaAtomicImpl(myProject, key, dom) }
+            { key: String -> TSMetaAtomicImpl(myModule, myProject, key, dom, myCustom) }
     }
 
     private fun findOrCreate(dom: CollectionType): TSMetaCollection? {
@@ -81,7 +81,7 @@ class TSMetaModelBuilder(
 
         return myMetaModel.getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
             .computeIfAbsent(name)
-            { key: String? -> TSMetaCollectionImpl(myProject, key, dom) }
+            { key: String? -> TSMetaCollectionImpl(myModule, myProject, key, dom, myCustom) }
     }
 
     private fun findOrCreate(dom: Relation): TSMetaRelation? {
@@ -89,7 +89,7 @@ class TSMetaModelBuilder(
 
         return myMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION)
             .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaRelation = TSMetaRelationImpl(myProject, key, dom)
+                val impl: TSMetaRelation = TSMetaRelationImpl(myModule, myProject, key, dom, myCustom)
                 registerReferenceEnd(impl.source, impl.target)
                 registerReferenceEnd(impl.target, impl.source)
                 impl
@@ -103,10 +103,10 @@ class TSMetaModelBuilder(
         var map = maps[name]
 
         if (map == null) {
-            map = TSMetaMapImpl(myProject, name, dom)
+            map = TSMetaMapImpl(myModule, myProject, name, dom, myCustom)
             maps[name] = map
         } else {
-            map.merge(TSMetaMapImpl(myProject, name, dom))
+            map.merge(TSMetaMapImpl(myModule, myProject, name, dom, myCustom))
         }
 
         return map;
@@ -126,17 +126,17 @@ class TSMetaModelBuilder(
         val meta = findOrCreate(type) ?: return
 
         type.attributes.attributes
-            .map { TSMetaAttributeImpl(myProject, meta, it) }
+            .map { TSMetaAttributeImpl(myModule, myProject, meta, it, myCustom) }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { attr -> meta.addAttribute(attr.name!!.trim { it <= ' ' }, attr) }
 
         type.customProperties.properties
-            .map { TSMetaCustomPropertyImpl(myProject, it) }
+            .map { TSMetaCustomPropertyImpl(myModule, myProject, it, myCustom) }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { prop -> meta.addCustomProperty(prop.name!!.trim { it <= ' ' }, prop) }
 
         type.indexes.indexes
-            .map { TSMetaIndexImpl(myProject, meta, it) }
+            .map { TSMetaIndexImpl(myModule, myProject, meta, it, myCustom) }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { index -> meta.addIndex(index.name!!.trim { it <= ' ' }, index) }
     }

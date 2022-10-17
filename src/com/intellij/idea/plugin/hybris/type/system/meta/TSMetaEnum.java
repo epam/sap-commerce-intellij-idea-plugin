@@ -35,7 +35,7 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
 
     void createValue(@NotNull EnumValue domEnumValue);
 
-    boolean isAutocreate();
+    boolean isAutoCreate();
 
     boolean isGenerate();
 
@@ -43,5 +43,5 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
 
     String getDescription();
 
-    String getJaloclass();
+    String getJaloClass();
 }

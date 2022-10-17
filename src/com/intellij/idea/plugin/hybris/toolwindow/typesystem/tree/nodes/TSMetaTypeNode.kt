@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -45,14 +46,22 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSMetaClassifier<DomElement>>(metaType).values.size
+
+        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSMetaClassifier<DomElement>>(metaType).values
+            .filter { if (showOnlyCustom) it.isCustom else true }
+            .size
         if (entries > 0) {
             presentation.locationString = "$entries"
         }
     }
 
-    override fun getChildren(): Collection<TSNode?> = TSMetaModelAccess.getInstance(myProject).getMetaModel()
+    override fun getChildren(): Collection<TSNode?> {
+        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+
+        return TSMetaModelAccess.getInstance(myProject).getMetaModel()
             .getMetaType<TSMetaClassifier<DomElement>>(metaType).values
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map {
                 when (it) {
                     is TSMetaItem -> TSMetaItemNode(this, it)
@@ -66,5 +75,6 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
             }
             .filter { Objects.nonNull(it) }
             .sortedBy { it!!.name }
+    }
 
 }

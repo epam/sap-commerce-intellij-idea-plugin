@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 
 /**
@@ -32,8 +33,8 @@ public class TSMetaAtomicImpl extends TSMetaEntityImpl<AtomicType> implements TS
     private final boolean myGenerate;
     private final String myExtends;
 
-    public TSMetaAtomicImpl(final Project project, final String name, final AtomicType dom) {
-        super(project, name, dom);
+    public TSMetaAtomicImpl(final Module module, final Project project, final String name, final AtomicType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myExtends = dom.getExtends().getStringValue();

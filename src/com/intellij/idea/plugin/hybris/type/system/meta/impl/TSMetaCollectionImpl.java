@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +34,8 @@ public class TSMetaCollectionImpl extends TSMetaEntityImpl<CollectionType> imple
     private final String myElementType;
     private final Type myType;
 
-    public TSMetaCollectionImpl(final Project project, final String name, final CollectionType dom) {
-        super(project, name, dom);
+    public TSMetaCollectionImpl(final Module module, final Project project, final String name, final CollectionType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myElementType = dom.getElementType().getStringValue();

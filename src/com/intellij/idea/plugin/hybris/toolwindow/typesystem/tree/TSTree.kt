@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSNode
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSRootNode
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.DataProvider
 import com.intellij.openapi.project.Project
@@ -50,8 +51,10 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         }, SEARCH_CAN_EXPAND)
     }
 
-    fun update() {
-        myTreeModel.reload()
+    fun update(changeType: TSViewSettings.ChangeType) {
+        if (changeType == TSViewSettings.ChangeType.FULL) {
+            myTreeModel.reload()
+        }
     }
 
     override fun getData(dataId: @NonNls String): Any? {

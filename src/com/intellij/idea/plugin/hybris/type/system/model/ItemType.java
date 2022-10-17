@@ -103,7 +103,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("jaloclass")
-    GenericAttributeValue<String> getJaloclass();
+    GenericAttributeValue<String> getJaloClass();
 
 
     /**

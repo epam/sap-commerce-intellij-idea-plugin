@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.DomService;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,19 +31,23 @@ import org.jetbrains.annotations.Nullable;
  */
 class TSMetaEntityImpl<D extends DomElement> {
 
-    private final String myName;
+    private final Module myModule;
     private final Project myProject;
+    private final String myName;
+    private final boolean myCustom;
 
     private final DomAnchor<D> myDomAnchor;
 
-    public TSMetaEntityImpl(final Project myProject, final D dom) {
-        this(myProject, null, dom);
+    public TSMetaEntityImpl(final Module module, final Project project, final D dom, final boolean custom) {
+        this(module, project, null, dom, custom);
     }
 
-    public TSMetaEntityImpl(final Project myProject, final String name, final D dom) {
-        this.myProject = myProject;
+    public TSMetaEntityImpl(final Module module, final Project project, final String name, final D dom, final boolean custom) {
+        myModule = module;
+        myProject = project;
         myDomAnchor = DomService.getInstance().createAnchor(dom);
         myName = name;
+        myCustom = custom;
     }
 
     @Nullable
@@ -54,7 +60,17 @@ class TSMetaEntityImpl<D extends DomElement> {
         return myDomAnchor.retrieveDomElement();
     }
 
+    @NotNull
     public Project getProject() {
         return myProject;
+    }
+
+    @NotNull
+    public Module getModule() {
+        return myModule;
+    }
+
+    public boolean isCustom() {
+        return myCustom;
     }
 }

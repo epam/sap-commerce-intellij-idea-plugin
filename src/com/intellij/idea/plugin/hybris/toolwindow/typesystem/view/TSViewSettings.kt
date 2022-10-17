@@ -29,14 +29,14 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisTypeSystemView")
 @Storage(StoragePathMacros.WORKSPACE_FILE)
-class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings.Settings> {
+class TSViewSettings(private val myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
 
     private val myMessageBus: MessageBus
     private val mySettings: Settings
 
     init {
         mySettings = Settings()
-        myMessageBus = project.messageBus
+        myMessageBus = myProject.messageBus
     }
 
     fun fireSettingsChanged(changeType: ChangeType) {
@@ -99,7 +99,7 @@ class TSViewSettings(project: Project) : PersistentStateComponent<TSViewSettings
     }
 
     enum class ChangeType {
-        FULL, UPDATE_LIST, UPDATE_DETAILS, FORCE_UPDATE_RIGHT_COMPONENT
+        FULL
     }
 
     interface Listener {

@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.CreationMode;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +41,8 @@ public class TSMetaIndexImpl extends TSMetaEntityImpl<Index> implements TSMetaIn
     private final Set<String> myKeys;
     private final CreationMode myCreationMode;
 
-    public TSMetaIndexImpl(final Project project, final @NotNull TSMetaItem owner, final @NotNull Index dom) {
-        super(project, extractName(dom), dom);
+    public TSMetaIndexImpl(final Module module, final Project project, final @NotNull TSMetaItem owner, final @NotNull Index dom, final boolean custom) {
+        super(module, project, extractName(dom), dom, custom);
         myOwner = owner;
         myRemove = Boolean.TRUE.equals(dom.getRemove().getValue());
         myReplace = Boolean.TRUE.equals(dom.getReplace().getValue());

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +29,8 @@ public class TSMetaCustomPropertyImpl extends TSMetaEntityImpl<CustomProperty> i
 
     private final String myValue;
 
-    public TSMetaCustomPropertyImpl(final Project project, final @NotNull CustomProperty dom) {
-        super(project, extractName(dom), dom);
+    public TSMetaCustomPropertyImpl(final Module module, final Project project, final @NotNull CustomProperty dom, final boolean custom) {
+        super(module, project, extractName(dom), dom, custom);
         myValue = dom.getValue().getRawText();
     }
 

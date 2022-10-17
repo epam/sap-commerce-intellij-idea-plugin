@@ -26,23 +26,20 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 
-class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
-    var myProject: Project
-    val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
-    val mySettings: TSViewSettings
+    private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
+    private val mySettings = TSViewSettings.getInstance(myProject)
+    private val myTreePane = TSTreePanel(myProject)
 
     override fun dispose() {
         //NOP
     }
 
     init {
-        myProject = project
-        mySettings = TSViewSettings(myProject)
-        val pane = TSTreePanel(myProject)
-        setContent(pane);
+        setContent(myTreePane);
 
-        Disposer.register(this, pane)
+        Disposer.register(this, myTreePane)
 
         installToolbar()
         installSettingsListener()
@@ -58,18 +55,11 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
     }
 
     private fun installSettingsListener() {
-//        myProject.messageBus.connect(this).subscribe(TSViewSettings.TOPIC,
-//            TSViewSettings.Listener { changeType ->
-//                if (changeType == SpringBeansViewSettings.ChangeType.FULL) {
-//                    this@SpringBeansView.performFullUpdate()
-//                } else if (changeType == SpringBeansViewSettings.ChangeType.UPDATE_DETAILS) {
-//                    this@SpringBeansView.performDetailsUpdate()
-//                } else if (changeType == SpringBeansViewSettings.ChangeType.UPDATE_LIST) {
-//                    this@SpringBeansView.myRootPanel.updatePanel()
-//                } else if (changeType == SpringBeansViewSettings.ChangeType.FORCE_UPDATE_RIGHT_COMPONENT) {
-//                    this@SpringBeansView.myRootPanel.updateRightComponent(true)
-//                }
-//            })
+        myProject.messageBus.connect(this).subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
+            override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
+                myTreePane.update(changeType)
+            }
+        })
     }
 
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {

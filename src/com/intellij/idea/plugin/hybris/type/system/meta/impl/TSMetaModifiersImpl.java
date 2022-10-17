@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModifiers;
 import com.intellij.idea.plugin.hybris.type.system.model.Modifiers;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +39,8 @@ public class TSMetaModifiersImpl<T extends TSMetaClassifier<?>> extends TSMetaEn
     private final boolean myDoNotOptimize;
     private final boolean myEncrypted;
 
-    public TSMetaModifiersImpl(final Project project, final @NotNull Modifiers dom) {
-        super(project, null, dom);
+    public TSMetaModifiersImpl(final Module module, final Project project, final @NotNull Modifiers dom, final boolean custom) {
+        super(module, project, null, dom, custom);
         myRead = Boolean.TRUE.equals(dom.getRead().getValue());
         myWrite = Boolean.TRUE.equals(dom.getWrite().getValue());
         mySearch = Boolean.TRUE.equals(dom.getSearch().getValue());

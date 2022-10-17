@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaDeployment;
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,8 +32,8 @@ public class TSMetaDeploymentImpl<T extends TSMetaClassifier<?>> extends TSMetaE
     private final String myPropertyTable;
     private final String myTypeCode;
 
-    public TSMetaDeploymentImpl(final Project project, final @NotNull T owner, final @NotNull Deployment dom) {
-        super(project, extractName(dom), dom);
+    public TSMetaDeploymentImpl(final Module module, final Project project, final @NotNull T owner, final @NotNull Deployment dom, final boolean custom) {
+        super(module, project, extractName(dom), dom, custom);
         myOwner = owner;
         myTypeCode = dom.getTypeCode().getStringValue();
         myPropertyTable = dom.getPropertyTable().getStringValue();

@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnumValue;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,15 +33,15 @@ import java.util.stream.Stream;
 
 public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMetaEnum {
 
-    private final NoCaseMultiMap<TSMetaEnumValueImpl> name2ValueObj = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaEnumValue> name2ValueObj = new NoCaseMultiMap<>();
     private final boolean myAutocreate;
     private final boolean myGenerate;
     private final boolean myDynamic;
     private final String myDescription;
     private final String myJaloclass;
 
-    public TSMetaEnumImpl(final Project project, final String name, final EnumType dom) {
-        super(project, name, dom);
+    public TSMetaEnumImpl(final Module module, final Project project, final String name, final EnumType dom, final boolean custom) {
+        super(module, project, name, dom, custom);
         myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myDynamic = Boolean.TRUE.equals(dom.getDynamic().getValue());
@@ -62,7 +63,7 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
 
     @Override
     public void createValue(final @NotNull EnumValue domEnumValue) {
-        final TSMetaEnumValueImpl result = new TSMetaEnumValueImpl(getProject(), this, domEnumValue);
+        final TSMetaEnumValue result = new TSMetaEnumValueImpl(getModule(), getProject(), this, domEnumValue, isCustom());
 
         if (result.getName() != null) {
             name2ValueObj.putValue(result.getName(), result);
@@ -70,7 +71,7 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
     }
 
     @Override
-    public boolean isAutocreate() {
+    public boolean isAutoCreate() {
         return myAutocreate;
     }
 
@@ -90,7 +91,7 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
     }
 
     @Override
-    public String getJaloclass() {
+    public String getJaloClass() {
         return myJaloclass;
     }
 }

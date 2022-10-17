@@ -27,7 +27,10 @@ class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show On
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowOnlyCustom(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowOnlyCustom(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.FULL)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
