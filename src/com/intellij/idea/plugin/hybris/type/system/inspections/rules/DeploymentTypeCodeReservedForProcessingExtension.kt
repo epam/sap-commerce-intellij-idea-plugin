@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.deployments
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -34,19 +34,18 @@ class DeploymentTypeCodeReservedForProcessingExtension : AbstractTypeSystemInspe
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it.deployment, holder, severity) }
-        items.relations.relations.forEach { check(it.deployment, holder, severity) }
+        items.deployments.forEach { check(it, holder, severity) }
     }
 
     private fun check(
-        it: Deployment,
+        dom: Deployment,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val typeCode = it.typeCode.stringValue?.toIntOrNull()
+        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 32700 .. 32799) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+            holder.createProblem(dom, severity, displayName, getTextRange(dom))
         }
     }
 }

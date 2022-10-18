@@ -18,7 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
@@ -57,10 +58,7 @@ class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
                 severity,
                 displayName,
                 TextRange.from(xmlElement.startOffsetInParent, xmlElement.textLength),
-                XmlAddUpdateAttributeQuickFix(
-                    "qualifier",
-                    newName
-                )
+                XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }
     }

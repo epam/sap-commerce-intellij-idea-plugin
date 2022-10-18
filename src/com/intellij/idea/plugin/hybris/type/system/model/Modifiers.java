@@ -34,6 +34,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Modifiers extends DomElement {
 
+    String DONT_OPTIMIZE = "dontOptimize";
+    String ENCRYPTED = "encrypted";
+    String READ = "read";
+    String WRITE = "write";
+    String SEARCH = "search";
+    String OPTIONAL = "optional";
+    String PRIVATE = "private";
+    String INITIAL = "initial";
+    String REMOVABLE = "removable";
+    String PARTOF = "partof";
+    String UNIQUE = "unique";
+
     /**
      * Returns the value of the read child.
      * <pre>
@@ -44,7 +56,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the read child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("read")
+    @com.intellij.util.xml.Attribute(READ)
     GenericAttributeValue<Boolean> getRead();
 
 
@@ -58,7 +70,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the write child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("write")
+    @com.intellij.util.xml.Attribute(WRITE)
     GenericAttributeValue<Boolean> getWrite();
 
 
@@ -72,7 +84,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the search child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("search")
+    @com.intellij.util.xml.Attribute(SEARCH)
     GenericAttributeValue<Boolean> getSearch();
 
 
@@ -86,7 +98,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the optional child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("optional")
+    @com.intellij.util.xml.Attribute(OPTIONAL)
     GenericAttributeValue<Boolean> getOptional();
 
 
@@ -100,7 +112,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the private child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("private")
+    @com.intellij.util.xml.Attribute(PRIVATE)
     GenericAttributeValue<Boolean> getPrivate();
 
 
@@ -114,7 +126,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the initial child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("initial")
+    @com.intellij.util.xml.Attribute(INITIAL)
     GenericAttributeValue<Boolean> getInitial();
 
 
@@ -128,7 +140,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the removable child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("removable")
+    @com.intellij.util.xml.Attribute(REMOVABLE)
     GenericAttributeValue<Boolean> getRemovable();
 
 
@@ -142,7 +154,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the partof child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("partof")
+    @com.intellij.util.xml.Attribute(PARTOF)
     GenericAttributeValue<Boolean> getPartOf();
 
 
@@ -156,7 +168,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the unique child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("unique")
+    @com.intellij.util.xml.Attribute(UNIQUE)
     GenericAttributeValue<Boolean> getUnique();
 
 
@@ -170,7 +182,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the dontOptimize child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("dontOptimize")
+    @com.intellij.util.xml.Attribute(DONT_OPTIMIZE)
     GenericAttributeValue<Boolean> getDoNotOptimize();
 
 
@@ -184,7 +196,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the encrypted child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("encrypted")
+    @com.intellij.util.xml.Attribute(ENCRYPTED)
     GenericAttributeValue<Boolean> getEncrypted();
 
 

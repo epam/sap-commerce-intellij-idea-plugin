@@ -23,20 +23,25 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
+public class XmlUpdateAttributeQuickFix implements LocalQuickFix {
 
     private final String myFixName;
     private final String myAttributeName;
+    private final String myAttributeValue;
 
-    public XmlDeleteAttributeQuickFix(final String attributeName) {
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.DeleteAttribute", attributeName);
+    public XmlUpdateAttributeQuickFix(
+        final String attributeName,
+        final String attributeValue
+    ) {
+
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.UpdateAttribute", attributeName, attributeValue);
         myAttributeName = attributeName;
+        myAttributeValue = attributeValue;
     }
 
     @NotNull
@@ -51,9 +56,8 @@ public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            Optional.ofNullable(currentTag.getAttribute(myAttributeName))
-                .ifPresent(PsiElement::delete);
-            PsiNavigateUtil.navigate(currentTag);
+            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, myAttributeValue);
+            PsiNavigateUtil.navigate(xmlAttribute);
         }
     }
 }

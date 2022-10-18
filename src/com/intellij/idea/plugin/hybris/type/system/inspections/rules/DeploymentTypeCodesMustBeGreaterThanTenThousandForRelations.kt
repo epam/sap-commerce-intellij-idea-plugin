@@ -37,14 +37,14 @@ class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractType
     }
 
     private fun check(
-        it: Deployment,
+        dom: Deployment,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val typeCode = it.typeCode.stringValue?.toIntOrNull()
+        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode <= 10000) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+            holder.createProblem(dom, severity, displayName, getTextRange(dom))
         }
     }
 }

@@ -20,8 +20,29 @@ package com.intellij.idea.plugin.hybris.type.system.model
 
 import java.util.stream.Stream
 
+val Items.deployments: Stream<Deployment>
+    get() {
+        return Stream.of(itemTypes.stream.map { it.deployment }, relations.relations.map { it.deployment }.stream())
+            .flatMap { it }
+    }
+
+val Items.modifiers: Stream<Modifiers>
+    get() {
+        return Stream.of(
+            itemTypes.stream.flatMap { it.attributes.attributes.stream() }.map { it.modifiers},
+            relations.elements.map { it.modifiers }
+        )
+            .flatMap { it }
+    }
+
 val ItemTypes.stream: Stream<ItemType>
     get() {
         return Stream.of(itemTypes.stream(), typeGroups.stream().flatMap { it.itemTypes.stream() })
             .flatMap { it }
+    }
+
+val Relations.elements: Stream<RelationElement>
+    get() {
+        return relations.stream()
+            .flatMap { Stream.of(it.sourceElement, it.targetElement) }
     }

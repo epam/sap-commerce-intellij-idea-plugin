@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttr
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
+import com.intellij.idea.plugin.hybris.type.system.model.elements
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -37,8 +38,8 @@ class OrderingOfRelationShouldBeAvoided : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.relations.relations.forEach { check(it.sourceElement, holder, severity) }
-        items.relations.relations.forEach { check(it.targetElement, holder, severity) }
+        items.relations.elements
+            .forEach { check(it, holder, severity) }
     }
 
     private fun check(
@@ -54,7 +55,7 @@ class OrderingOfRelationShouldBeAvoided : AbstractTypeSystemInspection() {
                 severity,
                 displayName,
                 TextRange.from(relation.ordered.xmlElement!!.startOffsetInParent, relation.ordered.xmlElement!!.textLength),
-                XmlDeleteAttributeQuickFix("ordered")
+                XmlDeleteAttributeQuickFix(RelationElement.ORDERED)
             )
         }
     }
