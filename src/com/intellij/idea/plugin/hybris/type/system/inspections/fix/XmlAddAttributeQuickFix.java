@@ -29,27 +29,34 @@ import org.jetbrains.annotations.NotNull;
 
 public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
-    private final String fixName;
-    private final String tagName;
-    private final String attributeName;
-    private final String attributeValue;
+    private final String myFixName;
+    private final String myTagName;
+    private final String myAttributeName;
+    private final String myAttributeValue;
 
     public XmlAddAttributeQuickFix(
             final String tagName,
             final String attributeName,
             final String attributeValue
     ) {
-        this.fixName = "Add/update attribute " + attributeName + "=" + attributeValue;
-        this.tagName = tagName;
-        this.attributeName = attributeName;
-        this.attributeValue = attributeValue;
+        myFixName = "Add/update attribute " + attributeName + '=' + attributeValue;
+        myTagName = tagName;
+        myAttributeName = attributeName;
+        myAttributeValue = attributeValue;
+    }
+
+    public XmlAddAttributeQuickFix(
+            final String attributeName,
+            final String attributeValue
+    ) {
+        this(null, attributeName, attributeValue);
     }
 
 
     @NotNull
     @Override
     public String getFamilyName() {
-        return fixName;
+        return myFixName;
     }
 
     @Override
@@ -59,20 +66,24 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
             final XmlAttribute xmlAttribute;
-            XmlTag modifiersTag = currentTag.findFirstSubTag(tagName);
-            if (modifiersTag == null) {
-                // Create tag
-                final XmlTag tagToInsert = currentTag.createChildTag(
-                        tagName,
+            if (myTagName != null) {
+                XmlTag modifiersTag = currentTag.findFirstSubTag(myTagName);
+                if (modifiersTag == null) {
+                    // Create tag
+                    final XmlTag tagToInsert = currentTag.createChildTag(
+                        myTagName,
                         currentTag.getNamespace(),
                         null,
                         false
-                );
+                    );
 
-                // Insert tag
-                modifiersTag = currentTag.addSubTag(tagToInsert, true);
+                    // Insert tag
+                    modifiersTag = currentTag.addSubTag(tagToInsert, true);
+                }
+                xmlAttribute = modifiersTag.setAttribute(myAttributeName, myAttributeValue);
+            } else {
+                xmlAttribute = currentTag.setAttribute(myAttributeName, myAttributeValue);
             }
-            xmlAttribute = modifiersTag.setAttribute(attributeName, attributeValue);
             PsiNavigateUtil.navigate(xmlAttribute);
         }
     }
