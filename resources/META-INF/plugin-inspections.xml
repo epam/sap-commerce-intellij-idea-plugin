@@ -18,19 +18,14 @@
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustStartWithUppercaseLetter"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.FieldNameMustStartWithLowercaseLetter.key"
-                         shortName="FieldNameMustStartWithLowercaseLetter" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.FieldNameMustStartWithLowercaseLetter"/>
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.QualifierMustStartWithLowercaseLetter.key"
+                         shortName="QualifierMustStartWithLowercaseLetter" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.QualifierMustStartWithLowercaseLetter"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.RelationshipQualifierNameMustStartWithLowercaseLetter.key"-->
-<!--                         shortName="RelationshipQualifierNameMustStartWithLowercaseLetter" level="WEAK WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.RelationshipQualifierNameMustStartWithLowercaseLetter"/>-->
-
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.OrderingOfRelationShouldBeAvoided.key"-->
-<!--                         shortName="OrderingOfRelationShouldBeAvoided" level="WEAK WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.OrderingOfRelationShouldBeAvoided"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.OrderingOfRelationShouldBeAvoided.key"
+                         shortName="OrderingOfRelationShouldBeAvoided" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.OrderingOfRelationShouldBeAvoided"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
 <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.ListsInRelationShouldBeAvoided.key"-->

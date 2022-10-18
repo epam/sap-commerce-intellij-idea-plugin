@@ -22,36 +22,21 @@ import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class XmlAddAttributeQuickFix implements LocalQuickFix {
+import java.util.Optional;
+
+public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
 
     private final String myFixName;
-    private final String myTagName;
     private final String myAttributeName;
-    private final String myAttributeValue;
 
-    public XmlAddAttributeQuickFix(
-            final String tagName,
-            final String attributeName,
-            final String attributeValue
-    ) {
-        myFixName = "Add/update attribute " + attributeName + '=' + attributeValue;
-        myTagName = tagName;
+    public XmlDeleteAttributeQuickFix(final String attributeName) {
+        myFixName = "Remove attribute " + attributeName;
         myAttributeName = attributeName;
-        myAttributeValue = attributeValue;
     }
-
-    public XmlAddAttributeQuickFix(
-            final String attributeName,
-            final String attributeValue
-    ) {
-        this(null, attributeName, attributeValue);
-    }
-
 
     @NotNull
     @Override
@@ -65,26 +50,9 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlAttribute xmlAttribute;
-            if (myTagName != null) {
-                XmlTag modifiersTag = currentTag.findFirstSubTag(myTagName);
-                if (modifiersTag == null) {
-                    // Create tag
-                    final XmlTag tagToInsert = currentTag.createChildTag(
-                        myTagName,
-                        currentTag.getNamespace(),
-                        null,
-                        false
-                    );
-
-                    // Insert tag
-                    modifiersTag = currentTag.addSubTag(tagToInsert, true);
-                }
-                xmlAttribute = modifiersTag.setAttribute(myAttributeName, myAttributeValue);
-            } else {
-                xmlAttribute = currentTag.setAttribute(myAttributeName, myAttributeValue);
-            }
-            PsiNavigateUtil.navigate(xmlAttribute);
+            Optional.ofNullable(currentTag.getAttribute(myAttributeName))
+                .ifPresent(PsiElement::delete);
+            PsiNavigateUtil.navigate(currentTag);
         }
     }
 }

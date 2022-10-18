@@ -29,7 +29,7 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
+class QualifierMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -38,9 +38,15 @@ class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
-        items.enumTypes.enumTypes.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
-        items.relations.relations.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
+        items.itemTypes.stream
+            .flatMap { it.attributes.attributes.stream() }
+            .forEach { check(it, it.qualifier.xmlElement, it.qualifier.stringValue, holder, severity) }
+        items.relations.relations
+            .map { it.sourceElement }
+            .forEach { check(it, it.qualifier.xmlElement, it.qualifier.stringValue, holder, severity) }
+        items.relations.relations
+            .map { it.targetElement }
+            .forEach { check(it, it.qualifier.xmlElement, it.qualifier.stringValue, holder, severity) }
     }
 
     private fun check(
@@ -50,8 +56,8 @@ class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        if (xmlElement != null && !name.isNullOrEmpty() && !name[0].isUpperCase()) {
-            val newName = name[0].uppercaseChar() + name.substring(1);
+        if (xmlElement != null && !name.isNullOrEmpty() && !name[0].isLowerCase()) {
+            val newName = name[0].lowercaseChar() + name.substring(1);
             holder.createProblem(
                 it,
                 severity,
