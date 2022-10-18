@@ -121,40 +121,40 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     override fun getActiveSslProtocol(project: Project, settings: @Nullable HybrisRemoteConnectionSettings?): String {
-        var settings = settings
-        if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        var mySettings = settings
+        if (mySettings == null) {
+            mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
                     .getActiveHybrisRemoteConnectionSettings(project)
         }
-        return settings?.sslProtocol ?: "TLSv1"
+        return mySettings?.sslProtocol ?: "TLSv1"
     }
 
     override fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
-        var settings = settings
-        if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        var mySettings = settings
+        if (mySettings == null) {
+            mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
                     .getActiveHybrisRemoteConnectionSettings(project)
         }
-        return getUrl(settings)
+        return getUrl(mySettings)
     }
 
     override fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
-        var settings = settings
+        var mySettings = settings
         val sb = StringBuilder()
-        if (settings == null) {
-            settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        if (mySettings == null) {
+            mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
                     .getActiveSolrConnectionSettings(project)
         }
-        if (settings!!.isSsl) {
+        if (mySettings!!.isSsl) {
             sb.append(HybrisConstants.HTTPS_PROTOCOL)
         } else {
             sb.append(HybrisConstants.HTTP_PROTOCOL)
         }
-        sb.append(settings.hostIP)
+        sb.append(mySettings.hostIP)
         sb.append(":")
-        sb.append(settings.port)
+        sb.append(mySettings.port)
         sb.append("/")
-        sb.append(settings.solrWebroot)
+        sb.append(mySettings.solrWebroot)
         val result = sb.toString()
         LOG.debug("Calculated host SOLR URL=$result")
         return result

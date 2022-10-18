@@ -33,9 +33,9 @@ import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.idea.plugin.hybris.type.system.model.Modifiers;
 import com.intellij.idea.plugin.hybris.type.system.model.Persistence;
+import com.intellij.idea.plugin.hybris.type.system.model.PersistenceType;
 import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
-import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup;
 import com.intellij.idea.plugin.hybris.type.system.model.Value;
 import com.intellij.psi.xml.XmlElement;
@@ -52,9 +52,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.intellij.util.containers.ContainerUtilRt.newArrayList;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
@@ -157,7 +156,7 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
             }
         }
         if (dom instanceof Persistence) {
-            final GenericAttributeValue<Type> type = ((Persistence) dom).getType();
+            final GenericAttributeValue<PersistenceType> type = ((Persistence) dom).getType();
             if (type != null) {
                 final String value = type.getStringValue();
                 if (value != null) {
@@ -255,7 +254,7 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
     private String localizeModifiers(final DomElement dom) {
         if (dom instanceof Modifiers) {
             final Modifiers modifiers = (Modifiers) dom;
-            final List<String> modList = newArrayList();
+            final List<String> modList = new ArrayList<>();
             resolveModifier(modifiers.getDoNotOptimize(), "doNotOptimize", modList);
             resolveModifier(modifiers.getEncrypted(), "encrypted", modList);
             resolveModifier(modifiers.getInitial(), "initial", modList);

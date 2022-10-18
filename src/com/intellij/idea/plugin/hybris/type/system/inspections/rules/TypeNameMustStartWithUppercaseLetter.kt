@@ -15,22 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.xml.XmlElement
+import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import java.util.stream.Collectors
 
-class DeploymentForSubclassesOfAbstractClasses : AbstractTypeSystemInspection() {
+private const val ALLOWED_FIRST_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -39,25 +38,19 @@ class DeploymentForSubclassesOfAbstractClasses : AbstractTypeSystemInspection() 
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it, project, holder, severity) }
+        items.enumTypes.enumTypes.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
+        items.relations.relations.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
     }
 
     private fun check(
-        it: ItemType,
-        project: Project,
+        it: DomElement,
+        xmlElement: XmlElement?,
+        name: String?,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
-            ?: return
-
-        val count = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
-            .map { it.deployment }
-            .filter { it.exists() }
-            .count()
-        if (count > 1) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+        if (xmlElement != null && !name.isNullOrEmpty() && !ALLOWED_FIRST_CHARS.contains(char = name[0])) {
+            holder.createProblem(it, severity, displayName, TextRange.from(xmlElement.startOffsetInParent, xmlElement.textLength))
         }
     }
 }

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -34,15 +35,26 @@ class TSMetaModelCollector(private val myProject: Project) : Processor<PsiFile> 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
     fun collectDependencies(): Set<PsiFile> {
-        StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            Items::class.java.name,
-            myProject,
-            ProjectScope.getAllScope(myProject),
-            PsiFile::class.java,
-            this
-        )
-        return Collections.unmodifiableSet(myFiles)
+        try {
+            StubIndex.getInstance().processElements(
+                DomElementClassIndex.KEY,
+                Items::class.java.name,
+                myProject,
+                ProjectScope.getAllScope(myProject),
+                PsiFile::class.java,
+                this
+            )
+            return Collections.unmodifiableSet(myFiles)
+        } catch (e : Throwable) {
+            if (e is ProcessCanceledException) {
+                throw e;
+            }
+            // Index is not up-to-date and have to be updated
+            // mby we have to re-index only that file(s)
+//            FileBasedIndex.getInstance().requestReindex(vFile)
+            StubIndex.getInstance().forceRebuild(e);
+            return emptySet()
+        }
     }
 
     override fun process(psiFile: PsiFile): Boolean {

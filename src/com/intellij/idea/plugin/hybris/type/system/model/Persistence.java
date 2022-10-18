@@ -50,7 +50,7 @@ public interface Persistence extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("type")
     @Required
-    GenericAttributeValue<Type> getType();
+    GenericAttributeValue<PersistenceType> getType();
 
 
     /**

@@ -15,23 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType
+import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import java.util.stream.Collectors
 
-class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
+class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -40,39 +33,17 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it, project, holder, severity) }
+        items.relations.relations.forEach { check(it.deployment, holder, severity) }
     }
 
     private fun check(
-        it: ItemType,
-        project: Project,
+        it: Deployment,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
-            ?: return
+        val typeCode = it.typeCode.stringValue?.toIntOrNull()
 
-        val isAbstract = metaItem.retrieveAllDomsStream()
-            .filter { it.abstract.exists() }
-            .map { it.abstract.value }
-            .count()
-
-        if (isAbstract > 0) {
-            return
-        }
-
-        val countExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
-            .map { it.deployment }
-            .filter { it.exists() }
-            .count()
-
-        val countOtherDeclarations = metaItem.retrieveAllDomsStream()
-            .map { it.deployment }
-            .filter { it.exists() }
-            .count()
-
-        if (countExtends == 0 && (!it.deployment.exists() && countOtherDeclarations == 0L)) {
+        if (typeCode != null && typeCode > 10000) {
             holder.createProblem(it, severity, displayName, getTextRange(it))
         }
     }

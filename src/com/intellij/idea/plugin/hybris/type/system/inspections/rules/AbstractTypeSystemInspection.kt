@@ -24,8 +24,11 @@ import com.intellij.codeInspection.ex.InspectionProfileWrapper
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.profile.codeInspection.ProjectInspectionProfileManager
 import com.intellij.psi.PsiFile
+import com.intellij.psi.xml.XmlElement
+import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomFileElement
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomElementAnnotationsManager
@@ -49,6 +52,18 @@ abstract class AbstractTypeSystemInspection : DomElementsInspection<Items>(Items
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     )
+
+    protected fun getTextRange(dom : DomElement): TextRange? {
+        val xmlElement = dom.xmlElement ?: return null
+
+        return TextRange.from(0, xmlElement.textLength)
+    }
+
+    protected fun getTextRange(xmlElement : XmlElement?): TextRange? {
+        if (xmlElement == null) return null
+
+        return TextRange.from(0, xmlElement.textLength)
+    }
 
     private fun getProblemHighlightType(file: PsiFile): HighlightDisplayLevel {
         val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile

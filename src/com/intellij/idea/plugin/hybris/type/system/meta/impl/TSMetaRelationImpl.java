@@ -28,10 +28,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.xml.DomAnchor;
-import com.intellij.util.xml.DomService;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -96,7 +93,6 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
 
     private static class TSMetaRelationElementImpl extends TSMetaEntityImpl<RelationElement> implements TSMetaRelationElement {
 
-        private final DomAnchor<RelationElement> myDomAnchor;
         private final TSMetaModifiers<TSMetaRelationElement> myModifiers;
         private final TSMetaRelation myOwner;
         private final String myType;
@@ -111,7 +107,6 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         public TSMetaRelationElementImpl(final Module module, final Project project, final @NotNull TSMetaRelation owner, final @NotNull RelationElement dom, final boolean custom) {
             super(module, project, dom, custom);
             myOwner = owner;
-            myDomAnchor = DomService.getInstance().createAnchor(dom);
             myType = StringUtil.notNullize(dom.getType().getStringValue());
             myQualifier = StringUtil.notNullize(dom.getQualifier().getStringValue());
             myNavigable = Optional.ofNullable(dom.getNavigable().getValue()).orElse(true);
@@ -127,12 +122,6 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         @Override
         public String getType() {
             return myType;
-        }
-
-        @Nullable
-        @Override
-        public RelationElement retrieveDom() {
-            return myDomAnchor.retrieveDomElement();
         }
 
         @NotNull

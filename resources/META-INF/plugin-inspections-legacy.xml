@@ -108,33 +108,33 @@
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"
-                         key="hybris.inspections.typesystem.DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations.key"
+                         key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeGreaterThanTenThousandForRelations.key"
                          shortName="DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeCodeReservedForCommonsExtension.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForCommonsExtension.key"
                          shortName="TypeCodeReservedForCommonsExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.TypeCodeReservedForCommonsExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeCodeReservedForPrintExtension.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForPrintExtension.key"
                          shortName="TypeCodeReservedForPrintExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.TypeCodeReservedForPrintExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeCodeReservedForProcessingExtension.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForProcessingExtension.key"
                          shortName="TypeCodeReservedForProcessingExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.TypeCodeReservedForProcessingExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"
-                         key="hybris.inspections.typesystem.TypeCodeReservedForLegacyXPrintExtension.key"
+                         key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForLegacyXPrintExtension.key"
                          shortName="TypeCodeReservedForLegacyXPrintExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.TypeCodeReservedForLegacyXPrintExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeCodeReservedForB2BCommerceExtension.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForB2BCommerceExtension.key"
                          shortName="TypeCodeReservedForB2BCommerceExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy.TypeCodeReservedForB2BCommerceExtension"/>
 

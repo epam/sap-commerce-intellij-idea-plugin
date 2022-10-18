@@ -16,21 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+// Generated on Sun Jun 05 01:21:13 EEST 2016
+// DTD/Schema  :    null
 
-import com.intellij.openapi.module.Module;
-import com.intellij.util.xml.DomAnchor;
-import com.intellij.util.xml.DomElement;
+package com.intellij.idea.plugin.hybris.type.system.model;
 
-public interface TSMetaClassifier<DOM extends DomElement> {
+/**
+ * null:typePersistenceType enumeration.
+ */
+public enum PersistenceType implements com.intellij.util.xml.NamedEnum {
+    CMP("cmp"),
+    JALO("jalo"),
+    PROPERTY("property"),
+    DYNAMIC("dynamic");
 
-    Module getModule();
+    private final String value;
 
-    String getName();
+    PersistenceType(String value) {
+        this.value = value;
+    }
 
-    DomAnchor<DOM> getDomAnchor();
+    public String getValue() {
+        return value;
+    }
 
-    DOM retrieveDom();
-
-    boolean isCustom();
 }

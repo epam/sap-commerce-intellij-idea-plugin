@@ -56,6 +56,11 @@ class TSMetaEntityImpl<D extends DomElement> {
     }
 
     @Nullable
+    public DomAnchor<D> getDomAnchor() {
+        return myDomAnchor;
+    }
+
+    @Nullable
     public D retrieveDom() {
         return myDomAnchor.retrieveDomElement();
     }
