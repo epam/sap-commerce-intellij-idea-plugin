@@ -43,7 +43,7 @@ class DeploymentTableMustExistForManyToManyRelation : AbstractTypeSystemInspecti
         severity: HighlightSeverity
     ) {
         val sourceCardinality = dom.sourceElement.cardinality.value ?: Cardinality.MANY
-        val targetCardinality = dom.sourceElement.cardinality.value ?: Cardinality.MANY
+        val targetCardinality = dom.targetElement.cardinality.value ?: Cardinality.MANY
 
         if (sourceCardinality == Cardinality.MANY && targetCardinality == Cardinality.MANY && dom.deployment.typeCode.stringValue == null) {
             holder.createProblem(dom.deployment.typeCode, severity, displayName)
