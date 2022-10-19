@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ThrowableComputable
@@ -36,18 +37,24 @@ class TSMetaModelCollector(private val myProject: Project) : Processor<PsiFile> 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
     fun collectDependencies(): Set<PsiFile> {
-        return ProgressManager.getInstance().computeInNonCancelableSection(ThrowableComputable<Set<PsiFile>, Exception> {
-            StubIndex.getInstance().processElements(
-                DomElementClassIndex.KEY,
-                Items::class.java.name,
-                myProject,
-                ProjectScope.getAllScope(myProject),
-                PsiFile::class.java,
-                this
-            )
+        try {
+            return ProgressManager.getInstance()
+                .computeInNonCancelableSection(ThrowableComputable<Set<PsiFile>, Exception> {
+                    StubIndex.getInstance().processElements(
+                        DomElementClassIndex.KEY,
+                        Items::class.java.name,
+                        myProject,
+                        ProjectScope.getAllScope(myProject),
+                        PsiFile::class.java,
+                        this
+                    )
 
-            Collections.unmodifiableSet(myFiles)
-        })
+                    Collections.unmodifiableSet(myFiles)
+                })
+        } catch (e : Exception) {
+            // can happen due broken Stub index, and requested reindex via FileBasedIndexImpl, cancel for now and try again later
+            throw ProcessCanceledException(e);
+        }
     }
 
     override fun process(psiFile: PsiFile): Boolean {

@@ -53,10 +53,10 @@
                          shortName="BooleanFieldCannotBeOptional" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.BooleanFieldCannotBeOptional"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.JaloPersistanceTypeIsDeprecated.key"-->
-<!--                         shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloPersistanceTypeIsDeprecated"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.JaloPersistanceTypeIsDeprecated.key"
+                         shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloPersistanceTypeIsDeprecated"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
 <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CmpPersistanceTypeIsDeprecated.key"-->
