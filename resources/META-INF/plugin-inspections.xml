@@ -70,17 +70,29 @@
 <!--                         shortName="DeploymentForSubclassesOfAbstractClasses" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentForSubclassesOfAbstractClasses"/>-->
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle"-->
-<!--                         key="hybris.inspections.typesystem.DeploymentTableMustExistForItemExtendingGenericItem.key"-->
-<!--                         shortName="DeploymentTableMustExistForItemExtendingGenericItem" level="ERROR"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustExistForItemExtendingGenericItem"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.DeploymentTableMustExistForItemExtendingGenericItem.key"
+                         shortName="DeploymentTableMustExistForItemExtendingGenericItem" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustExistForItemExtendingGenericItem"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
 <!--                         bundle="i18n.HybrisBundle"-->
 <!--                         key="hybris.inspections.typesystem.NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem.key"-->
 <!--                         shortName="NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem"/>-->
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeUnique.key"
+                         shortName="DeploymentTypeCodeMustBeUnique" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeUnique"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.DeploymentTableMustBeUnique.key"
+                         shortName="DeploymentTableMustBeUnique" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustBeUnique"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"

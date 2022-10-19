@@ -15,18 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.Items
+import com.intellij.idea.plugin.hybris.type.system.model.deployments
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import org.apache.commons.lang3.StringUtils
 
-class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractTypeSystemInspection() {
+class DeploymentTypeCodeMustBeUnique : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -35,7 +38,7 @@ class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractType
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.relations.relations.forEach { check(it.deployment, project, holder, severity) }
+        items.deployments.forEach { check(it, project, holder, severity) }
     }
 
     private fun check(
@@ -44,15 +47,16 @@ class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractType
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
+        val deployment = TSMetaModelAccess.getInstance(project).getMetaModel().getDeploymentForTypeCode(dom.typeCode.value)
+        deployment ?: return
 
-        if (typeCode != null && typeCode <= 10000) {
-            holder.createProblem(
-                dom.typeCode,
-                severity,
-                displayName,
-                XmlUpdateAttributeQuickFix(Deployment.TYPECODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
-            )
-        }
+        if (StringUtils.equals(dom.table.stringValue, deployment.table)) return
+
+        holder.createProblem(
+            dom.typeCode,
+            severity,
+            displayName,
+            XmlUpdateAttributeQuickFix(Deployment.TYPECODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
+        )
     }
 }

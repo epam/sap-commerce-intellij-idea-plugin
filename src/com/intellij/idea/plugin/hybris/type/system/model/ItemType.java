@@ -53,6 +53,7 @@ public interface ItemType extends DomElement {
     String GENERATE = "generate";
     String ABSTRACT = "abstract";
     String METATYPE = "metatype";
+    String DESCRIPTION = "description";
 
     /**
      * Returns the value of the simple content.
@@ -225,7 +226,7 @@ public interface ItemType extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
-    @SubTag("description")
+    @SubTag(DESCRIPTION)
     Description getDescription();
 
 

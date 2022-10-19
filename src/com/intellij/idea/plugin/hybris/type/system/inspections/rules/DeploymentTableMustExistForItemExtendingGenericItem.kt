@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
@@ -29,6 +31,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import org.apache.commons.lang3.StringUtils
 import java.util.stream.Collectors
 
 class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
@@ -52,28 +55,33 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
             ?: return
 
-        val isAbstract = metaItem.retrieveAllDomsStream()
-            .filter { it.abstract.exists() }
-            .map { it.abstract.value }
-            .count()
+        if (StringUtils.isNotBlank(metaItem.deployment.typeCode)) return
 
-        if (isAbstract > 0) {
-            return
-        }
+        val otherDeclarationsWithDeploymentTable = metaItem.retrieveAllDomsStream().anyMatch { StringUtils.isNotBlank(it.deployment.typeCode.value) }
 
-        val countExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
+        if (otherDeclarationsWithDeploymentTable) return
+
+        val otherDeclarationsMarkedAsAbstract = metaItem.retrieveAllDomsStream().anyMatch { it.abstract.value == true }
+
+        if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
+
+        val countDeploymentTablesInParents = TSMetaItemService.getInstance(project).getExtends(metaItem)
             .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
-            .map { it.deployment }
-            .filter { it.exists() }
-            .count()
+            .count { StringUtils.isNotBlank(it.deployment.typeCode.value) }
 
-        val countOtherDeclarations = metaItem.retrieveAllDomsStream()
-            .map { it.deployment }
-            .filter { it.exists() }
-            .count()
+        if (countDeploymentTablesInParents > 0) return
 
-        if (countExtends == 0 && (!dom.deployment.exists() && countOtherDeclarations == 0L)) {
-            holder.createProblem(dom.deployment.typeCode, severity, displayName)
-        }
+        val attributes = sortedMapOf(
+            Deployment.TABLE to dom.code.stringValue,
+            Deployment.TYPECODE to TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString(),
+        )
+
+        holder.createProblem(
+            dom,
+            severity,
+            displayName,
+            getTextRange(dom),
+            XmlAddTagQuickFix(ItemType.DEPLOYMENT, null, attributes, ItemType.DESCRIPTION)
+        )
     }
 }

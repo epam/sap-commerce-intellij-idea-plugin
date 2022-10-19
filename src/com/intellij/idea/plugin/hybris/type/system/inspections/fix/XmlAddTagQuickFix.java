@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 public class XmlAddTagQuickFix implements LocalQuickFix {
 
@@ -51,7 +53,7 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
             final SortedMap<String, String> attributes,
             final String insertAfterTag
     ) {
-        this.fixName = "Add " + tagName + " tag";
+        this.fixName = getFixName(tagName, attributes);
         this.tagName = tagName;
         this.tagBody = tagBody;
         if (attributes != null) {
@@ -62,6 +64,20 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
         this.insertAfterTag = insertAfterTag;
     }
 
+    private static String getFixName(final String tagName, final SortedMap<String, String> attributes) {
+        if (attributes == null || attributes.isEmpty()) {
+            return HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.AddTag", tagName);
+        }
+
+        return HybrisI18NBundleUtils.message(
+            "hybris.inspections.fix.typesystem.AddTagWithAttributes",
+            tagName,
+            attributes.entrySet()
+                      .stream()
+                      .map(pair -> '\'' + pair.getKey() + "'='" + pair.getValue() + '\'')
+                      .collect(Collectors.joining(", "))
+        );
+    }
 
     @NotNull
     @Override

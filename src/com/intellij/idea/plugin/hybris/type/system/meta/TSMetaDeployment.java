@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.idea.plugin.hybris.type.system.model.Deployment;
+import com.intellij.util.xml.DomAnchor;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaDeployment<T extends TSMetaClassifier<?>> {
@@ -32,5 +34,8 @@ public interface TSMetaDeployment<T extends TSMetaClassifier<?>> {
     String getTypeCode();
 
     T getOwner();
+
+    @Nullable
+    DomAnchor<Deployment> getDomAnchor();
 
 }

@@ -37,6 +37,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Relation extends DomElement {
 
+    String DEPLOYMENT = "deployment";
+    String CODE = "code";
+    String LOCALIZED = "localized";
+    String AUTOCREATE = "autocreate";
+    String GENERATE = "generate";
+    String DESCRIPTION = "description";
+
     /**
      * Returns the value of the simple content.
      *
@@ -64,7 +71,7 @@ public interface Relation extends DomElement {
      * @return the value of the code child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("code")
+    @com.intellij.util.xml.Attribute(CODE)
     @Required
     GenericAttributeValue<String> getCode();
 
@@ -79,7 +86,7 @@ public interface Relation extends DomElement {
      * @return the value of the localized child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("localized")
+    @com.intellij.util.xml.Attribute(LOCALIZED)
     @Required
     GenericAttributeValue<Boolean> getLocalized();
 
@@ -94,7 +101,7 @@ public interface Relation extends DomElement {
      * @return the value of the deployment child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("deployment")
+    @com.intellij.util.xml.Attribute(DEPLOYMENT)
     GenericAttributeValue<String> getDeploymentAttr();
 
 
@@ -108,7 +115,7 @@ public interface Relation extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("autocreate")
+    @com.intellij.util.xml.Attribute(AUTOCREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 
@@ -122,7 +129,7 @@ public interface Relation extends DomElement {
      * @return the value of the generate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("generate")
+    @com.intellij.util.xml.Attribute(GENERATE)
     GenericAttributeValue<Boolean> getGenerate();
 
 
@@ -136,7 +143,7 @@ public interface Relation extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
-    @SubTag("description")
+    @SubTag(DESCRIPTION)
     GenericDomValue<String> getDescription();
 
 

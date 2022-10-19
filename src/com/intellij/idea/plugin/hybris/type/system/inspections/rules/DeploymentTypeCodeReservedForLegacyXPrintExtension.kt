@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.deployments
@@ -34,18 +36,24 @@ class DeploymentTypeCodeReservedForLegacyXPrintExtension : AbstractTypeSystemIns
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.deployments.forEach { check(it, holder, severity) }
+        items.deployments.forEach { check(it, project, holder, severity) }
     }
 
     private fun check(
         dom: Deployment,
+        project: Project,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 24400 .. 24599) {
-            holder.createProblem(dom.typeCode, severity, displayName)
+            holder.createProblem(
+                dom.typeCode,
+                severity,
+                displayName,
+                XmlUpdateAttributeQuickFix(Deployment.TYPECODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
+            )
         }
     }
 }
