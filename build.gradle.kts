@@ -76,11 +76,6 @@ tasks {
         }
     }
 
-    // TODO: remove before final commit
-    buildSearchableOptions {
-        enabled = false
-    }
-
     runIde {
         jvmArgs = listOf(intellijJvmArgs)
     }
