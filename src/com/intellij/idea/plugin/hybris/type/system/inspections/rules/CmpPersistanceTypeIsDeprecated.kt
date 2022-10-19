@@ -25,7 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class JaloPersistanceTypeIsDeprecated : AbstractTypeSystemInspection() {
+class CmpPersistanceTypeIsDeprecated : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -44,7 +44,7 @@ class JaloPersistanceTypeIsDeprecated : AbstractTypeSystemInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val isJalo = PersistenceType.JALO == dom.persistence.type.value
+        val isJalo = PersistenceType.CMP == dom.persistence.type.value
 
         if (isJalo) {
             holder.createProblem(

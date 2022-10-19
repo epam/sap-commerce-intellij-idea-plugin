@@ -58,10 +58,10 @@
                          shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloPersistanceTypeIsDeprecated"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CmpPersistanceTypeIsDeprecated.key"-->
-<!--                         shortName="CmpPersistanceTypeIsDeprecated" level="WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CmpPersistanceTypeIsDeprecated"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CmpPersistanceTypeIsDeprecated.key"
+                         shortName="CmpPersistanceTypeIsDeprecated" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CmpPersistanceTypeIsDeprecated"/>
 
         <!-- Errors -->
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
