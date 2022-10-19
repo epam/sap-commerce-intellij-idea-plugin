@@ -44,7 +44,7 @@ class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractType
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode <= 10000) {
-            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+            holder.createProblem(dom.typeCode, severity, displayName)
         }
     }
 }

@@ -38,6 +38,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Persistence extends DomElement {
 
+    String TYPE = "type";
+    String QUALIFIER = "qualifier";
+    String ATTRIBUTE_HANDLER = "attributeHandler";
+
     /**
      * Returns the value of the type child.
      * <pre>
@@ -48,7 +52,7 @@ public interface Persistence extends DomElement {
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     @Required
     GenericAttributeValue<PersistenceType> getType();
 
@@ -63,7 +67,7 @@ public interface Persistence extends DomElement {
      * @return the value of the qualifier child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("qualifier")
+    @com.intellij.util.xml.Attribute(QUALIFIER)
     GenericAttributeValue<String> getQualifier();
 
 
@@ -77,7 +81,7 @@ public interface Persistence extends DomElement {
      * @return the value of the attributeHandler child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("attributeHandler")
+    @com.intellij.util.xml.Attribute(ATTRIBUTE_HANDLER)
     @Referencing(AttributeHandlerReferenceConverter.class)
     GenericAttributeValue<String> getAttributeHandler();
 

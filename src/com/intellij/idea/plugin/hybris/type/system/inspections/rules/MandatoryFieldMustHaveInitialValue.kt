@@ -41,16 +41,21 @@ class MandatoryFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
     }
 
     private fun check(
-        it: Attribute,
+        dom: Attribute,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val optional = it.modifiers.optional.value ?: true
-        val initial = it.modifiers.initial.value ?: false
-        val defaultValue = it.defaultValue.value
+        val optional = dom.modifiers.optional.value ?: true
+        val initial = dom.modifiers.initial.value ?: false
+        val defaultValue = dom.defaultValue.value
 
-        if (!optional && (!initial || defaultValue == null)) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+        if (!optional && (!initial && defaultValue == null)) {
+            holder.createProblem(
+                dom,
+                severity,
+                displayName,
+                getTextRange(dom)
+            )
         }
     }
 }

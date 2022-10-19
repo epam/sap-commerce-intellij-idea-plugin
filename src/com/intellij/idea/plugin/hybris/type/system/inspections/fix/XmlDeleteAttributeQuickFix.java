@@ -23,6 +23,8 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +56,14 @@ public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
             Optional.ofNullable(currentTag.getAttribute(myAttributeName))
                 .ifPresent(PsiElement::delete);
             PsiNavigateUtil.navigate(currentTag);
+        } else if (currentElement instanceof XmlAttribute) {
+            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement;
+            PsiNavigateUtil.navigate(xmlAttribute.getParent());
+            xmlAttribute.delete();
+        } else if (currentElement instanceof XmlAttributeValue && currentElement.getParent() instanceof XmlAttribute) {
+            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement.getParent();
+            PsiNavigateUtil.navigate(xmlAttribute.getParent());
+            xmlAttribute.delete();
         }
     }
 }

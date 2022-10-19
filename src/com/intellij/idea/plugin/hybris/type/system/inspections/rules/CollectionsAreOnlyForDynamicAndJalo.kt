@@ -18,16 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
-import com.intellij.idea.plugin.hybris.type.system.model.modifiers
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection() {
+class CollectionsAreOnlyForDynamicAndJalo : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -36,23 +37,27 @@ class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection(
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.modifiers.forEach { check(it, holder, severity) }
+        items.itemTypes.stream
+            .flatMap { it.attributes.attributes.stream() }
+            .forEach { check(it, project, holder, severity) }
     }
 
     private fun check(
-        dom: Modifiers,
+        attribute: Attribute,
+        project: Project,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val doNotOptimizeXmlElement = dom.doNotOptimize.xmlElement
-        val doNotOptimize = dom.doNotOptimize.value ?: false
 
-        if (doNotOptimizeXmlElement != null && doNotOptimize) {
+        if (!arrayOf(PersistenceType.DYNAMIC, PersistenceType.JALO).contains(attribute.persistence.type.value)) {
+            TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)[attribute.type.stringValue]
+                ?: return
+
             holder.createProblem(
-                dom.doNotOptimize,
+                attribute.persistence.type,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(Modifiers.DONT_OPTIMIZE)
+                XmlUpdateAttributeQuickFix(Persistence.TYPE, PersistenceType.DYNAMIC.value)
             )
         }
     }

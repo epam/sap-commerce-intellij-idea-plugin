@@ -18,16 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
-import com.intellij.idea.plugin.hybris.type.system.model.modifiers
+import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection() {
+class BooleanFieldCannotBeOptional : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -36,23 +38,28 @@ class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection(
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.modifiers.forEach { check(it, holder, severity) }
+        items.itemTypes.stream
+            .flatMap { it.attributes.attributes.stream() }
+            .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-        dom: Modifiers,
+        dom: Attribute,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
+        severity: HighlightSeverity,
+        project: Project
     ) {
-        val doNotOptimizeXmlElement = dom.doNotOptimize.xmlElement
-        val doNotOptimize = dom.doNotOptimize.value ?: false
+        val optional = dom.modifiers.optional.value ?: true
+        val defaultValue = dom.defaultValue.value
+        val type = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)[dom.type.stringValue]
+            ?: return
 
-        if (doNotOptimizeXmlElement != null && doNotOptimize) {
+        if (optional && defaultValue == null && "java.lang.Boolean".equals(type.name, true)) {
             holder.createProblem(
-                dom.doNotOptimize,
+                dom,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(Modifiers.DONT_OPTIMIZE)
+                getTextRange(dom)
             )
         }
     }

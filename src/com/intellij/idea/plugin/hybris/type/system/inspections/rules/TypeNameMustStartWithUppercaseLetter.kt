@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.xml.XmlElement
-import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
@@ -39,25 +37,23 @@ class TypeNameMustStartWithUppercaseLetter : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
-        items.enumTypes.enumTypes.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
-        items.relations.relations.forEach { check(it, it.code.xmlElement, it.code.stringValue, holder, severity) }
+        items.itemTypes.stream.forEach { check(it.code, holder, severity) }
+        items.enumTypes.enumTypes.forEach { check(it.code, holder, severity) }
+        items.relations.relations.forEach { check(it.code, holder, severity) }
     }
 
     private fun check(
-        it: DomElement,
-        xmlElement: XmlElement?,
-        name: String?,
+        attribute: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        if (xmlElement != null && !name.isNullOrEmpty() && !name[0].isUpperCase()) {
+        val name = attribute.stringValue
+        if (!name.isNullOrEmpty() && !name[0].isUpperCase()) {
             val newName = name[0].uppercaseChar() + name.substring(1);
             holder.createProblem(
-                it,
+                attribute,
                 severity,
                 displayName,
-                TextRange.from(xmlElement.startOffsetInParent, xmlElement.textLength),
                 XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }

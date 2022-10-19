@@ -45,7 +45,7 @@ class DeploymentTypeCodeReservedForPrintExtension : AbstractTypeSystemInspection
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 23400 .. 23999) {
-            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+            holder.createProblem(dom.typeCode, severity, displayName)
         }
     }
 }

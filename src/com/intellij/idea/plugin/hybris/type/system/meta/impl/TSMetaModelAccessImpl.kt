@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
@@ -72,12 +71,10 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     )
 
     override fun getMetaModel(): TSGlobalMetaModel {
-        return DumbService.getInstance(myProject).runReadActionInSmartMode<TSGlobalMetaModel> {
-            if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-                return@runReadActionInSmartMode readMetaModelWithLock()
-            }
-            return@runReadActionInSmartMode writeMetaModelWithLock()
+        if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+            return readMetaModelWithLock()
         }
+        return writeMetaModelWithLock()
     }
 
     override fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): Collection<T> = getMetaModel().getMetaType<T>(metaType).values

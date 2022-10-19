@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.elements
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
@@ -51,10 +50,9 @@ class OrderingOfRelationShouldBeAvoided : AbstractTypeSystemInspection() {
         val ordered = relation.ordered.value ?: false
         if (relation.xmlElement != null && relation.ordered.xmlElement != null && cardinality == Cardinality.MANY && ordered) {
             holder.createProblem(
-                relation,
+                relation.ordered,
                 severity,
                 displayName,
-                TextRange.from(relation.ordered.xmlElement!!.startOffsetInParent, relation.ordered.xmlElement!!.textLength),
                 XmlDeleteAttributeQuickFix(RelationElement.ORDERED)
             )
         }

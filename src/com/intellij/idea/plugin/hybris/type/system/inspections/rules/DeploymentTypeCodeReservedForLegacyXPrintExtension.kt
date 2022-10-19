@@ -45,7 +45,7 @@ class DeploymentTypeCodeReservedForLegacyXPrintExtension : AbstractTypeSystemIns
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 24400 .. 24599) {
-            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+            holder.createProblem(dom.typeCode, severity, displayName)
         }
     }
 }

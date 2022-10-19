@@ -45,7 +45,7 @@ class DeploymentTypeCodeReservedForB2BCommerceExtension : AbstractTypeSystemInsp
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 10000..10099) {
-            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+            holder.createProblem(dom.typeCode, severity, displayName)
         }
     }
 }

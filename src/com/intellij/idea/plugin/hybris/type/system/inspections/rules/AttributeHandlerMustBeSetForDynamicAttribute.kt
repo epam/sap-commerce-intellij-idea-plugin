@@ -18,16 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
-import com.intellij.idea.plugin.hybris.type.system.model.modifiers
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection() {
+class AttributeHandlerMustBeSetForDynamicAttribute : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -36,23 +34,24 @@ class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection(
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.modifiers.forEach { check(it, holder, severity) }
+        items.itemTypes.stream
+            .flatMap { it.attributes.attributes.stream() }
+            .forEach { check(it, holder, severity) }
     }
 
     private fun check(
-        dom: Modifiers,
+        dom: Attribute,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val doNotOptimizeXmlElement = dom.doNotOptimize.xmlElement
-        val doNotOptimize = dom.doNotOptimize.value ?: false
+        val dynamic = PersistenceType.DYNAMIC == dom.persistence.type.value
 
-        if (doNotOptimizeXmlElement != null && doNotOptimize) {
+        if (dynamic && dom.persistence.attributeHandler.stringValue == null) {
             holder.createProblem(
-                dom.doNotOptimize,
+                dom.persistence,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(Modifiers.DONT_OPTIMIZE)
+                XmlAddAttributeQuickFix(Persistence.ATTRIBUTE_HANDLER)
             )
         }
     }

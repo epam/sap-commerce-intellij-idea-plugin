@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttr
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
@@ -50,10 +49,9 @@ class ListsInRelationShouldBeAvoided : AbstractTypeSystemInspection() {
         val xmlElement = relation.collectionType.xmlElement
         if (xmlElement != null && cardinality == Cardinality.MANY && collectionType == Type.LIST) {
             holder.createProblem(
-                relation,
+                relation.collectionType,
                 severity,
                 displayName,
-                TextRange.from(xmlElement.startOffsetInParent, xmlElement.textLength),
                 XmlDeleteAttributeQuickFix(RelationElement.COLLECTIONTYPE),
                 XmlUpdateAttributeQuickFix(RelationElement.COLLECTIONTYPE, Type.SET.value)
             )

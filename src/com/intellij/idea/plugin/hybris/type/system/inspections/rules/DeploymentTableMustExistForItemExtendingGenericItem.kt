@@ -44,12 +44,12 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
     }
 
     private fun check(
-        it: ItemType,
+        dom: ItemType,
         project: Project,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
             ?: return
 
         val isAbstract = metaItem.retrieveAllDomsStream()
@@ -72,8 +72,8 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
             .filter { it.exists() }
             .count()
 
-        if (countExtends == 0 && (!it.deployment.exists() && countOtherDeclarations == 0L)) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+        if (countExtends == 0 && (!dom.deployment.exists() && countOtherDeclarations == 0L)) {
+            holder.createProblem(dom.deployment.typeCode, severity, displayName)
         }
     }
 }

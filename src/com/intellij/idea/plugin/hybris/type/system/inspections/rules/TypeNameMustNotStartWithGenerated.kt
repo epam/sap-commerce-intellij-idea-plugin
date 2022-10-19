@@ -18,16 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
-import com.intellij.idea.plugin.hybris.type.system.model.modifiers
+import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection() {
+class TypeNameMustNotStartWithGenerated : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -36,23 +37,24 @@ class UseOfUnoptimizedAttributesIsNotRecommended : AbstractTypeSystemInspection(
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.modifiers.forEach { check(it, holder, severity) }
+        items.itemTypes.stream.forEach { check(it.code, holder, severity) }
+        items.enumTypes.enumTypes.forEach { check(it.code, holder, severity) }
+        items.relations.relations.forEach { check(it.code, holder, severity) }
     }
 
     private fun check(
-        dom: Modifiers,
+        attribute: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val doNotOptimizeXmlElement = dom.doNotOptimize.xmlElement
-        val doNotOptimize = dom.doNotOptimize.value ?: false
-
-        if (doNotOptimizeXmlElement != null && doNotOptimize) {
+        val name = attribute.stringValue
+        if (!name.isNullOrEmpty() && name.startsWith("Generated")) {
+            val newName = name.replace("Generated", "")
             holder.createProblem(
-                dom.doNotOptimize,
+                attribute,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(Modifiers.DONT_OPTIMIZE)
+                XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }
     }

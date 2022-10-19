@@ -38,27 +38,20 @@
                          shortName="UseOfUnoptimizedAttributesIsNotRecommended" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.UseOfUnoptimizedAttributesIsNotRecommended"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CollectionsAreOnlyForDynamicAndJalo.key"-->
-<!--                         shortName="CollectionsAreOnlyForDynamicAndJalo" level="WEAK WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CollectionsAreOnlyForDynamicAndJalo"/>-->
-
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeNameMustNotStartWithGenerated.key"-->
-<!--                         shortName="TypeNameMustNotStartWithGenerated" level="WEAK WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustNotStartWithGenerated"/>-->
-
-<!--        &lt;!&ndash; Warnings &ndash;&gt;-->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
-                         bundle="i18n.HybrisBundle"
-                         key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeGreaterThanTenThousand.key"
-                         shortName="DeploymentTypeCodeMustBeGreaterThanTenThousand" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeGreaterThanTenThousand"/>
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CollectionsAreOnlyForDynamicAndJalo.key"
+                         shortName="CollectionsAreOnlyForDynamicAndJalo" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CollectionsAreOnlyForDynamicAndJalo"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.BooleanFieldCannotBeOptional.key"-->
-<!--                         shortName="BooleanFieldCannotBeOptional" level="WARNING"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.BooleanFieldCannotBeOptional"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeNameMustNotStartWithGenerated.key"
+                         shortName="TypeNameMustNotStartWithGenerated" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustNotStartWithGenerated"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.BooleanFieldCannotBeOptional.key"
+                         shortName="BooleanFieldCannotBeOptional" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.BooleanFieldCannotBeOptional"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
 <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.JaloPersistanceTypeIsDeprecated.key"-->
@@ -94,6 +87,18 @@
 <!--                         key="hybris.inspections.typesystem.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"-->
 <!--                         shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>-->
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.AttributeHandlerMustBeSetForDynamicAttribute.key"
+                         shortName="AttributeHandlerMustBeSetForDynamicAttribute" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.AttributeHandlerMustBeSetForDynamicAttribute"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeGreaterThanTenThousand.key"
+                         shortName="DeploymentTypeCodeMustBeGreaterThanTenThousand" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeGreaterThanTenThousand"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"

@@ -52,7 +52,7 @@ class ImmutableFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
         val defaultValue = it.defaultValue.value
 
         if (persistenceType != PersistenceType.DYNAMIC && !write && (!initial || defaultValue == null)) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+            holder.createProblem(it, severity, displayName)
         }
     }
 }

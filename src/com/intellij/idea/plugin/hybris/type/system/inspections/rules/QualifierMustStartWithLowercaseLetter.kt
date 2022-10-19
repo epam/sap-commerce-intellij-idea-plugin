@@ -25,9 +25,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.elements
 import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.xml.XmlElement
-import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
@@ -42,25 +40,23 @@ class QualifierMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
     ) {
         items.itemTypes.stream
             .flatMap { it.attributes.attributes.stream() }
-            .forEach { check(it, it.qualifier.xmlElement, it.qualifier.stringValue, holder, severity) }
+            .forEach { check(it.qualifier, holder, severity) }
         items.relations.elements
-            .forEach { check(it, it.qualifier.xmlElement, it.qualifier.stringValue, holder, severity) }
+            .forEach { check(it.qualifier, holder, severity) }
     }
 
     private fun check(
-        it: DomElement,
-        xmlElement: XmlElement?,
-        name: String?,
+        attribute: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        if (xmlElement != null && !name.isNullOrEmpty() && !name[0].isLowerCase()) {
+        val name = attribute.stringValue
+        if (!name.isNullOrEmpty() && !name[0].isLowerCase()) {
             val newName = name[0].lowercaseChar() + name.substring(1);
             holder.createProblem(
-                it,
+                attribute,
                 severity,
                 displayName,
-                TextRange.from(xmlElement.startOffsetInParent, xmlElement.textLength),
                 XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }

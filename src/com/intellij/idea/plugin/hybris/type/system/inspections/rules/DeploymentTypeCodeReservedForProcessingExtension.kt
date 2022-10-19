@@ -45,7 +45,7 @@ class DeploymentTypeCodeReservedForProcessingExtension : AbstractTypeSystemInspe
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
         if (typeCode != null && typeCode in 32700 .. 32799) {
-            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+            holder.createProblem(dom.typeCode, severity, displayName)
         }
     }
 }

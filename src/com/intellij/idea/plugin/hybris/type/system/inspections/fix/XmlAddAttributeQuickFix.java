@@ -24,25 +24,21 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class XmlUpdateAttributeQuickFix implements LocalQuickFix {
+public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
     private final String myFixName;
     private final String myAttributeName;
-    private final String myAttributeValue;
 
-    public XmlUpdateAttributeQuickFix(
-        final String attributeName,
-        final String attributeValue
+    public XmlAddAttributeQuickFix(
+        final String attributeName
     ) {
 
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.UpdateAttribute", attributeName, attributeValue);
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.AddAttribute", attributeName);
         myAttributeName = attributeName;
-        myAttributeValue = attributeValue;
     }
 
     @NotNull
@@ -57,16 +53,8 @@ public class XmlUpdateAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, myAttributeValue);
-            PsiNavigateUtil.navigate(xmlAttribute);
-        } else if (currentElement instanceof XmlAttribute) {
-            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement;
-            xmlAttribute.setValue(myAttributeValue);
-            PsiNavigateUtil.navigate(xmlAttribute);
-        } else if (currentElement instanceof XmlElement && currentElement.getParent() instanceof XmlAttribute) {
-            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement.getParent();
-            xmlAttribute.setValue(myAttributeValue);
-            PsiNavigateUtil.navigate(xmlAttribute);
+            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, "");
+            PsiNavigateUtil.navigate(xmlAttribute.getValueElement());
         }
     }
 }

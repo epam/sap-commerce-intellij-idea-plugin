@@ -43,12 +43,12 @@ class DeploymentForSubclassesOfAbstractClasses : AbstractTypeSystemInspection() 
     }
 
     private fun check(
-        it: ItemType,
+        dom: ItemType,
         project: Project,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[it.code.stringValue]
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
             ?: return
 
         val count = TSMetaItemService.getInstance(project).getExtends(metaItem)
@@ -57,7 +57,7 @@ class DeploymentForSubclassesOfAbstractClasses : AbstractTypeSystemInspection() 
             .filter { it.exists() }
             .count()
         if (count > 1) {
-            holder.createProblem(it, severity, displayName, getTextRange(it))
+            holder.createProblem(dom.deployment.typeCode, severity, displayName)
         }
     }
 }
