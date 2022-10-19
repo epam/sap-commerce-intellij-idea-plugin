@@ -82,11 +82,11 @@
 <!--                         shortName="NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.NoDeploymentTableShouldExistForItemIfNotExtendingGenericItem"/>-->
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle"-->
-<!--                         key="hybris.inspections.typesystem.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"-->
-<!--                         shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"
+                         shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"

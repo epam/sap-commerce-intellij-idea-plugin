@@ -43,6 +43,17 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface ItemType extends DomElement {
 
+    String CODE = "code";
+    String EXTENDS = "extends";
+    String JALOCLASS = "jaloclass";
+    String DEPLOYMENT = "deployment";
+    String SINGLETON = "singleton";
+    String JALOONLY = "jaloonly";
+    String AUTOCREATE = "autocreate";
+    String GENERATE = "generate";
+    String ABSTRACT = "abstract";
+    String METATYPE = "metatype";
+
     /**
      * Returns the value of the simple content.
      *
@@ -70,7 +81,7 @@ public interface ItemType extends DomElement {
      * @return the value of the code child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("code")
+    @com.intellij.util.xml.Attribute(CODE)
     @Required
     @Stubbed
     @NameValue
@@ -87,7 +98,7 @@ public interface ItemType extends DomElement {
      * @return the value of the extends child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("extends")
+    @com.intellij.util.xml.Attribute(EXTENDS)
     @Convert(ItemTypeConverter.class)
     GenericAttributeValue<String> getExtends();
 
@@ -102,7 +113,7 @@ public interface ItemType extends DomElement {
      * @return the value of the jaloclass child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("jaloclass")
+    @com.intellij.util.xml.Attribute(JALOCLASS)
     GenericAttributeValue<String> getJaloClass();
 
 
@@ -116,7 +127,7 @@ public interface ItemType extends DomElement {
      * @return the value of the deployment child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("deployment")
+    @com.intellij.util.xml.Attribute(DEPLOYMENT)
     GenericAttributeValue<String> getDeploymentAttr();
 
 
@@ -130,7 +141,7 @@ public interface ItemType extends DomElement {
      * @return the value of the singleton child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("singleton")
+    @com.intellij.util.xml.Attribute(SINGLETON)
     GenericAttributeValue<Boolean> getSingleton();
 
 
@@ -144,7 +155,7 @@ public interface ItemType extends DomElement {
      * @return the value of the jaloonly child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("jaloonly")
+    @com.intellij.util.xml.Attribute(JALOONLY)
     GenericAttributeValue<Boolean> getJaloOnly();
 
 
@@ -158,7 +169,7 @@ public interface ItemType extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("autocreate")
+    @com.intellij.util.xml.Attribute(AUTOCREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 
@@ -172,7 +183,7 @@ public interface ItemType extends DomElement {
      * @return the value of the generate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("generate")
+    @com.intellij.util.xml.Attribute(GENERATE)
     GenericAttributeValue<Boolean> getGenerate();
 
 
@@ -186,7 +197,7 @@ public interface ItemType extends DomElement {
      * @return the value of the abstract child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("abstract")
+    @com.intellij.util.xml.Attribute(ABSTRACT)
     GenericAttributeValue<Boolean> getAbstract();
 
 
@@ -200,7 +211,7 @@ public interface ItemType extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("metatype")
+    @com.intellij.util.xml.Attribute(METATYPE)
     GenericAttributeValue<String> getMetaType();
 
 
