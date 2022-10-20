@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
@@ -121,7 +122,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         try {
             readLock.lock()
             if (lock.isWriteLocked && writeLock.isHeldByCurrentThread) {
-                throw IllegalStateException("Same thread cannot be used to read and write TypeSystem Model, double check all getters")
+                // Same thread cannot be used to read and write TypeSystem Model, double check all getters
+                throw ProcessCanceledException()
             }
             return myGlobalMetaModel.value
         } finally {
