@@ -71,6 +71,12 @@
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.typesystem.DeploymentTableMustNotBeRedeclaredInChildTypes.key"
+                         shortName="DeploymentTableMustNotBeRedeclaredInChildTypes" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustNotBeRedeclaredInChildTypes"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeUnique.key"
                          shortName="DeploymentTypeCodeMustBeUnique" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeUnique"/>
