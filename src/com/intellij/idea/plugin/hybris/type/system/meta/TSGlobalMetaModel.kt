@@ -57,10 +57,8 @@ class TSGlobalMetaModel : AbstractTSMetaModel() {
                 cache.forEach { (key, metaClassifier) ->
                     val globalMetaClassifier = globalCache[key]
 
-                    if (globalMetaClassifier != null
-                        && globalMetaClassifier is TSMetaSelfMerge<DomElement?>
-                        && metaClassifier is TSMetaSelfMerge<DomElement?>) {
-                        globalMetaClassifier.merge(metaClassifier)
+                    if (globalMetaClassifier != null && globalMetaClassifier is TSMetaSelfMerge<*>) {
+                        (globalMetaClassifier as TSMetaSelfMerge<TSMetaClassifier<DomElement?>>).merge(metaClassifier)
                     } else {
                         globalCache[key] = metaClassifier
                     }

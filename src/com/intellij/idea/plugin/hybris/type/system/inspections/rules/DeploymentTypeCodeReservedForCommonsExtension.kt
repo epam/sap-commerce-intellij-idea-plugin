@@ -52,7 +52,7 @@ class DeploymentTypeCodeReservedForCommonsExtension : AbstractTypeSystemInspecti
                 dom.typeCode,
                 severity,
                 displayName,
-                XmlUpdateAttributeQuickFix(Deployment.TYPECODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
+                XmlUpdateAttributeQuickFix(Deployment.TYPE_CODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
             )
         }
     }

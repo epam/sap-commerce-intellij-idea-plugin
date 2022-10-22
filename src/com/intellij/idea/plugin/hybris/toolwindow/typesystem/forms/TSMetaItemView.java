@@ -21,12 +21,15 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 
@@ -49,12 +52,21 @@ public class TSMetaItemView {
     private JBCheckBox myJaloOnly;
     private JBCheckBox myGenerate;
     private JTextPane myDescription;
+    private JBScrollPane myScrollablePane;
+    private JPanel myIndexesPane;
+    private JPanel myCustomPropertiesPane;
+    private JPanel myAttributesPane;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
     }
 
     private void initData(final TSMetaItem myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         ((TSMetaItemAttributesTable) myAttributes).init(myProject, myMeta);
         ((TSMetaItemCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
         ((TSMetaItemIndexesTable) myIndexes).init(myProject, myMeta);
@@ -74,6 +86,35 @@ public class TSMetaItemView {
 
     public JBPanel getContent(final TSMetaItem meta) {
         initData(meta);
+
+        myScrollablePane.getVerticalScrollBar().setValue(0);
+
+        return myContentPane;
+    }
+
+    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
+        initData(meta);
+
+        ((TSMetaItemIndexesTable) myIndexes).select(metaIndex);
+        myScrollablePane.getVerticalScrollBar().setValue(myIndexesPane.getLocation().y);
+
+        return myContentPane;
+    }
+
+    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
+        initData(meta);
+
+        ((TSMetaItemAttributesTable) myAttributes).select(metaAttribute);
+        myScrollablePane.getVerticalScrollBar().setValue(myAttributesPane.getLocation().y);
+
+        return myContentPane;
+    }
+
+    public JBPanel getContent(final TSMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
+        initData(meta);
+
+        ((TSMetaItemCustomPropertiesTable) myCustomProperties).select(metaCustomProperty);
+        myScrollablePane.getVerticalScrollBar().setValue(myCustomPropertiesPane.getLocation().y);
 
         return myContentPane;
     }

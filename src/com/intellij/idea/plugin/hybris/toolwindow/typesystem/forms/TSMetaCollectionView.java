@@ -26,6 +26,7 @@ import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
@@ -45,6 +46,11 @@ public class TSMetaCollectionView {
     }
 
     private void initData(final TSMetaCollection myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myCode.setText(myMeta.getName());
         myType.setSelectedItem(myMeta.getType());
         myElementType.setText(myMeta.getElementType());

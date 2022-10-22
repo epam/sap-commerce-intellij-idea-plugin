@@ -29,6 +29,7 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 import java.awt.Dimension
+import java.awt.Rectangle
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
@@ -60,9 +61,23 @@ abstract class AbstractTSTable<Owner : Any, Item> : JBTable() {
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }
     }
 
+    abstract fun select(meta: Item)
     protected abstract fun createModel(): ListTableModel<Item>
     protected open fun getSearchableColumnNames(): List<String> = emptyList()
     protected open fun getFixedWidthColumnNames(): List<String> = emptyList()
+
+    protected fun selectRowWithValue(value: String?, columnName: String) {
+        var row = 0;
+        val column = getColumn(columnName).modelIndex
+        do {
+            if (value == getValueAt(row, column)) {
+                setRowSelectionInterval(row, row)
+                scrollRectToVisible(Rectangle(getCellRect(row, 0, true)));
+                break;
+            }
+            row++
+        } while (row != rowCount)
+    }
 
     protected fun createColumn(
         name: String,

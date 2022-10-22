@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.model.MapType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -36,7 +35,7 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
 
     private final String myArgumentType;
     private final String myReturnType;
-    private final boolean myAutocreate;
+    private final boolean myAutoCreate;
     private final boolean myGenerate;
     private final boolean myRedeclare;
     private final Set<DomAnchor<MapType>> myAllDoms = new LinkedHashSet<>();
@@ -45,7 +44,7 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
         super(module, project, name, dom, custom);
         myArgumentType = dom.getArgumentType().getStringValue();
         myReturnType = dom.getReturnType().getStringValue();
-        myAutocreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+        myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myRedeclare = Boolean.TRUE.equals(dom.getRedeclare().getValue());
 
@@ -74,8 +73,8 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
     }
 
     @Override
-    public boolean isAutocreate() {
-        return myAutocreate;
+    public boolean isAutoCreate() {
+        return myAutoCreate;
     }
 
     @Override
@@ -89,7 +88,7 @@ public class TSMetaMapImpl extends TSMetaEntityImpl<MapType> implements TSMetaMa
     }
 
     @Override
-    public void merge(final TSMetaSelfMerge<MapType> another) {
+    public void merge(final TSMetaMap another) {
         addDomRepresentation(another.retrieveDom());
     }
 }

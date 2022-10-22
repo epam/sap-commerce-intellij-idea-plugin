@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemAttribute
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.util.ui.ListTableModel
 
+private const val COLUMN_CUSTOM = "C"
 private const val COLUMN_DEPRECATED = "D"
 private const val COLUMN_REDECLARE = "R"
 private const val COLUMN_AUTO_CREATE = "A"
@@ -31,17 +32,29 @@ private const val COLUMN_TYPE = "Type"
 private const val COLUMN_DEFAULT_VALUE = "Default value"
 private const val COLUMN_DESCRIPTION = "Description"
 private const val COLUMN_QUALIFIER = "Qualifier"
+private const val COLUMN_MODULE = "Module"
 
-class TSMetaItemAttributesTable : AbstractTSTable<TSMetaItem, TSMetaAttribute>() {
+class TSMetaItemAttributesTable : AbstractTSTable<TSMetaItem, TSMetaItemAttribute>() {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
-    override fun getFixedWidthColumnNames() = listOf(COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
+    override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
+    override fun select(meta: TSMetaItemAttribute) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
 
-    override fun createModel(): ListTableModel<TSMetaAttribute> = with(ListTableModel<TSMetaAttribute>()) {
+    override fun createModel(): ListTableModel<TSMetaItemAttribute> = with(ListTableModel<TSMetaItemAttribute>()) {
         items = TSMetaItemService.getInstance(myProject).getAttributes(myOwner, true)
-            .sortedBy { it.name }
+            .sortedWith(compareBy(
+                { !it.isCustom },
+                { it.module.name },
+                { it.name })
+            )
 
         columnInfos = arrayOf(
+            createColumn(
+                name = COLUMN_CUSTOM,
+                valueProvider = { attr -> attr.isCustom },
+                columnClass = Boolean::class.java,
+                tooltip = "Custom"
+            ),
             createColumn(
                 name = COLUMN_DEPRECATED,
                 valueProvider = { attr -> attr.isDeprecated },
@@ -65,6 +78,10 @@ class TSMetaItemAttributesTable : AbstractTSTable<TSMetaItem, TSMetaAttribute>()
                 valueProvider = { attr -> attr.isGenerate },
                 columnClass = Boolean::class.java,
                 tooltip = "Generate"
+            ),
+            createColumn(
+                name = COLUMN_MODULE,
+                valueProvider = { attr -> attr.module.name }
             ),
             createColumn(
                 name = COLUMN_QUALIFIER,

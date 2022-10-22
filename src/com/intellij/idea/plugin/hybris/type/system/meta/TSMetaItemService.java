@@ -32,13 +32,13 @@ public interface TSMetaItemService {
         return project.getService(TSMetaItemService.class);
     }
 
-    List<? extends TSMetaAttribute> getAttributes(TSMetaItem meta, boolean includeInherited);
+    List<? extends TSMetaItem.TSMetaItemAttribute> getAttributes(TSMetaItem meta, boolean includeInherited);
 
-    List<? extends TSMetaIndex> getIndexes(TSMetaItem meta, boolean includeInherited);
+    List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(TSMetaItem meta, boolean includeInherited);
 
     List<? extends TSMetaCustomProperty> getCustomProperties(TSMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSMetaAttribute> findAttributesByName(TSMetaItem meta, String name, boolean includeInherited);
+    Collection<? extends TSMetaItem.TSMetaItemAttribute> findAttributesByName(TSMetaItem meta, String name, boolean includeInherited);
 
     Set<TSMetaItem> getExtends(TSMetaItem meta);
 

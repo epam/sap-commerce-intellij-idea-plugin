@@ -19,33 +19,39 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive;
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.idea.plugin.hybris.type.system.model.CreationMode;
+import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
+import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
+public interface TSMetaItem extends TSMetaClassifier<ItemType>, TSMetaSelfMerge<TSMetaItem>  {
 
     String IMPLICIT_SUPER_CLASS_NAME = "GenericItem";
 
     @Nullable
     String getExtendedMetaItemName();
 
-    void addAttribute(String key, TSMetaAttribute attribute);
+    void addAttribute(String key, TSMetaItemAttribute attribute);
 
     void addCustomProperty(String key, TSMetaCustomProperty customProperty);
 
-    void addIndex(String key, TSMetaIndex index);
+    void addIndex(String key, TSMetaItemIndex index);
 
-    CaseInsensitive.NoCaseMultiMap<TSMetaAttribute> getAttributes();
+    CaseInsensitive.NoCaseMultiMap<TSMetaItemAttribute> getAttributes();
 
     CaseInsensitive.NoCaseMultiMap<TSMetaCustomProperty> getCustomAttributes();
 
-    CaseInsensitive.NoCaseMultiMap<TSMetaIndex> getIndexes();
+    CaseInsensitive.NoCaseMultiMap<TSMetaItemIndex> getIndexes();
 
     @NotNull
     Stream<? extends ItemType> retrieveAllDomsStream();
@@ -65,4 +71,67 @@ public interface TSMetaItem extends TSMetaSelfMerge<ItemType> {
     String getJaloClass();
 
     String getDescription();
+
+    interface TSMetaItemIndex {
+
+        Module getModule();
+
+        @Nullable
+        String getName();
+
+        @Nullable
+        Index retrieveDom();
+
+        Set<String> getKeys();
+
+        boolean isCustom();
+
+        boolean isRemove();
+
+        boolean isReplace();
+
+        boolean isUnique();
+
+        CreationMode getCreationMode();
+
+        TSMetaItem getOwner();
+    }
+
+    interface TSMetaItemAttribute {
+
+        Module getModule();
+
+        @Nullable
+        String getName();
+
+        @Nullable
+        String getDescription();
+
+        @Nullable
+        String getDefaultValue();
+
+        @Nullable
+        Attribute retrieveDom();
+
+        boolean isCustom();
+
+        boolean isDeprecated();
+
+        boolean isAutoCreate();
+
+        boolean isRedeclare();
+
+        boolean isGenerate();
+
+        void addCustomProperty(String key, TSMetaCustomProperty customProperty);
+
+        @NotNull
+        List<? extends TSMetaCustomProperty> getCustomProperties(boolean includeInherited);
+
+        @Nullable
+        String getType();
+
+        @NotNull
+        TSMetaItem getOwner();
+    }
 }

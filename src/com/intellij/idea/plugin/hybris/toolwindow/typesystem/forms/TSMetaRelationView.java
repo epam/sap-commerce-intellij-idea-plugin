@@ -27,6 +27,8 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.components.JBTextField;
+import icons.DvcsImplIcons;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -34,13 +36,16 @@ import java.util.Optional;
 
 public class TSMetaRelationView {
 
+    private static final int TAB_DETAILS_INDEX = 0;
+    private static final int TAB_SOURCE_INDEX = 1;
+    private static final int TAB_TARGET_INDEX = 2;
     private final Project myProject;
 
     private JBPanel myContentPane;
     private JBTabbedPane myTabs;
     private ComboBox<Cardinality> myCardinalitySource;
     private ComboBox<Cardinality> myCardinalityTarget;
-    private JBTextField myTypecode;
+    private JBTextField myTypeCode;
     private JBTextField myDeploymentTable;
     private JBTextField myCode;
     private JTextPane myDescription;
@@ -57,11 +62,16 @@ public class TSMetaRelationView {
         mySourceView = new TSMetaRelationElementView(myProject);
         myTargetView = new TSMetaRelationElementView(myProject);
 
-        myTabs.insertTab("Source", null, mySourceView.getContent(), null, 1);
-        myTabs.insertTab("Target", null, myTargetView.getContent(), null, 2);
+        myTabs.insertTab("Source", DvcsImplIcons.Outgoing, mySourceView.getContent(), null, TAB_SOURCE_INDEX);
+        myTabs.insertTab("Target", DvcsImplIcons.Incoming, myTargetView.getContent(), null, TAB_TARGET_INDEX);
     }
 
     private void initData(final TSMetaRelation myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
         myAutocreate.setSelected(myMeta.isAutoCreate());
@@ -76,16 +86,29 @@ public class TSMetaRelationView {
         myTargetType.setText(myMeta.getTarget().getType());
 
         myDeploymentTable.setText(null);
-        myTypecode.setText(null);
+        myTypeCode.setText(null);
         Optional.ofNullable(myMeta.getDeployment())
             .ifPresent(deployment -> {
                 myDeploymentTable.setText(deployment.getTable());
-                myTypecode.setText(deployment.getTypeCode());
+                myTypeCode.setText(deployment.getTypeCode());
             });
     }
 
     public JBPanel getContent(final TSMetaRelation meta) {
         initData(meta);
+        myTabs.setSelectedIndex(TAB_DETAILS_INDEX);
+
+        return myContentPane;
+    }
+
+    public JBPanel getContent(final TSMetaRelation.TSMetaRelationElement meta) {
+        initData(meta.getOwningRelation());
+
+        if (meta.getEnd() == TSMetaRelation.RelationEnd.SOURCE) {
+            myTabs.setSelectedIndex(TAB_SOURCE_INDEX);
+        } else if (meta.getEnd() == TSMetaRelation.RelationEnd.TARGET) {
+            myTabs.setSelectedIndex(TAB_TARGET_INDEX);
+        }
 
         return myContentPane;
     }

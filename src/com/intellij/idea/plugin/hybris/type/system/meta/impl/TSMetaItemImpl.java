@@ -18,25 +18,30 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaDeployment;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaSelfMerge;
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap;
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
+import com.intellij.idea.plugin.hybris.type.system.model.CreationMode;
+import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomService;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -44,9 +49,9 @@ import java.util.stream.Stream;
  */
 public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMetaItem {
 
-    private final NoCaseMultiMap<TSMetaAttribute> myAttributes = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaItemAttribute> myAttributes = new NoCaseMultiMap<>();
     private final NoCaseMultiMap<TSMetaCustomProperty> myCustomProperties = new NoCaseMultiMap<>();
-    private final NoCaseMultiMap<TSMetaIndex> myIndexes = new NoCaseMultiMap<>();
+    private final NoCaseMultiMap<TSMetaItemIndex> myIndexes = new NoCaseMultiMap<>();
     private final Set<DomAnchor<ItemType>> myAllDoms = new LinkedHashSet<>();
 
     private final TSMetaDeployment<TSMetaItem> myDeployment;
@@ -85,7 +90,7 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    public void addAttribute(final String key, final TSMetaAttribute attribute) {
+    public void addAttribute(final String key, final TSMetaItemAttribute attribute) {
         myAttributes.putValue(key, attribute);
     }
 
@@ -95,12 +100,12 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    public void addIndex(final String key, final TSMetaIndex index) {
+    public void addIndex(final String key, final TSMetaItemIndex index) {
         myIndexes.putValue(key, index);
     }
 
     @Override
-    public NoCaseMultiMap<TSMetaAttribute> getAttributes() {
+    public NoCaseMultiMap<TSMetaItemAttribute> getAttributes() {
         return myAttributes;
     }
 
@@ -110,7 +115,7 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    public NoCaseMultiMap<TSMetaIndex> getIndexes() {
+    public NoCaseMultiMap<TSMetaItemIndex> getIndexes() {
         return myIndexes;
     }
 
@@ -121,7 +126,7 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     }
 
     @Override
-    public void merge(final TSMetaSelfMerge<ItemType> another) {
+    public void merge(final TSMetaItem another) {
         addDomRepresentation(another.retrieveDom());
     }
 
@@ -175,5 +180,172 @@ public class TSMetaItemImpl extends TSMetaEntityImpl<ItemType> implements TSMeta
     @Override
     public String getDescription() {
         return myDescription;
+    }
+
+    public static class TSMetaItemIndexImpl extends TSMetaEntityImpl<Index> implements TSMetaItemIndex {
+
+        private final TSMetaItem myOwner;
+        private final boolean myRemove;
+        private final boolean myReplace;
+        private final boolean myUnique;
+        private final Set<String> myKeys;
+        private final CreationMode myCreationMode;
+
+        public TSMetaItemIndexImpl(final Module module, final Project project, final @NotNull TSMetaItem owner, final @NotNull Index dom, final boolean custom) {
+            super(module, project, extractName(dom), dom, custom);
+            myOwner = owner;
+            myRemove = Boolean.TRUE.equals(dom.getRemove().getValue());
+            myReplace = Boolean.TRUE.equals(dom.getReplace().getValue());
+            myUnique = Boolean.TRUE.equals(dom.getUnique().getValue());
+            myCreationMode = Optional.ofNullable(dom.getCreationMode().getValue()).orElse(CreationMode.ALL);
+            myKeys = dom.getKeys().stream()
+                        .map(indexKey -> indexKey.getAttribute().getStringValue())
+                        .collect(Collectors.toSet());
+        }
+
+        @Nullable
+        @Override
+        public String getName() {
+            return super.getName();
+        }
+
+        @Override
+        public Set<String> getKeys() {
+            return Collections.unmodifiableSet(myKeys);
+        }
+
+        @Nullable
+        private static String extractName(final Index dom) {
+            return dom.getName().getStringValue();
+        }
+
+        @Override
+        public boolean isRemove() {
+            return myRemove;
+        }
+
+        @Override
+        public boolean isReplace() {
+            return myReplace;
+        }
+
+        @Override
+        public boolean isUnique() {
+            return myUnique;
+        }
+
+        @Override
+        public CreationMode getCreationMode() {
+            return myCreationMode;
+        }
+
+        @Override
+        public TSMetaItem getOwner() {
+            return myOwner;
+        }
+    }
+
+    public static class TSMetaItemAttributeImpl extends TSMetaEntityImpl<Attribute> implements TSMetaItemAttribute {
+
+        private final TSMetaItem myOwner;
+        private final NoCaseMultiMap<TSMetaCustomProperty> myCustomProperties = new NoCaseMultiMap<>();
+        private final boolean myDeprecated;
+        private final boolean myAutoCreate;
+        private final boolean myGenerate;
+        private final boolean myRedeclare;
+        private final String myDescription;
+        private final String myDefaultValue;
+        @Nullable private final String myType;
+
+        public TSMetaItemAttributeImpl(final Module module, final Project project, final @NotNull TSMetaItem owner, final @NotNull Attribute dom, final boolean custom) {
+            super(module, project, extractName(dom), dom, custom);
+            myOwner = owner;
+            myDeprecated = extractDeprecated(dom);
+            myRedeclare = Boolean.TRUE.equals(dom.getRedeclare().getValue());
+            myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
+            myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
+            myType = dom.getType().getStringValue();
+            myDescription = Optional.ofNullable(dom.getDescription().getXmlTag())
+                .map(xmlTag -> xmlTag.getValue().getText())
+                .orElse(null);
+            myDefaultValue = dom.getDefaultValue().getStringValue();
+            dom.getCustomProperties().getProperties().stream()
+                    .map(domAttribute -> new TSMetaCustomPropertyImpl(module, project, domAttribute, custom))
+                    .filter(attribute -> StringUtils.isNotBlank(attribute.getName()))
+                    .forEach(attribute -> addCustomProperty(attribute.getName().trim(), attribute));
+        }
+
+        @Override
+        @Nullable
+        public String getType() {
+            return myType;
+        }
+
+        @Override
+        public boolean isDeprecated() {
+            return myDeprecated;
+        }
+
+        @Override
+        public boolean isAutoCreate() {
+            return myAutoCreate;
+        }
+
+        @Override
+        public boolean isRedeclare() {
+            return myRedeclare;
+        }
+
+        @Override
+        public boolean isGenerate() {
+            return myGenerate;
+        }
+
+        @Override
+        public void addCustomProperty(final String key, final TSMetaCustomProperty customProperty) {
+            myCustomProperties.putValue(key, customProperty);
+        }
+
+        @Override
+        public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final boolean includeInherited) {
+            return new LinkedList<>(myCustomProperties.values());
+        }
+
+        @Nullable
+        @Override
+        public String getName() {
+            return super.getName();
+        }
+
+        @Nullable
+        @Override
+        public String getDescription() {
+            return myDescription;
+        }
+
+        @Nullable
+        @Override
+        public String getDefaultValue() {
+            return myDefaultValue;
+        }
+
+        @NotNull
+        @Override
+        public TSMetaItem getOwner() {
+            return myOwner;
+        }
+
+        @Nullable
+        private static String extractName(final Attribute dom) {
+            return dom.getQualifier().getStringValue();
+        }
+
+        private boolean extractDeprecated(@NotNull final Attribute dom) {
+            final String name = getName();
+            return name != null && dom.getModel().getSetters().stream().anyMatch(
+                setter -> name.equals(setter.getName().getStringValue()) &&
+                          Boolean.TRUE.equals(setter.getDeprecated().getValue()));
+        }
+
     }
 }

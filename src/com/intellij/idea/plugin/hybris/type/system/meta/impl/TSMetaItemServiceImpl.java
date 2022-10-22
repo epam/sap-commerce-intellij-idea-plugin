@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
@@ -49,8 +47,8 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSMetaAttribute> getAttributes(final TSMetaItem meta, final boolean includeInherited) {
-        final List<TSMetaAttribute> result = new LinkedList<>();
+    public List<? extends TSMetaItem.TSMetaItemAttribute> getAttributes(final TSMetaItem meta, final boolean includeInherited) {
+        final List<TSMetaItem.TSMetaItemAttribute> result = new LinkedList<>();
         if (includeInherited) {
             final Consumer<TSMetaItem> visitor = parent -> collectOwnAttributes(parent, result);
             walkInheritance(meta, visitor);
@@ -61,8 +59,8 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSMetaIndex> getIndexes(final TSMetaItem meta, final boolean includeInherited) {
-        final List<TSMetaIndex> result = new LinkedList<>();
+    public List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(final TSMetaItem meta, final boolean includeInherited) {
+        final List<TSMetaItem.TSMetaItemIndex> result = new LinkedList<>();
         if (includeInherited) {
             final Consumer<TSMetaItem> visitor = parent -> collectOwnIndexes(parent, result);
             walkInheritance(meta, visitor);
@@ -85,8 +83,8 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Collection<? extends TSMetaAttribute> findAttributesByName(final TSMetaItem meta, final String name, final boolean includeInherited) {
-        final LinkedList<TSMetaAttribute> result = new LinkedList<>();
+    public Collection<? extends TSMetaItem.TSMetaItemAttribute> findAttributesByName(final TSMetaItem meta, final String name, final boolean includeInherited) {
+        final LinkedList<TSMetaItem.TSMetaItemAttribute> result = new LinkedList<>();
         if (includeInherited) {
             final Consumer<TSMetaItem> visitor = parentMeta -> collectOwnAttributesByName(parentMeta, name, result);
             walkInheritance(meta, visitor);
@@ -138,11 +136,11 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
                        .map(name -> TSMetaModelAccess.Companion.getInstance(myProject).findMetaItemByName(name));
     }
 
-    private void collectOwnAttributes(final TSMetaItem meta, @NotNull final Collection<TSMetaAttribute> output) {
+    private void collectOwnAttributes(final TSMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemAttribute> output) {
         output.addAll(meta.getAttributes().values());
     }
 
-    private void collectOwnIndexes(final TSMetaItem meta, @NotNull final Collection<TSMetaIndex> output) {
+    private void collectOwnIndexes(final TSMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemIndex> output) {
         output.addAll(meta.getIndexes().values());
     }
 
@@ -150,7 +148,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
         output.addAll(meta.getCustomAttributes().values());
     }
 
-    private void collectOwnAttributesByName(final TSMetaItem meta, @NotNull final String name, @NotNull final Collection<TSMetaAttribute> output) {
+    private void collectOwnAttributesByName(final TSMetaItem meta, @NotNull final String name, @NotNull final Collection<TSMetaItem.TSMetaItemAttribute> output) {
         output.addAll(meta.getAttributes().get(name));
     }
 

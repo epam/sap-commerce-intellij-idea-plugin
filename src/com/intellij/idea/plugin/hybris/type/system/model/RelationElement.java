@@ -41,10 +41,10 @@ public interface RelationElement extends DomElement {
 
     String TYPE = "type";
     String QUALIFIER = "qualifier";
-    String METATYPE = "metatype";
+    String META_TYPE = "metatype";
     String CARDINALITY = "cardinality";
     String NAVIGABLE = "navigable";
-    String COLLECTIONTYPE = "collectiontype";
+    String COLLECTION_TYPE = "collectiontype";
     String ORDERED = "ordered";
 
     /**
@@ -87,7 +87,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(METATYPE)
+    @com.intellij.util.xml.Attribute(META_TYPE)
     GenericAttributeValue<String> getMetaType();
 
 
@@ -129,7 +129,7 @@ public interface RelationElement extends DomElement {
      * @return the value of the collectiontype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(COLLECTIONTYPE)
+    @com.intellij.util.xml.Attribute(COLLECTION_TYPE)
     GenericAttributeValue<Type> getCollectionType();
 
 

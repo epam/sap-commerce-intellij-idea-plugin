@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
-public interface TSMetaMap extends TSMetaSelfMerge<MapType> {
+public interface TSMetaMap extends TSMetaClassifier<MapType>, TSMetaSelfMerge<TSMetaMap> {
 
     @NotNull
     String getArgumentType();
@@ -34,7 +34,7 @@ public interface TSMetaMap extends TSMetaSelfMerge<MapType> {
     @NotNull
     Stream<? extends MapType> retrieveAllDomsStream();
 
-    boolean isAutocreate();
+    boolean isAutoCreate();
 
     boolean isGenerate();
 

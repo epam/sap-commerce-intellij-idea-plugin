@@ -18,29 +18,28 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import icons.DvcsImplIcons
 
-class TSMetaRelationNode(parent: TSNode, val meta: TSMetaRelation) : TSNode(parent), Disposable {
+class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRelationElement) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
-    override fun getName() = meta.retrieveDom().code.stringValue ?: "-- no name --"
+    override fun getName() = meta.type
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = "${meta.source.type} > ${meta.target.type}"
-    }
+        presentation.locationString = meta.cardinality.value + (if (meta.isOrdered) " ordered" else "") + (if (meta.qualifier.isNotBlank()) " as ${meta.qualifier}" else "")
 
-    override fun getChildren(): Collection<TSNode?> {
-        return listOf(
-            TSMetaRelationElementNode(this, meta.source),
-            TSMetaRelationElementNode(this, meta.target),
-        )
+        when (meta.end) {
+            TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(DvcsImplIcons.Outgoing)
+            TSMetaRelation.RelationEnd.TARGET -> presentation.setIcon(DvcsImplIcons.Incoming)
+        }
+
     }
 
 }

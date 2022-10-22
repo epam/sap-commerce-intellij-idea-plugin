@@ -40,7 +40,7 @@ public interface Relation extends DomElement {
     String DEPLOYMENT = "deployment";
     String CODE = "code";
     String LOCALIZED = "localized";
-    String AUTOCREATE = "autocreate";
+    String AUTO_CREATE = "autocreate";
     String GENERATE = "generate";
     String DESCRIPTION = "description";
 
@@ -115,7 +115,7 @@ public interface Relation extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(AUTOCREATE)
+    @com.intellij.util.xml.Attribute(AUTO_CREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 

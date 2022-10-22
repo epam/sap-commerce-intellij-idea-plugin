@@ -20,19 +20,19 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum.TSMetaEnumValue
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaCustomPropertyNode(parent: TSMetaItemNode, private val meta: TSMetaCustomProperty) : TSNode(parent), Disposable {
+class TSMetaEnumValueNode(val parent: TSMetaEnumNode, val meta: TSMetaEnumValue) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(AllIcons.Nodes.Property)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(AllIcons.Nodes.AnonymousClass)
     }
 
 }

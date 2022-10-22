@@ -126,7 +126,15 @@ class TSMetaModelBuilder(
         val meta = findOrCreate(type) ?: return
 
         type.attributes.attributes
-            .map { TSMetaAttributeImpl(myModule, myProject, meta, it, myCustom) }
+            .map {
+                TSMetaItemImpl.TSMetaItemAttributeImpl(
+                    myModule,
+                    myProject,
+                    meta,
+                    it,
+                    myCustom
+                )
+            }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { attr -> meta.addAttribute(attr.name!!.trim { it <= ' ' }, attr) }
 
@@ -136,7 +144,15 @@ class TSMetaModelBuilder(
             .forEach { prop -> meta.addCustomProperty(prop.name!!.trim { it <= ' ' }, prop) }
 
         type.indexes.indexes
-            .map { TSMetaIndexImpl(myModule, myProject, meta, it, myCustom) }
+            .map {
+                TSMetaItemImpl.TSMetaItemIndexImpl(
+                    myModule,
+                    myProject,
+                    meta,
+                    it,
+                    myCustom
+                )
+            }
             .filter { StringUtils.isNotBlank(it.name) }
             .forEach { index -> meta.addIndex(index.name!!.trim { it <= ' ' }, index) }
     }

@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
+import org.apache.commons.lang3.StringUtils;
 
 public class TSMetaMapView {
 
@@ -41,10 +42,15 @@ public class TSMetaMapView {
     }
 
     private void initData(final TSMetaMap myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myCode.setText(myMeta.getName());
         myReturnType.setText(myMeta.getReturnType());
         myArgumentType.setText(myMeta.getArgumentType());
-        myAutocreate.setSelected(myMeta.isAutocreate());
+        myAutocreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
         myRedeclare.setSelected(myMeta.isRedeclare());
     }

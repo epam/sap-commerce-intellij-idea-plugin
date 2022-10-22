@@ -18,33 +18,47 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaIndex
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemIndex
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_NAME = "Name"
+private const val COLUMN_CUSTOM = "C"
 private const val COLUMN_REMOVE = "D"
 private const val COLUMN_REPLACE = "R"
 private const val COLUMN_UNIQUE = "U"
 private const val COLUMN_CREATION_MODE = "Creation mode"
 private const val COLUMN_KEYS = "Keys"
+private const val COLUMN_MODULE = "Module"
 
-class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaIndex>() {
+class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaItemIndex>() {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS)
+    override fun select(meta: TSMetaItemIndex) = selectRowWithValue(meta.name, COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(
+        COLUMN_CUSTOM,
         COLUMN_REMOVE,
         COLUMN_REPLACE,
         COLUMN_UNIQUE,
         COLUMN_CREATION_MODE
     )
 
-    override fun createModel(): ListTableModel<TSMetaIndex> = with(ListTableModel<TSMetaIndex>()) {
+    override fun createModel(): ListTableModel<TSMetaItemIndex> = with(ListTableModel<TSMetaItemIndex>()) {
         items = TSMetaItemService.getInstance(myProject).getIndexes(myOwner, true)
-            .sortedBy { it.name }
+            .sortedWith(compareBy(
+                { !it.isCustom },
+                { it.module.name },
+                { it.name })
+            )
 
         columnInfos = arrayOf(
+            createColumn(
+                name = COLUMN_CUSTOM,
+                valueProvider = { attr -> attr.isCustom },
+                columnClass = Boolean::class.java,
+                tooltip = "Custom"
+            ),
             createColumn(
                 name = COLUMN_REMOVE,
                 valueProvider = { attr -> attr.isRemove },
@@ -64,6 +78,10 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaIndex>() {
                 tooltip = "Unique"
             ),
             createColumn(
+                name = COLUMN_MODULE,
+                valueProvider = { attr -> attr.module.name }
+            ),
+            createColumn(
                 name = COLUMN_NAME,
                 valueProvider = { attr -> attr.name ?: "" },
                 columnClass = String::class.java
@@ -79,6 +97,10 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaIndex>() {
         )
 
         this
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -6854917148686972681L
     }
 
 }

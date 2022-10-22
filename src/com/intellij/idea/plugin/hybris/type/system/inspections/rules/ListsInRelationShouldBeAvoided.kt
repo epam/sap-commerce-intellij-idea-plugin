@@ -52,8 +52,8 @@ class ListsInRelationShouldBeAvoided : AbstractTypeSystemInspection() {
                 relation.collectionType,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(RelationElement.COLLECTIONTYPE),
-                XmlUpdateAttributeQuickFix(RelationElement.COLLECTIONTYPE, Type.SET.value)
+                XmlDeleteAttributeQuickFix(RelationElement.COLLECTION_TYPE),
+                XmlUpdateAttributeQuickFix(RelationElement.COLLECTION_TYPE, Type.SET.value)
             )
         }
     }

@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
@@ -28,6 +29,7 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -53,7 +55,7 @@ public class TSMetaRelationElementView {
     private JBCheckBox myOptional;
     private JBCheckBox myOrdered;
     private JBCheckBox myNavigable;
-    private JBTextField myMetatype;
+    private JBTextField myMetaType;
     private JBTextField myType;
     private ComboBox<Cardinality> myCardinality;
     private ComboBox<Type> myCollectionType;
@@ -63,12 +65,17 @@ public class TSMetaRelationElementView {
     }
 
     public void updateView(final TSMetaRelation.TSMetaRelationElement myMeta) {
+        if (StringUtils.equals(myMeta.getQualifier(), myQualifier.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myQualifier.setText(myMeta.getQualifier());
         myDescription.setText(myMeta.getDescription());
         myType.setText(myMeta.getType());
         myCardinality.setSelectedItem(myMeta.getCardinality());
         myCollectionType.setSelectedItem(myMeta.getCollectionType());
-        myMetatype.setText(myMeta.getMetaType());
+        myMetaType.setText(myMeta.getMetaType());
         myOrdered.setSelected(myMeta.isOrdered());
         myNavigable.setSelected(myMeta.isNavigable());
 
@@ -84,6 +91,8 @@ public class TSMetaRelationElementView {
         mySearch.setSelected(modifiers.isSearch());
         myRemovable.setSelected(modifiers.isRemovable());
         myOptional.setSelected(modifiers.isOptional());
+
+        ((TSMetaRelationElementCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
     }
 
     public JBPanel getContent() {
@@ -93,5 +102,6 @@ public class TSMetaRelationElementView {
     private void createUIComponents() {
         myCardinality = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Cardinality.values())));
         myCollectionType = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Type.values())));
+        myCustomProperties = new TSMetaRelationElementCustomPropertiesTable();
     }
 }

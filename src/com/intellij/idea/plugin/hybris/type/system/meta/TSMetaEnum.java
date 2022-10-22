@@ -20,15 +20,16 @@ package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
+import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
-public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
+public interface TSMetaEnum extends TSMetaClassifier<EnumType>, TSMetaSelfMerge<TSMetaEnum> {
 
     @NotNull
-    Stream<? extends TSMetaEnumValue> getValuesStream();
+    Collection<? extends TSMetaEnumValue> getValues();
 
     @NotNull
     Collection<? extends TSMetaEnumValue> findValueByName(@NotNull String name);
@@ -41,7 +42,24 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType> {
 
     boolean isDynamic();
 
+    boolean isCustom();
+
     String getDescription();
 
     String getJaloClass();
+
+    interface TSMetaEnumValue {
+        Module getModule();
+
+        @Nullable
+        String getName();
+
+        @Nullable
+        EnumValue retrieveDom();
+
+        @NotNull
+        TSMetaEnum getOwner();
+
+        boolean isCustom();
+    }
 }

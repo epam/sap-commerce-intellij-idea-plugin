@@ -51,9 +51,9 @@ class JaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTypeSystemI
                 severity,
                 displayName,
                 getTextRange(dom),
-                XmlDeleteAttributeQuickFix(ItemType.AUTOCREATE),
+                XmlDeleteAttributeQuickFix(ItemType.AUTO_CREATE),
                 XmlDeleteAttributeQuickFix(ItemType.GENERATE),
-                XmlDeleteAttributeQuickFix(ItemType.JALOCLASS),
+                XmlDeleteAttributeQuickFix(ItemType.JALO_CLASS),
             )
         }
     }

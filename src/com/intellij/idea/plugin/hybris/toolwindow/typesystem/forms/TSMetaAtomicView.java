@@ -23,6 +23,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
+import org.apache.commons.lang3.StringUtils;
 
 public class TSMetaAtomicView {
 
@@ -39,6 +40,11 @@ public class TSMetaAtomicView {
     }
 
     private void initData(final TSMetaAtomic myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myClass.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myClass.setText(myMeta.getName());
         myAutoCreate.setSelected(myMeta.isAutocreate());
         myGenerate.setSelected(myMeta.isGenerate());

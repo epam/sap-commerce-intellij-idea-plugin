@@ -40,15 +40,15 @@ class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Dis
     override fun getChildren(): Collection<TSNode> {
         val metaItemService = TSMetaItemService.getInstance(myProject)
         val indexes = metaItemService.getIndexes(meta,false)
-            .map { TSMetaIndexNode(this, it) }
+            .map { TSMetaItemIndexNode(this, it) }
             .sortedBy { it.name }
 
         val customProperties = metaItemService.getCustomProperties(meta,false)
-            .map { TSMetaCustomPropertyNode(this, it) }
+            .map { TSMetaItemCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
         val attributes = metaItemService.getAttributes(meta, false)
-            .map { TSMetaAttributeNode(this, it) }
+            .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }
 
         return indexes + customProperties + attributes

@@ -58,12 +58,17 @@ class TSTreePanel(
                 secondComponent = myDefaultPanel
 
                 when (val tsNode = component.userObject) {
-                    is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(tsNode.meta)
-                    is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(tsNode.meta)
                     is TSMetaAtomicNode -> secondComponent = myMetaAtomicView.getContent(tsNode.meta)
                     is TSMetaCollectionNode -> secondComponent = myMetaCollectionView.getContent(tsNode.meta)
-                    is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
+                    is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(tsNode.meta)
+                    is TSMetaEnumValueNode -> secondComponent = myMetaEnumView.getContent(tsNode.parent.meta, tsNode.meta)
+                    is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(tsNode.meta)
+                    is TSMetaItemIndexNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
+                    is TSMetaItemAttributeNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
+                    is TSMetaItemCustomPropertyNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
                     is TSMetaMapNode -> secondComponent = myMetaMapView.getContent(tsNode.meta)
+                    is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
+                    is TSMetaRelationElementNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
                 }
             }
         }
@@ -78,7 +83,10 @@ class TSTreePanel(
         })
     }
 
-    fun update(changeType: TSViewSettings.ChangeType) = myTree.update(changeType)
+    fun update(changeType: TSViewSettings.ChangeType) {
+        secondComponent = myDefaultPanel
+        myTree.update(changeType)
+    }
 
     companion object {
         private const val serialVersionUID: Long = 4773839682466559598L

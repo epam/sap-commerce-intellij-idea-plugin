@@ -18,11 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaEnumValuesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
+import com.intellij.ui.table.JBTable;
+import org.apache.commons.lang3.StringUtils;
 
 public class TSMetaEnumView {
 
@@ -31,27 +34,47 @@ public class TSMetaEnumView {
     private JBPanel myContentPane;
     private JBTextField myJaloClass;
     private JBCheckBox myDynamic;
-    private JBCheckBox myAutocreate;
+    private JBCheckBox myAutoCreate;
     private JBCheckBox myGenerate;
     private JBTextField myDescription;
     private JBTextField myCode;
+    private JBTable myEnumValues;
 
     public TSMetaEnumView(final Project project) {
         this.myProject = project;
     }
 
     private void initData(final TSMetaEnum myMeta) {
+        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+            // same object, no need in re-init
+            return;
+        }
+
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
         myJaloClass.setText(myMeta.getJaloClass());
         myDynamic.setSelected(myMeta.isDynamic());
-        myAutocreate.setSelected(myMeta.isAutoCreate());
+        myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
+
+        ((TSMetaEnumValuesTable) myEnumValues).init(myProject, myMeta);
     }
 
     public JBPanel getContent(final TSMetaEnum meta) {
         initData(meta);
 
         return myContentPane;
+    }
+
+    public JBPanel getContent(final TSMetaEnum meta, final TSMetaEnum.TSMetaEnumValue metaValue) {
+        initData(meta);
+
+        ((TSMetaEnumValuesTable) myEnumValues).select(metaValue);
+
+        return myContentPane;
+    }
+
+    private void createUIComponents() {
+        myEnumValues = new TSMetaEnumValuesTable();
     }
 }

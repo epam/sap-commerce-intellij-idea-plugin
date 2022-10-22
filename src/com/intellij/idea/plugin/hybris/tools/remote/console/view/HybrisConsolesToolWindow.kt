@@ -20,16 +20,13 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-
-class HybrisConsolesToolWindow(val project: Project) : Disposable {
+class HybrisConsolesToolWindow(val project: Project) : Disposable, DumbAware {
 
     companion object {
         fun getInstance(project: Project): HybrisConsolesToolWindow = project.getService(HybrisConsolesToolWindow::class.java)
@@ -48,6 +45,5 @@ class HybrisConsolesToolWindow(val project: Project) : Disposable {
         return content
     }
 
-    override fun dispose() {
-    }
+    override fun dispose() = Unit
 }

@@ -48,8 +48,8 @@ public interface Attribute extends DomElement {
     String REDECLARE = "redeclare";
     String QUALIFIER = "qualifier";
     String TYPE = "type";
-    String METATYPE = "metatype";
-    String AUTOCREATE = "autocreate";
+    String META_TYPE = "metatype";
+    String AUTO_CREATE = "autocreate";
     String GENERATE = "generate";
     String IS_SELECTION_OF = "isSelectionOf";
 
@@ -109,7 +109,7 @@ public interface Attribute extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(METATYPE)
+    @com.intellij.util.xml.Attribute(META_TYPE)
     GenericAttributeValue<String> getMetaType();
 
 
@@ -123,7 +123,7 @@ public interface Attribute extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(AUTOCREATE)
+    @com.intellij.util.xml.Attribute(AUTO_CREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 

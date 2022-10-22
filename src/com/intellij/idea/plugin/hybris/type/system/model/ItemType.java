@@ -45,14 +45,14 @@ public interface ItemType extends DomElement {
 
     String CODE = "code";
     String EXTENDS = "extends";
-    String JALOCLASS = "jaloclass";
+    String JALO_CLASS = "jaloclass";
     String DEPLOYMENT = "deployment";
     String SINGLETON = "singleton";
-    String JALOONLY = "jaloonly";
-    String AUTOCREATE = "autocreate";
+    String JALO_ONLY = "jaloonly";
+    String AUTO_CREATE = "autocreate";
     String GENERATE = "generate";
     String ABSTRACT = "abstract";
-    String METATYPE = "metatype";
+    String META_TYPE = "metatype";
     String DESCRIPTION = "description";
 
     /**
@@ -114,7 +114,7 @@ public interface ItemType extends DomElement {
      * @return the value of the jaloclass child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(JALOCLASS)
+    @com.intellij.util.xml.Attribute(JALO_CLASS)
     GenericAttributeValue<String> getJaloClass();
 
 
@@ -156,7 +156,7 @@ public interface ItemType extends DomElement {
      * @return the value of the jaloonly child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(JALOONLY)
+    @com.intellij.util.xml.Attribute(JALO_ONLY)
     GenericAttributeValue<Boolean> getJaloOnly();
 
 
@@ -170,7 +170,7 @@ public interface ItemType extends DomElement {
      * @return the value of the autocreate child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(AUTOCREATE)
+    @com.intellij.util.xml.Attribute(AUTO_CREATE)
     GenericAttributeValue<Boolean> getAutoCreate();
 
 
@@ -212,7 +212,7 @@ public interface ItemType extends DomElement {
      * @return the value of the metatype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(METATYPE)
+    @com.intellij.util.xml.Attribute(META_TYPE)
     GenericAttributeValue<String> getMetaType();
 
 

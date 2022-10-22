@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaDeployment;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModifiers;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
@@ -28,9 +29,12 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TSMetaRelation {
 
@@ -49,8 +53,8 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         myAutoCreate = Boolean.TRUE.equals(dom.getAutoCreate().getValue());
         myGenerate = Boolean.TRUE.equals(dom.getGenerate().getValue());
         myDescription = dom.getDescription().getStringValue();
-        mySourceEnd = new TSMetaRelationElementImpl(module, project, this, dom.getSourceElement(), custom);
-        myTargetEnd = new TSMetaRelationElementImpl(module, project, this, dom.getTargetElement(), custom);
+        mySourceEnd = new TSMetaRelationElementImpl(module, project, this, dom.getSourceElement(), RelationEnd.SOURCE, custom);
+        myTargetEnd = new TSMetaRelationElementImpl(module, project, this, dom.getTargetElement(), RelationEnd.TARGET, custom);
         myDeployment = new TSMetaDeploymentImpl<>(module, project, this, dom.getDeployment(), custom);
     }
 
@@ -93,6 +97,7 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
 
     private static class TSMetaRelationElementImpl extends TSMetaEntityImpl<RelationElement> implements TSMetaRelationElement {
 
+        private final ConcurrentHashMap<String, TSMetaCustomProperty> myCustomProperties = new CaseInsensitive.CaseInsensitiveConcurrentHashMap<>();
         private final TSMetaModifiers<TSMetaRelationElement> myModifiers;
         private final TSMetaRelation myOwner;
         private final String myType;
@@ -103,11 +108,14 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         private final boolean myOrdered;
         private final Cardinality myCardinality;
         private final Type myCollectionType;
+        private final RelationEnd myEnd;
 
-        public TSMetaRelationElementImpl(final Module module, final Project project, final @NotNull TSMetaRelation owner, final @NotNull RelationElement dom, final boolean custom) {
+        public TSMetaRelationElementImpl(final Module module, final Project project, final @NotNull TSMetaRelation owner,
+                                         final @NotNull RelationElement dom, final RelationEnd end, final boolean custom) {
             super(module, project, dom, custom);
             myOwner = owner;
             myType = StringUtil.notNullize(dom.getType().getStringValue());
+            myEnd = end;
             myQualifier = StringUtil.notNullize(dom.getQualifier().getStringValue());
             myNavigable = Optional.ofNullable(dom.getNavigable().getValue()).orElse(true);
             myOrdered = Boolean.TRUE.equals(dom.getOrdered().getValue());
@@ -116,12 +124,22 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
             myMetaType = dom.getMetaType().getStringValue();
             myCollectionType = Optional.ofNullable(dom.getCollectionType().getValue()).orElse(Type.COLLECTION);
             myModifiers = new TSMetaModifiersImpl<>(module, project, dom.getModifiers(), custom);
+
+            dom.getCustomProperties().getProperties().stream()
+               .map(customProperty -> new TSMetaCustomPropertyImpl(module, project, customProperty, custom))
+               .filter(metaCustomProperty -> StringUtils.isNotBlank(metaCustomProperty.getName()))
+               .forEach(metaCustomProperty -> myCustomProperties.put(metaCustomProperty.getName(), metaCustomProperty));
         }
 
         @NotNull
         @Override
         public String getType() {
             return myType;
+        }
+
+        @Override
+        public RelationEnd getEnd() {
+            return myEnd;
         }
 
         @NotNull
@@ -139,6 +157,11 @@ public class TSMetaRelationImpl extends TSMetaEntityImpl<Relation> implements TS
         @Override
         public TSMetaRelation getOwningRelation() {
             return myOwner;
+        }
+
+        @Override
+        public Collection<TSMetaCustomProperty> getCustomAttributes() {
+            return myCustomProperties.values();
         }
 
         @Override

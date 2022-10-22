@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAttribute;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -45,10 +45,10 @@ public class TSMetaAttributeView {
         this.myProject = project;
     }
 
-    private void initData(final TSMetaAttribute myMeta) {
+    private void initData(final TSMetaItem.TSMetaItemAttribute myMeta) {
     }
 
-    public JBPanel getContent(final TSMetaAttribute meta) {
+    public JBPanel getContent(final TSMetaItem.TSMetaItemAttribute meta) {
         initData(meta);
 
         return myContentPane;

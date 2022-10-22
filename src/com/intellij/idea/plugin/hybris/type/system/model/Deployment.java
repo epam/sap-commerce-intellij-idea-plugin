@@ -36,8 +36,8 @@ import org.jetbrains.annotations.NotNull;
 public interface Deployment extends DomElement {
 
     String TABLE = "table";
-    String TYPECODE = "typecode";
-    String PROPERTYTABLE = "propertytable";
+    String TYPE_CODE = "typecode";
+    String PROPERTY_TABLE = "propertytable";
 
     /**
      * Returns the value of the table child.
@@ -64,7 +64,7 @@ public interface Deployment extends DomElement {
      * @return the value of the typecode child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(TYPECODE)
+    @com.intellij.util.xml.Attribute(TYPE_CODE)
     @Required
     GenericAttributeValue<String> getTypeCode();
 
@@ -79,7 +79,7 @@ public interface Deployment extends DomElement {
      * @return the value of the propertytable child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(PROPERTYTABLE)
+    @com.intellij.util.xml.Attribute(PROPERTY_TABLE)
     GenericAttributeValue<String> getPropertyTable();
 
 

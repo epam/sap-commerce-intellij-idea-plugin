@@ -25,6 +25,8 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+
 public interface TSMetaRelation extends TSMetaClassifier<Relation> {
 
     TSMetaDeployment<TSMetaRelation> getDeployment();
@@ -43,7 +45,14 @@ public interface TSMetaRelation extends TSMetaClassifier<Relation> {
 
     String getDescription();
 
+    enum RelationEnd {
+        SOURCE, TARGET
+    }
+
     interface TSMetaRelationElement extends TSMetaClassifier<RelationElement>{
+
+        @NotNull
+        RelationEnd getEnd();
 
         @NotNull
         String getQualifier();
@@ -57,6 +66,8 @@ public interface TSMetaRelation extends TSMetaClassifier<Relation> {
         TSMetaRelation getOwningRelation();
 
         TSMetaModifiers<TSMetaRelationElement> getModifiers();
+
+        Collection<TSMetaCustomProperty> getCustomAttributes();
 
         @Nullable
         RelationElement retrieveDom();

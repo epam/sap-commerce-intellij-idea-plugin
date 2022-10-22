@@ -43,7 +43,7 @@ public interface Modifiers extends DomElement {
     String PRIVATE = "private";
     String INITIAL = "initial";
     String REMOVABLE = "removable";
-    String PARTOF = "partof";
+    String PART_OF = "partof";
     String UNIQUE = "unique";
 
     /**
@@ -154,7 +154,7 @@ public interface Modifiers extends DomElement {
      * @return the value of the partof child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute(PARTOF)
+    @com.intellij.util.xml.Attribute(PART_OF)
     GenericAttributeValue<Boolean> getPartOf();
 
 

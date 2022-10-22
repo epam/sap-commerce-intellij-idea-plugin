@@ -16,31 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.model.CreationMode;
-import com.intellij.idea.plugin.hybris.type.system.model.Index;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 
-import java.util.Set;
+class TSMetaRelationElementCustomPropertiesTable : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>() {
 
-public interface TSMetaIndex {
+    override fun getCustomProperties(): List<TSMetaCustomProperty?> = myOwner.customAttributes
+        .sortedWith(compareBy(
+            { !it.isCustom },
+            { it.module.name },
+            { it.name })
+        )
 
-    @Nullable
-    String getName();
+    companion object {
+        private const val serialVersionUID: Long = -7138215848626018593L
+    }
 
-    @Nullable
-    Index retrieveDom();
-
-    Set<String> getKeys();
-
-    boolean isRemove();
-
-    boolean isReplace();
-
-    boolean isUnique();
-
-    CreationMode getCreationMode();
-
-    TSMetaItem getOwner();
 }

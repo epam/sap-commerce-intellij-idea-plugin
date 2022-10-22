@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaEnumNode(parent: TSNode, val meta: TSMetaEnum) : TSNode(parent), Disposable {
+class TSMetaEnumNode(val parent: TSNode, val meta: TSMetaEnum) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
@@ -33,6 +33,16 @@ class TSMetaEnumNode(parent: TSNode, val meta: TSMetaEnum) : TSNode(parent), Dis
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(AllIcons.Nodes.Enum)
+        if (meta.isDynamic) {
+            presentation.locationString = "dynamic"
+        }
+    }
+
+    override fun getChildren(): Collection<TSNode?> {
+        return meta.values
+            .filter { it.isCustom }
+            .sortedBy { it.name }
+            .map { TSMetaEnumValueNode(this, it) }
     }
 
 }

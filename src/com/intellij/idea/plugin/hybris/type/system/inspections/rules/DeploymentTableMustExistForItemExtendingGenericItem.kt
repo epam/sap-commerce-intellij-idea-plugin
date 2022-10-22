@@ -52,6 +52,9 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
+        // skip non-ComposedType
+        if ("ViewType".equals(dom.metaType.stringValue, true) || "ComposedType".equals(dom.metaType.stringValue, true)) return
+
         val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
             ?: return
 
@@ -65,15 +68,20 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
 
         if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
 
-        val countDeploymentTablesInParents = TSMetaItemService.getInstance(project).getExtends(metaItem)
+        val allExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
             .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
+
+        // skip Descriptor declarations
+        if (allExtends.count { "Descriptor".equals(it.code.stringValue, true) } > 0) return
+
+        val countDeploymentTablesInParents = allExtends
             .count { StringUtils.isNotBlank(it.deployment.typeCode.value) }
 
         if (countDeploymentTablesInParents > 0) return
 
         val attributes = sortedMapOf(
             Deployment.TABLE to dom.code.stringValue,
-            Deployment.TYPECODE to TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString(),
+            Deployment.TYPE_CODE to TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString(),
         )
 
         holder.createProblem(

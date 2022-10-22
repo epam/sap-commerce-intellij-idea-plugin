@@ -19,9 +19,14 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty;
+import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.Nullable;
 
 public interface TSMetaCustomProperty {
+
+    boolean isCustom();
+
+    Module getModule();
 
     @Nullable
     String getName();

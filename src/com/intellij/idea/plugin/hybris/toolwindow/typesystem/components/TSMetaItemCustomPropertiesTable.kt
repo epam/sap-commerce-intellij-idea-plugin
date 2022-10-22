@@ -21,38 +21,18 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
-import com.intellij.util.ui.ListTableModel
 
-private const val COLUMN_NAME = "Name"
-private const val COLUMN_VALUE = "Value"
+class TSMetaItemCustomPropertiesTable : AbstractTSMetaCustomPropertiesTable<TSMetaItem>() {
 
-class TSMetaItemCustomPropertiesTable : AbstractTSTable<TSMetaItem, TSMetaCustomProperty>() {
-
-    override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_VALUE)
-
-    override fun createModel(): ListTableModel<TSMetaCustomProperty> = with(ListTableModel<TSMetaCustomProperty>()) {
-        items = TSMetaItemService.getInstance(myProject).getCustomProperties(myOwner, true)
-            .sortedBy { it.name }
-
-        columnInfos = arrayOf(
-            createColumn(
-                name = COLUMN_NAME,
-                valueProvider = { attr -> attr.name ?: "" },
-                columnClass = String::class.java,
-            ),
-            createColumn(
-                name = COLUMN_VALUE,
-                valueProvider = { attr -> attr.value ?: "" },
-                columnClass = Boolean::class.java,
-                tooltip = "Redeclare"
-            )
+    override fun getCustomProperties(): List<TSMetaCustomProperty?> = TSMetaItemService.getInstance(myProject)
+        .getCustomProperties(myOwner, true)
+        .sortedWith(compareBy(
+            { !it.isCustom },
+            { it.module.name },
+            { it.name })
         )
 
-        this
+                companion object {
+        private const val serialVersionUID: Long = 1373538655259801277L
     }
-
-    companion object {
-        private const val serialVersionUID: Long = -6204398733396273020L
-    }
-
 }

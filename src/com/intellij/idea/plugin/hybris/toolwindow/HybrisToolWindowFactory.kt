@@ -20,11 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 
-class HybrisToolWindowFactory : ToolWindowFactory {
+class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow

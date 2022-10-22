@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.util.xml.DomElement;
 
-public interface TSMetaSelfMerge<DOM extends DomElement> extends TSMetaClassifier<DOM> {
+public interface TSMetaSelfMerge<T extends TSMetaClassifier<? extends DomElement>> {
 
-    void merge(TSMetaSelfMerge<DOM> another);
+    void merge(T another);
 }
