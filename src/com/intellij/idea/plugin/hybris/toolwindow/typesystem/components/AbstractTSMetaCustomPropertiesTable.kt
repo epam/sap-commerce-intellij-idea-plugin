@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
+import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_CUSTOM = "C"
@@ -26,15 +27,13 @@ private const val COLUMN_NAME = "Name"
 private const val COLUMN_VALUE = "Value"
 private const val COLUMN_MODULE = "Module"
 
-abstract class AbstractTSMetaCustomPropertiesTable<T : Any> : AbstractTSTable<T, TSMetaCustomProperty>() {
+abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) : AbstractTSTable<T, TSMetaCustomProperty>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_VALUE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
     override fun select(meta: TSMetaCustomProperty) = selectRowWithValue(meta.name, COLUMN_NAME)
 
     override fun createModel(): ListTableModel<TSMetaCustomProperty> = with(ListTableModel<TSMetaCustomProperty>()) {
-        items = getCustomProperties()
-
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_CUSTOM,
@@ -60,8 +59,6 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any> : AbstractTSTable<T,
 
         this
     }
-
-    abstract fun getCustomProperties(): List<TSMetaCustomProperty?>
 
     companion object {
         private const val serialVersionUID: Long = -6204398733396273020L

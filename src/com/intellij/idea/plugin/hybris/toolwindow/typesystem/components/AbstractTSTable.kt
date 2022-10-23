@@ -33,25 +33,16 @@ import java.awt.Rectangle
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
-abstract class AbstractTSTable<Owner : Any, Item> : JBTable() {
+abstract class AbstractTSTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
 
-    lateinit var myProject: Project
-    lateinit var myOwner: Owner
-
-    init {
-        intercellSpacing = Dimension(0, 0)
-    }
-
-    fun init(project: Project, owner: Owner) {
-        myProject = project
-        myOwner = owner
-
+    fun init() {
         val search = TableSpeedSearch(this)
+
+        intercellSpacing = Dimension(0, 0)
+        model = createModel()
 
         setShowGrid(false)
         setDefaultRenderer(Boolean::class.java, BooleanTableCellRenderer());
-
-        model = createModel()
 
         getSearchableColumnNames()
             .map { getColumn(it) }
@@ -61,7 +52,14 @@ abstract class AbstractTSTable<Owner : Any, Item> : JBTable() {
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }
     }
 
+    fun updateModel(owner: Owner) {
+        if (model is ListTableModel<*>) {
+            (model as ListTableModel<Item>).items = getItems(owner)
+        }
+    }
+
     abstract fun select(meta: Item)
+    protected abstract fun getItems(meta: Owner): List<Item>
     protected abstract fun createModel(): ListTableModel<Item>
     protected open fun getSearchableColumnNames(): List<String> = emptyList()
     protected open fun getFixedWidthColumnNames(): List<String> = emptyList()

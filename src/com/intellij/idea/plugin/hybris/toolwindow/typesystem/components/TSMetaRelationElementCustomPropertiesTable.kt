@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.openapi.project.Project
 
-class TSMetaRelationElementCustomPropertiesTable : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>() {
+class TSMetaRelationElementCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>(myProject) {
 
-    override fun getCustomProperties(): List<TSMetaCustomProperty?> = myOwner.customAttributes
+    override fun getItems(meta: TSMetaRelationElement): List<TSMetaCustomProperty> = meta.customAttributes
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
@@ -32,6 +33,12 @@ class TSMetaRelationElementCustomPropertiesTable : AbstractTSMetaCustomPropertie
 
     companion object {
         private const val serialVersionUID: Long = -7138215848626018593L
+
+        fun getInstance(project: Project): TSMetaRelationElementCustomPropertiesTable = with(TSMetaRelationElementCustomPropertiesTable(project)) {
+            init()
+
+            this
+        }
     }
 
 }

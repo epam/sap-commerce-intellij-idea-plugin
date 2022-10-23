@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTabbedPane;
@@ -54,6 +55,9 @@ public class TSMetaRelationView {
     private JBCheckBox myGenerate;
     private JBTextField mySourceType;
     private JBTextField myTargetType;
+    private JPanel myDeploymentPane;
+    private JPanel myFlagsPane;
+    private JBPanel myDetailsPane;
     private final TSMetaRelationElementView mySourceView;
     private final TSMetaRelationElementView myTargetView;
 
@@ -116,5 +120,13 @@ public class TSMetaRelationView {
     private void createUIComponents() {
         myCardinalitySource = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Cardinality.values())));
         myCardinalityTarget = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Cardinality.values())));
+
+        myDetailsPane = new JBPanel();
+        myDeploymentPane = new JBPanel<>();
+        myFlagsPane = new JBPanel<>();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myDeploymentPane.setBorder(IdeBorderFactory.createTitledBorder("Deployment"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
     }
 }

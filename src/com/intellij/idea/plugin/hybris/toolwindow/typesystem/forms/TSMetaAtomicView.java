@@ -20,10 +20,13 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.swing.*;
 
 public class TSMetaAtomicView {
 
@@ -34,6 +37,8 @@ public class TSMetaAtomicView {
     private JBCheckBox myGenerate;
     private JBTextField myClass;
     private JBTextField myExtends;
+    private JPanel myFlagsPane;
+    private JBPanel myDetailsPane;
 
     public TSMetaAtomicView(final Project project) {
         this.myProject = project;
@@ -55,5 +60,13 @@ public class TSMetaAtomicView {
         initData(meta);
 
         return myContentPane;
+    }
+
+    private void createUIComponents() {
+        myDetailsPane = new JBPanel();
+        myFlagsPane = new JBPanel();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
     }
 }

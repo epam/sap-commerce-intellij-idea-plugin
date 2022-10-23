@@ -25,10 +25,13 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
+import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
+import com.intellij.util.ui.JBUI;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -59,6 +62,10 @@ public class TSMetaRelationElementView {
     private JBTextField myType;
     private ComboBox<Cardinality> myCardinality;
     private ComboBox<Type> myCollectionType;
+    private JPanel myCustomPropertiesPane;
+    private JPanel myDetailsPane;
+    private JPanel myFlagsPane;
+    private JPanel myModifiersPane;
 
     public TSMetaRelationElementView(final Project project) {
         myProject = project;
@@ -92,7 +99,7 @@ public class TSMetaRelationElementView {
         myRemovable.setSelected(modifiers.isRemovable());
         myOptional.setSelected(modifiers.isOptional());
 
-        ((TSMetaRelationElementCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
+        ((TSMetaRelationElementCustomPropertiesTable) myCustomProperties).updateModel(myMeta);
     }
 
     public JBPanel getContent() {
@@ -102,6 +109,19 @@ public class TSMetaRelationElementView {
     private void createUIComponents() {
         myCardinality = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Cardinality.values())));
         myCollectionType = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Type.values())));
-        myCustomProperties = new TSMetaRelationElementCustomPropertiesTable();
+        myCustomProperties = TSMetaRelationElementCustomPropertiesTable.Companion.getInstance(myProject);
+        myDetailsPane = new JBPanel<>();
+        myModifiersPane = new JBPanel<>();
+        myFlagsPane = new JBPanel<>();
+
+        myCustomPropertiesPane = ToolbarDecorator.createDecorator(myCustomProperties)
+                                                 .disableUpDownActions()
+                                                 .setPanelBorder(JBUI.Borders.empty())
+                                                 .createPanel();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myModifiersPane.setBorder(IdeBorderFactory.createTitledBorder("Modifiers"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
+        myCustomPropertiesPane.setBorder(IdeBorderFactory.createTitledBorder("Custom Properties"));
     }
 }

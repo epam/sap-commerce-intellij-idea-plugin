@@ -55,6 +55,9 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType>, TSMetaSelfMerge<
         String getName();
 
         @Nullable
+        String getDescription();
+
+        @Nullable
         EnumValue retrieveDom();
 
         @NotNull

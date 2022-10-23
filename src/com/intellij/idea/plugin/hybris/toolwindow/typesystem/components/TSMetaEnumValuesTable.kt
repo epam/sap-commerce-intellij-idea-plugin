@@ -19,25 +19,25 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum
+import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_CUSTOM = "C"
 private const val COLUMN_MODULE = "Module"
 private const val COLUMN_VALUE = "Value"
+private const val COLUMN_DESCRIPTION = "Description"
 
-class TSMetaEnumValuesTable : AbstractTSTable<TSMetaEnum, TSMetaEnum.TSMetaEnumValue>() {
+class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTSTable<TSMetaEnum, TSMetaEnum.TSMetaEnumValue>(myProject) {
 
-    override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
+    override fun getSearchableColumnNames() = listOf(COLUMN_VALUE, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
     override fun select(meta: TSMetaEnum.TSMetaEnumValue) = selectRowWithValue(meta.name, COLUMN_VALUE)
+    override fun getItems(meta: TSMetaEnum) = meta.values.sortedWith(compareBy(
+        { !it.isCustom },
+        { it.module.name },
+        { it.name }))
 
     override fun createModel(): ListTableModel<TSMetaEnum.TSMetaEnumValue> = with(ListTableModel<TSMetaEnum.TSMetaEnumValue>()) {
-        items = myOwner.values.sortedWith(compareBy(
-            { !it.isCustom },
-            { it.module.name },
-            { it.name })
-        )
-
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_CUSTOM,
@@ -52,6 +52,10 @@ class TSMetaEnumValuesTable : AbstractTSTable<TSMetaEnum, TSMetaEnum.TSMetaEnumV
             createColumn(
                 name = COLUMN_VALUE,
                 valueProvider = { attr -> attr.name ?: "" }
+            ),
+            createColumn(
+                name = COLUMN_DESCRIPTION,
+                valueProvider = { attr -> attr.description ?: "" }
             )
         )
 
@@ -60,6 +64,12 @@ class TSMetaEnumValuesTable : AbstractTSTable<TSMetaEnum, TSMetaEnum.TSMetaEnumV
 
     companion object {
         private const val serialVersionUID: Long = 6652572661218637911L
+
+        fun getInstance(project: Project): TSMetaEnumValuesTable = with(TSMetaEnumValuesTable(project)) {
+            init()
+
+            this
+        }
     }
 
 }

@@ -20,10 +20,13 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaMap;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.swing.*;
 
 public class TSMetaMapView {
 
@@ -36,6 +39,8 @@ public class TSMetaMapView {
     private JBTextField myCode;
     private JBTextField myArgumentType;
     private JBTextField myReturnType;
+    private JBPanel myDetailsPane;
+    private JPanel myFlagsPane;
 
     public TSMetaMapView(final Project project) {
         myProject = project;
@@ -59,5 +64,12 @@ public class TSMetaMapView {
         initData(meta);
 
         return myContentPane;
+    }
+
+    private void createUIComponents() {
+        myDetailsPane = new JBPanel();
+        myFlagsPane = new JBPanel();
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
     }
 }

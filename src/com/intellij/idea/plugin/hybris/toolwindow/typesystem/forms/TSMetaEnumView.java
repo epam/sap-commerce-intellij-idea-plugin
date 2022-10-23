@@ -21,11 +21,16 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaEnumValuesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
+import com.intellij.util.ui.JBUI;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.swing.*;
 
 public class TSMetaEnumView {
 
@@ -39,6 +44,9 @@ public class TSMetaEnumView {
     private JBTextField myDescription;
     private JBTextField myCode;
     private JBTable myEnumValues;
+    private JPanel myValuesPane;
+    private JBPanel myDetailsPane;
+    private JPanel myFlagsPane;
 
     public TSMetaEnumView(final Project project) {
         this.myProject = project;
@@ -57,7 +65,7 @@ public class TSMetaEnumView {
         myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
 
-        ((TSMetaEnumValuesTable) myEnumValues).init(myProject, myMeta);
+        ((TSMetaEnumValuesTable) myEnumValues).updateModel(myMeta);
     }
 
     public JBPanel getContent(final TSMetaEnum meta) {
@@ -75,6 +83,16 @@ public class TSMetaEnumView {
     }
 
     private void createUIComponents() {
-        myEnumValues = new TSMetaEnumValuesTable();
+        myEnumValues = TSMetaEnumValuesTable.Companion.getInstance(myProject);
+        myValuesPane = ToolbarDecorator.createDecorator(myEnumValues)
+                                       .disableUpDownActions()
+                                       .setPanelBorder(JBUI.Borders.empty())
+                                       .createPanel();
+        myDetailsPane = new JBPanel();
+        myFlagsPane = new JBPanel();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
+        myValuesPane.setBorder(IdeBorderFactory.createTitledBorder("Values"));
     }
 }

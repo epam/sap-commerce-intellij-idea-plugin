@@ -117,15 +117,22 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
     public static class TSMetaEnumValueImpl extends TSMetaEntityImpl<EnumValue> implements TSMetaEnumValue {
 
         private final TSMetaEnum myOwner;
+        private final String myDescription;
 
         public TSMetaEnumValueImpl(final Module module, final Project project, final @NotNull TSMetaEnum owner, final @NotNull EnumValue dom, final boolean custom) {
             super(module, project, extractEnumValueName(dom), dom, custom);
             myOwner = owner;
+            myDescription = dom.getDescription().getStringValue();
         }
 
         @Nullable
         private static String extractEnumValueName(@NotNull final EnumValue dom) {
             return dom.getCode().getStringValue();
+        }
+
+        @Override
+        public String getDescription() {
+            return myDescription;
         }
 
         @NotNull

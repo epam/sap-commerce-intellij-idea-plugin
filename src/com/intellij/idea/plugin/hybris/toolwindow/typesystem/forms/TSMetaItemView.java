@@ -24,11 +24,14 @@ import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaIt
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
+import com.intellij.util.ui.JBUI;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -56,6 +59,9 @@ public class TSMetaItemView {
     private JPanel myIndexesPane;
     private JPanel myCustomPropertiesPane;
     private JPanel myAttributesPane;
+    private JBPanel myDetailsPane;
+    private JPanel myDeploymentPane;
+    private JPanel myFlagsPane;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
@@ -67,9 +73,9 @@ public class TSMetaItemView {
             return;
         }
 
-        ((TSMetaItemAttributesTable) myAttributes).init(myProject, myMeta);
-        ((TSMetaItemCustomPropertiesTable) myCustomProperties).init(myProject, myMeta);
-        ((TSMetaItemIndexesTable) myIndexes).init(myProject, myMeta);
+        ((TSMetaItemAttributesTable) myAttributes).updateModel(myMeta);
+        ((TSMetaItemCustomPropertiesTable) myCustomProperties).updateModel(myMeta);
+        ((TSMetaItemIndexesTable) myIndexes).updateModel(myMeta);
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
@@ -120,8 +126,31 @@ public class TSMetaItemView {
     }
 
     private void createUIComponents() {
-        myAttributes = new TSMetaItemAttributesTable();
-        myCustomProperties = new TSMetaItemCustomPropertiesTable();
-        myIndexes = new TSMetaItemIndexesTable();
+        myAttributes = TSMetaItemAttributesTable.Companion.getInstance(myProject);
+        myCustomProperties = TSMetaItemCustomPropertiesTable.Companion.getInstance(myProject);
+        myIndexes = TSMetaItemIndexesTable.Companion.getInstance(myProject);
+        myDetailsPane = new JBPanel();
+        myDeploymentPane = new JBPanel();
+        myFlagsPane = new JBPanel();
+
+        myAttributesPane = ToolbarDecorator.createDecorator(myAttributes)
+                                           .disableUpDownActions()
+                                           .setPanelBorder(JBUI.Borders.empty())
+                                           .createPanel();
+        myCustomPropertiesPane = ToolbarDecorator.createDecorator(myCustomProperties)
+                                                 .disableUpDownActions()
+                                                 .setPanelBorder(JBUI.Borders.empty())
+                                                 .createPanel();
+        myIndexesPane = ToolbarDecorator.createDecorator(myIndexes)
+                                        .disableUpDownActions()
+                                        .setPanelBorder(JBUI.Borders.empty())
+                                        .createPanel();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myDeploymentPane.setBorder(IdeBorderFactory.createTitledBorder("Deployment"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
+        myAttributesPane.setBorder(IdeBorderFactory.createTitledBorder("Attributes"));
+        myCustomPropertiesPane.setBorder(IdeBorderFactory.createTitledBorder("Custom Properties"));
+        myIndexesPane.setBorder(IdeBorderFactory.createTitledBorder("Indexes"));
     }
 }

@@ -23,11 +23,13 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
 import java.util.Arrays;
 
 public class TSMetaCollectionView {
@@ -40,6 +42,8 @@ public class TSMetaCollectionView {
     private ComboBox<Type> myType;
     private JBTextField myCode;
     private JBTextField myElementType;
+    private JPanel myFlagsPane;
+    private JBPanel myDetailsPane;
 
     public TSMetaCollectionView(final Project project) {
         myProject = project;
@@ -67,5 +71,10 @@ public class TSMetaCollectionView {
     private void createUIComponents() {
         final CollectionComboBoxModel<Type> myTypeModel = new CollectionComboBoxModel<>(Arrays.asList(Type.values()));
         myType = new ComboBox<>(myTypeModel);
+        myDetailsPane = new JBPanel();
+        myFlagsPane = new JBPanel();
+
+        myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
+        myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
     }
 }

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemIndex
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_NAME = "Name"
@@ -32,7 +33,7 @@ private const val COLUMN_CREATION_MODE = "Creation mode"
 private const val COLUMN_KEYS = "Keys"
 private const val COLUMN_MODULE = "Module"
 
-class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaItemIndex>() {
+class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTSTable<TSMetaItem, TSMetaItemIndex>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS)
     override fun select(meta: TSMetaItemIndex) = selectRowWithValue(meta.name, COLUMN_NAME)
@@ -44,14 +45,14 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaItemIndex>() {
         COLUMN_CREATION_MODE
     )
 
-    override fun createModel(): ListTableModel<TSMetaItemIndex> = with(ListTableModel<TSMetaItemIndex>()) {
-        items = TSMetaItemService.getInstance(myProject).getIndexes(myOwner, true)
-            .sortedWith(compareBy(
-                { !it.isCustom },
-                { it.module.name },
-                { it.name })
-            )
+    override fun getItems(meta: TSMetaItem): List<TSMetaItemIndex> = TSMetaItemService.getInstance(myProject).getIndexes(meta, true)
+        .sortedWith(compareBy(
+            { !it.isCustom },
+            { it.module.name },
+            { it.name })
+        )
 
+    override fun createModel(): ListTableModel<TSMetaItemIndex> = with(ListTableModel<TSMetaItemIndex>()) {
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_CUSTOM,
@@ -101,6 +102,12 @@ class TSMetaItemIndexesTable : AbstractTSTable<TSMetaItem, TSMetaItemIndex>() {
 
     companion object {
         private const val serialVersionUID: Long = -6854917148686972681L
+
+        fun getInstance(project: Project): TSMetaItemIndexesTable = with(TSMetaItemIndexesTable(project)) {
+            init()
+
+            this
+        }
     }
 
 }
