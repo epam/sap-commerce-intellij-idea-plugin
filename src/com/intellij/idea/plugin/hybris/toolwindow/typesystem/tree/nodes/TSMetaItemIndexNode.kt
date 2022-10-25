@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemIndex
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import icons.DatabaseIcons
 
 class TSMetaItemIndexNode(val parent: TSMetaItemNode, val meta: TSMetaItemIndex) : TSNode(parent), Disposable {
 
@@ -34,13 +34,13 @@ class TSMetaItemIndexNode(val parent: TSMetaItemNode, val meta: TSMetaItemIndex)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.keys.joinToString()
 
-        presentation.setIcon(DatabaseIcons.Index)
+        presentation.setIcon(HybrisIcons.INDEX)
         if (meta.isUnique) {
-            presentation.setIcon(DatabaseIcons.IndexUnique)
+            presentation.setIcon(HybrisIcons.INDEX_UNIQUE)
         } else if (meta.isReplace) {
-            presentation.setIcon(DatabaseIcons.IndexFun)
+            presentation.setIcon(HybrisIcons.INDEX_FUN)
         } else if (meta.isRemove) {
-            presentation.setIcon(DatabaseIcons.IndexCluster)
+            presentation.setIcon(HybrisIcons.INDEX_CLUSTER)
         }
 
     }

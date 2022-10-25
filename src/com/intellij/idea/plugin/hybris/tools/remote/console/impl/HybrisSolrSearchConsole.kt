@@ -167,7 +167,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     override fun tip(): String = "Solr Search Console"
 
-    override fun icon(): Icon = HybrisIcons.Console.SOLR
+    override fun icon(): Icon = HybrisIcons.CONSOLE_SOLR
 
     private fun buildSolrQueryObject(query: String): Optional<SolrQueryObject> {
         return Optional.ofNullable(coresComboBox.selectedItem)

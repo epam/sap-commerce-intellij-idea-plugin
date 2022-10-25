@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
-import com.intellij.util.castSafelyTo
+import com.intellij.util.asSafely
 import java.awt.BorderLayout
 import javax.swing.Icon
 import javax.swing.JPanel

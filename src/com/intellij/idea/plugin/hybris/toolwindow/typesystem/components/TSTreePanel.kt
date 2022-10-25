@@ -36,7 +36,6 @@ import com.intellij.ui.components.JBScrollPane
 
 class TSTreePanel(
     private val myProject: Project,
-    myGroupId: String = "HybrisTypeSystemTreePanel"
 ) : OnePixelSplitter(false, 0.25f), Disposable {
     private var myTree = TSTree(myProject)
     private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))

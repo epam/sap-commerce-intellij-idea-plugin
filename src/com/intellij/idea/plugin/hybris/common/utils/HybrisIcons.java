@@ -28,39 +28,44 @@ import javax.swing.*;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public interface HybrisIcons {
+public final class HybrisIcons {
 
-    Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
-    Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
-    Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
-    
-    Icon HYBRIS_ICON = getIcon("/icons/hybrisIcon.svg");
-    Icon HYBRIS_ICON_13x13 = getIcon("/icons/hybrisIcon_13x13.svg");
-    Icon HYBRIS_REMOTE_ICON = getIcon("/icons/hybrisRemoteIcon.svg");
-    
-    Icon WAIT = getIcon("/icons/waitIcon.svg");
-    Icon END = getIcon("/icons/endIcon.svg");
-    Icon NOTIFY = getIcon("/icons/notifyIcon.svg");
-    Icon ACTION = getIcon("/icons/actionIcon.svg");
-    Icon SPLIT = getIcon("/icons/splitIcon.svg");
-    Icon JOIN = getIcon("/icons/joinIcon.svg");
-    Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
-    
-    
-    Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
-    Icon BEAN = getIcon("/icons/beanIcon.svg");
-    Icon LOCALIZED = getIcon("/icons/localized.svg");
+    private HybrisIcons() {
+        // not allowed
+    }
 
-    Icon MACROS = getIcon("/icons/macros.png");
+    public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
+    public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
+    public static final Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
     
+    public static final Icon HYBRIS_ICON = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon HYBRIS_ICON_13x13 = getIcon("/icons/hybrisIcon_13x13.svg");
+    public static final Icon HYBRIS_REMOTE_ICON = getIcon("/icons/hybrisRemoteIcon.svg");
     
-    interface Gutter {
-        Icon POPULATOR = getIcon("/icons/gutter/populator.svg");
-    }
-    
-    interface Console {
-        Icon SOLR = getIcon("/icons/console/solr.svg");
-    }
+    public static final Icon WAIT = getIcon("/icons/waitIcon.svg");
+    public static final Icon END = getIcon("/icons/endIcon.svg");
+    public static final Icon NOTIFY = getIcon("/icons/notifyIcon.svg");
+    public static final Icon ACTION = getIcon("/icons/actionIcon.svg");
+    public static final Icon SPLIT = getIcon("/icons/splitIcon.svg");
+    public static final Icon JOIN = getIcon("/icons/joinIcon.svg");
+    public static final Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
+
+    public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
+    public static final Icon BEAN = getIcon("/icons/beanIcon.svg");
+    public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
+
+    public static final Icon MACROS = getIcon("/icons/macros.png");
+
+    public static final Icon ATTRIBUTE = getIcon("/icons/attribute.svg");
+    public static final Icon COLLECTION = getIcon("/icons/collection.svg");
+    public static final Icon INDEX = getIcon("/icons/index.svg");
+    public static final Icon INDEX_UNIQUE = getIcon("/icons/indexUnique.svg");
+    public static final Icon INDEX_FUN = getIcon("/icons/indexFun.svg");
+    public static final Icon INDEX_CLUSTER = getIcon("/icons/indexCluster.svg");
+
+    public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
+
+    public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

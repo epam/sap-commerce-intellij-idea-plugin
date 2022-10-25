@@ -112,7 +112,7 @@ class HybrisPopulatorLineMakerProvider : RelatedItemLineMarkerProvider() {
             psiElement: PsiElement,
             list: Collection<PsiElement>
     ) {
-        val builder = NavigationGutterIconBuilder.create(HybrisIcons.Gutter.POPULATOR).setTargets(list)
+        val builder = NavigationGutterIconBuilder.create(HybrisIcons.GUTTER_POPULATOR).setTargets(list)
 
         builder.setEmptyPopupText(HybrisI18NBundleUtils.message(
                 "hybris.gutter.navigate.no.matching.populators"

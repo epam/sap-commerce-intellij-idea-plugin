@@ -49,6 +49,7 @@ class TSGlobalMetaModel : AbstractTSMetaModel() {
         return this
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun merge(another: TSMetaModel) {
         another.getMetaTypes().forEach { (metaType, cache) ->
             run {

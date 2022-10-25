@@ -52,6 +52,7 @@ abstract class AbstractTSTable<Owner : Any, Item>(val myProject: Project) : JBTa
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun updateModel(owner: Owner) {
         if (model is ListTableModel<*>) {
             (model as ListTableModel<Item>).items = getItems(owner)

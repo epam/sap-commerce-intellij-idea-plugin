@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemAttribute
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import icons.DatabaseIcons
 
 class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSMetaItemAttribute) : TSNode(parent), Disposable {
 
@@ -31,7 +31,7 @@ class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSMetaItemAt
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(DatabaseIcons.Argument)
+        presentation.setIcon(HybrisIcons.ATTRIBUTE)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.type
     }

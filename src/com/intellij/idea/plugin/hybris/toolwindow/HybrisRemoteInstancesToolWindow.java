@@ -174,7 +174,7 @@ public class HybrisRemoteInstancesToolWindow implements DumbAware {
                             setIcon(HybrisIcons.HYBRIS_ICON);
                         }
                         if (type == HybrisRemoteConnectionSettings.Type.SOLR) {
-                            setIcon(HybrisIcons.Console.SOLR);
+                            setIcon(HybrisIcons.CONSOLE_SOLR);
                         }
                         return comp;
                     }

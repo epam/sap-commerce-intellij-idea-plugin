@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection
 import com.intellij.idea.plugin.hybris.type.system.model.Type
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import icons.DatabaseIcons
 
 class TSMetaCollectionNode(parent: TSNode, val meta: TSMetaCollection) : TSNode(parent), Disposable {
 
@@ -32,7 +32,7 @@ class TSMetaCollectionNode(parent: TSNode, val meta: TSMetaCollection) : TSNode(
     override fun getName() = meta.retrieveDom().code.stringValue ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(DatabaseIcons.CollectionType)
+        presentation.setIcon(HybrisIcons.COLLECTION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         val dom = meta.retrieveDom()
         presentation.locationString = "${(dom.type.value ?: Type.COLLECTION).value} of ${dom.elementType.stringValue}"
