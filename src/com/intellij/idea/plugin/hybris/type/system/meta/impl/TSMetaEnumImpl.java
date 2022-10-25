@@ -32,7 +32,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMetaEnum {
 
@@ -108,6 +110,14 @@ public class TSMetaEnumImpl extends TSMetaEntityImpl<EnumType> implements TSMeta
                .forEach(anotherValue -> name2ValueObj.putValue(anotherValue.getName(), anotherValue));
 
         addDomRepresentation(another.retrieveDom());
+    }
+
+    @NotNull
+    @Override
+    public Stream<? extends EnumType> retrieveAllDomsStream() {
+        return myAllDoms.stream()
+                        .map(DomAnchor::retrieveDomElement)
+                        .filter(Objects::nonNull);
     }
 
     protected void addDomRepresentation(final @NotNull EnumType anotherDom) {

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemaker
+package com.intellij.idea.plugin.hybris.linemarker
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -39,7 +39,7 @@ import com.intellij.psi.xml.XmlAttributeValue
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class HybrisBeanLineMakerProvider : RelatedItemLineMarkerProvider() {
+class HybrisBeanLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(element: PsiElement,
                                           result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {

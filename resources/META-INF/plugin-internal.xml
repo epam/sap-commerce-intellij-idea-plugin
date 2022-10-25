@@ -28,11 +28,11 @@
 
 
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisItemLineMakerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisBeanLineMakerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBeanLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemaker.HybrisPopulatorLineMakerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
 
         <completion.contributor language="XML"
                                 implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>

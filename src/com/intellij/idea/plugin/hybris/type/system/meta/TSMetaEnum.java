@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public interface TSMetaEnum extends TSMetaClassifier<EnumType>, TSMetaSelfMerge<TSMetaEnum> {
 
@@ -47,6 +48,8 @@ public interface TSMetaEnum extends TSMetaClassifier<EnumType>, TSMetaSelfMerge<
     String getDescription();
 
     String getJaloClass();
+
+    @NotNull Stream<? extends EnumType> retrieveAllDomsStream();
 
     interface TSMetaEnumValue {
         Module getModule();

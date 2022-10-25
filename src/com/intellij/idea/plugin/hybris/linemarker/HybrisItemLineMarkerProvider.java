@@ -16,53 +16,68 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemaker;
+package com.intellij.idea.plugin.hybris.linemarker;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil;
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlElement;
+import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Objects;
-
-import static com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil.ENUM_TYPE_TAG_NAME;
-import static com.intellij.idea.plugin.hybris.common.utils.PsiItemXmlUtil.ITEM_TYPE_TAG_NAME;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Class for show gutter icon for navigation between *-item.xml and generated classes.
  *
  * @author Nosov Aleksandr
  */
-public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
+public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
     @Override
     protected void collectNavigationMarkers(
         @NotNull final PsiElement element,
         @NotNull final Collection<? super RelatedItemLineMarkerInfo<?>> result
     ) {
-        if (!(element instanceof PsiClass)) return;
+        if (!(element instanceof final PsiClass psiClass)) return;
 
-        final PsiClass psiClass = (PsiClass) element;
+        final String name = cleanSearchName(psiClass.getName());
         if (shouldProcessItemType(psiClass)) {
-            final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ITEM_TYPE_TAG_NAME);
-            if (!list.isEmpty()) {
-                createTargetsWithGutterIcon(result, psiClass, list);
-            }
+            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
+                                                           .findMetaItemByName(name))
+                    .map(meta -> meta.retrieveAllDomsStream()
+                                     .map(DomElement::getXmlElement)
+                                     .collect(Collectors.toList()))
+                    .map(elements -> createTargetsWithGutterIcon(psiClass, elements))
+                    .ifPresent(result::add);
         } else if (shouldProcessEnum(psiClass)) {
-            final Collection<XmlElement> list = PsiItemXmlUtil.findTags(psiClass, ENUM_TYPE_TAG_NAME);
-
-            if (!list.isEmpty()) {
-                createTargetsWithGutterIcon(result, psiClass, list);
-            }
+            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
+                                                           .findMetaEnumByName(name))
+                    .map(meta -> meta.retrieveAllDomsStream()
+                                     .map(DomElement::getXmlElement)
+                                     .collect(Collectors.toList()))
+                    .map(elements -> createTargetsWithGutterIcon(psiClass, elements))
+                    .ifPresent(result::add);
         }
+    }
+
+    private static String cleanSearchName(final String searchName) {
+        if (searchName == null) return null;
+
+        final int idx = searchName.lastIndexOf("Model");
+        if (idx == -1) {
+            return searchName;
+        }
+        return searchName.substring(0, idx);
     }
 
     private boolean shouldProcessItemType(final PsiClass psiClass) {
@@ -84,19 +99,16 @@ public class HybrisItemLineMakerProvider extends RelatedItemLineMarkerProvider {
         return false;
     }
 
-    private void createTargetsWithGutterIcon(
-        final Collection<? super RelatedItemLineMarkerInfo<?>> result,
+    private @NotNull RelatedItemLineMarkerInfo<PsiElement> createTargetsWithGutterIcon(
         final PsiClass psiClass,
         final Collection<XmlElement> list
     ) {
-        final RelatedItemLineMarkerInfo<PsiElement> lineMarkerInfo = NavigationGutterIconBuilder
+        return NavigationGutterIconBuilder
             .create(HybrisIcons.TYPE_SYSTEM)
             .setTargets(list)
             .setEmptyPopupText(HybrisI18NBundleUtils.message("hybris.gutter.navigate.no.matching.beans"))
             .setPopupTitle(HybrisI18NBundleUtils.message("hybris.gutter.bean.class.navigate.choose.class.title"))
             .setTooltipText(HybrisI18NBundleUtils.message("hybris.gutter.item.class.tooltip.navigate.declaration"))
             .createLineMarkerInfo(Objects.requireNonNull(psiClass.getNameIdentifier()));
-
-        result.add(lineMarkerInfo);
     }
 }
