@@ -35,6 +35,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder;
 import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider;
 
@@ -58,18 +59,25 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
             gradleProjectImportBuilder);
 
-        project.getMessageBus().connect().subscribe(
-            ProjectDataImportListener.TOPIC,
-            (projectPath) -> {
+        final ProjectDataImportListener projectDataImportListener = new ProjectDataImportListener() {
+            @Override
+            public void onImportFinished(@Nullable final String projectPath) {
                 if (projectPath != null && !gradleRootGroupMapping.isEmpty()) {
                     ApplicationManager.getApplication().invokeLater(() -> {
                         if (!project.isDisposed()) {
-                            final Module module = ModuleManager.getInstance(project).findModuleByName(projectPath.substring(projectPath.lastIndexOf('/') + 1));
+                            final Module module = ModuleManager.getInstance(project)
+                                                               .findModuleByName(projectPath.substring(
+                                                                   projectPath.lastIndexOf('/') + 1));
                             moveGradleModulesToGroup(project, module, gradleRootGroupMapping);
                         }
                     });
                 }
             }
+        };
+
+        project.getMessageBus().connect().subscribe(
+            ProjectDataImportListener.TOPIC,
+            projectDataImportListener
         );
         gradleModules.forEach(gradleModule -> {
             ApplicationManager.getApplication().invokeAndWait(() -> {

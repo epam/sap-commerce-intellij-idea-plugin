@@ -25,12 +25,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.openapi.project.Project
-import com.intellij.util.castSafelyTo
+import com.intellij.util.asSafely
 import com.intellij.util.containers.mapSmartNotNull
 import org.apache.http.HttpStatus
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrRequest
-import org.apache.solr.client.solrj.SolrServerException
 import org.apache.solr.client.solrj.impl.HttpSolrClient
 import org.apache.solr.client.solrj.impl.NoOpResponseParser
 import org.apache.solr.client.solrj.request.CoreAdminRequest
@@ -59,7 +58,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
     }
 
     private fun parseCoreResponse(response: CoreAdminResponse) =
-            response.coreStatus.asShallowMap().values.castSafelyTo<Collection<Map<Any, Any>>>()!!.mapSmartNotNull { buildSolrCoreData(it) }.toTypedArray()
+            response.coreStatus.asShallowMap().values.asSafely<Collection<Map<Any, Any>>>()!!.mapSmartNotNull { buildSolrCoreData(it) }.toTypedArray()
 
     private fun buildSolrCoreData(it: Map<Any, Any>) =
             SolrCoreData(it["name"] as String, (it["index"] as NamedList<*>)["numDocs"] as Int)

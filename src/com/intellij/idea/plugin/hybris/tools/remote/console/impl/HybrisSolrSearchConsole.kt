@@ -39,7 +39,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.castSafelyTo
+import com.intellij.util.asSafely
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
@@ -130,7 +130,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
             val cores = retrieveListOfCores()
             if (CollectionUtils.isNotEmpty(cores)) {
                 coresComboBox.model = CollectionComboBoxModel(cores)
-                setDocsLabelCount(coresComboBox.selectedItem?.castSafelyTo<SolrCoreData>())
+                setDocsLabelCount(coresComboBox.selectedItem?.asSafely<SolrCoreData>())
             }
         }
     }

@@ -125,9 +125,9 @@ class HybrisTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<Hyb
         }
 
         addChangeListener {
-            it.source.castSafelyTo<JBEditorTabs>()
+            it.source.asSafely<JBEditorTabs>()
                     ?.selectedInfo
-                    ?.component.castSafelyTo<HybrisConsole>()
+                    ?.component.asSafely<HybrisConsole>()
                     ?.onSelection()
         }
     }

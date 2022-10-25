@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    // upgrade to 1.9.1 once released due https://youtrack.jetbrains.com/issue/IDEA-298989
     id("org.jetbrains.intellij") version "1.9.0"
 }
 
@@ -42,8 +41,8 @@ allprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
 }
@@ -60,13 +59,6 @@ intellij {
 }
 
 tasks {
-
-    setupDependencies {
-        doLast {
-            // Fixes IDEA-298989.
-            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
-        }
-    }
 
     withType<KotlinCompile>().configureEach {
         kotlinOptions {
