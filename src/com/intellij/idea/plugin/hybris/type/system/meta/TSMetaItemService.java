@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 

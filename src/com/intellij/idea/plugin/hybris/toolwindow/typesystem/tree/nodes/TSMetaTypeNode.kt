@@ -22,7 +22,9 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.type.system.meta.*
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes

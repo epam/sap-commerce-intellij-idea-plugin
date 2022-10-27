@@ -17,14 +17,16 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
-import com.intellij.idea.plugin.hybris.type.system.meta.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiFile
-import org.apache.commons.lang3.StringUtils
 
 class TSMetaModelBuilder(
     private val myProject: Project,
@@ -35,15 +37,8 @@ class TSMetaModelBuilder(
 
     private val myMetaModel = TSMetaModel(myModule, myPsiFile, myCustom)
 
-    private fun extractName(dom: ItemType): String? = dom.code.value
-    private fun extractName(dom: EnumType): String? = dom.code.value
-    private fun extractName(dom: CollectionType): String? = dom.code.value
-    private fun extractName(dom: Relation): String? = dom.code.value
-    private fun extractName(dom: AtomicType): String? = dom.clazz.value
-    private fun extractName(dom: MapType): String? = dom.code.value
-
     private fun findOrCreate(dom: ItemType): TSMetaItem? {
-        val name = extractName(dom) ?: return null
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
         val items = myMetaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM)
         var impl = items[name]
 
@@ -57,39 +52,41 @@ class TSMetaModelBuilder(
     }
 
     private fun findOrCreate(dom: EnumType): TSMetaEnum? {
-        val name = extractName(dom) ?: return null
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
         val enums = myMetaModel.getMetaType<TSMetaEnum>(MetaType.META_ENUM)
         var impl = enums[name]
 
         if (impl == null) {
             impl = TSMetaEnumImpl(myModule, myProject, name, dom, myCustom)
             enums[name] = impl
+        } else {
+            impl.merge(TSMetaEnumImpl(myModule, myProject, name, dom, myCustom))
         }
         return impl
     }
 
     private fun findOrCreate(dom: AtomicType): TSMetaAtomic? {
-        val clazzName = extractName(dom) ?: return null
+        val clazzName = TSMetaModelNameProvider.extract(dom) ?: return null
 
         return myMetaModel.getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)
             .computeIfAbsent(clazzName)
-            { key: String -> TSMetaAtomicImpl(myModule, myProject, key, dom, myCustom) }
+            { TSMetaAtomicImpl(myModule, myProject, clazzName, dom, myCustom) }
     }
 
     private fun findOrCreate(dom: CollectionType): TSMetaCollection? {
-        val name = extractName(dom) ?: return null
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
 
         return myMetaModel.getMetaType<TSMetaCollection>(MetaType.META_COLLECTION)
             .computeIfAbsent(name)
-            { key: String? -> TSMetaCollectionImpl(myModule, myProject, key, dom, myCustom) }
+            { TSMetaCollectionImpl(myModule, myProject, name, dom, myCustom) }
     }
 
     private fun findOrCreate(dom: Relation): TSMetaRelation? {
-        val name = extractName(dom) ?: return null
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
 
         return myMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION)
-            .computeIfAbsent(name) { key: String ->
-                val impl: TSMetaRelation = TSMetaRelationImpl(myModule, myProject, key, dom, myCustom)
+            .computeIfAbsent(name) {
+                val impl = TSMetaRelationImpl(myModule, myProject, name, dom, myCustom)
                 registerReferenceEnd(impl.source, impl.target)
                 registerReferenceEnd(impl.target, impl.source)
                 impl
@@ -97,7 +94,7 @@ class TSMetaModelBuilder(
     }
 
     private fun findOrCreate(dom: MapType): TSMetaMap? {
-        val name = extractName(dom) ?: return null
+        val name = TSMetaModelNameProvider.extract(dom) ?: return null
 
         val maps = myMetaModel.getMetaType<TSMetaMap>(MetaType.META_MAP)
         var map = maps[name]
@@ -126,40 +123,38 @@ class TSMetaModelBuilder(
         val meta = findOrCreate(type) ?: return
 
         type.attributes.attributes
-            .map {
-                TSMetaItemImpl.TSMetaItemAttributeImpl(
-                    myModule,
-                    myProject,
-                    meta,
-                    it,
-                    myCustom
-                )
+            .filter { TSMetaModelNameProvider.extract(it) != null }
+            .map { attr ->
+                val metaAttribute = TSMetaItemImpl.TSMetaItemAttributeImpl(myModule, myProject, attr, myCustom, meta, TSMetaModelNameProvider.extract(attr)!!)
+                attr.customProperties.properties
+                    .filter { TSMetaModelNameProvider.extract(it) != null }
+                    .map { TSMetaCustomPropertyImpl(myModule, myProject, it, myCustom, TSMetaModelNameProvider.extract(it)!!) }
+                    .forEach { prop -> metaAttribute.addCustomProperty(prop.name.trim { it <= ' ' }, prop) }
+
+                metaAttribute
             }
-            .filter { StringUtils.isNotBlank(it.name) }
-            .forEach { attr -> meta.addAttribute(attr.name!!.trim { it <= ' ' }, attr) }
+            .forEach { attr -> meta.addAttribute(attr.name.trim { it <= ' ' }, attr) }
 
         type.customProperties.properties
-            .map { TSMetaCustomPropertyImpl(myModule, myProject, it, myCustom) }
-            .filter { StringUtils.isNotBlank(it.name) }
-            .forEach { prop -> meta.addCustomProperty(prop.name!!.trim { it <= ' ' }, prop) }
+            .filter { TSMetaModelNameProvider.extract(it) != null }
+            .map { TSMetaCustomPropertyImpl(myModule, myProject, it, myCustom, TSMetaModelNameProvider.extract(it)!!) }
+            .forEach { prop -> meta.addCustomProperty(prop.name.trim { it <= ' ' }, prop) }
 
         type.indexes.indexes
-            .map {
-                TSMetaItemImpl.TSMetaItemIndexImpl(
-                    myModule,
-                    myProject,
-                    meta,
-                    it,
-                    myCustom
-                )
-            }
-            .filter { StringUtils.isNotBlank(it.name) }
-            .forEach { index -> meta.addIndex(index.name!!.trim { it <= ' ' }, index) }
+            .filter { TSMetaModelNameProvider.extract(it) != null }
+            .map { TSMetaItemImpl.TSMetaItemIndexImpl(myModule, myProject, it, myCustom, meta, TSMetaModelNameProvider.extract(it)!!) }
+            .forEach { index -> meta.addIndex(index.name.trim { it <= ' ' }, index) }
     }
 
     private fun build(type: EnumType) {
         val meta = findOrCreate(type) ?: return
-        type.values.forEach { meta.createValue(it) }
+
+        type.values
+            .filter { TSMetaModelNameProvider.extract(it) != null }
+            .forEach {
+                val metaEnumValue = TSMetaEnumImpl.TSMetaEnumValueImpl(myModule, myProject, it, myCustom, meta, TSMetaModelNameProvider.extract(it)!!)
+                meta.values.putValue(metaEnumValue.name, metaEnumValue)
+            }
     }
 
     private fun build(type: Relation) = findOrCreate(type)

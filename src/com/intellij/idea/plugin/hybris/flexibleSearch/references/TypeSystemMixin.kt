@@ -41,7 +41,7 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val lookingForName = element.text.replace("!", "")
         val res0 = Optional.ofNullable(TSMetaModelAccess.getInstance(project).findMetaItemByName(lookingForName))
-                .map { it.retrieveAllDomsStream() }
+                .map { it.retrieveAllDoms().stream() }
                 .orElse(Stream.empty())
                 .map { ItemTypeResolveResult(it) }
                 .collect(Collectors.toList())
@@ -49,7 +49,7 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
 
         val res1 = TSMetaModelAccess.getInstance(project).findRelationByName(lookingForName)
                 .distinctBy { it.name }
-                .map { it.retrieveDom() }
+                .mapNotNull { it.retrieveDom() }
                 .map { RelationResolveResult(it) }
                 .toList()
 

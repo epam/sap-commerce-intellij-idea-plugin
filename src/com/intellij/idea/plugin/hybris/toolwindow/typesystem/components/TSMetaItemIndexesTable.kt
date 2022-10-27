@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem.TSMetaItemIndex
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemIndex
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -84,7 +84,7 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
             ),
             createColumn(
                 name = COLUMN_NAME,
-                valueProvider = { attr -> attr.name ?: "" },
+                valueProvider = { attr -> attr.name },
                 columnClass = String::class.java
             ),
             createColumn(

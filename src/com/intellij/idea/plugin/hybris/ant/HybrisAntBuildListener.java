@@ -51,10 +51,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODULE_PREFIX;
+import java.util.Map;
 
 /**
  * Created by Martin Zdarsky-Jones on 15/2/17.
@@ -194,7 +195,7 @@ public class HybrisAntBuildListener implements AntExecutionListener {
     private void triggerCleanAll(final Project project) {
         final HybrisProjectSettings yProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
         final File platformDir = new File(project.getBasePath() + "/" +
-                                          yProjectSettings.getHybrisDirectory() + PLATFORM_MODULE_PREFIX);
+                                          yProjectSettings.getHybrisDirectory() + HybrisConstants.PLATFORM_MODULE_PREFIX);
         final VirtualFile vfPlatformDir = VfsUtil.findFileByIoFile(platformDir, true);
         final VirtualFile vfBuildFile = VfsUtil.findRelativeFile(vfPlatformDir, HybrisConstants.ANT_BUILD_XML);
 

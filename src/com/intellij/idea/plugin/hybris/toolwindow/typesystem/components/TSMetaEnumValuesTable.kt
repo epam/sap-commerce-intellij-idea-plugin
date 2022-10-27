@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -32,7 +32,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTS
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
     override fun select(meta: TSMetaEnum.TSMetaEnumValue) = selectRowWithValue(meta.name, COLUMN_VALUE)
-    override fun getItems(meta: TSMetaEnum) = meta.values.sortedWith(compareBy(
+    override fun getItems(meta: TSMetaEnum) = meta.values.values().sortedWith(compareBy(
         { !it.isCustom },
         { it.module.name },
         { it.name }))

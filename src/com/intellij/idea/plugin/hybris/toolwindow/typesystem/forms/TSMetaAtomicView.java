@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaAtomic;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
@@ -51,8 +51,8 @@ public class TSMetaAtomicView {
         }
 
         myClass.setText(myMeta.getName());
-        myAutoCreate.setSelected(myMeta.isAutocreate());
-        myGenerate.setSelected(myMeta.isGenerate());
+        myAutoCreate.setSelected(myMeta.getAutoCreate());
+        myGenerate.setSelected(myMeta.getGenerate());
         myExtends.setText(myMeta.getExtends());
     }
 

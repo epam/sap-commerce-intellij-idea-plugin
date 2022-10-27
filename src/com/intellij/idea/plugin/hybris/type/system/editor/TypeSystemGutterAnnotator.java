@@ -22,8 +22,8 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -127,8 +126,9 @@ public class TypeSystemGutterAnnotator implements Annotator {
         }
 
         return Optional.of(metaItem)
-                       .map(TSMetaItem::retrieveAllDomsStream)
-                       .orElse(Stream.empty())
+                       .map(TSMetaItem::retrieveAllDoms)
+                       .stream()
+                       .flatMap(Collection::stream)
                        .filter(dom -> !dom.equals(source))
                        .map(ItemType::getCode)
                        .sorted(compareByModuleName())
@@ -144,7 +144,8 @@ public class TypeSystemGutterAnnotator implements Annotator {
     @NotNull
     private Collection<PsiElement> findAllExtendingXmlAttributes(@NotNull final ItemType source) {
         return getExtendingMetaItemsNames(source).stream()
-                                                 .flatMap(TSMetaItem::retrieveAllDomsStream)
+                                                 .map(TSMetaItem::retrieveAllDoms)
+                                                 .flatMap(Collection::stream)
                                                  .map(ItemType::getCode)
                                                  .sorted(compareByModuleName())
                                                  .map(GenericAttributeValue::getXmlAttributeValue)

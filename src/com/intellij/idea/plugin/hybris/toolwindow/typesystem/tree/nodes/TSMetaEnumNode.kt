@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -39,7 +39,7 @@ class TSMetaEnumNode(val parent: TSNode, val meta: TSMetaEnum) : TSNode(parent),
     }
 
     override fun getChildren(): Collection<TSNode?> {
-        return meta.values
+        return meta.values.values()
             .filter { it.isCustom }
             .sortedBy { it.name }
             .map { TSMetaEnumValueNode(this, it) }

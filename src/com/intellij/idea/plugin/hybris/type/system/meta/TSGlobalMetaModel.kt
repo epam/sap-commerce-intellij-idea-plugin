@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 
@@ -53,13 +54,13 @@ class TSGlobalMetaModel : AbstractTSMetaModel() {
     private fun merge(another: TSMetaModel) {
         another.getMetaTypes().forEach { (metaType, cache) ->
             run {
-                val globalCache = getMetaType<TSMetaClassifier<DomElement?>>(metaType)
+                val globalCache = getMetaType<TSMetaClassifier<DomElement>>(metaType)
 
                 cache.forEach { (key, metaClassifier) ->
                     val globalMetaClassifier = globalCache[key]
 
                     if (globalMetaClassifier != null && globalMetaClassifier is TSMetaSelfMerge<*>) {
-                        (globalMetaClassifier as TSMetaSelfMerge<TSMetaClassifier<DomElement?>>).merge(metaClassifier)
+                        (globalMetaClassifier as TSMetaSelfMerge<TSMetaClassifier<DomElement>>).merge(metaClassifier)
                     } else {
                         globalCache[key] = metaClassifier
                     }

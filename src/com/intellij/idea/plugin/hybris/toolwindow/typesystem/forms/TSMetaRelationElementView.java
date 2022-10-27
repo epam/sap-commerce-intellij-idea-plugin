@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;

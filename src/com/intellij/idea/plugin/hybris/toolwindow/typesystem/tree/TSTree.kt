@@ -37,7 +37,7 @@ private const val SEARCH_CAN_EXPAND = true
 
 class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
-    private val myTreeModel = TSTreeModel(myProject, TSRootNode(this))
+    private val myTreeModel = TSTreeModel(TSRootNode(this))
 
     init {
         isRootVisible = false

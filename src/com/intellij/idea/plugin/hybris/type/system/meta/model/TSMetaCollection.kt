@@ -16,25 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty;
-import com.intellij.openapi.module.Module;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.idea.plugin.hybris.type.system.model.CollectionType
+import com.intellij.idea.plugin.hybris.type.system.model.Type
 
-public interface TSMetaCustomProperty {
+interface TSMetaCollection : TSMetaClassifier<CollectionType> {
 
-    boolean isCustom();
-
-    Module getModule();
-
-    @Nullable
-    String getName();
-
-    @Nullable
-    CustomProperty retrieveDom();
-
-    @Nullable
-    String getValue();
-
+    val type: Type?
+    val elementType: String?
+    val autoCreate: Boolean
+    val generate: Boolean
 }

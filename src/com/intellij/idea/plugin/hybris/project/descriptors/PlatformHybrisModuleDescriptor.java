@@ -59,7 +59,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
     @NotNull
     @Override
     public String getName() {
-        return HybrisConstants.PLATFORM_EXTENSION_NAME;
+        return HybrisConstants.EXTENSION_NAME_PLATFORM;
     }
 
     @NotNull

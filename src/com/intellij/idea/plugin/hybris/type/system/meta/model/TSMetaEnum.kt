@@ -15,27 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType
+import com.intellij.idea.plugin.hybris.type.system.model.EnumValue
 
-import com.intellij.idea.plugin.hybris.type.system.model.Deployment;
-import com.intellij.util.xml.DomAnchor;
-import org.jetbrains.annotations.Nullable;
+interface TSMetaEnum : TSMetaClassifier<EnumType>, TSMetaSelfMerge<TSMetaEnum> {
+    val values: CaseInsensitive.NoCaseMultiMap<TSMetaEnumValue>
+    val description: String?
+    val jaloClass: String?
+    val isAutoCreate: Boolean
+    val isGenerate: Boolean
+    val isDynamic: Boolean
 
-public interface TSMetaDeployment<T extends TSMetaClassifier<?>> {
+    fun findValueByName(name: String): Collection<TSMetaEnumValue>
+    fun retrieveAllDomsStream(): List<EnumType>
 
-    @Nullable
-    String getTable();
-
-    @Nullable
-    String getPropertyTable();
-
-    @Nullable
-    String getTypeCode();
-
-    T getOwner();
-
-    @Nullable
-    DomAnchor<Deployment> getDomAnchor();
-
+    interface TSMetaEnumValue : TSMetaClassifier<EnumValue> {
+        val description: String?
+        val owner: TSMetaEnum
+    }
 }

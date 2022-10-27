@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.TSMetaItemImpl;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -145,7 +146,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     private void collectOwnCustomProperties(final TSMetaItem meta, @NotNull final Collection<TSMetaCustomProperty> output) {
-        output.addAll(meta.getCustomAttributes().values());
+        output.addAll(meta.getCustomProperties().values());
     }
 
     private void collectOwnAttributesByName(final TSMetaItem meta, @NotNull final String name, @NotNull final Collection<TSMetaItem.TSMetaItemAttribute> output) {
@@ -181,6 +182,8 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     private String getRealExtendedMetaItemName(final TSMetaItem meta) {
-        return meta.getExtendedMetaItemName() == null ? TSMetaItem.IMPLICIT_SUPER_CLASS_NAME : meta.getExtendedMetaItemName();
+        return meta.getExtendedMetaItemName() == null
+            ? TSMetaItem.IMPLICIT_SUPER_CLASS_NAME
+            : meta.getExtendedMetaItemName();
     }
 }

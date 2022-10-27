@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.openapi.project.Project
 
 class TSMetaRelationElementCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>(myProject) {
 
-    override fun getItems(meta: TSMetaRelationElement): List<TSMetaCustomProperty> = meta.customAttributes
+    override fun getItems(meta: TSMetaRelationElement): List<TSMetaCustomProperty> = meta.customProperties.values
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },

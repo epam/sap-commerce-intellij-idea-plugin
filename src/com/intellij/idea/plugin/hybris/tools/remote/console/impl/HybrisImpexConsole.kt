@@ -25,16 +25,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisChooseInstanceAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionToolbar
-import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -57,8 +50,12 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
 
     val catalogVersionComboBox = ComboBox(arrayOf(
             CatalogVersionOption("doesn't change", StringUtils.EMPTY),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX.CATALOG_VERSION_STAGED}", HybrisConstants.IMPEX.CATALOG_VERSION_STAGED),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE}", HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE)
+            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_STAGED}",
+                HybrisConstants.IMPEX_CATALOG_VERSION_STAGED
+            ),
+            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE}",
+                HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE
+            )
     ))
 
     private val legacyModeCheckbox = JBCheckBox()

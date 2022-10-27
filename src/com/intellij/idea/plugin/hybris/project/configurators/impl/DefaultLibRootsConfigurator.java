@@ -125,7 +125,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                     );
                 }
             }
-            if (moduleDescriptor.getName().equals(HybrisConstants.BACK_OFFICE_EXTENSION_NAME)) {
+            if (moduleDescriptor.getName().equals(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)) {
                 addLibsToModule(
                     modifiableRootModel,
                     modifiableModelsProvider,

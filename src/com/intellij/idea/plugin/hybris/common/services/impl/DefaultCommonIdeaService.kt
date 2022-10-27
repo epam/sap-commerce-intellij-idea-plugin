@@ -31,7 +31,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.Nullable
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -120,7 +119,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
                 .let { getUrl(it) }
     }
 
-    override fun getActiveSslProtocol(project: Project, settings: @Nullable HybrisRemoteConnectionSettings?): String {
+    override fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?): String {
         var mySettings = settings
         if (mySettings == null) {
             mySettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)

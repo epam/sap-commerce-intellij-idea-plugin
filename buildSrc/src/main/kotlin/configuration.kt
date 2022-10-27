@@ -25,7 +25,7 @@ const val kotlinApiVersion="1.7"
 // https://www.jetbrains.org/intellij/sdk/docs/reference_guide/intellij_artifacts.html
 // https://data.services.jetbrains.com/products?fields=code,name,releases.downloads,releases.version,releases.build,releases.type&code=IIC,IIU
 
-const val intellijJvmArgs="-Xmx2G"
+const val intellijJvmArgs="-ea -Xms512m -Xmx3G -XX:MaxMetaspaceSize=400m"
 const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"

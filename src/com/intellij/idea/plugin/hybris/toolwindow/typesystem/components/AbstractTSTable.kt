@@ -80,7 +80,7 @@ abstract class AbstractTSTable<Owner : Any, Item>(val myProject: Project) : JBTa
 
     protected fun createColumn(
         name: String,
-        valueProvider: (Item) -> Any,
+        valueProvider: (Item) -> Any?,
         columnClass: Class<*> = String::class.java,
         tooltip: String? = null
     ) = object : ColumnInfo<Item, Any>(name) {

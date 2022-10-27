@@ -17,7 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement

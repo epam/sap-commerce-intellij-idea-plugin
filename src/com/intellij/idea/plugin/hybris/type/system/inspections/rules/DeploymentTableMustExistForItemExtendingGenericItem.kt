@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
@@ -32,7 +32,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
-import java.util.stream.Collectors
 
 class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
 
@@ -60,16 +59,16 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
 
         if (StringUtils.isNotBlank(metaItem.deployment.typeCode)) return
 
-        val otherDeclarationsWithDeploymentTable = metaItem.retrieveAllDomsStream().anyMatch { StringUtils.isNotBlank(it.deployment.typeCode.value) }
+        val otherDeclarationsWithDeploymentTable = metaItem.retrieveAllDoms().any { StringUtils.isNotBlank(it.deployment.typeCode.value) }
 
         if (otherDeclarationsWithDeploymentTable) return
 
-        val otherDeclarationsMarkedAsAbstract = metaItem.retrieveAllDomsStream().anyMatch { it.abstract.value == true }
+        val otherDeclarationsMarkedAsAbstract = metaItem.retrieveAllDoms().any { it.abstract.value == true }
 
         if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
 
         val allExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
+            .flatMap { it.retrieveAllDoms() }
 
         // skip Descriptor declarations
         if (allExtends.count { "Descriptor".equals(it.code.stringValue, true) } > 0) return

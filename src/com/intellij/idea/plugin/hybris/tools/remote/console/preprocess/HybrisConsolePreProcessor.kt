@@ -40,11 +40,11 @@ class HybrisConsolePreProcessorCatalogVersion : HybrisConsolePreProcessor {
             val selectedItem = console.catalogVersionComboBox.selectedItem
             if (selectedItem is CatalogVersionOption) {
                 when (selectedItem.value) {
-                    HybrisConstants.IMPEX.CATALOG_VERSION_STAGED -> {
+                    HybrisConstants.IMPEX_CATALOG_VERSION_STAGED -> {
                         text = catalogVersionRegexp.replace(text, "version[default=Staged]")
                         text = text.replace(":Online", ":Staged")
                     }
-                    HybrisConstants.IMPEX.CATALOG_VERSION_ONLINE -> {
+                    HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE -> {
                         text = catalogVersionRegexp.replace(text, "version[default=Online]")
                         text = text.replace(":Staged", ":Online")
                     }

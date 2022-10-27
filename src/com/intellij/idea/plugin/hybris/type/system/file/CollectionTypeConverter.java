@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;

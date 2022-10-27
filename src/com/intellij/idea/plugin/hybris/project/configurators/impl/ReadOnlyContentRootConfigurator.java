@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
@@ -88,7 +88,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         Validate.notNull(contentEntry);
 
         final File backOfficeModuleDirectory = new File(
-            moduleDescriptor.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY
+            moduleDescriptor.getRootDirectory(), BACKOFFICE_MODULE_DIRECTORY
         );
 
         final File hmcClassesDirectory = new File(backOfficeModuleDirectory, CLASSES_DIRECTORY);

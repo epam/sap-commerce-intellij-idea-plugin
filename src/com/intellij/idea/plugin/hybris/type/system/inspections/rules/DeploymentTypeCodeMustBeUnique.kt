@@ -47,7 +47,7 @@ class DeploymentTypeCodeMustBeUnique : AbstractTypeSystemInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val deployment = TSMetaModelAccess.getInstance(project).getMetaModel().getDeploymentForTypeCode(dom.typeCode.value)
+        val deployment = TSMetaModelAccess.getInstance(project).getMetaModel().getDeploymentForTypeCode(dom.typeCode.stringValue)
         deployment ?: return
 
         if (StringUtils.equals(dom.table.stringValue, deployment.table)) return

@@ -47,9 +47,9 @@ class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemRe
         if (metaItem == null) {
             // TODO: why call this method seconds time?
             val metaEnum = metaService.findMetaEnumByName(findItemTypeReference())
-            if (metaEnum != null) {
+            if (metaEnum?.retrieveDom() != null) {
                 val result = metaEnum.retrieveDom()
-                return arrayOf(EnumResolveResult(result))
+                return arrayOf(EnumResolveResult(result!!))
             }
         } else {
             val result = TSMetaItemService.getInstance(project)

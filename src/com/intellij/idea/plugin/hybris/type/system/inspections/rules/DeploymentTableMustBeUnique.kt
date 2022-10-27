@@ -52,15 +52,11 @@ class DeploymentTableMustBeUnique : AbstractTypeSystemInspection() {
 
         if (StringUtils.equals(dom.typeCode.stringValue, deployment.typeCode)) return
 
-        if (deployment.domAnchor == null) {
-            holder.createProblem(dom.table, severity, displayName)
-        } else {
-            holder.createProblem(
-                dom.table,
-                severity,
-                displayName,
-                PsiNavigateToDomFix(deployment.domAnchor)
-            )
-        }
+        holder.createProblem(
+            dom.table,
+            severity,
+            displayName,
+            PsiNavigateToDomFix(deployment.getDomAnchor())
+        )
     }
 }

@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_META_KEY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_META_KEY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
@@ -170,11 +170,11 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames());
 
         if (this.hasHmcModule()) {
-            requiredExtensionNames.add(HybrisConstants.HMC_EXTENSION_NAME);
+            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC);
         }
 
         if (this.hasBackofficeModule()) {
-            requiredExtensionNames.add(HybrisConstants.BACK_OFFICE_EXTENSION_NAME);
+            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE);
         }
 
         return Collections.unmodifiableSet(requiredExtensionNames);
@@ -189,7 +189,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     }
 
     public boolean hasBackofficeModule() {
-        return this.isMetaKeySetToTrue(BACK_OFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
+        return this.isMetaKeySetToTrue(BACKOFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
     }
 
     protected boolean isMetaKeySetToTrue(@NotNull final String metaKeyName) {
@@ -201,7 +201,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     }
 
     protected boolean doesBackofficeDirectoryExist() {
-        return new File(this.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY).isDirectory();
+        return new File(this.getRootDirectory(), BACKOFFICE_MODULE_DIRECTORY).isDirectory();
     }
 
     @NotNull
@@ -294,7 +294,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         if (this.hasHmcModule()) {
             final HybrisModuleDescriptor hmcModule = getRootProjectDescriptor()
                 .getModulesChosenForImport().stream()
-                .filter(e -> e.getName().equals(HybrisConstants.HMC_EXTENSION_NAME))
+                .filter(e -> e.getName().equals(HybrisConstants.EXTENSION_NAME_HMC))
                 .findFirst()
                 .orElse(null);
             if (hmcModule != null) {
@@ -378,10 +378,10 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
 
     protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.PLATFORM_EXTENSION_NAME));
+        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.EXTENSION_NAME_PLATFORM));
     }
 
     protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
-        return Collections.singleton(HybrisConstants.PLATFORM_EXTENSION_NAME);
+        return Collections.singleton(HybrisConstants.EXTENSION_NAME_PLATFORM);
     }
 }

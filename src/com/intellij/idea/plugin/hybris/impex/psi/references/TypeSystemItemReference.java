@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.psi.PsiElement;
@@ -33,8 +33,8 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -53,8 +53,9 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
         final Optional<TSMetaItem> metaItem = searchInMetaItems(meta, lookingForName);
         if (metaItem.isPresent()) {
             return metaItem
-                .map(TSMetaItem::retrieveAllDomsStream)
-                .orElse(Stream.empty())
+                .map(TSMetaItem::retrieveAllDoms)
+                .stream()
+                .flatMap(Collection::stream)
                 .map(ItemTypeResolveResult::new)
                 .toArray(ResolveResult[]::new);
         } else {

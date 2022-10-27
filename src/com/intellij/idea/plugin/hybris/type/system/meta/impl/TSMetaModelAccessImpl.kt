@@ -19,7 +19,8 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.*
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -35,7 +36,6 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.stream.Collectors
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -78,25 +78,24 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return writeMetaModelWithLock()
     }
 
-    override fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): Collection<T> = getMetaModel().getMetaType<T>(metaType).values
+    override fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType) = getMetaModel().getMetaType<T>(metaType).values
 
-    override fun findMetaItemForDom(dom: ItemType): TSMetaItem? = findMetaItemByName(extractName(dom))
+    override fun findMetaItemForDom(dom: ItemType) = findMetaItemByName(extractName(dom))
 
-    override fun findMetaItemByName(name: String?): TSMetaItem? = findMetaByName<TSMetaItem>(MetaType.META_ITEM, name)
+    override fun findMetaItemByName(name: String?) = findMetaByName<TSMetaItem>(MetaType.META_ITEM, name)
 
-    override fun findMetaEnumByName(name: String?): TSMetaEnum? = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
+    override fun findMetaEnumByName(name: String?) = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
 
-    override fun findMetaAtomicByName(name: String?): TSMetaAtomic? = findMetaByName<TSMetaAtomic>(MetaType.META_ATOMIC, name)
+    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSMetaAtomic>(MetaType.META_ATOMIC, name)
 
-    override fun findMetaCollectionByName(name: String?): TSMetaCollection? = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
+    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
 
-    override fun findMetaMapByName(name: String?): TSMetaMap? = findMetaByName<TSMetaMap>(MetaType.META_MAP, name)
+    override fun findMetaMapByName(name: String?) = findMetaByName<TSMetaMap>(MetaType.META_MAP, name)
 
-    override fun findRelationByName(name: String?): List<TSMetaRelation> = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values()).stream()
+    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values())
         .filter { obj: Any? -> Objects.nonNull(obj) }
-        .map { metaRelationElement -> metaRelationElement.owningRelation }
+        .map { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
-        .collect(Collectors.toList())
 
     override fun findMetaClassifierByName(name: String?): TSMetaClassifier<out DomElement>? {
         var result: TSMetaClassifier<out DomElement>? = findMetaItemByName(name)

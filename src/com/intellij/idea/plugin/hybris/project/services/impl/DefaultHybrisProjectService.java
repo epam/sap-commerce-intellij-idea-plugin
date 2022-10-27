@@ -52,7 +52,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     public boolean isPlatformModule(@NotNull final File file) {
         Validate.notNull(file);
 
-        return file.getName().equals(HybrisConstants.PLATFORM_EXTENSION_NAME)
+        return file.getName().equals(HybrisConstants.EXTENSION_NAME_PLATFORM)
                && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
@@ -70,7 +70,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         Validate.notNull(file);
 
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
-               && file.getName().equals(HybrisConstants.CORE_EXTENSION_NAME)
+               && file.getName().equals(HybrisConstants.EXTENSION_NAME_CORE)
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 

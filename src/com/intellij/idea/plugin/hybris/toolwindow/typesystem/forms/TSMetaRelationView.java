@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -106,7 +106,7 @@ public class TSMetaRelationView {
     }
 
     public JBPanel getContent(final TSMetaRelation.TSMetaRelationElement meta) {
-        initData(meta.getOwningRelation());
+        initData(meta.getOwner());
 
         if (meta.getEnd() == TSMetaRelation.RelationEnd.SOURCE) {
             myTabs.setSelectedIndex(TAB_SOURCE_INDEX);

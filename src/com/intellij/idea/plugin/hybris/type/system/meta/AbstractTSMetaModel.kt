@@ -17,16 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.NoCaseMultiMap
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.openapi.Disposable
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 open class AbstractTSMetaModel : Disposable {
-    internal val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<DomElement?>>> = ConcurrentHashMap()
+    internal val myMetaCache: MutableMap<MetaType, Map<String, TSMetaClassifier<DomElement>>> = ConcurrentHashMap()
     internal val myReferencesBySourceTypeName = NoCaseMultiMap<TSMetaRelationElement>()
 
     @Suppress("UNCHECKED_CAST")

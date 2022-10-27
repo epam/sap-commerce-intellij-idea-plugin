@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.reference;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClass;
@@ -38,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-    private static final String JAVA_MODEL_SUFFIX = "Model";
     private static final int QUOTE_LENGTH = 2;
 
     public HybrisModelItemReference(final PsiElement element, final boolean soft) {
@@ -56,7 +56,7 @@ public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> imple
         final Project project = myElement.getProject();
         final String modelName = ((XmlAttributeValue) myElement).getValue();
 
-        final String javaModelName = modelName + JAVA_MODEL_SUFFIX;
+        final String javaModelName = modelName + HybrisConstants.MODEL_SUFFIX;
         final String jaloModelName = modelName;
 
         final PsiClass[] javaModelClasses = PsiShortNamesCache.getInstance(project).getClassesByName(

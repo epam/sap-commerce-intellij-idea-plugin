@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,20 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-public interface TSMetaModifiers<T extends TSMetaClassifier<?>> {
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomElement
 
-    boolean isRead();
-    boolean isWrite();
-    boolean isSearch();
-    boolean isOptional();
-    boolean isPrivate();
-    boolean isInitial();
-    boolean isRemovable();
-    boolean isPartOf();
-    boolean isUnique();
-    boolean isDoNotOptimize();
-    boolean isEncrypted();
+interface TSMetaClassifier<DOM : DomElement> {
 
+    val name: String?
+        get() = null
+    val module: Module
+    val project: Project
+    val isCustom: Boolean
+    fun getDomAnchor(): DomAnchor<DOM>
+    fun retrieveDom(): DOM?
 }

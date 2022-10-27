@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCollection;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -58,8 +58,8 @@ public class TSMetaCollectionView {
         myCode.setText(myMeta.getName());
         myType.setSelectedItem(myMeta.getType());
         myElementType.setText(myMeta.getElementType());
-        myAutoCreate.setSelected(myMeta.isAutoCreate());
-        myGenerate.setSelected(myMeta.isGenerate());
+        myAutoCreate.setSelected(myMeta.getAutoCreate());
+        myGenerate.setSelected(myMeta.getGenerate());
     }
 
     public JBPanel getContent(final TSMetaCollection meta) {

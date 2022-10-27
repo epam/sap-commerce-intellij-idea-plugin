@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteSubTagQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
@@ -31,7 +31,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
-import java.util.stream.Collectors
 
 class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspection() {
 
@@ -59,7 +58,7 @@ class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspect
         if (StringUtils.isBlank(currentMetaTypeCode)) return
 
         val countDeploymentTablesInParents = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDomsStream().collect(Collectors.toList()) }
+            .flatMap { it.retrieveAllDoms() }
             .count { StringUtils.isNotBlank(it.deployment.typeCode.value) }
 
         if (countDeploymentTablesInParents == 0) return

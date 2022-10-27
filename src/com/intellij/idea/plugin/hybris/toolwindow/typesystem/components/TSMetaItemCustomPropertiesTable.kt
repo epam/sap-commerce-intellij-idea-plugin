@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomProperty
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
 import com.intellij.openapi.project.Project
 
 class TSMetaItemCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSMetaItem>(myProject) {

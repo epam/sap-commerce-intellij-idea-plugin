@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.linemarker;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
@@ -54,7 +55,7 @@ public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider 
         if (shouldProcessItemType(psiClass)) {
             Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
                                                            .findMetaItemByName(name))
-                    .map(meta -> meta.retrieveAllDomsStream()
+                    .map(meta -> meta.retrieveAllDoms().stream()
                                      .map(DomElement::getXmlElement)
                                      .collect(Collectors.toList()))
                     .map(elements -> createTargetsWithGutterIcon(psiClass, elements))
@@ -62,7 +63,7 @@ public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider 
         } else if (shouldProcessEnum(psiClass)) {
             Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
                                                            .findMetaEnumByName(name))
-                    .map(meta -> meta.retrieveAllDomsStream()
+                    .map(meta -> meta.retrieveAllDomsStream().stream()
                                      .map(DomElement::getXmlElement)
                                      .collect(Collectors.toList()))
                     .map(elements -> createTargetsWithGutterIcon(psiClass, elements))
@@ -73,7 +74,7 @@ public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider 
     private static String cleanSearchName(final String searchName) {
         if (searchName == null) return null;
 
-        final int idx = searchName.lastIndexOf("Model");
+        final int idx = searchName.lastIndexOf(HybrisConstants.MODEL_SUFFIX);
         if (idx == -1) {
             return searchName;
         }
@@ -81,7 +82,7 @@ public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider 
     }
 
     private boolean shouldProcessItemType(final PsiClass psiClass) {
-        return psiClass.getName() != null && psiClass.getName().endsWith("Model")
+        return psiClass.getName() != null && psiClass.getName().endsWith(HybrisConstants.MODEL_SUFFIX)
                || (psiClass.getSuperClass() != null
                    && psiClass.getSuperClass().getName() != null
                    && psiClass.getSuperClass().getName().startsWith("Generated"));

@@ -42,7 +42,7 @@ public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
     @Override
     protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.CORE_EXTENSION_NAME));
+        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.EXTENSION_NAME_CORE));
     }
 
     protected Collection<? extends String> getAdditionalRequiredExtensionNames() {

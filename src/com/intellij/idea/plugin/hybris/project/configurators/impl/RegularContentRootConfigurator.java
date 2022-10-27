@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACK_OFFICE_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BOWER_COMPONENTS_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_MODULE_DIRECTORY;
@@ -103,7 +103,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             .collect(Collectors.toList());
 
         this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.HMC_EXTENSION_NAME)) {
+        if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_HMC)) {
             this.configureAdditionalRoots(
                 moduleDescriptor,
                 HMC_MODULE_DIRECTORY,
@@ -300,7 +300,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(contentEntry);
 
         final File backOfficeModuleDirectory = new File(
-            moduleDescriptor.getRootDirectory(), BACK_OFFICE_MODULE_DIRECTORY
+            moduleDescriptor.getRootDirectory(), BACKOFFICE_MODULE_DIRECTORY
         );
 
         for (String srcDirName : SRC_DIR_NAMES) {
@@ -333,7 +333,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(contentEntry);
 
-        if (!HybrisConstants.PLATFORM_EXTENSION_NAME.equalsIgnoreCase(moduleDescriptor.getName())) {
+        if (!HybrisConstants.EXTENSION_NAME_PLATFORM.equalsIgnoreCase(moduleDescriptor.getName())) {
             return;
         }
         final File rootDirectory = moduleDescriptor.getRootDirectory();

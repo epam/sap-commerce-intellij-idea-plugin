@@ -20,8 +20,9 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItem
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -39,15 +40,20 @@ class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Dis
 
     override fun getChildren(): Collection<TSNode> {
         val metaItemService = TSMetaItemService.getInstance(myProject)
+        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+
         val indexes = metaItemService.getIndexes(meta,false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
             .sortedBy { it.name }
 
         val customProperties = metaItemService.getCustomProperties(meta,false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
         val attributes = metaItemService.getAttributes(meta, false)
+            .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }
 

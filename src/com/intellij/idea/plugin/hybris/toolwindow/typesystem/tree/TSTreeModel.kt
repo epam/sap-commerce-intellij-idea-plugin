@@ -20,11 +20,20 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes.TSNode
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.ui.tree.BaseTreeModel
+import com.intellij.util.concurrency.Invoker
+import com.intellij.util.concurrency.InvokerSupplier
 import javax.swing.tree.DefaultMutableTreeNode
 
-class TSTreeModel(private val myProject: Project, private val root: TSNode) : BaseTreeModel<TSTreeModel.Node>(), Disposable {
+class TSTreeModel(private val root: TSNode)
+    : BaseTreeModel<TSTreeModel.Node>(), Disposable, InvokerSupplier {
+
+    private val myInvoker = if (ApplicationManager.getApplication().isUnitTestMode) {
+        Invoker.forEventDispatchThread(this)
+    } else {
+        Invoker.forBackgroundThreadWithReadAction(this)
+    }
 
     override fun getRoot() = Node(root)
 
@@ -53,5 +62,7 @@ class TSTreeModel(private val myProject: Project, private val root: TSNode) : Ba
 
         override fun toString(): String = tsNode.toString()
     }
+
+    override fun getInvoker() = myInvoker
 
 }

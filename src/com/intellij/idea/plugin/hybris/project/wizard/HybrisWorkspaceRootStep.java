@@ -420,7 +420,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
                 this.configOverrideFilesInChooser.setText(
                     new File(
                         this.hybrisDistributionDirectoryFilesInChooser.getText(),
-                        HybrisConstants.CONFIG_EXTENSION_NAME
+                        HybrisConstants.EXTENSION_NAME_CONFIG
                     ).getAbsolutePath()
                 );
             }

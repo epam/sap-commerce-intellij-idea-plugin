@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -33,7 +33,7 @@ class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRela
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = meta.cardinality.value + (if (meta.isOrdered) " ordered" else "") + (if (meta.qualifier.isNotBlank()) " as ${meta.qualifier}" else "")
+        presentation.locationString = meta.cardinality?.value + (if (meta.isOrdered) " ordered" else "") + (if (meta.qualifier.isNotBlank()) " as ${meta.qualifier}" else "")
 
         when (meta.end) {
             TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(DvcsImplIcons.Outgoing)
