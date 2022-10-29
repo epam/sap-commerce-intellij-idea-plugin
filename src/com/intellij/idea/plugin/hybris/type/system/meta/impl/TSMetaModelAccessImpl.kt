@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -56,15 +55,15 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         {
-            val metaModels = TSMetaModelCollector(myProject).collectDependencies()
+            val localMetaModels = TSMetaModelCollector.getInstance(myProject).collectDependencies()
                 .filter { obj: PsiFile? -> Objects.nonNull(obj) }
                 .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
                 .map { obj: CachedValue<TSMetaModel> -> obj.value }
 
-            val dependencies = metaModels
+            val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
-            val globalMetaModel = TSGlobalMetaModel().merge(metaModels)
+            val globalMetaModel = TSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }
@@ -78,27 +77,28 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return writeMetaModelWithLock()
     }
 
-    override fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType) = getMetaModel().getMetaType<T>(metaType).values
+    override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType) = getMetaModel().getMetaType<T>(metaType).values
 
-    override fun findMetaItemForDom(dom: ItemType) = findMetaItemByName(extractName(dom))
+    override fun findMetaItemForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
 
-    override fun findMetaItemByName(name: String?) = findMetaByName<TSMetaItem>(MetaType.META_ITEM, name)
+    override fun findMetaItemByName(name: String?) = findMetaByName<TSGlobalMetaItem>(MetaType.META_ITEM, name)
 
-    override fun findMetaEnumByName(name: String?) = findMetaByName<TSMetaEnum>(MetaType.META_ENUM, name)
+    override fun findMetaEnumByName(name: String?) = findMetaByName<TSGlobalMetaEnum>(MetaType.META_ENUM, name)
 
-    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSMetaAtomic>(MetaType.META_ATOMIC, name)
+    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSGlobalMetaAtomic>(MetaType.META_ATOMIC, name)
 
-    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSMetaCollection>(MetaType.META_COLLECTION, name)
+    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSGlobalMetaCollection>(MetaType.META_COLLECTION, name)
 
-    override fun findMetaMapByName(name: String?) = findMetaByName<TSMetaMap>(MetaType.META_MAP, name)
+    override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(MetaType.META_MAP, name)
 
-    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values())
-        .filter { obj: Any? -> Objects.nonNull(obj) }
-        .map { metaRelationElement -> metaRelationElement.owner }
+    override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(MetaType.META_RELATION, name)
+
+    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values)
+        .mapNotNull { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
 
-    override fun findMetaClassifierByName(name: String?): TSMetaClassifier<out DomElement>? {
-        var result: TSMetaClassifier<out DomElement>? = findMetaItemByName(name)
+    override fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>? {
+        var result: TSGlobalMetaClassifier<out DomElement>? = findMetaItemByName(name)
         if (result == null) {
             result = findMetaCollectionByName(name)
         }
@@ -108,13 +108,11 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return result
     }
 
-    override fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelationElement?>) {
-        out.addAll(getMetaModel().getReference(source.name))
+    override fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelation.TSMetaRelationElement?>) {
+        getMetaModel().getReference(source.name)?.let { out.add(it) }
     }
 
-    private fun extractName(dom: ItemType): String? = dom.code.value
-
-    private fun <T : TSMetaClassifier<out DomElement>?> findMetaByName(metaType: MetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
+    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: MetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
     private fun readMetaModelWithLock(): TSGlobalMetaModel {
@@ -156,9 +154,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
             {
                 ApplicationManager.getApplication().runReadAction(
                     Computable {
-                        val processor = TSMetaModelProcessor(myProject)
-                        processor.process(psiFile)
-                        CachedValueProvider.Result.create(processor.processedMetaModel, psiFile)
+                        CachedValueProvider.Result.create(TSMetaModelProcessor.getInstance(myProject).process(psiFile), psiFile)
                     } as Computable<CachedValueProvider.Result<TSMetaModel>>)
             }, false
         )

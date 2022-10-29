@@ -19,6 +19,20 @@ package com.intellij.idea.plugin.hybris.type.system.meta.model
 
 import com.intellij.util.xml.DomElement
 
-interface TSMetaSelfMerge<T : TSMetaClassifier<out DomElement>> {
-    fun merge(another: T)
+abstract class TSMetaSelfMerge<DOM : DomElement, T : TSMetaClassifier<DOM>>(localMeta: T) : TSGlobalMetaClassifier<DOM> {
+
+    override val name = localMeta.name
+    override var isCustom = localMeta.isCustom
+    override val declarations: MutableSet<T> = HashSet()
+    var mergeConflicts: MutableList<String> = ArrayList()
+
+    fun merge(localMeta: T) {
+        declarations.add(localMeta)
+
+        if (localMeta.isCustom) isCustom = true
+
+        mergeInternally(localMeta)
+    }
+
+    protected abstract fun mergeInternally(localMeta: T)
 }

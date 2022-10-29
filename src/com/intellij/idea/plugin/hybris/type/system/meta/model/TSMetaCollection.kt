@@ -23,8 +23,12 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type
 
 interface TSMetaCollection : TSMetaClassifier<CollectionType> {
 
-    val type: Type?
-    val elementType: String?
-    val autoCreate: Boolean
-    val generate: Boolean
+    val type: Type
+    val elementType: String
+    val isAutoCreate: Boolean
+    val isGenerate: Boolean
+}
+
+interface TSGlobalMetaCollection : TSMetaCollection, TSGlobalMetaClassifier<CollectionType> {
+    override val declarations: MutableSet<TSMetaCollection>
 }

@@ -21,11 +21,17 @@ import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaModifiers
 import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.DomService
 
-class TSMetaModifiersImpl<T : TSMetaClassifier<*>?>(override val module: Module, override val project: Project, dom: Modifiers, override val isCustom: Boolean)
-    : TSMetaEntityImpl<Modifiers>(dom, module, project, isCustom), TSMetaModifiers<T> {
+class TSMetaModifiersImpl<T : TSMetaClassifier<out DomElement>>(
+    dom: Modifiers,
+    override val module: Module,
+    override val isCustom: Boolean
+) : TSMetaModifiers<T> {
 
+    override val domAnchor: DomAnchor<Modifiers> = DomService.getInstance().createAnchor(dom)
     override val isRead = java.lang.Boolean.TRUE == dom.read.value
     override val isWrite = java.lang.Boolean.TRUE == dom.write.value
     override val isSearch = java.lang.Boolean.TRUE == dom.search.value
@@ -38,7 +44,5 @@ class TSMetaModifiersImpl<T : TSMetaClassifier<*>?>(override val module: Module,
     override val isDoNotOptimize = java.lang.Boolean.TRUE == dom.doNotOptimize.value
     override val isEncrypted = java.lang.Boolean.TRUE == dom.encrypted.value
 
-    override fun toString(): String {
-        return "TSMetaModifiersImpl(module=$module, isCustom=$isCustom)"
-    }
+    override fun toString() = "TSMetaModifiersImpl(module=$module, isCustom=$isCustom)"
 }

@@ -13,7 +13,6 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.xml.DomElement
 import java.util.*
 
 /**
@@ -63,7 +62,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
         val attributes = TSMetaItemService.getInstance(project)
                 .findAttributesByName(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
-                .map { AttributeResolveResult(it) }.toList()
+                .map { AttributeResolveResult(it) }
 
         val relations = TSMetaItemService.getInstance(project)
                 .findReferenceEndsByRole(metaItem.get(), refName, true)
@@ -105,16 +104,16 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
     }
         
 
-    private class AttributeResolveResult(private val myDomAttribute: Attribute) : TypeSystemReferenceBase.TypeSystemResolveResult {
-        override fun getElement(): PsiElement? = myDomAttribute.qualifier.xmlAttributeValue
+    private class AttributeResolveResult(private val myDomAttribute: Attribute) : TypeSystemResolveResult {
+        override fun getElement() = myDomAttribute.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
         override fun getSemanticDomElement() = myDomAttribute
     }
 
-    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TypeSystemReferenceBase.TypeSystemResolveResult {
-        override fun getElement(): PsiElement? = myDomRelationEnd.qualifier.xmlAttributeValue
+    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TypeSystemResolveResult {
+        override fun getElement() = myDomRelationEnd.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
-        override fun getSemanticDomElement(): DomElement = myDomRelationEnd
+        override fun getSemanticDomElement() = myDomRelationEnd
     }
 
 }

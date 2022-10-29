@@ -21,23 +21,21 @@ import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaDeployment
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomService
 
 internal class TSMetaDeploymentImpl<T : TSMetaClassifier<*>>(
-    override val module: Module,
-    override val project: Project,
     dom: Deployment,
-    override val isCustom: Boolean,
     override val owner: T,
-    override val name: String?
-) : TSMetaEntityImpl<Deployment>(dom, module, project, isCustom, name),
-    TSMetaDeployment<T> {
+    override val module: Module,
+    override val name: String?,
+    override val isCustom: Boolean
+) : TSMetaDeployment<T> {
 
+    override val domAnchor: DomAnchor<Deployment> = DomService.getInstance().createAnchor(dom)
     override val propertyTable = dom.propertyTable.stringValue
     override val typeCode = dom.typeCode.stringValue
     override val table = dom.table.stringValue
 
-    override fun toString(): String {
-        return "TSMetaDeploymentImpl(module=$module, name=$name, isCustom=$isCustom)"
-    }
+    override fun toString() = "TSMetaDeploymentImpl(module=$module, name=$name, isCustom=$isCustom)"
 }

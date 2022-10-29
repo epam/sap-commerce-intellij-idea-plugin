@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -55,15 +56,21 @@ public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
             final XmlTag currentTag = (XmlTag) currentElement;
             Optional.ofNullable(currentTag.getAttribute(myAttributeName))
                 .ifPresent(PsiElement::delete);
-            PsiNavigateUtil.navigate(currentTag);
+            navigateIfNotPreviewMode(descriptor, currentTag);
         } else if (currentElement instanceof XmlAttribute) {
             final XmlAttribute xmlAttribute = (XmlAttribute) currentElement;
-            PsiNavigateUtil.navigate(xmlAttribute.getParent());
+            navigateIfNotPreviewMode(descriptor, xmlAttribute.getParent());
             xmlAttribute.delete();
         } else if (currentElement instanceof XmlAttributeValue && currentElement.getParent() instanceof XmlAttribute) {
             final XmlAttribute xmlAttribute = (XmlAttribute) currentElement.getParent();
-            PsiNavigateUtil.navigate(xmlAttribute.getParent());
+            navigateIfNotPreviewMode(descriptor, xmlAttribute.getParent());
             xmlAttribute.delete();
+        }
+    }
+
+    private void navigateIfNotPreviewMode(final ProblemDescriptor descriptor, final PsiElement psiElement) {
+        if (descriptor instanceof ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement);
         }
     }
 }

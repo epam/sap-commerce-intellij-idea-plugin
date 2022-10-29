@@ -56,7 +56,7 @@ class DeploymentTableMustBeUnique : AbstractTypeSystemInspection() {
             dom.table,
             severity,
             displayName,
-            PsiNavigateToDomFix(deployment.getDomAnchor())
+            PsiNavigateToDomFix(deployment.domAnchor)
         )
     }
 }

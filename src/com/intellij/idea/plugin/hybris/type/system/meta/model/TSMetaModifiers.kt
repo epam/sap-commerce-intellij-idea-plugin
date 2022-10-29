@@ -18,8 +18,9 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.model
 
 import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
+import com.intellij.util.xml.DomElement
 
-interface TSMetaModifiers<T : TSMetaClassifier<*>?> : TSMetaClassifier<Modifiers> {
+interface TSMetaModifiers<T : TSMetaClassifier<out DomElement>> : TSMetaClassifier<Modifiers> {
 
     val isRead: Boolean
     val isWrite: Boolean
@@ -33,3 +34,5 @@ interface TSMetaModifiers<T : TSMetaClassifier<*>?> : TSMetaClassifier<Modifiers
     val isDoNotOptimize: Boolean
     val isEncrypted: Boolean
 }
+
+interface TSGlobalMetaModifiers<T : TSMetaClassifier<out DomElement>> : TSMetaModifiers<T>, TSMetaClassifier<Modifiers>

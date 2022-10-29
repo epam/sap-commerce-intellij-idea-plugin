@@ -15,13 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-class CatalogAwareTypesMustHaveSpecificConditions : AbstractTypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/custom-properties/property[@name='catalogItemType']"
+package com.intellij.idea.plugin.hybris.type.system.meta.model;
 
-    override fun getTestQuery(): String = "count(./value) = 1"
-
-    override fun getNameQuery(): String = "../../@code"
-
+public enum MetaType {
+    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP
 }

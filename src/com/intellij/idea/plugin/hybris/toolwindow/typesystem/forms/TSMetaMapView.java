@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaMap;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaMap;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
@@ -46,7 +46,7 @@ public class TSMetaMapView {
         myProject = project;
     }
 
-    private void initData(final TSMetaMap myMeta) {
+    private void initData(final TSGlobalMetaMap myMeta) {
         if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
             // same object, no need in re-init
             return;
@@ -60,7 +60,7 @@ public class TSMetaMapView {
         myRedeclare.setSelected(myMeta.isRedeclare());
     }
 
-    public JBPanel getContent(final TSMetaMap meta) {
+    public JBPanel getContent(final TSGlobalMetaMap meta) {
         initData(meta);
 
         return myContentPane;

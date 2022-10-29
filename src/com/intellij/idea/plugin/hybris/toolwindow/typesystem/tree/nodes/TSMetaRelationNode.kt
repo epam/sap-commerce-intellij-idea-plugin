@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaRelationNode(parent: TSNode, val meta: TSMetaRelation) : TSNode(parent), Disposable {
+class TSMetaRelationNode(parent: TSNode, val meta: TSGlobalMetaRelation) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"

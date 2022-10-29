@@ -22,7 +22,12 @@ import com.intellij.idea.plugin.hybris.type.system.model.AtomicType
 
 interface TSMetaAtomic : TSMetaClassifier<AtomicType> {
 
-    val autoCreate: Boolean
-    val generate: Boolean
-    val extends: String?
+    override val name: String
+    val isAutoCreate: Boolean
+    val isGenerate: Boolean
+    val extends: String
+}
+
+interface TSGlobalMetaAtomic : TSMetaAtomic, TSGlobalMetaClassifier<AtomicType> {
+    override val declarations: MutableSet<TSMetaAtomic>
 }

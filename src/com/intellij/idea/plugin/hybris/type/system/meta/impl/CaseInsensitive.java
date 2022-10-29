@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,6 +65,7 @@ public class CaseInsensitive {
 
     public static class CaseInsensitiveConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
 
+        @Serial
         private static final long serialVersionUID = 4394959693646791943L;
         private final transient Object nullKey = new Object();
 

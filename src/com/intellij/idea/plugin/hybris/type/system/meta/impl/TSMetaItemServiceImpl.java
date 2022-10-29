@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.TSMetaItemImpl;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,10 +48,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSMetaItem.TSMetaItemAttribute> getAttributes(final TSMetaItem meta, final boolean includeInherited) {
-        final List<TSMetaItem.TSMetaItemAttribute> result = new LinkedList<>();
+    public List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> getAttributes(final TSGlobalMetaItem meta, final boolean includeInherited) {
+        final List<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
         if (includeInherited) {
-            final Consumer<TSMetaItem> visitor = parent -> collectOwnAttributes(parent, result);
+            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnAttributes(parent, result);
             walkInheritance(meta, visitor);
         } else {
             collectOwnAttributes(meta, result);
@@ -60,10 +60,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(final TSMetaItem meta, final boolean includeInherited) {
+    public List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(final TSGlobalMetaItem meta, final boolean includeInherited) {
         final List<TSMetaItem.TSMetaItemIndex> result = new LinkedList<>();
         if (includeInherited) {
-            final Consumer<TSMetaItem> visitor = parent -> collectOwnIndexes(parent, result);
+            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnIndexes(parent, result);
             walkInheritance(meta, visitor);
         } else {
             collectOwnIndexes(meta, result);
@@ -72,10 +72,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final TSMetaItem meta, final boolean includeInherited) {
+    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final TSGlobalMetaItem meta, final boolean includeInherited) {
         final List<TSMetaCustomProperty> result = new LinkedList<>();
         if (includeInherited) {
-            final Consumer<TSMetaItem> visitor = parent -> collectOwnCustomProperties(parent, result);
+            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnCustomProperties(parent, result);
             walkInheritance(meta, visitor);
         } else {
             collectOwnCustomProperties(meta, result);
@@ -84,10 +84,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Collection<? extends TSMetaItem.TSMetaItemAttribute> findAttributesByName(final TSMetaItem meta, final String name, final boolean includeInherited) {
-        final LinkedList<TSMetaItem.TSMetaItemAttribute> result = new LinkedList<>();
+    public Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(final TSGlobalMetaItem meta, final String name, final boolean includeInherited) {
+        final LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
         if (includeInherited) {
-            final Consumer<TSMetaItem> visitor = parentMeta -> collectOwnAttributesByName(parentMeta, name, result);
+            final Consumer<TSGlobalMetaItem> visitor = parentMeta -> collectOwnAttributesByName(parentMeta, name, result);
             walkInheritance(meta, visitor);
         } else {
             collectOwnAttributesByName(meta, name, result);
@@ -96,10 +96,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Set<TSMetaItem> getExtends(final TSMetaItem meta) {
-        final Set<TSMetaItem> tempParents = new LinkedHashSet<>();
+    public Set<TSGlobalMetaItem> getExtends(final TSGlobalMetaItem meta) {
+        final Set<TSGlobalMetaItem> tempParents = new LinkedHashSet<>();
         final Set<String> visitedParents = new HashSet<>();
-        Optional<TSMetaItem> metaItem = getTsMetaItem(meta, visitedParents);
+        Optional<TSGlobalMetaItem> metaItem = getTsMetaItem(meta, visitedParents);
 
         while (metaItem.isPresent()) {
             tempParents.add(metaItem.get());
@@ -110,9 +110,9 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(final TSMetaItem meta, final boolean includeInherited) {
+    public Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(final TSGlobalMetaItem meta, final boolean includeInherited) {
         final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
-        final Consumer<TSMetaItem> visitor = mc -> TSMetaModelAccess.Companion.getInstance(myProject).collectReferencesForSourceType(mc, result);
+        final Consumer<TSGlobalMetaItem> visitor = mc -> TSMetaModelAccess.Companion.getInstance(myProject).collectReferencesForSourceType(mc, result);
         if (includeInherited) {
             walkInheritance(meta, visitor);
         } else {
@@ -123,7 +123,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
 
     @Override
     public Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(
-        final TSMetaItem meta, @NotNull final String role, final boolean includeInherited
+        final TSGlobalMetaItem meta, @NotNull final String role, final boolean includeInherited
     ) {
         final String targetRoleNoCase = role.toLowerCase();
         return getReferenceEndsStream(meta, includeInherited)
@@ -131,33 +131,33 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
             .collect(Collectors.toList());
     }
 
-    private Optional<TSMetaItem> getTsMetaItem(final TSMetaItem meta, final Set<String> visitedParents) {
+    private Optional<TSGlobalMetaItem> getTsMetaItem(final TSGlobalMetaItem meta, final Set<String> visitedParents) {
         return Optional.of(getRealExtendedMetaItemName(meta))
                        .filter(aName -> !visitedParents.contains(aName))
                        .map(name -> TSMetaModelAccess.Companion.getInstance(myProject).findMetaItemByName(name));
     }
 
-    private void collectOwnAttributes(final TSMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemAttribute> output) {
+    private void collectOwnAttributes(final TSGlobalMetaItem meta, @NotNull final Collection<TSGlobalMetaItem.TSGlobalMetaItemAttribute> output) {
         output.addAll(meta.getAttributes().values());
     }
 
-    private void collectOwnIndexes(final TSMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemIndex> output) {
+    private void collectOwnIndexes(final TSGlobalMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemIndex> output) {
         output.addAll(meta.getIndexes().values());
     }
 
-    private void collectOwnCustomProperties(final TSMetaItem meta, @NotNull final Collection<TSMetaCustomProperty> output) {
+    private void collectOwnCustomProperties(final TSGlobalMetaItem meta, @NotNull final Collection<TSMetaCustomProperty> output) {
         output.addAll(meta.getCustomProperties().values());
     }
 
-    private void collectOwnAttributesByName(final TSMetaItem meta, @NotNull final String name, @NotNull final Collection<TSMetaItem.TSMetaItemAttribute> output) {
-        output.addAll(meta.getAttributes().get(name));
+    private void collectOwnAttributesByName(final TSGlobalMetaItem meta, @NotNull final String name, @NotNull final Collection<TSGlobalMetaItem.TSGlobalMetaItemAttribute> output) {
+        output.add(meta.getAttributes().get(name));
     }
 
     /**
      * Iteratively applies given consumer for this class and all its super-classes.
      * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
      */
-    private void walkInheritance(final TSMetaItem meta, @NotNull final Consumer<TSMetaItem> visitor) {
+    private void walkInheritance(final TSGlobalMetaItem meta, @NotNull final Consumer<TSGlobalMetaItem> visitor) {
         final Set<String> visited = new HashSet<>();
         visited.add(meta.getName());
         visitor.accept(meta);
@@ -168,12 +168,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
      * Iteratively applies given consumer for inheritance chain, <strong>starting from the super-class</strong>.
      * Every super is visited only once, so this method takes care of inheritance cycles and rhombs
      */
-    private void doWalkInheritance(final TSMetaItem meta, @NotNull final Set<String> visitedParents, @NotNull final Consumer<TSMetaItem> visitor) {
+    private void doWalkInheritance(final TSGlobalMetaItem meta, @NotNull final Set<String> visitedParents, @NotNull final Consumer<TSGlobalMetaItem> visitor) {
         Optional.of(getRealExtendedMetaItemName(meta))
                 .filter(aName -> !visitedParents.contains(aName))
                 .map(name -> TSMetaModelAccess.Companion.getInstance(myProject).findMetaItemByName(name))
-                .filter(TSMetaItemImpl.class::isInstance)
-                .map(TSMetaItemImpl.class::cast)
                 .ifPresent(parent -> {
                     visitedParents.add(parent.getName());
                     visitor.accept(parent);
@@ -181,7 +179,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
                 });
     }
 
-    private String getRealExtendedMetaItemName(final TSMetaItem meta) {
+    private String getRealExtendedMetaItemName(final TSGlobalMetaItem meta) {
         return meta.getExtendedMetaItemName() == null
             ? TSMetaItem.IMPLICIT_SUPER_CLASS_NAME
             : meta.getExtendedMetaItemName();

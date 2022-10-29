@@ -33,7 +33,7 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -50,27 +50,22 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final TSMetaModelAccess meta = getMetaModelAccess();
         final String lookingForName = getElement().getText();
-        final Optional<TSMetaItem> metaItem = searchInMetaItems(meta, lookingForName);
-        if (metaItem.isPresent()) {
-            return metaItem
-                .map(TSMetaItem::retrieveAllDoms)
-                .stream()
-                .flatMap(Collection::stream)
-                .map(ItemTypeResolveResult::new)
-                .toArray(ResolveResult[]::new);
-        } else {
-            final TSMetaEnum metaEnum = meta.findMetaEnumByName(lookingForName);
-            if (metaEnum != null) {
-                final EnumType enumType = metaEnum.retrieveDom();
-                final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
-                return new ResolveResult[]{resolveResult};
-            }
-        }
-        return ResolveResult.EMPTY_ARRAY;
-    }
-
-    private Optional<TSMetaItem> searchInMetaItems(final TSMetaModelAccess meta, final String lookingForName) {
-        return Optional.ofNullable(meta.findMetaItemByName(lookingForName));
+        return Optional.ofNullable(meta.findMetaItemByName(lookingForName))
+            .map(metaItem -> metaItem.getDeclarations().stream()
+                                     .map(TSMetaItem::retrieveDom)
+                                     .filter(Objects::nonNull)
+                                     .map(ItemTypeResolveResult::new)
+                                     .toArray(ResolveResult[]::new))
+            .orElseGet(() -> {
+                final TSMetaEnum metaEnum = meta.findMetaEnumByName(lookingForName);
+                if (metaEnum != null) {
+                    final EnumType enumType = metaEnum.retrieveDom();
+                    final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
+                    return new ResolveResult[]{resolveResult};
+                }
+                return ResolveResult.EMPTY_ARRAY;
+               }
+            );
     }
 
     private static class ItemTypeResolveResult implements TypeSystemResolveResult {

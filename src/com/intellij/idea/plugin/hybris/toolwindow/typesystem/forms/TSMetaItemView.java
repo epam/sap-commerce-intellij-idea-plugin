@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.openapi.project.Project;
@@ -67,7 +68,7 @@ public class TSMetaItemView {
         this.myProject = project;
     }
 
-    private void initData(final TSMetaItem myMeta) {
+    private void initData(final TSGlobalMetaItem myMeta) {
         if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
             // same object, no need in re-init
             return;
@@ -90,7 +91,7 @@ public class TSMetaItemView {
         myExtends.setText(myMeta.getExtendedMetaItemName());
     }
 
-    public JBPanel getContent(final TSMetaItem meta) {
+    public JBPanel getContent(final TSGlobalMetaItem meta) {
         initData(meta);
 
         myScrollablePane.getVerticalScrollBar().setValue(0);
@@ -98,7 +99,7 @@ public class TSMetaItemView {
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
         initData(meta);
 
         ((TSMetaItemIndexesTable) myIndexes).select(metaIndex);
@@ -107,7 +108,7 @@ public class TSMetaItemView {
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
         initData(meta);
 
         ((TSMetaItemAttributesTable) myAttributes).select(metaAttribute);
@@ -116,7 +117,7 @@ public class TSMetaItemView {
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
+    public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
         initData(meta);
 
         ((TSMetaItemCustomPropertiesTable) myCustomProperties).select(metaCustomProperty);

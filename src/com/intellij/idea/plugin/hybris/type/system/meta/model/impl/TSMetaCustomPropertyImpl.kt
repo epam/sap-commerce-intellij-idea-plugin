@@ -20,20 +20,18 @@ package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomService
 
 class TSMetaCustomPropertyImpl(
-    override val module: Module,
-    override val project: Project,
     dom: CustomProperty,
+    override val module: Module,
     override val isCustom: Boolean,
     override val name: String
-) : TSMetaEntityImpl<CustomProperty>(dom, module, project, isCustom, name),
-    TSMetaCustomProperty {
+) : TSMetaCustomProperty {
 
-    override val value = myDom.value.rawText
+    override val domAnchor: DomAnchor<CustomProperty> = DomService.getInstance().createAnchor(dom)
+    override val value = dom.value.rawText
 
-    override fun toString(): String {
-        return "TSMetaCustomPropertyImpl(module=$module, name=$name, isCustom=$isCustom)"
-    }
+    override fun toString() = "TSMetaCustomPropertyImpl(module=$module, name=$name, isCustom=$isCustom)"
 }

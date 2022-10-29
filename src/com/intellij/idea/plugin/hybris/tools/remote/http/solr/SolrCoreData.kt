@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.http.solr
 
 class SolrCoreData (val core: String, val docs: Int) {
 
-    override fun toString(): String {
-        return core
-    }
+    override fun toString() = core
 
 }

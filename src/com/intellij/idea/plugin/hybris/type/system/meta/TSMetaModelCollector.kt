@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
+package com.intellij.idea.plugin.hybris.type.system.meta
 
-class TypeCodeReservedForCommonsExtension : AbstractTypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/deployment"
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 
-    override fun getTestQuery(): String = "./@typecode > 13199 and ./@typecode < 13300"
+interface TSMetaModelCollector {
 
-    override fun getNameQuery(): String = "../@code"
+    companion object {
+        fun getInstance(project: Project): TSMetaModelCollector = project.getService(TSMetaModelCollector::class.java)
+    }
 
-    override fun isFailOnTestQuery(): Boolean = true
-
+    fun collectDependencies(): Set<PsiFile>
 }

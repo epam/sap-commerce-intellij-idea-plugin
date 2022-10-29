@@ -31,7 +31,8 @@ public enum CreationMode implements com.intellij.util.xml.NamedEnum {
     MYSQL("mysql"),
     ORACLE("oracle"),
     SAP("sap"),
-    SQLSERVER("sqlserver");
+    SQLSERVER("sqlserver"),
+    POSTGRESQL("postgresql");
 
     private final String value;
 

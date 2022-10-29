@@ -18,31 +18,30 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelProcessor
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.Processor
 import com.intellij.util.xml.DomManager
 import java.util.stream.Collectors
 
-class TSMetaModelProcessor(private val myProject: Project) : Processor<PsiFile> {
+class TSMetaModelProcessorImpl(private val myProject: Project) : TSMetaModelProcessor {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
-    var processedMetaModel: TSMetaModel? = null
 
-    override fun process(psiFile: PsiFile): Boolean {
-        psiFile.virtualFile ?: return true
-        val module = TypeSystemUtils.getModuleForFile(psiFile) ?: return true
+    override fun process(psiFile: PsiFile): TSMetaModel? {
+        psiFile.virtualFile ?: return null
+        val module = TypeSystemUtils.getModuleForFile(psiFile) ?: return null
         val custom = TypeSystemUtils.isCustomExtensionFile(psiFile)
         val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Items::class.java)
 
-        rootWrapper ?: return true
+        rootWrapper ?: return null
 
         val items = rootWrapper.rootElement
 
-        processedMetaModel = TSMetaModelBuilder(myProject, module, psiFile, custom)
+        return TSMetaModelBuilder(module, psiFile, custom)
             .withItemTypes(items.itemTypes.itemTypes)
             .withItemTypes(items.itemTypes.typeGroups.stream()
                 .flatMap { tg: TypeGroup -> tg.itemTypes.stream() }
@@ -53,8 +52,6 @@ class TSMetaModelProcessor(private val myProject: Project) : Processor<PsiFile> 
             .withRelationTypes(items.relations.relations)
             .withMapTypes(items.mapTypes.mapTypes)
             .build()
-
-        //continue visiting
-        return true
     }
+
 }

@@ -50,7 +50,7 @@ open class ImpexPsiNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node),
         }
     }
 
-    override fun toString(): String = text ?: super.toString()
+    override fun toString() = text ?: super.toString()
 }
 
 

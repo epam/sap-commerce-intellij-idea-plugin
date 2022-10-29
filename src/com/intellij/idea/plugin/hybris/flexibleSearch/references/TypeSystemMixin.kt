@@ -4,15 +4,11 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType
-import com.intellij.idea.plugin.hybris.type.system.model.Relation
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
-import java.util.*
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -40,38 +36,29 @@ class TypeSystemItemRef(owner: FlexibleSearchTableName) : TypeSystemReferenceBas
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val lookingForName = element.text.replace("!", "")
-        val res0 = Optional.ofNullable(TSMetaModelAccess.getInstance(project).findMetaItemByName(lookingForName))
-                .map { it.retrieveAllDoms().stream() }
-                .orElse(Stream.empty())
-                .map { ItemTypeResolveResult(it) }
-                .collect(Collectors.toList())
 
+        val items = (TSMetaModelAccess.getInstance(project).findMetaItemByName(lookingForName)
+            ?.declarations
+            ?.map { ItemTypeResolveResult(it) }
+            ?: emptyList())
 
-        val res1 = TSMetaModelAccess.getInstance(project).findRelationByName(lookingForName)
+        val relations = TSMetaModelAccess.getInstance(project).findRelationByName(lookingForName)
                 .distinctBy { it.name }
-                .mapNotNull { it.retrieveDom() }
                 .map { RelationResolveResult(it) }
-                .toList()
 
-        return (res0 + res1).toTypedArray()
+        return (items + relations).toTypedArray()
     }
 
-    private class ItemTypeResolveResult(private val myDomItemType: ItemType) : ResolveResult {
+    private class ItemTypeResolveResult(private val localMetaItem: TSMetaItem) : ResolveResult {
 
-        override fun getElement(): PsiElement? {
-            val codeAttr = myDomItemType.code
-            return codeAttr.xmlAttributeValue
-        }
+        override fun getElement() = localMetaItem.retrieveDom()?.code?.xmlAttributeValue
 
         override fun isValidResult() = element != null
     }
 
-    private class RelationResolveResult(private val myDomItemType: Relation) : ResolveResult {
+    private class RelationResolveResult(private val localMetaRelation: TSMetaRelation) : ResolveResult {
 
-        override fun getElement(): PsiElement? {
-            val codeAttr = myDomItemType.code
-            return codeAttr.xmlAttributeValue
-        }
+        override fun getElement() = localMetaRelation.retrieveDom()?.code?.xmlAttributeValue
 
         override fun isValidResult() = element != null
     }

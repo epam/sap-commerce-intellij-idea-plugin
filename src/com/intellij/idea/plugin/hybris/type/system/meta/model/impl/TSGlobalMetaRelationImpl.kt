@@ -19,49 +19,47 @@ package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelNameProvider
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaDeployment
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaModifiers
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.Relation
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.Type
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomService
 import java.util.concurrent.ConcurrentHashMap
 
-class TSMetaRelationImpl(
-    override val module: Module,
-    override val project: Project,
-    override val name: String?,
-    dom: Relation,
-    override val isCustom: Boolean
-) : TSMetaEntityImpl<Relation>(dom, module, project, isCustom, name), TSMetaRelation {
 
+class TSMetaRelationImpl(
+    dom: Relation,
+    override val module: Module,
+    override val name: String?,
+    override val isCustom: Boolean
+) : TSMetaRelation {
+
+    override val domAnchor: DomAnchor<Relation> = DomService.getInstance().createAnchor(dom)
     override val isLocalized = java.lang.Boolean.TRUE == dom.localized.value
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
     override val description = dom.description.stringValue
-    override val deployment: TSMetaDeployment<TSMetaRelation> = TSMetaDeploymentImpl(module, project, dom.deployment, isCustom, this, TSMetaModelNameProvider.extract(dom.deployment))
-    override val source: TSMetaRelationElement = TSMetaRelationElementImpl(module, project, dom.sourceElement, isCustom, this, RelationEnd.SOURCE)
-    override val target: TSMetaRelationElement = TSMetaRelationElementImpl(module, project, dom.targetElement, isCustom, this, RelationEnd.TARGET)
+    override val deployment: TSMetaDeployment<TSMetaRelation> = TSMetaDeploymentImpl(dom.deployment, this, module, TSMetaModelNameProvider.extract(dom.deployment), isCustom)
+    override val source: TSMetaRelation.TSMetaRelationElement = TSMetaRelationElementImpl(dom.sourceElement, this, module, isCustom, RelationEnd.SOURCE)
+    override val target: TSMetaRelation.TSMetaRelationElement = TSMetaRelationElementImpl(dom.targetElement, this, module, isCustom, RelationEnd.TARGET)
 
-    override fun toString(): String {
-        return "TSMetaRelationImpl(module=$module, name=$name, isCustom=$isCustom)"
-    }
+    override fun toString() = "TSMetaRelationImpl(module=$module, name=$name, isCustom=$isCustom)"
 
     private class TSMetaRelationElementImpl(
-        override val module: Module,
-        override val project: Project,
         dom: RelationElement,
-        override val isCustom: Boolean,
         override val owner: TSMetaRelation,
+        override val module: Module,
+        override val isCustom: Boolean,
         override val end: RelationEnd
-    ) : TSMetaEntityImpl<RelationElement>(dom, module, project, isCustom), TSMetaRelationElement {
+    ) : TSMetaRelation.TSMetaRelationElement {
 
+        override val domAnchor: DomAnchor<RelationElement> = DomService.getInstance().createAnchor(dom)
         override val customProperties: ConcurrentHashMap<String, TSMetaCustomProperty> = CaseInsensitiveConcurrentHashMap()
+
         override val type = dom.type.stringValue ?: ""
         override val qualifier = dom.qualifier.stringValue ?: ""
         override val name = qualifier
@@ -71,17 +69,33 @@ class TSMetaRelationImpl(
         override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
-        override val modifiers: TSMetaModifiers<TSMetaRelationElement> = TSMetaModifiersImpl(module, project, dom.modifiers, isCustom)
+
+        override val modifiers: TSMetaModifiers<TSMetaRelation.TSMetaRelationElement> = TSMetaModifiersImpl(dom.modifiers, module, isCustom)
 
         init {
             dom.customProperties.properties.stream()
                 .filter { TSMetaModelNameProvider.extract(it) != null}
-                .map { TSMetaCustomPropertyImpl(module, project, it, isCustom, TSMetaModelNameProvider.extract(it)!!) }
+                .map { TSMetaCustomPropertyImpl(it, module, isCustom, TSMetaModelNameProvider.extract(it)!!) }
                 .forEach { customProperties[it.name] = it }
         }
 
-        override fun toString(): String {
-            return "TSMetaRelationElementImpl(module=$module, name=$name, isCustom=$isCustom)"
-        }
+        override fun toString() = "TSMetaRelationElementImpl(module=$module, name=$name, isCustom=$isCustom)"
     }
+}
+
+class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
+    : TSMetaSelfMerge<Relation, TSMetaRelation>(localMeta), TSGlobalMetaRelation {
+
+    override val domAnchor = localMeta.domAnchor
+    override val module = localMeta.module
+    override var isLocalized = localMeta.isLocalized
+    override var isAutoCreate = localMeta.isAutoCreate
+    override var isGenerate = localMeta.isGenerate
+    override var description = localMeta.description
+    override var deployment: TSMetaDeployment<TSMetaRelation> = localMeta.deployment
+    override var source: TSMetaRelationElement = localMeta.source
+    override var target: TSMetaRelationElement = localMeta.target
+
+    override fun mergeInternally(localMeta: TSMetaRelation) = Unit
+
 }

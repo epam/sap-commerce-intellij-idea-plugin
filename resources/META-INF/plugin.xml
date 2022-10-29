@@ -38,7 +38,6 @@
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>
-<!--    <xi:include href="/META-INF/plugin-inspections-legacy.xml" xpointer="xpointer(/idea-plugin/*)"/>-->
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
 

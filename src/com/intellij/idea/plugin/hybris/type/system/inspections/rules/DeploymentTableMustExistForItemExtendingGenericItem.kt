@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
@@ -54,27 +54,27 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
         // skip non-ComposedType
         if ("ViewType".equals(dom.metaType.stringValue, true) || "ComposedType".equals(dom.metaType.stringValue, true)) return
 
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
             ?: return
 
         if (StringUtils.isNotBlank(metaItem.deployment.typeCode)) return
 
-        val otherDeclarationsWithDeploymentTable = metaItem.retrieveAllDoms().any { StringUtils.isNotBlank(it.deployment.typeCode.value) }
+        val otherDeclarationsWithDeploymentTable = metaItem.declarations.any { StringUtils.isNotBlank(it.deployment.typeCode) }
 
         if (otherDeclarationsWithDeploymentTable) return
 
-        val otherDeclarationsMarkedAsAbstract = metaItem.retrieveAllDoms().any { it.abstract.value == true }
+        val otherDeclarationsMarkedAsAbstract = metaItem.declarations.any { it.isAbstract }
 
         if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
 
         val allExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.retrieveAllDoms() }
+            .flatMap { it.declarations }
 
         // skip Descriptor declarations
-        if (allExtends.count { "Descriptor".equals(it.code.stringValue, true) } > 0) return
+        if (allExtends.count { "Descriptor".equals(it.name, true) } > 0) return
 
         val countDeploymentTablesInParents = allExtends
-            .count { StringUtils.isNotBlank(it.deployment.typeCode.value) }
+            .count { StringUtils.isNotBlank(it.deployment.typeCode) }
 
         if (countDeploymentTablesInParents > 0) return
 

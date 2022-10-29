@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -54,7 +55,13 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
             final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, "");
-            PsiNavigateUtil.navigate(xmlAttribute.getValueElement());
+            navigateIfNotPreviewMode(descriptor, xmlAttribute.getValueElement());
+        }
+    }
+
+    private void navigateIfNotPreviewMode(final ProblemDescriptor descriptor, final PsiElement psiElement) {
+        if (descriptor instanceof ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement);
         }
     }
 }

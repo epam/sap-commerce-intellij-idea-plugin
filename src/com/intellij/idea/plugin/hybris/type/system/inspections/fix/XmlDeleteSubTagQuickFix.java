@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -52,7 +53,9 @@ public class XmlDeleteSubTagQuickFix implements LocalQuickFix {
             final XmlTag subTag = currentTag.findFirstSubTag(myTagName);
             if (subTag != null) {
                 subTag.delete();
-                PsiNavigateUtil.navigate(currentTag);
+                if (descriptor instanceof ProblemDescriptorBase) {
+                    PsiNavigateUtil.navigate(currentTag);
+                }
             }
         }
     }

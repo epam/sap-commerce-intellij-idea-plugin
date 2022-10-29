@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelCollector
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -32,11 +33,12 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import java.util.*
 
-class TSMetaModelCollector(private val myProject: Project) : Processor<PsiFile> {
-    private val myFiles: MutableSet<PsiFile> = HashSet()
+class TSMetaModelCollectorImpl(private val myProject: Project) : TSMetaModelCollector {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    fun collectDependencies(): Set<PsiFile> {
+    override fun collectDependencies(): Set<PsiFile> {
+        val files = HashSet<PsiFile>()
+
         try {
             return ProgressManager.getInstance()
                 .computeInNonCancelableSection(ThrowableComputable<Set<PsiFile>, Exception> {
@@ -46,24 +48,24 @@ class TSMetaModelCollector(private val myProject: Project) : Processor<PsiFile> 
                         myProject,
                         ProjectScope.getAllScope(myProject),
                         PsiFile::class.java,
-                        this
+                        object : Processor<PsiFile> {
+                            override fun process(psiFile: PsiFile): Boolean {
+                                psiFile.virtualFile ?: return true
+                                // cannot process file without a module
+                                TypeSystemUtils.getModuleForFile(psiFile) ?: return true
+                                myDomManager.getFileElement(psiFile as XmlFile, Items::class.java) ?: return true
+
+                                files.add(psiFile)
+                                return true
+                            }
+                        }
                     )
 
-                    Collections.unmodifiableSet(myFiles)
+                    Collections.unmodifiableSet(files)
                 })
         } catch (e : Exception) {
             // can happen due broken Stub index, and requested reindex via FileBasedIndexImpl, cancel for now and try again later
             throw ProcessCanceledException(e);
         }
-    }
-
-    override fun process(psiFile: PsiFile): Boolean {
-        psiFile.virtualFile ?: return true
-        // cannot process file without a module
-        TypeSystemUtils.getModuleForFile(psiFile) ?: return true
-        myDomManager.getFileElement(psiFile as XmlFile, Items::class.java) ?: return true
-
-        myFiles.add(psiFile)
-        return true
     }
 }

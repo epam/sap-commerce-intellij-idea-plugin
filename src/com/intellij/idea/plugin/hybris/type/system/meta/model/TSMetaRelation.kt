@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.Cardinality
 import com.intellij.idea.plugin.hybris.type.system.model.Relation
 import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.Type
-import java.util.concurrent.ConcurrentHashMap
 
 interface TSMetaRelation : TSMetaClassifier<Relation> {
     val deployment: TSMetaDeployment<TSMetaRelation>
@@ -33,23 +32,25 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     val isGenerate: Boolean
 
     interface TSMetaRelationElement : TSMetaClassifier<RelationElement> {
+        val owner: TSMetaRelation
         val end: RelationEnd
         val qualifier: String
         val type: String
-        val owner: TSMetaRelation
         val modifiers: TSMetaModifiers<TSMetaRelationElement>
-        val customProperties: ConcurrentHashMap<String, TSMetaCustomProperty>
+        val customProperties: Map<String, TSMetaCustomProperty>
         val collectionType: Type
         val cardinality: Cardinality?
         val description: String?
         val metaType: String?
         val isOrdered: Boolean
         val isNavigable: Boolean
-
-        override fun retrieveDom(): RelationElement?
     }
 
     enum class RelationEnd {
         SOURCE, TARGET
     }
+}
+
+interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation> {
+    override val declarations: MutableSet<TSMetaRelation>
 }

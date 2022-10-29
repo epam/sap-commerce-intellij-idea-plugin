@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic
+import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
@@ -51,7 +51,7 @@ class BooleanFieldCannotBeOptional : AbstractTypeSystemInspection() {
     ) {
         val optional = dom.modifiers.optional.value ?: true
         val defaultValue = dom.defaultValue.value
-        val type = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSMetaAtomic>(MetaType.META_ATOMIC)[dom.type.stringValue]
+        val type = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaAtomic>(MetaType.META_ATOMIC)[dom.type.stringValue]
             ?: return
 
         if (optional && defaultValue == null && "java.lang.Boolean".equals(type.name, true)) {

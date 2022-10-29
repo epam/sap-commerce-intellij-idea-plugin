@@ -23,8 +23,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveRe
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
@@ -110,16 +110,16 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
     private List<ResolveResult> tryResolveForItemType(final TSMetaModelAccess meta,
                                                       final TSMetaItemService metaItemService,
                                                       final String featureName) {
-        final Optional<TSMetaItem> metaItem = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
-                                                                                   .map(meta::findMetaItemByName);
-        if (!metaItem.isPresent()) {
+        final Optional<TSGlobalMetaItem> metaItem = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
+                                                                                        .map(meta::findMetaItemByName);
+        if (metaItem.isEmpty()) {
             return null;
         }
 
         final List<ResolveResult> result = metaItemService
                                                             .findAttributesByName(metaItem.get(), featureName, true)
                                                             .stream()
-                                                            .map(TSMetaItem.TSMetaItemAttribute::retrieveDom)
+                                                            .map(TSGlobalMetaItem.TSGlobalMetaItemAttribute::retrieveDom)
                                                             .filter(Objects::nonNull)
                                                             .map(AttributeResolveResult::new)
                                                             .collect(Collectors.toCollection(LinkedList::new));
@@ -140,7 +140,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
             .map(PsiElement::getText)
             .map(meta::findRelationByName);
 
-        if (!metaReferences.isPresent()) {
+        if (metaReferences.isEmpty()) {
             return null;
         }
         final Set<TSMetaRelation> references = new HashSet<>(metaReferences.get());

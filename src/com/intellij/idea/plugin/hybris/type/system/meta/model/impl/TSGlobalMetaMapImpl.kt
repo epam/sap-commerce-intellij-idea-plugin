@@ -17,38 +17,50 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaMap
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaMap
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaSelfMerge
 import com.intellij.idea.plugin.hybris.type.system.model.MapType
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-class TSMetaMapImpl(override val module: Module, override val project: Project, override val name: String?, dom: MapType, override val isCustom: Boolean)
-    : TSMetaEntityImpl<MapType>(dom, module, project, isCustom, name), TSMetaMap {
+class TSMetaMapImpl(
+    dom: MapType,
+    override val module: Module,
+    override val name: String?,
+    override val isCustom: Boolean
+) : TSMetaMap {
 
+    override val domAnchor: DomAnchor<MapType> = DomService.getInstance().createAnchor(dom)
     override val argumentType = dom.argumentType.stringValue
     override val returnType = dom.returnType.stringValue
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
     override val isRedeclare = java.lang.Boolean.TRUE == dom.redeclare.value
-    private val myAllDoms: MutableSet<DomAnchor<MapType>> = LinkedHashSet()
 
-    init {
-        myAllDoms.add(DomService.getInstance().createAnchor(dom))
-    }
+    override fun toString() = "TSMetaMapImpl(module=$module, name=$name, isCustom=$isCustom)"
+}
 
-    private fun addDomRepresentation(anotherDom: MapType) {
-        myAllDoms.add(DomService.getInstance().createAnchor(anotherDom))
-    }
+class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
+    : TSMetaSelfMerge<MapType, TSMetaMap>(localMeta), TSGlobalMetaMap {
 
-    override fun retrieveAllDoms() = myAllDoms.mapNotNull { it.retrieveDomElement() }
+    override val domAnchor = localMeta.domAnchor
+    override val module = localMeta.module
+    override var argumentType = localMeta.argumentType
+    override var returnType = localMeta.returnType
+    override var isAutoCreate = localMeta.isAutoCreate
+    override var isGenerate = localMeta.isGenerate
+    override var isRedeclare = localMeta.isRedeclare
 
-    override fun merge(another: TSMetaMap) {
-        another.retrieveDom()?.let { addDomRepresentation(it) }
-    }
+    override fun mergeInternally(localMeta: TSMetaMap) {
+        if (localMeta.isAutoCreate) isAutoCreate = localMeta.isAutoCreate
+        if (localMeta.isGenerate) isGenerate = localMeta.isGenerate
 
-    override fun toString(): String {
-        return "TSMetaAtomicImpl(module=$module, name=$name, isCustom=$isCustom)"
+        if (localMeta.isRedeclare) {
+            isRedeclare = localMeta.isRedeclare
+            argumentType = localMeta.argumentType
+            returnType = localMeta.returnType
+        }
     }
 }

@@ -19,12 +19,15 @@ package com.intellij.idea.plugin.hybris.type.system.meta.model
 
 import com.intellij.idea.plugin.hybris.type.system.model.MapType
 
-interface TSMetaMap : TSMetaClassifier<MapType>, TSMetaSelfMerge<TSMetaMap> {
+interface TSMetaMap : TSMetaClassifier<MapType> {
 
     val argumentType: String?
     val returnType: String?
     val isAutoCreate: Boolean
     val isGenerate: Boolean
     val isRedeclare: Boolean
-    fun retrieveAllDoms(): List<MapType>
+}
+
+interface TSGlobalMetaMap : TSMetaMap, TSGlobalMetaClassifier<MapType> {
+    override val declarations: MutableSet<TSMetaMap>
 }

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
@@ -44,19 +44,19 @@ public class TSMetaAtomicView {
         this.myProject = project;
     }
 
-    private void initData(final TSMetaAtomic myMeta) {
+    private void initData(final TSGlobalMetaAtomic myMeta) {
         if (StringUtils.equals(myMeta.getName(), myClass.getText())) {
             // same object, no need in re-init
             return;
         }
 
         myClass.setText(myMeta.getName());
-        myAutoCreate.setSelected(myMeta.getAutoCreate());
-        myGenerate.setSelected(myMeta.getGenerate());
+        myAutoCreate.setSelected(myMeta.isAutoCreate());
+        myGenerate.setSelected(myMeta.isGenerate());
         myExtends.setText(myMeta.getExtends());
     }
 
-    public JBPanel getContent(final TSMetaAtomic meta) {
+    public JBPanel getContent(final TSGlobalMetaAtomic meta) {
         initData(meta);
 
         return myContentPane;

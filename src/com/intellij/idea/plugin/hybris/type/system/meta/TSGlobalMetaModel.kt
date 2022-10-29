@@ -19,11 +19,15 @@ package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.openapi.Disposable
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
-class TSGlobalMetaModel : AbstractTSMetaModel() {
+class TSGlobalMetaModel : Disposable {
 
+    private val myMetaCache: MutableMap<MetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
+    private val myReferencesBySourceTypeName = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment<*>>();
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment<*>>();
 
@@ -44,45 +48,60 @@ class TSGlobalMetaModel : AbstractTSMetaModel() {
         .filter { it !in 24400 .. 24599 } // OOTB XPrint extension
         .maxOf { it } + 1
 
-    fun merge(metaModels : List<TSMetaModel>): TSGlobalMetaModel {
-        metaModels.forEach { merge(it) }
-
-        return this
-    }
-
     @Suppress("UNCHECKED_CAST")
-    private fun merge(another: TSMetaModel) {
-        another.getMetaTypes().forEach { (metaType, cache) ->
-            run {
-                val globalCache = getMetaType<TSMetaClassifier<DomElement>>(metaType)
+    fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: MetaType): ConcurrentMap<String, T> =
+        myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-                cache.forEach { (key, metaClassifier) ->
-                    val globalMetaClassifier = globalCache[key]
+    fun getMetaTypes() = myMetaCache;
 
-                    if (globalMetaClassifier != null && globalMetaClassifier is TSMetaSelfMerge<*>) {
-                        (globalMetaClassifier as TSMetaSelfMerge<TSMetaClassifier<DomElement>>).merge(metaClassifier)
-                    } else {
-                        globalCache[key] = metaClassifier
-                    }
+    fun getReference(name: String?): TSMetaRelation.TSMetaRelationElement? = name?.let { getReferences()[it] }
 
-                }
-            }
-        }
-        getReferences().putAllValues(another.getReferences());
+    fun getReferences() = myReferencesBySourceTypeName;
 
-        another.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { mergeDeploymentInformation(it.deployment) }
-        another.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { mergeDeploymentInformation(it.deployment) }
-    }
-
-    private fun mergeDeploymentInformation(deployment: TSMetaDeployment<*>) {
+    fun addDeployment(deployment: TSMetaDeployment<*>) {
         myDeploymentTables[deployment.table] = deployment
         val typeCode = deployment.typeCode?.toIntOrNull()
         if (typeCode != null) {
             myDeploymentTypeCodes[typeCode] = deployment
         }
     }
+
+//    fun merge(metaModels : List<TSMetaModel>): TSGlobalMetaModel {
+//        metaModels.forEach { merge(it) }
+//
+//        return this
+//    }
+//
+//    @Suppress("UNCHECKED_CAST")
+//    private fun merge(another: TSMetaModel) {
+//        another.getMetaTypes().forEach { (metaType, cache) ->
+//            run {
+//                val globalCache = getMetaType<TSMetaClassifier<DomElement>>(metaType)
+//
+//                cache.forEach { (key, metaClassifier) ->
+//                    val globalMetaClassifier = globalCache.computeIfAbsent(key) { metaClassifier }
+//
+//                    if (globalMetaClassifier is TSMetaSelfMerge<*, *>) {
+//                        (globalMetaClassifier as TSMetaSelfMerge<DomElement, TSMetaClassifier<DomElement>>).merge(metaClassifier)
+//                    }
+//                }
+//            }
+//        }
+//        getReferences().putAll(another.getReferences());
+//
+//        another.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
+//            .filter { it.deployment.table != null && it.deployment.typeCode != null }
+//            .forEach { mergeDeploymentInformation(it.deployment) }
+//        another.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values
+//            .filter { it.deployment.table != null && it.deployment.typeCode != null }
+//            .forEach { mergeDeploymentInformation(it.deployment) }
+//    }
+//
+//    private fun mergeDeploymentInformation(deployment: TSMetaDeployment<*>) {
+//        myDeploymentTables[deployment.table] = deployment
+//        val typeCode = deployment.typeCode?.toIntOrNull()
+//        if (typeCode != null) {
+//            myDeploymentTypeCodes[typeCode] = deployment
+//        }
+//    }
 }

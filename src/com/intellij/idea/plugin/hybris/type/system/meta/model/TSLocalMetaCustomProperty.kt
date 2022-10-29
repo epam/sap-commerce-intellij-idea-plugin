@@ -15,15 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules.legacy
 
-class TypeCodeReservedForLegacyXPrintExtension : AbstractTypeSystemInspection() {
-    override fun getSelectionQuery(): String = "//itemtype/deployment"
+package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-    override fun getTestQuery(): String = "./@typecode > 24399 and ./@typecode < 24600"
+import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty
 
-    override fun getNameQuery(): String = "../@code"
-
-    override fun isFailOnTestQuery(): Boolean = true
-
+interface TSMetaCustomProperty : TSMetaClassifier<CustomProperty> {
+    val value: String?
 }

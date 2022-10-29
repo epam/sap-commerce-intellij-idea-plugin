@@ -18,8 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic;
 import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.psi.PsiElement;
@@ -56,7 +57,7 @@ public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
     protected Collection<? extends AtomicType> searchAll(
         @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return meta.<TSMetaAtomic>getAll(MetaType.META_ATOMIC).stream()
+        return meta.<TSGlobalMetaAtomic>getAll(MetaType.META_ATOMIC).stream()
                    .map(TSMetaAtomic::retrieveDom)
                    .filter(Objects::nonNull)
                    .collect(Collectors.toList());

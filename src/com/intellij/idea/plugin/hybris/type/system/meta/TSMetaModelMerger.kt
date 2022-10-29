@@ -15,27 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.meta
 
-package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
-
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic
-import com.intellij.idea.plugin.hybris.type.system.model.AtomicType
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 
-class TSMetaAtomicImpl(
-    override val module: Module,
-    override val project: Project,
-    override val name: String?,
-    dom: AtomicType,
-    override val isCustom: Boolean
-) : TSMetaEntityImpl<AtomicType>(dom, module, project, isCustom, name), TSMetaAtomic {
+interface TSMetaModelMerger {
 
-    override val autoCreate = java.lang.Boolean.TRUE == myDom.autoCreate.value
-    override val generate = java.lang.Boolean.TRUE == myDom.generate.value
-    override val extends = myDom.extends.stringValue
-
-    override fun toString(): String {
-        return "TSMetaAtomicImpl(module=$module, name=$name, isCustom=$isCustom)"
+    companion object {
+        fun getInstance(project: Project): TSMetaModelMerger = project.getService(TSMetaModelMerger::class.java)
     }
+
+    fun merge(localMetaModels: Collection<TSMetaModel>): TSGlobalMetaModel
 }

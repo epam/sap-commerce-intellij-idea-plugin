@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
 import com.intellij.openapi.project.Project;
@@ -98,14 +99,14 @@ public class TSMetaRelationView {
             });
     }
 
-    public JBPanel getContent(final TSMetaRelation meta) {
+    public JBPanel getContent(final TSGlobalMetaRelation meta) {
         initData(meta);
         myTabs.setSelectedIndex(TAB_DETAILS_INDEX);
 
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaRelation.TSMetaRelationElement meta) {
+    public JBPanel getContent(final TSGlobalMetaRelation.TSMetaRelationElement meta) {
         initData(meta.getOwner());
 
         if (meta.getEnd() == TSMetaRelation.RelationEnd.SOURCE) {

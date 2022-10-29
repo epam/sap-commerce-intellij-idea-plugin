@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaEnumValuesTable;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
@@ -52,7 +53,7 @@ public class TSMetaEnumView {
         this.myProject = project;
     }
 
-    private void initData(final TSMetaEnum myMeta) {
+    private void initData(final TSGlobalMetaEnum myMeta) {
         if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
             // same object, no need in re-init
             return;
@@ -68,13 +69,13 @@ public class TSMetaEnumView {
         ((TSMetaEnumValuesTable) myEnumValues).updateModel(myMeta);
     }
 
-    public JBPanel getContent(final TSMetaEnum meta) {
+    public JBPanel getContent(final TSGlobalMetaEnum meta) {
         initData(meta);
 
         return myContentPane;
     }
 
-    public JBPanel getContent(final TSMetaEnum meta, final TSMetaEnum.TSMetaEnumValue metaValue) {
+    public JBPanel getContent(final TSGlobalMetaEnum meta, final TSMetaEnum.TSMetaEnumValue metaValue) {
         initData(meta);
 
         ((TSMetaEnumValuesTable) myEnumValues).select(metaValue);

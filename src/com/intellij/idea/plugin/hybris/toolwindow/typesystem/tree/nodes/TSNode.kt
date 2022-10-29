@@ -41,8 +41,8 @@ abstract class TSNode : PresentableNodeDescriptor<TSNode?>, Supplier {
         update(myProject, presentation)
     }
 
-    override fun toString(): String = name
+    override fun toString() = name
 
-    override fun getLeafState(): LeafState = LeafState.ASYNC
+    override fun getLeafState() = LeafState.ASYNC
 
 }

@@ -15,9 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.type.system.meta
 
-package com.intellij.idea.plugin.hybris.type.system.meta;
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 
-public enum MetaType {
-    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP, META_ATTRIBUTE, META_INDEX
+interface TSMetaModelProcessor {
+
+    companion object {
+        fun getInstance(project: Project): TSMetaModelProcessor = project.getService(TSMetaModelProcessor::class.java)
+    }
+
+    fun process(psiFile: PsiFile): TSMetaModel?
 }

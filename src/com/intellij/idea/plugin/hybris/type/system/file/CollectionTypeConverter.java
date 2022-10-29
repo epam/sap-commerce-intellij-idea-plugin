@@ -18,8 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCollection;
 import com.intellij.idea.plugin.hybris.type.system.model.CollectionType;
 import com.intellij.psi.PsiElement;
@@ -51,7 +52,7 @@ public class CollectionTypeConverter extends TypeSystemConverterBase<CollectionT
     protected Collection<? extends CollectionType> searchAll(
         @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return meta.<TSMetaCollection>getAll(MetaType.META_COLLECTION).stream()
+        return meta.<TSGlobalMetaCollection>getAll(MetaType.META_COLLECTION).stream()
                    .map(TSMetaCollection::retrieveDom)
                    .filter(Objects::nonNull)
                    .collect(Collectors.toList());

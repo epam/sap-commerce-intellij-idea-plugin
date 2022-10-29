@@ -21,19 +21,20 @@ import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue
 
-interface TSMetaEnum : TSMetaClassifier<EnumType>, TSMetaSelfMerge<TSMetaEnum> {
-    val values: CaseInsensitive.NoCaseMultiMap<TSMetaEnumValue>
+interface TSMetaEnum : TSMetaClassifier<EnumType>  {
+    val values: CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>
     val description: String?
     val jaloClass: String?
     val isAutoCreate: Boolean
     val isGenerate: Boolean
     val isDynamic: Boolean
 
-    fun findValueByName(name: String): Collection<TSMetaEnumValue>
-    fun retrieveAllDomsStream(): List<EnumType>
-
     interface TSMetaEnumValue : TSMetaClassifier<EnumValue> {
         val description: String?
         val owner: TSMetaEnum
     }
+}
+
+interface TSGlobalMetaEnum : TSMetaEnum, TSGlobalMetaClassifier<EnumType> {
+    override val declarations: MutableSet<TSMetaEnum>
 }

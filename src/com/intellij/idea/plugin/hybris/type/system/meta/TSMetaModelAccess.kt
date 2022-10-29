@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -31,15 +30,16 @@ interface TSMetaModelAccess {
     }
 
     fun getMetaModel(): TSGlobalMetaModel
-    fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelationElement?>)
-    fun findMetaClassifierByName(name: String?): TSMetaClassifier<out DomElement>?
+    fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelation.TSMetaRelationElement?>)
+    fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>?
     fun findRelationByName(name: String?): List<TSMetaRelation>
-    fun findMetaMapByName(name: String?): TSMetaMap?
-    fun findMetaCollectionByName(name: String?): TSMetaCollection?
-    fun findMetaAtomicByName(name: String?): TSMetaAtomic?
-    fun findMetaEnumByName(name: String?): TSMetaEnum?
-    fun findMetaItemByName(name: String?): TSMetaItem?
-    fun findMetaItemForDom(dom: ItemType): TSMetaItem?
-    fun <T : TSMetaClassifier<out DomElement>?> getAll(metaType: MetaType): Collection<T>
+    fun findMetaMapByName(name: String?): TSGlobalMetaMap?
+    fun findMetaCollectionByName(name: String?): TSGlobalMetaCollection?
+    fun findMetaAtomicByName(name: String?): TSGlobalMetaAtomic?
+    fun findMetaEnumByName(name: String?): TSGlobalMetaEnum?
+    fun findMetaItemByName(name: String?): TSGlobalMetaItem?
+    fun findMetaRelationByName(name: String?): TSGlobalMetaRelation?
+    fun findMetaItemForDom(dom: ItemType): TSGlobalMetaItem?
+    fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType): Collection<T>
 
 }

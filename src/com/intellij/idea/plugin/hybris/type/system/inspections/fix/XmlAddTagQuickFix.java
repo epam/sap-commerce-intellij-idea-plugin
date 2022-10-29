@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.fix;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
+import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
@@ -116,10 +117,16 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
             // ? Maybe there is a better default cursor placement than before end of tag?
             final ASTNode[] children = ((XmlTagImpl) insertedTag).getChildren(TokenSet.create(XmlTokenType.XML_END_TAG_START));
             if (children.length > 0) {
-                PsiNavigateUtil.navigate(children[0].getPsi());
+                navigateIfNotPreviewMode(descriptor, children[0].getPsi());
             } else {
-                PsiNavigateUtil.navigate(insertedTag);
+                navigateIfNotPreviewMode(descriptor, insertedTag);
             }
+        }
+    }
+
+    private void navigateIfNotPreviewMode(final ProblemDescriptor descriptor, final PsiElement psiElement) {
+        if (descriptor instanceof ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement);
         }
     }
 }

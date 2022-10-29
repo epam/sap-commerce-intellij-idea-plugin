@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemIndex
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -33,7 +33,7 @@ private const val COLUMN_CREATION_MODE = "Creation mode"
 private const val COLUMN_KEYS = "Keys"
 private const val COLUMN_MODULE = "Module"
 
-class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTSTable<TSMetaItem, TSMetaItemIndex>(myProject) {
+class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaItem, TSMetaItemIndex>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS)
     override fun select(meta: TSMetaItemIndex) = selectRowWithValue(meta.name, COLUMN_NAME)
@@ -45,7 +45,7 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
         COLUMN_CREATION_MODE
     )
 
-    override fun getItems(meta: TSMetaItem): List<TSMetaItemIndex> = TSMetaItemService.getInstance(myProject).getIndexes(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaItemIndex> = TSMetaItemService.getInstance(myProject).getIndexes(meta, true)
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },

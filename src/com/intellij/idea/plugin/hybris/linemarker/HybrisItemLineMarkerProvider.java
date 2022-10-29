@@ -53,17 +53,15 @@ public class HybrisItemLineMarkerProvider extends RelatedItemLineMarkerProvider 
 
         final String name = cleanSearchName(psiClass.getName());
         if (shouldProcessItemType(psiClass)) {
-            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
-                                                           .findMetaItemByName(name))
+            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject()).findMetaItemByName(name))
                     .map(meta -> meta.retrieveAllDoms().stream()
                                      .map(DomElement::getXmlElement)
                                      .collect(Collectors.toList()))
                     .map(elements -> createTargetsWithGutterIcon(psiClass, elements))
                     .ifPresent(result::add);
         } else if (shouldProcessEnum(psiClass)) {
-            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject())
-                                                           .findMetaEnumByName(name))
-                    .map(meta -> meta.retrieveAllDomsStream().stream()
+            Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psiClass.getProject()).findMetaEnumByName(name))
+                    .map(meta -> meta.retrieveAllDoms().stream()
                                      .map(DomElement::getXmlElement)
                                      .collect(Collectors.toList()))
                     .map(elements -> createTargetsWithGutterIcon(psiClass, elements))

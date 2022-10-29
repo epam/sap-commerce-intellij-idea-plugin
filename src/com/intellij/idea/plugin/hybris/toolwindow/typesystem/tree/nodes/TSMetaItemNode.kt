@@ -22,12 +22,13 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemNode(parent: TSNode, val meta: TSMetaItem) : TSNode(parent), Disposable {
+class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
