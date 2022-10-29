@@ -49,16 +49,6 @@ public class BeansDomFileDescription extends DomFileDescription<AbstractPojos> {
         return isMyFile && isBeansFileName;
     }
 
-    @Override
-    public boolean hasStubs() {
-        return true;
-    }
-
-    @Override
-    public int getStubVersion() {
-        return 6;
-    }
-
     @Nullable
     @Override
     public Icon getFileIcon(final int flags) {

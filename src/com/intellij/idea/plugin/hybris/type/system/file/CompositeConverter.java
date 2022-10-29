@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.file;
 
+import com.intellij.psi.PsiDocCommentOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
 import com.intellij.util.xml.DomElement;
@@ -30,12 +31,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
+public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
 
     private final TypeSystemConverterBase<? extends DOM>[] myDelegates;
 
     public CompositeConverter(TypeSystemConverterBase<? extends DOM>... converters) {
         myDelegates = converters;
+    }
+
+    @Override
+    public boolean canResolveTo(final Class<? extends PsiElement> elementClass) {
+        return !PsiDocCommentOwner.class.isAssignableFrom(elementClass);
     }
 
     @NotNull

@@ -32,7 +32,7 @@ import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 
-class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
+class AttributeHandlerReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
     override fun createReferences(value: GenericDomValue<String>, element: PsiElement, context: ConvertContext): Array<PsiReference>
             = if (isPluginActive(SPRING_PLUGIN_ID)) createSpringReferences(element, value) else createPlainXMLReference(element, value)
@@ -112,5 +112,7 @@ class AttributeHandlerReferenceConverter : CustomReferenceConverter<String> {
         }
         return null
     }
+
+    override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
 
 }

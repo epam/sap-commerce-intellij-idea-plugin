@@ -36,7 +36,7 @@ import com.intellij.util.xml.GenericDomValue
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class AttributeReferenceConverter : CustomReferenceConverter<String> {
+class AttributeReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
     override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?): Array<PsiReference> {
         val reference = object : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
             override fun resolve(): PsiElement? {
@@ -94,4 +94,6 @@ class AttributeReferenceConverter : CustomReferenceConverter<String> {
 
     private fun suggestGetterName(name: String) = "get${capitalize(name)}"
     private fun suggestSetterName(name: String) = "set${capitalize(name)}"
+
+    override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
 }

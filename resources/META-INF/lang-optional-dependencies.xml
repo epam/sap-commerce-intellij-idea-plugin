@@ -23,7 +23,7 @@
         <!--                                            Hybris Type System                                           -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileDescription
+        <dom.fileMetaData rootTagName="items" stubVersion="21"
             implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
 
         <annotator language="XML"
@@ -42,7 +42,7 @@
         <!--                                                Beans                                                    -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileDescription
+        <dom.fileMetaData rootTagName="beans" stubVersion="7"
             implementation="com.intellij.idea.plugin.hybris.beans.BeansDomFileDescription"/>
 
         <!-- ####################################################################################################### -->

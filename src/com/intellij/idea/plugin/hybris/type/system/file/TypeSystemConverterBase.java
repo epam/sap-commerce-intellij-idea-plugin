@@ -48,6 +48,11 @@ public abstract class TypeSystemConverterBase<DOM> extends ResolvingConverter<DO
         myResolvesToClass = resolvesToClass;
     }
 
+    @Override
+    public boolean canResolveTo(final Class<? extends PsiElement> elementClass) {
+        return myResolvesToClass.isAssignableFrom(elementClass);
+    }
+
     public Class<? extends DOM> getResolvesToClass() {
         return myResolvesToClass;
     }

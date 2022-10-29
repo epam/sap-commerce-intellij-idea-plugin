@@ -50,16 +50,6 @@ public class TypeSystemDomFileDescription extends DomFileDescription<Items> {
     }
 
     @Override
-    public boolean hasStubs() {
-        return true;
-    }
-
-    @Override
-    public int getStubVersion() {
-        return 20;
-    }
-
-    @Override
     @Nullable
     public Icon getFileIcon(@Iconable.IconFlags final int flags) {
         return HybrisIcons.TYPE_SYSTEM;
