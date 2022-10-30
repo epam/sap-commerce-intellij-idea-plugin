@@ -20,18 +20,18 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult;
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.psi.ResolveResult;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -48,51 +48,36 @@ class TypeSystemItemReference extends TypeSystemReferenceBase<ImpexHeaderTypeNam
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
-        final TSMetaModelAccess meta = getMetaModelAccess();
+        final TSMetaModelAccess metaService = getMetaModelAccess();
         final String lookingForName = getElement().getText();
-        return Optional.ofNullable(meta.findMetaItemByName(lookingForName))
-            .map(metaItem -> metaItem.getDeclarations().stream()
-                                     .map(TSMetaItem::retrieveDom)
-                                     .filter(Objects::nonNull)
-                                     .map(ItemTypeResolveResult::new)
-                                     .toArray(ResolveResult[]::new))
-            .orElseGet(() -> {
-                final TSMetaEnum metaEnum = meta.findMetaEnumByName(lookingForName);
-                if (metaEnum != null) {
-                    final EnumType enumType = metaEnum.retrieveDom();
-                    final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
-                    return new ResolveResult[]{resolveResult};
-                }
-                return ResolveResult.EMPTY_ARRAY;
-               }
-            );
+
+        return Optional.ofNullable(metaService.findMetaItemByName(lookingForName))
+            .map(TypeSystemItemReference::resolveItem)
+            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(lookingForName))
+                              .map(TSGlobalMetaEnum::retrieveDom)
+                              .map(TypeSystemItemReference::resolveEnum))
+            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(lookingForName))
+                              .map(TSGlobalMetaRelation::retrieveDom)
+                              .map(TypeSystemItemReference::resolveRelation))
+            .orElse(ResolveResult.EMPTY_ARRAY);
     }
 
-    private static class ItemTypeResolveResult implements TypeSystemResolveResult {
+    private static ResolveResult[] resolveItem(final TSGlobalMetaItem metaItem) {
+        return metaItem.getDeclarations().stream()
+                       .map(TSMetaItem::retrieveDom)
+                       .filter(Objects::nonNull)
+                       .map(ItemResolveResult::new)
+                       .toArray(ResolveResult[]::new);
+    }
 
-        private final ItemType myDomItemType;
+    private static ResolveResult[] resolveEnum(final EnumType enumType) {
+        final var resolveResult = new EnumResolveResult(enumType);
+        return new ResolveResult[]{resolveResult};
+    }
 
-        public ItemTypeResolveResult(@NotNull final ItemType domItemType) {
-            myDomItemType = domItemType;
-        }
-
-        @Nullable
-        @Override
-        public PsiElement getElement() {
-            final GenericAttributeValue<String> codeAttr = myDomItemType.getCode();
-            return codeAttr == null ? null : codeAttr.getXmlAttributeValue();
-        }
-
-        @NotNull
-        @Override
-        public DomElement getSemanticDomElement() {
-            return myDomItemType;
-        }
-
-        @Override
-        public boolean isValidResult() {
-            return getElement() != null;
-        }
+    private static ResolveResult[] resolveRelation(final Relation relationType) {
+        final var resolveResult = new RelationResolveResult(relationType);
+        return new ResolveResult[]{resolveResult};
     }
 
 }

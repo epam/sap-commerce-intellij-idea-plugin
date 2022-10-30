@@ -66,6 +66,7 @@ public class TSMetaRelationElementView {
     private JPanel myDetailsPane;
     private JPanel myFlagsPane;
     private JPanel myModifiersPane;
+    private JBCheckBox myDeprecated;
 
     public TSMetaRelationElementView(final Project project) {
         myProject = project;
@@ -84,6 +85,7 @@ public class TSMetaRelationElementView {
         myCollectionType.setSelectedItem(myMeta.getCollectionType());
         myMetaType.setText(myMeta.getMetaType());
         myOrdered.setSelected(myMeta.isOrdered());
+        myDeprecated.setSelected(myMeta.isDeprecated());
         myNavigable.setSelected(myMeta.isNavigable());
 
         final var modifiers = myMeta.getModifiers();

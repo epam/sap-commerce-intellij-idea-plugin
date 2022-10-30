@@ -68,10 +68,16 @@ internal class TSMetaRelationImpl(
         override val name = qualifier
         override val isNavigable = dom.navigable.value ?: true
         override val isOrdered = java.lang.Boolean.TRUE == dom.ordered.value
+        override val isDeprecated = extractDeprecated(dom)
         override val collectionType = dom.collectionType.value ?: Type.COLLECTION
         override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
+
+        private fun extractDeprecated(dom: RelationElement): Boolean {
+            return dom.model.setters
+                .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
+        }
 
         override fun toString() = "TSMetaRelationElementImpl(module=$module, name=$name, isCustom=$isCustom)"
     }

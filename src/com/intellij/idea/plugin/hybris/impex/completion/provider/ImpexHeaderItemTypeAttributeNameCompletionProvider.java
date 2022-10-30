@@ -28,7 +28,9 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -41,9 +43,19 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME;
 
 /**
  * Created 22:13 14 May 2016
@@ -84,35 +96,78 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         @NotNull final ImpexHeaderTypeName headerTypeName,
         @NotNull final CompletionResultSet resultSet
     ) {
+        final var metaService = TSMetaModelAccess.Companion.getInstance(project);
+        final var typeCode = headerTypeName.getText();
 
-        final TSMetaModelAccess metaService = TSMetaModelAccess.Companion.getInstance(project);
-        final String itemTypeCode = headerTypeName.getText();
-        final Optional<TSGlobalMetaItem> metaItem = Optional.ofNullable(metaService.findMetaItemByName(itemTypeCode));
+        Optional.ofNullable(metaService.findMetaItemByName(typeCode))
+            .map(meta -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(meta, project))
+            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(typeCode))
+                              .map(ImpexHeaderItemTypeAttributeNameCompletionProvider::getCompletions))
+            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(typeCode))
+                              .map(metaRelation -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(metaRelation, metaService, project)))
+            .ifPresent(resultSet::addAllElements);
+    }
 
-        metaItem
-            .map(meta -> TSMetaItemService.getInstance(project).getAttributes(meta, true).stream())
-            .orElse(Stream.empty())
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaEnum meta) {
+        return List.of(
+            LookupElementBuilder.create(CODE_ATTRIBUTE_NAME).withIcon(HybrisIcons.TYPE_SYSTEM),
+            LookupElementBuilder.create(NAME_ATTRIBUTE_NAME).withIcon(HybrisIcons.TYPE_SYSTEM)
+        );
+    }
+
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaRelation metaRelation, final TSMetaModelAccess metaService, final Project project) {
+        final var linkMetaItem = metaService.findMetaItemByName("Link");
+        if (linkMetaItem == null) return Collections.emptyList();
+
+        final var completions = new LinkedList<>(getCompletions(linkMetaItem, project, Set.of(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)));
+
+        completions.add(
+            LookupElementBuilder.create(SOURCE_ATTRIBUTE_NAME)
+                .withIcon(HybrisIcons.TYPE_SYSTEM)
+                .withStrikeoutness(metaRelation.getSource().isDeprecated())
+                .withTypeText(metaRelation.getSource().getType(), true)
+        );
+        completions.add(
+            LookupElementBuilder.create(TARGET_ATTRIBUTE_NAME)
+                .withIcon(HybrisIcons.TYPE_SYSTEM)
+                .withStrikeoutness(metaRelation.getTarget().isDeprecated())
+                .withTypeText(metaRelation.getTarget().getType(), true)
+        );
+
+        return completions;
+    }
+
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project) {
+        return getCompletions(metaItem, project, Collections.emptySet());
+    }
+
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project, final Set<String> excludeNames) {
+        final TSMetaItemService metaItemService = TSMetaItemService.getInstance(project);
+
+        final var attributes = metaItemService
+            .getAttributes(metaItem, true).stream()
             .map(prop -> {
-                final String name = prop.getName();
+                final var name = prop.getName();
 
-                if (StringUtils.isBlank(name)) {
+                if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
                     return null;
                 }
-                final LookupElementBuilder builder = LookupElementBuilder
+                final var builder = LookupElementBuilder
                     .create(name.trim())
                     .withIcon(HybrisIcons.TYPE_SYSTEM)
                     .withStrikeoutness(prop.isDeprecated());
                 final String typeText = getTypePresentableText(prop.getType());
-                return StringUtil.isEmpty(typeText) ? builder : builder.withTypeText(typeText, true);
+                return StringUtil.isEmpty(typeText)
+                    ? builder
+                    : builder.withTypeText(typeText, true);
             })
-            .filter(Objects::nonNull)
-            .forEach(resultSet::addElement);
+            .filter(Objects::nonNull);
 
-        metaItem
-            .map(meta -> TSMetaItemService.getInstance(project).getRelationEnds(meta, true).stream())
-            .orElse(Stream.empty())
-            .map(ref -> LookupElementBuilder.create(ref.getQualifier()).withIcon(HybrisIcons.TYPE_SYSTEM))
-            .forEach(resultSet::addElement);
+        final var relationEnds = metaItemService
+            .getRelationEnds(metaItem, true).stream()
+            .map(ref -> LookupElementBuilder.create(ref.getQualifier()).withIcon(HybrisIcons.TYPE_SYSTEM));
+
+        return Stream.concat(attributes, relationEnds).collect(Collectors.toList());
     }
 
     @NotNull

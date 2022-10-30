@@ -19,31 +19,26 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
-import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME;
@@ -51,7 +46,6 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIB
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findHeaderItemTypeName;
-import static org.apache.commons.collections4.SetUtils.emptyIfNull;
 
 
 /**
@@ -74,10 +68,10 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         final TSMetaItemService metaItemService = getMetaItemService();
         final String featureName = getElement().getText().trim();
 
-        List<ResolveResult> result = tryResolveForItemType(metaModelAccess, metaItemService, featureName);
+        List<? extends ResolveResult> result = tryResolveForItemType(metaModelAccess, metaItemService, featureName);
 
         if (result == null) {
-            result = tryResolveForRelationType(metaModelAccess, featureName);
+            result = tryResolveForRelationType(metaModelAccess, metaItemService, featureName);
         }
 
         if (result == null) {
@@ -91,20 +85,15 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
         return result.toArray(new ResolveResult[0]);
     }
 
-    private List<ResolveResult> tryResolveForEnumType(final TSMetaModelAccess meta, final String featureName) {
-        final Optional<TSMetaEnum> metaEnum = findHeaderItemTypeName(getElement()).map(PsiElement::getText)
-                                                                                  .map(meta::findMetaEnumByName);
-        if (!metaEnum.isPresent()) {
-            return null;
-        }
-
-        final EnumType enumType = metaEnum.get().retrieveDom();
-        if (CODE_ATTRIBUTE_NAME.equals(featureName) || NAME_ATTRIBUTE_NAME.equals(featureName)) {
-            final EnumResolveResult resolveResult = new EnumResolveResult(enumType);
-            return Collections.singletonList(resolveResult);
-        }
-
-        return null;
+    private List<EnumResolveResult> tryResolveForEnumType(final TSMetaModelAccess metaService, final String featureName) {
+        return findHeaderItemTypeName(getElement())
+            .map(PsiElement::getText)
+            .map(metaService::findMetaEnumByName)
+            .filter(it -> CODE_ATTRIBUTE_NAME.equals(featureName) || NAME_ATTRIBUTE_NAME.equals(featureName))
+            .map(TSMetaEnum::retrieveDom)
+            .map(EnumResolveResult::new)
+            .map(Collections::singletonList)
+            .orElse(null);
     }
 
     private List<ResolveResult> tryResolveForItemType(final TSMetaModelAccess meta,
@@ -116,105 +105,52 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
             return null;
         }
 
-        final List<ResolveResult> result = metaItemService
-                                                            .findAttributesByName(metaItem.get(), featureName, true)
-                                                            .stream()
-                                                            .map(TSGlobalMetaItem.TSGlobalMetaItemAttribute::retrieveDom)
-                                                            .filter(Objects::nonNull)
-                                                            .map(AttributeResolveResult::new)
-                                                            .collect(Collectors.toCollection(LinkedList::new));
+        final List<ResolveResult> result = resolveMetaItemAttributes(metaItemService, featureName, metaItem.get());
 
         metaItemService.findReferenceEndsByQualifier(metaItem.get(), featureName, true)
-                         .stream()
-                         .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
-                         .filter(Objects::nonNull)
-                         .map(RelationElementResolveResult::new)
-                         .collect(Collectors.toCollection(() -> result));
+                       .stream()
+                       .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
+                       .filter(Objects::nonNull)
+                       .map(RelationElementResolveResult::new)
+                       .collect(Collectors.toCollection(() -> result));
 
         return result;
     }
 
-    private List<ResolveResult> tryResolveForRelationType(final TSMetaModelAccess meta,
-                                                          final String featureName) {
-        final Optional<List<TSMetaRelation>> metaReferences = findHeaderItemTypeName(getElement())
+    private List<ResolveResult> tryResolveForRelationType(final TSMetaModelAccess metaService, final TSMetaItemService metaItemService, final String featureName) {
+        return findHeaderItemTypeName(getElement())
             .map(PsiElement::getText)
-            .map(meta::findRelationByName);
+            .map(metaService::findMetaRelationByName)
+            .<List<ResolveResult>>map(meta -> {
+                if (SOURCE_ATTRIBUTE_NAME.equalsIgnoreCase(featureName)) {
+                    final var dom = meta.getSource().retrieveDom();
+                    return dom != null
+                        ? Collections.singletonList(new RelationElementResolveResult(dom))
+                        : null;
+                } else if (TARGET_ATTRIBUTE_NAME.equalsIgnoreCase(featureName)) {
+                    final var dom = meta.getTarget().retrieveDom();
+                    return dom != null
+                        ? Collections.singletonList(new RelationElementResolveResult(dom))
+                        : null;
+                }
 
-        if (metaReferences.isEmpty()) {
-            return null;
-        }
-        final Set<TSMetaRelation> references = new HashSet<>(metaReferences.get());
-        if (SOURCE_ATTRIBUTE_NAME.equals(featureName)) {
-            return emptyIfNull(references).stream()
-                                          .map(TSMetaRelation::getSource)
-                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
-                                          .filter(Objects::nonNull)
-                                          .map(RelationElementResolveResult::new)
-                                          .collect(Collectors.toList());
-        }
-        if (TARGET_ATTRIBUTE_NAME.equals(featureName)) {
-            return emptyIfNull(references).stream()
-                                          .map(TSMetaRelation::getTarget)
-                                          .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
-                                          .filter(Objects::nonNull)
-                                          .map(RelationElementResolveResult::new)
-                                          .collect(Collectors.toList());
-        }
-
-        return null;
+                return Optional.ofNullable(metaService.findMetaItemByName("Link"))
+                    .map(metaLink -> resolveMetaItemAttributes(metaItemService, featureName, metaLink))
+                    .orElse(null);
+            })
+            .orElse(null);
     }
 
-    private static class AttributeResolveResult implements TypeSystemResolveResult {
-
-        private final Attribute myDomAttribute;
-
-        public AttributeResolveResult(@NotNull final Attribute domAttribute) {
-            myDomAttribute = domAttribute;
-        }
-
-        @Nullable
-        @Override
-        public PsiElement getElement() {
-            return myDomAttribute.getQualifier().getXmlAttributeValue();
-        }
-
-        @Override
-        public boolean isValidResult() {
-            return getElement() != null;
-        }
-
-        @NotNull
-        @Override
-        public DomElement getSemanticDomElement() {
-            return myDomAttribute;
-        }
-    }
-
-    private static class RelationElementResolveResult implements TypeSystemResolveResult {
-
-        @NotNull
-        private final RelationElement myDomRelationEnd;
-
-        public RelationElementResolveResult(@NotNull final RelationElement domRelationEnd) {
-            myDomRelationEnd = domRelationEnd;
-        }
-
-        @Nullable
-        @Override
-        public PsiElement getElement() {
-            return myDomRelationEnd.getQualifier().getXmlAttributeValue();
-        }
-
-        @Override
-        public boolean isValidResult() {
-            return getElement() != null;
-        }
-
-        @NotNull
-        @Override
-        public DomElement getSemanticDomElement() {
-            return myDomRelationEnd;
-        }
+    private static List<ResolveResult> resolveMetaItemAttributes(
+        final TSMetaItemService metaItemService,
+        final String featureName,
+        final TSGlobalMetaItem metaItem
+    ) {
+        return metaItemService.findAttributesByName(metaItem, featureName, true).stream()
+                              .map(TSGlobalMetaItem.TSGlobalMetaItemAttribute::retrieveDom)
+                              .filter(Objects::nonNull)
+                              .map(AttributeResolveResult::new)
+                              .collect(Collectors.toCollection(LinkedList::new));
     }
 
 }

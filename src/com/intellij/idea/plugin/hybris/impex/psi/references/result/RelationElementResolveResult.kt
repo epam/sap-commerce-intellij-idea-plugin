@@ -19,12 +19,9 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references.result
 
 import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType
+import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-class EnumResolveResult(private val myDom: EnumType) : TypeSystemReferenceBase.TypeSystemResolveResult {
+class RelationElementResolveResult(private val myDom: RelationElement) : TypeSystemReferenceBase.TypeSystemResolveResult {
     override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom.xmlTag
     override fun isValidResult() = element != null

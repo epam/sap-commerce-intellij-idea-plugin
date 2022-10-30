@@ -23,7 +23,9 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.completion.provider.EnumTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.completion.provider.RelationTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
@@ -102,6 +104,24 @@ public class ImpexCompletionContributor extends CompletionContributor {
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
             ItemTypeCodeCompletionProvider.getInstance()
+        );
+
+        // case: enumtype-code
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .withLanguage(ImpexLanguage.getInstance())
+                .withElementType(ImpexTypes.HEADER_TYPE),
+            EnumTypeCodeCompletionProvider.getInstance()
+        );
+
+        // case: relationtype-code
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .withLanguage(ImpexLanguage.getInstance())
+                .withElementType(ImpexTypes.HEADER_TYPE),
+            RelationTypeCodeCompletionProvider.getInstance()
         );
 
         // case: item's attribute

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,8 +26,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
@@ -35,16 +33,11 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 22:08 14 May 2016
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public class ItemTypeCodeCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class EnumTypeCodeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     @NotNull
     public static CompletionProvider<CompletionParameters> getInstance() {
-        return ApplicationManager.getApplication().getService(ItemTypeCodeCompletionProvider.class);
+        return ApplicationManager.getApplication().getService(EnumTypeCodeCompletionProvider.class);
     }
 
     @Override
@@ -53,24 +46,14 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         @NotNull final ProcessingContext context,
         @NotNull CompletionResultSet result
     ) {
-        final Project project = this.getProject(parameters);
+        final Project project = getProject(parameters);
 
         if (project == null) {
             return;
         }
         result = result.caseInsensitive();
 
-        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaItem>getAll(MetaType.META_ITEM).stream()
-                                   .filter(meta -> meta.getName() != null)
-                                   .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
-                                   .forEach(result::addElement);
-
         TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaEnum>getAll(MetaType.META_ENUM).stream()
-                                   .filter(meta -> meta.getName() != null)
-                                   .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
-                                   .forEach(result::addElement);
-
-        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaRelation>getAll(MetaType.META_RELATION).stream()
                                    .filter(meta -> meta.getName() != null)
                                    .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                                    .forEach(result::addElement);

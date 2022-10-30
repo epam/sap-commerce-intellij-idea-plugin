@@ -44,6 +44,7 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
         val metaType: String?
         val isOrdered: Boolean
         val isNavigable: Boolean
+        val isDeprecated: Boolean
     }
 
     enum class RelationEnd {

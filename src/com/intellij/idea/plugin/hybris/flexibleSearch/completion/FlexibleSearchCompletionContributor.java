@@ -22,7 +22,9 @@ import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.completion.provider.EnumTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.completion.provider.RelationTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
@@ -66,6 +68,22 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             ItemTypeCodeCompletionProvider.getInstance()
+        );
+
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
+                .withLanguage(FlexibleSearchLanguage.getInstance()),
+            EnumTypeCodeCompletionProvider.getInstance()
+        );
+
+        extend(
+            CompletionType.BASIC,
+            psiElement()
+                .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
+                .withLanguage(FlexibleSearchLanguage.getInstance()),
+            RelationTypeCodeCompletionProvider.getInstance()
         );
 
         extend(

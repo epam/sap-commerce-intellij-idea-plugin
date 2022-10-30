@@ -26,6 +26,7 @@ import com.intellij.util.ui.ListTableModel
 
 private const val COLUMN_CUSTOM = "C"
 private const val COLUMN_ORDERED = "O"
+private const val COLUMN_DEPRECATED = "D"
 private const val COLUMN_MODULE = "Module"
 private const val COLUMN_OWNER = "Owner"
 private const val COLUMN_QUALIFIER = "Qualifier"
@@ -60,30 +61,12 @@ class TSMetaRelationTable private constructor(myProject: Project) : AbstractTSTa
                 columnClass = Boolean::class.java,
                 tooltip = "Ordered"
             ),
-//            createColumn(
-//                name = COLUMN_DEPRECATED,
-//                valueProvider = { attr -> attr.isDeprecated },
-//                columnClass = Boolean::class.java,
-//                tooltip = "Deprecated"
-//            ),
-//            createColumn(
-//                name = COLUMN_REDECLARE,
-//                valueProvider = { attr -> attr.isRedeclare },
-//                columnClass = Boolean::class.java,
-//                tooltip = "Redeclare"
-//            ),
-//            createColumn(
-//                name = COLUMN_AUTO_CREATE,
-//                valueProvider = { attr -> attr.isAutoCreate },
-//                columnClass = Boolean::class.java,
-//                tooltip = "AutoCreate"
-//            ),
-//            createColumn(
-//                name = COLUMN_GENERATE,
-//                valueProvider = { attr -> attr.isGenerate },
-//                columnClass = Boolean::class.java,
-//                tooltip = "Generate"
-//            ),
+            createColumn(
+                name = COLUMN_DEPRECATED,
+                valueProvider = { attr -> attr.isDeprecated },
+                columnClass = Boolean::class.java,
+                tooltip = "Deprecated"
+            ),
             createColumn(
                 name = COLUMN_MODULE,
                 valueProvider = { attr -> attr.module.name }
