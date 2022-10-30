@@ -17,20 +17,18 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaDeployment
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-internal class TSMetaDeploymentImpl<T : TSMetaClassifier<*>>(
+internal class TSMetaDeploymentImpl(
     dom: Deployment,
-    override val owner: T,
     override val module: Module,
     override val name: String?,
     override val isCustom: Boolean
-) : TSMetaDeployment<T> {
+) : TSMetaDeployment {
 
     override val domAnchor: DomAnchor<Deployment> = DomService.getInstance().createAnchor(dom)
     override val propertyTable = dom.propertyTable.stringValue

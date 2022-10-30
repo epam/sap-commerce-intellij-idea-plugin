@@ -23,7 +23,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-class TSMetaCustomPropertyImpl(
+internal class TSMetaCustomPropertyImpl(
     dom: CustomProperty,
     override val module: Module,
     override val isCustom: Boolean,
@@ -31,7 +31,7 @@ class TSMetaCustomPropertyImpl(
 ) : TSMetaCustomProperty {
 
     override val domAnchor: DomAnchor<CustomProperty> = DomService.getInstance().createAnchor(dom)
-    override val value = dom.value.rawText
+    override val rawValue = dom.value.rawText
 
     override fun toString() = "TSMetaCustomPropertyImpl(module=$module, name=$name, isCustom=$isCustom)"
 }

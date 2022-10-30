@@ -17,19 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
+import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 
-interface TSMetaModifiers : TSMetaClassifier<Modifiers> {
-
-    val isRead: Boolean
-    val isWrite: Boolean
-    val isSearch: Boolean
-    val isOptional: Boolean
-    val isPrivate: Boolean
-    val isInitial: Boolean
-    val isRemovable: Boolean
-    val isPartOf: Boolean
-    val isUnique: Boolean
-    val isDoNotOptimize: Boolean
-    val isEncrypted: Boolean
+interface TSMetaDeployment : TSMetaClassifier<Deployment> {
+    val table: String?
+    val propertyTable: String?
+    val typeCode: String?
 }

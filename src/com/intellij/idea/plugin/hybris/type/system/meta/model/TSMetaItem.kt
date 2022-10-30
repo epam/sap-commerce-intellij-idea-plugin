@@ -28,7 +28,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     val attributes: Map<String, TSMetaItemAttribute>
     val customProperties: Map<String, TSMetaCustomProperty>
     val indexes: Map<String, TSMetaItemIndex>
-    val deployment: TSMetaDeployment<TSMetaItem>
+    val deployment: TSMetaDeployment
     val description: String?
     val jaloClass: String?
     val isAbstract: Boolean
@@ -38,6 +38,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     val isJaloOnly: Boolean
 
     interface TSMetaItemIndex : TSMetaClassifier<Index> {
+        override val name: String
         val keys: Set<String>
         val creationMode: CreationMode?
         val isRemove: Boolean
@@ -46,8 +47,9 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     }
 
     interface TSMetaItemAttribute : TSMetaClassifier<Attribute> {
+        override val name: String
         val customProperties: Map<String, TSMetaCustomProperty>
-        val modifiers: TSMetaModifiers<TSMetaItemAttribute>
+        val modifiers: TSMetaModifiers
         val description: String?
         val defaultValue: String?
         val type: String?

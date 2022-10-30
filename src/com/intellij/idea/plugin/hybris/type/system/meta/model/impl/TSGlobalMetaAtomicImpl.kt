@@ -28,7 +28,7 @@ import com.intellij.util.xml.DomService
 
 private const val ATOMIC_DEFAULT_EXTENDS = "java.lang.Object"
 
-class TSMetaAtomicImpl(
+internal class TSMetaAtomicImpl(
     dom: AtomicType,
     override val module: Module,
     override val name: String,
@@ -43,7 +43,7 @@ class TSMetaAtomicImpl(
     override fun toString() = "TSMetaAtomicImpl(module=$module, name=$name, isCustom=$isCustom)"
 }
 
-class TSGlobalMetaAtomicImpl(localMeta: TSMetaAtomic)
+internal class TSGlobalMetaAtomicImpl(localMeta: TSMetaAtomic)
     : TSMetaSelfMerge<AtomicType, TSMetaAtomic>(localMeta), TSGlobalMetaAtomic {
 
     override val domAnchor = localMeta.domAnchor

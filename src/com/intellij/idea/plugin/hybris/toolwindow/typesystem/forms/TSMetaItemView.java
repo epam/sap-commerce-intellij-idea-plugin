@@ -31,7 +31,6 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,9 +46,9 @@ public class TSMetaItemView {
     private JBTextField myDeploymentTable;
     private JBTextField myDeploymentTypeCode;
     private JBTextField myCode;
-    private JBTable myAttributes;
-    private JBTable myCustomProperties;
-    private JBTable myIndexes;
+    private TSMetaItemAttributesTable myAttributes;
+    private TSMetaItemCustomPropertiesTable myCustomProperties;
+    private TSMetaItemIndexesTable myIndexes;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
@@ -74,9 +73,9 @@ public class TSMetaItemView {
             return;
         }
 
-        ((TSMetaItemAttributesTable) myAttributes).updateModel(myMeta);
-        ((TSMetaItemCustomPropertiesTable) myCustomProperties).updateModel(myMeta);
-        ((TSMetaItemIndexesTable) myIndexes).updateModel(myMeta);
+        myAttributes.updateModel(myMeta);
+        myCustomProperties.updateModel(myMeta);
+        myIndexes.updateModel(myMeta);
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
@@ -102,7 +101,7 @@ public class TSMetaItemView {
     public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemIndex metaIndex) {
         initData(meta);
 
-        ((TSMetaItemIndexesTable) myIndexes).select(metaIndex);
+        myIndexes.select(metaIndex);
         myScrollablePane.getVerticalScrollBar().setValue(myIndexesPane.getLocation().y);
 
         return myContentPane;
@@ -111,7 +110,7 @@ public class TSMetaItemView {
     public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaItem.TSMetaItemAttribute metaAttribute) {
         initData(meta);
 
-        ((TSMetaItemAttributesTable) myAttributes).select(metaAttribute);
+        myAttributes.select(metaAttribute);
         myScrollablePane.getVerticalScrollBar().setValue(myAttributesPane.getLocation().y);
 
         return myContentPane;
@@ -120,7 +119,7 @@ public class TSMetaItemView {
     public JBPanel getContent(final TSGlobalMetaItem meta, final TSMetaCustomProperty metaCustomProperty) {
         initData(meta);
 
-        ((TSMetaItemCustomPropertiesTable) myCustomProperties).select(metaCustomProperty);
+        myCustomProperties.select(metaCustomProperty);
         myScrollablePane.getVerticalScrollBar().setValue(myCustomPropertiesPane.getLocation().y);
 
         return myContentPane;

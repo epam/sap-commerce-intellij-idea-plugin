@@ -20,12 +20,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
 import com.intellij.openapi.project.Project
 
 class TSMetaItemCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSGlobalMetaItem>(myProject) {
 
-    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaCustomProperty> = TSMetaItemService.getInstance(myProject)
+    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject)
         .getCustomProperties(meta, true)
         .sortedWith(compareBy(
             { !it.isCustom },

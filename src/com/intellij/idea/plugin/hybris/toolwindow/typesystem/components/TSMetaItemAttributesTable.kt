@@ -40,7 +40,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
     override fun select(meta: TSMetaItemAttribute) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaItemAttribute> = TSMetaItemService.getInstance(myProject).getAttributes(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getAttributes(meta, true)
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
@@ -71,7 +71,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
                 name = COLUMN_AUTO_CREATE,
                 valueProvider = { attr -> attr.isAutoCreate },
                 columnClass = Boolean::class.java,
-                tooltip = "Autocreate"
+                tooltip = "AutoCreate"
             ),
             createColumn(
                 name = COLUMN_GENERATE,

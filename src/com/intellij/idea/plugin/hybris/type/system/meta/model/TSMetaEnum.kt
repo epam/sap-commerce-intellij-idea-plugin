@@ -17,12 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model
 
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue
 
 interface TSMetaEnum : TSMetaClassifier<EnumType>  {
-    val values: CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>
+    val values: Map<String, TSMetaEnumValue>
     val description: String?
     val jaloClass: String?
     val isAutoCreate: Boolean
@@ -30,8 +29,8 @@ interface TSMetaEnum : TSMetaClassifier<EnumType>  {
     val isDynamic: Boolean
 
     interface TSMetaEnumValue : TSMetaClassifier<EnumValue> {
+        override val name: String
         val description: String?
-        val owner: TSMetaEnum
     }
 }
 

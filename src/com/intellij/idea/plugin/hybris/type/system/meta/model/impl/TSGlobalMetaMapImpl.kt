@@ -25,7 +25,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-class TSMetaMapImpl(
+internal class TSMetaMapImpl(
     dom: MapType,
     override val module: Module,
     override val name: String?,
@@ -42,7 +42,7 @@ class TSMetaMapImpl(
     override fun toString() = "TSMetaMapImpl(module=$module, name=$name, isCustom=$isCustom)"
 }
 
-class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
+internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
     : TSMetaSelfMerge<MapType, TSMetaMap>(localMeta), TSGlobalMetaMap {
 
     override val domAnchor = localMeta.domAnchor

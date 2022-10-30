@@ -17,19 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaModifiers
 import com.intellij.idea.plugin.hybris.type.system.model.Modifiers
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
-import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomService
 
-class TSMetaModifiersImpl<T : TSMetaClassifier<out DomElement>>(
+internal class TSMetaModifiersImpl(
     dom: Modifiers,
     override val module: Module,
     override val isCustom: Boolean
-) : TSMetaModifiers<T> {
+) : TSMetaModifiers {
 
     override val domAnchor: DomAnchor<Modifiers> = DomService.getInstance().createAnchor(dom)
     override val isRead = java.lang.Boolean.TRUE == dom.read.value

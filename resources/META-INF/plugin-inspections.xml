@@ -144,21 +144,19 @@
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForB2BCommerceExtension"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle"-->
-<!--                         key="hybris.inspections.typesystem.CatalogAwareTypesMustHaveSpecificConditions.key"-->
+<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareTypesMustHaveSpecificConditions.key"-->
 <!--                         shortName="CatalogAwareTypesMustHaveSpecificConditions" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareTypesMustHaveSpecificConditions"/>-->
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle"-->
-<!--                         key="hybris.inspections.typesystem.ConditionForCatalogVersionAttributeQualifier.key"-->
-<!--                         shortName="ConditionForCatalogVersionAttributeQualifier" level="ERROR"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.ConditionForCatalogVersionAttributeQualifier"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareUniqueKeyAttributeQualifier.key"
+                         shortName="CatalogAwareUniqueKeyAttributeQualifier" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareUniqueKeyAttributeQualifier"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.ConditionForUniqueKeyAttributeQualifier.key"-->
-<!--                         shortName="ConditionForUniqueKeyAttributeQualifier" level="ERROR"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.ConditionForUniqueKeyAttributeQualifier"/>-->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareCatalogVersionAttributeQualifier.key"
+                         shortName="CatalogAwareCatalogVersionAttributeQualifier" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareCatalogVersionAttributeQualifier"/>
 
     </extensions>
 

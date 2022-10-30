@@ -79,7 +79,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .map { prop ->
                         val name = prop.name
                         val builder = LookupElementBuilder
-                                .create(name!!)
+                                .create(name)
                                 .withIcon(HybrisIcons.TYPE_SYSTEM)
                                 .withStrikeoutness(prop.isDeprecated)
                         val typeText = getTypePresentableText(prop.type)
@@ -88,7 +88,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .filter { Objects.nonNull(it) }
                     .forEach { resultSet.addElement(it) }
 
-            metaItemService.getReferenceEndsStream(metaItem, true)
+            metaItemService.getReferenceEnds(metaItem, true)
                     .map { ref -> LookupElementBuilder.create(ref.qualifier).withIcon(HybrisIcons.TYPE_SYSTEM) }
                     .forEach { resultSet.addElement(it) }
 

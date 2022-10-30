@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
 import com.intellij.idea.plugin.hybris.type.system.model.Type
 
 interface TSMetaRelation : TSMetaClassifier<Relation> {
-    val deployment: TSMetaDeployment<TSMetaRelation>
+    val deployment: TSMetaDeployment
     val source: TSMetaRelationElement
     val target: TSMetaRelationElement
     val description: String?
@@ -32,11 +32,11 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     val isGenerate: Boolean
 
     interface TSMetaRelationElement : TSMetaClassifier<RelationElement> {
-        val owner: TSMetaRelation
+        var owner: TSMetaRelation
         val end: RelationEnd
         val qualifier: String
         val type: String
-        val modifiers: TSMetaModifiers<TSMetaRelationElement>
+        val modifiers: TSMetaModifiers
         val customProperties: Map<String, TSMetaCustomProperty>
         val collectionType: Type
         val cardinality: Cardinality?

@@ -52,7 +52,7 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
             ),
             createColumn(
                 name = COLUMN_VALUE,
-                valueProvider = { attr -> attr.value ?: "" },
+                valueProvider = { attr -> attr.rawValue ?: "" },
                 tooltip = "Value"
             )
         )

@@ -106,8 +106,8 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         metaItem
                 .map { meta -> TSMetaItemService.getInstance(project).getAttributes(meta,true).stream() }
                 .orElse(Stream.empty())
-                .map<LookupElementBuilder> { prop ->
-                    val name = prop.name ?: return@map null
+                .map { prop ->
+                    val name = prop.name
 
                     val builder = LookupElementBuilder
                             .create(name)
@@ -119,8 +119,8 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 .filter { Objects.nonNull(it) }
                 .forEach { emptyPrefixResultSet.addElement(it) }
         metaItem
-                .map { meta -> TSMetaItemService.getInstance(project).getReferenceEndsStream(meta, true) }
-                .orElse(Stream.empty())
+                .map { meta -> TSMetaItemService.getInstance(project).getReferenceEnds(meta, true) }
+                .orElse(emptyList())
                 .map { ref ->
                     LookupElementBuilder
                             .create(ref.qualifier)

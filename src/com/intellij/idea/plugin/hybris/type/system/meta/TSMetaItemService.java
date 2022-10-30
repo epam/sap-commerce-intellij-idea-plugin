@@ -25,10 +25,8 @@ import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public interface TSMetaItemService {
     
@@ -42,12 +40,12 @@ public interface TSMetaItemService {
 
     List<? extends TSMetaCustomProperty> getCustomProperties(TSGlobalMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(TSGlobalMetaItem meta, String name, boolean includeInherited);
+    List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(TSGlobalMetaItem meta, String name, boolean includeInherited);
 
     Set<TSGlobalMetaItem> getExtends(TSGlobalMetaItem meta);
 
-    Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(TSGlobalMetaItem meta, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEnds(TSGlobalMetaItem meta, boolean includeInherited);
 
-    Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(TSGlobalMetaItem meta, @NotNull String role, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(TSGlobalMetaItem meta, @NotNull String role, boolean includeInherited);
 
 }

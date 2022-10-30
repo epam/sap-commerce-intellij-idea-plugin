@@ -28,8 +28,8 @@ class TSGlobalMetaModel : Disposable {
 
     private val myMetaCache: MutableMap<MetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaRelation.TSMetaRelationElement>()
-    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment<*>>();
-    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment<*>>();
+    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
+    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
 
     override fun dispose() {
         myMetaCache.clear()
@@ -37,9 +37,9 @@ class TSGlobalMetaModel : Disposable {
         myDeploymentTables.clear()
     }
 
-    fun getDeploymentForTable(table: String?) : TSMetaDeployment<*>? = if (table != null) myDeploymentTables[table] else null
-    fun getDeploymentForTypeCode(typeCode: Int?) : TSMetaDeployment<*>? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
-    fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment<*>? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
+    fun getDeploymentForTable(table: String?) : TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
+    fun getDeploymentForTypeCode(typeCode: Int?) : TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
+    fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
     fun getNextAvailableTypeCode(): Int = myDeploymentTypeCodes.keys
         .asSequence()
         .filter { it < 32700 } // OOTB Processing extension
@@ -52,13 +52,15 @@ class TSGlobalMetaModel : Disposable {
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: MetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
+    fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[name]
+
     fun getMetaTypes() = myMetaCache;
 
     fun getReference(name: String?): TSMetaRelation.TSMetaRelationElement? = name?.let { getReferences()[it] }
 
     fun getReferences() = myReferencesBySourceTypeName;
 
-    fun addDeployment(deployment: TSMetaDeployment<*>) {
+    fun addDeployment(deployment: TSMetaDeployment) {
         myDeploymentTables[deployment.table] = deployment
         val typeCode = deployment.typeCode?.toIntOrNull()
         if (typeCode != null) {

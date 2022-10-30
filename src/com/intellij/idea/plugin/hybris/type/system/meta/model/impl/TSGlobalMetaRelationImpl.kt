@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
@@ -28,14 +26,15 @@ import com.intellij.idea.plugin.hybris.type.system.model.Type
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
-import java.util.concurrent.ConcurrentHashMap
 
-
-class TSMetaRelationImpl(
+internal class TSMetaRelationImpl(
     dom: Relation,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override val isCustom: Boolean,
+    override val source: TSMetaRelationElement,
+    override val target: TSMetaRelationElement,
+    override val deployment: TSMetaDeployment
 ) : TSMetaRelation {
 
     override val domAnchor: DomAnchor<Relation> = DomService.getInstance().createAnchor(dom)
@@ -43,22 +42,26 @@ class TSMetaRelationImpl(
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
     override val description = dom.description.stringValue
-    override val deployment: TSMetaDeployment<TSMetaRelation> = TSMetaDeploymentImpl(dom.deployment, this, module, TSMetaModelNameProvider.extract(dom.deployment), isCustom)
-    override val source: TSMetaRelation.TSMetaRelationElement = TSMetaRelationElementImpl(dom.sourceElement, this, module, isCustom, RelationEnd.SOURCE)
-    override val target: TSMetaRelation.TSMetaRelationElement = TSMetaRelationElementImpl(dom.targetElement, this, module, isCustom, RelationEnd.TARGET)
+
+    init {
+        source.owner = this
+        target.owner = this
+    }
 
     override fun toString() = "TSMetaRelationImpl(module=$module, name=$name, isCustom=$isCustom)"
 
-    private class TSMetaRelationElementImpl(
+    internal class TSMetaRelationElementImpl(
         dom: RelationElement,
-        override val owner: TSMetaRelation,
         override val module: Module,
         override val isCustom: Boolean,
-        override val end: RelationEnd
-    ) : TSMetaRelation.TSMetaRelationElement {
+        override val end: RelationEnd,
+        override val modifiers: TSMetaModifiers,
+        override val customProperties: Map<String, TSMetaCustomProperty>
+    ) : TSMetaRelationElement {
+
+        override lateinit var owner: TSMetaRelation
 
         override val domAnchor: DomAnchor<RelationElement> = DomService.getInstance().createAnchor(dom)
-        override val customProperties: ConcurrentHashMap<String, TSMetaCustomProperty> = CaseInsensitiveConcurrentHashMap()
 
         override val type = dom.type.stringValue ?: ""
         override val qualifier = dom.qualifier.stringValue ?: ""
@@ -70,20 +73,11 @@ class TSMetaRelationImpl(
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
 
-        override val modifiers: TSMetaModifiers<TSMetaRelation.TSMetaRelationElement> = TSMetaModifiersImpl(dom.modifiers, module, isCustom)
-
-        init {
-            dom.customProperties.properties.stream()
-                .filter { TSMetaModelNameProvider.extract(it) != null}
-                .map { TSMetaCustomPropertyImpl(it, module, isCustom, TSMetaModelNameProvider.extract(it)!!) }
-                .forEach { customProperties[it.name] = it }
-        }
-
         override fun toString() = "TSMetaRelationElementImpl(module=$module, name=$name, isCustom=$isCustom)"
     }
 }
 
-class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
+internal class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
     : TSMetaSelfMerge<Relation, TSMetaRelation>(localMeta), TSGlobalMetaRelation {
 
     override val domAnchor = localMeta.domAnchor
@@ -92,9 +86,9 @@ class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
     override var isAutoCreate = localMeta.isAutoCreate
     override var isGenerate = localMeta.isGenerate
     override var description = localMeta.description
-    override var deployment: TSMetaDeployment<TSMetaRelation> = localMeta.deployment
-    override var source: TSMetaRelationElement = localMeta.source
-    override var target: TSMetaRelationElement = localMeta.target
+    override var deployment = localMeta.deployment
+    override var source = localMeta.source
+    override var target = localMeta.target
 
     override fun mergeInternally(localMeta: TSMetaRelation) = Unit
 

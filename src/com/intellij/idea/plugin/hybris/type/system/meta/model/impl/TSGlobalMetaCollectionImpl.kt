@@ -26,7 +26,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-class TSMetaCollectionImpl(
+internal class TSMetaCollectionImpl(
     dom: CollectionType,
     override val module: Module,
     override val name: String?,
@@ -42,7 +42,7 @@ class TSMetaCollectionImpl(
     override fun toString() = "TSMetaCollectionImpl(module=$module, name=$name, isCustom=$isCustom)"
 }
 
-class TSGlobalMetaCollectionImpl(localMeta: TSMetaCollection)
+internal class TSGlobalMetaCollectionImpl(localMeta: TSMetaCollection)
     : TSMetaSelfMerge<CollectionType, TSMetaCollection>(localMeta), TSGlobalMetaCollection {
 
     override val domAnchor = localMeta.domAnchor

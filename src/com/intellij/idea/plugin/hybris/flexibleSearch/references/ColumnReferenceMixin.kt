@@ -59,12 +59,13 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
             return ResolveResult.EMPTY_ARRAY
         }
 
-        val attributes = TSMetaItemService.getInstance(project)
+        val metaItemService = TSMetaItemService.getInstance(project)
+        val attributes = metaItemService
                 .findAttributesByName(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { AttributeResolveResult(it) }
 
-        val relations = TSMetaItemService.getInstance(project)
+        val relations = metaItemService
                 .findReferenceEndsByRole(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { RelationElementResolveResult(it) }

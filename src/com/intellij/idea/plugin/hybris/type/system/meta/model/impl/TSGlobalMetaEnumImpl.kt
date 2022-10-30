@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum.TSMetaEnumValue
@@ -29,43 +28,35 @@ import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
-class TSMetaEnumImpl(
+internal class TSMetaEnumImpl(
     dom: EnumType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override val isCustom: Boolean,
+    override val values: Map<String, TSMetaEnumValue>
 ) : TSMetaEnum {
 
     override val domAnchor: DomAnchor<EnumType> = DomService.getInstance().createAnchor(dom)
-    override val values = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>()
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
     override val isDynamic = java.lang.Boolean.TRUE == dom.dynamic.value
     override val description = dom.description.stringValue
     override val jaloClass = dom.jaloClass.stringValue
 
-    init {
-        dom.values
-            .filter { TSMetaModelNameProvider.extract(it) != null }
-            .map { TSMetaEnumValueImpl(it, module, this, isCustom, TSMetaModelNameProvider.extract(it)!!) }
-            .forEach { values[it.name] = it }
-    }
-
-    class TSMetaEnumValueImpl(
+    internal class TSMetaEnumValueImpl(
         dom: EnumValue,
         override val module: Module,
-        override val owner: TSMetaEnum,
         override val isCustom: Boolean,
         override val name: String
     ) : TSMetaEnumValue {
 
         override val domAnchor: DomAnchor<EnumValue> = DomService.getInstance().createAnchor(dom)
         override val description = dom.description.stringValue
-
     }
+
 }
 
-class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
+internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
     : TSMetaSelfMerge<EnumType, TSMetaEnum>(localMeta), TSGlobalMetaEnum {
 
     override val values = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>()

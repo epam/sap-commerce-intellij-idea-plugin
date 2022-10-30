@@ -37,7 +37,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TSMetaItemServiceImpl implements TSMetaItemService {
 
@@ -84,7 +83,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(final TSGlobalMetaItem meta, final String name, final boolean includeInherited) {
+    public List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(final TSGlobalMetaItem meta, final String name, final boolean includeInherited) {
         final LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
         if (includeInherited) {
             final Consumer<TSGlobalMetaItem> visitor = parentMeta -> collectOwnAttributesByName(parentMeta, name, result);
@@ -110,7 +109,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public Stream<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEndsStream(final TSGlobalMetaItem meta, final boolean includeInherited) {
+    public List<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEnds(final TSGlobalMetaItem meta, final boolean includeInherited) {
         final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
         final Consumer<TSGlobalMetaItem> visitor = mc -> TSMetaModelAccess.Companion.getInstance(myProject).collectReferencesForSourceType(mc, result);
         if (includeInherited) {
@@ -118,17 +117,17 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
         } else {
             visitor.accept(meta);
         }
-        return result.stream();
+        return result;
     }
 
     @Override
-    public Collection<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(
+    public List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(
         final TSGlobalMetaItem meta, @NotNull final String role, final boolean includeInherited
     ) {
         final String targetRoleNoCase = role.toLowerCase();
-        return getReferenceEndsStream(meta, includeInherited)
-            .filter(ref -> ref.getQualifier().equalsIgnoreCase(targetRoleNoCase))
-            .collect(Collectors.toList());
+        return getReferenceEnds(meta, includeInherited).stream()
+                                                       .filter(ref -> ref.getQualifier().equalsIgnoreCase(targetRoleNoCase))
+                                                       .collect(Collectors.toList());
     }
 
     private Optional<TSGlobalMetaItem> getTsMetaItem(final TSGlobalMetaItem meta, final Set<String> visitedParents) {
@@ -150,7 +149,10 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     private void collectOwnAttributesByName(final TSGlobalMetaItem meta, @NotNull final String name, @NotNull final Collection<TSGlobalMetaItem.TSGlobalMetaItemAttribute> output) {
-        output.add(meta.getAttributes().get(name));
+        final var attr = meta.getAttributes().get(name);
+        if (attr != null) {
+            output.add(attr);
+        }
     }
 
     /**
