@@ -121,12 +121,11 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(
-        final TSGlobalMetaItem meta, @NotNull final String role, final boolean includeInherited
+    public List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByQualifier(
+        final TSGlobalMetaItem meta, @NotNull final String qualifier, final boolean includeInherited
     ) {
-        final String targetRoleNoCase = role.toLowerCase();
         return getReferenceEnds(meta, includeInherited).stream()
-                                                       .filter(ref -> ref.getQualifier().equalsIgnoreCase(targetRoleNoCase))
+                                                       .filter(ref -> ref.getQualifier().equalsIgnoreCase(qualifier))
                                                        .collect(Collectors.toList());
     }
 

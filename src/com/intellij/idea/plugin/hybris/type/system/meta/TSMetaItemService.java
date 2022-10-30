@@ -46,6 +46,6 @@ public interface TSMetaItemService {
 
     List<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEnds(TSGlobalMetaItem meta, boolean includeInherited);
 
-    List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByRole(TSGlobalMetaItem meta, @NotNull String role, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByQualifier(TSGlobalMetaItem meta, @NotNull String qualifier, boolean includeInherited);
 
 }

@@ -58,7 +58,7 @@ class FunctionTypeSystemAttributeReference(owner: ImpexParameter) : TypeSystemRe
                     .filter { Objects.nonNull(it) }
                     .map { AttributeResolveResult(it!!) }
 
-            TSMetaItemService.getInstance(project).findReferenceEndsByRole(metaItem, featureName, true)
+            TSMetaItemService.getInstance(project).findReferenceEndsByQualifier(metaItem, featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { RelationElementResolveResult(it!!) }

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
@@ -49,6 +50,7 @@ public class TSMetaItemView {
     private TSMetaItemAttributesTable myAttributes;
     private TSMetaItemCustomPropertiesTable myCustomProperties;
     private TSMetaItemIndexesTable myIndexes;
+    private TSMetaRelationTable myRelations;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
@@ -62,6 +64,7 @@ public class TSMetaItemView {
     private JBPanel myDetailsPane;
     private JPanel myDeploymentPane;
     private JPanel myFlagsPane;
+    private JPanel myRelationsPane;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
@@ -76,6 +79,7 @@ public class TSMetaItemView {
         myAttributes.updateModel(myMeta);
         myCustomProperties.updateModel(myMeta);
         myIndexes.updateModel(myMeta);
+        myRelations.updateModel(myMeta);
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
@@ -129,6 +133,7 @@ public class TSMetaItemView {
         myAttributes = TSMetaItemAttributesTable.Companion.getInstance(myProject);
         myCustomProperties = TSMetaItemCustomPropertiesTable.Companion.getInstance(myProject);
         myIndexes = TSMetaItemIndexesTable.Companion.getInstance(myProject);
+        myRelations = TSMetaRelationTable.Companion.getInstance(myProject);
         myDetailsPane = new JBPanel();
         myDeploymentPane = new JBPanel();
         myFlagsPane = new JBPanel();
@@ -145,6 +150,10 @@ public class TSMetaItemView {
                                         .disableUpDownActions()
                                         .setPanelBorder(JBUI.Borders.empty())
                                         .createPanel();
+        myRelationsPane = ToolbarDecorator.createDecorator(myRelations)
+                                          .disableUpDownActions()
+                                          .setPanelBorder(JBUI.Borders.empty())
+                                          .createPanel();
 
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myDeploymentPane.setBorder(IdeBorderFactory.createTitledBorder("Deployment"));
@@ -152,5 +161,6 @@ public class TSMetaItemView {
         myAttributesPane.setBorder(IdeBorderFactory.createTitledBorder("Attributes"));
         myCustomPropertiesPane.setBorder(IdeBorderFactory.createTitledBorder("Custom Properties"));
         myIndexesPane.setBorder(IdeBorderFactory.createTitledBorder("Indexes"));
+        myRelationsPane.setBorder(IdeBorderFactory.createTitledBorder("Relations"));
     }
 }

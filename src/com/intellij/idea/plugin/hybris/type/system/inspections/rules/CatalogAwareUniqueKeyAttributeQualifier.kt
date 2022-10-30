@@ -52,7 +52,7 @@ class CatalogAwareUniqueKeyAttributeQualifier : AbstractTypeSystemInspection() {
         val meta = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
             ?: return
         val domCustomProperty = dom.customProperties.properties
-            .first { TSMetaCustomProperty.KnownProperties.UNIQUE_KEY_ATTRIBUTE_QUALIFIER.equals(it.name.stringValue, true) }
+            .firstOrNull { TSMetaCustomProperty.KnownProperties.UNIQUE_KEY_ATTRIBUTE_QUALIFIER.equals(it.name.stringValue, true) }
             ?: return
         val customPropertyValue = TSMetaCustomPropertyService.getInstance(project).parseCommaSeparatedStringValue(domCustomProperty)
             ?: return
@@ -61,17 +61,16 @@ class CatalogAwareUniqueKeyAttributeQualifier : AbstractTypeSystemInspection() {
         val nonUniqueQualifiers = customPropertyValue
             .filter {qualifier ->
                 val attributes = metaItemService.findAttributesByName(meta, qualifier, true).map { it.modifiers }
-                val referenceEnds = metaItemService.findReferenceEndsByRole(meta, qualifier, true).map { it.modifiers }
+                val referenceEnds = metaItemService.findReferenceEndsByQualifier(meta, qualifier, true).map { it.modifiers }
 
                 (attributes + referenceEnds).none { it.isUnique }
             }
 
         if (nonUniqueQualifiers.isNotEmpty()) {
             holder.createProblem(
-                domCustomProperty,
+                domCustomProperty.value,
                 severity,
-                displayName,
-                getTextRange(dom)
+                displayName
             )
         }
     }

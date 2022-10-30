@@ -54,7 +54,7 @@ class CatalogAwareCatalogVersionAttributeQualifier : AbstractTypeSystemInspectio
         val meta = metaModel.getMetaItem(dom.code.stringValue)
             ?: return
         val domCustomProperty = dom.customProperties.properties
-            .first { TSMetaCustomProperty.KnownProperties.CATALOG_VERSION_ATTRIBUTE_QUALIFIER.equals(it.name.stringValue, true) }
+            .firstOrNull { TSMetaCustomProperty.KnownProperties.CATALOG_VERSION_ATTRIBUTE_QUALIFIER.equals(it.name.stringValue, true) }
             ?: return
 
         val qualifier = TSMetaCustomPropertyService.getInstance(project).parseStringValue(domCustomProperty)
@@ -75,10 +75,9 @@ class CatalogAwareCatalogVersionAttributeQualifier : AbstractTypeSystemInspectio
 
         if (!isAttributeTypeCatalogAware) {
             holder.createProblem(
-                domCustomProperty,
+                domCustomProperty.value,
                 severity,
-                displayName,
-                getTextRange(dom)
+                displayName
             )
         }
     }
