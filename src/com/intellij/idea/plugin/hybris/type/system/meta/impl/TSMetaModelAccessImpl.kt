@@ -108,10 +108,6 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return result
     }
 
-    override fun collectReferencesForSourceType(source: TSMetaItem, out: LinkedList<TSMetaRelation.TSMetaRelationElement?>) {
-        getMetaModel().getReference(source.name)?.let { out.add(it) }
-    }
-
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: MetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process

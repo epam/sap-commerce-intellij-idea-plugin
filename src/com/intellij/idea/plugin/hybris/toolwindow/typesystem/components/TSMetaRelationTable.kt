@@ -39,7 +39,7 @@ class TSMetaRelationTable private constructor(myProject: Project) : AbstractTSTa
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED)
     override fun select(meta: TSMetaRelation.TSMetaRelationElement) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getReferenceEnds(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getRelationEnds(meta, true)
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },

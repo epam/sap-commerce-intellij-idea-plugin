@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteSubTagQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.stream
@@ -50,7 +48,7 @@ class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspect
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[dom.code.stringValue]
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
             ?: return
 
         val currentMetaTypeCode = metaItem.deployment.typeCode

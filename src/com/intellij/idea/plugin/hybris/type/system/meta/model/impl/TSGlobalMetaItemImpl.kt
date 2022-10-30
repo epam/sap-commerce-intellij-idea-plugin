@@ -107,6 +107,12 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
     override val indexes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemIndex>()
 
+    override var allAttributes: List<TSGlobalMetaItem.TSGlobalMetaItemAttribute>? = null
+    override var allIndexes: List<TSGlobalMetaItem.TSGlobalMetaItemIndex>? = null
+    override var allCustomProperties: List<TSMetaCustomProperty>? = null
+    override var allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>? = null
+    override var allExtends: Set<TSGlobalMetaItem>? = null
+
     override var domAnchor = localMeta.domAnchor
     override var module = localMeta.module
     override var extendedMetaItemName = localMeta.extendedMetaItemName
@@ -125,6 +131,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         mergeCustomProperties(localMeta)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun mergeAttributes(localMeta: TSMetaItem) = localMeta.attributes.values.forEach {
         val globalAttribute = this.attributes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemAttributeImpl(it)}
         if (globalAttribute is TSMetaSelfMerge<*, *>) {
@@ -132,6 +139,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun mergeIndexes(localMeta: TSMetaItem) = localMeta.indexes.values.forEach {
         val globalIndex = this.indexes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemIndexImpl(it) }
         if (globalIndex is TSMetaSelfMerge<*, *>) {

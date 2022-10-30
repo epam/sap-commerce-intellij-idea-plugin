@@ -88,7 +88,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .filter { Objects.nonNull(it) }
                     .forEach { resultSet.addElement(it) }
 
-            metaItemService.getReferenceEnds(metaItem, true)
+            metaItemService.getRelationEnds(metaItem, true)
                     .map { ref -> LookupElementBuilder.create(ref.qualifier).withIcon(HybrisIcons.TYPE_SYSTEM) }
                     .forEach { resultSet.addElement(it) }
 

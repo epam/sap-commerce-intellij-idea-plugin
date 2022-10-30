@@ -43,7 +43,6 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(pa
             MetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
             MetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
             MetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
-            else -> Unit
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 

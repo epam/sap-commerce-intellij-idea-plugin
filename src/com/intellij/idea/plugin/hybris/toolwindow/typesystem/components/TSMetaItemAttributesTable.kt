@@ -85,7 +85,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
             ),
             createColumn(
                 name = COLUMN_QUALIFIER,
-                valueProvider = { attr -> attr.name ?: "" }
+                valueProvider = { attr -> attr.name }
             ),
             createColumn(
                 name = COLUMN_TYPE,

@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -50,7 +48,7 @@ class CollectionsAreOnlyForDynamicAndJalo : AbstractTypeSystemInspection() {
     ) {
 
         if (!arrayOf(PersistenceType.DYNAMIC, PersistenceType.JALO).contains(attribute.persistence.type.value)) {
-            TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaCollection>(MetaType.META_COLLECTION)[attribute.type.stringValue]
+            TSMetaModelAccess.getInstance(project).getMetaModel().getMetaCollection(attribute.type.stringValue)
                 ?: return
 
             holder.createProblem(

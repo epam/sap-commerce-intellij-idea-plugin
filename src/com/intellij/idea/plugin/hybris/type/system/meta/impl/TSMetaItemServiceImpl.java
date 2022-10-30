@@ -47,55 +47,75 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     }
 
     @Override
-    public List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> getAttributes(final TSGlobalMetaItem meta, final boolean includeInherited) {
-        final List<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
-        if (includeInherited) {
-            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnAttributes(parent, result);
-            walkInheritance(meta, visitor);
-        } else {
-            collectOwnAttributes(meta, result);
+    public Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> getAttributes(final TSGlobalMetaItem meta, final boolean includeInherited) {
+        if (!includeInherited) {
+            return meta.getAttributes().values();
         }
-        return result;
+
+        return Optional.ofNullable(meta.getAllAttributes())
+                       .orElseGet(() -> {
+                           final List<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
+                           final Consumer<TSGlobalMetaItem> visitor = parent -> result.addAll(parent.getAttributes().values());
+                           walkInheritance(meta, visitor);
+                           meta.setAllAttributes(result);
+
+                           return result;
+                       });
     }
 
     @Override
-    public List<? extends TSMetaItem.TSMetaItemIndex> getIndexes(final TSGlobalMetaItem meta, final boolean includeInherited) {
-        final List<TSMetaItem.TSMetaItemIndex> result = new LinkedList<>();
-        if (includeInherited) {
-            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnIndexes(parent, result);
-            walkInheritance(meta, visitor);
-        } else {
-            collectOwnIndexes(meta, result);
+    public Collection<? extends TSMetaItem.TSMetaItemIndex> getIndexes(final TSGlobalMetaItem meta, final boolean includeInherited) {
+        if (!includeInherited) {
+            return meta.getIndexes().values();
         }
-        return result;
+        return Optional.ofNullable(meta.getAllIndexes())
+                       .orElseGet(() -> {
+                           final List<TSGlobalMetaItem.TSGlobalMetaItemIndex> result = new LinkedList<>();
+                           final Consumer<TSGlobalMetaItem> visitor = parent -> result.addAll(parent.getIndexes().values());
+                           walkInheritance(meta, visitor);
+                           meta.setAllIndexes(result);
+
+                           return result;
+                       });
     }
 
     @Override
-    public @NotNull List<? extends TSMetaCustomProperty> getCustomProperties(final TSGlobalMetaItem meta, final boolean includeInherited) {
-        final List<TSMetaCustomProperty> result = new LinkedList<>();
-        if (includeInherited) {
-            final Consumer<TSGlobalMetaItem> visitor = parent -> collectOwnCustomProperties(parent, result);
-            walkInheritance(meta, visitor);
-        } else {
-            collectOwnCustomProperties(meta, result);
+    public Collection<? extends TSMetaCustomProperty> getCustomProperties(final TSGlobalMetaItem meta, final boolean includeInherited) {
+
+        if (!includeInherited) {
+            return meta.getCustomProperties().values();
         }
-        return result;
+
+        return Optional.ofNullable(meta.getAllCustomProperties())
+                       .orElseGet(() -> {
+                           final List<TSMetaCustomProperty> result = new LinkedList<>();
+                           final Consumer<TSGlobalMetaItem> visitor = parent -> result.addAll(parent.getCustomProperties().values());
+                           walkInheritance(meta, visitor);
+                           meta.setAllCustomProperties(result);
+
+                           return result;
+                       });
     }
 
     @Override
     public List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(final TSGlobalMetaItem meta, final String name, final boolean includeInherited) {
-        final LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
-        if (includeInherited) {
-            final Consumer<TSGlobalMetaItem> visitor = parentMeta -> collectOwnAttributesByName(parentMeta, name, result);
-            walkInheritance(meta, visitor);
-        } else {
+        if (!includeInherited) {
+            final LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute> result = new LinkedList<>();
             collectOwnAttributesByName(meta, name, result);
+            return result;
         }
-        return result;
+
+        return getAttributes(meta, true).stream()
+                                        .filter(attribute -> attribute.getName().equalsIgnoreCase(name))
+                                        .collect(Collectors.toList());
     }
 
     @Override
     public Set<TSGlobalMetaItem> getExtends(final TSGlobalMetaItem meta) {
+        if (meta.getAllExtends() != null) {
+            return meta.getAllExtends();
+        }
+
         final Set<TSGlobalMetaItem> tempParents = new LinkedHashSet<>();
         final Set<String> visitedParents = new HashSet<>();
         Optional<TSGlobalMetaItem> metaItem = getTsMetaItem(meta, visitedParents);
@@ -105,46 +125,43 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
             metaItem = getTsMetaItem(metaItem.get(), visitedParents);
         }
 
+        meta.setAllExtends(tempParents);
         return Collections.unmodifiableSet(tempParents);
     }
 
     @Override
-    public List<? extends TSMetaRelation.TSMetaRelationElement> getReferenceEnds(final TSGlobalMetaItem meta, final boolean includeInherited) {
-        final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
-        final Consumer<TSGlobalMetaItem> visitor = mc -> TSMetaModelAccess.Companion.getInstance(myProject).collectReferencesForSourceType(mc, result);
-        if (includeInherited) {
-            walkInheritance(meta, visitor);
-        } else {
-            visitor.accept(meta);
+    public List<? extends TSMetaRelation.TSMetaRelationElement> getRelationEnds(final TSGlobalMetaItem meta, final boolean includeInherited) {
+        if (!includeInherited) {
+            final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
+            collectRelationForSourceType(meta, result);
+
+            return result;
         }
-        return result;
+
+        return Optional.ofNullable(meta.getAllRelationEnds())
+            .orElseGet(() -> {
+                final LinkedList<TSMetaRelation.TSMetaRelationElement> result = new LinkedList<>();
+                final Consumer<TSGlobalMetaItem> visitor = mc -> collectRelationForSourceType(mc, result);
+                walkInheritance(meta, visitor);
+
+                meta.setAllRelationEnds(result);
+                return result;
+            });
     }
 
     @Override
     public List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByQualifier(
         final TSGlobalMetaItem meta, @NotNull final String qualifier, final boolean includeInherited
     ) {
-        return getReferenceEnds(meta, includeInherited).stream()
-                                                       .filter(ref -> ref.getQualifier().equalsIgnoreCase(qualifier))
-                                                       .collect(Collectors.toList());
+        return getRelationEnds(meta, includeInherited).stream()
+                                                      .filter(ref -> ref.getQualifier().equalsIgnoreCase(qualifier))
+                                                      .collect(Collectors.toList());
     }
 
     private Optional<TSGlobalMetaItem> getTsMetaItem(final TSGlobalMetaItem meta, final Set<String> visitedParents) {
         return Optional.of(getRealExtendedMetaItemName(meta))
                        .filter(aName -> !visitedParents.contains(aName))
                        .map(name -> TSMetaModelAccess.Companion.getInstance(myProject).findMetaItemByName(name));
-    }
-
-    private void collectOwnAttributes(final TSGlobalMetaItem meta, @NotNull final Collection<TSGlobalMetaItem.TSGlobalMetaItemAttribute> output) {
-        output.addAll(meta.getAttributes().values());
-    }
-
-    private void collectOwnIndexes(final TSGlobalMetaItem meta, @NotNull final Collection<TSMetaItem.TSMetaItemIndex> output) {
-        output.addAll(meta.getIndexes().values());
-    }
-
-    private void collectOwnCustomProperties(final TSGlobalMetaItem meta, @NotNull final Collection<TSMetaCustomProperty> output) {
-        output.addAll(meta.getCustomProperties().values());
     }
 
     private void collectOwnAttributesByName(final TSGlobalMetaItem meta, @NotNull final String name, @NotNull final Collection<TSGlobalMetaItem.TSGlobalMetaItemAttribute> output) {
@@ -178,6 +195,15 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
                     visitor.accept(parent);
                     doWalkInheritance(parent, visitedParents, visitor);
                 });
+    }
+
+    private void collectRelationForSourceType(final TSMetaItem source, final LinkedList<TSMetaRelation.TSMetaRelationElement> out) {
+        final var reference = TSMetaModelAccess.Companion.getInstance(myProject)
+                                                         .getMetaModel()
+                                                         .getReference(source.getName());
+        if (reference != null) {
+            out.add(reference);
+        }
     }
 
     private String getRealExtendedMetaItemName(final TSGlobalMetaItem meta) {

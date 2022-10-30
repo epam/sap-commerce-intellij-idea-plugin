@@ -52,7 +52,12 @@ class TSGlobalMetaModel : Disposable {
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: MetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
+    fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(MetaType.META_ATOMIC)[name]
+    fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(MetaType.META_ENUM)[name]
+    fun getMetaMap(name: String?) = getMetaType<TSGlobalMetaMap>(MetaType.META_MAP)[name]
+    fun getMetaRelation(name: String?) = getMetaType<TSGlobalMetaRelation>(MetaType.META_RELATION)[name]
     fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[name]
+    fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(MetaType.META_COLLECTION)[name]
 
     fun getMetaTypes() = myMetaCache;
 
@@ -68,42 +73,4 @@ class TSGlobalMetaModel : Disposable {
         }
     }
 
-//    fun merge(metaModels : List<TSMetaModel>): TSGlobalMetaModel {
-//        metaModels.forEach { merge(it) }
-//
-//        return this
-//    }
-//
-//    @Suppress("UNCHECKED_CAST")
-//    private fun merge(another: TSMetaModel) {
-//        another.getMetaTypes().forEach { (metaType, cache) ->
-//            run {
-//                val globalCache = getMetaType<TSMetaClassifier<DomElement>>(metaType)
-//
-//                cache.forEach { (key, metaClassifier) ->
-//                    val globalMetaClassifier = globalCache.computeIfAbsent(key) { metaClassifier }
-//
-//                    if (globalMetaClassifier is TSMetaSelfMerge<*, *>) {
-//                        (globalMetaClassifier as TSMetaSelfMerge<DomElement, TSMetaClassifier<DomElement>>).merge(metaClassifier)
-//                    }
-//                }
-//            }
-//        }
-//        getReferences().putAll(another.getReferences());
-//
-//        another.getMetaType<TSMetaItem>(MetaType.META_ITEM).values
-//            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-//            .forEach { mergeDeploymentInformation(it.deployment) }
-//        another.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values
-//            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-//            .forEach { mergeDeploymentInformation(it.deployment) }
-//    }
-//
-//    private fun mergeDeploymentInformation(deployment: TSMetaDeployment<*>) {
-//        myDeploymentTables[deployment.table] = deployment
-//        val typeCode = deployment.typeCode?.toIntOrNull()
-//        if (typeCode != null) {
-//            myDeploymentTypeCodes[typeCode] = deployment
-//        }
-//    }
 }

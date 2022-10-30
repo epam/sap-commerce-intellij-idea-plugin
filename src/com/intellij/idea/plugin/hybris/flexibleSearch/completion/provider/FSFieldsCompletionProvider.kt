@@ -119,7 +119,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 .filter { Objects.nonNull(it) }
                 .forEach { emptyPrefixResultSet.addElement(it) }
         metaItem
-                .map { meta -> TSMetaItemService.getInstance(project).getReferenceEnds(meta, true) }
+                .map { meta -> TSMetaItemService.getInstance(project).getRelationEnds(meta, true) }
                 .orElse(emptyList())
                 .map { ref ->
                     LookupElementBuilder

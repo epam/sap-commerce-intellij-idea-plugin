@@ -109,7 +109,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
             .forEach(resultSet::addElement);
 
         metaItem
-            .map(meta -> TSMetaItemService.getInstance(project).getReferenceEnds(meta, true).stream())
+            .map(meta -> TSMetaItemService.getInstance(project).getRelationEnds(meta, true).stream())
             .orElse(Stream.empty())
             .map(ref -> LookupElementBuilder.create(ref.getQualifier()).withIcon(HybrisIcons.TYPE_SYSTEM))
             .forEach(resultSet::addElement);
