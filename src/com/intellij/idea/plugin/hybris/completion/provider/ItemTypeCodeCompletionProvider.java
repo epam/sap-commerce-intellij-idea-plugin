@@ -25,9 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
@@ -61,16 +59,6 @@ public class ItemTypeCodeCompletionProvider extends CompletionProvider<Completio
         result = result.caseInsensitive();
 
         TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaItem>getAll(MetaType.META_ITEM).stream()
-                                   .filter(meta -> meta.getName() != null)
-                                   .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
-                                   .forEach(result::addElement);
-
-        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaEnum>getAll(MetaType.META_ENUM).stream()
-                                   .filter(meta -> meta.getName() != null)
-                                   .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
-                                   .forEach(result::addElement);
-
-        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaRelation>getAll(MetaType.META_RELATION).stream()
                                    .filter(meta -> meta.getName() != null)
                                    .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                                    .forEach(result::addElement);
