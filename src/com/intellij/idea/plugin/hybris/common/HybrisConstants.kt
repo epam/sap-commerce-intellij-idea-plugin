@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.common
 import com.intellij.openapi.util.io.FileUtilRt
 import java.io.File
 
+private const val s = "byte"
+
 /**
  * Created 10:30 PM 07 June 2015
  *
@@ -141,6 +143,33 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
+    const val TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn"
+    const val TS_ATOMIC_DEFAULT_EXTENDS = "java.lang.Object"
+    const val TS_IMPLICIT_SUPER_CLASS_NAME = "GenericItem"
+    const val TS_ATTRIBUTE_DEFAULT_META_TYPE = "AttributeDescriptor"
+    const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
+    const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
+    const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
+    const val TS_CATALOG_VERSION_ATTRIBUTE_QUALIFIER = "catalogVersionAttributeQualifier"
+    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE = "catalog.sync.default.root.type"
+    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE_ORDER = "catalog.sync.default.root.type.order"
+    const val TS_PRIMITIVE_BYTE = "byte"
+    const val TS_PRIMITIVE_SHORT = "short"
+    const val TS_PRIMITIVE_INT = "int"
+    const val TS_PRIMITIVE_LONG = "long"
+    const val TS_PRIMITIVE_FLOAT = "float"
+    const val TS_PRIMITIVE_DOUBLE = "double"
+    const val TS_PRIMITIVE_CHAR = "char"
+    const val TS_PRIMITIVE_BOOLEAN = "boolean"
+    val TS_PRIMITIVE_TYPES = setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
+
+    val TS_TYPECODE_MIN_ALLOWED = 10000
+    val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED .. 10099
+    val TS_TYPECODE_RANGE_COMMONS = 13200 .. 13299
+    val TS_TYPECODE_RANGE_XPRINT = 24400 .. 24599
+    val TS_TYPECODE_RANGE_PRINT = 23400 .. 23999
+    val TS_TYPECODE_RANGE_PROCESSING = 32700 .. 32799
+
     const val SEARCH_SCOPE_Y_PREFIX = "[y]"
     const val SEARCH_SCOPE_GROUP_PREFIX = "group:"
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
@@ -155,7 +184,6 @@ object HybrisConstants {
     const val CODE_ATTRIBUTE_NAME = "code"
     const val NAME_ATTRIBUTE_NAME = "name"
     const val DICTIONARY_NAME = "hybris_integration"
-    const val TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn"
     const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
     const val DIALOG_TITLE = "copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"

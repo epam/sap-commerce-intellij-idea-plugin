@@ -37,8 +37,7 @@ class OrderingOfRelationShouldBeAvoided : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.relations.elements
-            .forEach { check(it, holder, severity) }
+        items.relations.elements.forEach { check(it, holder, severity) }
     }
 
     private fun check(

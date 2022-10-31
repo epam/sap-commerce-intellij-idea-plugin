@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaAtomic
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaSelfMerge
@@ -25,8 +26,6 @@ import com.intellij.idea.plugin.hybris.type.system.model.AtomicType
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
-
-private const val ATOMIC_DEFAULT_EXTENDS = "java.lang.Object"
 
 internal class TSMetaAtomicImpl(
     dom: AtomicType,
@@ -38,9 +37,9 @@ internal class TSMetaAtomicImpl(
     override val domAnchor: DomAnchor<AtomicType> = DomService.getInstance().createAnchor(dom)
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-    override val extends = dom.extends.stringValue ?: ATOMIC_DEFAULT_EXTENDS
+    override val extends = dom.extends.stringValue ?: HybrisConstants.TS_ATOMIC_DEFAULT_EXTENDS
 
-    override fun toString() = "TSMetaAtomicImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Atomic(module=$module, name=$name, isCustom=$isCustom)"
 }
 
 internal class TSGlobalMetaAtomicImpl(localMeta: TSMetaAtomic)
@@ -58,5 +57,7 @@ internal class TSGlobalMetaAtomicImpl(localMeta: TSMetaAtomic)
         if (localMeta.isGenerate) isGenerate = localMeta.isGenerate
         if (extends != localMeta.extends) extends = localMeta.extends
     }
+
+    override fun toString() = "Atomic(module=$module, name=$name, isCustom=$isCustom)"
 
 }

@@ -55,6 +55,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX;
+
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/2/17.
  */
@@ -312,8 +314,8 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
             if (value == null) {
                 return null;
             }
-            if (value.startsWith("localized:")) {
-                value = value.substring("localized:".length());
+            if (value.startsWith(TS_ATTRIBUTE_LOCALIZED_PREFIX)) {
+                value = value.substring(TS_ATTRIBUTE_LOCALIZED_PREFIX.length());
             }
             if (value.startsWith("java.lang.")) {
                 value = value.substring("java.lang.".length());
@@ -329,7 +331,7 @@ public class TSStructureTreeElement extends DomStructureTreeElement {
         final DomElement dom = getElement();
         if (dom instanceof Attribute) {
             final String value = resolveValue(((Attribute) dom).getType());
-            if (StringUtils.startsWith(value, "localized:")) {
+            if (StringUtils.startsWith(value, TS_ATTRIBUTE_LOCALIZED_PREFIX)) {
                 return HybrisIcons.LOCALIZED;
             }
         }

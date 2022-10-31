@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaCustomPropertyService
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -39,8 +39,7 @@ class CatalogAwareCatalogVersionAttributeQualifier : AbstractTypeSystemInspectio
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .forEach { check(it, holder, severity, project) }
+        items.itemTypes.all.forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
@@ -53,11 +52,9 @@ class CatalogAwareCatalogVersionAttributeQualifier : AbstractTypeSystemInspectio
 
         val meta = metaModel.getMetaItem(dom.code.stringValue)
             ?: return
-        val domCustomProperty = dom.customProperties.properties
-            .firstOrNull { TSMetaCustomProperty.KnownProperties.CATALOG_VERSION_ATTRIBUTE_QUALIFIER.equals(it.name.stringValue, true) }
+        val domCustomProperty = TSMetaHelper.getProperty(dom.customProperties, HybrisConstants.TS_CATALOG_VERSION_ATTRIBUTE_QUALIFIER)
             ?: return
-
-        val qualifier = TSMetaCustomPropertyService.getInstance(project).parseStringValue(domCustomProperty)
+        val qualifier = TSMetaHelper.parseStringValue(domCustomProperty)
             ?: return
 
         val metaItemService = TSMetaItemService.getInstance(project)

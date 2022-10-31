@@ -35,8 +35,8 @@ class CollectionsAreOnlyForDynamicAndJalo : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .flatMap { it.attributes.attributes.stream() }
+        items.itemTypes.all
+            .flatMap { it.attributes.attributes }
             .forEach { check(it, project, holder, severity) }
     }
 

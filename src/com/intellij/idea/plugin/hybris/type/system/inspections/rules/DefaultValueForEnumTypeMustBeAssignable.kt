@@ -18,11 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaHelper
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.ItemType
+import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
@@ -30,7 +27,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class CatalogAwareUniqueKeyAttributeQualifier : AbstractTypeSystemInspection() {
+class DefaultValueForEnumTypeMustBeAssignable : AbstractTypeSystemInspection() {
+
+    private val regex = Regex("em\\(\\)\\.getEnumerationValue\\(\\s*\".*\"\\s*,\\s*\".*\"\\s*\\)")
 
     override fun checkItems(
         project: Project,
@@ -39,34 +38,56 @@ class CatalogAwareUniqueKeyAttributeQualifier : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.all.forEach { check(it, holder, severity, project) }
+        items.itemTypes.all
+            .flatMap { it.attributes.attributes }
+            .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-        dom: ItemType,
+        dom: Attribute,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
         project: Project
     ) {
-        val meta = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
-            ?: return
-        val domCustomProperty = TSMetaHelper.getProperty(dom.customProperties, HybrisConstants.TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER)
-            ?: return
-        val customPropertyValue = TSMetaHelper.parseCommaSeparatedStringValue(domCustomProperty)
+        val defaultValue = dom.defaultValue.stringValue
+            ?.trim()
             ?: return
 
-        val metaItemService = TSMetaItemService.getInstance(project)
-        val nonUniqueQualifiers = customPropertyValue
-            .filter {qualifier ->
-                val attributes = metaItemService.findAttributesByName(meta, qualifier, true).map { it.modifiers }
-                val referenceEnds = metaItemService.findReferenceEndsByQualifier(meta, qualifier, true).map { it.modifiers }
+        if (!defaultValue.startsWith("em().getEnumerationValue")) return
 
-                (attributes + referenceEnds).none { it.isUnique }
-            }
-
-        if (nonUniqueQualifiers.isNotEmpty()) {
+        // 1st validation:
+        // Validate that default value for Enum is properly declared as 'em().getEnumerationValue("ENUM_TYPE", "ENUM_VALUE")'
+        // some spaces are ignored
+        if (!defaultValue.contains(regex)) {
             holder.createProblem(
-                domCustomProperty.value,
+                dom.defaultValue,
+                severity,
+                displayName
+            )
+            return
+        }
+
+        val splitDefaultValue = defaultValue.split("\"")
+
+        // 2nd validation:
+        // Ensure that Type set as default value is the same as one set for current Attribute
+        if (!splitDefaultValue[1].equals(dom.type.stringValue, true)) {
+            holder.createProblem(
+                dom.defaultValue,
+                severity,
+                displayName
+            )
+            return
+        }
+
+        val meta = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaEnum(dom.type.stringValue)
+            ?: return
+
+        // 3rd validation:
+        // Verify that Value set as default value exists in the system for Enum (will not handle dynamic enum values in the DB)
+        if (!meta.values.containsKey(splitDefaultValue[3])) {
+            holder.createProblem(
+                dom.defaultValue,
                 severity,
                 displayName
             )

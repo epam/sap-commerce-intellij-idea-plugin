@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.deployments
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class DeploymentTypeCodeReservedForB2BCommerceExtension : AbstractTypeSystemInspection() {
+class TypeNameMustPointToExistingType : AbstractTypeSystemInspection() {
 
     override fun checkItems(
         project: Project,
@@ -37,23 +37,45 @@ class DeploymentTypeCodeReservedForB2BCommerceExtension : AbstractTypeSystemInsp
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.deployments.forEach { check(it, project, holder, severity) }
+        val collectionElementTypes = items.collectionTypes.collectionTypes
+            .map { it.elementType }
+        val mapArgumentTypes = items.mapTypes.mapTypes
+            .flatMap { listOf(it.argumentType, it.returnType) }
+        val attributeTypes = items.itemTypes.all
+            .flatMap { it.attributes.attributes }
+            .map { it.type }
+
+        (collectionElementTypes + mapArgumentTypes + attributeTypes)
+            .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-        dom: Deployment,
-        project: Project,
+        dom: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
+        severity: HighlightSeverity,
+        project: Project
     ) {
-        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
+        val typeCode = dom.stringValue
+            ?.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+            ?: return
 
-        if (typeCode != null && typeCode in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE) {
+        // If type code is Primitive - skip, it is not registered via TS, but available in Service Layer
+        if (HybrisConstants.TS_PRIMITIVE_TYPES.contains(typeCode)) return
+
+        val metaModel = TSMetaModelAccess.getInstance(project).getMetaModel()
+
+        val meta = metaModel.getMetaAtomic(typeCode)
+            ?: metaModel.getMetaEnum(typeCode)
+            ?: metaModel.getMetaCollection(typeCode)
+            ?: metaModel.getMetaRelation(typeCode)
+            ?: metaModel.getMetaMap(typeCode)
+            ?: metaModel.getMetaItem(typeCode)
+
+        if (meta == null) {
             holder.createProblem(
-                dom.typeCode,
+                dom,
                 severity,
-                displayName,
-                XmlUpdateAttributeQuickFix(Deployment.TYPE_CODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
+                displayName
             )
         }
     }

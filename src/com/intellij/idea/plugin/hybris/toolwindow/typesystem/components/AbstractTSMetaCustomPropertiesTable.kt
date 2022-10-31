@@ -47,7 +47,7 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
             ),
             createColumn(
                 name = COLUMN_NAME,
-                valueProvider = { attr -> attr.name ?: "" },
+                valueProvider = { attr -> attr.name },
                 columnClass = String::class.java,
             ),
             createColumn(

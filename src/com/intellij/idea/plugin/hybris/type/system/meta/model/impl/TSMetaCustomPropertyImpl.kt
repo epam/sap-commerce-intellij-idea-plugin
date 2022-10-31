@@ -33,5 +33,5 @@ internal class TSMetaCustomPropertyImpl(
     override val domAnchor: DomAnchor<CustomProperty> = DomService.getInstance().createAnchor(dom)
     override val rawValue = dom.value.rawText
 
-    override fun toString() = "TSMetaCustomPropertyImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "CustomProperty(module=$module, name=$name, isCustom=$isCustom)"
 }

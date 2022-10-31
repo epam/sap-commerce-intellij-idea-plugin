@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -35,8 +35,8 @@ class MandatoryFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .flatMap { it.attributes.attributes.stream() }
+        items.itemTypes.all
+            .flatMap { it.attributes.attributes }
             .forEach { check(it, holder, severity) }
     }
 
@@ -47,7 +47,7 @@ class MandatoryFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
     ) {
         val optional = dom.modifiers.optional.value ?: true
         val initial = dom.modifiers.initial.value ?: false
-        val defaultValue = dom.defaultValue.value
+        val defaultValue = dom.defaultValue.stringValue
 
         if (!optional && (!initial && defaultValue == null)) {
             holder.createProblem(

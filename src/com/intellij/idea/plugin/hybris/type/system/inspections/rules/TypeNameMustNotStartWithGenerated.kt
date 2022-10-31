@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
@@ -37,9 +37,11 @@ class TypeNameMustNotStartWithGenerated : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream.forEach { check(it.code, holder, severity) }
-        items.enumTypes.enumTypes.forEach { check(it.code, holder, severity) }
-        items.relations.relations.forEach { check(it.code, holder, severity) }
+        val itemCodes = items.itemTypes.all.map { it.code }
+        val enumCodes = items.enumTypes.enumTypes.map { it.code }
+        val relationCodes = items.relations.relations.map { it.code }
+
+        (itemCodes + enumCodes + relationCodes).forEach { check(it, holder, severity) }
     }
 
     private fun check(

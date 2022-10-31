@@ -42,5 +42,5 @@ internal class TSMetaModifiersImpl(
     override val isDoNotOptimize = java.lang.Boolean.TRUE == dom.doNotOptimize.value
     override val isEncrypted = java.lang.Boolean.TRUE == dom.encrypted.value
 
-    override fun toString() = "TSMetaModifiersImpl(module=$module, isCustom=$isCustom)"
+    override fun toString() = "Modifiers(module=$module, isCustom=$isCustom)"
 }

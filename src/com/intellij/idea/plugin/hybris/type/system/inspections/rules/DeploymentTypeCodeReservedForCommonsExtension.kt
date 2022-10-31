@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
@@ -47,7 +48,7 @@ class DeploymentTypeCodeReservedForCommonsExtension : AbstractTypeSystemInspecti
     ) {
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
-        if (typeCode != null && typeCode in 13200..13299) {
+        if (typeCode != null && typeCode in HybrisConstants.TS_TYPECODE_RANGE_COMMONS) {
             holder.createProblem(
                 dom.typeCode,
                 severity,

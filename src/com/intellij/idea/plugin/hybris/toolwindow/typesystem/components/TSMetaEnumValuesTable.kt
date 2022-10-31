@@ -52,7 +52,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTS
             ),
             createColumn(
                 name = COLUMN_VALUE,
-                valueProvider = { attr -> attr.name ?: "" }
+                valueProvider = { attr -> attr.name }
             ),
             createColumn(
                 name = COLUMN_DESCRIPTION,

@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation.TSMetaRelationElement
@@ -48,7 +49,7 @@ internal class TSMetaRelationImpl(
         target.owner = this
     }
 
-    override fun toString() = "TSMetaRelationImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Relation(module=$module, name=$name, isCustom=$isCustom)"
 
     internal class TSMetaRelationElementImpl(
         dom: RelationElement,
@@ -68,18 +69,13 @@ internal class TSMetaRelationImpl(
         override val name = qualifier
         override val isNavigable = dom.navigable.value ?: true
         override val isOrdered = java.lang.Boolean.TRUE == dom.ordered.value
-        override val isDeprecated = extractDeprecated(dom)
+        override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
         override val collectionType = dom.collectionType.value ?: Type.COLLECTION
         override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
 
-        private fun extractDeprecated(dom: RelationElement): Boolean {
-            return dom.model.setters
-                .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
-        }
-
-        override fun toString() = "TSMetaRelationElementImpl(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "RelationElement(module=$module, name=$name, isCustom=$isCustom)"
     }
 }
 
@@ -97,5 +93,7 @@ internal class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
     override var target = localMeta.target
 
     override fun mergeInternally(localMeta: TSMetaRelation) = Unit
+
+    override fun toString() = "Relation(module=$module, name=$name, isCustom=$isCustom)"
 
 }

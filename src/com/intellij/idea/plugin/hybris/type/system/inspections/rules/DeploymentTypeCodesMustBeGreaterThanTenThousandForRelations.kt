@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
@@ -46,7 +47,7 @@ class DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations : AbstractType
     ) {
         val typeCode = dom.typeCode.stringValue?.toIntOrNull()
 
-        if (typeCode != null && typeCode <= 10000) {
+        if (typeCode != null && typeCode <= HybrisConstants.TS_TYPECODE_MIN_ALLOWED) {
             holder.createProblem(
                 dom.typeCode,
                 severity,

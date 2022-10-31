@@ -35,5 +35,5 @@ internal class TSMetaDeploymentImpl(
     override val typeCode = dom.typeCode.stringValue
     override val table = dom.table.stringValue
 
-    override fun toString() = "TSMetaDeploymentImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Deployment(module=$module, name=$name, isCustom=$isCustom)"
 }

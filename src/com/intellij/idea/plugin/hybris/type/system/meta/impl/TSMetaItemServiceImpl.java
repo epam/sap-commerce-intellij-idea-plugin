@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.meta.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
@@ -208,7 +209,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
 
     private String getRealExtendedMetaItemName(final TSGlobalMetaItem meta) {
         return meta.getExtendedMetaItemName() == null
-            ? TSMetaItem.IMPLICIT_SUPER_CLASS_NAME
+            ? HybrisConstants.TS_IMPLICIT_SUPER_CLASS_NAME
             : meta.getExtendedMetaItemName();
     }
 }

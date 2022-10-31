@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.openapi.Disposable
@@ -42,10 +43,12 @@ class TSGlobalMetaModel : Disposable {
     fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
     fun getNextAvailableTypeCode(): Int = myDeploymentTypeCodes.keys
         .asSequence()
-        .filter { it < 32700 } // OOTB Processing extension
-        .filter { it !in 13200 .. 13299 } // OOTB Commons extension
-        .filter { it !in 10000 .. 10099 } // OOTB Processing extension
-        .filter { it !in 24400 .. 24599 } // OOTB XPrint extension
+        .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
         .maxOf { it } + 1
 
     @Suppress("UNCHECKED_CAST")

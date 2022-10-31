@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.CreationMode
 import com.intellij.idea.plugin.hybris.type.system.model.Index
@@ -36,6 +37,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     val isGenerate: Boolean
     val isSingleton: Boolean
     val isJaloOnly: Boolean
+    val isCatalogAware: Boolean
 
     interface TSMetaItemIndex : TSMetaClassifier<Index> {
         override val name: String
@@ -55,15 +57,12 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
         val type: String?
         val isSelectionOf: String?
         val metaType: String
-            get() = "AttributeDescriptor"
+            get() = HybrisConstants.TS_ATTRIBUTE_DEFAULT_META_TYPE
         val isDeprecated: Boolean
         val isAutoCreate: Boolean
         val isRedeclare: Boolean
         val isGenerate: Boolean
-    }
-
-    companion object {
-        const val IMPLICIT_SUPER_CLASS_NAME = "GenericItem"
+        val isLocalized: Boolean
     }
 }
 

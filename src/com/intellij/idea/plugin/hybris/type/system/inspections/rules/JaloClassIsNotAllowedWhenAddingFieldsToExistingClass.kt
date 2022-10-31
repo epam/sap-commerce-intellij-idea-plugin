@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -36,8 +36,7 @@ class JaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTypeSystemI
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .forEach { check(it, holder, severity) }
+        items.itemTypes.all.forEach { check(it, holder, severity) }
     }
 
     private fun check(

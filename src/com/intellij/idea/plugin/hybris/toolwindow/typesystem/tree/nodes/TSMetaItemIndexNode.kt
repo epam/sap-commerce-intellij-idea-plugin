@@ -28,7 +28,7 @@ import com.intellij.ui.SimpleTextAttributes
 class TSMetaItemIndexNode(val parent: TSMetaItemNode, val meta: TSMetaItemIndex) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
-    override fun getName() = meta.name ?: "-- no name --"
+    override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)

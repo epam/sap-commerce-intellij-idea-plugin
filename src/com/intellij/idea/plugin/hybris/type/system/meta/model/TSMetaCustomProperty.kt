@@ -23,12 +23,4 @@ import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty
 interface TSMetaCustomProperty : TSMetaClassifier<CustomProperty> {
     override val name: String
     val rawValue: String?
-
-    object KnownProperties {
-        val UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
-        val CATALOG_ITEM_TYPE = "catalogItemType"
-        val CATALOG_VERSION_ATTRIBUTE_QUALIFIER = "catalogVersionAttributeQualifier"
-        val CATALOG_SYNC_DEFAULT_ROOT_TYPE = "catalog.sync.default.root.type"
-        val CATALOG_SYNC_DEFAULT_ROOT_TYPE_ORDER = "catalog.sync.default.root.type.order"
-    }
 }

@@ -39,7 +39,7 @@ internal class TSMetaMapImpl(
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
     override val isRedeclare = java.lang.Boolean.TRUE == dom.redeclare.value
 
-    override fun toString() = "TSMetaMapImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Map(module=$module, name=$name, isCustom=$isCustom)"
 }
 
 internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
@@ -63,4 +63,6 @@ internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
             returnType = localMeta.returnType
         }
     }
+
+    override fun toString() = "Map(module=$module, name=$name, isCustom=$isCustom)"
 }

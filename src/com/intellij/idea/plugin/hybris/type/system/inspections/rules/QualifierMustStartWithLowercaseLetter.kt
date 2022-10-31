@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.idea.plugin.hybris.type.system.model.elements
-import com.intellij.idea.plugin.hybris.type.system.model.stream
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
@@ -38,11 +38,14 @@ class QualifierMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .flatMap { it.attributes.attributes.stream() }
-            .forEach { check(it.qualifier, holder, severity) }
-        items.relations.elements
-            .forEach { check(it.qualifier, holder, severity) }
+        val itemQualifiers = items.itemTypes.all
+            .flatMap { it.attributes.attributes }
+            .map { it.qualifier }
+        val relationQualifiers = items.relations.elements
+            .map { it.qualifier }
+
+        (itemQualifiers + relationQualifiers)
+            .forEach { check(it, holder, severity) }
     }
 
     private fun check(

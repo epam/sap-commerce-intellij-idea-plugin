@@ -39,7 +39,7 @@ internal class TSMetaCollectionImpl(
     override val elementType = dom.elementType.stringValue!!
     override val type = dom.type.value ?: Type.COLLECTION
 
-    override fun toString() = "TSMetaCollectionImpl(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Collection(module=$module, name=$name, isCustom=$isCustom)"
 }
 
 internal class TSGlobalMetaCollectionImpl(localMeta: TSMetaCollection)
@@ -59,5 +59,7 @@ internal class TSGlobalMetaCollectionImpl(localMeta: TSMetaCollection)
 
         elementType = localMeta.elementType
     }
+
+    override fun toString() = "Collection(module=$module, name=$name, isCustom=$isCustom)"
 
 }

@@ -43,6 +43,8 @@ internal class TSMetaEnumImpl(
     override val description = dom.description.stringValue
     override val jaloClass = dom.jaloClass.stringValue
 
+    override fun toString() = "Enum(module=$module, name=$name, isDynamic=$isDynamic, isCustom=$isCustom)"
+
     internal class TSMetaEnumValueImpl(
         dom: EnumValue,
         override val module: Module,
@@ -52,6 +54,8 @@ internal class TSMetaEnumImpl(
 
         override val domAnchor: DomAnchor<EnumValue> = DomService.getInstance().createAnchor(dom)
         override val description = dom.description.stringValue
+
+        override fun toString() = "EnumValue(module=$module, name=$name, isCustom=$isCustom)"
     }
 
 }
@@ -80,4 +84,6 @@ internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
             .filterNot { values.contains(it.name) }
             .forEach { values[it.name] = it }
     }
+
+    override fun toString() = "Enum(module=$module, name=$name, isDynamic=$isDynamic, isCustom=$isCustom)"
 }

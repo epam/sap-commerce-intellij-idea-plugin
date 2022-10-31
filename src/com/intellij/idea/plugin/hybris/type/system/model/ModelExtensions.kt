@@ -18,31 +18,30 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model
 
-import java.util.stream.Stream
-
-val Items.deployments: Stream<Deployment>
+val Items.deployments: List<Deployment>
     get() {
-        return Stream.of(itemTypes.stream.map { it.deployment }, relations.relations.map { it.deployment }.stream())
-            .flatMap { it }
+        val itemDeployments = itemTypes.all.map { it.deployment }
+        val relationDeployments = relations.relations.map { it.deployment }
+
+        return itemDeployments + relationDeployments
     }
 
-val Items.modifiers: Stream<Modifiers>
+val Items.modifiers: List<Modifiers>
     get() {
-        return Stream.of(
-            itemTypes.stream.flatMap { it.attributes.attributes.stream() }.map { it.modifiers},
-            relations.elements.map { it.modifiers }
-        )
-            .flatMap { it }
+        val itemModifiers = itemTypes.all
+            .flatMap { it.attributes.attributes }
+            .map { it.modifiers }
+        val relationModifiers = relations.elements.map { it.modifiers }
+
+        return itemModifiers + relationModifiers
     }
 
-val ItemTypes.stream: Stream<ItemType>
+val ItemTypes.all: List<ItemType>
     get() {
-        return Stream.of(itemTypes.stream(), typeGroups.stream().flatMap { it.itemTypes.stream() })
-            .flatMap { it }
+        return itemTypes + typeGroups.flatMap { it.itemTypes }
     }
 
-val Relations.elements: Stream<RelationElement>
+val Relations.elements: List<RelationElement>
     get() {
-        return relations.stream()
-            .flatMap { Stream.of(it.sourceElement, it.targetElement) }
+        return relations.flatMap { listOf(it.sourceElement, it.targetElement) }
     }

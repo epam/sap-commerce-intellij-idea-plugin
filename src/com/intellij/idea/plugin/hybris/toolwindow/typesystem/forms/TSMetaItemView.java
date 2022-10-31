@@ -65,6 +65,7 @@ public class TSMetaItemView {
     private JPanel myDeploymentPane;
     private JPanel myFlagsPane;
     private JPanel myRelationsPane;
+    private JBCheckBox myCatalogAware;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
@@ -87,6 +88,7 @@ public class TSMetaItemView {
         myDeploymentTable.setText(myMeta.getDeployment().getTable());
         myDeploymentTypeCode.setText(myMeta.getDeployment().getTypeCode());
         myAbstract.setSelected(myMeta.isAbstract());
+        myCatalogAware.setSelected(myMeta.isCatalogAware());
         myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
         mySingleton.setSelected(myMeta.isSingleton());

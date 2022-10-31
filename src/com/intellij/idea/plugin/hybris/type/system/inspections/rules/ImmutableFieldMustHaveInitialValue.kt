@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.PersistenceType
-import com.intellij.idea.plugin.hybris.type.system.model.stream
+import com.intellij.idea.plugin.hybris.type.system.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -36,8 +36,8 @@ class ImmutableFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.stream
-            .flatMap { it.attributes.attributes.stream() }
+        items.itemTypes.all
+            .flatMap { it.attributes.attributes }
             .forEach { check(it, holder, severity) }
     }
 
@@ -49,7 +49,7 @@ class ImmutableFieldMustHaveInitialValue : AbstractTypeSystemInspection() {
         val write = it.modifiers.write.value ?: true
         val initial = it.modifiers.initial.value ?: false
         val persistenceType = it.persistence.type.value ?: return
-        val defaultValue = it.defaultValue.value
+        val defaultValue = it.defaultValue.stringValue
 
         if (persistenceType != PersistenceType.DYNAMIC && !write && (!initial || defaultValue == null)) {
             holder.createProblem(it, severity, displayName)
