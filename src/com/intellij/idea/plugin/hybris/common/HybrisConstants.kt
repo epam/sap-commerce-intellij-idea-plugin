@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.common
 import com.intellij.openapi.util.io.FileUtilRt
 import java.io.File
 
-private const val s = "byte"
-
 /**
  * Created 10:30 PM 07 June 2015
  *
