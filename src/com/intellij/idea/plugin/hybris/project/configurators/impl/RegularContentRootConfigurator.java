@@ -349,7 +349,6 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         }
 
         excludeDirectory(contentEntry, new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY));
-        excludeDirectory(contentEntry, new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY));
 
         File tomcat6 = new File(rootDirectory, PLATFORM_TOMCAT_6_DIRECTORY);
         if (tomcat6.exists()) {
