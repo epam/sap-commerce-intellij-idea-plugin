@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -37,7 +38,8 @@ interface TSMetaModelAccess {
     fun findMetaEnumByName(name: String?): TSGlobalMetaEnum?
     fun findMetaItemByName(name: String?): TSGlobalMetaItem?
     fun findMetaRelationByName(name: String?): TSGlobalMetaRelation?
-    fun findMetaItemForDom(dom: ItemType): TSGlobalMetaItem?
+    fun findMetaForDom(dom: ItemType): TSGlobalMetaItem?
+    fun findMetaForDom(dom: EnumType): TSGlobalMetaEnum?
     fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType): Collection<T>
 
 }

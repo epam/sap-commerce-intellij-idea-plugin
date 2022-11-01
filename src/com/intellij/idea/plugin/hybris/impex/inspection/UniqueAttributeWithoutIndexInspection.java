@@ -122,7 +122,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             }
             //it also may be in the separate representation
 
-            final TSGlobalMetaItem merged = TSMetaModelAccess.Companion.getInstance(myHolder.getProject()).findMetaItemForDom(domItemType);
+            final TSGlobalMetaItem merged = TSMetaModelAccess.Companion.getInstance(myHolder.getProject()).findMetaForDom(domItemType);
             return merged != null && merged.retrieveAllDoms().stream()
                                            .filter(it -> !domItemType.equals(it))
                                            .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));

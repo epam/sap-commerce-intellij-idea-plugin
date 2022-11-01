@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -79,18 +80,14 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType) = getMetaModel().getMetaType<T>(metaType).values
 
-    override fun findMetaItemForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
+    override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
+    override fun findMetaForDom(dom: EnumType) = findMetaEnumByName(TSMetaModelNameProvider.extract(dom))
 
     override fun findMetaItemByName(name: String?) = findMetaByName<TSGlobalMetaItem>(MetaType.META_ITEM, name)
-
     override fun findMetaEnumByName(name: String?) = findMetaByName<TSGlobalMetaEnum>(MetaType.META_ENUM, name)
-
     override fun findMetaAtomicByName(name: String?) = findMetaByName<TSGlobalMetaAtomic>(MetaType.META_ATOMIC, name)
-
     override fun findMetaCollectionByName(name: String?) = findMetaByName<TSGlobalMetaCollection>(MetaType.META_COLLECTION, name)
-
     override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(MetaType.META_MAP, name)
-
     override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(MetaType.META_RELATION, name)
 
     override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values)

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.editor;
+package com.intellij.idea.plugin.hybris.type.system.annotators;
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public class TypeSystemGutterAnnotator implements Annotator {
+public class TSItemTypeGutterAnnotator implements Annotator {
 
     @Override
     public void annotate(
@@ -119,7 +119,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
 
-        final TSGlobalMetaItem metaItem = TSMetaModelAccess.Companion.getInstance(psiFile.getProject()).findMetaItemForDom(source);
+        final TSGlobalMetaItem metaItem = TSMetaModelAccess.Companion.getInstance(psiFile.getProject()).findMetaForDom(source);
 
         if (metaItem == null) {
             return Collections.emptyList();
@@ -167,7 +167,7 @@ public class TypeSystemGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
         final TSMetaModelAccess metaService = TSMetaModelAccess.Companion.getInstance(psiFile.getProject());
-        final TSGlobalMetaItem metaItem = metaService.findMetaItemForDom(source);
+        final TSGlobalMetaItem metaItem = metaService.findMetaForDom(source);
 
         if (metaItem == null) {
             return Collections.emptyList();

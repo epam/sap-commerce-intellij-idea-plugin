@@ -18,6 +18,11 @@
 
 <idea-plugin>
 
+    <applicationListeners>
+        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </applicationListeners>
+
     <extensions defaultExtensionNs="com.intellij">
         <!-- ####################################################################################################### -->
         <!--                                            Hybris Type System                                           -->
@@ -26,8 +31,8 @@
         <dom.fileMetaData rootTagName="items" stubVersion="22"
             implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
 
-        <annotator language="XML"
-                   implementationClass="com.intellij.idea.plugin.hybris.type.system.editor.TypeSystemGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSItemTypeGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSEnumGutterAnnotator"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>

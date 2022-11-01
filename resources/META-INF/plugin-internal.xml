@@ -1,11 +1,6 @@
 <idea-plugin>
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
-    <applicationListeners>
-        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
-                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-    </applicationListeners>
-
     <extensions defaultExtensionNs="com.intellij">
 
         <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
