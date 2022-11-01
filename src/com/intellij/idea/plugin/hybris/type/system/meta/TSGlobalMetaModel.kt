@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentMap
 class TSGlobalMetaModel : Disposable {
 
     private val myMetaCache: MutableMap<MetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
-    private val myReferencesBySourceTypeName = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaRelation.TSMetaRelationElement>()
+    private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
 
@@ -64,9 +64,9 @@ class TSGlobalMetaModel : Disposable {
 
     fun getMetaTypes() = myMetaCache;
 
-    fun getReference(name: String?): TSMetaRelation.TSMetaRelationElement? = name?.let { getReferences()[it] }
+    fun getRelations(name: String?): Collection<TSMetaRelation.TSMetaRelationElement>? = name?.let { getAllRelations()[it] }
 
-    fun getReferences() = myReferencesBySourceTypeName;
+    fun getAllRelations() = myReferencesBySourceTypeName;
 
     fun addDeployment(deployment: TSMetaDeployment) {
         myDeploymentTables[deployment.table] = deployment

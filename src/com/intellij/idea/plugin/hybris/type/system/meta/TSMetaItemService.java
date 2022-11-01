@@ -19,34 +19,23 @@
 package com.intellij.idea.plugin.hybris.type.system.meta;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface TSMetaItemService {
-    
+
     static TSMetaItemService getInstance(final Project project) {
         return project.getService(TSMetaItemService.class);
     }
 
-    Collection<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> getAttributes(TSGlobalMetaItem meta, boolean includeInherited);
-
-    Collection<? extends TSMetaItem.TSMetaItemIndex> getIndexes(TSGlobalMetaItem meta, boolean includeInherited);
-
-    Collection<? extends TSMetaCustomProperty> getCustomProperties(TSGlobalMetaItem meta, boolean includeInherited);
-
     List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(TSGlobalMetaItem meta, String name, boolean includeInherited);
 
-    Set<TSGlobalMetaItem> getExtends(TSGlobalMetaItem meta);
+    Collection<? extends TSMetaRelation.TSMetaRelationElement> getRelationEnds(TSGlobalMetaItem meta, boolean includeInherited);
 
-    List<? extends TSMetaRelation.TSMetaRelationElement> getRelationEnds(TSGlobalMetaItem meta, boolean includeInherited);
-
-    List<? extends TSMetaRelation.TSMetaRelationElement> findReferenceEndsByQualifier(TSGlobalMetaItem meta, @NotNull String qualifier, boolean includeInherited);
+    List<? extends TSMetaRelation.TSMetaRelationElement> findRelationEndsByQualifier(TSGlobalMetaItem meta, @NotNull String qualifier, boolean includeInherited);
 
 }

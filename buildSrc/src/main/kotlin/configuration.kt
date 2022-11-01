@@ -29,7 +29,7 @@ const val intellijJvmArgs="-ea -Xms512m -Xmx3G -XX:MaxMetaspaceSize=400m"
 const val intellijUpdateSinceUntilBuild=true
 
 const val pluginName_ = "SAP-Commerce-Developers-Toolset"
-const val pluginVersion = "2022.3"
+const val pluginVersion = "2022.3.0"
 const val pluginSinceBuild = "223.7126.7"
 const val pluginUntilBuild = "223.*"
 

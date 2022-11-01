@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationTable;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementsTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
@@ -50,7 +50,7 @@ public class TSMetaItemView {
     private TSMetaItemAttributesTable myAttributes;
     private TSMetaItemCustomPropertiesTable myCustomProperties;
     private TSMetaItemIndexesTable myIndexes;
-    private TSMetaRelationTable myRelations;
+    private TSMetaRelationElementsTable myRelations;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
@@ -135,7 +135,7 @@ public class TSMetaItemView {
         myAttributes = TSMetaItemAttributesTable.Companion.getInstance(myProject);
         myCustomProperties = TSMetaItemCustomPropertiesTable.Companion.getInstance(myProject);
         myIndexes = TSMetaItemIndexesTable.Companion.getInstance(myProject);
-        myRelations = TSMetaRelationTable.Companion.getInstance(myProject);
+        myRelations = TSMetaRelationElementsTable.Companion.getInstance(myProject);
         myDetailsPane = new JBPanel();
         myDeploymentPane = new JBPanel();
         myFlagsPane = new JBPanel();

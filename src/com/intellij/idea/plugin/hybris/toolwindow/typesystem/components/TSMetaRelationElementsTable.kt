@@ -35,10 +35,10 @@ private const val COLUMN_COLLECTION_TYPE = "Collection Type"
 private const val COLUMN_CARDINALITY = "Cardinality"
 private const val COLUMN_DESCRIPTION = "Description"
 
-class TSMetaRelationTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement>(myProject) {
+class TSMetaRelationElementsTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
-    override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED)
+    override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED, COLUMN_DEPRECATED)
     override fun select(meta: TSMetaRelation.TSMetaRelationElement) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
     override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getRelationEnds(meta, true)
         .sortedWith(compareBy(
@@ -102,7 +102,7 @@ class TSMetaRelationTable private constructor(myProject: Project) : AbstractTSTa
 
     companion object {
 
-        fun getInstance(project: Project): TSMetaRelationTable = with(TSMetaRelationTable(project)) {
+        fun getInstance(project: Project): TSMetaRelationElementsTable = with(TSMetaRelationElementsTable(project)) {
             init()
 
             this

@@ -142,9 +142,10 @@ object HybrisConstants {
     const val ANT_STACK_SIZE_MB = 128
 
     const val TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn"
-    const val TS_ATOMIC_DEFAULT_EXTENDS = "java.lang.Object"
-    const val TS_IMPLICIT_SUPER_CLASS_NAME = "GenericItem"
-    const val TS_ATTRIBUTE_DEFAULT_META_TYPE = "AttributeDescriptor"
+    const val TS_TYPE_OBJECT = "java.lang.Object"
+    const val TS_TYPE_GENERIC_ITEM = "GenericItem"
+    const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
+    const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
@@ -249,20 +250,20 @@ object HybrisConstants {
     @JvmField val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
 
     @JvmField val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$COMMON_WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
-    @JvmField val HMC_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/bin")
+    @JvmField val HMC_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
     @JvmField val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
 
-    @JvmField val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/bin")
-    @JvmField val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/gensrc")
+    @JvmField val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$BIN_DIRECTORY")
+    @JvmField val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$GEN_SRC_DIRECTORY")
     @JvmField val PL_TOMCAT_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/lib")
-    @JvmField val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/bin")
+    @JvmField val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/$BIN_DIRECTORY")
     @JvmField val PL_TOMCAT_6_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/lib")
-    @JvmField val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/bin")
+    @JvmField val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/$BIN_DIRECTORY")
     @JvmField val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
 
     @JvmField val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
-    @JvmField val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/bin")
+    @JvmField val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/$BIN_DIRECTORY")
     @JvmField val BACKOFFICE_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("resources/backoffice")
     @JvmField val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
     @JvmField val BACKOFFICE_WEB_INF_LIB_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib")

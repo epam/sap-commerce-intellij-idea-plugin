@@ -144,8 +144,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
     private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project, final Set<String> excludeNames) {
         final TSMetaItemService metaItemService = TSMetaItemService.getInstance(project);
 
-        final var attributes = metaItemService
-            .getAttributes(metaItem, true).stream()
+        final var attributes = metaItem.getAllAttributes().stream()
             .map(prop -> {
                 final var name = prop.getName();
 

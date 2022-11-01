@@ -37,7 +37,7 @@ internal class TSMetaAtomicImpl(
     override val domAnchor: DomAnchor<AtomicType> = DomService.getInstance().createAnchor(dom)
     override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
     override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-    override val extends = dom.extends.stringValue ?: HybrisConstants.TS_ATOMIC_DEFAULT_EXTENDS
+    override val extends = dom.extends.stringValue ?: HybrisConstants.TS_TYPE_OBJECT
 
     override fun toString() = "Atomic(module=$module, name=$name, isCustom=$isCustom)"
 }

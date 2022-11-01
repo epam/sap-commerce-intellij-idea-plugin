@@ -90,7 +90,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(MetaType.META_MAP, name)
     override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(MetaType.META_RELATION, name)
 
-    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getReferences().values)
+    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getAllRelations().values())
         .mapNotNull { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
 

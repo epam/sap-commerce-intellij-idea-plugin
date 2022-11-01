@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemIndex
 import com.intellij.openapi.project.Project
@@ -45,7 +44,7 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
         COLUMN_CREATION_MODE
     )
 
-    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaItemIndex> = TSMetaItemService.getInstance(myProject).getIndexes(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaItemIndex> = meta.allIndexes
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },

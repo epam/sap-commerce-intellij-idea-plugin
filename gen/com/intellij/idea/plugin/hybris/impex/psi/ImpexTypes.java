@@ -1,10 +1,33 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.impex.psi;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyAttributeNameImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyAttributeValueImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderModeImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderParameterNameImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexBeanShellImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexCommentImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderParameterImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderTypeImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderLineImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderTypeNameImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroDeclarationImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroNameDecImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroValueDecImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexModifiersImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParameterImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParametersImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexRootMacroUsageImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubParametersImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueGroupImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueLineImpl;
 import com.intellij.lang.ASTNode;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 public interface ImpexTypes {
 
@@ -78,76 +101,76 @@ public interface ImpexTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == ANY_ATTRIBUTE_NAME) {
+      if (type.equals(ANY_ATTRIBUTE_NAME)) {
         return new ImpexAnyAttributeNameImpl(node);
       }
-      else if (type == ANY_ATTRIBUTE_VALUE) {
+      else if (type.equals(ANY_ATTRIBUTE_VALUE)) {
         return new ImpexAnyAttributeValueImpl(node);
       }
-      else if (type == ANY_HEADER_MODE) {
+      else if (type.equals(ANY_HEADER_MODE)) {
         return new ImpexAnyHeaderModeImpl(node);
       }
-      else if (type == ANY_HEADER_PARAMETER_NAME) {
+      else if (type.equals(ANY_HEADER_PARAMETER_NAME)) {
         return new ImpexAnyHeaderParameterNameImpl(node);
       }
-      else if (type == ATTRIBUTE) {
+      else if (type.equals(ATTRIBUTE)) {
         return new ImpexAttributeImpl(node);
       }
-      else if (type == BEAN_SHELL) {
+      else if (type.equals(BEAN_SHELL)) {
         return new ImpexBeanShellImpl(node);
       }
-      else if (type == COMMENT) {
+      else if (type.equals(COMMENT)) {
         return new ImpexCommentImpl(node);
       }
-      else if (type == FULL_HEADER_PARAMETER) {
+      else if (type.equals(FULL_HEADER_PARAMETER)) {
         return new ImpexFullHeaderParameterImpl(node);
       }
-      else if (type == FULL_HEADER_TYPE) {
+      else if (type.equals(FULL_HEADER_TYPE)) {
         return new ImpexFullHeaderTypeImpl(node);
       }
-      else if (type == HEADER_LINE) {
+      else if (type.equals(HEADER_LINE)) {
         return new ImpexHeaderLineImpl(node);
       }
-      else if (type == HEADER_TYPE_NAME) {
+      else if (type.equals(HEADER_TYPE_NAME)) {
         return new ImpexHeaderTypeNameImpl(node);
       }
-      else if (type == MACRO_DECLARATION) {
+      else if (type.equals(MACRO_DECLARATION)) {
         return new ImpexMacroDeclarationImpl(node);
       }
-      else if (type == MACRO_NAME_DEC) {
+      else if (type.equals(MACRO_NAME_DEC)) {
         return new ImpexMacroNameDecImpl(node);
       }
-      else if (type == MACRO_USAGE_DEC) {
+      else if (type.equals(MACRO_USAGE_DEC)) {
         return new ImpexMacroUsageDecImpl(node);
       }
-      else if (type == MACRO_VALUE_DEC) {
+      else if (type.equals(MACRO_VALUE_DEC)) {
         return new ImpexMacroValueDecImpl(node);
       }
-      else if (type == MODIFIERS) {
+      else if (type.equals(MODIFIERS)) {
         return new ImpexModifiersImpl(node);
       }
-      else if (type == PARAMETER) {
+      else if (type.equals(PARAMETER)) {
         return new ImpexParameterImpl(node);
       }
-      else if (type == PARAMETERS) {
+      else if (type.equals(PARAMETERS)) {
         return new ImpexParametersImpl(node);
       }
-      else if (type == ROOT_MACRO_USAGE) {
+      else if (type.equals(ROOT_MACRO_USAGE)) {
         return new ImpexRootMacroUsageImpl(node);
       }
-      else if (type == STRING) {
+      else if (type.equals(STRING)) {
         return new ImpexStringImpl(node);
       }
-      else if (type == SUB_PARAMETERS) {
+      else if (type.equals(SUB_PARAMETERS)) {
         return new ImpexSubParametersImpl(node);
       }
-      else if (type == VALUE) {
+      else if (type.equals(VALUE)) {
         return new ImpexValueImpl(node);
       }
-      else if (type == VALUE_GROUP) {
+      else if (type.equals(VALUE_GROUP)) {
         return new ImpexValueGroupImpl(node);
       }
-      else if (type == VALUE_LINE) {
+      else if (type.equals(VALUE_LINE)) {
         return new ImpexValueLineImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);

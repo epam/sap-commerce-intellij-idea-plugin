@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlDeleteSubTagQuickFix
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.idea.plugin.hybris.type.system.model.Items
@@ -55,7 +54,7 @@ class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspect
 
         if (StringUtils.isBlank(currentMetaTypeCode)) return
 
-        val countDeploymentTablesInParents = TSMetaItemService.getInstance(project).getExtends(metaItem)
+        val countDeploymentTablesInParents = metaItem.allExtends
             .flatMap { it.declarations }
             .count { StringUtils.isNotBlank(it.deployment.typeCode) }
 

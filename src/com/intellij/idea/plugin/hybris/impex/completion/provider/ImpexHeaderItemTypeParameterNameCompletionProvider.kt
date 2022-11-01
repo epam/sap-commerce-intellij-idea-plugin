@@ -75,7 +75,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             }
         } else {
             val metaItemService = TSMetaItemService.getInstance(project)
-            metaItemService.getAttributes(metaItem, true)
+            metaItem.allAttributes
                     .map { prop ->
                         val name = prop.name
                         val builder = LookupElementBuilder

@@ -189,7 +189,7 @@ class TSMetaModelBuilder(
         val ownerTypeName = ownerEnd.type
 
         if (StringUtils.isNotEmpty(ownerTypeName)) {
-            myMetaModel.getReferences()[ownerTypeName] = targetEnd
+            myMetaModel.getReferences().putValue(ownerTypeName, targetEnd)
         }
     }
 

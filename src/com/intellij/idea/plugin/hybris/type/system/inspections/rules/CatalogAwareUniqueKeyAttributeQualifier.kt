@@ -59,7 +59,7 @@ class CatalogAwareUniqueKeyAttributeQualifier : AbstractTypeSystemInspection() {
         val nonUniqueQualifiers = customPropertyValue
             .filter {qualifier ->
                 val attributes = metaItemService.findAttributesByName(meta, qualifier, true).map { it.modifiers }
-                val referenceEnds = metaItemService.findReferenceEndsByQualifier(meta, qualifier, true).map { it.modifiers }
+                val referenceEnds = metaItemService.findRelationEndsByQualifier(meta, qualifier, true).map { it.modifiers }
 
                 (attributes + referenceEnds).none { it.isUnique }
             }

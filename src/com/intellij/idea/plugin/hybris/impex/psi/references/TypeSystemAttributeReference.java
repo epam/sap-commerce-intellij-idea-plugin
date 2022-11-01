@@ -107,7 +107,7 @@ class TypeSystemAttributeReference extends TypeSystemReferenceBase<ImpexAnyHeade
 
         final List<ResolveResult> result = resolveMetaItemAttributes(metaItemService, featureName, metaItem.get());
 
-        metaItemService.findReferenceEndsByQualifier(metaItem.get(), featureName, true)
+        metaItemService.findRelationEndsByQualifier(metaItem.get(), featureName, true)
                        .stream()
                        .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
                        .filter(Objects::nonNull)

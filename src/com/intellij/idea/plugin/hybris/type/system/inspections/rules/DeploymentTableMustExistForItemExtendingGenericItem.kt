@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddTagQuickFix
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Deployment
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
@@ -65,8 +64,7 @@ class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemIn
 
         if (metaItem.isAbstract || otherDeclarationsMarkedAsAbstract) return
 
-        val allExtends = TSMetaItemService.getInstance(project).getExtends(metaItem)
-            .flatMap { it.declarations }
+        val allExtends = metaItem.allExtends.flatMap { it.declarations }
 
         // skip Descriptor declarations
         if (allExtends.count { "Descriptor".equals(it.name, true) } > 0) return

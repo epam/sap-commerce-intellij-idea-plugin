@@ -2,7 +2,8 @@
 
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
-    <version>2022.3</version>
+    <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
+    <version>2022.3.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="223.7126.7" until-build="223.*"/>

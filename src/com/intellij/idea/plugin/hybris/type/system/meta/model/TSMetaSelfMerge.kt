@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
 import com.intellij.util.xml.DomElement
 
 abstract class TSMetaSelfMerge<DOM : DomElement, T : TSMetaClassifier<DOM>>(localMeta: T) : TSGlobalMetaClassifier<DOM> {
@@ -35,4 +36,10 @@ abstract class TSMetaSelfMerge<DOM : DomElement, T : TSMetaClassifier<DOM>>(loca
     }
 
     protected abstract fun mergeInternally(localMeta: T)
+}
+
+abstract class TSGlobalMetaItemSelfMerge<DOM : DomElement, T : TSMetaClassifier<DOM>>(localMeta: T) : TSMetaSelfMerge<DOM, T>(localMeta) {
+
+    abstract fun postMerge(globalMetaModel: TSGlobalMetaModel)
+
 }

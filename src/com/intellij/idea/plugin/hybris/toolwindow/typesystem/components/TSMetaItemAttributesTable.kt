@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.openapi.project.Project
@@ -40,7 +39,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
     override fun select(meta: TSMetaItemAttribute) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getAttributes(meta, true)
+    override fun getItems(meta: TSGlobalMetaItem) = meta.allAttributes
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },

@@ -66,7 +66,7 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
                 .map { AttributeResolveResult(it) }
 
         val relations = metaItemService
-                .findReferenceEndsByQualifier(metaItem.get(), refName, true)
+                .findRelationEndsByQualifier(metaItem.get(), refName, true)
                 .mapNotNull { it.retrieveDom() }
                 .map { RelationElementResolveResult(it) }
 

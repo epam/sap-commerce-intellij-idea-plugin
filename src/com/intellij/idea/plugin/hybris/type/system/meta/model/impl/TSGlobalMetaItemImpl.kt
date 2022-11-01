@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
@@ -26,6 +27,7 @@ import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import java.util.*
 
 internal class TSMetaItemImpl(
     dom: ItemType,
@@ -96,17 +98,17 @@ internal class TSMetaItemImpl(
 }
 
 internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
-    : TSMetaSelfMerge<ItemType, TSMetaItem>(localMeta), TSGlobalMetaItem {
+    : TSGlobalMetaItemSelfMerge<ItemType, TSMetaItem>(localMeta), TSGlobalMetaItem {
 
     override val attributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
     override val indexes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemIndex>()
 
-    override var allAttributes: List<TSGlobalMetaItem.TSGlobalMetaItemAttribute>? = null
-    override var allIndexes: List<TSGlobalMetaItem.TSGlobalMetaItemIndex>? = null
-    override var allCustomProperties: List<TSMetaCustomProperty>? = null
-    override var allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>? = null
-    override var allExtends: Set<TSGlobalMetaItem>? = null
+    override val allAttributes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
+    override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
+    override val allCustomProperties = LinkedList<TSMetaCustomProperty>()
+    override val allRelationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
+    override val allExtends = LinkedHashSet<TSGlobalMetaItem>()
 
     override var domAnchor = localMeta.domAnchor
     override var module = localMeta.module
@@ -146,6 +148,21 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     }
 
     private fun mergeCustomProperties(localMeta: TSMetaItem) = customProperties.putAll(localMeta.customProperties)
+
+    override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
+        val extends = TSMetaHelper.getAllExtends(globalMetaModel, this)
+        val relationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
+
+        allExtends.addAll(extends)
+        allAttributes.addAll(attributes.values + extends.flatMap { it.attributes.values })
+        allCustomProperties.addAll(customProperties.values + extends.flatMap { it.customProperties.values })
+        allIndexes.addAll(indexes.values + extends.flatMap { it.indexes.values })
+        allRelationEnds.addAll(relationEnds)
+
+        if (!isCatalogAware) {
+            isCatalogAware = extends.any { it.isCatalogAware }
+        }
+    }
 
     override fun mergeInternally(localMeta: TSMetaItem) {
         if (localMeta.isAbstract) isAbstract = localMeta.isAbstract

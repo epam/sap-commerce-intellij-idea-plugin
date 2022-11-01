@@ -17,21 +17,26 @@
  */
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelMerger
+import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.type.system.model.*
+import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
+import java.util.*
 
-class TSMetaModelMergerImpl() : TSMetaModelMerger {
+class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
     override fun merge(localMetaModels: Collection<TSMetaModel>) = with(TSGlobalMetaModel()) {
         localMetaModels
             // ideally we have to get the same dependency order as SAP Commerce Cloud
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
+
+        // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
+        getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM).values
+            .filter { it is TSGlobalMetaItemSelfMerge<*, *>}
+            .forEach { (it as TSGlobalMetaItemSelfMerge<*, *>).postMerge(this) }
 
         this
     }
@@ -62,14 +67,15 @@ class TSMetaModelMergerImpl() : TSMetaModelMerger {
             }
         }
 
-        globalMetaModel.getReferences().putAll(localMetaModel.getReferences());
+        globalMetaModel.getAllRelations().putAllValues(localMetaModel.getReferences());
 
-        localMetaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values()
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { globalMetaModel.addDeployment(it.deployment) }
-        localMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values()
-            .filter { it.deployment.table != null && it.deployment.typeCode != null }
-            .forEach { globalMetaModel.addDeployment(it.deployment) }
+        val itemTypeDeployments = localMetaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values()
+            .map { it.deployment }
+        val relationDeployments = localMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values()
+            .map { it.deployment }
+        (itemTypeDeployments + relationDeployments)
+            .filter { it.table != null && it.typeCode != null }
+            .forEach { globalMetaModel.addDeployment(it) }
     }
 
 }

@@ -62,11 +62,11 @@ class CatalogAwareCatalogVersionAttributeQualifier : AbstractTypeSystemInspectio
 
         val isAttributeTypeCatalogAware = attributes
             .any { attribute ->
-                "CatalogVersion".equals(attribute.type, true)
+                HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(attribute.type, true)
                 || metaModel.getMetaItem(attribute.type)?.let { attributeTypeMeta ->
-                    metaItemService.getExtends(attributeTypeMeta)
+                    attributeTypeMeta.allExtends
                         .mapNotNull { it.name }
-                        .any { "CatalogVersion".equals(it, true) }
+                        .any { HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(it, true) }
                 } ?: false
             }
 

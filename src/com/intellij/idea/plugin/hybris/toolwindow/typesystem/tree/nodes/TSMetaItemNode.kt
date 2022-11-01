@@ -36,24 +36,24 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(AllIcons.Nodes.Class)
-        presentation.locationString = "extends ${meta.extendedMetaItemName ?: HybrisConstants.TS_IMPLICIT_SUPER_CLASS_NAME}"
+        presentation.locationString = "extends ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
     }
 
     override fun getChildren(): Collection<TSNode> {
         val metaItemService = TSMetaItemService.getInstance(myProject)
         val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
 
-        val indexes = metaItemService.getIndexes(meta,false)
+        val indexes = meta.indexes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
             .sortedBy { it.name }
 
-        val customProperties = metaItemService.getCustomProperties(meta,false)
+        val customProperties = meta.customProperties.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
-        val attributes = metaItemService.getAttributes(meta, false)
+        val attributes = meta.attributes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }
