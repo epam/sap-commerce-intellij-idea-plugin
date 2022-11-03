@@ -22,7 +22,6 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -40,7 +39,6 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
     }
 
     override fun getChildren(): Collection<TSNode> {
-        val metaItemService = TSMetaItemService.getInstance(myProject)
         val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
 
         val indexes = meta.indexes.values

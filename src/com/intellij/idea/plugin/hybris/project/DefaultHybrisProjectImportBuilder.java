@@ -26,18 +26,18 @@ import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider;
+import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.ExtensionPoint;
-import com.intellij.openapi.extensions.Extensions;
-import com.intellij.openapi.extensions.ExtensionsArea;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
@@ -57,13 +57,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.notifications.NotificationUtil.showSystemNotificationIfNotActive;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -82,19 +87,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     protected volatile boolean refresh;
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
-
-    public ConfiguratorFactory getConfiguratorFactory() {
-        final Application application = ApplicationManager.getApplication();
-        final ExtensionsArea extensionsArea = application.getExtensionArea();
-
-        if (!extensionsArea.hasExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID)) {
-            return application.getService(DefaultConfiguratorFactory.class);
-        }
-        final ExtensionPoint ep = extensionsArea.getExtensionPoint(HybrisConstants.CONFIGURATOR_FACTORY_ID);
-        return (ConfiguratorFactory) ep.extensions()
-                                       .findFirst()
-                                       .orElseGet(() -> application.getService(DefaultConfiguratorFactory.class));
-    }
 
     @Nullable
     public Project createProject(String name, String path) {
@@ -178,7 +170,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
-        final ConfiguratorFactory configuratorFactory = this.getConfiguratorFactory();
+        final ConfiguratorFactory configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactoryProvider.class).get();
 
         this.performProjectsCleanup(allModules);
 
@@ -343,6 +335,43 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
+    public List<HybrisModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable HybrisProjectSettings settings) {
+        final List<HybrisModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
+        final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
+        final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
+        for (HybrisModuleDescriptor hybrisModuleDescriptor : allModules) {
+            if (hybrisModuleDescriptor.isPreselected()) {
+                moduleToImport.add(hybrisModuleDescriptor);
+                hybrisModuleDescriptor.setImportStatus(MANDATORY);
+                moduleToCheck.add(hybrisModuleDescriptor);
+            }
+        }
+        resolveDependency(moduleToImport, moduleToCheck, MANDATORY);
+
+        final Set<String> unusedExtensionNameSet = settings != null
+            ? settings.getUnusedExtensions()
+            : Collections.emptySet();
+
+        allModules.stream()
+            .filter(e -> unusedExtensionNameSet.contains(e.getName()))
+            .forEach(e -> {
+                moduleToImport.add(e);
+                e.setImportStatus(UNUSED);
+                moduleToCheck.add(e);
+            });
+        resolveDependency(moduleToImport, moduleToCheck, UNUSED);
+
+        final Set<String> modulesOnBlackList = settings != null
+            ? settings.getModulesOnBlackList()
+            : Collections.emptySet();
+
+        return moduleToImport.stream()
+                             .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
+                             .sorted(Comparator.nullsLast(Comparator.comparing(HybrisModuleDescriptor::getName)))
+                             .collect(Collectors.toList());
+    }
+
+    @Override
     public void setCoreStepModuleList() {
         moduleList = this.getHybrisProjectDescriptor()
                          .getFoundModules()
@@ -397,6 +426,29 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public boolean isMarked(final HybrisModuleDescriptor element) {
         return false;
+    }
+
+    @Override
+    public boolean validate(@Nullable final Project currentProject, @NotNull final Project project) {
+        return super.validate(currentProject, project);
+    }
+
+    private void resolveDependency(
+        final List<HybrisModuleDescriptor> moduleToImport,
+        final Set<HybrisModuleDescriptor> moduleToCheck,
+        final HybrisModuleDescriptor.IMPORT_STATUS selectionMode
+    ) {
+        while (!moduleToCheck.isEmpty()) {
+            final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
+            for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
+                if (!moduleToImport.contains(moduleDescriptor)) {
+                    moduleToImport.add(moduleDescriptor);
+                    moduleDescriptor.setImportStatus(selectionMode);
+                    moduleToCheck.add(moduleDescriptor);
+                }
+            }
+            moduleToCheck.remove(currentModule);
+        }
     }
 
 }

@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
 import icons.GradleIcons;
-import icons.MavenIcons;
 import icons.OpenapiIcons;
 import org.jetbrains.annotations.Nullable;
 

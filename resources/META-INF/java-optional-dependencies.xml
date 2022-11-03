@@ -26,7 +26,7 @@
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
-        <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
+<!--        <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>-->
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorFactory"
@@ -53,6 +53,8 @@
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocModuleConfigurator"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 

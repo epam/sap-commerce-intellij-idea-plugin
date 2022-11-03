@@ -75,7 +75,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                 .state
         val version = hybrisProjectSettings.importedByVersion ?: return true
-        val versionParts = version.split("\\.").toTypedArray()
+        val versionParts = version.split(".").toTypedArray()
         if (versionParts.size < 2) {
             return true
         }

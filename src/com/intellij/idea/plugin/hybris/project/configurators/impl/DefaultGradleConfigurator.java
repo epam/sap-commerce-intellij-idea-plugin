@@ -18,26 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.ide.actions.ImportModuleAction;
-import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
-import com.intellij.openapi.externalSystem.service.project.ProjectDataManager;
 import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataImportListener;
-import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder;
-import org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportProvider;
+import org.jetbrains.plugins.gradle.service.project.open.GradleProjectImportUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -54,20 +46,16 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         if (gradleModules.isEmpty()) {
             return;
         }
-        final ProjectDataManager projectDataManager = ApplicationManager.getApplication().getService(ProjectDataManager.class);
-        final GradleProjectImportBuilder gradleProjectImportBuilder = new GradleProjectImportBuilder(projectDataManager);
-        final GradleProjectImportProvider gradleProjectImportProvider = new GradleProjectImportProvider(
-            gradleProjectImportBuilder);
 
-        final ProjectDataImportListener projectDataImportListener = new ProjectDataImportListener() {
+        final var projectDataImportListener = new ProjectDataImportListener() {
+
             @Override
-            public void onImportFinished(@Nullable final String projectPath) {
+            public void onImportFinished(final String projectPath) {
                 if (projectPath != null && !gradleRootGroupMapping.isEmpty()) {
                     ApplicationManager.getApplication().invokeLater(() -> {
                         if (!project.isDisposed()) {
-                            final Module module = ModuleManager.getInstance(project)
-                                                               .findModuleByName(projectPath.substring(
-                                                                   projectPath.lastIndexOf('/') + 1));
+                            final var module = ModuleManager.getInstance(project)
+                                                            .findModuleByName(projectPath.substring(projectPath.lastIndexOf('/') + 1));
                             moveGradleModulesToGroup(project, module, gradleRootGroupMapping);
                         }
                     });
@@ -79,26 +67,8 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
             ProjectDataImportListener.TOPIC,
             projectDataImportListener
         );
-        gradleModules.forEach(gradleModule -> {
-            ApplicationManager.getApplication().invokeAndWait(() -> {
-                final AddModuleWizard wizard = new AddModuleWizard(
-                    project,
-                    gradleModule.getGradleFile().getPath(),
-                    gradleProjectImportProvider
-                );
-                if (wizard.getStepCount() > 0) {
-                    final ModuleWizardStep step = wizard.getCurrentStepObject();
-                    if (step.isStepVisible()) {
-                        step.updateStep();
-                        step.updateDataModel();
-                    }
-                }
-                wizard.doFinishAction();
-                ImportModuleAction.createFromWizard(project, wizard);
-            });
-        });
 
-        project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
+        gradleModules.forEach(gradleModule -> GradleProjectImportUtil.linkAndRefreshGradleProject(gradleModule.getGradleFile().getPath(), project));
     }
 
     private void moveGradleModulesToGroup(
@@ -109,7 +79,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         if (gradleModule == null) {
             return;
         }
-        final ModifiableModuleModel modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
+        final var modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
         gradleModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
         modifiableModuleModel.setModuleGroupPath(gradleModule, gradleRootGroupMapping.get(gradleModule.getName()));

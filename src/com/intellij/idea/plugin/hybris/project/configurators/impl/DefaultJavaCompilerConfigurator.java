@@ -15,7 +15,6 @@ import org.jetbrains.jps.model.java.compiler.JavaCompilers;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

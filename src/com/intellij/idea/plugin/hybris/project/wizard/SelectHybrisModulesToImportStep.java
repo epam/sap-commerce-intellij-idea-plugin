@@ -34,12 +34,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
@@ -128,59 +125,11 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
-        selectionMode = MANDATORY;
-        getContext().setAllModuleList();
-        final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
-        final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor : getContext().getList()) {
-            if (hybrisModuleDescriptor.isPreselected()) {
-                moduleToImport.add(hybrisModuleDescriptor);
-                hybrisModuleDescriptor.setImportStatus(selectionMode);
-                moduleToCheck.add(hybrisModuleDescriptor);
-            }
-        }
-        resolveDependency(moduleToImport, moduleToCheck);
-
-        selectionMode = UNUSED;
-        final Set<String> unusedExtensionNameSet = settings.getUnusedExtensions();
-        getContext()
-            .getList()
-            .stream()
-            .filter(e -> unusedExtensionNameSet.contains(e.getName()))
-            .forEach(e -> {
-                moduleToImport.add(e);
-                e.setImportStatus(selectionMode);
-                moduleToCheck.add(e);
-            });
-        resolveDependency(moduleToImport, moduleToCheck);
-
-        final Set<String> modulesOnBlackList = settings.getModulesOnBlackList();
-        final List<HybrisModuleDescriptor> filteredModuleToImport = moduleToImport
-            .stream()
-            .filter(e->!modulesOnBlackList.contains(e.getRelativePath()))
-            .sorted(Comparator.nullsLast(Comparator.comparing(HybrisModuleDescriptor::getName)))
-            .collect(Collectors.toList());
         try {
+            final var filteredModuleToImport = getContext().getBestMatchingExtensionsToImport(settings);
             this.getContext().setList(filteredModuleToImport);
         } catch (ConfigurationException e) {
             // no-op already validated
-        }
-    }
-
-    private void resolveDependency(
-        final List<HybrisModuleDescriptor> moduleToImport,
-        final Set<HybrisModuleDescriptor> moduleToCheck
-    ) {
-        while (!moduleToCheck.isEmpty()) {
-            final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
-            for (HybrisModuleDescriptor moduleDescriptor : currentModule.getDependenciesPlainList()) {
-                if (!moduleToImport.contains(moduleDescriptor)) {
-                    moduleToImport.add(moduleDescriptor);
-                    moduleDescriptor.setImportStatus(selectionMode);
-                    moduleToCheck.add(moduleDescriptor);
-                }
-            }
-            moduleToCheck.remove(currentModule);
         }
     }
 

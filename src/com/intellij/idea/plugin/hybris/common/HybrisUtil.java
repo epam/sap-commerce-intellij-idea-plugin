@@ -18,7 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileVisitor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -41,6 +44,24 @@ public final class HybrisUtil {
 
     public static boolean isHybrisModuleRoot(@NotNull VirtualFile file) {
         return file.findChild(HybrisConstants.EXTENSION_INFO_XML) != null;
+    }
+
+    public static boolean isPotentialHybrisProject(@NotNull VirtualFile file) {
+        final Key<Boolean> key = Key.create("IS_HYBRIS_FILE");
+        file.putUserData(key, false);
+
+        VfsUtilCore.iterateChildrenRecursively(file, null, fileOrDir -> {
+            final var hybrisFile = fileOrDir.getName().equals(HybrisConstants.LOCAL_EXTENSIONS_XML)
+                                   || fileOrDir.getName().equals(HybrisConstants.EXTENSIONS_XML)
+                                   || fileOrDir.getName().equals(HybrisConstants.EXTENSION_INFO_XML);
+
+            if (hybrisFile) {
+                file.putUserData(key, true);
+            }
+            return !hybrisFile;
+        }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6));
+
+        return Boolean.TRUE.equals(file.getUserData(key));
     }
 
     public static boolean isAcceleratorAddOnModuleRoot(@NotNull final File file) {

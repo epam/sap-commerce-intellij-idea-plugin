@@ -27,8 +27,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.TreeSpeedSearch
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
-import com.intellij.util.containers.Convertor
 import org.jetbrains.annotations.NonNls
+import java.util.function.Function
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
@@ -43,12 +43,12 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         isRootVisible = false
         model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
 
-        TreeSpeedSearch(this, Convertor { treePath: TreePath ->
+        TreeSpeedSearch(this, SEARCH_CAN_EXPAND, Function { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
-                is TSNode -> return@Convertor uObj.name
-                else -> return@Convertor ""
+                is TSNode -> return@Function uObj.name
+                else -> return@Function ""
             }
-        }, SEARCH_CAN_EXPAND)
+        })
     }
 
     fun update(changeType: TSViewSettings.ChangeType) {

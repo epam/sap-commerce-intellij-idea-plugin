@@ -20,8 +20,10 @@ package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
@@ -39,6 +41,8 @@ public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBu
     public abstract HybrisProjectDescriptor getHybrisProjectDescriptor();
 
     public abstract void setAllModuleList();
+
+    public abstract List<HybrisModuleDescriptor> getBestMatchingExtensionsToImport(@Nullable HybrisProjectSettings settings);
 
     public abstract void setCoreStepModuleList();
 
