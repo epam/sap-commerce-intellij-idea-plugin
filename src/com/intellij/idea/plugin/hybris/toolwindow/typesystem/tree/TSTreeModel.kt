@@ -38,24 +38,17 @@ class TSTreeModel(private val root: TSNode)
     override fun getRoot() = Node(root)
 
     override fun getChildren(parent: Any?): List<Node> {
-        if (parent is Node) {
-            if (!parent.allowsChildren) return emptyList()
-
-            val nodeObject = parent.userObject
-            if (nodeObject is TSNode) {
-                return nodeObject.getChildren()
-                    .onEach { it!!.update() }
-                    .map { Node(it) }
-            }
+        if (parent !is Node || !parent.allowsChildren || parent.userObject !is TSNode) {
+            return emptyList();
         }
 
-        return emptyList();
-
+        return (parent.userObject as TSNode).getChildren()
+            .onEach { it!!.update() }
+            .map { Node(it) }
     }
 
     fun reload() {
         treeNodesChanged(null, null, null)
-        treeStructureChanged(null, null, null)
     }
 
     class Node(private val tsNode : TSNode?) : DefaultMutableTreeNode(tsNode) {

@@ -28,7 +28,9 @@
 
 
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemLineMarkerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA"
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemAttributeLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBeanLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"

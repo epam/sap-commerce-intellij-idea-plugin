@@ -51,17 +51,18 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         })
     }
 
-    fun update(changeType: TSViewSettings.ChangeType) {
-        if (changeType == TSViewSettings.ChangeType.FULL) {
-            myTreeModel.reload()
-        }
-    }
-
     override fun getData(dataId: @NonNls String): Any? {
         return null
     }
 
     override fun dispose() {
+    }
+
+    fun update(changeType: TSViewSettings.ChangeType) {
+        if (changeType == TSViewSettings.ChangeType.FULL) {
+            selectionModel.selectionPath = null
+            myTreeModel.reload()
+        }
     }
 
     companion object {

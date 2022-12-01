@@ -33,7 +33,7 @@ class TSMetaModel(
 ) : Disposable {
 
     private val myMetaCache: MutableMap<MetaType, MultiMap<String, TSMetaClassifier<DomElement>>> = ConcurrentHashMap()
-    private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
+    private val myRelationsBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
 
     fun addMetaModel(meta: TSMetaClassifier<out DomElement>, metaType: MetaType) {
         // add log why no name
@@ -47,11 +47,11 @@ class TSMetaModel(
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
     fun getMetaTypes() = myMetaCache;
-    fun getReferences() = myReferencesBySourceTypeName;
+    fun getRelations() = myRelationsBySourceTypeName;
 
     override fun dispose() {
         myMetaCache.clear()
-        myReferencesBySourceTypeName.clear()
+        myRelationsBySourceTypeName.clear()
     }
 
     override fun toString() = "Module: ${module.name} | psi file: ${psiFile.name}"
