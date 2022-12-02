@@ -32,5 +32,6 @@ object TSMetaModelNameProvider {
     fun extract(dom: EnumValue): String? = dom.code.stringValue
     fun extract(dom: Index): String? = dom.name.stringValue
     fun extract(dom: Attribute): String? = dom.qualifier.stringValue
+    fun extract(dom: Persistence): String? = dom.type.stringValue
 
 }

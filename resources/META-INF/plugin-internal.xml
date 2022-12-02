@@ -26,16 +26,6 @@
         <psi.referenceContributor language="XML"
                                   implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisProcessReferenceContributor"/>
 
-
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemAttributeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBeanLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
-
         <completion.contributor language="XML"
                                 implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
 

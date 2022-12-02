@@ -77,6 +77,7 @@ internal class TSMetaItemImpl(
         override val module: Module,
         override val name: String,
         override val isCustom: Boolean,
+        override val persistence: TSMetaPersistence,
         override val modifiers: TSMetaModifiers,
         override val customProperties: Map<String, TSMetaCustomProperty>
     ) : TSMetaItemAttribute {
@@ -216,6 +217,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override val name: String = localMeta.name
         override var module = localMeta.module
         override var modifiers = localMeta.modifiers
+        override var persistence = localMeta.persistence
         override var domAnchor = localMeta.domAnchor
         override var description = localMeta.description
         override var defaultValue = localMeta.defaultValue

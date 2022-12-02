@@ -22,6 +22,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.type.system.utils.ModelsUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.DomElement;
@@ -45,17 +46,16 @@ public class HybrisItemTypeLineMarkerProvider extends AbstractHybrisItemLineMark
     protected Optional<RelatedItemLineMarkerInfo<PsiElement>> collectDeclarations(
         final PsiClass psi
     ) {
-        final var content = psi.getContainingFile().getText();
         final var name = cleanSearchName(psi.getName());
         final var psiNameIdentifier = psi.getNameIdentifier();
 
-        if (content.contains("Generated model class for type")) {
+        if (ModelsUtils.isModelFile(psi.getContainingFile(), psi.getContainingClass())) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaItemByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)
                                             .collect(Collectors.toList()))
                            .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TYPE_SYSTEM));
-        } else if (content.contains("Generated enum")) {
+        } else if (ModelsUtils.isEnumFile(psi.getContainingFile(), psi.getContainingClass())) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaEnumByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)

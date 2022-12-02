@@ -159,10 +159,15 @@ class TSMetaModelBuilder(
         return TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
     }
 
+    private fun create(dom: Persistence): TSMetaPersistence {
+        return TSMetaPersistenceImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
+    }
+
     private fun create(dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl.TSMetaItemAttributeImpl(dom, myModule, name, myCustom,
             customProperties = create(dom.customProperties),
+            persistence = create(dom.persistence),
             modifiers = create(dom.modifiers)
         )
     }

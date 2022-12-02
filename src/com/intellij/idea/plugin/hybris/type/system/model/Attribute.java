@@ -52,6 +52,7 @@ public interface Attribute extends DomElement {
     String AUTO_CREATE = "autocreate";
     String GENERATE = "generate";
     String IS_SELECTION_OF = "isSelectionOf";
+    String PERSISTENCE = "persistence";
 
     /**
      * Returns the value of the redeclare child.
@@ -193,7 +194,7 @@ public interface Attribute extends DomElement {
      * @return the value of the persistence child.
      */
     @NotNull
-    @SubTag("persistence")
+    @SubTag(PERSISTENCE)
     Persistence getPersistence();
 
 
