@@ -32,10 +32,10 @@ class TSMetaModel(
     val custom: Boolean
 ) : Disposable {
 
-    private val myMetaCache: MutableMap<MetaType, MultiMap<String, TSMetaClassifier<DomElement>>> = ConcurrentHashMap()
+    private val myMetaCache: MutableMap<TSMetaType, MultiMap<String, TSMetaClassifier<DomElement>>> = ConcurrentHashMap()
     private val myRelationsBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
 
-    fun addMetaModel(meta: TSMetaClassifier<out DomElement>, metaType: MetaType) {
+    fun addMetaModel(meta: TSMetaClassifier<out DomElement>, metaType: TSMetaType) {
         // add log why no name
         if (meta.name == null) return
 
@@ -43,7 +43,7 @@ class TSMetaModel(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : TSMetaClassifier<out DomElement>> getMetaType(metaType: MetaType): MultiMap<String, T> =
+    fun <T : TSMetaClassifier<out DomElement>> getMetaType(metaType: TSMetaType): MultiMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
     fun getMetaTypes() = myMetaCache;

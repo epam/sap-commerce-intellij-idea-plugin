@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemIndex
 import com.intellij.openapi.project.Project
@@ -79,7 +81,7 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.name }
+                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
             ),
             createColumn(
                 name = COLUMN_NAME,

@@ -78,17 +78,17 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return writeMetaModelWithLock()
     }
 
-    override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType) = getMetaModel().getMetaType<T>(metaType).values
+    override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
 
     override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
     override fun findMetaForDom(dom: EnumType) = findMetaEnumByName(TSMetaModelNameProvider.extract(dom))
 
-    override fun findMetaItemByName(name: String?) = findMetaByName<TSGlobalMetaItem>(MetaType.META_ITEM, name)
-    override fun findMetaEnumByName(name: String?) = findMetaByName<TSGlobalMetaEnum>(MetaType.META_ENUM, name)
-    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSGlobalMetaAtomic>(MetaType.META_ATOMIC, name)
-    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSGlobalMetaCollection>(MetaType.META_COLLECTION, name)
-    override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(MetaType.META_MAP, name)
-    override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(MetaType.META_RELATION, name)
+    override fun findMetaItemByName(name: String?) = findMetaByName<TSGlobalMetaItem>(TSMetaType.META_ITEM, name)
+    override fun findMetaEnumByName(name: String?) = findMetaByName<TSGlobalMetaEnum>(TSMetaType.META_ENUM, name)
+    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC, name)
+    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION, name)
+    override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(TSMetaType.META_MAP, name)
+    override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(TSMetaType.META_RELATION, name)
 
     override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getAllRelations().values())
         .mapNotNull { metaRelationElement -> metaRelationElement.owner }
@@ -105,7 +105,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return result
     }
 
-    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: MetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
+    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
     private fun readMetaModelWithLock(): TSGlobalMetaModel {

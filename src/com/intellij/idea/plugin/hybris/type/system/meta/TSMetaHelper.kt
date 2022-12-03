@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.type.system.meta
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.type.system.model.AttributeModel
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperties
 import com.intellij.idea.plugin.hybris.type.system.model.CustomProperty
@@ -78,7 +78,7 @@ class TSMetaHelper {
         private fun getMetaItem(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): TSGlobalMetaItem? {
             val realExtendedMetaItemName = meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM
 
-            return metaModel.getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[realExtendedMetaItemName]
+            return metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[realExtendedMetaItemName]
         }
 
         private fun getMetaRelationEnds(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): Collection<TSMetaRelation.TSMetaRelationElement> {

@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.openapi.project.Project
@@ -80,7 +82,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.name }
+                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
             ),
             createColumn(
                 name = COLUMN_QUALIFIER,

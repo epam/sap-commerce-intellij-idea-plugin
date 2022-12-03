@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap
 
 class TSGlobalMetaModel : Disposable {
 
-    private val myMetaCache: MutableMap<MetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
+    private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
@@ -52,15 +52,15 @@ class TSGlobalMetaModel : Disposable {
         .maxOf { it } + 1
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: MetaType): ConcurrentMap<String, T> =
+    fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: TSMetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
-    fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(MetaType.META_ATOMIC)[name]
-    fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(MetaType.META_ENUM)[name]
-    fun getMetaMap(name: String?) = getMetaType<TSGlobalMetaMap>(MetaType.META_MAP)[name]
-    fun getMetaRelation(name: String?) = getMetaType<TSGlobalMetaRelation>(MetaType.META_RELATION)[name]
-    fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM)[name]
-    fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(MetaType.META_COLLECTION)[name]
+    fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC)[name]
+    fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(TSMetaType.META_ENUM)[name]
+    fun getMetaMap(name: String?) = getMetaType<TSGlobalMetaMap>(TSMetaType.META_MAP)[name]
+    fun getMetaRelation(name: String?) = getMetaType<TSGlobalMetaRelation>(TSMetaType.META_RELATION)[name]
+    fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[name]
+    fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION)[name]
 
     fun getMetaTypes() = myMetaCache;
 

@@ -4,12 +4,16 @@
 package com.intellij.idea.plugin.hybris.beans.model;
 
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * null:abstractPojos interface.
  */
-public interface AbstractPojos extends DomElement {
+@Stubbed
+@StubbedOccurrence
+public interface Beans extends DomElement {
 
     /**
      * Returns the list of bean children.

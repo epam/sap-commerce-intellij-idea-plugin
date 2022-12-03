@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
+package com.intellij.idea.plugin.hybris.toolwindow.components
 
 import com.intellij.ide.ui.search.SearchUtil
 import com.intellij.openapi.project.Project
@@ -46,7 +46,7 @@ abstract class AbstractTSTable<Owner : Any, Item>(val myProject: Project) : JBTa
 
         getSearchableColumnNames()
             .map { getColumn(it) }
-            .forEach { it.cellRenderer = Renderer(search)}
+            .forEach { it.cellRenderer = Renderer(search) }
 
         getFixedWidthColumnNames()
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }

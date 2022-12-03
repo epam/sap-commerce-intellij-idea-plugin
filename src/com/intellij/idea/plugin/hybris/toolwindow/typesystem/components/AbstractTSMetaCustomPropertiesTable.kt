@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -43,7 +45,7 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.name }
+                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
             ),
             createColumn(
                 name = COLUMN_NAME,

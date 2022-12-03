@@ -30,19 +30,19 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
 import java.util.*
 
-class TSMetaTypeNode(parent: TSNode, private val metaType: MetaType) : TSNode(parent), Disposable {
+class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = HybrisI18NBundleUtils.message("hybris.toolwindow.ts.group.${metaType.name.lowercase()}.name")
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
-            MetaType.META_ATOMIC -> presentation.setIcon(AllIcons.Actions.GroupByModule)
-            MetaType.META_ITEM -> presentation.setIcon(AllIcons.Actions.GroupByClass)
-            MetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
-            MetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
-            MetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
-            MetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
+            TSMetaType.META_ATOMIC -> presentation.setIcon(AllIcons.Actions.GroupByModule)
+            TSMetaType.META_ITEM -> presentation.setIcon(AllIcons.Actions.GroupByClass)
+            TSMetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
+            TSMetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
+            TSMetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
+            TSMetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 

@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelProcessor
-import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils

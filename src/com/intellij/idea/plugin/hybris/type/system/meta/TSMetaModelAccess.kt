@@ -40,6 +40,6 @@ interface TSMetaModelAccess {
     fun findMetaRelationByName(name: String?): TSGlobalMetaRelation?
     fun findMetaForDom(dom: ItemType): TSGlobalMetaItem?
     fun findMetaForDom(dom: EnumType): TSGlobalMetaEnum?
-    fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: MetaType): Collection<T>
+    fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType): Collection<T>
 
 }

@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -52,7 +52,7 @@ public class EnumTypeConverter extends TypeSystemConverterBase<EnumType> {
     protected Collection<? extends EnumType> searchAll(
         @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return meta.<TSGlobalMetaEnum>getAll(MetaType.META_ENUM).stream()
+        return meta.<TSGlobalMetaEnum>getAll(TSMetaType.META_ENUM).stream()
                    .map(TSMetaEnum::retrieveDom)
                    .filter(Objects::nonNull)
                    .collect(Collectors.toList());

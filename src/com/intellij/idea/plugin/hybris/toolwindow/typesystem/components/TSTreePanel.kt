@@ -78,18 +78,18 @@ class TSTreePanel(
         if (component != null && component is TSTreeModel.Node && component.userObject is TSNode) {
             secondComponent = myDefaultPanel
 
-            when (val tsNode = component.userObject) {
-                is TSMetaAtomicNode -> secondComponent = myMetaAtomicView.getContent(tsNode.meta)
-                is TSMetaCollectionNode -> secondComponent = myMetaCollectionView.getContent(tsNode.meta)
-                is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(tsNode.meta)
-                is TSMetaEnumValueNode -> secondComponent = myMetaEnumView.getContent(tsNode.parent.meta, tsNode.meta)
-                is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(tsNode.meta)
-                is TSMetaItemIndexNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
-                is TSMetaItemAttributeNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
-                is TSMetaItemCustomPropertyNode -> secondComponent = myMetaItemView.getContent(tsNode.parent.meta, tsNode.meta)
-                is TSMetaMapNode -> secondComponent = myMetaMapView.getContent(tsNode.meta)
-                is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
-                is TSMetaRelationElementNode -> secondComponent = myMetaRelationView.getContent(tsNode.meta)
+            when (val node = component.userObject) {
+                is TSMetaAtomicNode -> secondComponent = myMetaAtomicView.getContent(node.meta)
+                is TSMetaCollectionNode -> secondComponent = myMetaCollectionView.getContent(node.meta)
+                is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(node.meta)
+                is TSMetaEnumValueNode -> secondComponent = myMetaEnumView.getContent(node.parent.meta, node.meta)
+                is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(node.meta)
+                is TSMetaItemIndexNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
+                is TSMetaItemAttributeNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
+                is TSMetaItemCustomPropertyNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
+                is TSMetaMapNode -> secondComponent = myMetaMapView.getContent(node.meta)
+                is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(node.meta)
+                is TSMetaRelationElementNode -> secondComponent = myMetaRelationView.getContent(node.meta)
             }
         } else {
             secondComponent = myDefaultPanel

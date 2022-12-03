@@ -22,8 +22,8 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
@@ -173,7 +173,7 @@ public class TSItemTypeGutterAnnotator implements Annotator {
             return Collections.emptyList();
         }
 
-        return metaService.<TSGlobalMetaItem>getAll(MetaType.META_ITEM).stream()
+        return metaService.<TSGlobalMetaItem>getAll(TSMetaType.META_ITEM).stream()
                           .filter(meta -> metaItem.getName().equals(meta.getExtendedMetaItemName()))
                           .collect(Collectors.toList());
     }

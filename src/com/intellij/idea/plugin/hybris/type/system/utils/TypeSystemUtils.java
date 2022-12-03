@@ -19,16 +19,12 @@
 package com.intellij.idea.plugin.hybris.type.system.utils;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.idea.plugin.hybris.type.system.model.Items;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -125,7 +121,7 @@ public final class TypeSystemUtils {
         }
 
         final VirtualFile vFile = file.getVirtualFile();
-        return vFile != null && isCustomExtensionFile(vFile, file.getProject());
+        return vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.getProject());
     }
 
     @Nullable
@@ -134,33 +130,7 @@ public final class TypeSystemUtils {
             return null;
         }
 
-        final VirtualFile vFile = file.getVirtualFile();
-
-        if (vFile == null) {
-            return null;
-        }
-
-        return ModuleUtilCore.findModuleForFile(vFile, file.getProject());
-
-    }
-
-    public static boolean isCustomExtensionFile(@NotNull final VirtualFile file, @NotNull final Project project) {
-        final Module module = ModuleUtilCore.findModuleForFile(file, project);
-
-        if (null == module) {
-            return false;
-        }
-        final String descriptorTypeName = module.getOptionValue(HybrisConstants.DESCRIPTOR_TYPE);
-
-        if (descriptorTypeName == null) {
-            if (shouldCheckFilesWithoutHybrisSettings(project)) {
-                return estimateIsCustomExtension(file);
-            }
-            return false;
-        }
-
-        final HybrisModuleDescriptorType descriptorType = HybrisModuleDescriptorType.valueOf(descriptorTypeName);
-        return descriptorType == HybrisModuleDescriptorType.CUSTOM;
+        return PsiUtils.getModule(file);
     }
 
     /*
@@ -182,9 +152,4 @@ public final class TypeSystemUtils {
         return true;
     }
 
-    private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
-        // at least it needs to have hybris flag
-        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
-        return commonIdeaService.isHybrisProject(project);
-    }
 }

@@ -19,7 +19,9 @@
 <idea-plugin>
 
     <applicationListeners>
-        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
+        <listener class="com.intellij.idea.plugin.hybris.type.system.vfs.listeners.TSBulkFileListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+        <listener class="com.intellij.idea.plugin.hybris.beans.vfs.listeners.BeansBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
@@ -58,6 +60,18 @@
 
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
             implementation="com.intellij.idea.plugin.hybris.beans.BeansDomFileDescription"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelAccessImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelProcessorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelCollectorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelMergerImpl"/>
 
         <!-- ####################################################################################################### -->
         <!--                                          Flexible Search                                                -->

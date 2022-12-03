@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.type.system.file;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -56,7 +56,7 @@ public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
     protected Collection<? extends ItemType> searchAll(
         @NotNull final ConvertContext context, final TSMetaModelAccess meta
     ) {
-        return meta.<TSGlobalMetaItem>getAll(MetaType.META_ITEM).stream()
+        return meta.<TSGlobalMetaItem>getAll(TSMetaType.META_ITEM).stream()
                    .map(TSGlobalMetaItem::retrieveAllDoms)
                    .map(Collection::stream)
                    .map(Stream::findFirst)

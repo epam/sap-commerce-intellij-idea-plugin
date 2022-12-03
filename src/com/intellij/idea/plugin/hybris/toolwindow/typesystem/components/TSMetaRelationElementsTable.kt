@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation
@@ -69,7 +71,7 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.name }
+                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
             ),
             createColumn(
                 name = COLUMN_OWNER,

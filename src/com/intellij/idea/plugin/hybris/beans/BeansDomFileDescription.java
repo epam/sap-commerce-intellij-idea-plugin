@@ -18,8 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.beans;
 
-import com.intellij.idea.plugin.hybris.beans.model.AbstractPojos;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.beans.model.Beans;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.openapi.module.Module;
@@ -30,10 +29,16 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class BeansDomFileDescription extends DomFileDescription<AbstractPojos> {
+public class BeansDomFileDescription extends DomFileDescription<Beans> {
 
     public BeansDomFileDescription() {
-        super(AbstractPojos.class, "beans");
+        super(Beans.class, "beans");
+    }
+
+    @Nullable
+    @Override
+    public Icon getFileIcon(final int flags) {
+        return HybrisIcons.BEAN_FILE;
     }
 
     @Override
@@ -45,18 +50,8 @@ public class BeansDomFileDescription extends DomFileDescription<AbstractPojos> {
         }
 
         final boolean isMyFile = super.isMyFile(file, module);
-        final boolean isBeansFileName = isBeansXmlFile(file);
+        final boolean isBeansFileName = BeansUtils.isBeansXmlFile(file);
         return isMyFile && isBeansFileName;
-    }
-
-    @Nullable
-    @Override
-    public Icon getFileIcon(final int flags) {
-        return HybrisIcons.BEAN_FILE;
-    }
-
-    public static boolean isBeansXmlFile(@NotNull final XmlFile file) {
-        return file.getName().endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING);
     }
 
 

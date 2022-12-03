@@ -38,6 +38,8 @@
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
 
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.BeansToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings"/>
 

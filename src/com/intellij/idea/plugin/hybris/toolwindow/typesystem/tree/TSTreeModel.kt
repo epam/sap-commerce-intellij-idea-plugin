@@ -51,9 +51,9 @@ class TSTreeModel(private val root: TSNode)
         treeNodesChanged(null, null, null)
     }
 
-    class Node(private val tsNode : TSNode?) : DefaultMutableTreeNode(tsNode) {
+    class Node(private val node : TSNode?) : DefaultMutableTreeNode(node) {
 
-        override fun toString() = tsNode.toString()
+        override fun toString() = node.toString()
     }
 
     override fun getInvoker() = myInvoker

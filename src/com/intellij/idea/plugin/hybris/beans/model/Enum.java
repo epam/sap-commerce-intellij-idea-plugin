@@ -25,7 +25,7 @@ public interface Enum extends DomElement, AbstractPojo {
      * @return the value of the deprecated child.
      */
     @NotNull
-    GenericAttributeValue<String> getDeprecated();
+    GenericAttributeValue<Boolean> getDeprecated();
 
 
     /**
@@ -64,7 +64,7 @@ public interface Enum extends DomElement, AbstractPojo {
      */
     @NotNull
     @Required
-    java.util.List<GenericDomValue<String>> getValues();
+    java.util.List<EnumValue> getValues();
 
     /**
      * Adds new child to the list of value children.

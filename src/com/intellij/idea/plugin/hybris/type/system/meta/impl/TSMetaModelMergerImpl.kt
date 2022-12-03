@@ -34,7 +34,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .forEach { merge(this, it) }
 
         // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
-        getMetaType<TSGlobalMetaItem>(MetaType.META_ITEM).values
+        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .filter { it is TSGlobalMetaItemSelfMerge<*, *>}
             .forEach { (it as TSGlobalMetaItemSelfMerge<*, *>).postMerge(this) }
 
@@ -69,9 +69,9 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
         globalMetaModel.getAllRelations().putAllValues(localMetaModel.getRelations());
 
-        val itemTypeDeployments = localMetaModel.getMetaType<TSMetaItem>(MetaType.META_ITEM).values()
+        val itemTypeDeployments = localMetaModel.getMetaType<TSMetaItem>(TSMetaType.META_ITEM).values()
             .map { it.deployment }
-        val relationDeployments = localMetaModel.getMetaType<TSMetaRelation>(MetaType.META_RELATION).values()
+        val relationDeployments = localMetaModel.getMetaType<TSMetaRelation>(TSMetaType.META_RELATION).values()
             .map { it.deployment }
         (itemTypeDeployments + relationDeployments)
             .filter { it.table != null && it.typeCode != null }

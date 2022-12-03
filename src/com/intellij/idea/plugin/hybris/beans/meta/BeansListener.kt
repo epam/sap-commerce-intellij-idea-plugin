@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.meta.model;
+package com.intellij.idea.plugin.hybris.beans.meta
 
-public enum MetaType {
-    META_ITEM, META_RELATION, META_ENUM, META_COLLECTION, META_ATOMIC, META_MAP
+interface BeansListener {
+
+    fun beansChanged(globalMetaModel: BeansGlobalMetaModel)
 }

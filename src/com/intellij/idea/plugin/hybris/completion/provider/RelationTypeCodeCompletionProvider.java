@@ -24,8 +24,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.MetaType;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
@@ -53,7 +53,7 @@ public class RelationTypeCodeCompletionProvider extends CompletionProvider<Compl
         }
         result = result.caseInsensitive();
 
-        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaRelation>getAll(MetaType.META_RELATION).stream()
+        TSMetaModelAccess.Companion.getInstance(project).<TSGlobalMetaRelation>getAll(TSMetaType.META_RELATION).stream()
                                    .filter(meta -> meta.getName() != null)
                                    .map(meta -> LookupElementBuilder.create(meta.getName()).withIcon(HybrisIcons.TYPE_SYSTEM))
                                    .forEach(result::addElement);

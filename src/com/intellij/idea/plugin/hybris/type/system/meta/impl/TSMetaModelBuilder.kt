@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.meta.model.impl
+package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
+import com.intellij.idea.plugin.hybris.type.system.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.openapi.module.Module
 import com.intellij.psi.PsiFile
@@ -39,7 +38,7 @@ class TSMetaModelBuilder(
     fun withItemTypes(types: List<ItemType>): TSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, MetaType.META_ITEM) }
+            .forEach { myMetaModel.addMetaModel(it, TSMetaType.META_ITEM) }
 
         return this
     }
@@ -47,7 +46,7 @@ class TSMetaModelBuilder(
     fun withEnumTypes(types: List<EnumType>): TSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, MetaType.META_ENUM) }
+            .forEach { myMetaModel.addMetaModel(it, TSMetaType.META_ENUM) }
 
         return this
     }
@@ -55,7 +54,7 @@ class TSMetaModelBuilder(
     fun withCollectionTypes(types: List<CollectionType>): TSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, MetaType.META_COLLECTION) }
+            .forEach { myMetaModel.addMetaModel(it, TSMetaType.META_COLLECTION) }
 
         return this
     }
@@ -63,7 +62,7 @@ class TSMetaModelBuilder(
     fun withMapTypes(types: List<MapType>): TSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, MetaType.META_MAP) }
+            .forEach { myMetaModel.addMetaModel(it, TSMetaType.META_MAP) }
 
         return this
     }
@@ -72,7 +71,7 @@ class TSMetaModelBuilder(
         types
             .mapNotNull { create(it) }
             .forEach {
-                myMetaModel.addMetaModel(it, MetaType.META_RELATION)
+                myMetaModel.addMetaModel(it, TSMetaType.META_RELATION)
                 registerReferenceEnd(it.source, it.target)
                 registerReferenceEnd(it.target, it.source)
             }
@@ -83,7 +82,7 @@ class TSMetaModelBuilder(
     fun withAtomicTypes(types: List<AtomicType>): TSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, MetaType.META_ATOMIC) }
+            .forEach { myMetaModel.addMetaModel(it, TSMetaType.META_ATOMIC) }
 
         return this
     }
@@ -125,7 +124,8 @@ class TSMetaModelBuilder(
     }
 
     private fun create(dom: RelationElement, end: TSMetaRelation.RelationEnd): TSMetaRelation.TSMetaRelationElement {
-        return TSMetaRelationImpl.TSMetaRelationElementImpl(dom, myModule, myCustom, end,
+        return TSMetaRelationImpl.TSMetaRelationElementImpl(
+            dom, myModule, myCustom, end,
             modifiers = create(dom.modifiers),
             customProperties = create(dom.customProperties)
         )
@@ -165,7 +165,8 @@ class TSMetaModelBuilder(
 
     private fun create(dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaItemImpl.TSMetaItemAttributeImpl(dom, myModule, name, myCustom,
+        return TSMetaItemImpl.TSMetaItemAttributeImpl(
+            dom, myModule, name, myCustom,
             customProperties = create(dom.customProperties),
             persistence = create(dom.persistence),
             modifiers = create(dom.modifiers)
