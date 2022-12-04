@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
+import com.intellij.idea.plugin.hybris.type.system.model.Relation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
@@ -30,10 +32,10 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.components.JBTextField;
 import icons.DvcsImplIcons;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 public class TSMetaRelationView {
@@ -42,6 +44,7 @@ public class TSMetaRelationView {
     private static final int TAB_SOURCE_INDEX = 1;
     private static final int TAB_TARGET_INDEX = 2;
     private final Project myProject;
+    private TSMetaClassifier<Relation> myMeta;
 
     private JBPanel myContentPane;
     private JBTabbedPane myTabs;
@@ -72,10 +75,11 @@ public class TSMetaRelationView {
     }
 
     private void initData(final TSMetaRelation myMeta) {
-        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());

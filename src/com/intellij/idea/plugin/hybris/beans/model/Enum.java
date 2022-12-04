@@ -10,6 +10,8 @@ import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * null:enum interface.
  */
@@ -26,6 +28,9 @@ public interface Enum extends DomElement, AbstractPojo {
      */
     @NotNull
     GenericAttributeValue<Boolean> getDeprecated();
+
+    @NotNull
+    GenericAttributeValue<String> getDeprecatedSince();
 
 
     /**
@@ -64,7 +69,7 @@ public interface Enum extends DomElement, AbstractPojo {
      */
     @NotNull
     @Required
-    java.util.List<EnumValue> getValues();
+    List<EnumValue> getValues();
 
     /**
      * Adds new child to the list of value children.

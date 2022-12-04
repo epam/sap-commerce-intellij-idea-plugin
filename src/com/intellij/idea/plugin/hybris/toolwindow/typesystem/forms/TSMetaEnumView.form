@@ -38,7 +38,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="d4d84" class="javax.swing.JLabel">
@@ -64,7 +65,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="578a8" class="javax.swing.JLabel">
@@ -82,7 +84,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                 </children>

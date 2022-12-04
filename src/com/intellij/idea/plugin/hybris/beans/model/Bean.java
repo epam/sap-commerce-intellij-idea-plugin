@@ -8,7 +8,10 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * null:bean interface.
@@ -34,7 +37,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the type child.
      */
     @NotNull
-    GenericAttributeValue<String> getType();
+    GenericAttributeValue<BeanType> getType();
 
 
     /**
@@ -47,7 +50,11 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the deprecated child.
      */
     @NotNull
-    GenericAttributeValue<String> getDeprecated();
+    GenericAttributeValue<Boolean> getDeprecated();
+
+    @NotNull
+    @Attribute("deprecatedSince")
+    GenericAttributeValue<String> getDeprecatedSince();
 
 
     /**
@@ -65,8 +72,12 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the superEquals child.
      */
     @NotNull
+    @Attribute("superEquals")
     GenericAttributeValue<Boolean> getSuperEquals();
 
+    @NotNull
+    @SubTag("hints")
+    Hints getHints();
 
     /**
      * Returns the value of the class child.
@@ -103,7 +114,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the list of import children.
      */
     @NotNull
-    java.util.List<Import> getImports();
+    List<Import> getImports();
 
     /**
      * Adds new child to the list of import children.
@@ -119,7 +130,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the annotations child.
      */
     @NotNull
-    Annotations getAnnotations();
+    List<Annotations> getAnnotationses();
 
 
     /**
@@ -128,7 +139,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the list of property children.
      */
     @NotNull
-    java.util.List<Property> getProperties();
+    List<Property> getProperties();
 
     /**
      * Adds new child to the list of property children.

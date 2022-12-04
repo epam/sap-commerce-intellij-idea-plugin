@@ -19,5 +19,5 @@
 package com.intellij.idea.plugin.hybris.beans.meta.model;
 
 public enum BeansMetaType {
-    META_BEAN, META_ENUM
+    META_WS_BEAN, META_BEAN, META_EVENT, META_ENUM
 }

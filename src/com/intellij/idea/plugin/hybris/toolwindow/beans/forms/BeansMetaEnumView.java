@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.beans.forms;
 
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum;
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaClassifier;
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum;
+import com.intellij.idea.plugin.hybris.beans.model.Enum;
 import com.intellij.idea.plugin.hybris.toolwindow.beans.components.BeansMetaEnumValuesTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
@@ -27,41 +29,44 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class BeansMetaEnumView {
 
     private final Project myProject;
+    private BeansMetaClassifier<Enum> myMeta;
     private JPanel myContentPane;
     private JBTextField myDescription;
     private JBTextField myClass;
     private JBCheckBox myDeprecated;
     private JBTextField myTemplate;
-    private JBTable myEnumValues;
     private JPanel myValuesPane;
     private JBPanel myDetailsPane;
     private JPanel myFlagsPane;
+    private JBTextField myDeprecatedSince;
+    private BeansMetaEnumValuesTable myEnumValues;
 
     public BeansMetaEnumView(final Project project) {
         this.myProject = project;
     }
 
     private void initData(final BeansGlobalMetaEnum myMeta) {
-        if (StringUtils.equals(myMeta.getClazz(), myClass.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myClass.setText(myMeta.getClazz());
         myTemplate.setText(myMeta.getTemplate());
         myDescription.setText(myMeta.getDescription());
+        myDeprecatedSince.setText(myMeta.getDeprecatedSince());
         myDeprecated.setSelected(myMeta.isDeprecated());
 
-        ((BeansMetaEnumValuesTable) myEnumValues).updateModel(myMeta);
+        myEnumValues.updateModel(myMeta);
     }
 
     public JPanel getContent(final BeansGlobalMetaEnum meta) {
@@ -73,7 +78,7 @@ public class BeansMetaEnumView {
     public JPanel getContent(final BeansGlobalMetaEnum meta, final BeansMetaEnum.BeansMetaEnumValue metaValue) {
         initData(meta);
 
-        ((BeansMetaEnumValuesTable) myEnumValues).select(metaValue);
+        myEnumValues.select(metaValue);
 
         return myContentPane;
     }

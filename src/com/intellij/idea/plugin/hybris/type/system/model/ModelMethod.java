@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.type.system.model;
 
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -45,7 +46,7 @@ public interface ModelMethod extends DomElement {
      * @return the value of the name child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("name")
+    @Attribute("name")
     @Required
     GenericAttributeValue<String> getName();
 
@@ -61,7 +62,7 @@ public interface ModelMethod extends DomElement {
      * @return the value of the deprecated child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("deprecated")
+    @Attribute("deprecated")
     GenericAttributeValue<Boolean> getDeprecated();
 
 
@@ -75,7 +76,7 @@ public interface ModelMethod extends DomElement {
      * @return the value of the default child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("default")
+    @Attribute("default")
     GenericAttributeValue<Boolean> getDefault();
 
 

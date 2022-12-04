@@ -73,8 +73,8 @@ internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
     override var jaloClass = localMeta.jaloClass
 
     override fun mergeInternally(localMeta: TSMetaEnum) {
-        jaloClass?.let { jaloClass = localMeta.jaloClass }
-        description?.let { description = localMeta.description }
+        jaloClass?:let { jaloClass = localMeta.jaloClass }
+        description?:let { description = localMeta.description }
 
         if (localMeta.isDynamic) isDynamic = localMeta.isDynamic
         if (localMeta.isAutoCreate) isAutoCreate = localMeta.isAutoCreate

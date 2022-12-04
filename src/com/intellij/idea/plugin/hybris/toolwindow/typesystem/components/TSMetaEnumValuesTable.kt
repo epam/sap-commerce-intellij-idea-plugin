@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum
 import com.intellij.openapi.project.Project
@@ -30,7 +30,7 @@ private const val COLUMN_MODULE = "Module"
 private const val COLUMN_VALUE = "Value"
 private const val COLUMN_DESCRIPTION = "Description"
 
-class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTSTable<TSGlobalMetaEnum, TSMetaEnum.TSMetaEnumValue>(myProject) {
+class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaEnum, TSMetaEnum.TSMetaEnumValue>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)

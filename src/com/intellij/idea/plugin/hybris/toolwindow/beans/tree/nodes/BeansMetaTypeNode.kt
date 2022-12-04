@@ -21,10 +21,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaBean
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -40,10 +42,11 @@ class BeansMetaTypeNode(parent: BeansNode, private val metaType: BeansMetaType) 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
             BeansMetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
-            else -> {}
+            BeansMetaType.META_BEAN -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_DTO)
+            BeansMetaType.META_WS_BEAN -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_WS)
+            BeansMetaType.META_EVENT -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_EVENT)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-
 
         val showOnlyCustom = BeansViewSettings.getInstance(myProject).isShowOnlyCustom()
         val entries = BeansMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<BeansGlobalMetaClassifier<DomElement>>(metaType).values
@@ -63,6 +66,7 @@ class BeansMetaTypeNode(parent: BeansNode, private val metaType: BeansMetaType) 
             .map {
                 when (it) {
                     is BeansGlobalMetaEnum -> BeansMetaEnumNode(this, it)
+                    is BeansGlobalMetaBean -> BeansMetaBeanNode(this, it)
                     else -> null
                 }
             }

@@ -38,7 +38,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="d81bc" class="javax.swing.JLabel">
@@ -64,7 +65,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="8605" class="javax.swing.JLabel">
@@ -90,7 +92,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="48d2" class="com.intellij.ui.components.JBTextField" binding="myExtends">
@@ -100,7 +103,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                 </children>
@@ -138,7 +142,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="1ee8" class="javax.swing.JLabel">
@@ -156,7 +161,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                       <text value=""/>
                     </properties>
                   </component>

@@ -19,18 +19,21 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.type.system.model.AtomicType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class TSMetaAtomicView {
 
     private final Project myProject;
+    private TSMetaClassifier<AtomicType> myMeta;
 
     private JBPanel myContentPane;
     private JBCheckBox myAutoCreate;
@@ -45,10 +48,11 @@ public class TSMetaAtomicView {
     }
 
     private void initData(final TSGlobalMetaAtomic myMeta) {
-        if (StringUtils.equals(myMeta.getName(), myClass.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myClass.setText(myMeta.getName());
         myAutoCreate.setSelected(myMeta.isAutoCreate());

@@ -63,6 +63,10 @@ public final class HybrisIcons {
     public static final Icon INDEX_FUN = getIcon("/icons/indexFun.svg");
     public static final Icon INDEX_CLUSTER = getIcon("/icons/indexCluster.svg");
 
+    public static final Icon GROUP_BY_BEAN_DTO = getIcon("/icons/groupByBeanDto.svg");
+    public static final Icon GROUP_BY_BEAN_EVENT = getIcon("/icons/groupByBeanEvent.svg");
+    public static final Icon GROUP_BY_BEAN_WS = getIcon("/icons/groupByBeanWS.svg");
+
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");

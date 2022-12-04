@@ -25,6 +25,7 @@ interface BeansMetaEnum : BeansMetaClassifier<Enum>  {
     val clazz: String?
     val description: String?
     val template: String?
+    val deprecatedSince: String?
     val isDeprecated: Boolean
 
     interface BeansMetaEnumValue : BeansMetaClassifier<EnumValue> {

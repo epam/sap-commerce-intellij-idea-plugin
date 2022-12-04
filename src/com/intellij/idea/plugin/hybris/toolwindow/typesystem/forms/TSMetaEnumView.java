@@ -18,24 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaEnumValuesTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class TSMetaEnumView {
 
     private final Project myProject;
+    private TSMetaClassifier<EnumType> myMeta;
 
     private JBPanel myContentPane;
     private JBTextField myJaloClass;
@@ -44,20 +47,21 @@ public class TSMetaEnumView {
     private JBCheckBox myGenerate;
     private JBTextField myDescription;
     private JBTextField myCode;
-    private JBTable myEnumValues;
     private JPanel myValuesPane;
     private JBPanel myDetailsPane;
     private JPanel myFlagsPane;
+    private AbstractTable<TSGlobalMetaEnum, TSMetaEnum.TSMetaEnumValue> myEnumValues;
 
     public TSMetaEnumView(final Project project) {
         this.myProject = project;
     }
 
     private void initData(final TSGlobalMetaEnum myMeta) {
-        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
@@ -66,7 +70,7 @@ public class TSMetaEnumView {
         myAutoCreate.setSelected(myMeta.isAutoCreate());
         myGenerate.setSelected(myMeta.isGenerate());
 
-        ((TSMetaEnumValuesTable) myEnumValues).updateModel(myMeta);
+        myEnumValues.updateModel(myMeta);
     }
 
     public JBPanel getContent(final TSGlobalMetaEnum meta) {
@@ -78,7 +82,7 @@ public class TSMetaEnumView {
     public JBPanel getContent(final TSGlobalMetaEnum meta, final TSMetaEnum.TSMetaEnumValue metaValue) {
         initData(meta);
 
-        ((TSMetaEnumValuesTable) myEnumValues).select(metaValue);
+        myEnumValues.select(metaValue);
 
         return myContentPane;
     }

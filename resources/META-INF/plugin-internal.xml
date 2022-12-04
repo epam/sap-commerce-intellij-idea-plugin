@@ -82,7 +82,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Hybris" icon="/icons/grayHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="Hybris" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 

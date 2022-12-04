@@ -18,9 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.AbstractTSMetaCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementCustomPropertiesTable;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
+import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
 import com.intellij.idea.plugin.hybris.type.system.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
@@ -30,19 +33,18 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class TSMetaRelationElementView {
 
     private final Project myProject;
+    private TSMetaClassifier<RelationElement> myMeta;
 
     private JBPanel myContentPane;
-    private JBTable myCustomProperties;
     private JBTextField myQualifier;
     private JTextPane myDescription;
     private JBCheckBox myPartOf;
@@ -67,16 +69,18 @@ public class TSMetaRelationElementView {
     private JPanel myFlagsPane;
     private JPanel myModifiersPane;
     private JBCheckBox myDeprecated;
+    private AbstractTSMetaCustomPropertiesTable<TSMetaRelation.TSMetaRelationElement> myCustomProperties;
 
     public TSMetaRelationElementView(final Project project) {
         myProject = project;
     }
 
     public void updateView(final TSMetaRelation.TSMetaRelationElement myMeta) {
-        if (StringUtils.equals(myMeta.getQualifier(), myQualifier.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myQualifier.setText(myMeta.getQualifier());
         myDescription.setText(myMeta.getDescription());
@@ -101,7 +105,7 @@ public class TSMetaRelationElementView {
         myRemovable.setSelected(modifiers.isRemovable());
         myOptional.setSelected(modifiers.isOptional());
 
-        ((TSMetaRelationElementCustomPropertiesTable) myCustomProperties).updateModel(myMeta);
+        myCustomProperties.updateModel(myMeta);
     }
 
     public JBPanel getContent() {

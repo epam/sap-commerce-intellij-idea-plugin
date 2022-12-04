@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.beans.components
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTSTable
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -30,7 +30,7 @@ private const val COLUMN_MODULE = "Module"
 private const val COLUMN_VALUE = "Value"
 
 class BeansMetaEnumValuesTable private constructor(myProject: Project) :
-    AbstractTSTable<BeansGlobalMetaEnum, BeansMetaEnum.BeansMetaEnumValue>(myProject) {
+    AbstractTable<BeansGlobalMetaEnum, BeansMetaEnum.BeansMetaEnumValue>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)

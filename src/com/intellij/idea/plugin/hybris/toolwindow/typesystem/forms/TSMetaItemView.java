@@ -18,13 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.forms;
 
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
+import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.AbstractTSMetaCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemAttributesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaItemIndexesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSMetaRelationElementsTable;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
+import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.ToolbarDecorator;
@@ -33,13 +38,14 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class TSMetaItemView {
 
     private final Project myProject;
+    private TSMetaClassifier<ItemType> myMeta;
 
     private JBPanel myContentPane;
     private JBTextField myExtends;
@@ -47,10 +53,6 @@ public class TSMetaItemView {
     private JBTextField myDeploymentTable;
     private JBTextField myDeploymentTypeCode;
     private JBTextField myCode;
-    private TSMetaItemAttributesTable myAttributes;
-    private TSMetaItemCustomPropertiesTable myCustomProperties;
-    private TSMetaItemIndexesTable myIndexes;
-    private TSMetaRelationElementsTable myRelations;
     private JBCheckBox myAbstract;
     private JBCheckBox myAutoCreate;
     private JBCheckBox mySingleton;
@@ -66,16 +68,21 @@ public class TSMetaItemView {
     private JPanel myFlagsPane;
     private JPanel myRelationsPane;
     private JBCheckBox myCatalogAware;
+    private AbstractTSMetaCustomPropertiesTable<TSGlobalMetaItem> myCustomProperties;
+    private AbstractTable<TSGlobalMetaItem, TSMetaItem.TSMetaItemAttribute> myAttributes;
+    private AbstractTable<TSGlobalMetaItem, TSMetaItem.TSMetaItemIndex> myIndexes;
+    private AbstractTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement> myRelations;
 
     public TSMetaItemView(final Project project) {
         this.myProject = project;
     }
 
     private void initData(final TSGlobalMetaItem myMeta) {
-        if (StringUtils.equals(myMeta.getName(), myCode.getText())) {
+        if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
             return;
         }
+        this.myMeta = myMeta;
 
         myAttributes.updateModel(myMeta);
         myCustomProperties.updateModel(myMeta);

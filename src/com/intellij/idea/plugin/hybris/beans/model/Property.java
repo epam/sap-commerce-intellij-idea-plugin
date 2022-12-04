@@ -7,7 +7,10 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * null:property interface.
@@ -56,7 +59,7 @@ public interface Property extends DomElement {
      * @return the value of the deprecated child.
      */
     @NotNull
-    GenericAttributeValue<String> getDeprecated();
+    GenericAttributeValue<Boolean> getDeprecated();
 
 
     /**
@@ -74,7 +77,11 @@ public interface Property extends DomElement {
      * @return the list of annotations children.
      */
     @NotNull
-    java.util.List<Annotations> getAnnotationses();
+    List<Annotations> getAnnotationses();
+
+    @NotNull
+    @SubTag("hints")
+    Hints getHints();
 
     /**
      * Adds new child to the list of annotations children.

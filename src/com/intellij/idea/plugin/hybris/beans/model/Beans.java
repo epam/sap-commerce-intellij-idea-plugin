@@ -8,6 +8,8 @@ import com.intellij.util.xml.Stubbed;
 import com.intellij.util.xml.StubbedOccurrence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * null:abstractPojos interface.
  */
@@ -21,7 +23,7 @@ public interface Beans extends DomElement {
      * @return the list of bean children.
      */
     @NotNull
-    java.util.List<Bean> getBeans();
+    List<Bean> getBeans();
 
     /**
      * Adds new child to the list of bean children.
@@ -37,7 +39,7 @@ public interface Beans extends DomElement {
      * @return the list of enum children.
      */
     @NotNull
-    java.util.List<Enum> getEnums();
+    List<Enum> getEnums();
 
     /**
      * Adds new child to the list of enum children.

@@ -33,7 +33,7 @@ import java.awt.Rectangle
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
-abstract class AbstractTSTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
+abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
 
     fun init() {
         val search = TableSpeedSearch(this)

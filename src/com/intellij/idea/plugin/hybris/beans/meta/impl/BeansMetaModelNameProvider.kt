@@ -17,14 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.beans.meta.impl
 
-import com.intellij.idea.plugin.hybris.beans.model.Bean
+import com.intellij.idea.plugin.hybris.beans.model.*
 import com.intellij.idea.plugin.hybris.beans.model.Enum
-import com.intellij.idea.plugin.hybris.beans.model.EnumValue
 
 object BeansMetaModelNameProvider {
 
     fun extract(dom: Enum): String? = dom.clazz.stringValue
     fun extract(dom: EnumValue): String? = dom.stringValue
     fun extract(dom: Bean): String? = dom.clazz.stringValue
+    fun extract(dom: Hint): String? = dom.name.stringValue
+    fun extract(dom: Property): String? = dom.name.stringValue
 
 }

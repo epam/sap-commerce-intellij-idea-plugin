@@ -41,6 +41,8 @@ class BeansMetaModelProcessorImpl(private val myProject: Project) : BeansMetaMod
 
         return BeansMetaModelBuilder(module, psiFile, custom)
             .withEnumTypes(items.enums)
+            .withBeanTypes(items.beans)
+            .withEventTypes(items.beans)
             .build()
     }
 

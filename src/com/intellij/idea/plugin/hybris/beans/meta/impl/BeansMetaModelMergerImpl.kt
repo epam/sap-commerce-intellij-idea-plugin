@@ -20,9 +20,8 @@ package com.intellij.idea.plugin.hybris.beans.meta.impl
 import com.intellij.idea.plugin.hybris.beans.meta.BeansGlobalMetaModel
 import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModel
 import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelMerger
-import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaClassifier
-import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum
-import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaSelfMerge
+import com.intellij.idea.plugin.hybris.beans.meta.model.*
+import com.intellij.idea.plugin.hybris.beans.meta.model.impl.BeansGlobalMetaBeanImpl
 import com.intellij.idea.plugin.hybris.beans.meta.model.impl.BeansGlobalMetaEnumImpl
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -35,6 +34,12 @@ class BeansMetaModelMergerImpl(val myProject: Project) : BeansMetaModelMerger {
             // ideally we have to get the same dependency order as SAP Commerce Cloud
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
+
+        val beans = getMetaType<BeansGlobalMetaBean>(BeansMetaType.META_BEAN)
+        val wsBeans = beans.filter { it.value.hints.containsKey("wsRelated") }
+
+        getMetaType<BeansGlobalMetaBean>(BeansMetaType.META_WS_BEAN).putAll(wsBeans)
+        beans.keys.removeAll(wsBeans.keys)
 
         this
     }
@@ -50,6 +55,7 @@ class BeansMetaModelMergerImpl(val myProject: Project) : BeansMetaModelMerger {
                         val globalMetaClassifier = globalCache.computeIfAbsent(key) {
                             when (localMetaClassifier) {
                                 is BeansMetaEnum -> BeansGlobalMetaEnumImpl(localMetaClassifier)
+                                is BeansMetaBean -> BeansGlobalMetaBeanImpl(localMetaClassifier)
                                 else -> null
                             }
                         }

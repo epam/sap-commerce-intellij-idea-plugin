@@ -36,10 +36,11 @@ internal class BeansMetaEnumImpl(
 ) : BeansMetaEnum {
 
     override val domAnchor: DomAnchor<Enum> = DomService.getInstance().createAnchor(dom)
-    override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
     override val description = dom.description.stringValue
-    override val template = dom.description.stringValue
+    override val template = dom.template.stringValue
+    override val deprecatedSince = dom.deprecatedSince.stringValue
     override val name = clazz?.split(".")?.lastOrNull()
+    override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
 
     override fun toString() = "Enum(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 
@@ -64,11 +65,12 @@ internal class BeansGlobalMetaEnumImpl(localMeta: BeansMetaEnum)
     override val clazz = localMeta.clazz
     override val module = localMeta.module
     override val template = localMeta.template
-    override var isDeprecated = localMeta.isDeprecated
     override var description = localMeta.description
+    override var deprecatedSince = localMeta.deprecatedSince
+    override var isDeprecated = localMeta.isDeprecated
 
     override fun mergeInternally(localMeta: BeansMetaEnum) {
-        description?.let { description = localMeta.description }
+        description?:let { description = localMeta.description }
 
         if (localMeta.isDeprecated) isDeprecated = localMeta.isDeprecated
 

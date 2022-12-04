@@ -54,7 +54,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                   <component id="9590b" class="com.intellij.ui.components.JBTextField" binding="myExtends">
@@ -64,7 +65,8 @@
                       </grid>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
+                      <editable value="false"/>
+                      <enabled value="true"/>
                     </properties>
                   </component>
                 </children>

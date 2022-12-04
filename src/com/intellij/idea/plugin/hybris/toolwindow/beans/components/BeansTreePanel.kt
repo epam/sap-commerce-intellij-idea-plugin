@@ -22,12 +22,11 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.beans.meta.BeansGlobalMetaModel
 import com.intellij.idea.plugin.hybris.beans.meta.BeansListener
 import com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelAccessImpl
+import com.intellij.idea.plugin.hybris.toolwindow.beans.forms.BeansMetaBeanView
 import com.intellij.idea.plugin.hybris.toolwindow.beans.forms.BeansMetaEnumView
 import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.BeansTree
 import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.BeansTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes.BeansMetaEnumNode
-import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes.BeansMetaEnumValueNode
-import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes.BeansNode
+import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.AppUIExecutor
@@ -43,6 +42,7 @@ class BeansTreePanel(
     private var myTree = BeansTree(myProject)
     private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
     private val myMetaEnumView: BeansMetaEnumView by lazy { BeansMetaEnumView(myProject) }
+    private val myMetaBeanView: BeansMetaBeanView by lazy { BeansMetaBeanView(myProject) }
     private val myTreeSelectionListener: TreeSelectionListener = treeSelectionListener()
 
     init {
@@ -78,6 +78,8 @@ class BeansTreePanel(
             when (val node = component.userObject) {
                 is BeansMetaEnumNode -> secondComponent = myMetaEnumView.getContent(node.meta)
                 is BeansMetaEnumValueNode -> secondComponent = myMetaEnumView.getContent(node.parent.meta, node.meta)
+                is BeansMetaBeanNode -> secondComponent = myMetaBeanView.getContent(node.meta)
+                is BeansMetaPropertyNode -> secondComponent = myMetaBeanView.getContent(node.parent.meta, node.meta)
             }
         } else {
             secondComponent = myDefaultPanel

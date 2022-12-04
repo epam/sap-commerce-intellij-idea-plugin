@@ -18,11 +18,10 @@
 package com.intellij.idea.plugin.hybris.beans.meta.impl
 
 import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModel
-import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum
-import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaType
-import com.intellij.idea.plugin.hybris.beans.meta.model.impl.BeansMetaEnumImpl
+import com.intellij.idea.plugin.hybris.beans.meta.model.*
+import com.intellij.idea.plugin.hybris.beans.meta.model.impl.*
+import com.intellij.idea.plugin.hybris.beans.model.*
 import com.intellij.idea.plugin.hybris.beans.model.Enum
-import com.intellij.idea.plugin.hybris.beans.model.EnumValue
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
 import com.intellij.openapi.module.Module
 import com.intellij.psi.PsiFile
@@ -45,6 +44,19 @@ class BeansMetaModelBuilder(
         return this
     }
 
+    fun withBeanTypes(types: List<Bean>) = withBeanTypes(types, BeanType.BEAN, BeansMetaType.META_BEAN)
+
+    fun withEventTypes(types: List<Bean>) = withBeanTypes(types, BeanType.EVENT, BeansMetaType.META_EVENT)
+
+    private fun withBeanTypes(types: List<Bean>, type: BeanType, targetType: BeansMetaType): BeansMetaModelBuilder {
+        types
+            .filter { (it.type.value ?: BeanType.BEAN) == type}
+            .mapNotNull { create(it) }
+            .forEach { myMetaModel.addMetaModel(it, targetType) }
+
+        return this
+    }
+
     private fun create(dom: Enum): BeansMetaEnum? {
         val name = BeansMetaModelNameProvider.extract(dom) ?: return null
         return BeansMetaEnumImpl(
@@ -53,6 +65,30 @@ class BeansMetaModelBuilder(
         )
     }
 
+    private fun create(dom: Bean): BeansMetaBean? {
+        val name = BeansMetaModelNameProvider.extract(dom) ?: return null
+        return BeansMetaBeanImpl(
+            dom, myModule, name, myCustom,
+            imports = createImports(dom.imports),
+            annotations = createAnnotations(dom.annotationses),
+            properties = createProperties(dom.properties),
+            hints = createHints(dom.hints),
+        )
+    }
+
+    private fun createHints(dom: Hints): Map<String, BeansMetaHint> = dom.hints
+        .mapNotNull { create(it) }
+        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { hint -> hint.name?.trim { it <= ' ' } }
+
+    private fun createProperties(dom: List<Property>): Map<String, BeansMetaProperty> = dom
+        .mapNotNull { create(it) }
+        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { property -> property.name?.trim { it <= ' ' } }
+
+    private fun createAnnotations(dom: List<Annotations>) = dom
+        .map { create(it) }
+
+    private fun createImports(dom: List<Import>) = dom
+        .map { create(it) }
 
     private fun createEnumValues(dom: Enum): Map<String, BeansMetaEnum.BeansMetaEnumValue> = dom.values
         .mapNotNull { create(it) }
@@ -61,6 +97,24 @@ class BeansMetaModelBuilder(
     private fun create(dom: EnumValue): BeansMetaEnum.BeansMetaEnumValue? {
         val name = BeansMetaModelNameProvider.extract(dom) ?: return null
         return BeansMetaEnumImpl.BeansMetaEnumValueImpl(dom, myModule, myCustom, name)
+    }
+
+    private fun create(dom: Annotations) = BeansMetaAnnotationsImpl(dom, myModule, myCustom, null)
+
+    private fun create(dom: Import) = BeansMetaImportImpl(dom, myModule, myCustom, null)
+
+    private fun create(dom: Property): BeansMetaProperty? {
+        val name = BeansMetaModelNameProvider.extract(dom) ?: return null
+        return BeansMetaPropertyImpl(
+            dom, myModule, myCustom, name,
+            createAnnotations(dom.annotationses),
+            createHints(dom.hints)
+        )
+    }
+
+    private fun create(dom: Hint): BeansMetaHint? {
+        val name = BeansMetaModelNameProvider.extract(dom) ?: return null
+        return BeansMetaHintImpl(dom, myModule, myCustom, name)
     }
 
 }
