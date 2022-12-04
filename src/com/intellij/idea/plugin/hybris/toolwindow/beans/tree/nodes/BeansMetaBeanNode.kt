@@ -28,7 +28,7 @@ import com.intellij.ui.SimpleTextAttributes
 class BeansMetaBeanNode(val parent: BeansNode, val meta: BeansGlobalMetaBean) : BeansNode(parent), Disposable {
 
     override fun dispose() = Unit
-    override fun getName() = meta.name ?: "-- no name --"
+    override fun getName() = meta.shortName ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)

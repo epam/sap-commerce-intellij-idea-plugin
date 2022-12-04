@@ -60,7 +60,7 @@ public class BeansMetaEnumView {
         }
         this.myMeta = myMeta;
 
-        myClass.setText(myMeta.getClazz());
+        myClass.setText(myMeta.getName());
         myTemplate.setText(myMeta.getTemplate());
         myDescription.setText(myMeta.getDescription());
         myDeprecatedSince.setText(myMeta.getDeprecatedSince());

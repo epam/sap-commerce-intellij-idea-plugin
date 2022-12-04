@@ -15,28 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.beans.meta.model
 
-import com.intellij.idea.plugin.hybris.beans.model.Bean
-import com.intellij.idea.plugin.hybris.beans.model.BeanType
+package com.intellij.idea.plugin.hybris.beans.meta
 
-interface BeansMetaBean : BeansMetaClassifier<Bean> {
-    val type: BeanType
-    val shortName: String?
-    val description: String?
-    val template: String?
-    val extends: String?
-    val deprecatedSince: String?
-    val isDeprecated: Boolean
-    val isAbstract: Boolean
-    val isSuperEquals: Boolean
-    val imports: List<BeansMetaImport>
-    val annotations: List<BeansMetaAnnotations>
-    val properties: Map<String, BeansMetaProperty>
-    val hints: Map<String, BeansMetaHint>
+class BeansMetaHelper {
 
-}
-
-interface BeansGlobalMetaBean : BeansMetaBean, BeansGlobalMetaClassifier<Bean> {
-    override val declarations: MutableSet<BeansMetaBean>
+    companion object {
+        fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
+    }
 }

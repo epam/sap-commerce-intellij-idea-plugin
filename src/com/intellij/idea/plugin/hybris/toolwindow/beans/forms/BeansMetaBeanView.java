@@ -76,7 +76,7 @@ public class BeansMetaBeanView {
         }
         this.myMeta = myMeta;
 
-        myClass.setText(myMeta.getClazz());
+        myClass.setText(myMeta.getName());
         myExtends.setText(myMeta.getExtends());
         myTemplate.setText(myMeta.getTemplate());
         myDescription.setText(myMeta.getDescription());

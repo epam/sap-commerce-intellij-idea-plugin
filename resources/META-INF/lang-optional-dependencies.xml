@@ -35,6 +35,8 @@
 
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSItemTypeGutterAnnotator"/>
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSEnumGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.beans.annotators.BeansEnumGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.beans.annotators.BeansBeanGutterAnnotator"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>

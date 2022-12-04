@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.beans.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaHelper
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaSelfMerge
@@ -30,7 +31,7 @@ import com.intellij.util.xml.DomService
 internal class BeansMetaEnumImpl(
     dom: Enum,
     override val module: Module,
-    override val clazz: String?,
+    override val name: String?,
     override val isCustom: Boolean,
     override val values: Map<String, BeansMetaEnum.BeansMetaEnumValue>
 ) : BeansMetaEnum {
@@ -39,7 +40,7 @@ internal class BeansMetaEnumImpl(
     override val description = dom.description.stringValue
     override val template = dom.template.stringValue
     override val deprecatedSince = dom.deprecatedSince.stringValue
-    override val name = clazz?.split(".")?.lastOrNull()
+    override val shortName = BeansMetaHelper.getShortName(name)
     override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
 
     override fun toString() = "Enum(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
@@ -62,7 +63,7 @@ internal class BeansGlobalMetaEnumImpl(localMeta: BeansMetaEnum)
 
     override val values = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BeansMetaEnum.BeansMetaEnumValue>()
     override val domAnchor = localMeta.domAnchor
-    override val clazz = localMeta.clazz
+    override val shortName = localMeta.shortName
     override val module = localMeta.module
     override val template = localMeta.template
     override var description = localMeta.description

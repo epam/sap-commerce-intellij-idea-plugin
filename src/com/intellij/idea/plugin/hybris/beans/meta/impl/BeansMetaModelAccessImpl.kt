@@ -18,9 +18,11 @@
 package com.intellij.idea.plugin.hybris.beans.meta.impl
 
 import com.intellij.idea.plugin.hybris.beans.meta.*
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaBean
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaType
+import com.intellij.idea.plugin.hybris.beans.model.Bean
 import com.intellij.idea.plugin.hybris.beans.model.Enum
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -67,6 +69,14 @@ class BeansMetaModelAccessImpl(private val myProject: Project) : BeansMetaModelA
     override fun <T : BeansGlobalMetaClassifier<*>> getAll(metaType: BeansMetaType) = getMetaModel().getMetaType<T>(metaType).values
 
     override fun findMetaForDom(dom: Enum) = findMetaEnumByName(BeansMetaModelNameProvider.extract(dom))
+    override fun findMetasForDom(dom: Bean): List<BeansGlobalMetaBean> {
+        val name = BeansMetaModelNameProvider.extract(dom) ?: return emptyList()
+        return listOfNotNull(
+            findMetaByName(BeansMetaType.META_BEAN, name),
+            findMetaByName(BeansMetaType.META_WS_BEAN, name),
+            findMetaByName(BeansMetaType.META_EVENT, name)
+        )
+    }
 
     override fun findMetaEnumByName(name: String?) = findMetaByName<BeansGlobalMetaEnum>(BeansMetaType.META_ENUM, name)
 

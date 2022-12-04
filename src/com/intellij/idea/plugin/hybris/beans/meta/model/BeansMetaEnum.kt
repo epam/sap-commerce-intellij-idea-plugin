@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.beans.model.EnumValue
 
 interface BeansMetaEnum : BeansMetaClassifier<Enum>  {
     val values: Map<String, BeansMetaEnumValue>
-    val clazz: String?
+    val shortName: String?
     val description: String?
     val template: String?
     val deprecatedSince: String?

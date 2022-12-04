@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.annotators
+package com.intellij.idea.plugin.hybris.beans.annotators
 
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.beans.BeansUtils
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess
+import com.intellij.idea.plugin.hybris.beans.model.Bean
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess.Companion.getInstance
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -33,7 +33,7 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
 
-class TSEnumGutterAnnotator : Annotator {
+class BeansBeanGutterAnnotator : Annotator {
 
     override fun annotate(psiElement: PsiElement, annotationHolder: AnnotationHolder) {
         if (!canProcess(psiElement)) return
@@ -42,17 +42,17 @@ class TSEnumGutterAnnotator : Annotator {
             ?: return
 
         val project = parentTag.project
-        val enumType = DomManager.getDomManager(project).getDomElement(parentTag) as? EnumType
+        val dom = DomManager.getDomManager(project).getDomElement(parentTag) as? Bean
             ?: return
 
-        if (psiElement != enumType.code.xmlAttributeValue) return
+        if (psiElement != dom.clazz.xmlAttributeValue) return
 
-        val alternativeDoms = findAlternativeDoms(enumType, project)
+        val alternativeDoms = findAlternativeDoms(dom, project)
 
         if (alternativeDoms.isNotEmpty()) {
             NavigationGutterIconBuilder
                 .create(AllIcons.Actions.Forward) { _: Any? -> alternativeDoms }
-                .setTarget(enumType)
+                .setTarget(dom)
                 .setTooltipText(
                     if (alternativeDoms.size > 1)
                         HybrisI18NBundleUtils.message("hybris.editor.gutter.alternativeDefinitions")
@@ -66,13 +66,13 @@ class TSEnumGutterAnnotator : Annotator {
     }
 
     private fun canProcess(psiElement: PsiElement) = psiElement is XmlAttributeValue
-            && TypeSystemUtils.isTypeSystemXmlFile(psiElement.getContainingFile())
+            && BeansUtils.isBeansXmlFile(psiElement.getContainingFile())
 
-    private fun findAlternativeDoms(sourceDom: EnumType, project: Project) = getInstance(project).findMetaForDom(sourceDom)?.retrieveAllDoms()
-            ?.filter { dom -> dom != sourceDom }
-            ?.map { it.code }
-            ?.sortedBy { it.module?.name }
-            ?.mapNotNull { it.xmlAttributeValue }
-            ?: emptyList();
+    private fun findAlternativeDoms(sourceDom: Bean, project: Project) = BeansMetaModelAccess.getInstance(project).findMetasForDom(sourceDom)
+        .flatMap { it.retrieveAllDoms() }
+        .filter { dom -> dom != sourceDom }
+        .map { it.clazz }
+        .sortedBy { it.module?.name }
+        .mapNotNull { it.xmlAttributeValue }
 
 }

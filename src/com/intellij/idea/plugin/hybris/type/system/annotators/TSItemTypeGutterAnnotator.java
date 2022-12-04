@@ -87,8 +87,8 @@ public class TSItemTypeGutterAnnotator implements Annotator {
                 .create(AllIcons.Actions.Forward, it -> alternativeDoms)
                 .setTarget(itemType)
                 .setTooltipText(alternativeDoms.size() > 1
-                                    ? HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinitions")
-                                    : HybrisI18NBundleUtils.message("hybris.editor.typesystem.alternativeDefinition"))
+                                    ? HybrisI18NBundleUtils.message("hybris.editor.gutter.alternativeDefinitions")
+                                    : HybrisI18NBundleUtils.message("hybris.editor.gutter.alternativeDefinition"))
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                 .createGutterIcon(annotationHolder, psiElement);
         }

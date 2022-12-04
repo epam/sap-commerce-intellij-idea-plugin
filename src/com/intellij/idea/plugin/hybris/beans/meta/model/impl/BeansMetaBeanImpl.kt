@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.beans.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaHelper
 import com.intellij.idea.plugin.hybris.beans.meta.model.*
 import com.intellij.idea.plugin.hybris.beans.model.Bean
 import com.intellij.idea.plugin.hybris.beans.model.BeanType
@@ -28,7 +29,7 @@ import com.intellij.util.xml.DomService
 internal class BeansMetaBeanImpl(
     dom: Bean,
     override val module: Module,
-    override val clazz: String?,
+    override val name: String?,
     override val isCustom: Boolean,
     override val imports: List<BeansMetaImport>,
     override val annotations: List<BeansMetaAnnotations>,
@@ -41,7 +42,7 @@ internal class BeansMetaBeanImpl(
     override val template = dom.template.stringValue
     override val extends = dom.extends.stringValue
     override val type = dom.type.value ?: BeanType.BEAN
-    override val name = clazz?.split(".")?.lastOrNull()
+    override val shortName = BeansMetaHelper.getShortName(name)
     override val deprecatedSince = dom.deprecatedSince.stringValue
     override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
     override val isAbstract = java.lang.Boolean.TRUE == dom.abstract.value
@@ -58,7 +59,7 @@ internal class BeansGlobalMetaBeanImpl(localMeta: BeansMetaBean)
     override val properties = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BeansMetaProperty>()
     override val domAnchor = localMeta.domAnchor
     override val type = localMeta.type
-    override val clazz = localMeta.clazz
+    override val shortName = localMeta.shortName
     override val module = localMeta.module
     override var template = localMeta.template
     override var description = localMeta.description

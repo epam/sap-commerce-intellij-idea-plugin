@@ -17,9 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.beans.meta
 
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaBean
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaType
+import com.intellij.idea.plugin.hybris.beans.model.Bean
 import com.intellij.idea.plugin.hybris.beans.model.Enum
 import com.intellij.openapi.project.Project
 
@@ -32,6 +34,7 @@ interface BeansMetaModelAccess {
     fun getMetaModel(): BeansGlobalMetaModel
     fun findMetaEnumByName(name: String?): BeansGlobalMetaEnum?
     fun findMetaForDom(dom: Enum): BeansGlobalMetaEnum?
+    fun findMetasForDom(dom: Bean): List<BeansGlobalMetaBean>
     fun <T : BeansGlobalMetaClassifier<*>> getAll(metaType: BeansMetaType): Collection<T>
 
 }
