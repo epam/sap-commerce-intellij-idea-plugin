@@ -65,6 +65,7 @@ import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
@@ -95,7 +96,6 @@ import com.intellij.spellchecker.dictionary.ProjectDictionary;
 import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
-import com.intellij.util.PlatformUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -184,7 +184,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.disableWrapOnType(ImpexLanguage.getInstance());
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
-        if (PlatformUtils.isIdeaUltimate()) {
+        if ("Ultimate Edition".equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.facets"));
             if (isPluginActive(SPRING_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);

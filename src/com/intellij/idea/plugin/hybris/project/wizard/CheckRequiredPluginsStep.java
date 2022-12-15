@@ -18,16 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard;
 
-import com.intellij.ide.plugins.*;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ex.ApplicationEx;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import com.intellij.ui.components.JBList;
-import com.intellij.util.PlatformUtils;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -50,7 +51,6 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private JButton enableButton;
     private final Set<PluginId> notInstalledPlugins;
     private final Set<PluginId> notEnabledPlugins;
-    private static final Logger LOG = Logger.getInstance(CheckRequiredPluginsStep.class);
 
     private final List<String> ULTIMATE_EDITION_ONLY = Arrays.asList(
         "com.intellij.database",
@@ -101,8 +101,9 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
                 notInstalledPlugins.add(id);
                 return;
             }
-            final IdeaPluginDescriptor plugin = PluginManager.getPlugin(id);
-            if (!plugin.isEnabled()) {
+
+            final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(id);
+            if (plugin != null && !plugin.isEnabled()) {
                 notEnabledPlugins.add(id);
             }
         });
@@ -124,7 +125,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         if (!notEnabledPlugins.isEmpty()) {
             return true;
         }
-        if (PlatformUtils.isIdeaUltimate()) {
+        if ("Ultimate Edition".equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             return !notInstalledPlugins.isEmpty();
         }
         for (PluginId pluginId : notInstalledPlugins) {
@@ -143,9 +144,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     }
 
     private void enablePlugins() {
-        notEnabledPlugins.stream().forEach(id -> {
-            PluginManager.enablePlugin(id.getIdString());
-        });
+        notEnabledPlugins.forEach(PluginManagerCore::enablePlugin);
         final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();
         app.restart(true);
     }

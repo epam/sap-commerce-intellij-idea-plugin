@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.BeansTreeModel
 import com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.AppUIExecutor
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
@@ -53,10 +52,8 @@ class BeansTreePanel(
 
         myProject.messageBus.connect(this).subscribe(BeansMetaModelAccessImpl.topic, object : BeansListener {
             override fun beansChanged(globalMetaModel: BeansGlobalMetaModel) {
-                AppUIExecutor.onUiThread().expireWith(myTree).submit {
-                    secondComponent = myDefaultPanel;
-                    myTree.update(BeansViewSettings.ChangeType.FULL)
-                }
+                secondComponent = myDefaultPanel;
+                myTree.update(BeansViewSettings.ChangeType.FULL)
             }
         })
     }

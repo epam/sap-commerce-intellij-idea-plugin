@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.type.system.meta.TSListener
 import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.AppUIExecutor
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
@@ -56,10 +55,8 @@ class TSTreePanel(
 
         myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSListener {
             override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                AppUIExecutor.onUiThread().expireWith(myTree).submit {
-                    secondComponent = myDefaultPanel;
-                    myTree.update(TSViewSettings.ChangeType.FULL)
-                }
+                secondComponent = myDefaultPanel;
+                myTree.update(TSViewSettings.ChangeType.FULL)
             }
         })
     }
