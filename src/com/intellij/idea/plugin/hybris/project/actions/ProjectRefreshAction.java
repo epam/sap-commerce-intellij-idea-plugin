@@ -36,6 +36,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -88,6 +89,11 @@ public class ProjectRefreshAction extends AnAction {
     }
 
     @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
+
+    @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
         final Project project = getEventProject(anActionEvent);
 
@@ -111,6 +117,28 @@ public class ProjectRefreshAction extends AnAction {
                 HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
         }
+    }
+
+    @Override
+    public void update(final AnActionEvent e) {
+        final Project project = e.getData(CommonDataKeys.PROJECT);
+        final Presentation presentation = e.getPresentation();
+        if (project == null) {
+            presentation.setVisible(false);
+            return;
+        }
+        presentation.setIcon(HybrisIcons.HYBRIS_ICON);
+        presentation.setVisible(CommonIdeaService.getInstance().isHybrisProject(project));
+    }
+
+    @Override
+    public boolean isDumbAware() {
+        return true;
+    }
+
+    @Override
+    public boolean displayTextInToolbar() {
+        return true;
     }
 
     private static void removeOldProjectData(@NotNull final Project project) {
@@ -138,23 +166,6 @@ public class ProjectRefreshAction extends AnAction {
         for (AntBuildFile antBuildFile : antConfiguration.getBuildFiles()) {
             antConfiguration.removeBuildFile(antBuildFile);
         }
-    }
-
-    @Override
-    public void update(final AnActionEvent e) {
-        final Project project = e.getData(CommonDataKeys.PROJECT);
-        final Presentation presentation = e.getPresentation();
-        if (project == null) {
-            presentation.setVisible(false);
-            return;
-        }
-        presentation.setIcon(HybrisIcons.HYBRIS_ICON);
-        presentation.setVisible(CommonIdeaService.getInstance().isHybrisProject(project));
-    }
-
-    @Override
-    public boolean isDumbAware() {
-        return true;
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
@@ -191,10 +202,5 @@ public class ProjectRefreshAction extends AnAction {
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean displayTextInToolbar() {
-        return true;
     }
 }

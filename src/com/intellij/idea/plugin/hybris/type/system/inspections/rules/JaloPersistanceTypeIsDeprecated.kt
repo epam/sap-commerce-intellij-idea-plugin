@@ -27,7 +27,7 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
 class JaloPersistanceTypeIsDeprecated : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

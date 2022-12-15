@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.beans.inspections.rules
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
-import com.intellij.idea.plugin.hybris.type.system.model.Items
+import com.intellij.idea.plugin.hybris.beans.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -35,9 +35,9 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationsManager
 import com.intellij.util.xml.highlighting.DomElementsInspection
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-abstract class AbstractTypeSystemInspection : DomElementsInspection<Items>(Items::class.java) {
+abstract class AbstractBeansInspection : DomElementsInspection<Beans>(Beans::class.java) {
 
-    override fun checkFileElement(domFileElement: DomFileElement<Items>, holder: DomElementAnnotationHolder) {
+    override fun checkFileElement(domFileElement: DomFileElement<Beans>, holder: DomElementAnnotationHolder) {
         val helper = DomElementAnnotationsManager.getInstance(domFileElement.manager.project).highlightingHelper
         val problemHighlightType = getProblemHighlightType(domFileElement.file)
         val project = domFileElement.file.project
@@ -47,7 +47,7 @@ abstract class AbstractTypeSystemInspection : DomElementsInspection<Items>(Items
 
     abstract fun inspect(
         project: Project,
-        items: Items,
+        beans: Beans,
         holder: DomElementAnnotationHolder,
         helper: DomHighlightingHelper,
         severity: HighlightSeverity

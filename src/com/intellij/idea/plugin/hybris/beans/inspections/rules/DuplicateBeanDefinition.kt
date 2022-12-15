@@ -15,45 +15,54 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlUpdateAttributeQuickFix
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.Deployment
-import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.model.deployments
+package com.intellij.idea.plugin.hybris.beans.inspections.rules
+
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess
+import com.intellij.idea.plugin.hybris.beans.model.Bean
+import com.intellij.idea.plugin.hybris.beans.model.Beans
+import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddAttributeQuickFix
+import com.intellij.idea.plugin.hybris.type.system.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class DeploymentTypeCodeReservedForProcessingExtension : AbstractTypeSystemInspection() {
+class DuplicateBeanDefinition : AbstractBeansInspection() {
 
     override fun inspect(
         project: Project,
-        items: Items,
+        beans: Beans,
         holder: DomElementAnnotationHolder,
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.deployments.forEach { check(it, project, holder, severity) }
+        if (beans.xmlElement == null) return
+
+        beans.beans
+            .forEach { inspect(it, holder, severity, project) }
     }
 
-    private fun check(
-        dom: Deployment,
-        project: Project,
+    private fun inspect(
+        dom: Bean,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
+        severity: HighlightSeverity,
+        project: Project
     ) {
-        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
+        val metas = BeansMetaModelAccess.getInstance(project).findMetasForDom(dom)
 
-        if (typeCode != null && typeCode in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING) {
+        if (metas.isEmpty()) return
+
+        val currentFileDeclarations = metas
+            .flatMap { it.declarations }
+            .map { it.domAnchor }
+            .filter { it.containingFile == dom.xmlElement!!.containingFile }
+            .mapNotNull { it.retrieveDomElement() }
+        if (currentFileDeclarations.size > 1) {
             holder.createProblem(
-                dom.typeCode,
+                dom.clazz,
                 severity,
-                displayName,
-                XmlUpdateAttributeQuickFix(Deployment.TYPE_CODE, TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString())
+                displayName
             )
         }
     }

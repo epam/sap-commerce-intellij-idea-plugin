@@ -28,7 +28,7 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
 class ListsInRelationShouldBeAvoided : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

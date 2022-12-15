@@ -2,175 +2,187 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <!-- Beans System  -->
-        <localInspection shortName="DuplicateBeanDefinitionInspection" displayName="Duplicate bean definition in -beans.xml file"
-                         groupName="Bean Definition" level="ERROR" language="XML" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.inspections.DuplicateBeanDefinitionInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.beans.DuplicateBeanDefinition.key"
+                         shortName="DuplicateBeanDefinition" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.beans.inspections.rules.DuplicateBeanDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.beans.DuplicateEnumDefinition.key"
+                         shortName="DuplicateEnumDefinition" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.beans.inspections.rules.DuplicateEnumDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.beans.DuplicateBeanPropertyDefinition.key"
+                         shortName="DuplicateBeanPropertyDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.beans.inspections.rules.DuplicateBeanPropertyDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.beans.DuplicateEnumValueDefinition.key"
+                         shortName="DuplicateEnumValueDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.beans.inspections.rules.DuplicateEnumValueDefinition"/>
 
         <!-- Type System  -->
-
         <!-- Weak Warnings -->
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.MandatoryFieldMustHaveInitialValue.key"
                          shortName="MandatoryFieldMustHaveInitialValue" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.MandatoryFieldMustHaveInitialValue"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.ImmutableFieldMustHaveInitialValue.key"
                          shortName="ImmutableFieldMustHaveInitialValue" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.ImmutableFieldMustHaveInitialValue"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeNameMustStartWithUppercaseLetter.key"
                          shortName="TypeNameMustStartWithUppercaseLetter" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustStartWithUppercaseLetter"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.QualifierMustStartWithLowercaseLetter.key"
                          shortName="QualifierMustStartWithLowercaseLetter" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.QualifierMustStartWithLowercaseLetter"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.OrderingOfRelationShouldBeAvoided.key"
                          shortName="OrderingOfRelationShouldBeAvoided" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.OrderingOfRelationShouldBeAvoided"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.ListsInRelationShouldBeAvoided.key"
                          shortName="ListsInRelationShouldBeAvoided" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.ListsInRelationShouldBeAvoided"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.UseOfUnoptimizedAttributesIsNotRecommended.key"
                          shortName="UseOfUnoptimizedAttributesIsNotRecommended" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.UseOfUnoptimizedAttributesIsNotRecommended"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CollectionsAreOnlyForDynamicAndJalo.key"
                          shortName="CollectionsAreOnlyForDynamicAndJalo" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CollectionsAreOnlyForDynamicAndJalo"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeNameMustNotStartWithGenerated.key"
                          shortName="TypeNameMustNotStartWithGenerated" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustNotStartWithGenerated"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.TypeNameMustPointToExistingType.key"
                          shortName="TypeNameMustPointToExistingType" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.TypeNameMustPointToExistingType"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.BooleanFieldCannotBeOptional.key"
                          shortName="BooleanFieldCannotBeOptional" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.BooleanFieldCannotBeOptional"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.JaloPersistanceTypeIsDeprecated.key"
                          shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloPersistanceTypeIsDeprecated"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CmpPersistanceTypeIsDeprecated.key"
                          shortName="CmpPersistanceTypeIsDeprecated" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CmpPersistanceTypeIsDeprecated"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTableMustExistForItemExtendingGenericItem.key"
                          shortName="DeploymentTableMustExistForItemExtendingGenericItem" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustExistForItemExtendingGenericItem"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTableMustNotBeRedeclaredInChildTypes.key"
                          shortName="DeploymentTableMustNotBeRedeclaredInChildTypes" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustNotBeRedeclaredInChildTypes"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeUnique.key"
                          shortName="DeploymentTypeCodeMustBeUnique" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeUnique"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTableMustBeUnique.key"
                          shortName="DeploymentTableMustBeUnique" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustBeUnique"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"
                          shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.AttributeHandlerMustBeSetForDynamicAttribute.key"
                          shortName="AttributeHandlerMustBeSetForDynamicAttribute" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.AttributeHandlerMustBeSetForDynamicAttribute"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeGreaterThanTenThousand.key"
                          shortName="DeploymentTypeCodeMustBeGreaterThanTenThousand" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeMustBeGreaterThanTenThousand"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTableMustExistForManyToManyRelation.key"
                          shortName="DeploymentTableMustExistForManyToManyRelation" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTableMustExistForManyToManyRelation"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTypeCodeMustBeGreaterThanTenThousandForRelations.key"
                          shortName="DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForCommonsExtension.key"
                          shortName="DeploymentTypeCodeReservedForCommonsExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForCommonsExtension"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForPrintExtension.key"
                          shortName="DeploymentTypeCodeReservedForPrintExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForPrintExtension"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForProcessingExtension.key"
                          shortName="DeploymentTypeCodeReservedForProcessingExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForProcessingExtension"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForLegacyXPrintExtension.key"
                          shortName="DeploymentTypeCodeReservedForLegacyXPrintExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForLegacyXPrintExtension"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DeploymentTypeCodeReservedForB2BCommerceExtension.key"
                          shortName="DeploymentTypeCodeReservedForB2BCommerceExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DeploymentTypeCodeReservedForB2BCommerceExtension"/>
 
-<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"-->
+<!--        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"-->
 <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareTypesMustHaveSpecificConditions.key"-->
 <!--                         shortName="CatalogAwareTypesMustHaveSpecificConditions" level="ERROR"-->
 <!--                         implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareTypesMustHaveSpecificConditions"/>-->
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareUniqueKeyAttributeQualifier.key"
                          shortName="CatalogAwareUniqueKeyAttributeQualifier" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareUniqueKeyAttributeQualifier"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.CatalogAwareCatalogVersionAttributeQualifier.key"
                          shortName="CatalogAwareCatalogVersionAttributeQualifier" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.CatalogAwareCatalogVersionAttributeQualifier"/>
 
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.DefaultValueForEnumTypeMustBeAssignable.key"
                          shortName="DefaultValueForEnumTypeMustBeAssignable" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.type.system.inspections.rules.DefaultValueForEnumTypeMustBeAssignable"/>

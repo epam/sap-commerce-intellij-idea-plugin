@@ -31,7 +31,7 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
 class QualifierMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

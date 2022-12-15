@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils
 
 class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

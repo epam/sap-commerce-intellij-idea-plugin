@@ -27,7 +27,7 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
 class DeploymentTableMustExistForManyToManyRelation : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

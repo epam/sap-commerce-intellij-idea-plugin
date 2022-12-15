@@ -16,43 +16,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.type.system.inspections.rules
+package com.intellij.idea.plugin.hybris.beans.inspections.rules
 
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess
+import com.intellij.idea.plugin.hybris.beans.model.Bean
+import com.intellij.idea.plugin.hybris.beans.model.Beans
+import com.intellij.idea.plugin.hybris.beans.model.Enum
 import com.intellij.idea.plugin.hybris.type.system.inspections.fix.XmlAddAttributeQuickFix
-import com.intellij.idea.plugin.hybris.type.system.model.*
+import com.intellij.idea.plugin.hybris.type.system.model.Persistence
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class AttributeHandlerMustBeSetForDynamicAttribute : AbstractTypeSystemInspection() {
+class DuplicateEnumValueDefinition : AbstractBeansInspection() {
 
     override fun inspect(
         project: Project,
-        items: Items,
+        beans: Beans,
         holder: DomElementAnnotationHolder,
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        items.itemTypes.all
-            .flatMap { it.attributes.attributes }
-            .forEach { check(it, holder, severity) }
+        if (beans.xmlElement == null) return
+
+        beans.enums
+            .forEach { inspect(it, holder, severity, project) }
     }
 
-    private fun check(
-        dom: Attribute,
+    private fun inspect(
+        dom: Enum,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
+        severity: HighlightSeverity,
+        project: Project
     ) {
-        val dynamic = PersistenceType.DYNAMIC == dom.persistence.type.value
+        if (dom.values.isEmpty()) return
 
-        if (dynamic && dom.persistence.attributeHandler.stringValue == null) {
-            holder.createProblem(
-                dom.persistence,
-                severity,
-                displayName,
-                XmlAddAttributeQuickFix(Persistence.ATTRIBUTE_HANDLER)
-            )
+        val meta = BeansMetaModelAccess.getInstance(project).findMetaForDom(dom) ?: return
+
+        dom.values.forEach { value ->
+            val otherPropertyDeclarations = meta.declarations
+                .map { it.values }
+                .mapNotNull { it[value.stringValue] }
+
+            if (otherPropertyDeclarations.size > 1) {
+                holder.createProblem(
+                    value,
+                    severity,
+                    displayName
+                )
+            }
         }
     }
 }

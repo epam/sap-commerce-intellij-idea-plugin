@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils
 
 class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,

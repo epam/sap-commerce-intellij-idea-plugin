@@ -31,7 +31,7 @@ class DefaultValueForEnumTypeMustBeAssignable : AbstractTypeSystemInspection() {
 
     private val regex = Regex("em\\(\\)\\.getEnumerationValue\\(\\s*\".*\"\\s*,\\s*\".*\"\\s*\\)")
 
-    override fun checkItems(
+    override fun inspect(
         project: Project,
         items: Items,
         holder: DomElementAnnotationHolder,
