@@ -37,12 +37,12 @@ class BeansMetaModelProcessorImpl(private val myProject: Project) : BeansMetaMod
 
         rootWrapper ?: return null
 
-        val items = rootWrapper.rootElement
+        val root = rootWrapper.rootElement
 
         return BeansMetaModelBuilder(module, psiFile, custom)
-            .withEnumTypes(items.enums)
-            .withBeanTypes(items.beans)
-            .withEventTypes(items.beans)
+            .withEnumTypes(root.enums)
+            .withBeanTypes(root.beans)
+            .withEventTypes(root.beans)
             .build()
     }
 

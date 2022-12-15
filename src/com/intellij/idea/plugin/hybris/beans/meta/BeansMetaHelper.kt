@@ -18,9 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.beans.meta
 
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaClassifier
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaBean
+import com.intellij.idea.plugin.hybris.beans.meta.model.BeansMetaEnum
+import com.intellij.util.xml.DomElement
+
 class BeansMetaHelper {
 
     companion object {
         fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
+        fun isDeprecated(it: BeansGlobalMetaClassifier<DomElement>): Boolean {
+            if (it is BeansMetaEnum) {
+                return it.isDeprecated
+            }
+
+            if (it is BeansMetaBean) {
+                return it.isDeprecated
+            }
+
+            return false
+        }
     }
 }

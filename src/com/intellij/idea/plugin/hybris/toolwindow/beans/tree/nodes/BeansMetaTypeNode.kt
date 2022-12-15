@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.beans.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaHelper
 import com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaBean
 import com.intellij.idea.plugin.hybris.beans.meta.model.BeansGlobalMetaClassifier
@@ -48,9 +49,10 @@ class BeansMetaTypeNode(parent: BeansNode, private val metaType: BeansMetaType) 
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val showOnlyCustom = BeansViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val settings = BeansViewSettings.getInstance(myProject)
         val entries = BeansMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<BeansGlobalMetaClassifier<DomElement>>(metaType).values
-            .filter { if (showOnlyCustom) it.isCustom else true }
+            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+            .filter { if (settings.isShowOnlyDeprecated()) BeansMetaHelper.isDeprecated(it) else true }
             .size
         if (entries > 0) {
             presentation.locationString = "$entries"
@@ -58,11 +60,13 @@ class BeansMetaTypeNode(parent: BeansNode, private val metaType: BeansMetaType) 
     }
 
     override fun getChildren(): Collection<BeansNode?> {
-        val showOnlyCustom = BeansViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val settings = BeansViewSettings.getInstance(myProject)
 
         return BeansMetaModelAccess.getInstance(myProject).getMetaModel()
             .getMetaType<BeansGlobalMetaClassifier<DomElement>>(metaType).values
-            .filter { if (showOnlyCustom) it.isCustom else true }
+            .asSequence()
+            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+            .filter { if (settings.isShowOnlyDeprecated()) BeansMetaHelper.isDeprecated(it) else true }
             .map {
                 when (it) {
                     is BeansGlobalMetaEnum -> BeansMetaEnumNode(this, it)
@@ -72,6 +76,7 @@ class BeansMetaTypeNode(parent: BeansNode, private val metaType: BeansMetaType) 
             }
             .filter { Objects.nonNull(it) }
             .sortedBy { it!!.name }
+            .toList()
     }
 
 }

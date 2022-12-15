@@ -1,6 +1,13 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- Beans System  -->
+        <localInspection shortName="DuplicateBeanDefinitionInspection" displayName="Duplicate bean definition in -beans.xml file"
+                         groupName="Bean Definition" level="ERROR" language="XML" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.inspections.DuplicateBeanDefinitionInspection"/>
+
+        <!-- Type System  -->
+
         <!-- Weak Warnings -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] hybris Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.typesystem.MandatoryFieldMustHaveInitialValue.key"

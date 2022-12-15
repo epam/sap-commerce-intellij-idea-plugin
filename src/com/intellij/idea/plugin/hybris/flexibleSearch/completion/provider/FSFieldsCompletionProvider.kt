@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -59,7 +60,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
 
                 if (correlationNames.isNotEmpty()) {
                     correlationNames.map { it.text }
-                            .map { LookupElementBuilder.create(it).withPresentableText(it).withIcon(PARAMETER_ICON) }
+                            .map { LookupElementBuilder.create(it).withPresentableText(it).withIcon(AllIcons.Nodes.Parameter) }
                             .forEach { result.addElement(it) }
 
                 } else {

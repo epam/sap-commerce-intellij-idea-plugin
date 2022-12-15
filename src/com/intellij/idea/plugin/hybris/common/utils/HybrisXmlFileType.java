@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.IdeBundle;
 import com.intellij.ide.highlighter.DomSupportEnabled;
 import com.intellij.ide.highlighter.XmlLikeFileType;
 import com.intellij.lang.xml.XMLLanguage;
+import com.intellij.xml.XmlBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class HybrisXmlFileType extends XmlLikeFileType implements DomSupportEnab
     @Override
     @NotNull
     public String getDescription() {
-        return IdeBundle.message("filetype.description.xml");
+        return XmlBundle.message("title.xml");
     }
 
     @Override

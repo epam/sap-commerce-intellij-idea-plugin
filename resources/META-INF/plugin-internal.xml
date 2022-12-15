@@ -29,10 +29,6 @@
         <completion.contributor language="XML"
                                 implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
 
-        <localInspection shortName="DuplicateBeanDefinitionInspection" displayName="Duplicate bean definition in -beans.xml file"
-                         groupName="Bean Definition" level="ERROR" language="XML" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.inspections.DuplicateBeanDefinitionInspection"/>
-
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
 

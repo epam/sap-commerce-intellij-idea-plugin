@@ -40,7 +40,7 @@
 
           <b>Contribution guidelines:</b>
           <ul>
-              <li>Please read <a href="http://developercertificate.org/">Contributor License Agreement</a></li>
+              <li>Please read <a href="https://developercertificate.org/">Contributor License Agreement</a></li>
               <li>Available tasks are in our board: <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/projects/1">Project board</a></li>
               <li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html">How to Configure Project Environment For Plugin Developers</a></li>
               <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>

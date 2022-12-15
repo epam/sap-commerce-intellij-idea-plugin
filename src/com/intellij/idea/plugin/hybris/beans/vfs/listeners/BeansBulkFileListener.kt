@@ -45,7 +45,7 @@ class BeansBulkFileListener : BulkFileListener {
             .filter { fileIndex.isInContent(it) }
 
         if (items.isNotEmpty()) {
-            logger.debug("Re-triggering GlobalMetaModel re-calculation due following items.xml changes: ${items.map { it.nameWithoutExtension }}")
+            logger.debug("Re-triggering GlobalMetaModel re-calculation due following beans.xml changes: ${items.map { it.nameWithoutExtension }}")
             // re-triggering GlobalMetaModel state on file changes
             BeansMetaModelAccess.getInstance(project).getMetaModel()
         }

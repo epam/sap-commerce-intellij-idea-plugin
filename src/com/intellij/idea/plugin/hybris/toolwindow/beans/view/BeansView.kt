@@ -28,7 +28,7 @@ import com.intellij.openapi.util.Disposer
 
 class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
-    private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
+    private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BeansViewSettings.getInstance(myProject)
     private val myTreePane = BeansTreePanel(myProject)
 
@@ -47,7 +47,7 @@ class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Di
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
-            add(myItemsViewActionGroup)
+            add(myBeansViewActionGroup)
             ActionManager.getInstance().createActionToolbar("HybrisBeansView", this, false)
         }
         toolbar.targetComponent = this
@@ -62,8 +62,11 @@ class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Di
         })
     }
 
-    private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
+    private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
+        isPopup = true
+
         add(ShowOnlyCustomAction(mySettings))
+        add(ShowOnlyDeprecatedAction(mySettings))
         addSeparator()
         this
     }

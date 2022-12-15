@@ -63,6 +63,9 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
+        isPopup = true
+
+
         add(ShowOnlyCustomAction(mySettings))
         addSeparator()
 //        add(ShowMetaItemsAction(mySettings))

@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
-class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show Only Custom", "Will exclude types defined outside of the current project", AllIcons.Actions.GroupBy) {
+class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show Only Custom", "Will exclude types defined outside of the current project", null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
 

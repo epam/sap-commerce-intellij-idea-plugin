@@ -23,12 +23,24 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
-class ShowOnlyCustomAction(val settings: BeansViewSettings) : ToggleAction("Show Only Custom", "Will exclude beans defined outside of the current project", AllIcons.Actions.GroupBy) {
+class ShowOnlyCustomAction(val settings: BeansViewSettings) : ToggleAction("Show Only Custom", "Will exclude beans defined outside of the current project", null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         settings.setShowOnlyCustom(state)
+        settings.fireSettingsChanged(BeansViewSettings.ChangeType.FULL)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowOnlyDeprecatedAction(val settings: BeansViewSettings) : ToggleAction("Show Only Deprecated", "Will include only deprecated beans", null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyDeprecated()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowOnlyDeprecated(state)
         settings.fireSettingsChanged(BeansViewSettings.ChangeType.FULL)
     }
 

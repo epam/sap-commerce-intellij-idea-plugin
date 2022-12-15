@@ -22,8 +22,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.Hy
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.RegionEntity;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService;
-import com.intellij.util.Base64;
 
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -41,8 +41,8 @@ public class DefaultRegionEntityService implements RegionEntityService {
 
     @Override
     public <T> RegionEntity<T> save(final String regionName, final String entityName, final T entityBody) {
-        String uid = Base64.encode(regionName.getBytes()) + SPLIT_SIGN + UUID.randomUUID();
-        RegionEntity<T> createdEntity = new RegionEntity<>(uid, entityName, entityBody);
+        final String uid = Base64.getEncoder().encodeToString(regionName.getBytes()) + SPLIT_SIGN + UUID.randomUUID();
+        final RegionEntity<T> createdEntity = new RegionEntity<>(uid, entityName, entityBody);
 
         getRegionByName(regionName).getEntities().put(uid, createdEntity);
         return createdEntity;
@@ -50,14 +50,14 @@ public class DefaultRegionEntityService implements RegionEntityService {
 
     @Override
     public Optional<RegionEntity> find(final String entityId) {
-        Region region = getRegionByEntityId(entityId);
-        Map<String, RegionEntity> entities = region.getEntities();
+        final Region region = getRegionByEntityId(entityId);
+        final Map<String, RegionEntity> entities = region.getEntities();
         return Optional.ofNullable(entities.get(entityId));
     }
 
     @Override
     public void remove(final String entityId) {
-        Region region = getRegionByEntityId(entityId);
+        final Region region = getRegionByEntityId(entityId);
         region.getEntities().remove(entityId);
     }
 
@@ -72,7 +72,7 @@ public class DefaultRegionEntityService implements RegionEntityService {
     }
 
     private Region getRegionByEntityId(final String entityId) {
-        String regionName = new String(Base64.decode(entityId.split(SPLIT_SIGN)[0]));
+        final String regionName = new String(Base64.getDecoder().decode(entityId.split(SPLIT_SIGN)[0]));
         return getRegionByName(regionName);
     }
 

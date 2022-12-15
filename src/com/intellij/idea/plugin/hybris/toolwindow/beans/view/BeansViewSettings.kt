@@ -49,11 +49,18 @@ class BeansViewSettings(private val myProject: Project) : PersistentStateCompone
         mySettings.showCustomOnly = state
     }
 
+    fun isShowOnlyDeprecated(): Boolean = mySettings.showDeprecatedOnly
+
+    fun setShowOnlyDeprecated(state: Boolean) {
+        mySettings.showDeprecatedOnly = state
+    }
+
     override fun getState(): Settings = mySettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
 
     class Settings {
         var showCustomOnly = false
+        var showDeprecatedOnly = false
     }
 
     enum class ChangeType {
