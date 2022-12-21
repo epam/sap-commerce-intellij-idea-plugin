@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
@@ -66,7 +66,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.notifications.NotificationUtil.showSystemNotificationIfNotActive;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
 
@@ -88,8 +87,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private List<HybrisModuleDescriptor> moduleList;
     private List<HybrisModuleDescriptor> hybrisModulesToImport;
 
+    @Override
     @Nullable
-    public Project createProject(String name, String path) {
+    public Project createProject(final String name, final String path) {
         final Project project = super.createProject(name, path);
         getHybrisProjectDescriptor().setHybrisProject(project);
         return project;
@@ -255,33 +255,28 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private void notifyImportNotFinishedYet(@NotNull Project project) {
 
         final String notificationTitle = refresh
-            ? message("project.refresh.notification.title")
-            : message("project.import.notification.title");
+            ? message("hybris.notification.project.refresh.title")
+            : message("hybris.notification.project.import.title");
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            notificationTitle,
-            message("import.or.refresh.process.not.finished.yet"),
-            NotificationType.INFORMATION
-        ).notify(project);
+        Notifications.create(NotificationType.INFORMATION, notificationTitle,
+                             message("hybris.notification.import.or.refresh.process.not.finished.yet.content"))
+                     .notify(project);
     }
 
     private void notifyImportFinished(@NotNull Project project) {
 
-        final String notificationName = refresh
-            ? message("project.refresh.finished")
-            : message("project.import.finished");
+        final String notificationContent = refresh
+            ? message("hybris.notification.project.refresh.finished.content")
+            : message("hybris.notification.project.import.finished.content");
 
         final String notificationTitle = refresh
-            ? message("project.refresh.notification.title")
-            : message("project.import.notification.title");
+            ? message("hybris.notification.project.refresh.title")
+            : message("hybris.notification.project.import.title");
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            notificationTitle,
-            notificationName,
-            NotificationType.INFORMATION
-        ).notify(project);
+        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
+                     .notify(project);
 
-        showSystemNotificationIfNotActive(project, notificationName, notificationTitle, notificationName);
+        Notifications.showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent);
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {

@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
 import com.intellij.idea.plugin.hybris.toolwindow.document.filter.UnsignedIntegerDocumentFilter;
@@ -120,12 +120,11 @@ public class SolrConnectionDialog extends DialogWrapper {
             message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", setting.getGeneratedURL(), e.getMessage());
         }
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type
-        ).notify(myProject);
+        Notifications.create(type, HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"), message)
+                     .notify(myProject);
     }
 
-    private void saveSettings(HybrisRemoteConnectionSettings mySettings) {
+    private void saveSettings(final HybrisRemoteConnectionSettings mySettings) {
         mySettings.setSsl(sslButton.isSelected());
         mySettings.setDisplayName(displayNameTextField.getText());
         mySettings.setType(HybrisRemoteConnectionSettings.Type.SOLR);
@@ -140,12 +139,10 @@ public class SolrConnectionDialog extends DialogWrapper {
     }
 
     private void validateParams() {
-        testConnectionButton
-                .setEnabled(!solrPortTextField.getText().isEmpty()
-                        && !solrIpTextField.getText().isEmpty());
+        final boolean enabledFlag = !solrPortTextField.getText().isEmpty() && !solrIpTextField.getText().isEmpty();
 
-        getOKAction().setEnabled(!solrPortTextField.getText().isEmpty()
-                && !solrIpTextField.getText().isEmpty());
+        testConnectionButton.setEnabled(enabledFlag);
+        getOKAction().setEnabled(enabledFlag);
     }
 
     @Nullable

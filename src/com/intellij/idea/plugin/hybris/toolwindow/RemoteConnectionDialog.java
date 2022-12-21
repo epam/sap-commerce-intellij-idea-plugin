@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient;
 import com.intellij.idea.plugin.hybris.toolwindow.document.filter.UnsignedIntegerDocumentFilter;
@@ -123,9 +123,8 @@ public class RemoteConnectionDialog extends DialogWrapper {
             message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testedHacURL, errorMessage);
         }
 
-        NotificationUtil.NOTIFICATION_GROUP.createNotification(
-                HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"), message, type
-        ).notify(myProject);
+        Notifications.create(type, HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"), message)
+                     .notify(myProject);
     }
 
     private void toggleSslButton(final HybrisRemoteConnectionSettings setting) {

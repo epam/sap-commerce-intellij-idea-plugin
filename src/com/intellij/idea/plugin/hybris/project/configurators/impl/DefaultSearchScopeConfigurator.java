@@ -72,12 +72,12 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.files"),
                 createCustomTSFilesPattern()
             ));
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.custom.ts.beans.impex.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.beans.impex.files"),
                 createCustomTsImpexBeansFilesPattern()
             ));
         }
@@ -97,8 +97,12 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(createScope(nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + " " + HybrisI18NBundleUtils.message("scope.all.ts.files"),
+            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.ts.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
+        ));
+        newScopes.add(new NamedScope(
+            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.beans.files"),
+            new FilePatternPackageSet(null, "*//*" + HYBRIS_BEANS_XML_FILE_ENDING)
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
 

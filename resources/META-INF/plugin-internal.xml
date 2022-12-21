@@ -57,7 +57,7 @@
 
     <actions>
         <group id="HybrisToolsActions"
-               text="Hybris"
+               text="[y] SAP Commerce Cloud"
                icon="/icons/hybrisIcon.png"
                popup="true"
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
@@ -78,7 +78,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Hybris" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="[y] SAP Commerce Cloud" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 

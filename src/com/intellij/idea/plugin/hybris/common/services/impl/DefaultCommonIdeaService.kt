@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.common.services.impl
 
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
@@ -28,6 +29,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
@@ -72,20 +74,15 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     override fun isOutDatedHybrisProject(project: Project): Boolean {
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                .state
-        val version = hybrisProjectSettings.importedByVersion ?: return true
-        val versionParts = version.split(".").toTypedArray()
-        if (versionParts.size < 2) {
-            return true
-        }
-        val majorVersion = versionParts[0]
-        val minorVersion = versionParts[1]
+        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+        val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
         return try {
-            val majorVersionNumber = majorVersion.toInt()
-            val minorVersionNumber = minorVersion.toInt()
-            val versionNumber = majorVersionNumber * 100 + minorVersionNumber
-            versionNumber < 900
+            val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))!!.version
+
+            val last = lastImportVersion.split(".").toTypedArray().sumOf { it.toInt() }
+            val current = currentVersion.split(".").toTypedArray().sumOf { it.toInt() }
+
+            last < current
         } catch (nfe: NumberFormatException) {
             true
         }

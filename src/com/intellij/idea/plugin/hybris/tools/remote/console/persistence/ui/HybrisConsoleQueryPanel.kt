@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.RegionEntity
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService
@@ -25,6 +27,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleEventListener
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryBodyDocumentListener
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.IconLoader
@@ -57,10 +60,6 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     private val maxPossibleItemsNumber = this.region.maxNumberEntities
     private val maxQueryBodyLength = 300
     private val maxQueryNameLength = 25
-    private val queryBodyNotificationTitle = "Query is too long"
-    private val queryNameNotificationTitle = "Query Name is too long"
-    private val queryBodyNotificationName = "Query can't contain more than $maxQueryBodyLength symbols"
-    private val queryNameNotificationName = "Query Name can't contain more than $maxQueryNameLength symbols"
 
     init {
         addComponentsToPanel()
@@ -119,12 +118,18 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
                     if (console.editorDocument.text.length <= maxQueryBodyLength) {
                         addQueryToComboBox()
                     } else {
-                        HybrisConsoleNotificationUtil
-                                .displayWarningNotification(queryBodyNotificationTitle, queryBodyNotificationName, project)
+                        Notifications.create(NotificationType.WARNING,
+                            HybrisI18NBundleUtils.message("hybris.notification.query.body.title"),
+                            HybrisI18NBundleUtils.message("hybris.notification.query.body.content", maxQueryBodyLength)
+                        )
+                            .notify(project)
                     }
                 } else {
-                    HybrisConsoleNotificationUtil
-                            .displayWarningNotification(queryNameNotificationTitle, queryNameNotificationName, project)
+                    Notifications.create(NotificationType.WARNING,
+                        HybrisI18NBundleUtils.message("hybris.notification.query.name.title"),
+                        HybrisI18NBundleUtils.message("hybris.notification.query.name.content", maxQueryNameLength)
+                    )
+                        .notify(project)
                 }
             }
         }

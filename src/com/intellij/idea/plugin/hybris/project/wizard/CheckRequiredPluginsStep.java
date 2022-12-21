@@ -116,7 +116,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         final DefaultListModel notEnabledModel = (DefaultListModel) notEnabledList.getModel();
         notEnabledModel.clear();
         notEnabledPlugins.forEach(id -> {
-            final IdeaPluginDescriptor plugin = PluginManager.getPlugin(id);
+            final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(id);
             notEnabledModel.addElement(plugin.getName());
         });
     }

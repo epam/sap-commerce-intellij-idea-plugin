@@ -285,19 +285,11 @@
                                  implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
         <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector" />
-    </extensions>
 
-    <application-components>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderHighlighterComponent</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.project.components.HybrisProjectApplicationComponent</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.type.system.validation.TypeSystemValidationComponent</implementation-class>
-        </component>
-    </application-components>
+        <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
+        <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
+    </extensions>
 
     <actions>
 

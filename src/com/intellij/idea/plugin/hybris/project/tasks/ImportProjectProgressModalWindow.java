@@ -25,7 +25,8 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
-import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
@@ -360,7 +361,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final @NotNull HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                                    .getState();
         hybrisProjectSettings.setHybrisProject(true);
-        final String version = PluginManager.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)).getVersion();
+        final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
+
+        if (plugin == null) return;
+
+        final String version = plugin.getVersion();
         hybrisProjectSettings.setImportedByVersion(version);
     }
 

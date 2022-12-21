@@ -1,7 +1,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <notificationGroup displayType="BALLOON" id="Hybris"/>
+        <notificationGroup id="[y] SAP Commerce Cloud" displayType="BALLOON" isLogByDefault="true"/>
 
     </extensions>
 </idea-plugin>

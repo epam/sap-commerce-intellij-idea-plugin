@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -21,22 +21,19 @@ package com.intellij.idea.plugin.hybris.common.utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.highlighter.DomSupportEnabled;
 import com.intellij.ide.highlighter.XmlLikeFileType;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.lang.xml.XMLLanguage;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.xml.XmlBundle;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class HybrisXmlFileType extends XmlLikeFileType implements DomSupportEnabled {
+public class HybrisItemsXmlFileType extends XmlLikeFileType implements DomSupportEnabled {
 
-    public static final HybrisXmlFileType INSTANCE = new HybrisXmlFileType();
-    @NonNls
-    public static final String DEFAULT_EXTENSION = "xml";
-    @NonNls
-    public static final String DOT_DEFAULT_EXTENSION = "-items." + DEFAULT_EXTENSION;
+    public static final FileType INSTANCE = new HybrisItemsXmlFileType();
 
-    private HybrisXmlFileType() {
+    private HybrisItemsXmlFileType() {
         super(XMLLanguage.INSTANCE);
     }
 
@@ -55,7 +52,7 @@ public class HybrisXmlFileType extends XmlLikeFileType implements DomSupportEnab
     @Override
     @NotNull
     public String getDefaultExtension() {
-        return DOT_DEFAULT_EXTENSION;
+        return HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
     }
 
     @Override

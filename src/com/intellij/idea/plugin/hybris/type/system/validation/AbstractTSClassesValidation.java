@@ -62,12 +62,13 @@ public abstract class AbstractTSClassesValidation<T extends DomElement, M extend
     ) {
         final List<M> itemAttributes = this.getDefinedAttributes(itemType);
 
+        final PsiField[] allFields = javaClass.getAllFields();
         for (final M itemAttribute : itemAttributes) {
             if (this.isJavaFieldGenerationDisabled(itemAttribute)) {
                 continue;
             }
 
-            if (!this.isJavaFieldGenerated(itemAttribute, javaClass)) {
+            if (!this.isJavaFieldGenerated(itemAttribute, allFields)) {
                 return false;
             }
         }
@@ -78,8 +79,8 @@ public abstract class AbstractTSClassesValidation<T extends DomElement, M extend
     /**
      * Finds attribute in generated class for attribute defined for type in items.xml
      */
-    private boolean isJavaFieldGenerated(@NotNull final M itemAttribute, @NotNull final PsiClass javaClass) {
-        for (final PsiField javaField : javaClass.getAllFields()) {
+    private boolean isJavaFieldGenerated(@NotNull final M itemAttribute, final PsiField @NotNull [] allFields) {
+        for (final PsiField javaField : allFields) {
             final String itemAttributeName = this.buildJavaFieldName(itemAttribute);
 
             if (StringUtils.equalsIgnoreCase(javaField.getName(), itemAttributeName)) {

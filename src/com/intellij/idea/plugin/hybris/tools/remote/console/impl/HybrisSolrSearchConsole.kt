@@ -23,7 +23,7 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.NotificationUtil
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
@@ -147,14 +147,12 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         return try {
             SolrHttpClient.getInstance(project).coresData(project).toList()
         } catch (e : SolrServerException) {
-            NotificationUtil.NOTIFICATION_GROUP.createNotification(
-                HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.title"),
-                HybrisI18NBundleUtils.message(
-                    "hybris.toolwindow.solr.test.connection.fail",
-                    e.localizedMessage
-                ),
-                NotificationType.WARNING
-            ).notify(project)
+            Notifications.create(
+                NotificationType.WARNING,
+                HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"),
+                HybrisI18NBundleUtils.message("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
+            )
+                .notify(project)
             emptyList()
         }
     }

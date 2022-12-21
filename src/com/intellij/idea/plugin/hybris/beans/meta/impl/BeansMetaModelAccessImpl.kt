@@ -48,6 +48,7 @@ class BeansMetaModelAccessImpl(private val myProject: Project) : BeansMetaModelA
                 .filter { obj: PsiFile? -> Objects.nonNull(obj) }
                 .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
                 .map { obj: CachedValue<BeansMetaModel> -> obj.value }
+                .sortedBy { !it.custom }
 
             val dependencies = localMetaModels
                 .map { it.psiFile }

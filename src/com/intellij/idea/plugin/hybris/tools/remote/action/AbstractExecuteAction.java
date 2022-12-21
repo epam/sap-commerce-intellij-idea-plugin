@@ -50,8 +50,7 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
             consolePanel.sendTextToConsole(console, content);
             doExecute(consolePanel);
 
-            ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(
-                HybrisToolWindowFactory.ID);
+            final ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(HybrisToolWindowFactory.ID);
             toolWindow.activate(null);
         }
     }

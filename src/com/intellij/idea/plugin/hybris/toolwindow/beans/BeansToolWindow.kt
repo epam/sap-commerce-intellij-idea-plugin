@@ -33,7 +33,7 @@ class BeansToolWindow(val myProject: Project) : Disposable {
     }
 
     fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(BeansView(myProject), "Beans", true)
+        val content = toolWindow.contentManager.factory.createContent(BeansView(myProject), "Bean System", true)
         content.icon = HybrisIcons.BEAN_FILE
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         return content

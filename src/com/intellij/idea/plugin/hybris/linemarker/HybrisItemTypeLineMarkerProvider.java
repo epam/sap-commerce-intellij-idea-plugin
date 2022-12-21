@@ -49,13 +49,13 @@ public class HybrisItemTypeLineMarkerProvider extends AbstractHybrisItemLineMark
         final var name = cleanSearchName(psi.getName());
         final var psiNameIdentifier = psi.getNameIdentifier();
 
-        if (ModelsUtils.isModelFile(psi.getContainingFile(), psi.getContainingClass())) {
+        if (ModelsUtils.isModelFile(psi.getContainingFile(), psi)) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaItemByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)
                                             .collect(Collectors.toList()))
                            .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TYPE_SYSTEM));
-        } else if (ModelsUtils.isEnumFile(psi.getContainingFile(), psi.getContainingClass())) {
+        } else if (ModelsUtils.isEnumFile(psi.getContainingFile(), psi)) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaEnumByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)

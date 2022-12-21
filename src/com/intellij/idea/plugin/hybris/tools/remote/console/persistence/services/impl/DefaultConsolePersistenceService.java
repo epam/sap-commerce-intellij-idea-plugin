@@ -19,11 +19,13 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionPersistenceService;
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleNotificationUtil;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
@@ -48,13 +50,11 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
     private final HybrisConsoleRegionsCache hybrisConsoleRegionsCache;
 
     public DefaultConsolePersistenceService(
-        final Project project,
-        final RegionPersistenceService regionPersistenceService,
-        final HybrisConsoleRegionsCache hybrisConsoleRegionsCache
+        final Project project
     ) {
         this.project = project;
-        this.regionPersistenceService = regionPersistenceService;
-        this.hybrisConsoleRegionsCache = hybrisConsoleRegionsCache;
+        this.regionPersistenceService = RegionPersistenceService.getInstance(project);
+        this.hybrisConsoleRegionsCache = HybrisConsoleRegionsCache.getInstance(project);
     }
 
     @Override
@@ -86,8 +86,7 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
         return ProjectUtil.guessProjectDir(project).getPath() + HybrisConstants.QUERY_STORAGE_FOLDER_PATH;
     }
 
-    private void loadEntitiesFromFile(final RegionPersistenceService loadService, final String path) throws
-                                                                                                     IOException {
+    private void loadEntitiesFromFile(final RegionPersistenceService loadService, final String path) throws IOException {
         loadEntityFromFile(loadService, getRegionPath(path, SOLR), SOLR);
         loadEntityFromFile(loadService, getRegionPath(path, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
@@ -100,9 +99,11 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
         try {
             loadService.loadRegionData(path, regionName);
         } catch (IllegalArgumentException e) {
-            final String notificationTitle = e.getMessage();
-            final String notificationName = "Only 'FLEXIBLE_SEARCH' or 'SOLR' are allowable regions.";
-            HybrisConsoleNotificationUtil.displayWarningNotification(notificationTitle, notificationName, project);
+            Notifications.create(NotificationType.WARNING,
+                                 e.getMessage(),
+                                 HybrisI18NBundleUtils.message("hybris.notification.region.not.allowed")
+                                 )
+                         .notify(project);
         }
     }
 

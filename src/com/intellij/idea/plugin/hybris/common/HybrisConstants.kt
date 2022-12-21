@@ -27,15 +27,17 @@ import java.io.File
  */
 object HybrisConstants {
 
+    const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce Cloud"
+
     const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
     const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
-    const val IMPEX_CONSOLE_TITLE = "Hybris Impex Console"
-    const val IMPEX_MONITOR_CONSOLE_TITLE = "Hybris Monitor Console"
+    const val IMPEX_CONSOLE_TITLE = "[y] Impex Console"
+    const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
     const val IMPEX_FILE_EXTENSION = "impex"
 
-    const val GROOVY_CONSOLE_TITLE = "Hybris Groovy Console"
-    const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "Hybris FS Console"
-    const val SOLR_SEARCH_CONSOLE_TITLE = "Hybris Solr search"
+    const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
+    const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
+    const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
 
     const val DOT_PROJECT = ".project"
     const val SETTINGS_GRADLE = "settings.gradle"
@@ -141,7 +143,6 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
-    const val TS_ITEMS_VALIDATION_WARN = "hybris.ts.items.validation.warn"
     const val TS_TYPE_OBJECT = "java.lang.Object"
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
