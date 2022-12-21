@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -35,6 +34,7 @@ import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.Nullable;
 
 import javax.xml.bind.UnmarshalException;
+import java.util.Locale;
 
 
 /**
@@ -44,8 +44,6 @@ import javax.xml.bind.UnmarshalException;
  */
 public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<BpGraphNode>
     implements BpDiagramElementManager {
-
-    private static final Logger LOG = Logger.getInstance(BpDiagramElementManagerIml.class);
 
     @Nullable
     @Override
@@ -62,7 +60,7 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
             return null;
         }
 
-        if (!virtualFile.getName().endsWith("process.xml")) {
+        if (!virtualFile.getName().toLowerCase(Locale.ROOT).endsWith("process.xml")) {
             return null;
         }
 

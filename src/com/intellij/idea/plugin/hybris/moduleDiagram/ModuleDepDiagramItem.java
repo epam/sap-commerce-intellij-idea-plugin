@@ -111,6 +111,6 @@ public class ModuleDepDiagramItem {
 
     @Override
     public String toString() {
-        return myModule != null ? myModule.getName() : "hybris Module Dependencies";
+        return myModule != null ? myModule.getName() : "[y] Module Dependencies";
     }
 }
