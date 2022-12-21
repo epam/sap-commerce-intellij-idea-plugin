@@ -40,7 +40,6 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import gnu.trove.THashSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -1011,7 +1010,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             HybrisModuleDescriptorFactory.class
         );
 
-        final Set<HybrisModuleDescriptor> existingModules = new THashSet<HybrisModuleDescriptor>();
+        final Set<HybrisModuleDescriptor> existingModules = new HashSet<>();
 
         for (Module module : ModuleManager.getInstance(project).getModules()) {
             try {

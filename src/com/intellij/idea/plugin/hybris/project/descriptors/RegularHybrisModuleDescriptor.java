@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_META_KEY_NAME;
@@ -165,7 +164,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         requiredExtensionNames.addAll(requiresExtensions.stream()
                                                         .map(RequiresExtensionType::getName)
-                                                        .collect(Collectors.toList()));
+                                                        .toList());
 
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames());
 
@@ -292,20 +291,19 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         ));
 
         if (this.hasHmcModule()) {
-            final HybrisModuleDescriptor hmcModule = getRootProjectDescriptor()
+            getRootProjectDescriptor()
                 .getModulesChosenForImport().stream()
                 .filter(e -> e.getName().equals(HybrisConstants.EXTENSION_NAME_HMC))
                 .findFirst()
-                .orElse(null);
-            if (hmcModule != null) {
-                libs.add(new DefaultJavaLibraryDescriptor(
-                    new File(
-                        hmcModule.getRootDirectory(),
-                        HybrisConstants.WEB_INF_CLASSES_DIRECTORY
-                    ),
-                    false, true
-                ));
-            }
+                .ifPresent(hmcModule -> {
+                    libs.add(new DefaultJavaLibraryDescriptor(
+                        new File(
+                            hmcModule.getRootDirectory(),
+                            HybrisConstants.WEB_INF_CLASSES_DIRECTORY
+                        ),
+                        false, true
+                    ));
+                });
         }
 
         if (this.hasBackofficeModule()) {
@@ -366,7 +364,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                     false,
                     false
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
         libs.addAll(backwardDependencies);
     }
