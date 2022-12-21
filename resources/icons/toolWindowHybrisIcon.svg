@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-    <g id="toolWindowHybrisIcon">
-        <style type="text/css">
-            .st0{fill:#6E6E6E;}
-        </style>
-        <polygon class="st0" points="10.7,1 10.7,2.7 13.3,2.7 13.3,13.3 10.7,13.3 10.7,15 15.1,15 15.1,13.6 15.1,13.3 15.1,2.7 15.1,2.2
-	15.1,1 "/>
-        <polygon class="st0" points="5.4,1 5.4,2.7 2.7,2.7 2.7,13.3 5.4,13.3 5.4,15 1,15 1,13.6 1,13.3 1,2.7 1,2.2 1,1 "/>
-        <polygon class="st0" points="8.9,8.5 10.8,4.5 8.5,4.5 7.7,6.6 6.3,4.5 3.8,4.5 8.5,12.4 11.3,12.4 "/>
-    </g>
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <polygon fill="#6C707E" points="10.7,1 10.7,2.3 13.7,2.3 13.7,13.7 10.7,13.7 10.7,15 15.1,15 15.1,13.6 15.1,13.3 15.1,2.7 15.1,2.2 15.1,1 "/>
+    <polygon fill="#6C707E" points="5.4,1 5.4,2.3 2.3,2.3 2.3,13.7 5.4,13.7 5.4,15 1,15 1,13.6 1,13.3 1,2.7 1,2.2 1,1 "/>
+    <polygon fill="#6C707E" points="8.9,8.5 10.8,4.5 8.5,4.5 7.7,6.6 6.3,4.5 3.8,4.5 8.5,12.4 11.3,12.4 "/>
 </svg>
