@@ -26,7 +26,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.ui.UIUtil;
+import com.intellij.util.ui.ImageUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -166,7 +166,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         builder.append(moduleDescriptor.getName());
 
         final Font font = getComponent().getFont();
-        final BufferedImage img = UIUtil.createImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage img = ImageUtil.createImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         final FontMetrics fm = img.getGraphics().getFontMetrics(font);
 
         final int currentWidth = fm.stringWidth(builder.toString());
