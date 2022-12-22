@@ -15,7 +15,7 @@
 
     <description>
         <![CDATA[
-          <p>This plugin is a plugin for SAP Commerce integration.</p>
+          <p>This plugin is a plugin for SAP Commerce Cloud integration.</p>
 
           <b>If you have any questions you can send an email to:</b>
           <ul>
@@ -88,10 +88,13 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Introduction the Type System Management - the powerful tool to observe SAP Commerce Cloud type system </li>
-                <li> Improved performance of the items.xml inspection </li>
-                <li> Extended/refactored type system rules </li>
-                <li> Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions </li>
+                <li> Introduction the Bean System Management - the powerful tool to observe SAP Commerce Cloud bean system </li>
+                <li> Added new beans.xml inspection rules </li>
+                <li> Added extra visibility filters for Type System view </li>
+                <li> Inspection for beans.xml rely on whole Bean System, not only current file </li>
+                <li> Decreased usage of the Deprecated API </li>
+                <li> Fixed: Business Process Diagram action is not visible </li>
+                <li> Fixed: Impex config processor inspection rule </li>
             </ul>
           ]]>
     </change-notes>

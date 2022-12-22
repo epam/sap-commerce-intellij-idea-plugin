@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener
-import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexEditorFactoryListener
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexPsiTreeChangeListener
 import com.intellij.openapi.Disposable
@@ -27,10 +26,9 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
-import com.intellij.openapi.startup.StartupManager
 import com.intellij.psi.PsiManager
 
-class ImpexHeaderHighlighterStartupActivity : StartupActivity, Disposable {
+class ImpexHeaderHighlighterStartupActivity : StartupActivity.DumbAware, Disposable {
 
     override fun runActivity(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
@@ -39,14 +37,11 @@ class ImpexHeaderHighlighterStartupActivity : StartupActivity, Disposable {
 
         val disposable = this;
 
-        StartupManager.getInstance(project).runAfterOpened {
-            val eventFactory = EditorFactory.getInstance()
+        val eventFactory = EditorFactory.getInstance()
 
-            PsiManager.getInstance(project).addPsiTreeChangeListener(ImpexPsiTreeChangeListener(), disposable)
-            eventFactory.addEditorFactoryListener(ImpexEditorFactoryListener(), disposable)
-            eventFactory.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener(), disposable)
-            eventFactory.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener(), disposable)
-        }
+        PsiManager.getInstance(project).addPsiTreeChangeListener(ImpexPsiTreeChangeListener(), disposable)
+        eventFactory.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener(), disposable)
+        eventFactory.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener(), disposable)
     }
 
     override fun dispose() {

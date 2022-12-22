@@ -15,43 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+package com.intellij.idea.plugin.hybris.startup.event
+
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisItemsXmlFileType
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.type.system.validation.ItemsFileValidation
 import com.intellij.idea.plugin.hybris.type.system.validation.impl.DefaultItemsFileValidation
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
-import com.intellij.psi.search.FileTypeIndex
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.openapi.startup.StartupManager
+import com.intellij.openapi.vfs.VirtualFile
 
+class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
+    private val validator: ItemsFileValidation
 
-class ItemsXmlFileOpenStartupActivity : StartupActivity {
+    init {
+        validator = DefaultItemsFileValidation(project)
+    }
 
-    override fun runActivity(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
-
-        val isOutdated = FileTypeIndex.getFiles(
-            HybrisItemsXmlFileType.INSTANCE,
-            GlobalSearchScope.projectScope(project)
-        )
-            .any { file -> DefaultItemsFileValidation(project).isFileOutOfDate(file) }
-        if (isOutdated) {
+    override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+        if (validator.isFileOutOfDate(file)) {
             Notifications.create(
                 NotificationType.WARNING,
                 HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
                 HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
             )
-                .important(true)
                 .delay(10)
                 .notify(project)
         }
     }
-
 }
