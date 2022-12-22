@@ -43,10 +43,10 @@ class TSViewSettings(private val myProject: Project) : PersistentStateComponent<
         myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType)
     }
 
-    fun isShowOnlyCustom(): Boolean = mySettings.showCustomOnly
+    fun isShowOnlyCustom(): Boolean = mySettings.showOnlyCustom
 
     fun setShowOnlyCustom(state: Boolean) {
-        mySettings.showCustomOnly = state
+        mySettings.showOnlyCustom = state
     }
 
     fun isShowMetaItems(): Boolean = mySettings.showMetaItems
@@ -89,7 +89,7 @@ class TSViewSettings(private val myProject: Project) : PersistentStateComponent<
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
 
     class Settings {
-        var showCustomOnly = false
+        var showOnlyCustom = false
         var showMetaItems = true
         var showMetaRelations = true
         var showMetaEnums = true
@@ -99,7 +99,7 @@ class TSViewSettings(private val myProject: Project) : PersistentStateComponent<
     }
 
     enum class ChangeType {
-        FULL
+        FULL,UPDATE
     }
 
     interface Listener {

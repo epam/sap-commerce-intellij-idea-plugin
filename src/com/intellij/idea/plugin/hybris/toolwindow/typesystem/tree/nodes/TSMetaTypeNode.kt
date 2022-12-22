@@ -57,19 +57,19 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     }
 
     override fun getChildren(): Collection<TSNode?> {
-        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val settings = TSViewSettings.getInstance(myProject)
 
         return TSMetaModelAccess.getInstance(myProject).getMetaModel()
             .getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType).values
-            .filter { if (showOnlyCustom) it.isCustom else true }
+            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
             .map {
                 when (it) {
-                    is TSGlobalMetaItem -> TSMetaItemNode(this, it)
-                    is TSGlobalMetaEnum -> TSMetaEnumNode(this, it)
-                    is TSGlobalMetaRelation -> TSMetaRelationNode(this, it)
-                    is TSGlobalMetaCollection -> TSMetaCollectionNode(this, it)
-                    is TSGlobalMetaAtomic -> TSMetaAtomicNode(this, it)
-                    is TSGlobalMetaMap -> TSMetaMapNode(this, it)
+                    is TSGlobalMetaItem -> if (settings.isShowMetaItems()) TSMetaItemNode(this, it) else null
+                    is TSGlobalMetaEnum -> if (settings.isShowMetaEnums()) TSMetaEnumNode(this, it) else null
+                    is TSGlobalMetaRelation -> if (settings.isShowMetaRelations()) TSMetaRelationNode(this, it) else null
+                    is TSGlobalMetaCollection -> if (settings.isShowMetaCollections()) TSMetaCollectionNode(this, it) else null
+                    is TSGlobalMetaAtomic -> if (settings.isShowMetaAtomics()) TSMetaAtomicNode(this, it) else null
+                    is TSGlobalMetaMap -> if (settings.isShowMetaMaps()) TSMetaMapNode(this, it) else null
                     else -> null
                 }
             }

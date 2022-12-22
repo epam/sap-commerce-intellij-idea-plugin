@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.view
 
+import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -62,18 +64,22 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         })
     }
 
-    private fun initItemsViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
-        isPopup = true
+    private fun initItemsViewActionGroup(): DefaultActionGroup = with(
+        DefaultActionGroup(
+            message("hybris.toolwindow.action.view_options.text"),
+            true
+        )
+    ) {
+        templatePresentation.icon = AllIcons.Actions.Show
 
-
+        addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
-        addSeparator()
-//        add(ShowMetaItemsAction(mySettings))
-//        add(ShowMetaEnumsAction(mySettings))
-//        add(ShowMetaCollectionsAction(mySettings))
-//        add(ShowMetaMapsAction(mySettings))
-//        add(ShowMetaRelationsAction(mySettings))
-//        add(ShowMetaAtomicsAction(mySettings))
+        add(ShowMetaAtomicsAction(mySettings))
+        add(ShowMetaEnumsAction(mySettings))
+        add(ShowMetaCollectionsAction(mySettings))
+        add(ShowMetaMapsAction(mySettings))
+        add(ShowMetaRelationsAction(mySettings))
+        add(ShowMetaItemsAction(mySettings))
         this
     }
 

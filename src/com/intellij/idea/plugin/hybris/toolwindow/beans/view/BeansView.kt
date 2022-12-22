@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.beans.view
 
+import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.toolwindow.beans.components.BeansTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -62,13 +64,20 @@ class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Di
         })
     }
 
-    private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup()) {
-        isPopup = true
+    private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup(
+        HybrisI18NBundleUtils.message("hybris.toolwindow.action.view_options.text"),
+        true
+    )) {
+        templatePresentation.icon = AllIcons.Actions.Show
 
+        addSeparator(HybrisI18NBundleUtils.message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
         add(ShowOnlyDeprecatedAction(mySettings))
-        addSeparator()
         this
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = 5943815445616586522L
     }
 
 }

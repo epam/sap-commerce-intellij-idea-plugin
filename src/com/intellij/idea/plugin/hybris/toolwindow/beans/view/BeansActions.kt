@@ -18,12 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.beans.view
 
-import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
-class ShowOnlyCustomAction(val settings: BeansViewSettings) : ToggleAction("Show Only Custom", "Will exclude beans defined outside of the current project", null) {
+class ShowOnlyCustomAction(val settings: BeansViewSettings) : ToggleAction(
+    message("hybris.toolwindow.action.only_custom.text"),
+    message("hybris.toolwindow.beans.action.only_custom.description"),
+    null
+) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
 
@@ -35,7 +39,11 @@ class ShowOnlyCustomAction(val settings: BeansViewSettings) : ToggleAction("Show
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowOnlyDeprecatedAction(val settings: BeansViewSettings) : ToggleAction("Show Only Deprecated", "Will include only deprecated beans", null) {
+class ShowOnlyDeprecatedAction(val settings: BeansViewSettings) : ToggleAction(
+    message("hybris.toolwindow.beans.action.only_deprecated.text"),
+    message("hybris.toolwindow.beans.action.only_deprecated.description"),
+    null
+) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyDeprecated()
 

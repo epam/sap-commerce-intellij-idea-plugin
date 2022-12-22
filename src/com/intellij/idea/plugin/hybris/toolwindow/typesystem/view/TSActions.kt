@@ -19,11 +19,12 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.view
 
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
-class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show Only Custom", "Will exclude types defined outside of the current project", null) {
+class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.action.only_custom.text"), message("hybris.toolwindow.ts.action.only_custom.description"), null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
 
@@ -35,56 +36,74 @@ class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction("Show On
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction("Show Items", null, AllIcons.Actions.GroupByClass) {
+class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, AllIcons.Actions.GroupByClass) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItems()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaItems(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaItems(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction("Show Maps", null, AllIcons.Actions.GroupByPackage) {
+class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, AllIcons.Actions.GroupByPackage) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaMaps()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaMaps(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaMaps(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction("Show Enums", null, AllIcons.Actions.GroupByTestProduction) {
+class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, AllIcons.Actions.GroupByTestProduction) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnums()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaEnums(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaEnums(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction("Show Collections", null, AllIcons.Actions.GroupByPrefix) {
+class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, AllIcons.Actions.GroupByPrefix) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaCollections()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaCollections(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaCollections(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction("Show Relations", null, AllIcons.Actions.GroupByModuleGroup) {
+class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, AllIcons.Actions.GroupByModuleGroup) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaRelations()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaRelations(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaRelations(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction("Show Atomics", null, AllIcons.Actions.GroupByModule) {
+class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, AllIcons.Actions.GroupByModule) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaAtomics()
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) = settings.setShowMetaAtomics(state)
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaAtomics(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
