@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.service
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -28,10 +29,10 @@ import java.util.function.BiFunction;
 
 public class DefaultRegionService implements RegionService {
 
-    private HybrisConsoleRegionsCache cache;
+    private final HybrisConsoleRegionsCache cache;
 
-    public DefaultRegionService(HybrisConsoleRegionsCache cache) {
-        this.cache = cache;
+    public DefaultRegionService(final Project project) {
+        this.cache = HybrisConsoleRegionsCache.getInstance(project);
     }
 
     @Override

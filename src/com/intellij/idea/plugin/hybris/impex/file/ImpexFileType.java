@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.file;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.lang.Language;
@@ -50,7 +51,7 @@ public class ImpexFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Impex";
+        return HybrisConstants.IMPEX;
     }
 
     @NotNull
@@ -62,7 +63,7 @@ public class ImpexFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "impex";
+        return HybrisConstants.IMPEX_FILE_EXTENSION;
     }
 
     @Nullable

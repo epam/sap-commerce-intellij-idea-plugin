@@ -18,17 +18,19 @@
 
 package com.intellij.idea.plugin.hybris.impex;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.lang.Language;
 
 public class ImpexLanguage extends Language {
 
     private static final ImpexLanguage INSTANCE = new ImpexLanguage();
+    private static final long serialVersionUID = -6312784074276675105L;
 
     public static ImpexLanguage getInstance() {
         return INSTANCE;
     }
 
     protected ImpexLanguage() {
-        super("Impex");
+        super(HybrisConstants.IMPEX);
     }
 }

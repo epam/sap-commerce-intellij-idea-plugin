@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.HighlighterColors;
@@ -177,6 +178,6 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDisplayName() {
-        return "Impex";
+        return HybrisConstants.IMPEX;
     }
 }

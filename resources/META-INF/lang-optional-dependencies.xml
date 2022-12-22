@@ -203,10 +203,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
 
-        <defaultLiveTemplatesProvider
-            implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexTemplateProvider"/>
-        <liveTemplateContext implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
-
+        <defaultLiveTemplates file="liveTemplates/Impex.xml"/>
+        <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
 
         <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>
         <renamePsiElementProcessor

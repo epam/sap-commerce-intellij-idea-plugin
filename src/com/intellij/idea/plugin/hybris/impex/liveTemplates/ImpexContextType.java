@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.liveTemplates;
 
 import com.intellij.codeInsight.template.FileTypeBasedContextType;
-import com.intellij.codeInsight.template.TemplateContextType;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.psi.PsiFile;
@@ -32,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 public class ImpexContextType extends FileTypeBasedContextType {
 
     protected ImpexContextType() {
-        super("IMPEX", "Impex", ImpexFileType.getInstance());
+        super("Impex", ImpexFileType.getInstance());
     }
 
     @Override

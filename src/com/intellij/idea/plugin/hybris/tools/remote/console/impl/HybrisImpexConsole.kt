@@ -102,7 +102,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         return HybrisHacHttpClient.getInstance(project).importImpex(project, settings)
     }
 
-    override fun title(): String = "Impex"
+    override fun title(): String = HybrisConstants.IMPEX
 
     override fun tip(): String = "Impex Console"
 

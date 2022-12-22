@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.impex.formatting;
 import com.intellij.application.options.CodeStyleAbstractConfigurable;
 import com.intellij.application.options.CodeStyleAbstractPanel;
 import com.intellij.application.options.TabbedLanguageCodeStylePanel;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.openapi.options.Configurable;
 import com.intellij.psi.codeStyle.CodeStyleConfigurable;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
@@ -45,14 +45,14 @@ public class ImpexCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     @Nullable
     @Override
     public String getConfigurableDisplayName() {
-        return "Impex";
+        return HybrisConstants.IMPEX;
     }
 
     @NotNull
     @Override
     public CodeStyleConfigurable createConfigurable(@NotNull final CodeStyleSettings settings, @NotNull final CodeStyleSettings originalSettings) {
 
-        return new CodeStyleAbstractConfigurable(settings, originalSettings, "Impex") {
+        return new CodeStyleAbstractConfigurable(settings, originalSettings, HybrisConstants.IMPEX) {
 
             @Override
             protected CodeStyleAbstractPanel createPanel(final CodeStyleSettings settings) {

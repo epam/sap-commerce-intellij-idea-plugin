@@ -28,12 +28,12 @@ import java.nio.file.Path;
 
 public class DefaultJsonRegionPersistenceService implements RegionPersistenceService {
 
-    private Project project;
-    private RegionService regionService;
+    private final Project project;
+    private final RegionService regionService;
 
-    public DefaultJsonRegionPersistenceService(final RegionService regionService, final  Project project) {
+    public DefaultJsonRegionPersistenceService(final Project project) {
         this.project = project;
-        this.regionService = regionService;
+        this.regionService = RegionService.getInstance(project);
     }
 
     @Override

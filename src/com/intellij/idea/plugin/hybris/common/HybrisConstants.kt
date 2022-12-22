@@ -35,6 +35,7 @@ object HybrisConstants {
     const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
     const val IMPEX_CONSOLE_TITLE = "[y] Impex Console"
     const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
+    const val IMPEX = "Impex"
     const val IMPEX_FILE_EXTENSION = "impex"
 
     const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
