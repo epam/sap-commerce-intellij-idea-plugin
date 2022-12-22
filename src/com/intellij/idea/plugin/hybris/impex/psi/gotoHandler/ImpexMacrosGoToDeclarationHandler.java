@@ -53,7 +53,7 @@ public class ImpexMacrosGoToDeclarationHandler extends GotoDeclarationHandlerBas
         Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(originalFile).getValue();
         ImpexMacroDescriptor descriptor = cache.get(sourceElement.getText());
         if (descriptor != null) {
-            return descriptor.getPsiElement();
+            return descriptor.psiElement();
         }
         return null;
     }

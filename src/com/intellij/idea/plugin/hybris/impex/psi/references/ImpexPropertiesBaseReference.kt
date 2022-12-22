@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
@@ -48,7 +49,7 @@ class ImpexPropertiesBaseReference(private val prev: PsiElement?, current: PsiEl
 
     private fun getKey(prev: PsiElement?) =
             if (prev != null)
-                prev.text.replace("\$config", "") + element.text.replace("-", "")
+                prev.text.replace(HybrisConstants.IMPEX_CONFIG_PREFIX, "") + element.text.replace("-", "")
             else
                 element.text.replace("-", "")
 

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -33,13 +34,13 @@ abstract class ImpexMacrosValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(as
 
     override fun getReferences(): Array<PsiReference> {
         val prevLeaf = prevLeaf(this)
-        if (prevLeaf != null && prevLeaf.text.contains("\$config")) {
+        if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
             if (myReference == null) {
                 myReference = ImpexPropertiesBaseReference(prevLeaf, this)
             }
             return arrayOf(myReference!!)
         }
-        if (this.text.contains("\$config")) {
+        if (this.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
             if (myReference == null) {
                 myReference = ImpexPropertiesBaseReference(null, this)
             }

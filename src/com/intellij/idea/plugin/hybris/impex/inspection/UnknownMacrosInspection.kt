@@ -23,6 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils
 import com.intellij.idea.plugin.hybris.impex.psi.*
@@ -53,7 +54,7 @@ class UnknownMacrosInspection : LocalInspectionTool() {
 private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: HashMap<String, Boolean>) : ImpexVisitor() {
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
-        if (usage.text.startsWith("\$config-")) return
+        if (usage.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
         val macroName = usage.text
 
         if (macroName.isNotEmpty()) {

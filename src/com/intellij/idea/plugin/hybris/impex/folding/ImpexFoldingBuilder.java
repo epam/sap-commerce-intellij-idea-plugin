@@ -118,10 +118,10 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         String text = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
         String resolvedMacro = text;
         if (text.startsWith("$")) {
-            Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
-            ImpexMacroDescriptor descriptor = cache.get(text);
+            final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
+            final ImpexMacroDescriptor descriptor = cache.get(text);
             if (descriptor != null) {
-                resolvedMacro = descriptor.getResolvedValue();
+                resolvedMacro = descriptor.resolvedValue();
             }
         }
         if (resolvedMacro.length() <= text.length()) {

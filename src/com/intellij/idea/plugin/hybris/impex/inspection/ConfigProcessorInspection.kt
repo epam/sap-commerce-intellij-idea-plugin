@@ -22,9 +22,10 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.psi.PsiElementVisitor
@@ -48,29 +49,25 @@ class ConfigProcessorInspection : LocalInspectionTool() {
 private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
     override fun visitMacroDeclaration(declaration: ImpexMacroDeclaration) {
-        val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroValue::class.java)
-        if (macroValue != null) {
-            val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
-            if (prevLeaf != null && prevLeaf.text.contains("\$config")) {
-                val file = prevLeaf.containingFile
-                var isExist = false
-                PsiSearchHelper.getInstance(prevLeaf.project)
-                        .processElementsWithWord({ element, _ ->
-                            if (element.node.elementType != ImpexParserDefinition.FILE &&
-                                    element.node.elementType != ImpexTypes.LINE_COMMENT) {
-                                isExist = true
-                            };true
-                        }, GlobalSearchScope.fileScope(file),
-                                "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor",
-                                UsageSearchContext.ANY,
-                                true,
-                                false)
-                if (!isExist) {
-                    problemsHolder.registerProblem(macroValue,
-                            "Incorrect use of \$config macros - not defined ConfigPropertyImportProcessor",
-                            ProblemHighlightType.ERROR)
-                }
-
+        val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroUsageDec::class.java)
+        if (macroValue != null && macroValue.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
+            var isExist = false
+            PsiSearchHelper.getInstance(macroValue.project)
+                    .processElementsWithWord({ element, _ ->
+                        if (element.node.elementType != ImpexParserDefinition.FILE
+                            && element.node.elementType != ImpexTypes.LINE_COMMENT) {
+                            isExist = true
+                        }
+                        true
+                    }, GlobalSearchScope.fileScope(macroValue.containingFile),
+                            "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor",
+                            UsageSearchContext.ANY,
+                            true,
+                            false)
+            if (!isExist) {
+                problemsHolder.registerProblem(macroValue,
+                        "Incorrect use of ${HybrisConstants.IMPEX_CONFIG_PREFIX} macros - not defined ConfigPropertyImportProcessor",
+                        ProblemHighlightType.ERROR)
             }
         }
     }

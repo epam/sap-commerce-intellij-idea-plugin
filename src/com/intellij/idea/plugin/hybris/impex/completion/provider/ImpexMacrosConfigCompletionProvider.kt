@@ -23,6 +23,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
@@ -35,11 +36,10 @@ import com.intellij.util.ProcessingContext
  */
 class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    val configElement = "\$config-"
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val psiElementUnderCaret = parameters.position
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
-        if (prevLeaf != null && prevLeaf.text.contains(configElement)) {
+        if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val query = getQuery(position)
             val module = ModuleUtil.findModuleForPsiElement(position)
@@ -48,7 +48,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             }
         }
 
-        if (psiElementUnderCaret.text.contains(configElement)) {
+        if (psiElementUnderCaret.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val prefix = getPrefix(position)
             val query = position.text.substring(prefix.length).replace("IntellijIdeaRulezzz", "")
@@ -63,9 +63,9 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         .replace("IntellijIdeaRulezzz", "")
 
     private fun getPrefix(position: PsiElement): String {
-        var text = position.text
+        val text = position.text
 
-        val index = text.indexOf(configElement)
-        return text.substring(0, index + configElement.length)
+        val index = text.indexOf(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        return text.substring(0, index + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
     }
 }
