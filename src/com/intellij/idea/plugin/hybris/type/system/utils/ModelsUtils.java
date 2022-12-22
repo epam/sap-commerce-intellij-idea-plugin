@@ -39,9 +39,11 @@ public final class ModelsUtils {
             return true;
         }
 
-        final VirtualFile virtualFile = psiFile.getVirtualFile();
+        final VirtualFile virtualFile = psiFile.getVirtualFile() != null
+            ? psiFile.getVirtualFile()
+            : psiFile.getOriginalFile().getVirtualFile();
 
-        if (virtualFile.getExtension() == null) {
+        if (virtualFile == null || virtualFile.getExtension() == null) {
             return false;
         }
 

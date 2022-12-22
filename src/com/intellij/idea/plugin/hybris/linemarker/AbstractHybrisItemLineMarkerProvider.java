@@ -24,11 +24,13 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.xml.XmlElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -55,24 +57,30 @@ public abstract class AbstractHybrisItemLineMarkerProvider<T extends PsiElement>
         @NotNull final PsiElement element,
         @NotNull final Collection<? super RelatedItemLineMarkerInfo<?>> result
     ) {
-        if (!isPlatformModule(element)) {
-            return;
-        }
+        if (!canProcess(element)) return;
 
-        if (canProcess(element)) {
-            collectDeclarations((T) element)
-                .ifPresent(result::add);
-        }
+        final var module = getModule(element);
+        if (module == null || !isPlatformModule(module)) return;
+
+        collectDeclarations((T) element)
+            .ifPresent(result::add);
     }
 
-    private static boolean isPlatformModule(final @NotNull PsiElement element) {
-        final var pf = element.getContainingFile();
-        final var vf = pf.getVirtualFile();
-        final var p = pf.getProject();
-        final var module = ModuleUtilCore.findModuleForFile(vf, p);
+    private static boolean isPlatformModule(final @NotNull Module module) {
+        return Objects.equals(HybrisModuleDescriptor.getDescriptorType(module), HybrisModuleDescriptorType.PLATFORM);
+    }
 
-        return module != null
-               && Objects.equals(HybrisModuleDescriptor.getDescriptorType(module), HybrisModuleDescriptorType.PLATFORM);
+    @Nullable
+    private static Module getModule(final @NotNull PsiElement element) {
+        final var pf = element.getContainingFile();
+        final var p = pf.getProject();
+        var vf = pf.getVirtualFile();
+
+        if (vf == null) {
+            vf = pf.getOriginalFile().getVirtualFile();
+        }
+
+        return ModuleUtilCore.findModuleForFile(vf, p);
     }
 
     protected abstract boolean canProcess(final PsiElement psi);
