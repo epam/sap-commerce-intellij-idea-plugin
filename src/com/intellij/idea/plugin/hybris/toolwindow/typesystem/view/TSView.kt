@@ -19,14 +19,20 @@
 package com.intellij.idea.plugin.hybris.toolwindow.typesystem.view
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.IdeBundle
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.toolwindow.typesystem.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.components.JBLabel
+import com.intellij.ui.components.JBPanel
+import java.awt.GridBagLayout
 
 class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
@@ -39,12 +45,21 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     init {
-        setContent(myTreePane);
-
-        Disposer.register(this, myTreePane)
-
         installToolbar()
-        installSettingsListener()
+
+        if (DumbService.isDumb(myProject)) {
+            val panel = JBPanel<JBPanel<*>>(GridBagLayout())
+            panel.add(JBLabel(message("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+            setContent(panel)
+        }
+
+        DumbService.getInstance(myProject).runWhenSmart {
+            setContent(myTreePane);
+
+            Disposer.register(this, myTreePane)
+
+            installSettingsListener()
+        }
     }
 
     private fun installToolbar() {

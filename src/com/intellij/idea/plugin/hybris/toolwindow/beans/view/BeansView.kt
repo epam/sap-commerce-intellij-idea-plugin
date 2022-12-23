@@ -19,14 +19,22 @@
 package com.intellij.idea.plugin.hybris.toolwindow.beans.view
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.toolwindow.beans.components.BeansTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.components.JBLabel
+import com.intellij.ui.components.JBPanel
+import java.awt.BorderLayout
+import java.awt.GridBagLayout
+import java.awt.GridLayout
 
 class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
@@ -39,12 +47,21 @@ class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Di
     }
 
     init {
-        setContent(myTreePane);
-
-        Disposer.register(this, myTreePane)
-
         installToolbar()
-        installSettingsListener()
+
+        if (DumbService.isDumb(myProject)) {
+            val panel = JBPanel<JBPanel<*>>(GridBagLayout())
+            panel.add(JBLabel(message("hybris.toolwindow.beans.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+            setContent(panel)
+        }
+
+        DumbService.getInstance(myProject).runWhenSmart {
+            setContent(myTreePane);
+
+            Disposer.register(this, myTreePane)
+
+            installSettingsListener()
+        }
     }
 
     private fun installToolbar() {
@@ -64,13 +81,15 @@ class BeansView(val myProject: Project) : SimpleToolWindowPanel(false, true), Di
         })
     }
 
-    private fun initBeansViewActionGroup(): DefaultActionGroup = with(DefaultActionGroup(
-        HybrisI18NBundleUtils.message("hybris.toolwindow.action.view_options.text"),
-        true
-    )) {
+    private fun initBeansViewActionGroup(): DefaultActionGroup = with(
+        DefaultActionGroup(
+            message("hybris.toolwindow.action.view_options.text"),
+            true
+        )
+    ) {
         templatePresentation.icon = AllIcons.Actions.Show
 
-        addSeparator(HybrisI18NBundleUtils.message("hybris.toolwindow.action.separator.show"))
+        addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
         add(ShowOnlyDeprecatedAction(mySettings))
         this

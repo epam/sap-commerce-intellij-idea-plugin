@@ -29,7 +29,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisTypeSystemView")
 @Storage(StoragePathMacros.WORKSPACE_FILE)
-class TSViewSettings(private val myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
+class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
 
     private val myMessageBus: MessageBus
     private val mySettings: Settings

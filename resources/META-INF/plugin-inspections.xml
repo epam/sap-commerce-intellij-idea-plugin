@@ -1,7 +1,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <!-- Beans System  -->
+        <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.beans.DuplicateBeanDefinition.key"
                          shortName="DuplicateBeanDefinition" level="WEAK WARNING"
