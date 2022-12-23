@@ -51,7 +51,6 @@ public class ImpexCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     @NotNull
     @Override
     public CodeStyleConfigurable createConfigurable(@NotNull final CodeStyleSettings settings, @NotNull final CodeStyleSettings originalSettings) {
-
         return new CodeStyleAbstractConfigurable(settings, originalSettings, HybrisConstants.IMPEX) {
 
             @Override

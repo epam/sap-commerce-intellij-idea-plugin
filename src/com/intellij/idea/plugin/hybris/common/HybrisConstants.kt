@@ -29,6 +29,8 @@ object HybrisConstants {
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce Cloud"
 
+    const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
+
     const val IMPEX_CONFIG_PREFIX = "\$config"
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX_CATALOG_VERSION_ONLINE = "Online"

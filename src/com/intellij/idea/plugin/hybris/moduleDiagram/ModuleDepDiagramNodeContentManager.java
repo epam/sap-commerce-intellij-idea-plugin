@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.moduleDiagram;
 
 import com.intellij.diagram.AbstractDiagramNodeContentManager;
+import com.intellij.diagram.DiagramBuilder;
 import com.intellij.diagram.DiagramCategory;
-import com.intellij.diagram.presentation.DiagramState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Eugene.Kudelevsky
@@ -29,9 +31,10 @@ public class ModuleDepDiagramNodeContentManager extends AbstractDiagramNodeConte
 
     @Override
     public boolean isInCategory(
-        final Object o,
-        final DiagramCategory diagramCategory,
-        final DiagramState diagramState
+        @Nullable final Object nodeElement,
+        @Nullable final Object item,
+        @NotNull final DiagramCategory category,
+        @Nullable final DiagramBuilder builder
     ) {
         return false;
     }

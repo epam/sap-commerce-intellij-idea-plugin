@@ -55,47 +55,56 @@ public class ModuleDepDiagramProvider extends DiagramProvider<ModuleDepDiagramIt
     }
 
     @Override
+    @NotNull
     public DiagramVisibilityManager createVisibilityManager() {
         return new ModuleDepDiagramVisibilityManager();
     }
 
     @Override
-    public DiagramNodeContentManager getNodeContentManager() {
+    @NotNull
+    public DiagramNodeContentManager createNodeContentManager() {
         return myNodeContentManager;
     }
 
     @Override
+    @NotNull
     public DiagramElementManager<ModuleDepDiagramItem> getElementManager() {
         return myElementManager;
     }
 
     @Override
+    @NotNull
     public DiagramVfsResolver<ModuleDepDiagramItem> getVfsResolver() {
         return myVfsResolver;
     }
 
     @Override
+    @NotNull
     public DiagramColorManager getColorManager() {
         return myColorManager;
     }
 
     @SuppressWarnings("unchecked")
     @Override
+    @NotNull
     public DiagramRelationshipManager<ModuleDepDiagramItem> getRelationshipManager() {
         return (DiagramRelationshipManager<ModuleDepDiagramItem>) DiagramRelationshipManager.NO_RELATIONSHIP_MANAGER;
     }
 
     @Override
+    @NotNull
     public String getPresentableName() {
         return HybrisI18NBundleUtils.message("hybris.module.dependencies.diagram.provider.name");
     }
 
     @Override
+    @NotNull
     public Icon getActionIcon(final boolean isPopup) {
         return HybrisIcons.HYBRIS_ICON;
     }
 
     @Override
+    @NotNull
     public DiagramDataModel<ModuleDepDiagramItem> createDataModel(
         @NotNull final Project project,
         @Nullable final ModuleDepDiagramItem item,

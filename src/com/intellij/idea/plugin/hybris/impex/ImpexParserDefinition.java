@@ -93,7 +93,7 @@ public class ImpexParserDefinition implements ParserDefinition {
 
     @NotNull
     @Override
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
+    public SpaceRequirements spaceExistenceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
         return SpaceRequirements.MAY;
     }
 

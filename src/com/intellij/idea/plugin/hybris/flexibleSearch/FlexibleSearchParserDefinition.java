@@ -78,7 +78,9 @@ public class FlexibleSearchParserDefinition implements ParserDefinition {
         return new FlexibleSearchFile(viewProvider);
     }
 
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    @Override
+    @NotNull
+    public SpaceRequirements spaceExistenceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
         return SpaceRequirements.MAY;
     }
 

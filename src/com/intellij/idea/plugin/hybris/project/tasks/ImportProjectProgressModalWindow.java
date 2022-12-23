@@ -112,6 +112,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_WORDS;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
@@ -185,7 +186,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.disableWrapOnType(ImpexLanguage.getInstance());
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
-        if ("Ultimate Edition".equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
+        if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.facets"));
             if (isPluginActive(SPRING_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
@@ -467,7 +468,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
 
-        StartupManager.getInstance(project).runWhenProjectIsInitialized(() -> {
+        StartupManager.getInstance(project).runAfterOpened(() -> {
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
             project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
         });

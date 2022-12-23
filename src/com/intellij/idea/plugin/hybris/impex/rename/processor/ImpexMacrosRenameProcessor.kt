@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
@@ -38,10 +39,9 @@ class ImpexMacrosRenameProcessor : RenamePsiElementProcessor() {
         return element is ImpexMacroNameDec || element is ImpexMacroUsageDec
     }
 
-    override fun findReferences(element: PsiElement): MutableCollection<PsiReference?> {
+    override fun findReferences(element: PsiElement, searchScope: SearchScope, searchInCommentsAndStrings: Boolean): MutableCollection<PsiReference> {
         val file = element.containingFile
-        val psiElements = PsiTreeUtil.collectElements(
-                file, { el -> (el is ImpexMacroNameDec || el is ImpexMacroUsageDec) && el.text == element.text })
+        val psiElements = PsiTreeUtil.collectElements(file) { el -> (el is ImpexMacroNameDec || el is ImpexMacroUsageDec) && el.text == element.text }
 
         return psiElements.map { ImpexMacrosReferenceBase(it) }.toMutableList()
     }

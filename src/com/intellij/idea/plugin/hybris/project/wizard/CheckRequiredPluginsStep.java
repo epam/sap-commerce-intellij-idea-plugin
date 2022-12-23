@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IDEA_EDITION_ULTIMATE;
+
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 13/3/17.
  */
@@ -125,7 +127,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         if (!notEnabledPlugins.isEmpty()) {
             return true;
         }
-        if ("Ultimate Edition".equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
+        if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             return !notInstalledPlugins.isEmpty();
         }
         for (PluginId pluginId : notInstalledPlugins) {

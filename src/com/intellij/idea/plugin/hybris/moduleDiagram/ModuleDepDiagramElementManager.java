@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.moduleDiagram;
 
 import com.intellij.diagram.AbstractDiagramElementManager;
-import com.intellij.diagram.presentation.DiagramState;
+import com.intellij.diagram.DiagramBuilder;
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.ui.SimpleColoredText;
@@ -62,11 +62,14 @@ public class ModuleDepDiagramElementManager extends AbstractDiagramElementManage
         return element.toString();
     }
 
-    @Nullable
     @Override
-    public SimpleColoredText getItemName(final Object element, final DiagramState diagramState) {
-        return element instanceof ModuleDepDiagramItem
-            ? new SimpleColoredText(((ModuleDepDiagramItem) element).getName(), DEFAULT_TITLE_ATTR)
+    public @Nullable SimpleColoredText getItemName(
+        @Nullable final ModuleDepDiagramItem nodeElement,
+        @Nullable final Object nodeItem,
+        @NotNull final DiagramBuilder builder
+    ) {
+        return nodeElement != null
+            ? new SimpleColoredText(nodeElement.getName(), DEFAULT_TITLE_ATTR)
             : null;
     }
 

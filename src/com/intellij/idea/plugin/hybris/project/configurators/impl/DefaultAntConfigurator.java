@@ -358,6 +358,6 @@ public class DefaultAntConfigurator implements AntConfigurator {
         final ConfigurationFactory configurationFactory = antRunConfigurationType.getConfigurationFactories()[0];
         final RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
         final AntRunConfiguration runConfiguration = (AntRunConfiguration) template.getConfiguration();
-        runManager.setBeforeRunTasks(runConfiguration, Collections.<BeforeRunTask>emptyList(), false);
+        runManager.setBeforeRunTasks(runConfiguration, Collections.<BeforeRunTask>emptyList());
     }
 }

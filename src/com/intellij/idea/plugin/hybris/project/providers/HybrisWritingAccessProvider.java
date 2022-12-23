@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.providers;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -29,7 +28,6 @@ import com.intellij.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -64,7 +62,7 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
 
     @NotNull
     @Override
-    public Collection<VirtualFile> requestWriting(final VirtualFile... files) {
+    public Collection<VirtualFile> requestWriting(final Collection<? extends VirtualFile> files) {
         final List<VirtualFile> writingDenied = new ArrayList<>();
         for (VirtualFile file : files) {
             if (isFileReadOnly(file)) {

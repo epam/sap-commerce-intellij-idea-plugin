@@ -48,9 +48,9 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
     @Override
     public void configure(
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final HybrisConfiguratorCache cache
+        final HybrisConfiguratorCache cache
     ) {
 
         final RunManager runManager = RunManager.getInstance(project);
@@ -65,23 +65,24 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
             RemoteConfigurationType.class);
         final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
-        final String configurationName = HybrisI18NBundleUtils.message(
-            "hybris.project.import.run.configuration.remote.debug");
+        final String configurationName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug");
 
         if (runManager.findConfigurationByName(configurationName) != null) {
             return;
         }
-        final RunnerAndConfigurationSettings runner = runManager.createRunConfiguration(
+        final RunnerAndConfigurationSettings runner = runManager.createConfiguration(
             configurationName,
             configurationFactory
         );
+
         final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
         remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
+        remoteConfiguration.setAllowRunningInParallel(false);
 
         ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
-            runner.setSingleton(true);
             runner.setActivateToolWindowBeforeRun(true);
-            runManager.addConfiguration(runner, true);
+            runner.storeInDotIdeaFolder();
+            runManager.addConfiguration(runner);
             runManager.setSelectedConfiguration(runner);
         }));
     }
@@ -129,7 +130,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final Optional<String> transport = Arrays.stream(debugOptions.split(" "))
                                                  .filter(e -> e.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT))
                                                  .findAny();
-        if (!transport.isPresent()) {
+        if (transport.isEmpty()) {
             return null;
         }
         final Optional<String> address = Arrays.stream(transport.get().split(","))

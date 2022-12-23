@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -147,15 +148,15 @@ public interface MavenUtils {
                     );
                     if (downloadDocs) {
                         for (final MavenId resolvedDoc : downloadResult.resolvedDocs) {
-                            final File libFile = getArtifactLib(manager, resolvedDoc);
-                            final String resultJarPath = libFile.getAbsolutePath().replace(".jar", "-javadoc.jar");
+                            final Path libFile = getArtifactLib(manager, resolvedDoc);
+                            final String resultJarPath = libFile.toAbsolutePath().toString().replace(".jar", "-javadoc.jar");
                             resultPathList.add(resultJarPath);
                         }
                     }
                     if (downloadSources) {
                         for (final MavenId resolvedDoc : downloadResult.resolvedSources) {
-                            final File libFile = getArtifactLib(manager, resolvedDoc);
-                            final String resultJarPath = libFile.getAbsolutePath().replace(".jar", "-sources.jar");
+                            final Path libFile = getArtifactLib(manager, resolvedDoc);
+                            final String resultJarPath = libFile.toAbsolutePath().toString().replace(".jar", "-sources.jar");
                             resultPathList.add(resultJarPath);
                         }
                     }
@@ -170,9 +171,9 @@ public interface MavenUtils {
     }
 
     @NotNull
-    static File getArtifactLib(final MavenProjectsManager manager, final MavenId resolvedDoc) {
+    static Path getArtifactLib(final MavenProjectsManager manager, final MavenId resolvedDoc) {
         return MavenArtifactUtil
-            .getArtifactFile(
+            .getArtifactNioPath(
                 manager.getLocalRepository(),
                 resolvedDoc.getGroupId(),
                 resolvedDoc.getArtifactId(),

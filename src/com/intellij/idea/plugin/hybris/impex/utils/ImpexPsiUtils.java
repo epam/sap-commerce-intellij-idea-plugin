@@ -39,7 +39,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
-import com.intellij.util.containers.Predicate;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Created 22:43 01 January 2015
@@ -167,7 +167,7 @@ public final class ImpexPsiUtils {
             return null;
         } else {
             for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
-                if (predicate.apply(child)) {
+                if (predicate.test(child)) {
                     return child;
                 }
             }
