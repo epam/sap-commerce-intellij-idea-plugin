@@ -91,10 +91,13 @@
                 <li> Introduction the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
                 <li> Added new beans.xml inspection rules </li>
                 <li> Added extra visibility filters for Type System view </li>
+                <li> Added <strong>dynamic</strong> prefix getters/setters in the Java classes </li>
+                <li> Added <strong>dynamic</strong> flag for attribute suggestions in the impex files </li>
                 <li> Inspection for beans.xml rely on whole Bean System, not only current file </li>
                 <li> Decreased usage of the Deprecated API </li>
                 <li> Fixed: Business Process Diagram action is not visible </li>
                 <li> Fixed: Impex config processor inspection rule </li>
+                <li> Fixed: Default values for Type System modifiers </li>
             </ul>
           ]]>
     </change-notes>
