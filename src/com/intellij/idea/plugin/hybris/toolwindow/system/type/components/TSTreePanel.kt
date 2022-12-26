@@ -24,9 +24,9 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.type.system.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.type.system.meta.TSChangeListener
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
@@ -53,7 +53,8 @@ class TSTreePanel(
 
         myTree.addTreeSelectionListener(myTreeSelectionListener)
 
-        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
+        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object :
+            TSChangeListener {
             override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                 secondComponent = myDefaultPanel;
                 myTree.update(TSViewSettings.ChangeType.FULL)

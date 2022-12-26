@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaSelfMerge
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService

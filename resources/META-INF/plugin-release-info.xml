@@ -88,7 +88,7 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Introduction the Bean System Management - the powerful tool to observe SAP Commerce Cloud bean system </li>
+                <li> Introduction the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
                 <li> Added new beans.xml inspection rules </li>
                 <li> Added extra visibility filters for Type System view </li>
                 <li> Inspection for beans.xml rely on whole Bean System, not only current file </li>

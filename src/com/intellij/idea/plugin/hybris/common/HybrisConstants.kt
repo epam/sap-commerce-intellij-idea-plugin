@@ -27,7 +27,7 @@ import java.io.File
  */
 object HybrisConstants {
 
-    const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce Cloud"
+    const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 
     const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
 

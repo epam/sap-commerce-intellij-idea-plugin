@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.psi.references;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;

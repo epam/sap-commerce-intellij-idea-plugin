@@ -3,10 +3,10 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute
-import com.intellij.idea.plugin.hybris.type.system.model.RelationElement
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference

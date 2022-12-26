@@ -20,11 +20,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.type.system.model.Cardinality;
-import com.intellij.idea.plugin.hybris.type.system.model.RelationElement;
-import com.intellij.idea.plugin.hybris.type.system.model.Type;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.system.type.model.Cardinality;
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement;
+import com.intellij.idea.plugin.hybris.system.type.model.Type;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;

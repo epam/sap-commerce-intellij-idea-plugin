@@ -1,9 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.type.system.inspections.XPathService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.type.system.inspections.DefaultXPathService"/>
-
     </extensions>
 
 </idea-plugin>

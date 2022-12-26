@@ -27,7 +27,7 @@ import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "HybrisBeansView")
+@State(name = "HybrisBSView")
 @Storage(StoragePathMacros.WORKSPACE_FILE)
 class BSViewSettings(private val myProject: Project) : PersistentStateComponent<BSViewSettings.Settings> {
 

@@ -20,13 +20,12 @@ package com.intellij.idea.plugin.hybris.startup.event
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.type.system.validation.ItemsFileValidation
-import com.intellij.idea.plugin.hybris.type.system.validation.impl.DefaultItemsFileValidation
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation
+import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupManager
 import com.intellij.openapi.vfs.VirtualFile
 
 class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {

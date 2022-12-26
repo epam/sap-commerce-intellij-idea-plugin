@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaAtomic
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaAtomic
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes

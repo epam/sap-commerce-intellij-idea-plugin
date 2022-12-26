@@ -23,11 +23,11 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeReso
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;

@@ -23,13 +23,13 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveRe
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult;
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase;
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaRelation;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaItem;
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
-import com.intellij.idea.plugin.hybris.type.system.model.Relation;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem;
+import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
+import com.intellij.idea.plugin.hybris.system.type.model.Relation;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 

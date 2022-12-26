@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references.result
 
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.model.Relation
+import com.intellij.idea.plugin.hybris.system.type.model.Relation
 
 class RelationResolveResult(private val myDom: Relation) :
     TSReferenceBase.TSResolveResult {

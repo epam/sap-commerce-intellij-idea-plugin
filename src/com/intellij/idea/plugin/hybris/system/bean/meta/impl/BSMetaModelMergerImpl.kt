@@ -31,7 +31,7 @@ class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
 
     override fun merge(localMetaModels: Collection<BSMetaModel>) = with(BSGlobalMetaModel()) {
         localMetaModels
-            // ideally we have to get the same dependency order as SAP Commerce Cloud
+            // ideally we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
 

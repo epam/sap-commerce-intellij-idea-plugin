@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProperty
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 

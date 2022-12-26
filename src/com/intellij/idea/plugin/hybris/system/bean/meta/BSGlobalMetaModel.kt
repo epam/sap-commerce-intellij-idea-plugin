@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.bean.meta
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.openapi.Disposable
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap

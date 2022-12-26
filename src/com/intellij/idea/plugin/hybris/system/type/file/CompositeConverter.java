@@ -1,0 +1,117 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.intellij.idea.plugin.hybris.system.type.file;
+
+import com.intellij.psi.PsiDocCommentOwner;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.xml.ConvertContext;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.ResolvingConverter;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
+
+    private final TSConverterBase<? extends DOM>[] myDelegates;
+
+    public CompositeConverter(TSConverterBase<? extends DOM>... converters) {
+        myDelegates = converters;
+    }
+
+    @Override
+    public boolean canResolveTo(final Class<? extends PsiElement> elementClass) {
+        return !PsiDocCommentOwner.class.isAssignableFrom(elementClass);
+    }
+
+    @NotNull
+    @Override
+    public Collection<? extends DOM> getVariants(final ConvertContext context) {
+        final List<DOM> result = new LinkedList<>();
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
+            result.addAll(next.getVariants(context));
+        }
+        return result;
+    }
+
+    @Nullable
+    @Override
+    public DOM fromString(
+        @Nullable @NonNls final String s, final ConvertContext context
+    ) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
+            final DOM nextResult = next.fromString(s, context);
+            if (nextResult != null) {
+                return nextResult;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String toString(@Nullable final DOM t, final ConvertContext context) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
+            final String nextToString = next.tryToString(t, context);
+            if (nextToString != null) {
+                return nextToString;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getPsiElement(@Nullable final DOM resolvedValue) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
+            if (next.getResolvesToClass().isInstance(resolvedValue)) {
+                final PsiElement nextResult = next.tryGetPsiElement(resolvedValue);
+                if (nextResult != null) {
+                    return nextResult;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static class TypeOrEnum extends CompositeConverter<DomElement> {
+
+        public TypeOrEnum() {
+            super(new EnumTypeConverter(), new ItemTypeConverter());
+        }
+    }
+
+    public static class AnyClassifier extends CompositeConverter<DomElement> {
+
+        public AnyClassifier() {
+            super(
+                new EnumTypeConverter(),
+                new ItemTypeConverter(),
+                new CollectionTypeConverter(),
+                new AtomicTypeConverter(),
+                new MapTypeConverter()
+            );
+        }
+
+    }
+}

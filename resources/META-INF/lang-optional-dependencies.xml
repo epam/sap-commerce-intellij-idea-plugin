@@ -19,9 +19,9 @@
 <idea-plugin>
 
     <applicationListeners>
-        <listener class="com.intellij.idea.plugin.hybris.type.system.vfs.listeners.TSBulkFileListener"
+        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-        <listener class="com.intellij.idea.plugin.hybris.system.bean.vfs.listeners.BSBulkFileListener"
+        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.BSBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
@@ -38,29 +38,29 @@
         <!-- ####################################################################################################### -->
 
         <dom.fileMetaData rootTagName="items" stubVersion="22"
-            implementation="com.intellij.idea.plugin.hybris.type.system.file.TSDomFileDescription"/>
+            implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
 
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSItemTypeGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.annotators.BSEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.annotators.BSBeanGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.annotators.TSItemTypeGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.annotators.TSEnumGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.annotators.BSEnumGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.annotators.BSBeanGutterAnnotator"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelProcessor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelProcessorImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelProcessorImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelCollector"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelCollectorImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelCollectorImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelMerger"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelMergerImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelMergerImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaItemServiceImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
 
-        <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.type.system.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
+        <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.system.type.structure.view.TSXmlStructureViewBuilderProvider" order="first"/>
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
 
         <!-- ####################################################################################################### -->

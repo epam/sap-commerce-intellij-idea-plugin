@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisItemsXmlFileType
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.type.system.validation.impl.DefaultItemsFileValidation
+import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project

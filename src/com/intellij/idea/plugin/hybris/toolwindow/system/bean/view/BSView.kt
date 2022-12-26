@@ -48,7 +48,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
 
         if (DumbService.isDumb(myProject)) {
             val panel = JBPanel<JBPanel<*>>(GridBagLayout())
-            panel.add(JBLabel(message("hybris.toolwindow.beans.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+            panel.add(JBLabel(message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
             setContent(panel)
         }
 
@@ -64,7 +64,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
             add(myBeansViewActionGroup)
-            ActionManager.getInstance().createActionToolbar("HybrisBeansView", this, false)
+            ActionManager.getInstance().createActionToolbar("HybrisBSView", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)

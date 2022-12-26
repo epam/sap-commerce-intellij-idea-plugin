@@ -31,7 +31,7 @@ class HybrisDynamicAttributeInlayProvider : InlayHintsProvider<NoSettings> {
     override val previewText: String = """
 public void foo() {
   final CustomerModel customer = new CustomerModel();
-  customer.getAllGroups();
+  customer. `dynamic` getAllGroups();
   customer.getName();
 }
   """.trimIndent()

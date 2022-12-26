@@ -23,10 +23,10 @@ import com.intellij.codeInsight.completion.JavaMethodCallElement
 import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute
-import com.intellij.idea.plugin.hybris.type.system.model.PersistenceType
-import com.intellij.idea.plugin.hybris.type.system.utils.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
+import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement

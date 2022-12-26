@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaEnumValuesTable;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum;
+import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.ToolbarDecorator;

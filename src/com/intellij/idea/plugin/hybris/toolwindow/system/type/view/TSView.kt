@@ -64,7 +64,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
             add(myItemsViewActionGroup)
-            ActionManager.getInstance().createActionToolbar("HybrisTypeSystemView", this, false)
+            ActionManager.getInstance().createActionToolbar("HybrisTSView", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)

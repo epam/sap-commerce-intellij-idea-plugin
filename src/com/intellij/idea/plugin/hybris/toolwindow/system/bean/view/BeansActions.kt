@@ -25,7 +25,7 @@ import com.intellij.openapi.actionSystem.ToggleAction
 
 class ShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.action.only_custom.text"),
-    message("hybris.toolwindow.beans.action.only_custom.description"),
+    message("hybris.toolwindow.bs.action.only_custom.description"),
     null
 ) {
 
@@ -40,8 +40,8 @@ class ShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
 }
 
 class ShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
-    message("hybris.toolwindow.beans.action.only_deprecated.text"),
-    message("hybris.toolwindow.beans.action.only_deprecated.description"),
+    message("hybris.toolwindow.bs.action.only_deprecated.text"),
+    message("hybris.toolwindow.bs.action.only_deprecated.description"),
     null
 ) {
 

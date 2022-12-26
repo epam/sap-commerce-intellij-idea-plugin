@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references.result
 
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.model.EnumType
+import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>

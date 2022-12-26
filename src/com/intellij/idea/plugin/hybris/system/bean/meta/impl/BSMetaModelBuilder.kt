@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.type.system.meta.impl.CaseInsensitive
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.openapi.module.Module
 import com.intellij.psi.PsiFile
 

@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaCollection
-import com.intellij.idea.plugin.hybris.type.system.model.Type
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
+import com.intellij.idea.plugin.hybris.system.type.model.Type
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes

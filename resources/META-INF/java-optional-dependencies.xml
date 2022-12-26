@@ -76,11 +76,11 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemTypeLineMarkerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSTypeLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisItemAttributeLineMarkerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSAttributeLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBeanLineMarkerProvider"/>
+                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA"
                                         implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
 

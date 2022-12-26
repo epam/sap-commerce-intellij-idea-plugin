@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaMap;
-import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaClassifier;
-import com.intellij.idea.plugin.hybris.type.system.model.MapType;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
+import com.intellij.idea.plugin.hybris.system.type.model.MapType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBCheckBox;

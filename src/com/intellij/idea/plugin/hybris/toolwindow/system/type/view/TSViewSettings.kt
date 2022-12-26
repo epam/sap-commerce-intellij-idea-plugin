@@ -27,7 +27,7 @@ import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "HybrisTypeSystemView")
+@State(name = "HybrisTSView")
 @Storage(StoragePathMacros.WORKSPACE_FILE)
 class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
 

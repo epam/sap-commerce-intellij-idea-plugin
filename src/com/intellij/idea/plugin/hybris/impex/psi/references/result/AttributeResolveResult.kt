@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references.result
 
 import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
-import com.intellij.idea.plugin.hybris.type.system.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 
 class AttributeResolveResult(private val myDom: Attribute) :
     TSReferenceBase.TSResolveResult {

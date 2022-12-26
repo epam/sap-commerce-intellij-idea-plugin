@@ -29,12 +29,7 @@ import com.intellij.formatting.Wrap
 import com.intellij.formatting.WrapType
 import com.intellij.formatting.alignment.AlignmentStrategy
 import com.intellij.formatting.alignment.AlignmentStrategy.createAlignmentPerTypeStrategy
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.BOOLEAN_PREDICAND
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM_CLAUSE
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.ON
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.SEARCH_CONDITION
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.TokenType
@@ -102,16 +97,16 @@ class FSBlock internal constructor(
         val parentType = this.node.elementType
         val type = node.elementType
 
-        if (parentType === FlexibleSearchTypes.QUERY_SPECIFICATION && type === FlexibleSearchTypes.SUBQUERY) {
+        if (parentType === QUERY_SPECIFICATION && type === SUBQUERY) {
             return Indent.getNoneIndent()
         }
-        if (type === FlexibleSearchTypes.LEFT_DOUBLE_BRACE || type === FlexibleSearchTypes.RIGHT_DOUBLE_BRACE) {
+        if (type === LEFT_DOUBLE_BRACE || type === RIGHT_DOUBLE_BRACE) {
             return Indent.getNormalIndent()
         }
-        if (parentType === FlexibleSearchTypes.SUBQUERY && type === FlexibleSearchTypes.QUERY_SPECIFICATION) {
+        if (parentType === SUBQUERY && type === QUERY_SPECIFICATION) {
             return Indent.getContinuationWithoutFirstIndent()
         }
-        if (type === FlexibleSearchTypes.FROM_CLAUSE) {
+        if (type === FROM_CLAUSE) {
             return Indent.getNormalIndent()
         }
         if (type !== FROM && parentType === FROM_CLAUSE) {
@@ -123,7 +118,7 @@ class FSBlock internal constructor(
         if (isReturnBodyKeywords(node)) {
             return Indent.getNormalIndent()
         }
-        return if (type === FlexibleSearchTypes.WHERE) {
+        return if (type === WHERE) {
             Indent.getNormalIndent()
         } else Indent.getNoneIndent()
 
@@ -150,9 +145,9 @@ class FSBlock internal constructor(
     private fun isReturnBodyKeywords(node: ASTNode): Boolean {
         return FormatterUtil.isOneOf(
                 node,
-                FlexibleSearchTypes.LEFT,
-                FlexibleSearchTypes.JOIN,
-                FlexibleSearchTypes.ORDER
+                LEFT,
+                JOIN,
+                ORDER
         )
     }
 }
