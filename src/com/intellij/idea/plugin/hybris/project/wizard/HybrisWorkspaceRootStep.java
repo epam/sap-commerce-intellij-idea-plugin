@@ -590,14 +590,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
     @Nullable
     private String getDefaultJavadocUrl(@Nullable final String hybrisApiVersion) {
-        if (StringUtils.isNotEmpty(hybrisApiVersion)) {
-            if (hybrisApiVersion.charAt(0) >= '6') {
-                return String.format(HybrisConstants.HYBRIS_6_0_PLUS_JAVADOC_ROOT_URL, hybrisApiVersion);
-            }
-            return String.format(HybrisConstants.DEFAULT_JAVADOC_ROOT_URL, hybrisApiVersion);
-        }
-
-        return null;
+        return StringUtils.isNotEmpty(hybrisApiVersion)
+            ? String.format(HybrisConstants.JAVADOC_URL, hybrisApiVersion)
+            : HybrisConstants.JAVADOC_FALLBACK_URL;
     }
 
     @Override

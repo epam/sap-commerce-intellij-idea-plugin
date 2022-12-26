@@ -42,6 +42,7 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
@@ -180,7 +181,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final boolean[] finished = {false};
 
-        StartupManager.getInstance(project).runAfterOpened(() -> {
+        StartupManager.getInstance(project).runAfterOpened(() -> DumbService.getInstance(project).runWhenSmart(() -> {
             finished[0] = true;
 
             finishImport(
@@ -190,7 +191,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                 configuratorFactory,
                 () -> notifyImportFinished(project)
             );
-        });
+        }));
 
         if (!finished[0]) {
             notifyImportNotFinishedYet(project);
