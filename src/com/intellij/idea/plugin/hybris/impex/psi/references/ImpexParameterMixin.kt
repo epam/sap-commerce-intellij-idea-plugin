@@ -48,7 +48,7 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
         }
 
         if (myReference == null) {
-            myReference = FunctionTypeSystemAttributeReference(this)
+            myReference = FunctionTSAttributeReference(this)
         }
         return arrayOf(myReference!!)
     }

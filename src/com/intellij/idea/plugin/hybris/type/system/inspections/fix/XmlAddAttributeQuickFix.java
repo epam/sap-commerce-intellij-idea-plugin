@@ -38,7 +38,7 @@ public class XmlAddAttributeQuickFix implements LocalQuickFix {
         final String attributeName
     ) {
 
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.AddAttribute", attributeName);
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.system.type.AddAttribute", attributeName);
         myAttributeName = attributeName;
     }
 

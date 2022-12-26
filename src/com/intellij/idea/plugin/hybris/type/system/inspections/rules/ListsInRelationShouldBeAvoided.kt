@@ -26,7 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class ListsInRelationShouldBeAvoided : AbstractTypeSystemInspection() {
+class ListsInRelationShouldBeAvoided : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,

@@ -21,7 +21,7 @@
     <applicationListeners>
         <listener class="com.intellij.idea.plugin.hybris.type.system.vfs.listeners.TSBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-        <listener class="com.intellij.idea.plugin.hybris.beans.vfs.listeners.BeansBulkFileListener"
+        <listener class="com.intellij.idea.plugin.hybris.system.bean.vfs.listeners.BSBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
@@ -38,12 +38,12 @@
         <!-- ####################################################################################################### -->
 
         <dom.fileMetaData rootTagName="items" stubVersion="22"
-            implementation="com.intellij.idea.plugin.hybris.type.system.file.TypeSystemDomFileDescription"/>
+            implementation="com.intellij.idea.plugin.hybris.type.system.file.TSDomFileDescription"/>
 
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSItemTypeGutterAnnotator"/>
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.type.system.annotators.TSEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.beans.annotators.BeansEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.beans.annotators.BeansBeanGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.annotators.BSEnumGutterAnnotator"/>
+        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.annotators.BSBeanGutterAnnotator"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.type.system.meta.impl.TSMetaModelAccessImpl"/>
@@ -68,19 +68,19 @@
         <!-- ####################################################################################################### -->
 
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
-            implementation="com.intellij.idea.plugin.hybris.beans.BeansDomFileDescription"/>
+            implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelAccess"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelAccessImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelProcessor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelProcessorImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelProcessorImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelCollector"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelCollectorImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelCollectorImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.beans.meta.BeansMetaModelMerger"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.beans.meta.impl.BeansMetaModelMergerImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
 
         <!-- ####################################################################################################### -->
         <!--                                          Flexible Search                                                -->

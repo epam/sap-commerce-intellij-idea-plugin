@@ -28,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class DeploymentTypeCodeReservedForCommonsExtension : AbstractTypeSystemInspection() {
+class DeploymentTypeCodeReservedForCommonsExtension : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,

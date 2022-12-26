@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
+import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
@@ -20,11 +20,11 @@ import java.util.*
  */
 abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnReference {
 
-    private var reference: TypeSystemAttributeReference? = null
+    private var reference: TSAttributeReference? = null
 
     override fun getReferences(): Array<PsiReference?> {
         if (reference == null) {
-            reference = TypeSystemAttributeReference(this)
+            reference = TSAttributeReference(this)
         }
         return arrayOf(reference)
     }
@@ -37,7 +37,7 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
 }
 
-internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference) : TypeSystemReferenceBase<FlexibleSearchColumnReference>(owner) {
+internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val featureName = element.text.replace("!", "")
@@ -105,13 +105,15 @@ internal class TypeSystemAttributeReference(owner: FlexibleSearchColumnReference
     }
         
 
-    private class AttributeResolveResult(private val myDomAttribute: Attribute) : TypeSystemResolveResult {
+    private class AttributeResolveResult(private val myDomAttribute: Attribute) :
+        TSResolveResult {
         override fun getElement() = myDomAttribute.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
         override fun getSemanticDomElement() = myDomAttribute
     }
 
-    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TypeSystemResolveResult {
+    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) :
+        TSResolveResult {
         override fun getElement() = myDomRelationEnd.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
         override fun getSemanticDomElement() = myDomRelationEnd

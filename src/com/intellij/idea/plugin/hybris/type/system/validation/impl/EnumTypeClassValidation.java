@@ -20,14 +20,14 @@ package com.intellij.idea.plugin.hybris.type.system.validation.impl;
 
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType;
 import com.intellij.idea.plugin.hybris.type.system.model.EnumValue;
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils;
 import com.intellij.idea.plugin.hybris.type.system.validation.AbstractTSClassesValidation;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.getString;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
@@ -56,7 +56,7 @@ public class EnumTypeClassValidation extends AbstractTSClassesValidation<EnumTyp
 
     @Override
     public boolean isJavaClassGenerationDisabledForItemType(@NotNull final EnumType itemType) {
-        return TypeSystemUtils.isEnumGenerationDisabled(itemType);
+        return TSUtils.isEnumGenerationDisabled(itemType);
     }
 
     @Override

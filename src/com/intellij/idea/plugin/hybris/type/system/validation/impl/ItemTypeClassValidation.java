@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.validation.impl;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils;
 import com.intellij.idea.plugin.hybris.type.system.validation.AbstractTSClassesValidation;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.MODEL_SUFFIX;
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.getString;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
@@ -61,11 +61,11 @@ public class ItemTypeClassValidation extends AbstractTSClassesValidation<ItemTyp
 
     @Override
     public boolean isJavaClassGenerationDisabledForItemType(@NotNull final ItemType itemType) {
-        return TypeSystemUtils.isClassGenerationDisabled(itemType);
+        return TSUtils.isClassGenerationDisabled(itemType);
     }
 
     @Override
     protected boolean isJavaFieldGenerationDisabled(@NotNull final Attribute itemAttribute) {
-        return TypeSystemUtils.isAttributeGenerationDisabled(itemAttribute);
+        return TSUtils.isAttributeGenerationDisabled(itemAttribute);
     }
 }

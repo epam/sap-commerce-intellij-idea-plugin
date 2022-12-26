@@ -27,7 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class DefaultValueForEnumTypeMustBeAssignable : AbstractTypeSystemInspection() {
+class DefaultValueForEnumTypeMustBeAssignable : AbstractTSInspection() {
 
     private val regex = Regex("em\\(\\)\\.getEnumerationValue\\(\\s*\".*\"\\s*,\\s*\".*\"\\s*\\)")
 

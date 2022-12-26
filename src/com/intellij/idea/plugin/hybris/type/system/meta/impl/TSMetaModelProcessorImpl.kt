@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelProcessor
 import com.intellij.idea.plugin.hybris.type.system.model.Items
 import com.intellij.idea.plugin.hybris.type.system.model.TypeGroup
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
@@ -33,8 +33,8 @@ class TSMetaModelProcessorImpl(private val myProject: Project) : TSMetaModelProc
 
     override fun process(psiFile: PsiFile): TSMetaModel? {
         psiFile.virtualFile ?: return null
-        val module = TypeSystemUtils.getModuleForFile(psiFile) ?: return null
-        val custom = TypeSystemUtils.isCustomExtensionFile(psiFile)
+        val module = TSUtils.getModuleForFile(psiFile) ?: return null
+        val custom = TSUtils.isCustomExtensionFile(psiFile)
         val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Items::class.java)
 
         rootWrapper ?: return null

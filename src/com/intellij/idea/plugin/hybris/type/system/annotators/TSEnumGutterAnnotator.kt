@@ -22,7 +22,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess.Companion.getInstance
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -66,7 +66,7 @@ class TSEnumGutterAnnotator : Annotator {
     }
 
     private fun canProcess(psiElement: PsiElement) = psiElement is XmlAttributeValue
-            && TypeSystemUtils.isTypeSystemXmlFile(psiElement.getContainingFile())
+            && TSUtils.isTypeSystemXmlFile(psiElement.getContainingFile())
 
     private fun findAlternativeDoms(sourceDom: EnumType, project: Project) = getInstance(project).findMetaForDom(sourceDom)?.retrieveAllDoms()
             ?.filter { dom -> dom != sourceDom }

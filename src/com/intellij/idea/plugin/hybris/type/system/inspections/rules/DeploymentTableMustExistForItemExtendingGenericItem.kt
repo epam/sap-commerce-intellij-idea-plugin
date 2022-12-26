@@ -30,7 +30,7 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
 
-class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTypeSystemInspection() {
+class DeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,

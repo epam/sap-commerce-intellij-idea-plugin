@@ -27,14 +27,14 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
-import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase.TypeSystemResolveResult;
+import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase.TSResolveResult;
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute;
 import com.intellij.idea.plugin.hybris.type.system.model.Index;
 import com.intellij.idea.plugin.hybris.type.system.model.Indexes;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -109,7 +109,7 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
             return Optional.ofNullable(attribute)
                            .map(DomElement::getXmlElement)
                            .map(XmlElement::getContainingFile)
-                           .map(TypeSystemUtils::isCustomExtensionFile)
+                           .map(TSUtils::isCustomExtensionFile)
                            .orElse(false);
         }
 
@@ -175,9 +175,9 @@ public class UniqueAttributeWithoutIndexInspection extends LocalInspectionTool {
                          .map(ref -> ObjectUtils.tryCast(ref, PsiPolyVariantReference.class))
                          .filter(Objects::nonNull)
                          .flatMap(ref -> Arrays.stream(ref.multiResolve(false)))
-                         .map(resolve -> ObjectUtils.tryCast(resolve, TypeSystemResolveResult.class))
+                         .map(resolve -> ObjectUtils.tryCast(resolve, TSResolveResult.class))
                          .filter(Objects::nonNull)
-                         .map(TypeSystemResolveResult::getSemanticDomElement)
+                         .map(TSResolveResult::getSemanticDomElement)
                          .map(dom -> ObjectUtils.tryCast(dom, Attribute.class))
                          .filter(Objects::nonNull)
                          .findAny()

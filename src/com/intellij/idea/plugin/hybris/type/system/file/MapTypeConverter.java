@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MapTypeConverter extends TypeSystemConverterBase<MapType> {
+public class MapTypeConverter extends TSConverterBase<MapType> {
 
     public MapTypeConverter() {
         super(MapType.class);

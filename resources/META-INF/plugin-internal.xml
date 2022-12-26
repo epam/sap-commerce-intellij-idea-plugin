@@ -34,10 +34,10 @@
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.BeansToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.beans.view.BeansViewSettings"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.typesystem.view.TSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>

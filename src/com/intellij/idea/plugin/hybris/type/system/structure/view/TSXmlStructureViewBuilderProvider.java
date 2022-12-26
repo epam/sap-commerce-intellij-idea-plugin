@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.type.system.structure.view;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider;
 import com.intellij.idea.plugin.hybris.type.system.model.Attributes;
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomService;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class TSXmlStructureViewBuilderProvider implements XmlStructureViewBuilde
     @Nullable
     @Override
     public StructureViewBuilder createStructureViewBuilder(@NotNull final XmlFile xmlFile) {
-        if (!TypeSystemUtils.isTypeSystemXmlFile(xmlFile)) {
+        if (!TSUtils.isTypeSystemXmlFile(xmlFile)) {
             return null;
         }
         return new TSStructureViewBuilder(xmlFile, (dom) -> {

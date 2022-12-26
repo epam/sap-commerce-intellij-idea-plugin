@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-public class ItemTypeConverter extends TypeSystemConverterBase<ItemType> {
+public class ItemTypeConverter extends TSConverterBase<ItemType> {
 
     public ItemTypeConverter() {
         super(ItemType.class);

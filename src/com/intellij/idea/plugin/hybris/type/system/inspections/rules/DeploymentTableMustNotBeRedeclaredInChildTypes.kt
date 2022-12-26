@@ -29,7 +29,7 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
 
-class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTypeSystemInspection() {
+class DeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,

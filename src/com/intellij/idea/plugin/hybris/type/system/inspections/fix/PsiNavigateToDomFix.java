@@ -33,7 +33,7 @@ public class PsiNavigateToDomFix<D extends DomElement> implements LocalQuickFix 
     private final DomAnchor<D> myDomAnchor;
 
     public PsiNavigateToDomFix(final DomAnchor<D> domAnchor) {
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.NavigateToAnchor");
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.system.type.NavigateToAnchor");
         myDomAnchor = domAnchor;
     }
 

@@ -34,7 +34,7 @@ import java.util.Optional;
 public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElement implements
                                                                                     ImpexAnyHeaderParameterName {
 
-    private TypeSystemAttributeReference myReference;
+    private TSAttributeReference myReference;
 
     public ImpexAnyHeaderParameterNameMixin(@NotNull final ASTNode astNode) {
         super(astNode);
@@ -62,7 +62,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
             return PsiReference.EMPTY_ARRAY;
         }
         if (myReference == null) {
-            myReference = new TypeSystemAttributeReference(this);
+            myReference = new TSAttributeReference(this);
         }
         return new PsiReference[]{myReference};
     }

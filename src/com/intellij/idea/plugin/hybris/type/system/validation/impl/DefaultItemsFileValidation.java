@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ITEM_ROOT_CLASS;
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.getString;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>

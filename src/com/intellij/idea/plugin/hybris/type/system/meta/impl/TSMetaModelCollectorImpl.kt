@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelCollector
 import com.intellij.idea.plugin.hybris.type.system.model.Items
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -52,7 +52,7 @@ class TSMetaModelCollectorImpl(private val myProject: Project) : TSMetaModelColl
                             override fun process(psiFile: PsiFile): Boolean {
                                 psiFile.virtualFile ?: return true
                                 // cannot process file without a module
-                                TypeSystemUtils.getModuleForFile(psiFile) ?: return true
+                                TSUtils.getModuleForFile(psiFile) ?: return true
                                 myDomManager.getFileElement(psiFile as XmlFile, Items::class.java) ?: return true
 
                                 files.add(psiFile)

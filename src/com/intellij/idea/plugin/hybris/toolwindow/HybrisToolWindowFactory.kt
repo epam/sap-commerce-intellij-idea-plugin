@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow
-import com.intellij.idea.plugin.hybris.toolwindow.beans.BeansToolWindow
-import com.intellij.idea.plugin.hybris.toolwindow.typesystem.TSToolWindow
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -33,7 +33,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     ) {
         arrayOf(
             TSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
-            BeansToolWindow.getInstance(project).createToolWindowContent(toolWindow),
+            BSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
             HybrisConsolesToolWindow.getInstance(project).createToolWindowContent(toolWindow),
             HybrisRemoteInstancesToolWindow(project).createToolWindowContent(toolWindow)
         ).forEach { toolWindow.contentManager.addContent(it) }

@@ -29,7 +29,7 @@ import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class QualifierMustStartWithLowercaseLetter : AbstractTypeSystemInspection() {
+class QualifierMustStartWithLowercaseLetter : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,

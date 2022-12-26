@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-public class AtomicTypeConverter extends TypeSystemConverterBase<AtomicType> {
+public class AtomicTypeConverter extends TSConverterBase<AtomicType> {
 
     public AtomicTypeConverter() {
         super(AtomicType.class);

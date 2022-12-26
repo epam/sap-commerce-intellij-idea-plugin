@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CollectionTypeConverter extends TypeSystemConverterBase<CollectionType> {
+public class CollectionTypeConverter extends TSConverterBase<CollectionType> {
 
     public CollectionTypeConverter() {
         super(CollectionType.class);

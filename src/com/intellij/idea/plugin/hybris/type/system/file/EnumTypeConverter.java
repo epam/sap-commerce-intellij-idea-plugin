@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EnumTypeConverter extends TypeSystemConverterBase<EnumType> {
+public class EnumTypeConverter extends TSConverterBase<EnumType> {
 
     public EnumTypeConverter() {
         super(EnumType.class);

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement implements ImpexHeaderTypeName {
 
-    private TypeSystemItemReference myReference;
+    private TSItemReference myReference;
 
     public ImpexHeaderTypeNameMixin(@NotNull final ASTNode astNode) {
         super(astNode);
@@ -38,7 +38,7 @@ public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement impl
     @Override
     public final PsiReference[] getReferences() {
         if (myReference == null) {
-            myReference = new TypeSystemItemReference(this);
+            myReference = new TSItemReference(this);
         }
         return new PsiReference[]{myReference};
     }

@@ -36,8 +36,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.getBoolean;
-import static com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils.getString;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TSUtils.getBoolean;
+import static com.intellij.idea.plugin.hybris.type.system.utils.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>

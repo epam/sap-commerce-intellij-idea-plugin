@@ -34,7 +34,7 @@ public class XmlDeleteSubTagQuickFix implements LocalQuickFix {
     private final String myTagName;
 
     public XmlDeleteSubTagQuickFix(final @NotNull String tagName) {
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.typesystem.DeleteSubTag", tagName);
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.system.type.DeleteSubTag", tagName);
         myTagName = tagName;
     }
 

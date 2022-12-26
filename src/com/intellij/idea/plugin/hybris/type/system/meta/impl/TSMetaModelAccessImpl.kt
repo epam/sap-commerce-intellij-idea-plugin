@@ -18,23 +18,16 @@
 package com.intellij.idea.plugin.hybris.type.system.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.type.system.meta.*
 import com.intellij.idea.plugin.hybris.type.system.meta.model.*
 import com.intellij.idea.plugin.hybris.type.system.model.EnumType
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -162,7 +155,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     companion object {
-        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSListener::class.java)
+        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()

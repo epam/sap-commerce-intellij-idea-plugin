@@ -18,10 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references.result
 
-import com.intellij.idea.plugin.hybris.psi.references.TypeSystemReferenceBase
+import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase
 import com.intellij.idea.plugin.hybris.type.system.model.Attribute
 
-class AttributeResolveResult(private val myDom: Attribute) : TypeSystemReferenceBase.TypeSystemResolveResult {
+class AttributeResolveResult(private val myDom: Attribute) :
+    TSReferenceBase.TSResolveResult {
     override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom.qualifier.xmlAttributeValue
     override fun isValidResult() = element != null

@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.type.system.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.type.system.meta.model.TSMetaType;
 import com.intellij.idea.plugin.hybris.type.system.model.ItemType;
-import com.intellij.idea.plugin.hybris.type.system.utils.TypeSystemUtils;
+import com.intellij.idea.plugin.hybris.type.system.utils.TSUtils;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
@@ -61,7 +61,7 @@ public class TSItemTypeGutterAnnotator implements Annotator {
         @NotNull final PsiElement psiElement, @NotNull final AnnotationHolder annotationHolder
     ) {
         if (!(psiElement instanceof XmlAttributeValue) ||
-            !TypeSystemUtils.isTypeSystemXmlFile(psiElement.getContainingFile())) {
+            !TSUtils.isTypeSystemXmlFile(psiElement.getContainingFile())) {
             return;
         }
         final XmlTag parentTag = PsiTreeUtil.getParentOfType(psiElement, XmlTag.class);

@@ -33,9 +33,9 @@ import java.util.List;
 
 public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
 
-    private final TypeSystemConverterBase<? extends DOM>[] myDelegates;
+    private final TSConverterBase<? extends DOM>[] myDelegates;
 
-    public CompositeConverter(TypeSystemConverterBase<? extends DOM>... converters) {
+    public CompositeConverter(TSConverterBase<? extends DOM>... converters) {
         myDelegates = converters;
     }
 
@@ -48,7 +48,7 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
     @Override
     public Collection<? extends DOM> getVariants(final ConvertContext context) {
         final List<DOM> result = new LinkedList<>();
-        for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
             result.addAll(next.getVariants(context));
         }
         return result;
@@ -59,7 +59,7 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
     public DOM fromString(
         @Nullable @NonNls final String s, final ConvertContext context
     ) {
-        for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
             final DOM nextResult = next.fromString(s, context);
             if (nextResult != null) {
                 return nextResult;
@@ -71,7 +71,7 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
     @Nullable
     @Override
     public String toString(@Nullable final DOM t, final ConvertContext context) {
-        for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
             final String nextToString = next.tryToString(t, context);
             if (nextToString != null) {
                 return nextToString;
@@ -83,7 +83,7 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
     @Nullable
     @Override
     public PsiElement getPsiElement(@Nullable final DOM resolvedValue) {
-        for (TypeSystemConverterBase<? extends DOM> next : myDelegates) {
+        for (TSConverterBase<? extends DOM> next : myDelegates) {
             if (next.getResolvesToClass().isInstance(resolvedValue)) {
                 final PsiElement nextResult = next.tryGetPsiElement(resolvedValue);
                 if (nextResult != null) {

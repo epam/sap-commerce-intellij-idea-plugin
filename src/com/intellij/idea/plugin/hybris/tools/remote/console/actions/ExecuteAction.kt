@@ -41,8 +41,6 @@ class HybrisSuspendAction(private val tabbedPane: HybrisTabs, executeActionHandl
     }
 
     override fun update(e: AnActionEvent) {
-        val editor = tabbedPane.activeConsole().consoleEditor
-        val lookup = LookupManager.getActiveLookup(editor)
         e.presentation.isEnabled = executeActionHandler.isProcessRunning
     }
 
