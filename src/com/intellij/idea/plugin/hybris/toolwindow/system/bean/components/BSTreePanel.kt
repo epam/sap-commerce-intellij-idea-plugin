@@ -59,7 +59,7 @@ class BSTreePanel(
         myTree.addTreeSelectionListener(myTreeSelectionListener)
 
         myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
-            override fun beansChanged(globalMetaModel: BSGlobalMetaModel) {
+            override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
                 secondComponent = myDefaultPanel;
                 myTree.update(BSViewSettings.ChangeType.FULL)
             }

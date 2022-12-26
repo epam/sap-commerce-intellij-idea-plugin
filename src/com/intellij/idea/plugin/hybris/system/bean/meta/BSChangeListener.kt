@@ -20,5 +20,5 @@ package com.intellij.idea.plugin.hybris.system.bean.meta
 
 interface BSChangeListener {
 
-    fun beansChanged(globalMetaModel: BSGlobalMetaModel)
+    fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel)
 }

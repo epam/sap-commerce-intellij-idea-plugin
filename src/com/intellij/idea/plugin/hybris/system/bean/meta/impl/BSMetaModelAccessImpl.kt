@@ -101,7 +101,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         try {
             writeLock.lock()
             val globalMetaModel = myGlobalMetaModel.value
-            myMessageBus.syncPublisher(topic).beansChanged(globalMetaModel)
+            myMessageBus.syncPublisher(topic).beanSystemChanged(globalMetaModel)
 
             return globalMetaModel
         } finally {
