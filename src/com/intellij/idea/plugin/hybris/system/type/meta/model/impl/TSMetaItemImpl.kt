@@ -93,6 +93,7 @@ internal class TSMetaItemImpl(
         override val isRedeclare = java.lang.Boolean.TRUE == dom.redeclare.value
         override val isSelectionOf = dom.isSelectionOf.stringValue
         override val isLocalized = TSMetaHelper.isLocalized(type)
+        override val isDynamic = TSMetaHelper.isDynamic(persistence)
 
         override fun toString() = "Attribute(module=$module, name=$name, isCustom=$isCustom)"
     }
@@ -228,6 +229,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override var isRedeclare = localMeta.isRedeclare
         override var isSelectionOf = localMeta.isSelectionOf
         override var isLocalized = localMeta.isLocalized
+        override var isDynamic = localMeta.isDynamic
 
         init {
             mergeCustomProperties(localMeta)
@@ -240,6 +242,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
                 domAnchor = localMeta.domAnchor
                 type = localMeta.type
                 modifiers = localMeta.modifiers
+                isLocalized = localMeta.isLocalized
+                isDynamic = localMeta.isDynamic
 
                 mergeCustomProperties(localMeta)
             }

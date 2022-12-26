@@ -40,6 +40,10 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
         //NOP
     }
 
+    companion object {
+        private const val serialVersionUID: Long = -2700270816491881103L
+    }
+
 }
 
 

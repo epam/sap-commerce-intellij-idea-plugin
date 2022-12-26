@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * Class contains array of keywords for use to completion on Impex files.
- * keywords got from <a href="https://help.hybris.com/6.0.0/hcd/8bef9530866910148e6cff59d9afa127.html#impexsyntax-header">here</a>
+ * keywords got from <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US#header-mode">here</a>
  *
  * @author Aleksandr Nosov <nosovae.dev@gmail.com>
  */

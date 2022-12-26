@@ -64,6 +64,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
         val isRedeclare: Boolean
         val isGenerate: Boolean
         val isLocalized: Boolean
+        val isDynamic: Boolean
     }
 }
 

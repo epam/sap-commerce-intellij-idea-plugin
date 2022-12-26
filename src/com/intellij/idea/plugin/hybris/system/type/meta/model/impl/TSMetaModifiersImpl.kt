@@ -30,13 +30,13 @@ internal class TSMetaModifiersImpl(
 ) : TSMetaModifiers {
 
     override val domAnchor: DomAnchor<Modifiers> = DomService.getInstance().createAnchor(dom)
-    override val isRead = java.lang.Boolean.TRUE == dom.read.value
-    override val isWrite = java.lang.Boolean.TRUE == dom.write.value
-    override val isSearch = java.lang.Boolean.TRUE == dom.search.value
-    override val isOptional = java.lang.Boolean.TRUE == dom.optional.value
-    override val isPrivate = java.lang.Boolean.TRUE == dom.private.value
-    override val isInitial = java.lang.Boolean.TRUE == dom.initial.value
-    override val isRemovable = java.lang.Boolean.TRUE == dom.removable.value
+    override val isRead = (dom.read.value ?: true) == java.lang.Boolean.TRUE
+    override val isWrite = (dom.write.value ?: true) == java.lang.Boolean.TRUE
+    override val isSearch = (dom.search.value ?: true) == java.lang.Boolean.TRUE
+    override val isOptional = (dom.optional.value ?: true) == java.lang.Boolean.TRUE
+    override val isPrivate = java.lang.Boolean.TRUE == dom.partOf.value
+    override val isInitial = java.lang.Boolean.TRUE == dom.partOf.value
+    override val isRemovable = (dom.removable.value ?: true) == java.lang.Boolean.TRUE
     override val isPartOf = java.lang.Boolean.TRUE == dom.partOf.value
     override val isUnique = java.lang.Boolean.TRUE == dom.unique.value
     override val isDoNotOptimize = java.lang.Boolean.TRUE == dom.doNotOptimize.value

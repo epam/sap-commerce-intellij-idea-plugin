@@ -20,11 +20,13 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaPersistence
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.model.AttributeModel
 import com.intellij.idea.plugin.hybris.system.type.model.CustomProperties
 import com.intellij.idea.plugin.hybris.system.type.model.CustomProperty
+import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import java.util.*
 
 class TSMetaHelper {
@@ -35,6 +37,8 @@ class TSMetaHelper {
 
         fun isLocalized(type: String?) = type?.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
             ?: false
+
+        fun isDynamic(persistence: TSMetaPersistence) = PersistenceType.DYNAMIC == persistence.type
 
         fun isCatalogAware(dom: CustomProperties) = getProperty(dom, HybrisConstants.TS_CATALOG_ITEM_TYPE)
             ?.let { parseBooleanValue(it) }

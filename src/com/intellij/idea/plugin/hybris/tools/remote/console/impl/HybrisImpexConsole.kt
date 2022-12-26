@@ -121,4 +121,8 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         }
         return HybrisHacHttpClient.getInstance(project).validateImpex(project, settings)
     }
+
+    companion object {
+        private const val serialVersionUID: Long = -8798339041999147739L
+    }
 }

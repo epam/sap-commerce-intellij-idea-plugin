@@ -145,8 +145,8 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final TSMetaItemService metaItemService = TSMetaItemService.getInstance(project);
 
         final var attributes = metaItem.getAllAttributes().stream()
-            .map(prop -> {
-                final var name = prop.getName();
+            .map(attribute -> {
+                final var name = attribute.getName();
 
                 if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
                     return null;
@@ -154,8 +154,9 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
                 final var builder = LookupElementBuilder
                     .create(name.trim())
                     .withIcon(HybrisIcons.TYPE_SYSTEM)
-                    .withStrikeoutness(prop.isDeprecated());
-                final String typeText = getTypePresentableText(prop.getType());
+                    .withTailText(attribute.isDynamic() ? " (dynamic)" : "", true)
+                    .withStrikeoutness(attribute.isDeprecated());
+                final String typeText = getTypePresentableText(attribute.getType());
                 return StringUtil.isEmpty(typeText)
                     ? builder
                     : builder.withTypeText(typeText, true);
