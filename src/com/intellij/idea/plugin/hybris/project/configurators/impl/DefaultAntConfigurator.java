@@ -286,7 +286,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
             extHybrisModuleDescriptorList
                 .parallelStream()
                 .map(e -> new AllJarsUnderDirEntry(new File(e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
-                .collect(Collectors.toList())
+                .toList()
         );
         final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);
         classPaths.add(new AllJarsUnderDirEntry(libDir));

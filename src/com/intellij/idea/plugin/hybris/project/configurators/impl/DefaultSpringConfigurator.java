@@ -121,8 +121,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
 
         final Set<HybrisModuleDescriptor> dependenciesTree = moduleDescriptor.getDependenciesTree();
-        final List<HybrisModuleDescriptor> sortedDependenciesTree = dependenciesTree.stream().sorted().collect(
-            Collectors.toList());
+        final List<HybrisModuleDescriptor> sortedDependenciesTree = dependenciesTree.stream().sorted().toList();
         for (HybrisModuleDescriptor dependsOnModule : sortedDependenciesTree) {
             final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule.getName());
             if (parentFileSet == null) {

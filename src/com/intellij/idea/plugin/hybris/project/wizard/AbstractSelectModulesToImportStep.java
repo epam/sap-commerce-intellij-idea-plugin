@@ -77,7 +77,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<>();
         final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
 
-        getAdditionalFixedElements().stream().forEach(e -> uniqueModules.put(e.getName(), e));
+        getAdditionalFixedElements().forEach(e -> uniqueModules.put(e.getName(), e));
 
         for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 

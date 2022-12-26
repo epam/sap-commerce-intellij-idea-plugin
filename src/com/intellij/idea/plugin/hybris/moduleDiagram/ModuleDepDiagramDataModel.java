@@ -55,9 +55,9 @@ import java.util.stream.Collectors;
 public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagramItem> {
 
     @NotNull
-    private Set<ModuleDepDiagramNode> myNodes = new HashSet<>();
+    private final Set<ModuleDepDiagramNode> myNodes = new HashSet<>();
     @NotNull
-    private Set<ModuleDepDiagramEdge> myEdges = new HashSet<>();
+    private final Set<ModuleDepDiagramEdge> myEdges = new HashSet<>();
 
     public ModuleDepDiagramDataModel(final Project project, final DiagramProvider<ModuleDepDiagramItem> provider) {
         super(project, provider);
@@ -153,7 +153,7 @@ public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagram
                 .stream()
                 .flatMap(module -> Arrays.stream(ModuleRootManager.getInstance(module).getDependencies()))
                 .filter(this::isOotbOrPlatformExtension)
-                .collect(Collectors.toList());
+                .toList();
 
             final List<Module> backwardDependencies = Arrays
                 .stream(allModules)
@@ -161,7 +161,7 @@ public class ModuleDepDiagramDataModel extends DiagramDataModel<ModuleDepDiagram
                     .stream(ModuleRootManager.getInstance(module).getDependencies())
                     .anyMatch(this::isCustomExtension))
                 .filter(this::isOotbOrPlatformExtension)
-                .collect(Collectors.toList());
+                .toList();
 
             final Set<Module> result = new HashSet<>();
             result.addAll(customExtModules);

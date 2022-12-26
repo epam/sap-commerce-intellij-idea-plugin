@@ -349,10 +349,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
         hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
         hybrisDictionary.addToDictionary(project.getName().toLowerCase());
-        Set<String> moduleNames = modules.stream()
-                                         .map(HybrisModuleDescriptor::getName)
-                                         .map(String::toLowerCase)
-                                         .collect(Collectors.toSet());
+        final Set<String> moduleNames = modules.stream()
+                                               .map(HybrisModuleDescriptor::getName)
+                                               .map(String::toLowerCase)
+                                               .collect(Collectors.toSet());
         hybrisDictionary.addToDictionary(moduleNames);
     }
 
@@ -478,7 +478,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final List<String> toBeImportedNames = hybrisProjectDescriptor
             .getModulesChosenForImport().stream()
             .map(HybrisModuleDescriptor::getName)
-            .collect(Collectors.toList());
+            .toList();
         return hybrisProjectDescriptor
             .getFoundModules().stream()
             .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))

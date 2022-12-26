@@ -29,7 +29,6 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -163,8 +162,8 @@ public class DefaultImpexColumnHighlighterService
         // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = column
             .stream()
-            .filter(psiElement -> !FoldingUtil.isTextRangeFolded(editor, psiElement.getTextRange()))
             .map(PsiElement::getTextRange)
+            .filter(textRange -> !FoldingUtil.isTextRangeFolded(editor, textRange))
             // Do not use Collectors.toList() here because:
             // There are no guarantees on the type, mutability, serializability,
             // or thread-safety of the List returned; if more control over the

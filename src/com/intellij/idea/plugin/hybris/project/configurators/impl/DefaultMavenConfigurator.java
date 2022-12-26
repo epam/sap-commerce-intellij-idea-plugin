@@ -76,7 +76,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final var mavenProjectBuilders = mavenProjectFiles.stream()
                                                           .map(mavenProjectBuilderFunction(project))
                                                           .filter(isProjectPathValid(mavenModules))
-                                                          .collect(Collectors.toList());
+                                                          .toList();
 
         if (mavenImportListener == null) {
             mavenImportListener = new HybrisMavenImportListener(project);
@@ -189,7 +189,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                 .stream()
                 .anyMatch(pom -> pom.equals(e.getFile()))
             )
-            .collect(Collectors.toList());
+            .toList();
 
         final List<Module> newRootModules = newModules
             .stream()

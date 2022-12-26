@@ -738,7 +738,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
-        moduleDescriptors.stream().forEach(module -> {
+        moduleDescriptors.forEach(module -> {
             if (module instanceof ConfigHybrisModuleDescriptor) {
                 configHybrisModuleDescriptor = (ConfigHybrisModuleDescriptor) module;
             }
