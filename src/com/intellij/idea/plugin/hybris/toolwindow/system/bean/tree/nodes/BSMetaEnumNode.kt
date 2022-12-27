@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class BSMetaEnumNode(val parent: BSNode, val meta: BSGlobalMetaEnum) : BSNode(pa
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(AllIcons.Nodes.Enum)
+        presentation.setIcon(HybrisIcons.ENUM)
         if (meta.isDeprecated) {
             presentation.locationString = "deprecated"
         }

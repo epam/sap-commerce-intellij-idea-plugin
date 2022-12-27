@@ -30,6 +30,7 @@ public interface Enum extends DomElement, AbstractPojo {
     GenericAttributeValue<Boolean> getDeprecated();
 
     @NotNull
+    @Attribute("deprecatedSince")
     GenericAttributeValue<String> getDeprecatedSince();
 
 

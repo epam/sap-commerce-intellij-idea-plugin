@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.linemarker
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.getDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
@@ -52,7 +52,7 @@ class HybrisBSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private fun createTargetsWithGutterIcon(
         dom: PsiEnumConstant,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(AllIcons.Nodes.AnonymousClass)
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
         .setTarget(psi)
         .setTooltipText(message("hybris.gutter.bs.enum.value.title"))
         .createLineMarkerInfo(dom.nameIdentifier)

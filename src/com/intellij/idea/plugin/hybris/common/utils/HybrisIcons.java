@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.common.utils;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
 
@@ -51,11 +52,16 @@ public final class HybrisIcons {
     public static final Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
+    public static final Icon ENUM = AllIcons.Nodes.Enum;
+    public static final Icon ENUM_VALUE = AllIcons.Nodes.AnonymousClass;
     public static final Icon BEAN = getIcon("/icons/beanIcon.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
 
     public static final Icon MACROS = getIcon("/icons/macros.png");
 
+    public static final Icon IMPORT = AllIcons.ToolbarDecorator.Import;
+    public static final Icon ANNOTATION = AllIcons.Nodes.Annotationtype;
+    public static final Icon PROPERTY = AllIcons.Nodes.Property;
     public static final Icon ATTRIBUTE = getIcon("/icons/attribute.svg");
     public static final Icon COLLECTION = getIcon("/icons/collection.svg");
     public static final Icon INDEX = getIcon("/icons/index.svg");

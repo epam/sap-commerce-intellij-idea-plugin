@@ -88,11 +88,12 @@
     <change-notes>
         <![CDATA[
             <ul>
-                <li> Introduction the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
+                <li> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
+                <li> Added customized Structure View for beans.xml files </li>
                 <li> Added new beans.xml inspection rules </li>
-                <li> Added navigation to attributes from Model classes </li>
-                <li> Added navigation to Enum values declaration from generated classes </li>
-                <li> Added navigation to Bean property declaration from generated classes </li>
+                <li> Added navigation to items.xml Type attributes from generated classes </li>
+                <li> Added navigation to beans.xml Enum values declaration from generated classes </li>
+                <li> Added navigation to beans.xml Bean property declaration from generated classes </li>
                 <li> Added extra visibility filters for Type System view </li>
                 <li> Added <strong>dynamic</strong> prefix getters/setters in the Java classes </li>
                 <li> Added <strong>dynamic</strong> flag for attribute suggestions in the impex files </li>

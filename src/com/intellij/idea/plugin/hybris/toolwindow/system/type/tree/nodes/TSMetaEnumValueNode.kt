@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum.TSMetaEnumValue
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class TSMetaEnumValueNode(val parent: TSMetaEnumNode, val meta: TSMetaEnumValue)
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(AllIcons.Nodes.AnonymousClass)
+        presentation.setIcon(HybrisIcons.ENUM_VALUE)
     }
 
 }

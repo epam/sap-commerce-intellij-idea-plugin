@@ -32,7 +32,7 @@ internal class BSMetaHintImpl(
 ) : BSMetaHint {
 
     override val domAnchor: DomAnchor<Hint> = DomService.getInstance().createAnchor(dom)
-    override val value = dom.value
+    override val value = dom.stringValue
 
     override fun toString() = "Hint(module=$module, name=$name, isCustom=$isCustom)"
 }

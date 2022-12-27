@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class BSMetaPropertyNode(val parent: BSMetaBeanNode, val meta: BSMetaProperty) :
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(AllIcons.Nodes.Property)
+        presentation.setIcon(HybrisIcons.PROPERTY)
     }
 
 }

@@ -6,7 +6,6 @@ package com.intellij.idea.plugin.hybris.system.bean.model;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +104,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the description child.
      */
     @NotNull
-    GenericDomValue<String> getDescription();
+    Description getDescription();
 
 
     /**
