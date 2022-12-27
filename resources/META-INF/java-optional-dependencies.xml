@@ -75,17 +75,13 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSAttributeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA"
-                                        implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSAttributeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
 
-        <codeInsight.inlayProvider language="JAVA"
-                                   implementationClass="com.intellij.idea.plugin.hybris.inlayprovider.HybrisDynamicAttributeInlayProvider"/>
+        <codeInsight.inlayProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.inlayprovider.HybrisDynamicAttributeInlayProvider"/>
     </extensions>
 
 </idea-plugin>

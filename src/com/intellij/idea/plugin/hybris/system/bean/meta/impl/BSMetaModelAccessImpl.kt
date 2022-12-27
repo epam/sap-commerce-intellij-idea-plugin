@@ -78,6 +78,14 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
             findMetaByName(BSMetaType.META_EVENT, name)
         )
     }
+    override fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> {
+        return listOfNotNull(
+            findMetaByName(BSMetaType.META_ENUM, name),
+            findMetaByName(BSMetaType.META_BEAN, name),
+            findMetaByName(BSMetaType.META_WS_BEAN, name),
+            findMetaByName(BSMetaType.META_EVENT, name)
+        )
+    }
 
     override fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
 

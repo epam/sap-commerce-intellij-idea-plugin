@@ -25,12 +25,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.xml.XmlElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -59,7 +58,7 @@ public abstract class AbstractHybrisItemLineMarkerProvider<T extends PsiElement>
     ) {
         if (!canProcess(element)) return;
 
-        final var module = getModule(element);
+        final var module = ModuleUtil.findModuleForPsiElement(element);
         if (module == null || !isPlatformModule(module)) return;
 
         collectDeclarations((T) element)
@@ -68,19 +67,6 @@ public abstract class AbstractHybrisItemLineMarkerProvider<T extends PsiElement>
 
     private static boolean isPlatformModule(final @NotNull Module module) {
         return Objects.equals(HybrisModuleDescriptor.getDescriptorType(module), HybrisModuleDescriptorType.PLATFORM);
-    }
-
-    @Nullable
-    private static Module getModule(final @NotNull PsiElement element) {
-        final var pf = element.getContainingFile();
-        final var p = pf.getProject();
-        var vf = pf.getVirtualFile();
-
-        if (vf == null) {
-            vf = pf.getOriginalFile().getVirtualFile();
-        }
-
-        return ModuleUtilCore.findModuleForFile(vf, p);
     }
 
     protected abstract boolean canProcess(final PsiElement psi);

@@ -72,7 +72,7 @@ public class HybrisTSTypeLineMarkerProvider extends AbstractHybrisItemLineMarker
 
     @Override
     protected String getPopupTitle() {
-        return HybrisI18NBundleUtils.message("hybris.gutter.bean.class.navigate.choose.class.title");
+        return HybrisI18NBundleUtils.message("hybris.gutter.bean.type.navigate.choose.class.title");
     }
 
     @Override

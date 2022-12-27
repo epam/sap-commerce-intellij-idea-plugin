@@ -145,29 +145,35 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final TSMetaItemService metaItemService = TSMetaItemService.getInstance(project);
 
         final var attributes = metaItem.getAllAttributes().stream()
-            .map(attribute -> {
-                final var name = attribute.getName();
-
-                if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
-                    return null;
-                }
-                final var builder = LookupElementBuilder
-                    .create(name.trim())
-                    .withIcon(HybrisIcons.TYPE_SYSTEM)
-                    .withTailText(attribute.isDynamic() ? " (dynamic)" : "", true)
-                    .withStrikeoutness(attribute.isDeprecated());
-                final String typeText = getTypePresentableText(attribute.getType());
-                return StringUtil.isEmpty(typeText)
-                    ? builder
-                    : builder.withTypeText(typeText, true);
-            })
-            .filter(Objects::nonNull);
+                                       .map(attribute -> mapAttributeToLookup(excludeNames, attribute))
+                                       .filter(Objects::nonNull);
 
         final var relationEnds = metaItemService
             .getRelationEnds(metaItem, true).stream()
             .map(ref -> LookupElementBuilder.create(ref.getQualifier()).withIcon(HybrisIcons.TYPE_SYSTEM));
 
         return Stream.concat(attributes, relationEnds).collect(Collectors.toList());
+    }
+
+    @Nullable
+    private static LookupElementBuilder mapAttributeToLookup(
+        final Set<String> excludeNames,
+        final TSGlobalMetaItem.TSGlobalMetaItemAttribute attribute
+    ) {
+        final var name = attribute.getName();
+
+        if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
+            return null;
+        }
+        final var builder = LookupElementBuilder
+            .create(name.trim())
+            .withIcon(HybrisIcons.TYPE_SYSTEM)
+            .withTailText(attribute.isDynamic() ? " (dynamic)" : "", true)
+            .withStrikeoutness(attribute.isDeprecated());
+        final String typeText = getTypePresentableText(attribute.getType());
+        return StringUtil.isEmpty(typeText)
+            ? builder
+            : builder.withTypeText(typeText, true);
     }
 
     @NotNull
