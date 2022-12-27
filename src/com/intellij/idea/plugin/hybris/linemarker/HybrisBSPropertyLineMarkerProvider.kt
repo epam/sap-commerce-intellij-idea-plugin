@@ -30,31 +30,36 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
+import com.intellij.psi.PsiField
 
-class HybrisBSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class HybrisBSPropertyLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
-        if (element !is PsiEnumConstant || element.containingClass == null) return
+        if (element !is PsiField || element.containingClass == null) return
         val module = ModuleUtil.findModuleForPsiElement(element) ?: return
         val psiClass = element.containingClass!!
         if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) return
-        if (!BeansUtils.isEnumFile(psiClass)) return
+        if (BeansUtils.isEnumFile(psiClass)) return
+        if (psiClass.qualifiedName == null) return
 
-        val meta = BSMetaModelAccess.getInstance(element.project).findMetaEnumByName(psiClass.qualifiedName) ?: return
-        val xmlElement = meta.values[element.name]?.retrieveDom()?.xmlElement ?: return
+        val metas = BSMetaModelAccess.getInstance(element.project).findMetaBeansByName(psiClass.qualifiedName!!)
+
+        if (metas.isEmpty() || metas.size > 1) return
+
+        val xmlElement = metas.first().properties[element.name]?.retrieveDom()?.xmlElement ?: return
 
         result.add(createTargetsWithGutterIcon(element, xmlElement))
     }
 
     private fun createTargetsWithGutterIcon(
-        dom: PsiEnumConstant,
+        dom: PsiField,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(AllIcons.Nodes.AnonymousClass)
+    ) = NavigationGutterIconBuilder.create(AllIcons.Nodes.Property)
         .setTarget(psi)
-        .setTooltipText(message("hybris.gutter.bs.enum.value.title"))
+        .setTooltipText(message("hybris.gutter.bs.bean.property.title"))
         .createLineMarkerInfo(dom.nameIdentifier)
 
 }

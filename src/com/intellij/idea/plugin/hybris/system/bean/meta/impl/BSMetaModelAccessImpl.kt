@@ -72,6 +72,9 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     override fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
     override fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> {
         val name = BSMetaModelNameProvider.extract(dom) ?: return emptyList()
+        return findMetaBeansByName(name)
+    }
+    override fun findMetaBeansByName(name: String): List<BSGlobalMetaBean> {
         return listOfNotNull(
             findMetaByName(BSMetaType.META_BEAN, name),
             findMetaByName(BSMetaType.META_WS_BEAN, name),
