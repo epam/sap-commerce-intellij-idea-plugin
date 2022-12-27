@@ -68,6 +68,9 @@ internal class TSMetaItemImpl(
         override val keys = dom.keys
             .mapNotNull { it.attribute.stringValue }
             .toSet()
+        override val includes = dom.includes
+            .mapNotNull { it.attribute.stringValue }
+            .toSet()
 
         override fun toString() = "Index(module=$module, name=$name, isCustom=$isCustom)"
     }
@@ -197,6 +200,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override var isUnique = localMeta.isUnique
         override var creationMode = localMeta.creationMode
         override var keys = localMeta.keys
+        override var includes = localMeta.includes
 
         override fun mergeInternally(localMeta: TSMetaItemIndex) {
             if (localMeta.isReplace) {
@@ -205,6 +209,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
                 isUnique = localMeta.isUnique
                 creationMode = localMeta.creationMode
                 keys = localMeta.keys
+                includes = localMeta.includes
             }
         }
 

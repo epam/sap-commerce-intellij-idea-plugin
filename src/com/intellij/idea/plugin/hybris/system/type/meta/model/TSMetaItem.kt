@@ -42,6 +42,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     interface TSMetaItemIndex : TSMetaClassifier<Index> {
         override val name: String
         val keys: Set<String>
+        val includes: Set<String>
         val creationMode: CreationMode?
         val isRemove: Boolean
         val isReplace: Boolean

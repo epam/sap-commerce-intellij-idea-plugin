@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.common.utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
+import icons.DvcsImplIcons;
 
 import javax.swing.*;
 
@@ -59,10 +60,16 @@ public final class HybrisIcons {
 
     public static final Icon MACROS = getIcon("/icons/macros.png");
 
+    public static final Icon ATOMIC = AllIcons.Actions.GroupByModule;
+    public static final Icon ITEM = AllIcons.Nodes.Class;
+    public static final Icon MAP = AllIcons.Nodes.Plugin;
+    public static final Icon RELATION = AllIcons.Actions.GroupByModuleGroup;
     public static final Icon IMPORT = AllIcons.ToolbarDecorator.Import;
     public static final Icon ANNOTATION = AllIcons.Nodes.Annotationtype;
     public static final Icon PROPERTY = AllIcons.Nodes.Property;
     public static final Icon ATTRIBUTE = getIcon("/icons/attribute.svg");
+    public static final Icon RELATION_SOURCE = DvcsImplIcons.Outgoing;
+    public static final Icon RELATION_TARGET = DvcsImplIcons.Incoming;
     public static final Icon COLLECTION = getIcon("/icons/collection.svg");
     public static final Icon INDEX = getIcon("/icons/index.svg");
     public static final Icon INDEX_UNIQUE = getIcon("/icons/indexUnique.svg");

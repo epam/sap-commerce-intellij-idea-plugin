@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -84,7 +85,7 @@ class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(mes
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, AllIcons.Actions.GroupByModuleGroup) {
+class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.RELATION) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaRelations()
 
@@ -96,7 +97,7 @@ class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(messa
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, AllIcons.Actions.GroupByModule) {
+class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.ATOMIC) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaAtomics()
 

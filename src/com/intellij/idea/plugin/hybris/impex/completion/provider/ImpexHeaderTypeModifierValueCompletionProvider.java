@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier;
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifierValue;
@@ -87,7 +87,7 @@ public class ImpexHeaderTypeModifierValueCompletionProvider extends CompletionPr
                     final PsiClass psiClass = ((ImpexProcessorModifierValue) it).getPsiClass();
                     final LookupElementBuilder lookup = LookupElementBuilder.create(psiClass.getQualifiedName())
                                                                             .withPresentableText(psiClass.getName())
-                                                                            .withIcon(AllIcons.Nodes.Class);
+                                                                            .withIcon(HybrisIcons.ITEM);
                     result.addElement(lookup);
                 });
 

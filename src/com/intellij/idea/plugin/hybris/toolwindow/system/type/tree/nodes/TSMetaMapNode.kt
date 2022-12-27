@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -31,9 +31,9 @@ class TSMetaMapNode(parent: TSNode, val meta: TSGlobalMetaMap) : TSNode(parent),
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(AllIcons.Nodes.Plugin)
+        presentation.setIcon(HybrisIcons.MAP)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = "${meta.argumentType} : ${meta.returnType}"
+        presentation.locationString = "${meta.argumentType ?: "?"} : ${meta.returnType ?: "?"}"
     }
 
 }

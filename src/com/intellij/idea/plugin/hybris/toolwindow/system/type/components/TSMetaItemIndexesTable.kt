@@ -32,11 +32,12 @@ private const val COLUMN_REPLACE = "R"
 private const val COLUMN_UNIQUE = "U"
 private const val COLUMN_CREATION_MODE = "Creation mode"
 private const val COLUMN_KEYS = "Keys"
+private const val COLUMN_INCLUDES = "Includes"
 private const val COLUMN_MODULE = "Module"
 
 class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaItemIndex>(myProject) {
 
-    override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS)
+    override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS, COLUMN_INCLUDES)
     override fun select(meta: TSMetaItemIndex) = selectRowWithValue(meta.name, COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(
         COLUMN_CUSTOM,
@@ -95,6 +96,10 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
             createColumn(
                 name = COLUMN_KEYS,
                 valueProvider = { attr -> attr.keys.joinToString() }
+            ),
+            createColumn(
+                name = COLUMN_INCLUDES,
+                valueProvider = { attr -> attr.includes.joinToString() }
             )
         )
 

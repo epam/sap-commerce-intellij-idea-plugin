@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaAtomic
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ class TSMetaAtomicNode(parent: TSNode, val meta: TSGlobalMetaAtomic) : TSNode(pa
     override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(AllIcons.Actions.GroupByModule)
+        presentation.setIcon(HybrisIcons.ATOMIC)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 

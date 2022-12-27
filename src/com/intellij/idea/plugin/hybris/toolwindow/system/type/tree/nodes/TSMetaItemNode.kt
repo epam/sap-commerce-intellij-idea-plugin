@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.Disposable
@@ -34,8 +34,8 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(AllIcons.Nodes.Class)
-        presentation.locationString = "extends ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
+        presentation.setIcon(HybrisIcons.ITEM)
+        presentation.locationString = ": ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
     }
 
     override fun getChildren(): Collection<TSNode> {

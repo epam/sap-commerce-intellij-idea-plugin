@@ -36,6 +36,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Index extends DomElement {
 
+    String REMOVE = "remove";
+    String REPLACE = "replace";
+    String UNIQUE = "unique";
+
     /**
      * Returns the value of the name child.
      * <pre>
@@ -61,7 +65,7 @@ public interface Index extends DomElement {
      * @return the value of the remove child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("remove")
+    @com.intellij.util.xml.Attribute(REMOVE)
     GenericAttributeValue<Boolean> getRemove();
 
 
@@ -75,7 +79,7 @@ public interface Index extends DomElement {
      * @return the value of the replace child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("replace")
+    @com.intellij.util.xml.Attribute(REPLACE)
     GenericAttributeValue<Boolean> getReplace();
 
 
@@ -89,7 +93,7 @@ public interface Index extends DomElement {
      * @return the value of the unique child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("unique")
+    @com.intellij.util.xml.Attribute(UNIQUE)
     GenericAttributeValue<Boolean> getUnique();
 
 
@@ -127,6 +131,27 @@ public interface Index extends DomElement {
      */
     @SubTagList("key")
     IndexKey addKey();
+
+    /**
+     * Returns the list of include children.
+     * <pre>
+     * <h3>Element null:include documentation</h3>
+     * Configures a single index include.
+     * </pre>
+     *
+     * @return the list of include children.
+     */
+    @NotNull
+    @SubTagList("include")
+    java.util.List<IndexInclude> getIncludes();
+
+    /**
+     * Adds new child to the list of include children.
+     *
+     * @return created child
+     */
+    @SubTagList("include")
+    IndexInclude addInclude();
 
 
 }

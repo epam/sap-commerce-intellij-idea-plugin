@@ -173,7 +173,7 @@ public interface Relation extends DomElement {
     @NotNull
     @SubTag("sourceElement")
     @Required
-    RelationElement getSourceElement();
+    RelationSourceElement getSourceElement();
 
 
     /**
@@ -188,7 +188,7 @@ public interface Relation extends DomElement {
     @NotNull
     @SubTag("targetElement")
     @Required
-    RelationElement getTargetElement();
+    RelationTargetElement getTargetElement();
 
 
 }

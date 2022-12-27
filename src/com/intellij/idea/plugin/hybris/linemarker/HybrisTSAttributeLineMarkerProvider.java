@@ -34,7 +34,6 @@ import com.intellij.psi.PsiNameValuePair;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomElement;
-import icons.DvcsImplIcons;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -79,12 +78,12 @@ public class HybrisTSAttributeLineMarkerProvider extends AbstractHybrisItemLineM
                          final var elements = getAttributeElements(meta, name);
                          if (elements.isEmpty()) {
                              final var groupedRelElements = getRelations(meta, name);
-                             return getRelationMarkers(groupedRelElements, TSMetaRelation.RelationEnd.SOURCE, nameValuePair, DvcsImplIcons.Outgoing)
+                             return getRelationMarkers(groupedRelElements, TSMetaRelation.RelationEnd.SOURCE, nameValuePair, HybrisIcons.RELATION_SOURCE)
                                  .or(() -> getRelationMarkers(
                                      groupedRelElements,
                                      TSMetaRelation.RelationEnd.TARGET,
                                      nameValuePair,
-                                     DvcsImplIcons.Incoming
+                                     HybrisIcons.RELATION_TARGET
                                  ));
                          } else {
                              return Optional.of(createTargetsWithGutterIcon(nameValuePair.getNameIdentifier(), elements, HybrisIcons.ATTRIBUTE));

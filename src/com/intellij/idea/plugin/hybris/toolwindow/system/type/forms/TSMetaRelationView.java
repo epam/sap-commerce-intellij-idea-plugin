@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
@@ -31,7 +32,6 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.components.JBTextField;
-import icons.DvcsImplIcons;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -70,8 +70,8 @@ public class TSMetaRelationView {
         mySourceView = new TSMetaRelationElementView(myProject);
         myTargetView = new TSMetaRelationElementView(myProject);
 
-        myTabs.insertTab("Source", DvcsImplIcons.Outgoing, mySourceView.getContent(), null, TAB_SOURCE_INDEX);
-        myTabs.insertTab("Target", DvcsImplIcons.Incoming, myTargetView.getContent(), null, TAB_TARGET_INDEX);
+        myTabs.insertTab("Source", HybrisIcons.RELATION_SOURCE, mySourceView.getContent(), null, TAB_SOURCE_INDEX);
+        myTabs.insertTab("Target", HybrisIcons.RELATION_TARGET, myTargetView.getContent(), null, TAB_TARGET_INDEX);
     }
 
     private void initData(final TSMetaRelation myMeta) {

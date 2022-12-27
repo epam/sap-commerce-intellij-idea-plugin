@@ -65,6 +65,10 @@ public interface ModelMethod extends DomElement {
     @Attribute("deprecated")
     GenericAttributeValue<Boolean> getDeprecated();
 
+    @NotNull
+    @Attribute("deprecatedSince")
+    GenericAttributeValue<String> getDeprecatedSince();
+
 
     /**
      * Returns the value of the default child.

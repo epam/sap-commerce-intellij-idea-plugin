@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -31,14 +31,14 @@ class TSMetaRelationNode(parent: TSNode, val meta: TSGlobalMetaRelation) : TSNod
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
+        presentation.setIcon(HybrisIcons.RELATION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = "${meta.source.type} > ${meta.target.type}"
     }
 
     override fun getChildren() = listOf(
-            TSMetaRelationElementNode(this, meta.source),
-            TSMetaRelationElementNode(this, meta.target)
+        TSMetaRelationElementNode(this, meta.source),
+        TSMetaRelationElementNode(this, meta.target)
     )
 
 }

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -49,10 +50,10 @@ public class HybrisApplicationSettings {
     );
 
     public static final List<String> DEFAULT_TSD_STOP_TYPE_NAMES = Lists.newArrayList(
-        "GenericItem",
-        "Item",
-        "LocalizableItem",
-        "CronJob"
+        HybrisConstants.TS_TYPE_GENERIC_ITEM,
+        HybrisConstants.TS_TYPE_ITEM,
+        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
+        HybrisConstants.TS_TYPE_CRON_JOB
     );
 
     public static final List<String> DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = Lists.newArrayList(

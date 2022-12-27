@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
@@ -37,12 +38,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
-            TSMetaType.META_ATOMIC -> presentation.setIcon(AllIcons.Actions.GroupByModule)
+            TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.ATOMIC)
             TSMetaType.META_ITEM -> presentation.setIcon(AllIcons.Actions.GroupByClass)
             TSMetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
             TSMetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
             TSMetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
-            TSMetaType.META_RELATION -> presentation.setIcon(AllIcons.Actions.GroupByModuleGroup)
+            TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.RELATION)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
