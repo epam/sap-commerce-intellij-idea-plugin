@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult;
-import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase;
+import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;

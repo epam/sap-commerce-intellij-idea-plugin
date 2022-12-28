@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
-import com.intellij.idea.plugin.hybris.psi.references.TSReferenceBase.TSResolveResult;
+import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase.TSResolveResult;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute;

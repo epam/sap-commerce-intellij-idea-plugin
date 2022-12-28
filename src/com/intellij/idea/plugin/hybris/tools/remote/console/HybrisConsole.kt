@@ -5,6 +5,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessor
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
@@ -12,7 +13,7 @@ import javax.swing.Icon
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language), Disposable {
 
     init {
         this.printDefaultText()

@@ -19,13 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.AbstractElementManipulator
-import com.intellij.psi.ElementManipulator
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
+import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.IncorrectOperationException
 
@@ -33,9 +27,8 @@ import com.intellij.util.IncorrectOperationException
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexJavaClassBaseReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
-    private val NO_VARIANTS = arrayOfNulls<Any>(0)
 
-    override fun getVariants() = NO_VARIANTS
+    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val project = element.project

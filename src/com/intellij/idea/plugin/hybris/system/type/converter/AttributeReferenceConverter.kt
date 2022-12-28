@@ -18,82 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.system.type.converter
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.util.Comparing
-import com.intellij.openapi.util.text.StringUtil.capitalize
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeReference
 import com.intellij.psi.*
-import com.intellij.psi.impl.PsiClassImplUtil
-import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.PsiShortNamesCache
-import com.intellij.psi.util.MethodSignatureUtil
-import com.intellij.psi.util.PsiTreeUtil.findFirstParent
-import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class AttributeReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
-    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?): Array<PsiReference> {
-        val reference = object : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
-            override fun resolve(): PsiElement? {
-                val resolveResults = multiResolve(false)
-                return if (resolveResults.size == 1) resolveResults.first().element else null
-            }
 
-            override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-                val project = element.project
-                val className = findItemTag(element).getAttributeValue("code")
-                val psiElements = mutableListOf<PsiElement>()
-                val searchFieldName = (element as XmlAttributeValueImpl).value
-
-                if (className != null) {
-                    arrayListOf(className, "${className}${HybrisConstants.MODEL_SUFFIX}").forEach { name ->
-                        val psiClasses = PsiShortNamesCache.getInstance(project).getClassesByName(
-                                name, GlobalSearchScope.allScope(project)
-                        )
-                        psiClasses.forEach { psiClass ->
-                            val psiField = PsiClassImplUtil.findFieldByName(psiClass, searchFieldName.uppercase(), true)
-                            if (psiField != null) psiElements.add(psiField)
-                            val psiGetterMethod = findGetter(psiClass, searchFieldName, true)
-                            if (psiGetterMethod != null) psiElements.add(psiGetterMethod)
-                            val psiSetterMethod = findSetter(psiClass, searchFieldName, true)
-                            if (psiSetterMethod != null) psiElements.add(psiSetterMethod)
-                        }
-                    }
-                }
-
-                return PsiElementResolveResult.createResults(psiElements)
-            }
-
-            override fun getVariants() = PsiReference.EMPTY_ARRAY
-        }
-
-        return arrayOf(reference)
-    }
-
-    private fun findItemTag(element: PsiElement) =
-            findFirstParent(element, true) { e -> return@findFirstParent e is XmlTag && e.name == "itemtype" } as XmlTag
-    
-    private fun findGetter(psiClass: PsiClass, name: String, checkSuperClasses: Boolean): PsiMethod? {
-        return if (!Comparing.strEqual(name, null as String?)) {
-            val methodSignature = MethodSignatureUtil.createMethodSignature(suggestGetterName(name), PsiType.EMPTY_ARRAY, PsiTypeParameter.EMPTY_ARRAY, PsiSubstitutor.EMPTY)
-            return MethodSignatureUtil.findMethodBySignature(psiClass, methodSignature, checkSuperClasses)
-        } else {
-            null
-        }
-    }
-    
-    private fun findSetter(psiClass: PsiClass, name: String, checkSuperClasses: Boolean): PsiMethod? {
-        val methods = psiClass.findMethodsByName(suggestSetterName(name), checkSuperClasses)
-        return if (methods.isEmpty()) null else methods.first()
-    }
-
-    private fun suggestGetterName(name: String) = "get${capitalize(name)}"
-    private fun suggestSetterName(name: String) = "set${capitalize(name)}"
+    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?) = arrayOf(AttributeReference(element))
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
+
 }

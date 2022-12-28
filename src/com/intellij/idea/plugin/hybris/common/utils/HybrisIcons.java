@@ -56,6 +56,7 @@ public final class HybrisIcons {
     public static final Icon ENUM = AllIcons.Nodes.Enum;
     public static final Icon ENUM_VALUE = AllIcons.Nodes.AnonymousClass;
     public static final Icon BEAN = getIcon("/icons/beanIcon.svg");
+    public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
 
     public static final Icon MACROS = getIcon("/icons/macros.png");

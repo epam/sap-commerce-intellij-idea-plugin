@@ -30,7 +30,6 @@ import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
@@ -113,6 +112,7 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_WORDS;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IDEA_EDITION_ULTIMATE;
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
@@ -141,7 +141,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisProjectDescriptor hybrisProjectDescriptor,
         final List<Module> modules
     ) {
-        super(project, HybrisI18NBundleUtils.message("hybris.project.import.commit"), false);
+        super(project, message("hybris.project.import.commit"), false);
         this.project = project;
         this.model = model;
         this.modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
@@ -153,7 +153,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     @Override
     public synchronized void run(@NotNull final ProgressIndicator indicator) {
         indicator.setIndeterminate(true);
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.preparation"));
+        indicator.setText(message("hybris.project.import.preparation"));
 
         final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
         final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor
@@ -187,7 +187,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.facets"));
+            indicator.setText(message("hybris.project.import.facets"));
             if (isPluginActive(SPRING_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
@@ -200,17 +200,17 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
 
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.spring"));
+        indicator.setText(message("hybris.project.import.spring"));
         springConfigurator.findSpringConfiguration(allModules);
         groupModuleConfigurator.findDependencyModules(allModules);
         int counter = 0;
 
         for (HybrisModuleDescriptor moduleDescriptor : allModules) {
-            indicator.setText(HybrisI18NBundleUtils.message(
+            indicator.setText(message(
                 "hybris.project.import.module.import",
                 moduleDescriptor.getName()
             ));
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.settings"));
+            indicator.setText2(message("hybris.project.import.module.settings"));
             final Module javaModule = rootProjectModifiableModel.newModule(
                 moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
             );
@@ -220,32 +220,30 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             final ModifiableRootModel modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
             final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule);
 
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.sdk"));
+            indicator.setText2(message("hybris.project.import.module.sdk"));
             ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
 
             modifiableRootModel.inheritSdk();
 
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.libs"));
+            indicator.setText2(message("hybris.project.import.module.libs"));
             libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.content"));
+            indicator.setText2(message("hybris.project.import.module.content"));
 
             if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
                 readOnlyContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             } else {
                 regularContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
             }
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath"));
+            indicator.setText2(message("hybris.project.import.module.outputpath"));
             compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.javadoc"));
+            indicator.setText2(message("hybris.project.import.module.javadoc"));
             javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor,indicator);
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.groups"));
+            indicator.setText2(message("hybris.project.import.module.groups"));
             groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
-            indicator.setText2(HybrisI18NBundleUtils.message("hybris.project.import.module.facet"));
+            indicator.setText2(message("hybris.project.import.module.facet"));
             for (FacetConfigurator facetConfigurator : facetConfigurators) {
-                facetConfigurator.configure(
-                    modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel
-                );
+                facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
             }
             modules.add(javaModule);
             counter++;
@@ -263,21 +261,21 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.dependencies"));
+        indicator.setText(message("hybris.project.import.dependencies"));
         indicator.setText2("");
         modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
         springConfigurator.configureDependencies(hybrisProjectDescriptor, modifiableModelsProvider);
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.runconfigurations"));
+        indicator.setText(message("hybris.project.import.runconfigurations"));
         debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
 
         if (testRunConfigurationConfigurator != null) {
             testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
         }
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.vcs"));
+        indicator.setText(message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.search.scope"));
+        indicator.setText(message("hybris.project.import.search.scope"));
         searchScopeConfigurator.configure(project, rootProjectModifiableModel);
-        indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.saving.project"));
+        indicator.setText(message("hybris.project.import.saving.project"));
 
         ApplicationManager.getApplication().invokeAndWait(
             () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
@@ -288,13 +286,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getCompilerConfigurator();
 
         if (compilerConfigurator != null) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.compiler"));
+            indicator.setText(message("hybris.project.import.compiler"));
             compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
         }
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
 
         if (eclipseConfigurator != null) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.eclipse"));
+            indicator.setText(message("hybris.project.import.eclipse"));
 
             try {
                 final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
@@ -314,7 +312,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final GradleConfigurator gradleConfigurator = configuratorFactory.getGradleConfigurator();
 
         if (gradleConfigurator != null) {
-            indicator.setText(HybrisI18NBundleUtils.message("hybris.project.import.gradle"));
+            indicator.setText(message("hybris.project.import.gradle"));
 
             try {
                 final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor

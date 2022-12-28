@@ -22,19 +22,19 @@
 
     <xi:include href="/META-INF/plugin-release-info.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
-    <depends optional="true" config-file="ant-support-optional-dependencies.xml">AntSupport</depends>
-    <depends optional="true" config-file="junit-optional-dependencies.xml">JUnit</depends>
-    <depends optional="true" config-file="maven-support-optional-dependencies.xml">org.jetbrains.idea.maven</depends>
-    <depends optional="true" config-file="eclipse-support-optional-dependencies.xml">org.jetbrains.idea.eclipse</depends>
-    <depends optional="true" config-file="gradle-support-optional-dependencies.xml">org.jetbrains.plugins.gradle</depends>
-    <depends optional="true" config-file="lang-optional-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="spring-optional-dependencies.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="javaee-optional-dependencies.xml">com.intellij.javaee</depends>
-    <depends optional="true" config-file="java-optional-dependencies.xml">com.intellij.modules.java</depends>
-    <depends optional="true" config-file="diagram-optional-dependencies.xml">com.intellij.diagram</depends>
-    <depends optional="true" config-file="properties-optional-dependencies.xml">com.intellij.properties</depends>
-    <depends optional="true" config-file="groovy-optional-dependencies.xml">org.intellij.groovy</depends>
-    <depends optional="true" config-file="impex-optional-copyright.xml">com.intellij.copyright</depends>
+    <depends optional="true" config-file="optional-junit-dependencies.xml">JUnit</depends>
+    <depends optional="true" config-file="optional-support-ant-dependencies.xml">AntSupport</depends>
+    <depends optional="true" config-file="optional-support-maven-dependencies.xml">org.jetbrains.idea.maven</depends>
+    <depends optional="true" config-file="optional-support-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
+    <depends optional="true" config-file="optional-support-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="optional-lang-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="optional-spring-dependencies.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="optional-javaee-dependencies.xml">com.intellij.javaee</depends>
+    <depends optional="true" config-file="optional-java-dependencies.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="optional-diagram-dependencies.xml">com.intellij.diagram</depends>
+    <depends optional="true" config-file="optional-properties-dependencies.xml">com.intellij.properties</depends>
+    <depends optional="true" config-file="optional-groovy-dependencies.xml">org.intellij.groovy</depends>
+    <depends optional="true" config-file="optional-impex-copyright.xml">com.intellij.copyright</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>

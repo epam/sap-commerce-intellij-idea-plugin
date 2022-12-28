@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.facet.FacetType;
-import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -55,26 +54,21 @@ public class SpringFacetConfigurator implements FacetConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(modifiableFacetModel);
 
-        SpringFacet springFacet = modifiableFacetModel.getFacetByType(SpringFacet.FACET_TYPE_ID);
+        SpringFacet springFacet = SpringFacet.getInstance(javaModule);
 
         if (springFacet == null) {
-            final FacetType<SpringFacet, SpringFacetConfiguration> springFacetType = FacetTypeRegistry
-                .getInstance().findFacetType(SpringFacet.FACET_TYPE_ID);
+            final FacetType<SpringFacet, SpringFacetConfiguration> springFacetType = SpringFacet.getSpringFacetType();
 
-            if (!springFacetType.isSuitableModuleType(ModuleType.get(javaModule))) {
-                return;
-            }
+            if (!springFacetType.isSuitableModuleType(ModuleType.get(javaModule))) return;
 
             springFacet = springFacetType.createFacet(
                 javaModule, springFacetType.getDefaultFacetName(), springFacetType.createDefaultConfiguration(), null
             );
-
-            modifiableFacetModel.addFacet(springFacet);
         } else {
             springFacet.removeFileSets();
         }
 
-        final String facetId = moduleDescriptor.getName() + SpringFacet.FACET_TYPE_ID.toString();
+        final String facetId = moduleDescriptor.getName() + SpringFacet.FACET_TYPE_ID;
         final SpringFileSet springFileSet = springFacet.addFileSet(facetId, facetId);
 
         for (String springFile : moduleDescriptor.getSpringFileSet()) {
@@ -90,5 +84,7 @@ public class SpringFacetConfigurator implements FacetConfigurator {
             setting.setBooleanValue(false);
             setting.apply();
         }
+
+        modifiableFacetModel.addFacet(springFacet);
     }
 }

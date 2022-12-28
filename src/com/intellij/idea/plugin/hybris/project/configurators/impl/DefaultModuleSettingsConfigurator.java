@@ -40,7 +40,7 @@ public class DefaultModuleSettingsConfigurator implements ModuleSettingsConfigur
         final boolean isReadOnlyType = descriptorType == HybrisModuleDescriptorType.OOTB ||
                                        descriptorType == HybrisModuleDescriptorType.PLATFORM ||
                                        descriptorType == HybrisModuleDescriptorType.EXT;
-        String readOnly = Boolean.valueOf(hasReadOnlySettings && isReadOnlyType).toString();
+        final String readOnly = Boolean.valueOf(hasReadOnlySettings && isReadOnlyType).toString();
 
         javaModule.setOption(HybrisConstants.READ_ONLY, readOnly);
     }
