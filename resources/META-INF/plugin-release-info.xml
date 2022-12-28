@@ -103,6 +103,11 @@
                 <li> Fixed: Impex config processor inspection rule </li>
                 <li> Fixed: Default values for Type System modifiers </li>
             </ul>
+
+            <strong>Ultimate only</strong>
+            <ul>
+                <li> Introduced new items.xml Annotator for Attribute Handler </li>
+            </ul>
           ]]>
     </change-notes>
 
