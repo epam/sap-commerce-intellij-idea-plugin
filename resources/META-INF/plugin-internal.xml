@@ -5,15 +5,7 @@
 
         <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
-
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"
-            serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultCommonIdeaService"/>
@@ -21,13 +13,10 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisProcessReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisItemXmlReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.reference.contributor.HybrisProcessReferenceContributor"/>
 
-        <completion.contributor language="XML"
-                                implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.completion.ExtensionsNameContributor"/>
 
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
@@ -35,9 +24,12 @@
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>

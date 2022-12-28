@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemarker;
+package com.intellij.idea.plugin.hybris.codeInsight;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
@@ -49,13 +49,13 @@ public class HybrisTSTypeLineMarkerProvider extends AbstractHybrisItemLineMarker
         final var name = cleanSearchName(psi.getName());
         final var psiNameIdentifier = psi.getNameIdentifier();
 
-        if (ModelsUtils.isModelFile(psi.getContainingFile(), psi)) {
+        if (ModelsUtils.isModelFile(psi)) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaItemByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)
                                             .collect(Collectors.toList()))
                            .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TYPE_SYSTEM));
-        } else if (ModelsUtils.isEnumFile(psi.getContainingFile(), psi)) {
+        } else if (ModelsUtils.isEnumFile(psi)) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaEnumByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)

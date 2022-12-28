@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemarker
+package com.intellij.idea.plugin.hybris.codeInsight
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -28,39 +28,37 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.openapi.module.ModuleUtil
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiField
 
-class HybrisBSTypeLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class HybrisBSPropertyLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
-        if (element !is PsiClass) return
-        val name = element.qualifiedName ?: return
+        if (element !is PsiField || element.containingClass == null) return
         val module = ModuleUtil.findModuleForPsiElement(element) ?: return
+        val psiClass = element.containingClass!!
         if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) return
-        if (!BeansUtils.isGeneratedFile(element)) return
+        if (BeansUtils.isEnumFile(psiClass)) return
+        if (psiClass.qualifiedName == null) return
 
-        val elements = BSMetaModelAccess.getInstance(element.project).findMetasByName(name)
-            .flatMap { it.declarations }
-            .mapNotNull { it.retrieveDom() }
-            .mapNotNull { it.xmlElement }
+        val metas = BSMetaModelAccess.getInstance(element.project).findMetaBeansByName(psiClass.qualifiedName!!)
 
-        if (elements.isEmpty()) return
+        if (metas.isEmpty() || metas.size > 1) return
 
-        result.add(createTargetsWithGutterIcon(element, elements))
+        val xmlElement = metas.first().properties[element.name]?.retrieveDom()?.xmlElement ?: return
+
+        result.add(createTargetsWithGutterIcon(element, xmlElement))
     }
 
     private fun createTargetsWithGutterIcon(
-        psiClass: PsiClass,
-        list: Collection<PsiElement>
-    ) = NavigationGutterIconBuilder.create(HybrisIcons.BEAN)
-        .setTargets(list)
-        .setEmptyPopupText(message("hybris.gutter.navigate.no.matching.beans"))
-        .setPopupTitle(message("hybris.gutter.bean.type.navigate.choose.class.title"))
-        .setTooltipText(message("hybris.gutter.item.class.tooltip.navigate.declaration"))
-        .createLineMarkerInfo(psiClass.nameIdentifier!!)
+        dom: PsiField,
+        psi: PsiElement
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.PROPERTY)
+        .setTarget(psi)
+        .setTooltipText(message("hybris.gutter.bs.bean.property.title"))
+        .createLineMarkerInfo(dom.nameIdentifier)
 
 }

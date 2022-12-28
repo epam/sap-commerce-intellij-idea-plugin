@@ -75,12 +75,13 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisTSAttributeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSPropertyLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisBSTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.linemarker.HybrisPopulatorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisTSTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisTSAttributeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisTSEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisBSEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisBSPropertyLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisBSTypeLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.HybrisPopulatorLineMarkerProvider"/>
 
         <codeInsight.inlayProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.inlayprovider.HybrisDynamicAttributeInlayProvider"/>
     </extensions>

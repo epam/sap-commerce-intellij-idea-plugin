@@ -22,18 +22,14 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.Nullable;
 
 public final class ModelsUtils {
 
     private ModelsUtils() {
     }
 
-    public static boolean isModelFile(final PsiFile psiFile, final @Nullable PsiClass psiClass) {
-        if (psiClass == null) {
-            return false;
-        }
+    public static boolean isModelFile(final PsiClass psiClass) {
+        final var psiFile = psiClass.getContainingFile();
 
         if (psiFile.getText().contains("Generated model class for type")) {
             return true;
@@ -59,10 +55,8 @@ public final class ModelsUtils {
                    && psiClass.getSuperClass().getName().startsWith("Generated"));
     }
 
-    public static boolean isEnumFile(final PsiFile psiFile, final @Nullable PsiClass psiClass) {
-        if (psiClass == null) {
-            return false;
-        }
+    public static boolean isEnumFile(final PsiClass psiClass) {
+        final var psiFile = psiClass.getContainingFile();
 
         if (psiFile.getText().contains("Generated enum")) {
             return true;

@@ -25,7 +25,7 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_INTEGRATION_SETTINGS_FILE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS;
 
 
 /**
@@ -33,7 +33,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_INTE
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-@State(name = "HybrisApplicationSettings", storages = {@Storage(HYBRIS_INTEGRATION_SETTINGS_FILE_NAME)})
+@State(name = "HybrisApplicationSettings", storages = {@Storage(STORAGE_HYBRIS_INTEGRATION_SETTINGS)})
 public class HybrisApplicationSettingsComponent implements PersistentStateComponent<HybrisApplicationSettings> {
 
     protected final HybrisApplicationSettings hybrisApplicationSettings = new HybrisApplicationSettings();

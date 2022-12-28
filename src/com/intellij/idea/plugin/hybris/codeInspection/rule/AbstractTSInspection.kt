@@ -21,7 +21,9 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.system.type.model.Items
+import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -38,9 +40,12 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 abstract class AbstractTSInspection : DomElementsInspection<Items>(Items::class.java) {
 
     override fun checkFileElement(domFileElement: DomFileElement<Items>, holder: DomElementAnnotationHolder) {
-        val helper = DomElementAnnotationsManager.getInstance(domFileElement.manager.project).highlightingHelper
-        val problemHighlightType = getProblemHighlightType(domFileElement.file)
-        val project = domFileElement.file.project
+        val file = domFileElement.file
+        val project = file.project
+        if (!CommonIdeaService.getInstance().isHybrisProject(project)) return
+        if (!TSUtils.isTsFile(file)) return
+        val helper = DomElementAnnotationsManager.getInstance(project).highlightingHelper
+        val problemHighlightType = getProblemHighlightType(file)
 
         inspect(project, domFileElement.rootElement, holder, helper, problemHighlightType.severity)
     }

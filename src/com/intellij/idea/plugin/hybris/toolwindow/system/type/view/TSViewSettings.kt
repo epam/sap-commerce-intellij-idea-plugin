@@ -18,17 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.StoragePathMacros
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisTSView")
-@Storage(StoragePathMacros.WORKSPACE_FILE)
+@Storage(HybrisConstants.STORAGE_HYBRIS_TS_VIEW)
 class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
 
     private val myMessageBus: MessageBus

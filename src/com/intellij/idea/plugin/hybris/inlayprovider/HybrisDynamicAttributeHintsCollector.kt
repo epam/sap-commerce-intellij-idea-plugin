@@ -50,7 +50,7 @@ class HybrisDynamicAttributeHintsCollector(editor: Editor) : FactoryInlayHintsCo
 
         if (method !is PsiMethod) return true
         if (method.containingClass == null) return true
-        if (!ModelsUtils.isModelFile(method.containingFile, method.containingClass)) return true
+        if (!ModelsUtils.isModelFile(method.containingClass)) return true
 
         val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return true
         val annotation = method.getAnnotation("de.hybris.bootstrap.annotations.Accessor") ?: return true

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemarker
+package com.intellij.idea.plugin.hybris.codeInsight
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -25,32 +25,32 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.getDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
-import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiEnumConstant
+import com.intellij.psi.PsiField
 
-class HybrisBSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class HybrisTSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
-        if (element !is PsiEnumConstant || element.containingClass == null) return
+        if (element !is PsiField || element.containingClass == null) return
         val module = ModuleUtil.findModuleForPsiElement(element) ?: return
         val psiClass = element.containingClass!!
         if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) return
-        if (!BeansUtils.isEnumFile(psiClass)) return
+        if (!ModelsUtils.isEnumFile(psiClass)) return
 
-        val meta = BSMetaModelAccess.getInstance(element.project).findMetaEnumByName(psiClass.qualifiedName) ?: return
+        val meta = TSMetaModelAccess.getInstance(element.project).findMetaEnumByName(psiClass.name) ?: return
         val xmlElement = meta.values[element.name]?.retrieveDom()?.xmlElement ?: return
 
         result.add(createTargetsWithGutterIcon(element, xmlElement))
     }
 
     private fun createTargetsWithGutterIcon(
-        dom: PsiEnumConstant,
+        dom: PsiField,
         psi: PsiElement
     ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
         .setTarget(psi)

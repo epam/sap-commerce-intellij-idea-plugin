@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemarker;
+package com.intellij.idea.plugin.hybris.codeInsight;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;

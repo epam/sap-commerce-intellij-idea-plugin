@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.linemarker
+package com.intellij.idea.plugin.hybris.codeInsight
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
@@ -30,36 +30,31 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
-import com.intellij.psi.PsiField
 
-class HybrisBSPropertyLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class HybrisBSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
-        if (element !is PsiField || element.containingClass == null) return
+        if (element !is PsiEnumConstant || element.containingClass == null) return
         val module = ModuleUtil.findModuleForPsiElement(element) ?: return
         val psiClass = element.containingClass!!
         if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) return
-        if (BeansUtils.isEnumFile(psiClass)) return
-        if (psiClass.qualifiedName == null) return
+        if (!BeansUtils.isEnumFile(psiClass)) return
 
-        val metas = BSMetaModelAccess.getInstance(element.project).findMetaBeansByName(psiClass.qualifiedName!!)
-
-        if (metas.isEmpty() || metas.size > 1) return
-
-        val xmlElement = metas.first().properties[element.name]?.retrieveDom()?.xmlElement ?: return
+        val meta = BSMetaModelAccess.getInstance(element.project).findMetaEnumByName(psiClass.qualifiedName) ?: return
+        val xmlElement = meta.values[element.name]?.retrieveDom()?.xmlElement ?: return
 
         result.add(createTargetsWithGutterIcon(element, xmlElement))
     }
 
     private fun createTargetsWithGutterIcon(
-        dom: PsiField,
+        dom: PsiEnumConstant,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(HybrisIcons.PROPERTY)
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
         .setTarget(psi)
-        .setTooltipText(message("hybris.gutter.bs.bean.property.title"))
+        .setTooltipText(message("hybris.gutter.bs.enum.value.title"))
         .createLineMarkerInfo(dom.nameIdentifier)
 
 }

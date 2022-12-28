@@ -14,10 +14,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS;
 
-@State(name = HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_COMPONENT_NAME, storages = {@Storage(HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS_FILE_NAME)})
+@State(name = "HybrisDeveloperSpecificProjectSettings", storages = {@Storage(STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS)})
 public class HybrisDeveloperSpecificProjectSettingsComponent
     implements PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
 
