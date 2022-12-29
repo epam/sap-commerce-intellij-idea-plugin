@@ -42,7 +42,6 @@ import javax.swing.Icon
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 object FSKeywordTableClauseAnalyzer {
-    private val topLevelKeywords = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", /* Temporarily place this*/ "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
 
     fun analyzeKeyword(parameters: CompletionParameters, completionResultSet: CompletionResultSet) {
         if ((parameters.originalPosition == null && !isTableNameIdentifier(parameters) && !isColumnReferenceIdentifier(parameters)) || isFile(parameters)) {

@@ -30,9 +30,9 @@ class Notifications private constructor(type: NotificationType, title: String, c
         return this
     }
 
-    fun delay(delay: Long): Notifications {
-        if (delay > 0) {
-            this.delay = delay
+    fun hideAfter(seconds: Long): Notifications {
+        if (seconds > 0) {
+            this.delay = seconds
         }
         return this
     }

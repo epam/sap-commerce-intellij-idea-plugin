@@ -89,6 +89,7 @@
         <![CDATA[
             <ul>
                 <li> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
+                <li> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard </li>
                 <li> Added customized Structure View for beans.xml files </li>
                 <li> Added new beans.xml inspection rules </li>
                 <li> Added navigation to items.xml Type attributes from generated classes </li>

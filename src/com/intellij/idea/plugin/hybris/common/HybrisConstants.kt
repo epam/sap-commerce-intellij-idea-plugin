@@ -195,6 +195,7 @@ object HybrisConstants {
     const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
     const val DIALOG_TITLE = "copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
+
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"
     const val RESOURCES_DIRECTORY = "resources"
@@ -216,6 +217,7 @@ object HybrisConstants {
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
 
+    @JvmField val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
     @JvmField val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
     @JvmField val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
 

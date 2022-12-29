@@ -42,7 +42,7 @@ class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEdit
                 HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
                 HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
             )
-                .delay(10)
+                .hideAfter(10)
                 .notify(project)
         }
     }

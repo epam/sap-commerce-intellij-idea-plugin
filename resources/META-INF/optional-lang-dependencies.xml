@@ -154,14 +154,9 @@
         <langCodeStyleSettingsProvider
             implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <lang.foldingBuilder language="Impex"
-                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingBuilder"/>
-
-        <lang.foldingBuilder language="Impex"
-                             implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingLinesBuilder"/>
-
-        <lang.foldingBuilder language="Impex"
-                                     implementationClass="com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroFoldingBuilder"/>
+        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexFoldingBuilder"/>
+        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexMacroFoldingBuilder"/>
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 

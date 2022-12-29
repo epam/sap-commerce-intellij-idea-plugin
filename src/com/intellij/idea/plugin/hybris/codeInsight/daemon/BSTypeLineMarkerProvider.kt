@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -58,9 +58,9 @@ class BSTypeLineMarkerProvider : RelatedItemLineMarkerProvider() {
         list: Collection<PsiElement>
     ) = NavigationGutterIconBuilder.create(HybrisIcons.BEAN)
         .setTargets(list)
-        .setEmptyPopupText(message("hybris.gutter.navigate.no.matching.beans"))
-        .setPopupTitle(message("hybris.gutter.bean.type.navigate.choose.class.title"))
-        .setTooltipText(message("hybris.gutter.item.class.tooltip.navigate.declaration"))
+        .setEmptyPopupText(message("hybris.editor.gutter.navigate.no.matching.beans"))
+        .setPopupTitle(message("hybris.editor.gutter.bean.type.navigate.choose.class.title"))
+        .setTooltipText(message("hybris.editor.gutter.item.class.tooltip.navigate.declaration"))
         .createLineMarkerInfo(psiClass.nameIdentifier!!)
 
 }

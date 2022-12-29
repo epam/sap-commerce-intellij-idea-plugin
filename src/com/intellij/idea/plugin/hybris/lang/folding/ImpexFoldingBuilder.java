@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,8 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding;
+package com.intellij.idea.plugin.hybris.lang.folding;
 
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilderFactory;
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor;
+import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils;
+import com.intellij.idea.plugin.hybris.impex.folding.PsiElementFilterFactory;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;

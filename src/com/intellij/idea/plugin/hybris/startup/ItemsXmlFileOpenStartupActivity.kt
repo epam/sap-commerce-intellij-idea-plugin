@@ -49,7 +49,7 @@ class ItemsXmlFileOpenStartupActivity : StartupActivity {
                 HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
             )
                 .important(true)
-                .delay(10)
+                .hideAfter(10)
                 .notify(project)
         }
     }

@@ -101,13 +101,13 @@ class PopulatorLineMarkerProvider : RelatedItemLineMarkerProvider() {
         NavigationGutterIconBuilder.create(HybrisIcons.GUTTER_POPULATOR)
             .setTargets(list)
             .setEmptyPopupText(HybrisI18NBundleUtils.message(
-                    "hybris.gutter.navigate.no.matching.populators"
+                    "hybris.editor.gutter.navigate.no.matching.populators"
                 ))
             .setPopupTitle(HybrisI18NBundleUtils.message(
-                    "hybris.gutter.populator.class.navigate.choose.class.title"
+                    "hybris.editor.gutter.populator.class.navigate.choose.class.title"
                 ))
             .setTooltipText(HybrisI18NBundleUtils.message(
-                    "hybris.gutter.populator.class.tooltip.navigate.declaration"
+                    "hybris.editor.gutter.populator.class.tooltip.navigate.declaration"
                 ))
             .createLineMarkerInfo(psiElement)
 

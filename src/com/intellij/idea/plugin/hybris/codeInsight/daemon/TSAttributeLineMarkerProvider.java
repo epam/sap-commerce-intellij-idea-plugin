@@ -93,17 +93,17 @@ public class TSAttributeLineMarkerProvider extends AbstractItemLineMarkerProvide
 
     @Override
     protected String getTooltipText() {
-        return HybrisI18NBundleUtils.message("hybris.gutter.item.attribute.tooltip.navigate.declaration");
+        return HybrisI18NBundleUtils.message("hybris.editor.gutter.item.attribute.tooltip.navigate.declaration");
     }
 
     @Override
     protected String getPopupTitle() {
-        return HybrisI18NBundleUtils.message("hybris.gutter.bean.attribute.navigate.choose.class.title");
+        return HybrisI18NBundleUtils.message("hybris.editor.gutter.bean.attribute.navigate.choose.class.title");
     }
 
     @Override
     protected String getEmptyPopupText() {
-        return HybrisI18NBundleUtils.message("hybris.gutter.navigate.no.matching.attributes");
+        return HybrisI18NBundleUtils.message("hybris.editor.gutter.navigate.no.matching.attributes");
     }
 
     private static List<XmlElement> getAttributeElements(final TSGlobalMetaItem meta, final String name) {
