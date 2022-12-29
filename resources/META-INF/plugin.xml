@@ -34,7 +34,7 @@
     <depends optional="true" config-file="optional-diagram-dependencies.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="optional-properties-dependencies.xml">com.intellij.properties</depends>
     <depends optional="true" config-file="optional-groovy-dependencies.xml">org.intellij.groovy</depends>
-    <depends optional="true" config-file="optional-impex-copyright.xml">com.intellij.copyright</depends>
+    <depends optional="true" config-file="optional-copyright-impex-dependencies.xml">com.intellij.copyright</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>
