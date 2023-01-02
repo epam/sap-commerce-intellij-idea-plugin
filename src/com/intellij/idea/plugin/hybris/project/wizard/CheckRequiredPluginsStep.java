@@ -146,7 +146,7 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     }
 
     private void enablePlugins() {
-        notEnabledPlugins.forEach(PluginManagerCore::enablePlugin);
+        notEnabledPlugins.forEach(pluginId -> PluginManager.getInstance().enablePlugin(pluginId));
         final ApplicationEx app = (ApplicationEx) ApplicationManager.getApplication();
         app.restart(true);
     }

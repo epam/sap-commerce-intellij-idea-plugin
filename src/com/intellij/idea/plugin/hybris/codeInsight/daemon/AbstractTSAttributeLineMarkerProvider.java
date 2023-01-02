@@ -25,18 +25,15 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute;
-import com.intellij.psi.PsiAnnotation;
+import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiNameValuePair;
+import com.intellij.psi.PsiIdentifier;
 import com.intellij.psi.xml.XmlElement;
 import com.intellij.util.xml.DomAnchor;
 import com.intellij.util.xml.DomElement;
 
 import javax.swing.*;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,23 +41,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TSAttributeLineMarkerProvider extends AbstractItemLineMarkerProvider<PsiMethod> {
+public abstract class AbstractTSAttributeLineMarkerProvider< T extends PsiElement> extends AbstractItemLineMarkerProvider<T> {
 
     @Override
-    protected boolean canProcess(final PsiElement psi) {
-        return psi instanceof PsiMethod;
-    }
-
-    @Override
-    protected Optional<RelatedItemLineMarkerInfo<PsiElement>> collectDeclarations(final PsiMethod psi) {
-        final PsiAnnotation annotation = psi.getAnnotation("de.hybris.bootstrap.annotations.Accessor");
-
-        if (annotation == null) {
-            return Optional.empty();
-        }
-        if (!(psi.getParent() instanceof final PsiClass psiClass)) {
-            return Optional.empty();
-        }
+    protected Optional<RelatedItemLineMarkerInfo<PsiElement>> collectDeclarations(final T psi) {
+        if (!(psi.getParent() instanceof final PsiClass psiClass)) return Optional.empty();
+        if (!ModelsUtils.isModelFile(psiClass)) return Optional.empty();
 
         final var project = psi.getProject();
         final var metaService = TSMetaModelAccess.Companion.getInstance(project);
@@ -70,25 +56,29 @@ public class TSAttributeLineMarkerProvider extends AbstractItemLineMarkerProvide
             return Optional.empty();
         }
 
-        return Arrays.stream(annotation.getParameterList().getAttributes())
-                     .filter(it -> Objects.equals(it.getName(), Attribute.QUALIFIER))
-                     .findFirst()
-                     .flatMap(nameValuePair -> {
-                         final var name = nameValuePair.getLiteralValue();
-                         final var elements = getAttributeElements(meta, name);
-                         if (elements.isEmpty()) {
-                             final var groupedRelElements = getRelations(meta, name);
-                             return getRelationMarkers(groupedRelElements, TSMetaRelation.RelationEnd.SOURCE, nameValuePair, HybrisIcons.RELATION_SOURCE)
-                                 .or(() -> getRelationMarkers(
-                                     groupedRelElements,
-                                     TSMetaRelation.RelationEnd.TARGET,
-                                     nameValuePair,
-                                     HybrisIcons.RELATION_TARGET
-                                 ));
-                         } else {
-                             return Optional.of(createTargetsWithGutterIcon(nameValuePair.getNameIdentifier(), elements, HybrisIcons.ATTRIBUTE));
-                         }
-                     });
+        return collect(meta, psi);
+    }
+
+    protected abstract Optional<RelatedItemLineMarkerInfo<PsiElement>> collect(final TSGlobalMetaItem meta, final T psi);
+
+    protected Optional<RelatedItemLineMarkerInfo<PsiElement>> getPsiElementRelatedItemLineMarkerInfo(
+        final TSGlobalMetaItem meta, final String name, final PsiIdentifier nameIdentifier
+    ) {
+        final var elements = getAttributeElements(meta, name);
+        if (elements.isEmpty()) {
+            final var groupedRelElements = getRelations(meta, name);
+            return getRelationMarkers(groupedRelElements, TSMetaRelation.RelationEnd.SOURCE,
+                                      HybrisIcons.RELATION_SOURCE,
+                                      nameIdentifier
+            )
+                .or(() -> getRelationMarkers(
+                    groupedRelElements,
+                    TSMetaRelation.RelationEnd.TARGET,
+                    HybrisIcons.RELATION_TARGET, nameIdentifier
+                ));
+        } else {
+            return Optional.of(createTargetsWithGutterIcon(nameIdentifier, elements, HybrisIcons.ATTRIBUTE));
+        }
     }
 
     @Override
@@ -137,10 +127,9 @@ public class TSAttributeLineMarkerProvider extends AbstractItemLineMarkerProvide
     private Optional<RelatedItemLineMarkerInfo<PsiElement>> getRelationMarkers(
         final Map<TSMetaRelation.RelationEnd, List<XmlElement>> groupedRelElements,
         final TSMetaRelation.RelationEnd target,
-        final PsiNameValuePair nameValuePair,
-        final Icon icon
+        final Icon icon, final PsiIdentifier nameIdentifier
     ) {
         return Optional.ofNullable(groupedRelElements.get(target))
-                       .map(relElements -> createTargetsWithGutterIcon(nameValuePair.getNameIdentifier(), relElements, icon));
+                       .map(relElements -> createTargetsWithGutterIcon(nameIdentifier, relElements, icon));
     }
 }

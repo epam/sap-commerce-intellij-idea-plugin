@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
@@ -36,7 +35,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import com.intellij.ui.JBColor;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +56,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 import static java.lang.Character.getNumericValue;
 import static java.util.Collections.reverse;
@@ -116,7 +115,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         super(context);
 
         this.storeModuleFilesInChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message(
+            message(
                 "hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
             "",
             null,
@@ -223,28 +222,28 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             FileChooserDescriptorFactory.createSingleLocalFileDescriptor()));
 
         this.hybrisDistributionDirectoryFilesInChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.distribution.directory"),
+            message("hybris.import.label.select.hybris.distribution.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
         this.externalExtensionsDirectoryFilesInChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message("hybris.import.label.select.custom.extensions.directory"),
+            message("hybris.import.label.select.custom.extensions.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
         this.configOverrideFilesInChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message("hybris.import.label.select.config.extensions.directory"),
+            message("hybris.import.label.select.config.extensions.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
         this.dbDriversDirOverrideFileChooser.addBrowseFolderListener(
-            HybrisI18NBundleUtils.message("hybris.import.label.select.dbdriver.extensions.directory"),
+            message("hybris.import.label.select.dbdriver.extensions.directory"),
             "",
             null,
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
@@ -526,14 +525,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (directoryOverrideCheckBox.isSelected()) {
             if (!new File(this.externalExtensionsDirectoryFilesInChooser.getText()).isDirectory()) {
                 throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message(
+                    message(
                         "hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"));
             }
         }
         if (configOverrideCheckBox.isSelected()) {
             if (!new File(this.configOverrideFilesInChooser.getText()).isDirectory()) {
                 throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message(
+                    message(
                         "hybris.import.wizard.validation.config.directory.does.not.exist"));
             }
         }
@@ -541,20 +540,20 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (dbDriversDirOverrideCheckBox.isSelected()) {
             if (!new File(this.dbDriversDirOverrideFileChooser.getText()).isDirectory()) {
                 throw new ConfigurationException(
-                    HybrisI18NBundleUtils.message(
+                    message(
                         "hybris.import.wizard.validation.dbdriver.directory.does.not.exist"));
             }
         }
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.import.wizard.validation.hybris.distribution.directory.empty")
+                message("hybris.import.wizard.validation.hybris.distribution.directory.empty")
             );
         }
 
         if (!new File(this.hybrisDistributionDirectoryFilesInChooser.getText()).isDirectory()) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message(
+                message(
                     "hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"));
         }
 
@@ -572,14 +571,14 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
         final Properties buildProperties = new Properties();
 
-        try (FileInputStream fis = new FileInputStream(buildInfoFile)) {
+        try (final FileInputStream fis = new FileInputStream(buildInfoFile)) {
             buildProperties.load(fis);
         } catch (IOException e) {
             return null;
         }
 
         if (!apiOnly) {
-            String version = buildProperties.getProperty(HybrisConstants.HYBRIS_VERSION_KEY);
+            final String version = buildProperties.getProperty(HybrisConstants.HYBRIS_VERSION_KEY);
             if (version != null) {
                 return version;
             }
@@ -667,27 +666,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         MySourceCodeChooserActionListener(final FileChooserDescriptor fileChooserDescriptor) {
             super(
-                HybrisI18NBundleUtils.message("hybris.import.label.select.hybris.src.file"),
+                message("hybris.import.label.select.hybris.src.file"),
                 "",
                 HybrisWorkspaceRootStep.this.sourceCodeFilesInChooser,
                 (Project) null,
                 fileChooserDescriptor,
                 TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT
             );
-        }
-
-        @NotNull
-        @Override
-        protected String chosenFileToResultingText(@NotNull final VirtualFile chosenFile) {
-            if (chosenFile.isDirectory()) {
-                final String hybrisApiVersion = getHybrisVersion(hybrisDistributionDirectoryFilesInChooser.getText(), false);
-                final File sourceZip = findSourceZip(chosenFile.getPath(), hybrisApiVersion);
-
-                if (sourceZip != null) {
-                    return sourceZip.getAbsolutePath();
-                }
-            }
-            return super.chosenFileToResultingText(chosenFile);
         }
     }
 
