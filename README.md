@@ -1,4 +1,4 @@
-[![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com)
+[![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com) [![Join the chat at https://gitter.im/sap-commerce-intellij-idea-plugin/community](https://badges.gitter.im/sap-commerce-intellij-idea-plugin/community.svg)](https://gitter.im/sap-commerce-intellij-idea-plugin/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Licence ##
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
