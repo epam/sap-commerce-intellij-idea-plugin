@@ -178,6 +178,7 @@ object HybrisConstants {
     val TS_TYPECODE_RANGE_PRINT = 23400 .. 23999
     val TS_TYPECODE_RANGE_PROCESSING = 32700 .. 32799
 
+    const val DEBUG_MODEL_RENDERER_PREFIX = "[y]"
     const val SEARCH_SCOPE_Y_PREFIX = "[y]"
     const val SEARCH_SCOPE_GROUP_PREFIX = "group:"
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
