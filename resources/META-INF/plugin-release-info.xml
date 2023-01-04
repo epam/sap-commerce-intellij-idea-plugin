@@ -106,6 +106,7 @@
                 <li> Fixed: Business Process Diagram action is not visible </li>
                 <li> Fixed: Impex config processor inspection rule </li>
                 <li> Fixed: Default values for Type System modifiers </li>
+                <li> Fixed: Focus will be set for Consoles tab on Copy-To Console Action </li>
             </ul>
 
             <strong>Ultimate only</strong>

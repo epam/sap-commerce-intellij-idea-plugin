@@ -19,16 +19,17 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions;
 
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.copySelectedFilesToHybrisConsole;
 import static com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
-public class CopyFlexibleSearchFileAction extends AnAction {
+public class CopyFlexibleSearchFileAction extends AnAction implements DumbAware {
 
     @Override
     public void update(@NotNull final AnActionEvent event) {
@@ -44,7 +45,7 @@ public class CopyFlexibleSearchFileAction extends AnAction {
     public void actionPerformed(@NotNull final AnActionEvent event) {
         Project project = event.getProject();
         if (project != null) {
-            copySelectedFilesToHybrisConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION);
+            CopyFileToHybrisConsoleUtils.copySelectedFilesToHybrisConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION);
         }
     }
 }

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -54,7 +55,7 @@ class TSCatalogAwareUniqueKeyAttributeQualifier : AbstractTSInspection() {
         val customPropertyValue = TSMetaHelper.parseCommaSeparatedStringValue(domCustomProperty)
             ?: return
 
-        val metaItemService = com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService.getInstance(project)
+        val metaItemService = TSMetaItemService.getInstance(project)
         val nonUniqueQualifiers = customPropertyValue
             .filter {qualifier ->
                 val attributes = metaItemService.findAttributesByName(meta, qualifier, true).map { it.modifiers }

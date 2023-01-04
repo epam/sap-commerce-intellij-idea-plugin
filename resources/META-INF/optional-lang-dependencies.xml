@@ -305,11 +305,13 @@
         <group>
             <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
                     class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    text="Copy to Hybris Console" description="Copy impex file to Hybris Console">
+                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_ICON"
+                    text="Copy to Impex Console" description="Copy impex file to SAP Commerce Console">
             </action>
             <action id="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
                     class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
-                    text="Copy to Hybris Console" description="Copy flexible search to hybris console">
+                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_ICON"
+                    text="Copy to Flexible Search Console" description="Copy flexible search to SAP Commerce console">
             </action>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>

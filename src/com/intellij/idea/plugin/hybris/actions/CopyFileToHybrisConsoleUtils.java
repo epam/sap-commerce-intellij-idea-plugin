@@ -24,10 +24,10 @@ import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -152,11 +152,23 @@ public final class CopyFileToHybrisConsoleUtils {
         var hybrisConsolePanel = getHybrisConsolePanel(project);
         var hybrisConsole = hybrisConsolePanel.findConsole(consoleTitle);
         if (hybrisConsole != null) {
+            setActiveConsolesTab(project);
             hybrisConsole.clear();
             hybrisConsole.setInputText(query);
             hybrisConsolePanel.setActiveConsole(hybrisConsole);
             openHybrisConsole(project);
         }
+    }
+
+    private static void setActiveConsolesTab(final Project project) {
+        Optional.ofNullable(ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID))
+            .ifPresent(toolWindow -> {
+                final var contentManager = toolWindow.getContentManager();
+                final var consolesTab = contentManager.findContent(HybrisConsolesToolWindow.ID);
+                if (consolesTab != null) {
+                    contentManager.setSelectedContent(consolesTab);
+                }
+            });
     }
 
     private static void openHybrisConsole(Project project) {

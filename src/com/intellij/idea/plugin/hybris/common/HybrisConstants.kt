@@ -194,7 +194,7 @@ object HybrisConstants {
     const val NAME_ATTRIBUTE_NAME = "name"
     const val DICTIONARY_NAME = "hybris_integration"
     const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
-    const val DIALOG_TITLE = "copy.file.dialog."
+    const val DIALOG_TITLE = "hybris.copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
 
     const val LIB_DIRECTORY = "lib"

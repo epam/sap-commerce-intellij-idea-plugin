@@ -29,11 +29,12 @@ import com.intellij.ui.content.Content
 class TSToolWindow(val myProject: Project) : Disposable {
 
     companion object {
+        const val ID = "Type System"
         fun getInstance(project: Project): TSToolWindow = project.getService(TSToolWindow::class.java)
     }
 
     fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(TSView(myProject), "Type System", true)
+        val content = toolWindow.contentManager.factory.createContent(TSView(myProject), ID, true)
         content.icon = HybrisIcons.TYPE_SYSTEM
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         return content

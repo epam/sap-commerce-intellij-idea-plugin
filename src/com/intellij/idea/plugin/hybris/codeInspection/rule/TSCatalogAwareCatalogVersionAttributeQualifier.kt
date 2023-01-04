@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -56,7 +57,7 @@ class TSCatalogAwareCatalogVersionAttributeQualifier : AbstractTSInspection() {
         val qualifier = TSMetaHelper.parseStringValue(domCustomProperty)
             ?: return
 
-        val metaItemService = com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService.getInstance(project)
+        val metaItemService = TSMetaItemService.getInstance(project)
         val attributes = metaItemService.findAttributesByName(meta, qualifier, true)
 
         val isAttributeTypeCatalogAware = attributes

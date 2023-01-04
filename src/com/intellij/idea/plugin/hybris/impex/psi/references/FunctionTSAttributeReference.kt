@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
@@ -51,13 +52,13 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                 return arrayOf(EnumResolveResult(result!!))
             }
         } else {
-            val result = com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService.getInstance(project)
+            val result = TSMetaItemService.getInstance(project)
                     .findAttributesByName(metaItem, featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { AttributeResolveResult(it!!) }
 
-            com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService.getInstance(project).findRelationEndsByQualifier(metaItem, featureName, true)
+            TSMetaItemService.getInstance(project).findRelationEndsByQualifier(metaItem, featureName, true)
                     .map { it.retrieveDom() }
                     .filter { Objects.nonNull(it) }
                     .map { RelationElementResolveResult(it!!) }

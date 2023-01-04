@@ -30,6 +30,7 @@ import java.util.List;
 
 public class HybrisRemoteInstancesToolWindow implements DumbAware {
 
+    public static final String ID = "Remote Instances";
     private Project myProject;
     private JPanel myToolWindowContent;
     private JPanel connectionPanel;
@@ -51,7 +52,7 @@ public class HybrisRemoteInstancesToolWindow implements DumbAware {
     }
 
     public Content createToolWindowContent(final ToolWindow toolWindow) {
-        final Content content = toolWindow.getContentManager().getFactory().createContent(myToolWindowContent, "Remote Instances", false);
+        final Content content = toolWindow.getContentManager().getFactory().createContent(myToolWindowContent, ID, false);
         content.setIcon(AllIcons.RunConfigurations.Remote);
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true);
 

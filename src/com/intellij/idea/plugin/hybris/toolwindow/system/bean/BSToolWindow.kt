@@ -29,11 +29,12 @@ import com.intellij.ui.content.Content
 class BSToolWindow(val myProject: Project) : Disposable {
 
     companion object {
+        const val ID = "Bean System"
         fun getInstance(project: Project): BSToolWindow = project.getService(BSToolWindow::class.java)
     }
 
     fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(BSView(myProject), "Bean System", true)
+        val content = toolWindow.contentManager.factory.createContent(BSView(myProject), ID, true)
         content.icon = HybrisIcons.BEAN_FILE
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         return content

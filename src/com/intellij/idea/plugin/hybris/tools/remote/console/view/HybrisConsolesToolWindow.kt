@@ -29,6 +29,7 @@ import com.intellij.ui.content.Content
 class HybrisConsolesToolWindow(val project: Project) : Disposable, DumbAware {
 
     companion object {
+        const val ID = "Consoles"
         fun getInstance(project: Project): HybrisConsolesToolWindow = project.getService(HybrisConsolesToolWindow::class.java)
     }
 
@@ -39,7 +40,7 @@ class HybrisConsolesToolWindow(val project: Project) : Disposable, DumbAware {
      * @param toolWindow
      */
     fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(consolesPanel.component, "Consoles", true)
+        val content = toolWindow.contentManager.factory.createContent(consolesPanel.component, ID, true)
         content.icon = AllIcons.Debugger.Console
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         return content
