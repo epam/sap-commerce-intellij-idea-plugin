@@ -30,6 +30,7 @@ object HybrisConstants {
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 
     const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"
+    const val UPDATE_TIMESTAMP_PROPERTY = "sap.commerce.update.timestamp"
 
     const val IMPEX_CONFIG_PREFIX = "\$config"
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"

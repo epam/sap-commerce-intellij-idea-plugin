@@ -32,6 +32,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.util.text.VersionComparatorUtil
 import org.apache.commons.lang3.StringUtils
 import java.io.File
 import java.io.FileReader
@@ -76,16 +77,9 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun isOutDatedHybrisProject(project: Project): Boolean {
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
         val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
-        return try {
-            val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))!!.version
+        val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))?.version ?: return true
 
-            val last = lastImportVersion.split(".").toTypedArray().sumOf { it.toInt() }
-            val current = currentVersion.split(".").toTypedArray().sumOf { it.toInt() }
-
-            last < current
-        } catch (nfe: NumberFormatException) {
-            true
-        }
+        return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
     override fun isPotentiallyHybrisProject(project: Project): Boolean {

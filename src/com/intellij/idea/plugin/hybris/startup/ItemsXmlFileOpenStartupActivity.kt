@@ -30,7 +30,7 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 
 
-class ItemsXmlFileOpenStartupActivity : StartupActivity {
+class ItemsXmlFileOpenStartupActivity : StartupActivity.RequiredForSmartMode {
 
     override fun runActivity(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {

@@ -289,6 +289,7 @@
 
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
 

@@ -30,6 +30,7 @@ import com.intellij.plugin.hybris.debugger.ui.tree.render.ModelRenderer
  * Due that we have to reset these fields after each start for possible custom [y] renderers
  */
 class HybrisJavaTypeRenderersStartupActivity : StartupActivity.DumbAware {
+
     override fun runActivity(project: Project) {
         val rendererSettings = NodeRendererSettings.getInstance()
         val oldRenderers = arrayListOf<CompoundReferenceRenderer>()
@@ -40,7 +41,7 @@ class HybrisJavaTypeRenderersStartupActivity : StartupActivity.DumbAware {
             .map { oldRenderer ->
                 oldRenderers.add(oldRenderer)
 
-                val modelRenderer = object: ModelRenderer(oldRenderer.className, project) {
+                val modelRenderer = object : ModelRenderer(oldRenderer.className, project) {
                     // there is no need to re-evaluate children for preloaded renderers
                     override fun getChildrenRenderer() = oldRenderer.childrenRenderer
                 }

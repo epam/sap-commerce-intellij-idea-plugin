@@ -92,17 +92,20 @@
             <ul>
                 <li> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
                 <li> Introduced new Debugger Java Type Renderers for Model classes </li>
+                <li> Introduced automatic Plugin Update Checker </li>
                 <li> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard </li>
                 <li> Added customized Structure View for beans.xml files </li>
                 <li> Added new beans.xml inspection rules </li>
                 <li> Added navigation to items.xml Type attributes from generated classes </li>
                 <li> Added navigation to beans.xml Enum values declaration from generated classes </li>
                 <li> Added navigation to beans.xml Bean property declaration from generated classes </li>
-                <li> Added extra visibility filters for Type System view </li>
+                <li> Added extra visibility filters for Type and Bean System views </li>
                 <li> Added <strong>dynamic</strong> prefix getters/setters in the Java classes </li>
                 <li> Added <strong>dynamic</strong> flag for attribute suggestions in the impex files </li>
+                <li> Redesigned Structure View for items.xml files </li>
                 <li> Inspection for beans.xml rely on whole Bean System, not only current file </li>
                 <li> Decreased usage of the Deprecated API </li>
+                <li> Fixed: [y] Tool Window Logo for new theme </li>
                 <li> Fixed: Business Process Diagram action is not visible </li>
                 <li> Fixed: Impex config processor inspection rule </li>
                 <li> Fixed: Default values for Type System modifiers </li>
