@@ -35,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -46,6 +47,7 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -181,22 +183,37 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         final boolean[] finished = {false};
 
-        StartupManager.getInstance(project).runAfterOpened(() -> DumbService.getInstance(project).runWhenSmart(() -> {
-            finished[0] = true;
+        StartupManager.getInstance(project).runAfterOpened(() -> {
+            activateToolWindowAfterImport(project);
 
-            finishImport(
-                project,
-                hybrisProjectDescriptor,
-                allModules,
-                configuratorFactory,
-                () -> notifyImportFinished(project)
-            );
-        }));
+            DumbService.getInstance(project).runWhenSmart(() -> {
+                finished[0] = true;
+
+                finishImport(
+                    project,
+                    hybrisProjectDescriptor,
+                    allModules,
+                    configuratorFactory,
+                    () -> notifyImportFinished(project)
+                );
+            });
+        });
 
         if (!finished[0]) {
             notifyImportNotFinishedYet(project);
         }
         return modules;
+    }
+
+    private void activateToolWindowAfterImport(final Project project) {
+        if (!refresh) {
+            ApplicationManager.getApplication().invokeLater(() -> {
+                final var yToolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
+                    if (yToolWindow != null) {
+                    yToolWindow.setAvailable(true);
+                }
+            });
+        }
     }
 
     private static void finishImport(
@@ -253,7 +270,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         });
     }
 
-    private void notifyImportNotFinishedYet(@NotNull Project project) {
+    private void notifyImportNotFinishedYet(@NotNull final Project project) {
 
         final String notificationTitle = refresh
             ? message("hybris.notification.project.refresh.title")
@@ -264,7 +281,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                      .notify(project);
     }
 
-    private void notifyImportFinished(@NotNull Project project) {
+    private void notifyImportFinished(@NotNull final Project project) {
 
         final String notificationContent = refresh
             ? message("hybris.notification.project.refresh.finished.content")
