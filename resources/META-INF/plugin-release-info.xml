@@ -32,6 +32,8 @@
               <li>Custom editor for items.xml with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
               <li>Custom editor for beans.xml with custom automated Intellij refactorings actions.</li>
               <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
+              <li>Preview for Type and Bean Systems.</li>
+              <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
               <li>Enhanced project view tree.</li>
               <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
               <li>Execution of queries on remote Solr instances.</li>
@@ -89,6 +91,7 @@
         <![CDATA[
             <ul>
                 <li> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
+                <li> Introduced new Debugger Java Type Renderers for Model classes </li>
                 <li> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard </li>
                 <li> Added customized Structure View for beans.xml files </li>
                 <li> Added new beans.xml inspection rules </li>
