@@ -39,21 +39,19 @@ class BSViewSettings(private val myProject: Project) : PersistentStateComponent<
         myMessageBus = myProject.messageBus
     }
 
-    fun fireSettingsChanged(changeType: ChangeType) {
-        myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType)
-    }
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType) }
 
     fun isShowOnlyCustom(): Boolean = mySettings.showCustomOnly
-
-    fun setShowOnlyCustom(state: Boolean) {
-        mySettings.showCustomOnly = state
-    }
+    fun setShowOnlyCustom(state: Boolean) = state.also { mySettings.showCustomOnly = state }
 
     fun isShowOnlyDeprecated(): Boolean = mySettings.showDeprecatedOnly
+    fun setShowOnlyDeprecated(state: Boolean) = state.also { mySettings.showDeprecatedOnly = state }
 
-    fun setShowOnlyDeprecated(state: Boolean) {
-        mySettings.showDeprecatedOnly = state
-    }
+    fun isShowEnumValues(): Boolean = mySettings.showEnumValues
+    fun setShowEnumValues(state: Boolean) = state.also { mySettings.showEnumValues = state }
+
+    fun isShowBeanProperties(): Boolean = mySettings.showBeanProperties
+    fun setShowBeanProperties(state: Boolean) = state.also { mySettings.showBeanProperties = state }
 
     override fun getState(): Settings = mySettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
@@ -61,6 +59,8 @@ class BSViewSettings(private val myProject: Project) : PersistentStateComponent<
     class Settings {
         var showCustomOnly = false
         var showDeprecatedOnly = false
+        var showEnumValues = true
+        var showBeanProperties = true
     }
 
     enum class ChangeType {

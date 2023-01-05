@@ -88,12 +88,19 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
 
         addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
+        addSeparator("-- Types --")
         add(ShowMetaAtomicsAction(mySettings))
         add(ShowMetaEnumsAction(mySettings))
         add(ShowMetaCollectionsAction(mySettings))
         add(ShowMetaMapsAction(mySettings))
         add(ShowMetaRelationsAction(mySettings))
         add(ShowMetaItemsAction(mySettings))
+        addSeparator("-- Enums --")
+        add(ShowMetaEnumValuesAction(mySettings))
+        addSeparator("-- Items --")
+        add(ShowMetaItemIndexesAction(mySettings))
+        add(ShowMetaItemAttributesAction(mySettings))
+        add(ShowMetaItemCustomPropertiesAction(mySettings))
         this
     }
 

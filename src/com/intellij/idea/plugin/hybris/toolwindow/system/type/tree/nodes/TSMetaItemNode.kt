@@ -39,19 +39,20 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
     }
 
     override fun getChildren(): Collection<TSNode> {
-        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val settings = TSViewSettings.getInstance(myProject)
+        val showOnlyCustom = settings.isShowOnlyCustom()
 
-        val indexes = meta.indexes.values
+        val indexes = if (!settings.isShowMetaItemIndexes()) emptyList() else meta.indexes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
             .sortedBy { it.name }
 
-        val customProperties = meta.customProperties.values
+        val customProperties = if (!settings.isShowMetaItemCustomProperties()) emptyList() else meta.customProperties.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
             .sortedBy { it.name }
 
-        val attributes = meta.attributes.values
+        val attributes = if (!settings.isShowMetaItemAttributes()) emptyList() else meta.attributes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }

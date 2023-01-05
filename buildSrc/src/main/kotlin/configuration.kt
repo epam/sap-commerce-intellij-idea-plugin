@@ -17,7 +17,7 @@
  */
 
 const val sourceVersion="17"
-const val kotlinApiVersion="1.7"
+const val kotlinApiVersion="1.8"
 
 
 // https://www.jetbrains.com/intellij-repository/releases

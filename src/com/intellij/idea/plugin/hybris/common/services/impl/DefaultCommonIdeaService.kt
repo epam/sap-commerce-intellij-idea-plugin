@@ -99,8 +99,6 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor {
         return hybrisProjectDescriptor.foundModules
                 .first { e: HybrisModuleDescriptor? -> e is PlatformHybrisModuleDescriptor } as PlatformHybrisModuleDescriptor
-
-
     }
 
     override fun getActiveHacUrl(project: Project): String {

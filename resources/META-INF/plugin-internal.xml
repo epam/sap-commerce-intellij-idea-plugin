@@ -70,7 +70,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="[y] SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 

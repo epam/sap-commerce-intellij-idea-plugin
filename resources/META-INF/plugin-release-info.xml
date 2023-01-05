@@ -15,106 +15,150 @@
 
     <description>
         <![CDATA[
-          <p>This plugin is a plugin for SAP Commerce Cloud integration.</p>
+            <p>This plugin is a plugin for SAP Commerce integration.</p>
 
-          <b>If you have any questions you can send an email to:</b>
-          <ul>
-              <li><a href="mailto:hybrisideaplugin@epam.com">EPAM Systems</a></li>
-          </ul>
+            <i>If you have any questions you can send an email to::</i>
+            <ul>
+                <li><a href="mailto:hybrisideaplugin@epam.com">EPAM Systems</a></li>
+            </ul>
 
-          <b>Features:</b>
-          <ul>
-              <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
-              <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
-              <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
-              <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
-              <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
-              <li>Custom editor for items.xml with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
-              <li>Custom editor for beans.xml with custom automated Intellij refactorings actions.</li>
-              <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
-              <li>Preview for Type and Bean Systems.</li>
-              <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
-              <li>Enhanced project view tree.</li>
-              <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
-              <li>Execution of queries on remote Solr instances.</li>
-              <li>And much more</li>
-          </ul>
+            <h2>Features:</h2>
+            <ul>
+                <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
+                <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
+                <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
+                <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
+                <li>Custom editor for <code>beans.xml</code> with custom automated Intellij refactorings actions.</li>
+                <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
+                <li>Preview for Type and Bean Systems.</li>
+                <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
+                <li>Enhanced project view tree.</li>
+                <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
+                <li>Execution of queries on remote Solr instances.</li>
+                <li>And much more</li>
+            </ul>
 
-          <b>Contribution guidelines:</b>
-          <ul>
-              <li>Please read <a href="https://developercertificate.org/">Contributor License Agreement</a></li>
-              <li>Available tasks are in our board: <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/projects/1">Project board</a></li>
-              <li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html">How to Configure Project Environment For Plugin Developers</a></li>
-              <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>
-              <li>Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name.</li>
-              <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>
-          </ul>
+            <h3>Contribution guidelines:</h3>
 
-          <b>Contributors and Developers</b>
-          <p>This project exists thanks to all the people who contribute.</p>
+            <ul>
+                <li>Please read <a href="https://developercertificate.org/">Contributor License Agreement</a></li>
+                <li>Available tasks are in our board: <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/projects/1">Project board</a></li>
+                <li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html">How to Configure Project Environment For Plugin Developers</a></li>
+                <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>
+                <li>Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name.</li>
+                <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>§
+                <li>Join community on <a href="https://gitter.im/sap-commerce-intellij-idea-plugin/community">Gitter</a></li>
+            </ul>
 
-          <ul>
-              <li>Alexander Bartash</li>
-              <li>Vlad Bozhenok</li>
-              <li>Martin Zdarsky-Jones</li>
-              <li>Alexander Nosov</li>
-              <li>Eugene Kudelevsky</li>
-              <li>Cristian Caprar</li>
-              <li>Daniel Carter</li>
-              <li>Oleksandr Mishchuk</li>
-              <li>Michael Golubev</li>
-              <li>Nicko Cadell</li>
-              <li>Dan Wanigasekera</li>
-              <li>Markus Priegl</li>
-              <li>Sergei Aksenenko</li>
-              <li>Roger Ye</li>
-              <li>Hector Longarte</li>
-              <li>Fabian Necci</li>
-              <li>Markus Perndorfer</li>
-              <li>FAIR Consulting Group</li>
-              <li>Mykyta Kostiuk</li>
-              <li>Dmytro Lytvynenko</li>
-              <li>Oleksandr Shkurat</li>
-              <li>Maxim Bilohay</li>
-              <li>Eugene Koryakin</li>
-              <li>Yevhenii Koshevyi</li>
-              <li>Mykhailo Lytvyn</li>
-              <li>Viktors Jengovatovs</li>
-              <li>Oleksandr Dihtiar</li>
-              <li>Rustam Burmenskyi</li>
-              <li>Vladyslav Yanytskyi</li>
-          </ul>
+            <h3>Contributors and Developers</h3>
+            <p>This project exists thanks to all the people who contribute.</p>
+
+            <ul>
+                <li>Alexander Bartash</li>
+                <li>Vlad Bozhenok</li>
+                <li>Martin Zdarsky-Jones</li>
+                <li>Alexander Nosov</li>
+                <li>Eugene Kudelevsky</li>
+                <li>Cristian Caprar</li>
+                <li>Daniel Carter</li>
+                <li>Oleksandr Mishchuk</li>
+                <li>Michael Golubev</li>
+                <li>Nicko Cadell</li>
+                <li>Dan Wanigasekera</li>
+                <li>Markus Priegl</li>
+                <li>Sergei Aksenenko</li>
+                <li>Roger Ye</li>
+                <li>Hector Longarte</li>
+                <li>Fabian Necci</li>
+                <li>Markus Perndorfer</li>
+                <li>FAIR Consulting Group</li>
+                <li>Mykyta Kostiuk</li>
+                <li>Dmytro Lytvynenko</li>
+                <li>Oleksandr Shkurat</li>
+                <li>Maxim Bilohay</li>
+                <li>Eugene Koryakin</li>
+                <li>Yevhenii Koshevyi</li>
+                <li>Mykhailo Lytvyn</li>
+                <li>Viktors Jengovatovs</li>
+                <li>Oleksandr Dihtiar</li>
+                <li>Rustam Burmenskyi</li>
+                <li>Vladyslav Yanytskyi</li>
+            </ul>
       ]]>
     </description>
 
     <change-notes>
         <![CDATA[
+            <h3>2022.3.1</h3>
             <ul>
-                <li> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system </li>
-                <li> Introduced new Debugger Java Type Renderers for Model classes </li>
-                <li> Introduced automatic Plugin Update Checker </li>
-                <li> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard </li>
-                <li> Added customized Structure View for beans.xml files </li>
-                <li> Added new beans.xml inspection rules </li>
-                <li> Added navigation to items.xml Type attributes from generated classes </li>
-                <li> Added navigation to beans.xml Enum values declaration from generated classes </li>
-                <li> Added navigation to beans.xml Bean property declaration from generated classes </li>
-                <li> Added extra visibility filters for Type and Bean System views </li>
-                <li> Added <strong>dynamic</strong> prefix getters/setters in the Java classes </li>
-                <li> Added <strong>dynamic</strong> flag for attribute suggestions in the impex files </li>
-                <li> Redesigned Structure View for items.xml files </li>
-                <li> Inspection for beans.xml rely on whole Bean System, not only current file </li>
-                <li> Decreased usage of the Deprecated API </li>
-                <li> Fixed: [y] Tool Window Logo for new theme </li>
-                <li> Fixed: Business Process Diagram action is not visible </li>
-                <li> Fixed: Impex config processor inspection rule </li>
-                <li> Fixed: Default values for Type System modifiers </li>
-                <li> Fixed: Focus will be set for Consoles tab on Copy-To Console Action </li>
+                <li><i>Feature:</i> Introduced the Bean System Management - the powerful tool to observe SAP Commerce bean system (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/76" target="_blank" rel="nofollow">#76</a>)</li>
+                <li><i>Feature:</i> Introduced new Debugger Java Type Renderers for Model classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/123" target="_blank" rel="nofollow">#123</a>)</li>
+                <li><i>Feature:</i> Introduced automatic Plugin Update Checker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/127" target="_blank" rel="nofollow">#127</a>)</li>
+                <li><i>Feature:</i> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/118" target="_blank" rel="nofollow">#118</a>)</li>
+                <li><i>Feature:</i> Added customized Structure View for <code>beans.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/113" target="_blank" rel="nofollow">#113</a>)</li>
+                <li><i>Feature:</i> Added new <code>beans.xml</code> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)
+                    <ul>
+                        <li>Duplicate Enum definition inspection</li>
+                        <li>Duplicate Enum Value definition inspection</li>
+                        <li>Duplicate Bean Property definition inspection</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Added navigation to <code>items.xml</code> Type attributes from generated classes
+                (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/120" target="_blank" rel="nofollow">#120</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/71" target="_blank" rel="nofollow">#71</a>)</li>
+                <li><i>Feature:</i> Added navigation to <code>items.xml</code> Enum values declaration from generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/115" target="_blank" rel="nofollow">#115</a>)</li>
+                <li><i>Feature:</i> Added navigation to <code>beans.xml</code> Enum values declaration from generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/111" target="_blank" rel="nofollow">#111</a>)</li>
+                <li><i>Feature:</i> Added navigation to <code>beans.xml</code> Bean property declaration from generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/112" target="_blank" rel="nofollow">#112</a>)</li>
+                <li><i>Feature:</i> Added navigation to alternative declarations of the beans within <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/78" target="_blank" rel="nofollow">#78</a>)</li>
+                <li><i>Feature:</i> Added extra visibility filters for Type and Bean System views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/99" target="_blank" rel="nofollow">#99</a>)</li>
+                <li><i>Feature:</i> Added <code>dynamic</code> prefix getters/setters in the Java classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/74" target="_blank" rel="nofollow">#74</a>)</li>
+                <li><i>Feature:</i> Redesigned and improved performance of the Structure View for <code>items.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/114" target="_blank" rel="nofollow">#114</a>)</li>
+                <li><i>Feature:</i> Show label for dynamic attribute during Impex code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/110" target="_blank" rel="nofollow">#110</a>)</li>
+                <li><i>Feature:</i> Inspection for <code>beans.xml</code> rely on whole Bean System, not only current file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)</li>
+                <li><i>Deprecation:</i> Decreased usage of the Deprecated API
+                (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107" target="_blank" rel="nofollow">#107</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/106" target="_blank" rel="nofollow">#106</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/101" target="_blank" rel="nofollow">#101</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/94" target="_blank" rel="nofollow">#94</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/91" target="_blank" rel="nofollow">#91</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/89" target="_blank" rel="nofollow">#89</a>)</li>
+                <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
+                <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
+                <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
+                <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
+                <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
+                <li><i>Bug Fix:</i> Default values for Type System modifiers</li>
+                <li>
+                    <strong>Ultimate only</strong>
+                    <ul>
+                        <li><i>Feature:</i> Introduced new <code>items.xml</code> Annotator for Attribute Handler (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/117" target="_blank" rel="nofollow">#117</a>)</li>
+                    </ul>
+                </li>
             </ul>
-
-            <strong>Ultimate only</strong>
+            <h3>2022.3.0</h3>
             <ul>
-                <li> Introduced new items.xml Annotator for Attribute Handler </li>
+                <li><i>Feature:</i> Added 2022.3 support</li>
+                <li><i>Feature:</i> Introduction the Type System Management - the powerful tool to observe SAP Commerce type system
+                (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62" target="_blank" rel="nofollow">#62</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60" target="_blank" rel="nofollow">#60</a>)</li>
+                <li><i>Feature:</i> Added support of the Enum completion in Impex/FSQ</li>
+                <li><i>Feature:</i> Added support of the Relation completion in Impex/FSQ</li>
+                <li><i>Feature:</i> Added MapType support for <code>items.xml</code></li>
+                <li><i>Feature:</i> Added postgresql DB mapping</li>
+                <li><i>Feature:</i> Added next <code>typecode</code> suggestion via <code>items.xml</code> Inspection</li>
+                <li><i>Feature:</i> Added possibility to change [y] <code>items.xml</code> Inspection levels (previously they were hardcoded in ruleset.xml) </li>
+                <li><i>Feature:</i> Improved performance of the <code>items.xml</code> inspection</li>
+                <li><i>Feature:</i> Extended/refactored type system inspection rules</li>
+                <li><i>Feature:</i> Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions </li>
+                <li><i>Deprecation:</i> Decreased usage of the Deprecated API</li>
+            </ul>
+            <h3>2022.2</h3>
+            <ul>
+                <li><i>Feature:</i> Added 2022.2 support</li>
+                <li><i>Feature:</i> Feature Add inline actions for Impex & FlexibleSearch files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53" target="_blank" rel="nofollow">#53</a>)</li>
+                <li><i>Feature:</i> Do not index <code>node_modules</code> directories (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/52" target="_blank" rel="nofollow">#52</a>)</li>
             </ul>
           ]]>
     </change-notes>

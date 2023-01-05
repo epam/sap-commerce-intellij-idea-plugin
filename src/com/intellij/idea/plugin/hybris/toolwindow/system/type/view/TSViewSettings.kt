@@ -39,51 +39,40 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         myMessageBus = myProject.messageBus
     }
 
-    fun fireSettingsChanged(changeType: ChangeType) {
-        myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType)
-    }
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType) }
 
     fun isShowOnlyCustom(): Boolean = mySettings.showOnlyCustom
-
-    fun setShowOnlyCustom(state: Boolean) {
-        mySettings.showOnlyCustom = state
-    }
+    fun setShowOnlyCustom(state: Boolean) = state.also { mySettings.showOnlyCustom = state }
 
     fun isShowMetaItems(): Boolean = mySettings.showMetaItems
-
-    fun setShowMetaItems(state: Boolean) {
-        mySettings.showMetaItems = state
-    }
+    fun setShowMetaItems(state: Boolean) = state.also { mySettings.showMetaItems = state }
 
     fun isShowMetaMaps(): Boolean = mySettings.showMetaMaps
-
-    fun setShowMetaMaps(state: Boolean) {
-        mySettings.showMetaMaps = state
-    }
+    fun setShowMetaMaps(state: Boolean) = state.also { mySettings.showMetaMaps = state }
 
     fun isShowMetaRelations(): Boolean = mySettings.showMetaRelations
-
-    fun setShowMetaRelations(state: Boolean) {
-        mySettings.showMetaRelations = state
-    }
+    fun setShowMetaRelations(state: Boolean) = state.also { mySettings.showMetaRelations = state }
 
     fun isShowMetaEnums(): Boolean = mySettings.showMetaEnums
-
-    fun setShowMetaEnums(state: Boolean) {
-        mySettings.showMetaEnums = state
-    }
+    fun setShowMetaEnums(state: Boolean) = state.also { mySettings.showMetaEnums = state }
 
     fun isShowMetaCollections(): Boolean = mySettings.showMetaCollections
-
-    fun setShowMetaCollections(state: Boolean) {
-        mySettings.showMetaCollections = state
-    }
+    fun setShowMetaCollections(state: Boolean) = state.also { mySettings.showMetaCollections = state }
 
     fun isShowMetaAtomics(): Boolean = mySettings.showMetaAtomics
+    fun setShowMetaAtomics(state: Boolean) = state.also { mySettings.showMetaAtomics = it }
 
-    fun setShowMetaAtomics(state: Boolean) {
-        mySettings.showMetaAtomics = state
-    }
+    fun isShowMetaEnumValues(): Boolean = mySettings.showMetaEnumValues
+    fun setShowMetaEnumValues(state: Boolean) = state.also { mySettings.showMetaEnumValues = state }
+
+    fun isShowMetaItemIndexes(): Boolean = mySettings.showMetaItemIndexes
+    fun setShowMetaItemIndexes(state: Boolean) = state.also { mySettings.showMetaItemIndexes = state }
+
+    fun isShowMetaItemAttributes(): Boolean = mySettings.showMetaItemAttributes
+    fun setShowMetaItemAttributes(state: Boolean) = state.also { mySettings.showMetaItemAttributes = state }
+
+    fun isShowMetaItemCustomProperties(): Boolean = mySettings.showMetaItemCustomProperties
+    fun setShowMetaItemCustomProperties(state: Boolean) = state.also { mySettings.showMetaItemCustomProperties = state }
 
     override fun getState(): Settings = mySettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
@@ -96,6 +85,10 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         var showMetaCollections = true
         var showMetaAtomics = true
         var showMetaMaps = true
+        var showMetaEnumValues = true
+        var showMetaItemIndexes = true
+        var showMetaItemAttributes = true
+        var showMetaItemCustomProperties = true
     }
 
     enum class ChangeType {

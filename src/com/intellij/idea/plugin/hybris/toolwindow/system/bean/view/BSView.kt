@@ -89,6 +89,10 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))
         add(ShowOnlyDeprecatedAction(mySettings))
+        addSeparator("-- Enum --")
+        add(ShowMetaEnumValuesAction(mySettings))
+        addSeparator("-- Bean --")
+        add(ShowMetaBeanPropertiesAction(mySettings))
         this
     }
 

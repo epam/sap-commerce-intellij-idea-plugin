@@ -108,3 +108,51 @@ class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
+
+class ShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enum.values.text"), null, null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnumValues()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaEnumValues(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.indexes.text"), null, null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemIndexes()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaItemIndexes(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.attributes.text"), null, null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemAttributes()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaItemAttributes(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.custom_properties.text"), null, null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemCustomProperties()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowMetaItemCustomProperties(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}

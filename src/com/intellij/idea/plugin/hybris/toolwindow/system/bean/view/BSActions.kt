@@ -55,3 +55,31 @@ class ShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
+class ShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
+    message("hybris.toolwindow.bs.action.enum.values.text"), null, null
+) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowEnumValues()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowEnumValues(state)
+        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+
+class ShowMetaBeanPropertiesAction(val settings: BSViewSettings) : ToggleAction(
+    message("hybris.toolwindow.bs.action.bean.properties.text"), null, null
+) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowBeanProperties()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setShowBeanProperties(state)
+        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}
+

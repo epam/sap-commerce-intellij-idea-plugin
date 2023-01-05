@@ -19,8 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -38,11 +39,10 @@ class BSMetaBeanNode(val parent: BSNode, val meta: BSGlobalMetaBean) : BSNode(pa
         }
     }
 
-    override fun getChildren(): Collection<BSNode?> {
-        return meta.properties.values
-            .filter { it.isCustom }
-            .sortedBy { it.name }
-            .map { BSMetaPropertyNode(this, it) }
-    }
+    override fun getChildren(): Collection<BSNode?> = if (BSViewSettings.getInstance(project).isShowBeanProperties()) meta.properties.values
+        .filter { it.isCustom }
+        .sortedBy { it.name }
+        .map { BSMetaPropertyNode(this, it) }
+    else emptyList()
 
 }
