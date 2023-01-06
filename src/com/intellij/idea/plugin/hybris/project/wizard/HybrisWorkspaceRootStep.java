@@ -606,7 +606,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExternalConfigDirectory(toFile(settings.getExternalConfigDirectory(), true));
         hybrisProjectDescriptor.setExternalDbDriversDirectory(toFile(settings.getExternalDbDriversDirectory(), true));
         hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
-        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
+        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.isImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.isFollowSymlink());
         hybrisProjectDescriptor.setExcludeTestSources(settings.isExcludeTestSources());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.isScanThroughExternalModule());

@@ -148,7 +148,7 @@ public class HybrisProjectSettings {
         this.ideModulesFilesDirectory = ideModulesFilesDirectory;
     }
 
-    public boolean getImportOotbModulesInReadOnlyMode() {
+    public boolean isImportOotbModulesInReadOnlyMode() {
         return importOotbModulesInReadOnlyMode;
     }
 

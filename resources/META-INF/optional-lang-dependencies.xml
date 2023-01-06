@@ -160,7 +160,7 @@
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 
-        <applicationConfigurable id="hybris.impex.application.settings" parentId="hybris.application.settings"
+        <applicationConfigurable id="hybris.impex.settings" parentId="hybris.settings"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisImpexApplicationSettingsConfigurable"/>
 
         <applicationService

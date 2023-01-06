@@ -18,22 +18,22 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectImportApplicationSettingsForm
+import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectSettingsForm
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
-class HybrisProjectImportApplicationSettingsConfigurable : Configurable {
-    private val settingsForm = HybrisProjectImportApplicationSettingsForm()
+class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable {
+    private val settingsForm = HybrisProjectSettingsForm()
 
-    override fun getDisplayName() = HybrisI18NBundleUtils.message("hybris.settings.application.project_import.title")
+    override fun getDisplayName() = HybrisI18NBundleUtils.message("hybris.settings.project.title")
 
     override fun createComponent(): JComponent {
-        settingsForm.createComponent()
-        settingsForm.setData(HybrisApplicationSettingsComponent.getInstance().state)
+        settingsForm.setData(HybrisProjectSettingsComponent.getInstance(project).state)
         return settingsForm.mainPanel
     }
 
-    override fun isModified() = settingsForm.isModified(HybrisApplicationSettingsComponent.getInstance().state)
-    override fun apply() = settingsForm.getData(HybrisApplicationSettingsComponent.getInstance().state)
-    override fun reset() = settingsForm.setData(HybrisApplicationSettingsComponent.getInstance().state)
+    override fun isModified() = settingsForm.isModified(HybrisProjectSettingsComponent.getInstance(project).state)
+    override fun apply() = settingsForm.getData(HybrisProjectSettingsComponent.getInstance(project).state)
+    override fun reset() = settingsForm.setData(HybrisProjectSettingsComponent.getInstance(project).state)
 }
