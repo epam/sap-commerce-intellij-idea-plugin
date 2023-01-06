@@ -16,19 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings;
+package com.intellij.idea.plugin.hybris.settings.forms;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.openapi.ui.InputValidatorEx;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.AddEditDeleteListPanel;
-import com.intellij.ui.IdeBorderFactory;
-import com.intellij.ui.components.JBLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,33 +38,19 @@ import java.util.List;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class HybrisApplicationSettingsForm {
+public class HybrisProjectImportApplicationSettingsForm {
 
-    private JCheckBox enableFoldingCheckBox;
-    private JCheckBox useSmartFoldingCheckBox;
     private JPanel mainPanel;
     private JPanel junkDirectoriesPanel;
-    private JLabel impexLabel;
-    private JLabel projectImportLabel;
     private JCheckBox groupModulesCheckBox;
     private JTextField groupCustomTextField;
     private JTextField groupNonHybrisTextField;
     private JTextField groupCustomUnusedTextField;
     private JTextField groupHybrisTextField;
     private JTextField groupHybrisUnusedTextField;
-    private JCheckBox hideEmptyMiddleFoldersCheckBox;
-    private JLabel projectTreeViewSettingsLabel;
-    private JCheckBox defaultPlatformInReadOnly;
     private JTextField groupPlatformTextField;
-    private JCheckBox followSymlink;
-    private JCheckBox withMavenSources;
-    private JCheckBox withMavenJavadocs;
     private JPanel typeSystemDiagramStopWords;
-    private JCheckBox scanThroughExternalModule;
-    private JCheckBox excludeTestSources;
     private JPanel extensionsResourcesToExclude;
-    private JCheckBox warnIfGeneratedItemsAreOutOfDateCheckBox;
-    private JCheckBox withStandardProvidedSources;
     private JPanel excludedFromIndexPanel;
 
     private MyListPanel junkListPanel;
@@ -73,8 +59,6 @@ public class HybrisApplicationSettingsForm {
     private MyListPanel excludedFromIndexListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
-        enableFoldingCheckBox.setSelected(data.isFoldingEnabled());
-        useSmartFoldingCheckBox.setSelected(data.isUseSmartFolding());
         junkListPanel.setMyList(data.getJunkDirectoryList());
         tsdListPanel.setMyList(data.getTsdStopTypeList());
         extensionsResourcesToExcludeListPanel.setMyList(data.getExtensionsResourcesToExcludeList());
@@ -85,21 +69,10 @@ public class HybrisApplicationSettingsForm {
         groupHybrisTextField.setText(data.getGroupHybris());
         groupHybrisUnusedTextField.setText(data.getGroupOtherHybris());
         groupPlatformTextField.setText(data.getGroupPlatform());
-        hideEmptyMiddleFoldersCheckBox.setSelected(data.isHideEmptyMiddleFolders());
-        defaultPlatformInReadOnly.setSelected(data.isDefaultPlatformInReadOnly());
-        followSymlink.setSelected(data.isFollowSymlink());
-        withMavenSources.setSelected(data.isWithMavenSources());
-        withMavenJavadocs.setSelected(data.isWithMavenJavadocs());
-        withStandardProvidedSources.setSelected(data.isWithStandardProvidedSources());
-        scanThroughExternalModule.setSelected(data.isScanThroughExternalModule());
-        excludeTestSources.setSelected(data.isExcludeTestSources());
-        warnIfGeneratedItemsAreOutOfDateCheckBox.setSelected(data.isWarnIfGeneratedItemsAreOutOfDate());
         excludedFromIndexListPanel.setMyList(data.getExcludedFromIndexList());
     }
 
     public void getData(final HybrisApplicationSettings data) {
-        data.setFoldingEnabled(enableFoldingCheckBox.isSelected());
-        data.setUseSmartFolding(useSmartFoldingCheckBox.isSelected());
         data.setJunkDirectoryList(junkListPanel.getMyList());
         data.setTsdStopTypeList(tsdListPanel.getMyList());
         data.setExtensionsResourcesToExcludeList(extensionsResourcesToExcludeListPanel.getMyList());
@@ -110,25 +83,10 @@ public class HybrisApplicationSettingsForm {
         data.setGroupOtherHybris(groupHybrisUnusedTextField.getText());
         data.setGroupNonHybris(groupNonHybrisTextField.getText());
         data.setGroupPlatform(groupPlatformTextField.getText());
-        data.setHideEmptyMiddleFolders(hideEmptyMiddleFoldersCheckBox.isSelected());
-        data.setDefaultPlatformInReadOnly(defaultPlatformInReadOnly.isSelected());
-        data.setFollowSymlink(followSymlink.isSelected());
-        data.setWithMavenSources(withMavenSources.isSelected());
-        data.setWithMavenJavadocs(withMavenJavadocs.isSelected());
-        data.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
-        data.setScanThroughExternalModule(scanThroughExternalModule.isSelected());
-        data.setExcludeTestSources(excludeTestSources.isSelected());
-        data.setWarnIfGeneratedItemsAreOutOfDate(warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected());
         data.setExcludedFromIndexList(excludedFromIndexListPanel.getMyList());
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
-        if (enableFoldingCheckBox.isSelected() != data.isFoldingEnabled()) {
-            return true;
-        }
-        if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
-            return true;
-        }
         if (!junkListPanel.getMyList().equals(data.getJunkDirectoryList())) {
             return true;
         }
@@ -162,33 +120,6 @@ public class HybrisApplicationSettingsForm {
         if (!StringUtil.equals(groupNonHybrisTextField.getText(), data.getGroupNonHybris())) {
             return true;
         }
-        if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
-            return true;
-        }
-        if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
-            return true;
-        }
-        if (scanThroughExternalModule.isSelected() != data.isScanThroughExternalModule()) {
-            return true;
-        }
-        if (followSymlink.isSelected() != data.isFollowSymlink()) {
-            return true;
-        }
-        if (withMavenSources.isSelected() != data.isWithMavenSources()) {
-            return true;
-        }
-        if (withMavenJavadocs.isSelected() != data.isWithMavenJavadocs()) {
-            return true;
-        }
-        if (withStandardProvidedSources.isSelected() != data.isWithStandardProvidedSources()) {
-            return true;
-        }
-        if (excludeTestSources.isSelected() != data.isExcludeTestSources()) {
-            return true;
-        }
-        if (warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected() != data.isWarnIfGeneratedItemsAreOutOfDate()) {
-            return true;
-        }
         return false;
     }
 
@@ -197,12 +128,6 @@ public class HybrisApplicationSettingsForm {
     }
 
     private void createUIComponents() {
-        impexLabel = new JBLabel();
-        impexLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
-            "hybris.import.settings.impex.title"), false));
-        projectImportLabel = new JBLabel();
-        projectImportLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
-            "hybris.import.settings.project.title")));
         junkListPanel = new MyListPanel("hybris.import.settings.junk.directory.name", "hybris.import.settings.junk.directory.popup.add.title", "hybris.import.settings.junk.directory.popup.add.text", "hybris.import.settings.junk.directory.popup.edit.title", "hybris.import.settings.junk.directory.popup.edit.text", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
         tsdListPanel = new MyListPanel("hybris.import.settings.tsv.diagram.name", "hybris.import.settings.tsv.diagram.popup.add.title", "hybris.import.settings.tsv.diagram.popup.add.text", "hybris.import.settings.tsv.diagram.popup.edit.title", "hybris.import.settings.tsv.diagram.popup.edit.text", new ArrayList<String>());
@@ -211,10 +136,6 @@ public class HybrisApplicationSettingsForm {
         extensionsResourcesToExclude = extensionsResourcesToExcludeListPanel;
         excludedFromIndexListPanel = new MyListPanel("hybris.import.settings.excludedFromIndex.directory.name", "hybris.import.settings.excludedFromIndex.directory.popup.add.title", "hybris.import.settings.excludedFromIndex.directory.popup.add.text", "hybris.import.settings.excludedFromIndex.directory.popup.edit.title", "hybris.import.settings.excludedFromIndex.directory.popup.edit.text", new ArrayList<String>());
         excludedFromIndexPanel = excludedFromIndexListPanel;
-
-        projectTreeViewSettingsLabel = new JBLabel();
-        projectTreeViewSettingsLabel.setBorder(IdeBorderFactory.createTitledBorder(HybrisI18NBundleUtils.message(
-            "hybris.project.view.tree.settings")));
     }
 
     public void createComponent() {
@@ -229,6 +150,7 @@ public class HybrisApplicationSettingsForm {
     }
 
     private static class MyListPanel extends AddEditDeleteListPanel<String> {
+        @Serial
         private static final long serialVersionUID = -6339262026248471671L;
         private final String addTitle;
         private final String addText;

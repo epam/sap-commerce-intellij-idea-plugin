@@ -160,8 +160,8 @@
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 
-        <applicationConfigurable id="ImpexPlugin.ImpexConfigurable" parentId="root"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisSettingsConfigurable"/>
+        <applicationConfigurable id="hybris.impex.application.settings" parentId="hybris.application.settings"
+                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisImpexApplicationSettingsConfigurable"/>
 
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
@@ -376,7 +376,7 @@
         </group>
 
         <action id="File.yRefresh" class="com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction"
-                text="Refresh Project" description="Re-imports the current hybris project with default values">
+                text="Refresh SAP Commerce Project" description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
 
