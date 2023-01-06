@@ -49,15 +49,15 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         final HybrisProjectService hybrisProjectService = ApplicationManager.getApplication().getService(HybrisProjectService.class);
 
         String path = file.getAbsolutePath();
-        File resolvedFile;
+        final File resolvedFile;
         try {
             resolvedFile = file.getCanonicalFile();
         } catch (IOException e) {
             throw new HybrisConfigurationException(e);
         }
-        String newPath = resolvedFile.getAbsolutePath();
+        final String newPath = resolvedFile.getAbsolutePath();
         if (!path.equals(newPath)) {
-            path = path + "(" + newPath + ")";
+            path = path + '(' + newPath + ')';
         }
         if (hybrisProjectService.isConfigModule(resolvedFile)) {
             LOG.info("Creating Config module for " + path);

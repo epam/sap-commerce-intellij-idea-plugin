@@ -26,7 +26,8 @@
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
-<!--        <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>-->
+        <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.OpenHybrisProjectImportBuilder"/>
+        <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorFactory"

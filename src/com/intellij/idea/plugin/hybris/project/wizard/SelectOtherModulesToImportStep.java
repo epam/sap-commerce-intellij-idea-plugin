@@ -70,6 +70,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         return null;
     }
 
+    @Override
     protected void setList(final List<HybrisModuleDescriptor> otherElements) {
         final Stream<HybrisModuleDescriptor> hybrisModuleStream = getContext().getHybrisModulesToImport().stream();
         final List<HybrisModuleDescriptor> allModules =

@@ -210,9 +210,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (yToolWindow == null) return;
 
         ApplicationManager.getApplication().invokeLater(() -> {
-            if (!refresh) {
-                yToolWindow.setAvailable(true);
-            }
+            yToolWindow.setAvailable(true);
             yToolWindow.activate(null, true);
         });
     }

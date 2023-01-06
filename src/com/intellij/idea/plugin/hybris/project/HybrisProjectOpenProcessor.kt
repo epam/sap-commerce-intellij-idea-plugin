@@ -20,31 +20,35 @@ package com.intellij.idea.plugin.hybris.project
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.options.ConfigurationException
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.idea.plugin.hybris.project.wizard.OpenSupport
+import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectImportBuilder
+import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.projectImport.ProjectOpenProcessorBase
-import org.apache.commons.collections4.CollectionUtils
 
-class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<DefaultHybrisProjectImportBuilder>() {
+class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 
     public override fun doQuickImport(file: VirtualFile, wizardContext: WizardContext): Boolean {
-        builder.cleanup()
-        builder.setRootProjectDirectory(VfsUtil.virtualToIoFile(file))
-
-        val projects = builder.getBestMatchingExtensionsToImport(null)
-
-        if (CollectionUtils.isEmpty(projects)) {
-            return false
-        }
-        try {
-            builder.list = projects
-        } catch (e: ConfigurationException) {
-            LOG.error(e)
+        if (file.isDirectory) {
+            wizardContext.setProjectFileDirectory(file.path)
         }
         wizardContext.projectName = file.name
+        wizardContext.projectBuilder = builder
+
+        builder.refresh = false
+        builder.fileToImport = file.path
+
+        val temporarySettings = HybrisProjectSettings()
+        hybrisProjectImportProvider()
+            ?.createSteps(wizardContext)
+            ?.filterIsInstance<OpenSupport>()
+            ?.forEach { it.open(temporarySettings) }
+
+        // it has to be set as last property
+        builder.isOpenProjectSettingsAfter = true
+
         return true
     }
 
@@ -60,9 +64,9 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<DefaultHybrisProject
         HybrisConstants.EXTENSIONS_XML
     )
 
-    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(DefaultHybrisProjectImportBuilder::class.java)
+    override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(OpenHybrisProjectImportBuilder::class.java)
 
-    companion object {
-        private val LOG = Logger.getInstance(HybrisProjectOpenProcessor::class.java)
-    }
+    private fun hybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensions
+        .find { it is HybrisProjectImportProvider }
+
 }

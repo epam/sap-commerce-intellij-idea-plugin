@@ -24,8 +24,8 @@ import com.intellij.openapi.options.ConfigurationException;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 14/2/17.
  */
-public interface NonGuiSupport {
+public interface RefreshSupport {
 
-    void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException;
+    void refresh(HybrisProjectSettings settings) throws ConfigurationException;
 
 }

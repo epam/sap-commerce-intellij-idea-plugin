@@ -69,7 +69,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     }
 
     protected List<HybrisModuleDescriptor> getAdditionalFixedElements() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @NotNull
@@ -133,7 +133,6 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     protected abstract void setList(final List<HybrisModuleDescriptor> allElements);
 
-
     protected boolean validateCommon() throws ConfigurationException {
         final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = new HashSet<>(moduleDuplicates.size());
@@ -173,15 +172,12 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         final int spaceWidth = fm.charWidth(' ');
         final int spaceCount = (COLUMN_WIDTH - currentWidth) / spaceWidth;
 
-        for (int index = 0; index < spaceCount; index++) {
-            builder.append(' ');
-        }
-
-        builder.append(" (");
-        builder.append(moduleDescriptor.getRelativePath());
-        builder.append(')');
-
-        return builder.toString();
+        return builder
+            .append(" ".repeat(Math.max(0, spaceCount)))
+            .append(" (")
+            .append(moduleDescriptor.getRelativePath())
+            .append(')')
+            .toString();
     }
 
 }

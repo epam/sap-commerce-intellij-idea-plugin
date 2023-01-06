@@ -41,7 +41,7 @@ import java.util.Set;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
 
-public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements NonGuiSupport {
+public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements OpenSupport, RefreshSupport {
 
     private HybrisModuleDescriptor.IMPORT_STATUS selectionMode = MANDATORY;
 
@@ -81,8 +81,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             }
         }
         selectionMode = UNUSED;
-        Set<String> duplicateModules = new HashSet<>();
-        Set<String> uniqueModules = new HashSet<>();
+        final Set<String> duplicateModules = new HashSet<>();
+        final Set<String> uniqueModules = new HashSet<>();
         getContext().getList().forEach(e->{
             if (uniqueModules.contains(e.getName())) {
                 duplicateModules.add(e.getName());
@@ -91,20 +91,20 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             }
         });
         fileChooser.sort((o1,o2)->{
-            boolean o1dup = duplicateModules.contains(o1.getName());
-            boolean o2dup = duplicateModules.contains(o2.getName());
+            final boolean o1dup = duplicateModules.contains(o1.getName());
+            final boolean o2dup = duplicateModules.contains(o2.getName());
             if (o1dup ^ o2dup) {
                 return o1dup ? -1 : 1;
             }
 
-            boolean o1custom = o1 instanceof CustomHybrisModuleDescriptor || o1 instanceof ConfigHybrisModuleDescriptor;
-            boolean o2custom = o2 instanceof CustomHybrisModuleDescriptor || o2 instanceof ConfigHybrisModuleDescriptor;
+            final boolean o1custom = o1 instanceof CustomHybrisModuleDescriptor || o1 instanceof ConfigHybrisModuleDescriptor;
+            final boolean o2custom = o2 instanceof CustomHybrisModuleDescriptor || o2 instanceof ConfigHybrisModuleDescriptor;
             if (o1custom ^ o2custom) {
                 return o1custom ? -1 : 1;
             }
 
-            boolean o1selected = o1.getImportStatus() == MANDATORY || o1.isPreselected();
-            boolean o2selected = o2.getImportStatus() == MANDATORY || o2.isPreselected();
+            final boolean o1selected = o1.getImportStatus() == MANDATORY || o1.isPreselected();
+            final boolean o2selected = o2.getImportStatus() == MANDATORY || o2.isPreselected();
             if (o1selected ^ o2selected) {
                 return o1selected ? -1 : 1;
             }
@@ -112,19 +112,23 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             return o1.compareTo(o2);
         });
         //scroll to top
-        JComponent component = fileChooser.getComponent();
-        if (component instanceof JBTable) {
-            JBTable table = (JBTable)component;
+        if (fileChooser.getComponent() instanceof final JBTable table) {
             table.changeSelection(0, 0, false, false);
         }
     }
 
-    protected void setList(final List<HybrisModuleDescriptor> hybrisModules) {
-        getContext().setHybrisModulesToImport(hybrisModules);
+    @Override
+    protected void setList(final List<HybrisModuleDescriptor> allElements) {
+        getContext().setHybrisModulesToImport(allElements);
     }
 
     @Override
-    public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
+    public void open(@Nullable final HybrisProjectSettings settings) throws ConfigurationException {
+        refresh(settings);
+    }
+
+    @Override
+    public void refresh(final HybrisProjectSettings settings) {
         try {
             final var filteredModuleToImport = getContext().getBestMatchingExtensionsToImport(settings);
             this.getContext().setList(filteredModuleToImport);
@@ -134,11 +138,9 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     }
 
     @Override
-    protected boolean isElementEnabled(HybrisModuleDescriptor hybrisModuleDescriptor) {
-        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor) {
-            if (hybrisModuleDescriptor.isPreselected()) {
-                return false;
-            }
+    protected boolean isElementEnabled(final HybrisModuleDescriptor hybrisModuleDescriptor) {
+        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor && hybrisModuleDescriptor.isPreselected()) {
+            return false;
         }
         if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return false;
@@ -152,14 +154,14 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     @Nullable
-    protected Icon getElementIcon(final HybrisModuleDescriptor module) {
-        if (this.isInConflict(module)) {
+    protected Icon getElementIcon(final HybrisModuleDescriptor item) {
+        if (this.isInConflict(item)) {
             return AllIcons.Actions.Cancel;
         }
-        if (module instanceof CustomHybrisModuleDescriptor) {
+        if (item instanceof CustomHybrisModuleDescriptor) {
             return AllIcons.Nodes.JavaModule;
         }
-        if (module instanceof ConfigHybrisModuleDescriptor) {
+        if (item instanceof ConfigHybrisModuleDescriptor) {
             return AllIcons.Nodes.Module;
         }
 

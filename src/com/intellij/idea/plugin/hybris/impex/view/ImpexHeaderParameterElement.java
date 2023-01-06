@@ -42,7 +42,7 @@ public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHea
     @NotNull
     @Override
     public Collection<StructureViewTreeElement> getChildrenBase() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Nullable

@@ -65,7 +65,7 @@ import static java.util.Collections.sort;
 /**
  * @author Vlad Bozhenok <VladBozhenok@gmail.com>
  */
-public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements NonGuiSupport {
+public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements OpenSupport, RefreshSupport {
 
     private static final Logger LOG = Logger.getInstance(HybrisWorkspaceRootStep.class);
 
@@ -595,7 +595,13 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     }
 
     @Override
-    public void nonGuiModeImport(final HybrisProjectSettings settings) throws ConfigurationException {
+    public void open(@Nullable final HybrisProjectSettings settings) throws ConfigurationException {
+        updateStep();
+        updateDataModel();
+    }
+
+    @Override
+    public void refresh(final HybrisProjectSettings settings) throws ConfigurationException {
 
         this.getContext().cleanup();
 
@@ -648,13 +654,11 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (hybrisDirectory == null) {
             // refreshing a project which was never imported by this plugin
             ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                toFile(this.getBuilder().getFileToImport()), parameter -> {
-                hybrisProjectDescriptor.setHybrisDistributionDirectory(toFile(parameter));
-            }
+                toFile(this.getBuilder().getFileToImport()), parameter -> hybrisProjectDescriptor.setHybrisDistributionDirectory(toFile(parameter))
             ));
         }
 
-        LOG.info("refreshing a project with the following settings: "+this.getContext().getHybrisProjectDescriptor().toString());
+        LOG.info("refreshing a project with the following settings: " + this.getContext().getHybrisProjectDescriptor());
     }
 
     private void createUIComponents() {

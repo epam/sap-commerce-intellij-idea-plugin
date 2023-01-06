@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
-import com.intellij.idea.plugin.hybris.project.wizard.NonGuiSupport;
+import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ant.config.AntBuildFile;
@@ -44,7 +44,6 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -110,9 +109,9 @@ public class ProjectRefreshAction extends AnAction {
                 ((AbstractHybrisProjectImportBuilder) projectBuilder).setRefresh(true);
             }
             projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
-        } catch (ConfigurationException e) {
+        } catch (final ConfigurationException e) {
             Messages.showErrorDialog(
-                anActionEvent.getProject(),
+                project,
                 e.getMessage(),
                 HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
@@ -169,15 +168,15 @@ public class ProjectRefreshAction extends AnAction {
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
-        final HybrisProjectImportProvider provider = getHybrisProjectImportProvider();
-        final String basePath = project.getBasePath();
+        final ProjectImportProvider provider = getHybrisProjectImportProvider();
         final String projectName = project.getName();
         final Sdk jdk = ProjectRootManager.getInstance(project).getProjectSdk();
         final String compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
         final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
 
-        final AddModuleWizard wizard = new AddModuleWizard(null, basePath, provider) {
+        final AddModuleWizard wizard = new AddModuleWizard(null, project.getBasePath(), provider) {
 
+            @Override
             protected void init() {
                 // non GUI mode
             }
@@ -188,17 +187,17 @@ public class ProjectRefreshAction extends AnAction {
         wizardContext.setCompilerOutputDirectory(compilerOutputUrl);
         final StepSequence stepSequence = wizard.getSequence();
         for (ModuleWizardStep step : stepSequence.getAllSteps()) {
-            if (step instanceof NonGuiSupport) {
-                ((NonGuiSupport) step).nonGuiModeImport(settings);
+            if (step instanceof RefreshSupport) {
+                ((RefreshSupport) step).refresh(settings);
             }
         }
         return wizard;
     }
 
-    private HybrisProjectImportProvider getHybrisProjectImportProvider() {
-        for (ProjectImportProvider provider : Extensions.getExtensions(ProjectImportProvider.PROJECT_IMPORT_PROVIDER)) {
+    private ProjectImportProvider getHybrisProjectImportProvider() {
+        for (final ProjectImportProvider provider : ProjectImportProvider.PROJECT_IMPORT_PROVIDER.getExtensionsIfPointIsRegistered()) {
             if (provider instanceof HybrisProjectImportProvider) {
-                return (HybrisProjectImportProvider) provider;
+                return provider;
             }
         }
         return null;
