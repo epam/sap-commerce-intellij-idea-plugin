@@ -117,6 +117,7 @@
                 <li><i>Feature:</i> Redesigned and improved performance of the Structure View for <code>items.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/114" target="_blank" rel="nofollow">#114</a>)</li>
                 <li><i>Feature:</i> Show label for dynamic attribute during Impex code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/110" target="_blank" rel="nofollow">#110</a>)</li>
                 <li><i>Feature:</i> Inspection for <code>beans.xml</code> rely on whole Bean System, not only current file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)</li>
+                <li><i>Feature:</i> Regrouped [y] Application settings into separate sections (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/130" target="_blank" rel="nofollow">#130</a>)</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API
                 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107" target="_blank" rel="nofollow">#107</a>,
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/106" target="_blank" rel="nofollow">#106</a>,
