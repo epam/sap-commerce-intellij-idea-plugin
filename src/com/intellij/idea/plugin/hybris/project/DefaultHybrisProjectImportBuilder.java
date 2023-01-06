@@ -206,14 +206,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private void activateToolWindowAfterImport(final Project project) {
-        if (!refresh) {
-            ApplicationManager.getApplication().invokeLater(() -> {
-                final var yToolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
-                    if (yToolWindow != null) {
-                    yToolWindow.setAvailable(true);
-                }
-            });
-        }
+        final var yToolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
+        if (yToolWindow == null) return;
+
+        ApplicationManager.getApplication().invokeLater(() -> {
+            if (!refresh) {
+                yToolWindow.setAvailable(true);
+            }
+            yToolWindow.activate(null, true);
+        });
     }
 
     private static void finishImport(
