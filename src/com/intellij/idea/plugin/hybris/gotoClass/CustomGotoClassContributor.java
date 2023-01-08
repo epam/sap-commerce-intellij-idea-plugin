@@ -65,8 +65,8 @@ public class CustomGotoClassContributor implements GotoClassContributor {
         }
         final List<NavigationItem> result = new ArrayList<>();
         final Processor<NavigationItem> processor = Processors.cancelableCollectProcessor(result);
-        final OotbClassesSearchScope scope = new OotbClassesSearchScope(project);
-        inner.processElementsWithName(name, processor, new FindSymbolParameters(pattern, pattern, scope, null));
+        final GlobalSearchScope scope = new OotbClassesSearchScope(project);
+        inner.processElementsWithName(name, processor, new FindSymbolParameters(pattern, pattern, scope));
 
         return result.isEmpty() ? NavigationItem.EMPTY_NAVIGATION_ITEM_ARRAY :
             result.toArray(NavigationItem.EMPTY_NAVIGATION_ITEM_ARRAY);
