@@ -127,6 +127,7 @@
                 <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
                 <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
                 <li><i>Bug Fix:</i> Platform module should not be identified as Gradle project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/141" target="_blank" rel="nofollow">#141</a>)</li>
+                <li><i>Bug Fix:</i> Consoles are not disposable (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/142" target="_blank" rel="nofollow">#142</a>)</li>
                 <li><i>Bug Fix:</i> Default values for Type System modifiers</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API
                 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107" target="_blank" rel="nofollow">#107</a>,
