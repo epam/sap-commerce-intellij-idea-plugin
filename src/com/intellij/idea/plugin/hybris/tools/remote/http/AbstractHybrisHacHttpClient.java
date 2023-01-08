@@ -67,25 +67,25 @@ public abstract class AbstractHybrisHacHttpClient {
     protected String sessionId;
 
     public String login(Project project) {
-        HybrisRemoteConnectionSettings settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHybrisRemoteConnectionSettings(project);
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
         return login(project, settings);
     }
 
-    public String login(@NotNull Project project, @NotNull HybrisRemoteConnectionSettings settings) {
-        String hostHacURL = getHostHacURL(project,settings);
+    public String login(@NotNull final Project project, @NotNull final HybrisRemoteConnectionSettings settings) {
+        final String hostHacURL = getHostHacURL(project, settings);
         sessionId = getSessionId(hostHacURL, project, settings);
         if (sessionId == null) {
             return "Unable to obtain sessionId for "+hostHacURL;
         }
         final String csrfToken = getCsrfToken(hostHacURL, sessionId, project, settings);
-        List<BasicNameValuePair> params = new ArrayList<>();
+        final List<BasicNameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("j_username", settings.getHacLogin()));
         params.add(new BasicNameValuePair("j_password", settings.getHacPassword()));
         params.add(new BasicNameValuePair("_csrf", csrfToken));
-        String loginURL = hostHacURL + "/j_spring_security_check";
-        HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
+        final String loginURL = hostHacURL + "/j_spring_security_check";
+        final HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
         if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
-            Header location = response.getFirstHeader("Location");
+            final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {
                 return "Wrong username/password. Set your credentials in [y] tool window.";
             }
@@ -94,20 +94,15 @@ public abstract class AbstractHybrisHacHttpClient {
         if (sessionId != null) {
             return StringUtils.EMPTY;
         }
-        int statusCode = response.getStatusLine().getStatusCode();
-        StringBuffer sb = new StringBuffer();
+        final int statusCode = response.getStatusLine().getStatusCode();
+        final StringBuilder sb = new StringBuilder();
         sb.append("HTTP ");
         sb.append(statusCode);
-        sb.append(" ");
+        sb.append(' ');
         switch (statusCode) {
-            case HTTP_OK:
-                sb.append("Unable to obtain sessionId from response");
-                break;
-            case HTTP_MOVED_TEMP:
-                sb.append(response.getFirstHeader("Location"));
-                break;
-            default:
-                sb.append(response.getStatusLine().getReasonPhrase());
+            case HTTP_OK -> sb.append("Unable to obtain sessionId from response");
+            case HTTP_MOVED_TEMP -> sb.append(response.getFirstHeader("Location"));
+            default -> sb.append(response.getStatusLine().getReasonPhrase());
         }
         return sb.toString();
     }
@@ -143,12 +138,12 @@ public abstract class AbstractHybrisHacHttpClient {
         HybrisRemoteConnectionSettings settings
     ) {
         if (sessionId == null) {
-            String errorMessage = login(project);
+            final String errorMessage = login(project);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }
         }
-        String csrfToken = getCsrfToken(getHostHacURL(project), sessionId, project, settings);
+        final String csrfToken = getCsrfToken(getHostHacURL(project), sessionId, project, settings);
         if (csrfToken == null) {
             this.sessionId = null;
             if (canReLoginIfNeeded) {
@@ -156,11 +151,11 @@ public abstract class AbstractHybrisHacHttpClient {
             }
             return createErrorResponse("Unable to obtain csrfToken for sessionId="+sessionId);
         }
-        HttpClient client = createAllowAllClient(timeout);
+        final HttpClient client = createAllowAllClient(timeout);
         if (client == null) {
             return createErrorResponse("Unable to create HttpClient");
         }
-        HttpPost post = new HttpPost(actionUrl);
+        final HttpPost post = new HttpPost(actionUrl);
         post.setHeader("User-Agent", USER_AGENT);
         post.setHeader("X-CSRF-TOKEN", csrfToken);
         post.setHeader("Cookie", "JSESSIONID=" + sessionId);
@@ -203,20 +198,20 @@ public abstract class AbstractHybrisHacHttpClient {
         final Project project,
         final @Nullable HybrisRemoteConnectionSettings settings
     ) {
-        return CommonIdeaService.getInstance().getActiveSslProtocol(project,settings);
+        return CommonIdeaService.getInstance().getActiveSslProtocol(project, settings);
     }
 
-    public String getHostHacURL(Project project, HybrisRemoteConnectionSettings settings) {
+    public String getHostHacURL(final Project project, final HybrisRemoteConnectionSettings settings) {
         return CommonIdeaService.getInstance().getHostHacUrl(project, settings);
     }
 
-    protected CloseableHttpClient createAllowAllClient(long timeout) {
+    protected CloseableHttpClient createAllowAllClient(final long timeout) {
         SSLContext sslcontext = null;
         try {
             sslcontext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
 
                 @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                public boolean isTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
                     return true;
                 }
             }).build();

@@ -65,34 +65,15 @@ public class HybrisApplicationSettingsForm {
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
-        if (hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()) {
-            return true;
-        }
-        if (defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()) {
-            return true;
-        }
-        if (scanThroughExternalModule.isSelected() != data.isScanThroughExternalModule()) {
-            return true;
-        }
-        if (followSymlink.isSelected() != data.isFollowSymlink()) {
-            return true;
-        }
-        if (withMavenSources.isSelected() != data.isWithMavenSources()) {
-            return true;
-        }
-        if (withMavenJavadocs.isSelected() != data.isWithMavenJavadocs()) {
-            return true;
-        }
-        if (withStandardProvidedSources.isSelected() != data.isWithStandardProvidedSources()) {
-            return true;
-        }
-        if (excludeTestSources.isSelected() != data.isExcludeTestSources()) {
-            return true;
-        }
-        if (warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected() != data.isWarnIfGeneratedItemsAreOutOfDate()) {
-            return true;
-        }
-        return false;
+        return hideEmptyMiddleFoldersCheckBox.isSelected() != data.isHideEmptyMiddleFolders()
+            || defaultPlatformInReadOnly.isSelected() != data.isDefaultPlatformInReadOnly()
+            || scanThroughExternalModule.isSelected() != data.isScanThroughExternalModule()
+            || followSymlink.isSelected() != data.isFollowSymlink()
+            || withMavenSources.isSelected() != data.isWithMavenSources()
+            || withMavenJavadocs.isSelected() != data.isWithMavenJavadocs()
+            || withStandardProvidedSources.isSelected() != data.isWithStandardProvidedSources()
+            || excludeTestSources.isSelected() != data.isExcludeTestSources()
+            || warnIfGeneratedItemsAreOutOfDateCheckBox.isSelected() != data.isWarnIfGeneratedItemsAreOutOfDate();
     }
 
     public JPanel getMainPanel() {

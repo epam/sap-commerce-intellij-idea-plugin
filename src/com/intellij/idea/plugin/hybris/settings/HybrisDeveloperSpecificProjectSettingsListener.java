@@ -6,7 +6,9 @@ public interface HybrisDeveloperSpecificProjectSettingsListener {
     Topic<HybrisDeveloperSpecificProjectSettingsListener> TOPIC = Topic.create("HybrisDeveloperSpecificProjectSettingsListener", HybrisDeveloperSpecificProjectSettingsListener.class);
 
     default void hacConnectionSettingsChanged() {};
+    default void hacActiveConnectionSettingsChanged() {};
 
     default void solrConnectionSettingsChanged() {};
+    default void solrActiveConnectionSettingsChanged() {};
 
 }

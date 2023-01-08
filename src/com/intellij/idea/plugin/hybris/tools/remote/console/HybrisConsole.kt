@@ -29,13 +29,9 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
 
     open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
 
-    open fun printDefaultText() {
-        setInputText("")
-    }
+    open fun printDefaultText() = setInputText("")
 
-    open fun connectionType(): HybrisRemoteConnectionSettings.Type {
-        return HybrisRemoteConnectionSettings.Type.Hybris
-    }
+    open fun connectionType() = HybrisRemoteConnectionSettings.Type.Hybris
 
     open fun onSelection() {
         //NOP

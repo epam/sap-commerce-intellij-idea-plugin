@@ -87,40 +87,17 @@ public class HybrisProjectImportApplicationSettingsForm {
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
-        if (!junkListPanel.getMyList().equals(data.getJunkDirectoryList())) {
-            return true;
-        }
-        if (!excludedFromIndexListPanel.getMyList().equals(data.getExcludedFromIndexList())) {
-            return true;
-        }
-        if (!tsdListPanel.getMyList().equals(data.getTsdStopTypeList())) {
-            return true;
-        }
-        if (!extensionsResourcesToExcludeListPanel.getMyList().equals(data.getExtensionsResourcesToExcludeList())) {
-            return true;
-        }
-        if (groupModulesCheckBox.isSelected() != data.isGroupModules()) {
-            return true;
-        }
-        if (!StringUtil.equals(groupCustomTextField.getText(), data.getGroupCustom())) {
-            return true;
-        }
-        if (!StringUtil.equals(groupCustomUnusedTextField.getText(), data.getGroupOtherCustom())) {
-            return true;
-        }
-        if (!StringUtil.equals(groupHybrisTextField.getText(), data.getGroupHybris())) {
-            return true;
-        }
-        if (!StringUtil.equals(groupHybrisUnusedTextField.getText(), data.getGroupOtherHybris())) {
-            return true;
-        }
-        if (!StringUtil.equals(groupPlatformTextField.getText(), data.getGroupPlatform())) {
-            return true;
-        }
-        if (!StringUtil.equals(groupNonHybrisTextField.getText(), data.getGroupNonHybris())) {
-            return true;
-        }
-        return false;
+        return groupModulesCheckBox.isSelected() != data.isGroupModules()
+            || !excludedFromIndexListPanel.getMyList().equals(data.getExcludedFromIndexList())
+            || !tsdListPanel.getMyList().equals(data.getTsdStopTypeList())
+            || !extensionsResourcesToExcludeListPanel.getMyList().equals(data.getExtensionsResourcesToExcludeList())
+            || !junkListPanel.getMyList().equals(data.getJunkDirectoryList())
+            || !StringUtil.equals(groupCustomTextField.getText(), data.getGroupCustom())
+            || !StringUtil.equals(groupCustomUnusedTextField.getText(), data.getGroupOtherCustom())
+            || !StringUtil.equals(groupHybrisTextField.getText(), data.getGroupHybris())
+            || !StringUtil.equals(groupHybrisUnusedTextField.getText(), data.getGroupOtherHybris())
+            || !StringUtil.equals(groupPlatformTextField.getText(), data.getGroupPlatform())
+            || !StringUtil.equals(groupNonHybrisTextField.getText(), data.getGroupNonHybris());
     }
 
     public JPanel getMainPanel() {

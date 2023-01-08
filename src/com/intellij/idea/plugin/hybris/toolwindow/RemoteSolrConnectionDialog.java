@@ -23,9 +23,9 @@ import java.util.Objects;
 
 import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
-public class SolrConnectionDialog extends DialogWrapper {
+public class RemoteSolrConnectionDialog extends DialogWrapper {
 
-    private static final Logger LOG = Logger.getInstance(SolrConnectionDialog.class);
+    private static final Logger LOG = Logger.getInstance(RemoteSolrConnectionDialog.class);
 
     private JPanel contentPane;
     private JTextField displayNameTextField;
@@ -48,7 +48,7 @@ public class SolrConnectionDialog extends DialogWrapper {
     private HybrisRemoteConnectionSettings mySettings;
     private HybrisRemoteConnectionSettings setting;
 
-    public SolrConnectionDialog(
+    public RemoteSolrConnectionDialog(
             @Nullable final Project project,
             @Nullable final Component parentComponent,
             @NotNull final HybrisRemoteConnectionSettings settings

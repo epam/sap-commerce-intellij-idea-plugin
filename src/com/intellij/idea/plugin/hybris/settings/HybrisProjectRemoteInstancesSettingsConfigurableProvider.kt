@@ -19,43 +19,31 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectSettingsForm
+import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectRemoteInstancesSettingsForm
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
 import javax.swing.JComponent
 
-class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun createConfigurable() = if (HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject)
-        HybrisProjectSettingsConfigurable(project)
+        HybrisProjectRemoteInstancesSettingsConfigurable(project)
     else
         null
 
-    class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable {
-        private val settingsForm = HybrisProjectSettingsForm()
+    class HybrisProjectRemoteInstancesSettingsConfigurable(project: Project) : Configurable {
+        private val settingsForm = HybrisProjectRemoteInstancesSettingsForm(project)
 
-        init {
-            Disposer.register({}, settingsForm)
-        }
-
-        override fun getDisplayName() = message("hybris.settings.project.title")
+        override fun getDisplayName() = message("hybris.settings.project.remote_instances.title")
 
         override fun createComponent(): JComponent {
-            return settingsForm
-                .init(project)
-                .mainPanel
+            settingsForm.setData()
+            return settingsForm.mainPanel
         }
 
-        override fun isModified() = settingsForm.isModified(project)
-        override fun apply() = settingsForm.apply(project)
-        override fun reset() {
-            settingsForm.setData(project)
-        }
-
-        override fun disposeUIResources() {
-            Disposer.dispose(settingsForm)
-        }
+        override fun isModified() = false
+        override fun apply() = Unit
+        override fun reset() = Unit
     }
 }

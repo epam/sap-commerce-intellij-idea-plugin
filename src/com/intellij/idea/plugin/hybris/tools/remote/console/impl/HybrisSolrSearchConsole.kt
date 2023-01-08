@@ -76,9 +76,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
-    override fun connectionType(): HybrisRemoteConnectionSettings.Type {
-        return HybrisRemoteConnectionSettings.Type.SOLR
-    }
+    override fun connectionType() = HybrisRemoteConnectionSettings.Type.SOLR
 
     private fun createUI() {
         initCoresElements()

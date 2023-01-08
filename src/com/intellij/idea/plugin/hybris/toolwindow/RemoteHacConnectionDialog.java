@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
-public class RemoteConnectionDialog extends DialogWrapper {
+public class RemoteHacConnectionDialog extends DialogWrapper {
 
     private JPanel contentPane;
     private JTextField projectIpTextField;
@@ -48,7 +48,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
     private HybrisRemoteConnectionSettings mySettings;
     private HybrisRemoteConnectionSettings setting;
 
-    public RemoteConnectionDialog(
+    public RemoteHacConnectionDialog(
         @Nullable final Project project,
         @Nullable final Component parentComponent,
         @NotNull final HybrisRemoteConnectionSettings settings
@@ -133,6 +133,7 @@ public class RemoteConnectionDialog extends DialogWrapper {
     }
 
     private void saveSettings(final HybrisRemoteConnectionSettings mySettings) {
+        mySettings.setType(HybrisRemoteConnectionSettings.Type.Hybris);
         mySettings.setSsl(sslButton.isSelected());
         mySettings.setSslProtocol((String) sslProtocol.getSelectedItem());
         mySettings.setDisplayName(displayNameTextField.getText());

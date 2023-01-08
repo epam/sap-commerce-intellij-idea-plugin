@@ -39,13 +39,8 @@ public class HybrisImpexApplicationSettingsForm {
     }
 
     public boolean isModified(final HybrisApplicationSettings data) {
-        if (enableFoldingCheckBox.isSelected() != data.isFoldingEnabled()) {
-            return true;
-        }
-        if (useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding()) {
-            return true;
-        }
-        return false;
+        return enableFoldingCheckBox.isSelected() != data.isFoldingEnabled()
+            || useSmartFoldingCheckBox.isSelected() != data.isUseSmartFolding();
     }
 
     public JPanel getMainPanel() {

@@ -50,7 +50,7 @@ class DefaultSolrHttpClient : SolrHttpClient {
                     setAction(CoreAdminParams.CoreAdminAction.STATUS)
                     setBasicAuthCredentials(solrConnectionSettings.adminLogin, solrConnectionSettings.adminPassword)
                 }
-                .runCatching { process(buildHttpSolrClient(solrConnectionSettings.generatedURL)) }
+                .runCatching { process(buildHttpSolrClient(solrConnectionSettings.generatedURL!!)) }
                 .map { parseCoreResponse(it) }
                 .getOrElse {
                     throw it
@@ -121,6 +121,6 @@ class DefaultSolrHttpClient : SolrHttpClient {
 
     // active or default
     private fun solrConnectionSettings(project: Project): HybrisRemoteConnectionSettings {
-        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrConnectionSettings(project)
+        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrRemoteConnectionSettings(project)
     }
 }

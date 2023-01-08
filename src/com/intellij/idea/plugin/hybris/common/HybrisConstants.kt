@@ -127,7 +127,9 @@ object HybrisConstants {
 
     const val DEFAULT_TOMCAT_HTTP_PORT = "9001"
     const val DEFAULT_TOMCAT_SSL_PORT = "9002"
+    const val DEFAULT_HOST_URL = "localhost"
     const val DEFAULT_SOLR_TOMCAT_SSL_PORT = "8983"
+    const val DEFAULT_SSL_PROTOCOL = "TLSv2"
 
     const val HTTP_PROTOCOL = "http://"
     const val HTTPS_PROTOCOL = "https://"

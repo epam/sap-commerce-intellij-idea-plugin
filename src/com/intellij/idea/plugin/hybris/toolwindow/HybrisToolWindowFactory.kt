@@ -35,7 +35,6 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
             TSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
             BSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
             HybrisConsolesToolWindow.getInstance(project).createToolWindowContent(toolWindow),
-            HybrisRemoteInstancesToolWindow(project).createToolWindowContent(toolWindow)
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
