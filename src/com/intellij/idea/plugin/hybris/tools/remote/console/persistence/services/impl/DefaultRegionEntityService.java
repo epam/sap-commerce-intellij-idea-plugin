@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.Hy
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.RegionEntity;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService;
+import com.intellij.openapi.project.Project;
 
 import java.util.Base64;
 import java.util.Collections;
@@ -32,11 +33,10 @@ import java.util.UUID;
 public class DefaultRegionEntityService implements RegionEntityService {
 
     private static final String SPLIT_SIGN = "_";
+    private final HybrisConsoleRegionsCache cache;
 
-    private HybrisConsoleRegionsCache cache;
-
-    public DefaultRegionEntityService(HybrisConsoleRegionsCache cache) {
-        this.cache = cache;
+    public DefaultRegionEntityService(final Project project) {
+        cache = HybrisConsoleRegionsCache.getInstance(project);
     }
 
     @Override

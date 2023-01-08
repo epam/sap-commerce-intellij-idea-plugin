@@ -77,6 +77,7 @@ import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.projectRoots.JavaSdkVersion;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
@@ -87,6 +88,7 @@ import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
@@ -394,7 +396,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                                                                                           .getState();
         final File customDirectory = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         final File hybrisDirectory = hybrisProjectDescriptor.getHybrisDistributionDirectory();
-        final File baseDirectory = VfsUtilCore.virtualToIoFile(project.getBaseDir());
+        final VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
+
+        if (projectDir == null) return;
+
+        final File baseDirectory = VfsUtilCore.virtualToIoFile(projectDir);
         final Path projectPath = Paths.get(baseDirectory.getAbsolutePath());
         final Path hybrisPath = Paths.get(hybrisDirectory.getAbsolutePath());
         final Path relativeHybrisPath = projectPath.relativize(hybrisPath);
