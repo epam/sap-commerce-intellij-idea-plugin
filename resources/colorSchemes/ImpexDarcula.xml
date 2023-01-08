@@ -57,4 +57,16 @@
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>
+    <option name="IMPEX_FUNCTION_CALL">
+        <value>
+            <option name="FOREGROUND" value="589DF6"/>
+            <option name="EFFECT_TYPE" value="2" />
+        </value>
+    </option>
+    <option name="IMPEX_WARNING_ATTRIBUTES">
+        <value>
+            <option name="FOREGROUND" value="9F6B00"/>
+            <option name="EFFECT_TYPE" value="2" />
+        </value>
+    </option>
 </list>

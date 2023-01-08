@@ -284,4 +284,15 @@
             <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
+    <option name="IMPEX_FUNCTION_CALL">
+        <value>
+            <option name="FOREGROUND" value="0000FF"/>
+        </value>
+    </option>
+    <option name="IMPEX_WARNING_ATTRIBUTES">
+        <value>
+            <option name="FOREGROUND" value="FFC800"/>
+            <option name="EFFECT_TYPE" value="2" />
+        </value>
+    </option>
 </list>

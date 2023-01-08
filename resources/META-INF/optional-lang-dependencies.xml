@@ -141,6 +141,8 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
         <lang.commenter language="Impex"
                         implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
