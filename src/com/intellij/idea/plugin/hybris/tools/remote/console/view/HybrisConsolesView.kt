@@ -10,6 +10,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
@@ -46,10 +47,12 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val panel = JPanel(BorderLayout())
 
-        hybrisTabs = HybrisTabs(project, TOP, arrayOf(impexConsole, groovyConsole, monitorConsole, flexibleSearchConsole, solrSearchConsole))
+        val consoles = arrayOf(impexConsole, groovyConsole, monitorConsole, flexibleSearchConsole, solrSearchConsole)
+        consoles.forEach { Disposer.register(this, it) }
+        hybrisTabs = HybrisTabs(project, TOP, consoles)
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
-        actionToolbar.setTargetComponent(hybrisTabs.component)
+        actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
         val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
@@ -104,6 +107,10 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
         val action = actionToolbar.actions.first { it is HybrisExecuteImmediatelyAction }
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = 5761094275961283320L
     }
 }
 
