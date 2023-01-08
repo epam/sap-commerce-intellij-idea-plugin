@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
@@ -229,10 +229,12 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final List<Module> mavenModules,
         final Map<String, String[]> mavenGroupMapping
     ) {
-        final ModifiableModuleModel model = ModuleManager.getInstance(project).getModifiableModel();
+        final var model = ModuleManager.getInstance(project).getModifiableModel();
+        final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
-        for (Module module : mavenModules) {
-            module.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.MAVEN.name());
+        for (final Module module : mavenModules) {
+            settingsComponent.getModuleSettings(module)
+                             .setDescriptorType(HybrisModuleDescriptorType.MAVEN.name());
             final String[] groupPath = model.getModuleGroupPath(module);
             model.setModuleGroupPath(module, ArrayUtils.addAll(mavenGroupMapping.get(module.getName()), groupPath));
         }

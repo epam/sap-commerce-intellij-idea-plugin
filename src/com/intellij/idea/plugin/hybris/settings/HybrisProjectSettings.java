@@ -21,7 +21,10 @@ package com.intellij.idea.plugin.hybris.settings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -51,6 +54,7 @@ public class HybrisProjectSettings {
     protected Set<String> completeSetOfAvailableExtensionsInHybris = new HashSet<>();
     protected Set<String> unusedExtensions = new HashSet<>();
     protected Set<String> modulesOnBlackList = new HashSet<>();
+    protected Map<String, ModuleSettings> moduleSettings = new HashMap<>();
 
     public boolean isHybrisProject() {
         return hybrisProject;
@@ -212,6 +216,14 @@ public class HybrisProjectSettings {
         return modulesOnBlackList;
     }
 
+    public Map<String, ModuleSettings> getModuleSettings() {
+        return moduleSettings;
+    }
+
+    public void setModuleSettings(final Map<String, ModuleSettings> moduleSettings) {
+        this.moduleSettings = moduleSettings;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
@@ -234,6 +246,7 @@ public class HybrisProjectSettings {
             .append(completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns)
             .append(unusedExtensions)
+            .append(moduleSettings)
             .toHashCode();
     }
 
@@ -269,6 +282,7 @@ public class HybrisProjectSettings {
             .append(completeSetOfAvailableExtensionsInHybris, other.completeSetOfAvailableExtensionsInHybris)
             .append(createBackwardCyclicDependenciesForAddOns, other.createBackwardCyclicDependenciesForAddOns)
             .append(unusedExtensions, other.unusedExtensions)
+            .append(moduleSettings, other.moduleSettings)
             .isEquals();
     }
 
@@ -294,7 +308,60 @@ public class HybrisProjectSettings {
         sb.append("completeSetOfAvailableExtensionsInHybris=").append(completeSetOfAvailableExtensionsInHybris);
         sb.append("createBackwardCyclicDependenciesForAddOns=").append(createBackwardCyclicDependenciesForAddOns);
         sb.append("unusedExtensions=").append(unusedExtensions);
+        sb.append("moduleSettings=").append(moduleSettings);
         sb.append('}');
         return sb.toString();
+    }
+
+    public static class ModuleSettings {
+        boolean readonly;
+        String descriptorType;
+
+        public boolean isReadonly() {
+            return readonly;
+        }
+
+        public void setReadonly(final boolean readonly) {
+            this.readonly = readonly;
+        }
+
+        public String getDescriptorType() {
+            return descriptorType;
+        }
+
+        public void setDescriptorType(final String descriptorType) {
+            this.descriptorType = descriptorType;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof final ModuleSettings other)) {
+                return false;
+            }
+
+            if (readonly != other.readonly) {
+                return false;
+            }
+            return Objects.equals(descriptorType, other.descriptorType);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (readonly ? 1 : 0);
+            result = 31 * result + (descriptorType != null ? descriptorType.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("ModuleSettings{")
+                .append("readonly=").append(readonly)
+                .append(", descriptorType='").append(descriptorType).append('\'')
+                .append('}')
+                .toString();
+        }
     }
 }

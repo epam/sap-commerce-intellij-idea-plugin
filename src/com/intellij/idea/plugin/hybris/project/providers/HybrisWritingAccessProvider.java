@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.providers;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -101,8 +101,10 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
             return false;
         }
         return Optional.ofNullable(ModuleUtilCore.findModuleForFile(file, myProject))
-                       .map(module -> module.getOptionValue(HybrisConstants.READ_ONLY))
-                       .map(Boolean::parseBoolean)
+                       .map(module -> HybrisProjectSettingsComponent.getInstance(myProject)
+                                                                .getModuleSettings(module)
+                                                                .isReadonly())
+
                        .orElse(false);
     }
 

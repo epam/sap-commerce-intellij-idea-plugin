@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.settings;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,15 @@ public class HybrisProjectSettingsComponent implements PersistentStateComponent<
     @Override
     public HybrisProjectSettings getState() {
         return this.hybrisProjectSettings;
+    }
+
+    public HybrisProjectSettings.ModuleSettings getModuleSettings(final Module module) {
+        return getModuleSettings(module.getName());
+    }
+
+    public HybrisProjectSettings.ModuleSettings getModuleSettings(final String moduleName) {
+        return getState().getModuleSettings()
+                         .computeIfAbsent(moduleName, s -> new HybrisProjectSettings.ModuleSettings());
     }
 
     @Override

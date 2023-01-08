@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings.ModuleSettings;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataImportListener;
 import com.intellij.openapi.module.Module;
@@ -81,7 +82,9 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
         }
         final var modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
 
-        gradleModule.setOption(HybrisConstants.DESCRIPTOR_TYPE, HybrisModuleDescriptorType.GRADLE.name());
+        final ModuleSettings moduleSettings = HybrisProjectSettingsComponent.getInstance(project)
+                                                                            .getModuleSettings(gradleModule);
+        moduleSettings.setDescriptorType(HybrisModuleDescriptorType.GRADLE.name());
         modifiableModuleModel.setModuleGroupPath(gradleModule, gradleRootGroupMapping.get(gradleModule.getName()));
 
         ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);

@@ -118,8 +118,6 @@ object HybrisConstants {
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
 
-    const val DESCRIPTOR_TYPE = "descriptorType"
-    const val READ_ONLY = "importedAsReadOnly"
     const val DEBUG_PORT = "8000"
 
     const val TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port"
