@@ -113,8 +113,7 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         final Collection<File> libraryDirectories = getLibraryDirectories();
         final File bootStrapSrc = new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY);
 
-        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider
-            .getModifiableProjectLibrariesModel();
+        final LibraryTable.ModifiableModel libraryTableModifiableModel = modifiableModelsProvider.getModifiableProjectLibrariesModel();
 
         Library library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP);
         if (null == library) {
@@ -181,7 +180,6 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
         }
 
         addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY));
-
         addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_BIN_DIRECTORY));
         addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_6_BIN_DIRECTORY));
         addLibraryDirectories(libraryDirectories, new File(getRootDirectory(), HybrisConstants.PL_TOMCAT_LIB_DIRECTORY));
