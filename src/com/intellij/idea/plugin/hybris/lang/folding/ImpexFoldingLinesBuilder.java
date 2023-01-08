@@ -29,8 +29,7 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.PsiElementProcessor.CollectFilteredElements;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.SyntaxTraverser;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +104,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
                             currentLineGroup,
                             (elm) -> {
                                 final PsiElement prevSibling = getPrevNonWhitespaceElement(elm);
-                                if (prevSibling != null && (isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
+                                if ((isHeaderLine(prevSibling) || isUserRightsMacros(prevSibling))) {
                                     return ";....;....";
                                 }
                                 return "";
@@ -135,12 +134,10 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
         if (root == null) {
             return Collections.emptyList();
         }
-
-        final List<PsiElement> foldingBlocks = new ArrayList<>();
-        PsiTreeUtil.processElements(root, new CollectFilteredElements<>(
-            new ImpexFoldingLinesFilter(), foldingBlocks));
-
-        return foldingBlocks;
+        final var filter = new ImpexFoldingLinesFilter();
+        return SyntaxTraverser.psiTraverser(root)
+                       .filter(filter::isAccepted)
+                       .toList();
     }
 
     @Nullable
