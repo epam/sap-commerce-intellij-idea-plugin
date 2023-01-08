@@ -91,7 +91,11 @@ class DefaultCommonIdeaService : CommonIdeaService {
         if (matchAllModuleNames(acceleratorNames, moduleNames)) {
             return true
         }
-        val webservicesNames: Collection<String> = listOf("*hmc", "hmc", "platform")
+        val webservicesNames: Collection<String> = listOf(
+            "*${HybrisConstants.EXTENSION_NAME_HMC}",
+            HybrisConstants.EXTENSION_NAME_HMC,
+            HybrisConstants.EXTENSION_NAME_PLATFORM
+        )
         return matchAllModuleNames(webservicesNames, moduleNames)
     }
 

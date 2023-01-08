@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.impex.utils
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.OPTIONAL_CONFIG_DIR_KEY
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
@@ -27,16 +28,16 @@ object ProjectPropertiesUtils {
     private const val NESTED_PROPERTY_SUFFIX = "}"
     private val OPTIONAL_PROPERTIES_FILE_PATTERN = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
-    fun findAllProperties(module: Module): List<IProperty> {
+    fun findAllProperties(project: Project): List<IProperty> {
         val result = LinkedHashMap<String, IProperty>()
-        val configModule = obtainConfigModule(module)
-        val platformModule = obtainPlatformModule(module)
-        val scope = createSearchScope(module, configModule, platformModule)
+        val configModule = obtainConfigModule(project)
+        val platformModule = obtainPlatformModule(project)
+        val scope = createSearchScope(project, configModule, platformModule)
         val files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
         var advancedPropsFile: PropertiesFile? = null
         var localPropsFile: PropertiesFile? = null
         for (virtualFile in files) {
-            val file = PsiManager.getInstance(module.project).findFile(virtualFile) as PropertiesFile?
+            val file = PsiManager.getInstance(project).findFile(virtualFile) as PropertiesFile?
             if (file != null) {
                 if (file.name == "advanced.properties") {
                     advancedPropsFile = file
@@ -55,16 +56,16 @@ object ProjectPropertiesUtils {
         addPropertyFile(result, localPropsFile)
 
         val optDir = result[OPTIONAL_CONFIG_DIR_KEY]
-        addOptionalConfiguration(module.project, result, optDir)
+        addOptionalConfiguration(project, result, optDir)
 
         return ArrayList(result.values)
     }
 
-    fun findAutoCompleteProperties(module: Module, query: String): List<IProperty> =
-        findAllProperties(module).filter { it.key != null && it.key!!.contains(query) || query.isBlank()}
+    fun findAutoCompleteProperties(project: Project, query: String): List<IProperty> =
+        findAllProperties(project).filter { it.key != null && it.key!!.contains(query) || query.isBlank()}
 
-    fun findMacroProperty(module: Module, query: String): IProperty? {
-        val allProps = findAllProperties(module)
+    fun findMacroProperty(project: Project, query: String): IProperty? {
+        val allProps = findAllProperties(project)
         if (allProps.isEmpty()) {
             return null;
         }
@@ -76,11 +77,11 @@ object ProjectPropertiesUtils {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-    fun resolvePropertyValue(module: Module, value: String?): String {
-        return resolvePropertyValue(module, value, HashMap())
+    fun resolvePropertyValue(project: Project, value: String?): String {
+        return resolvePropertyValue(project, value, HashMap())
     }
 
-    private fun resolvePropertyValue(module: Module, value: String?, resolvedProperties: MutableMap<String, String>): String {
+    private fun resolvePropertyValue(project: Project, value: String?, resolvedProperties: MutableMap<String, String>): String {
         if (value == null) {
             return ""
         }
@@ -96,9 +97,9 @@ object ProjectPropertiesUtils {
                 if (resolvedValue != null) {
                     sb.append(resolvedValue)
                 } else {
-                    val property = findMacroProperty(module, propertyKey)
+                    val property = findMacroProperty(project, propertyKey)
                     if (property != null) {
-                        resolvedValue = resolvePropertyValue(module, property.value)
+                        resolvedValue = resolvePropertyValue(project, property.value)
                         sb.append(resolvedValue)
                         resolvedProperties[propertyKey] = resolvedValue
                     } else {
@@ -150,8 +151,8 @@ object ProjectPropertiesUtils {
         }
     }
 
-    private fun createSearchScope(module: Module, configModule: Module, platformModule: Module): GlobalSearchScope {
-        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(module.project), PropertiesFileType.INSTANCE)
+    private fun createSearchScope(project: Project, configModule: Module, platformModule: Module): GlobalSearchScope {
+        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(project), PropertiesFileType.INSTANCE)
             .filter { it.name == "project.properties" }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == "advanced.properties" }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == "local.properties" }
@@ -159,13 +160,13 @@ object ProjectPropertiesUtils {
         return projectPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope)
     }
 
-    private fun obtainConfigModule(module: Module) =
-        ModuleManager.getInstance(module.project).modules.first { it.name == "config" }
+    private fun obtainConfigModule(project: Project) =
+        ModuleManager.getInstance(project).modules.first { it.name == HybrisConstants.EXTENSION_NAME_CONFIG }
 
-    private fun obtainPlatformModule(module: Module) =
-        ModuleManager.getInstance(module.project).modules.first { it.name == "platform" }
+    private fun obtainPlatformModule(project: Project) =
+        ModuleManager.getInstance(project).modules.first { it.name == HybrisConstants.EXTENSION_NAME_PLATFORM }
 
-    fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
+    fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean ) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
             return filter(file) && super.contains(file)
         }

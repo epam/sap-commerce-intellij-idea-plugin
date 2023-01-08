@@ -2,7 +2,9 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
+import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -104,10 +107,12 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setType(HybrisRemoteConnectionSettings.Type.Hybris);
         item.setUuid(UUID.randomUUID().toString());
         item.setHostIP(HybrisConstants.DEFAULT_HOST_URL);
-        item.setPort(HybrisConstants.DEFAULT_TOMCAT_SSL_PORT);
+        item.setPort(getPropertyOrDefault(project, HybrisConstants.TOMCAT_SSL_PORT_KEY, "9002"));
+        item.setHacWebroot(getPropertyOrDefault(project, HybrisConstants.HAC_WEBROOT_KEY, ""));
         item.setHacLogin("admin");
         item.setHacPassword("nimda");
         item.setSsl(true);
+        item.setSslProtocol(HybrisConstants.DEFAULT_SSL_PROTOCOL);
         item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
         return item;
     }
@@ -118,10 +123,11 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setType(HybrisRemoteConnectionSettings.Type.SOLR);
         item.setUuid(UUID.randomUUID().toString());
         item.setHostIP(HybrisConstants.DEFAULT_HOST_URL);
-        item.setPort(HybrisConstants.DEFAULT_SOLR_TOMCAT_SSL_PORT);
+
+        item.setPort(getPropertyOrDefault(project, HybrisConstants.SOLR_DEFAULT_PORT_KEY, "8983"));
         item.setSolrWebroot("solr");
-        item.setAdminLogin("solradmin");
-        item.setAdminPassword("admin123");
+        item.setAdminLogin(getPropertyOrDefault(project, HybrisConstants.SOLR_DEFAULT_USER_KEY, "solrserver"));
+        item.setAdminPassword(getPropertyOrDefault(project, HybrisConstants.SOLR_DEFAULT_PASSWORD_KEY, "server123"));
         item.setSsl(true);
         item.setGeneratedURL(CommonIdeaService.getInstance().getSolrUrl(project, item));
         return item;
@@ -159,5 +165,11 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
             case Hybris -> myMessageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
             case SOLR -> myMessageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
         }
+    }
+
+    private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
+        return Optional.ofNullable(ProjectPropertiesUtils.INSTANCE.findMacroProperty(project, key))
+                       .map(IProperty::getValue)
+                       .orElse(fallback);
     }
 }

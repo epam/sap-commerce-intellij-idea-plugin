@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
@@ -59,6 +60,7 @@ import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 public class DefaultSpringConfigurator implements SpringConfigurator {
 
     private static final Logger LOG = Logger.getInstance(DefaultSpringConfigurator.class);
+    private static final Pattern SPLIT_PATTERN = Pattern.compile(" ,");
 
     @Override
     public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
@@ -173,7 +175,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
         moduleDescriptor.addSpringFile(propFile.getAbsolutePath());
 
-        try (FileInputStream fis = new FileInputStream(propFile)) {
+        try (final FileInputStream fis = new FileInputStream(propFile)) {
             projectProperties.load(fis);
         } catch (FileNotFoundException e) {
             return;
@@ -196,7 +198,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                     }
                     for (String file : rawFile.split(",")) {
                         if (!addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), file)) {
-                            File dir = hackGuessLocation(relevantModule);
+                            final File dir = hackGuessLocation(relevantModule);
                             addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, file);
                         }
                     }
@@ -244,7 +246,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final String contextConfigLocation
     ) {
         File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
-        for (String xml: contextConfigLocation.split(" ,")) {
+        for (String xml: SPLIT_PATTERN.split(contextConfigLocation)) {
             if (!xml.endsWith(".xml")) {
                 continue;
             }
@@ -256,8 +258,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
 
-    private Document getDocument(File inputFile) throws IOException, JDOMException {
-        SAXBuilder saxBuilder = new SAXBuilder();
+    private Document getDocument(final File inputFile) throws IOException, JDOMException {
+        final SAXBuilder saxBuilder = new SAXBuilder();
         return saxBuilder.build(inputFile);
     }
 
@@ -306,7 +308,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final File springFile
     ) {
         for (Element importElement: importList) {
-            String resource = importElement.getAttributeValue("resource");
+            final String resource = importElement.getAttributeValue("resource");
             if (resource.startsWith("classpath:")) {
                 addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length()));
             } else {

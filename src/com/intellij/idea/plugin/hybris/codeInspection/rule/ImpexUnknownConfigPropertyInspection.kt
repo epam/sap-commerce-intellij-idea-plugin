@@ -57,8 +57,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
             if (isDeclarationExists != null && isDeclarationExists == false) {
                 problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)
             } else {
-                val module = ModuleUtil.findModuleForPsiElement(usage)
-                val property = ProjectPropertiesUtils.findMacroProperty(module!!, propertyName)
+                val property = ProjectPropertiesUtils.findMacroProperty(usage.project, propertyName)
                 if (property == null) {
                     cachedProperties[propertyName] = false
                     problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)

@@ -59,7 +59,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_CORE = "core"
     const val EXTENSION_NAME_CONFIG = "config"
     const val EXTENSION_NAME_HMC = "hmc"
-    const val EXTENSION_NAME_HAC_MODULE = "hac"
+    const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
 
     const val BACKOFFICE_MODULE_META_KEY_NAME = "backoffice-module"
@@ -122,12 +122,12 @@ object HybrisConstants {
 
     const val TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port"
     const val TOMCAT_HTTP_PORT_KEY = "tomcat.http.port"
+    const val SOLR_DEFAULT_PORT_KEY = "solrserver.instances.default.port"
+    const val SOLR_DEFAULT_USER_KEY = "solrserver.instances.default.user"
+    const val SOLR_DEFAULT_PASSWORD_KEY = "solrserver.instances.default.password"
 
-    const val DEFAULT_TOMCAT_HTTP_PORT = "9001"
-    const val DEFAULT_TOMCAT_SSL_PORT = "9002"
     const val DEFAULT_HOST_URL = "localhost"
-    const val DEFAULT_SOLR_TOMCAT_SSL_PORT = "8983"
-    const val DEFAULT_SSL_PROTOCOL = "TLSv2"
+    const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
 
     const val HTTP_PROTOCOL = "http://"
     const val HTTPS_PROTOCOL = "https://"

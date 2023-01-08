@@ -231,11 +231,11 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             if (module == null) {
                 return;
             }
-            final IProperty property = ProjectPropertiesUtils.INSTANCE.findMacroProperty(module, propertyName);
+            final IProperty property = ProjectPropertiesUtils.INSTANCE.findMacroProperty(module.getProject(), propertyName);
             if (property == null) {
                 return;
             }
-            final String value = ProjectPropertiesUtils.INSTANCE.resolvePropertyValue(module, property.getValue());
+            final String value = ProjectPropertiesUtils.INSTANCE.resolvePropertyValue(module.getProject(), property.getValue());
             descriptor = new ImpexMacroDescriptor(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + property.getKey(), value, property.getPsiElement());
             cache.put(text, descriptor);
             cache.put(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + property.getKey(), descriptor);

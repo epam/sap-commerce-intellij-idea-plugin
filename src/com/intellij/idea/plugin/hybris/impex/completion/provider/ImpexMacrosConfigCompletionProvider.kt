@@ -22,7 +22,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
@@ -44,7 +43,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val position = parameters.position
             val query = getQuery(position)
             val module = ModuleUtil.findModuleForPsiElement(position)
-            ProjectPropertiesUtils.findAutoCompleteProperties(module!!, query).forEach {
+            ProjectPropertiesUtils.findAutoCompleteProperties(module!!.project, query).forEach {
                 result.addElement(LookupElementBuilder.create("${it.key}").withIcon(HybrisIcons.PROPERTY))
             }
         }
@@ -54,7 +53,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val prefix = getPrefix(position)
             val query = position.text.substring(prefix.length).replace("IntellijIdeaRulezzz", "")
             val module = ModuleUtil.findModuleForPsiElement(position)
-            ProjectPropertiesUtils.findAutoCompleteProperties(module!!, query).forEach {
+            ProjectPropertiesUtils.findAutoCompleteProperties(module!!.project, query).forEach {
                 result.addElement(LookupElementBuilder.create(prefix+"${it.key}").withIcon(HybrisIcons.PROPERTY))
             }
         }
