@@ -121,6 +121,13 @@
                 <li><i>Feature:</i> Show label for dynamic attribute during Impex code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/110" target="_blank" rel="nofollow">#110</a>)</li>
                 <li><i>Feature:</i> Inspection for <code>beans.xml</code> rely on whole Bean System, not only current file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)</li>
                 <li><i>Feature:</i> Regrouped [y] Application settings into separate sections (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/130" target="_blank" rel="nofollow">#130</a>)</li>
+                <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
+                <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
+                <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
+                <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
+                <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
+                <li><i>Bug Fix:</i> Platform module should not be identified as Gradle project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/141" target="_blank" rel="nofollow">#141</a>)</li>
+                <li><i>Bug Fix:</i> Default values for Type System modifiers</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API
                 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107" target="_blank" rel="nofollow">#107</a>,
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/106" target="_blank" rel="nofollow">#106</a>,
@@ -135,12 +142,6 @@
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/138" target="_blank" rel="nofollow">#138</a>,
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/139" target="_blank" rel="nofollow">#139</a>,
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/140" target="_blank" rel="nofollow">#140</a>)</li>
-                <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
-                <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
-                <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
-                <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
-                <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
-                <li><i>Bug Fix:</i> Default values for Type System modifiers</li>
                 <li>
                     <strong>Ultimate only</strong>
                     <ul>
