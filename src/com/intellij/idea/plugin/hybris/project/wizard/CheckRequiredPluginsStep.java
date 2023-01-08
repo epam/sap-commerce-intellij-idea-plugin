@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard;
 
+import com.intellij.ide.plugins.IdeaPluginDependency;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.ide.plugins.PluginManagerCore;
@@ -46,8 +47,8 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     private JPanel rootPanel;
     private JLabel warningLabel;
     private JTextPane descriptionTextPane;
-    private JList notInstalledList;
-    private JList notEnabledList;
+    private JList<?> notInstalledList;
+    private JList<?> notEnabledList;
     private JLabel notInstalledLablel;
     private JLabel notEnabledLabel;
     private JButton enableButton;
@@ -82,33 +83,36 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     public boolean isStepVisible() {
         notInstalledPlugins.clear();
         notEnabledPlugins.clear();
-        checkDependentPlugins();
-        boolean missing = isAnyMissing();
-        if (!missing) {
+        validateDependentPlugins();
+        if (!isAnyMissing()) {
             return false;
         }
         fillInGUI();
         return true;
     }
 
-    private void checkDependentPlugins() {
+    private void validateDependentPlugins() {
         final IdeaPluginDescriptor hybrisPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
-        final PluginId[] dependentPluginIds = hybrisPlugin.getOptionalDependentPluginIds();
-        Arrays.stream(dependentPluginIds).forEach(id -> {
-            if (id.getIdString().startsWith(EXCLUDED_ID_PREFIX)) {
-                return;
-            }
-            final boolean installed = PluginManager.isPluginInstalled(id);
-            if (!installed) {
-                notInstalledPlugins.add(id);
-                return;
-            }
 
-            final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(id);
-            if (plugin != null && !plugin.isEnabled()) {
-                notEnabledPlugins.add(id);
-            }
-        });
+        if (hybrisPlugin == null) return;
+
+        hybrisPlugin.getDependencies().stream()
+            .filter(IdeaPluginDependency::isOptional)
+            .map(IdeaPluginDependency::getPluginId)
+            .forEach(id -> {
+                if (id.getIdString().startsWith(EXCLUDED_ID_PREFIX)) {
+                    return;
+                }
+                if (!PluginManager.isPluginInstalled(id)) {
+                    notInstalledPlugins.add(id);
+                    return;
+                }
+
+                final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(id);
+                if (plugin != null && !plugin.isEnabled()) {
+                    notEnabledPlugins.add(id);
+                }
+            });
     }
 
     private void fillInGUI() {
@@ -139,8 +143,8 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
     }
 
     private void createUIComponents() {
-        notInstalledList = new JBList(new DefaultListModel());
-        notEnabledList = new JBList(new DefaultListModel());
+        notInstalledList = new JBList<>(new DefaultListModel<>());
+        notEnabledList = new JBList<>(new DefaultListModel<>());
         enableButton = new JButton();
         enableButton.addActionListener(e -> enablePlugins());
     }

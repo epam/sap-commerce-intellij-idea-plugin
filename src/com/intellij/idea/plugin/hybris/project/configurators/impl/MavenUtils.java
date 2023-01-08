@@ -107,7 +107,7 @@ public interface MavenUtils {
                 moduleDirPath,
                 moduleDirPath
             );
-            final MavenGeneralSettings generalSettings = settings.generalSettings;
+            final MavenGeneralSettings generalSettings = settings.getGeneralSettings();
             generalSettings.setNonRecursive(true);
 
             final MavenProjectsTree mavenProjectsTree = new MavenProjectsTree(project);
