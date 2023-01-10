@@ -80,6 +80,7 @@ tasks {
 
     runPluginVerifier {
         ideVersions.addAll(pluginVerifierIdeVersions)
+        externalPrefixes.addAll("com.intellij.javaee", "com.intellij.spring")
     }
 
     clean {
