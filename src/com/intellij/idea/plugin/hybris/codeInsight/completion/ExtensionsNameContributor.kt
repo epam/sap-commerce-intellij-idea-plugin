@@ -17,24 +17,57 @@
  */
 package com.intellij.idea.plugin.hybris.codeInsight.completion
 
-import com.intellij.codeInsight.completion.CompletionContributor
-import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider
+import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.system.extensionInfo.model.ExtensionInfo
+import com.intellij.psi.xml.XmlFile
+import com.intellij.util.ProcessingContext
+import com.intellij.util.xml.DomManager
 
 class ExtensionsNameContributor : CompletionContributor() {
 
     init {
-        val instance = ExtensionNameCompletionProvider.instance
         extend(
             CompletionType.BASIC,
             PsiXmlUtils.tagAttributePattern("extension", "name", "localextensions"),
-            instance
+            object: CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    val project = parameters.originalFile.project
+                    val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+                    val extensions = hybrisProjectSettings.completeSetOfAvailableExtensionsInHybris
+                    extensions.forEach { result.addElement(LookupElementBuilder.create(it)) }
+                }
+            }
         )
         extend(
             CompletionType.BASIC,
             PsiXmlUtils.tagAttributePattern("requires-extension", "name", "extensioninfo"),
-            instance
+            object: CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    val file = parameters.originalFile
+                    if (file !is XmlFile) return
+
+                    val project = file.project
+                    val currentNames = DomManager.getDomManager(project)
+                        .getFileElement(file, ExtensionInfo::class.java)
+                        ?.rootElement
+                        ?.extension
+                        ?.requiresExtensions
+                        ?.mapNotNull { it.name.stringValue }
+                        ?.filter { it.isNotBlank() }
+                        ?.map { it.lowercase() } ?: emptyList()
+
+                    val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+                    val extensions = hybrisProjectSettings.completeSetOfAvailableExtensionsInHybris
+                    extensions
+                        .filterNot { currentNames.contains(it.lowercase()) }
+                        .forEach { result.addElement(LookupElementBuilder.create(it)) }
+                }
+            }
         )
+
+
     }
 }

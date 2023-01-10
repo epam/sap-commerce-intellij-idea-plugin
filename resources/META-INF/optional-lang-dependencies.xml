@@ -47,9 +47,6 @@
                           implementation="com.intellij.idea.plugin.hybris.system.extensionInfo.EiSDomFileDescription"/>
         <completion.contributor language="XML"
                                 implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"
-            serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Hybris Type System                                           -->
