@@ -29,14 +29,13 @@ import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleD
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -50,7 +49,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
@@ -71,12 +69,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         File advancedProperties = null;
         for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
-            if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
-                final ConfigHybrisModuleDescriptor configModule = (ConfigHybrisModuleDescriptor) moduleDescriptor;
+            if (moduleDescriptor instanceof final ConfigHybrisModuleDescriptor configModule) {
                 localProperties = new File(configModule.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
             }
-            if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-                final PlatformHybrisModuleDescriptor platformModule = (PlatformHybrisModuleDescriptor) moduleDescriptor;
+            if (moduleDescriptor instanceof final PlatformHybrisModuleDescriptor platformModule) {
                 advancedProperties = new File(platformModule.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
             }
         }
@@ -217,23 +213,22 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
         final HybrisModuleDescriptor moduleDescriptor
     ) throws IOException, JDOMException {
-        File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
+        final File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
         if (!webXml.exists()) {
             return;
         }
-        final Document document = getDocument(webXml);
-        final Element root = document.getRootElement();
-        if (root == null || !root.getName().equals("web-app")) {
+        final Element root = getDocumentRoot(webXml);
+        if (root.isEmpty() || !root.getName().equals("web-app")) {
             return;
         }
-        String location = root.getChildren()
-                              .stream()
-                              .filter(e -> e.getName().equals("context-param"))
-                              .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
-                              .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
-                              .filter(Objects::nonNull)
-                              .map(Element::getValue)
-                              .findFirst().orElse(null);
+        final String location = root.getChildren()
+                                    .stream()
+                                    .filter(e -> e.getName().equals("context-param"))
+                                    .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
+                                    .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
+                                    .filter(Objects::nonNull)
+                                    .map(Element::getValue)
+                                    .findFirst().orElse(null);
         if (location == null) {
             return;
         }
@@ -245,12 +240,12 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final HybrisModuleDescriptor moduleDescriptor,
         final String contextConfigLocation
     ) {
-        File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
+        final File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
         for (String xml: SPLIT_PATTERN.split(contextConfigLocation)) {
             if (!xml.endsWith(".xml")) {
                 continue;
             }
-            File springFile = new File(webModuleDir, xml);
+            final File springFile = new File(webModuleDir, xml);
             if (!springFile.exists()) {
                 continue;
             }
@@ -258,17 +253,13 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
 
-    private Document getDocument(final File inputFile) throws IOException, JDOMException {
-        final SAXBuilder saxBuilder = new SAXBuilder();
-        return saxBuilder.build(inputFile);
+    private @NotNull Element getDocumentRoot(final File inputFile) throws IOException, JDOMException {
+        return JDOMUtil.load(inputFile);
     }
 
     private boolean hasSpringContent(final File springFile) throws IOException, JDOMException {
-        final Document document = getDocument(springFile);
-        if (document == null) {
-            return false;
-        }
-        return document.getRootElement() != null && document.getRootElement().getName().equals("beans");
+        final Element root = getDocumentRoot(springFile);
+        return !root.isEmpty() && root.getName().equals("beans");
     }
 
     private boolean processSpringFile(final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
@@ -293,11 +284,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final HybrisModuleDescriptor moduleDescriptor,
         final File springFile
     ) throws IOException, JDOMException {
-        final Document document = getDocument(springFile);
-        final List<Element> importList = document.getRootElement().getChildren()
-                                                 .stream()
-                                                 .filter(e -> e.getName().equals("import"))
-                                                 .collect(Collectors.toList());
+        final Element root = getDocumentRoot(springFile);
+        final List<Element> importList = root.getChildren().stream()
+                                             .filter(e -> e.getName().equals("import"))
+                                             .toList();
         processImportNodeList(moduleDescriptorMap, moduleDescriptor, importList, springFile);
     }
 
