@@ -100,7 +100,7 @@ public class ModuleDepDiagramProvider extends DiagramProvider<ModuleDepDiagramIt
     @Override
     @NotNull
     public Icon getActionIcon(final boolean isPopup) {
-        return HybrisIcons.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS;
     }
 
     @Override

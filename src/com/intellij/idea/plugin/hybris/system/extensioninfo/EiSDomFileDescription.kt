@@ -16,16 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.plugin.hybris.debugger.ui.tree.render
+package com.intellij.idea.plugin.hybris.system.extensioninfo
 
-import com.intellij.debugger.engine.evaluation.EvaluationContext
-import com.intellij.debugger.ui.tree.ValueDescriptor
-import com.intellij.debugger.ui.tree.render.DescriptorLabelListener
-import com.intellij.debugger.ui.tree.render.ValueIconRenderer
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
+import com.intellij.openapi.module.Module
+import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class ModelValueIconRenderer : ValueIconRenderer {
-    override fun calcValueIcon(descriptor: ValueDescriptor?, evaluationContext: EvaluationContext?, listener: DescriptorLabelListener?): Icon =
-        HybrisIcons.HYBRIS
+class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, "extensioninfo") {
+
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTENSION_INFO
+
+    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+            && file.name == HybrisConstants.EXTENSION_INFO_XML
+
 }

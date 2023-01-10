@@ -16,16 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.plugin.hybris.debugger.ui.tree.render
+// Generated on Mon Jan 09 16:31:21 CET 2023
+// DTD/Schema  :    null
+package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
-import com.intellij.debugger.engine.evaluation.EvaluationContext
-import com.intellij.debugger.ui.tree.ValueDescriptor
-import com.intellij.debugger.ui.tree.render.DescriptorLabelListener
-import com.intellij.debugger.ui.tree.render.ValueIconRenderer
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import javax.swing.Icon
+import com.intellij.util.xml.*;
+import com.intellij.util.xml.DomElement;
+import org.jetbrains.annotations.NotNull;
 
-class ModelValueIconRenderer : ValueIconRenderer {
-    override fun calcValueIcon(descriptor: ValueDescriptor?, evaluationContext: EvaluationContext?, listener: DescriptorLabelListener?): Icon =
-        HybrisIcons.HYBRIS
+/**
+ * null:extensioninfoElemType interface.
+ * <pre>
+ * <h3>Type null:extensioninfoElemType documentation</h3>
+ * Configures the available modules of the extension.
+ * </pre>
+ */
+@Stubbed
+@StubbedOccurrence
+public interface ExtensionInfo extends DomElement {
+
+	/**
+	 * Returns the value of the extension child.
+	 * @return the value of the extension child.
+	 */
+	@NotNull
+	@SubTag ("extension")
+	@Required
+	Extension getExtension();
+
+
 }

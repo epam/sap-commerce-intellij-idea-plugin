@@ -17,19 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
+import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.util.ArrayUtil;
 import org.apache.xerces.xni.XMLResourceIdentifier;
 import org.apache.xerces.xni.XNIException;
 import org.apache.xerces.xni.parser.XMLEntityResolver;
 import org.apache.xerces.xni.parser.XMLInputSource;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import java.io.CharArrayReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,19 +61,7 @@ public class ModelGen {
     }
 
     public static Element loadXml(File configXml) throws Exception {
-        SAXBuilder saxBuilder = new SAXBuilder();
-        saxBuilder.setEntityResolver(new EntityResolver() {
-
-            public InputSource resolveEntity(
-                String publicId,
-                String systemId
-            )
-            throws SAXException, IOException {
-                return new InputSource(new CharArrayReader(new char[0]));
-            }
-        });
-        final Document document = saxBuilder.build(configXml);
-        return document.getRootElement();
+        return JDOMUtil.load(configXml);
     }
 
     public void loadConfig(File configXml) throws Exception {

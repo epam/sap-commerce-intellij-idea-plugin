@@ -51,6 +51,7 @@ object HybrisConstants {
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
+    const val BUSINESS_PROCESS_XML = "process.xml"
 
     const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"

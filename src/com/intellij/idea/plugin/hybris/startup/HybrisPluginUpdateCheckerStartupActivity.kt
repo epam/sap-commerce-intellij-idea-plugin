@@ -36,7 +36,7 @@ class HybrisPluginUpdateCheckerStartupActivity : StartupActivity.Background {
                 PluginId.getId(HybrisConstants.PLUGIN_ID),
                 HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
                 NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
-                HybrisIcons.HYBRIS_ICON
+                HybrisIcons.HYBRIS
             )
             checker.pluginUsed()
         }

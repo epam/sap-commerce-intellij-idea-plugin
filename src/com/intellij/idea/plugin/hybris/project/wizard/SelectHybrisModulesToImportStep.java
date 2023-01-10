@@ -165,6 +165,6 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             return AllIcons.Nodes.Module;
         }
 
-        return HybrisIcons.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS;
     }
 }

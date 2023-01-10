@@ -40,17 +40,16 @@ import java.util.TreeMap;
  */
 public class ModelDesc {
 
-    final Map<String, String> name2replaceMap = new HashMap<String, String>();
-    final Map<QName, String> qname2FileMap = new HashMap<QName, String>();
-    final Map<String, NamespaceDesc> nsdMap = new HashMap<String, NamespaceDesc>();
-    final Map<String, TypeDesc> jtMap = new TreeMap<String, TypeDesc>();
+    final Map<String, String> name2replaceMap = new HashMap<>();
+    final Map<QName, String> qname2FileMap = new HashMap<>();
+    final Map<String, NamespaceDesc> nsdMap = new HashMap<>();
+    final Map<String, TypeDesc> jtMap = new TreeMap<>();
 
-
-    public String getNSDPrefix(TypeDesc td) {
+    public String getNSDPrefix(final TypeDesc td) {
         return getNSDPrefix(td.xsNamespace, td.name, td.type == TypeDesc.TypeEnum.ENUM);
     }
 
-    public String getNSDPrefix(String namespace, String name, boolean isEnum) {
+    public String getNSDPrefix(final String namespace, final String name, final boolean isEnum) {
         final int lastIdx = name.lastIndexOf(".");
         if (lastIdx > -1) {
             return name.substring(0, lastIdx + 1);

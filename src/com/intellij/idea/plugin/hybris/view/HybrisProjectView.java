@@ -123,7 +123,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             ModuleGroup moduleGroup = parent.getValue();
             if (Arrays.equals(moduleGroup.getGroupPath(), commerceGroupName) ||
                 Arrays.equals(moduleGroup.getGroupPath(), platformGroupName)) {
-                parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+                parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
             }
         }
         children.stream()
@@ -147,10 +147,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                         case PLATFORM:
                         case EXT:
                         case OOTB:
-                            parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+                            parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
                             final AbstractTreeNode superParent = parent.getParent();
                             if (superParent != null) {
-                                superParent.getPresentation().setIcon(HybrisIcons.HYBRIS_ICON);
+                                superParent.getPresentation().setIcon(HybrisIcons.HYBRIS);
                             }
                             return;
                     }

@@ -41,7 +41,7 @@ class RemoteHacInstancesListPanel extends RemoteInstancesListPanel {
 
     @Override
     Icon getCellIcon() {
-        return HybrisIcons.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS;
     }
 
     @Override

@@ -338,7 +338,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public Icon getIcon() {
-        return HybrisIcons.HYBRIS_ICON;
+        return HybrisIcons.HYBRIS;
     }
 
     @Override

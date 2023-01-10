@@ -20,12 +20,13 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 
 /**
  * @author Konstantin Bulenkov
  */
-public class GenerateDomModelAction extends AnAction {
+public class GenerateDomModelAction extends AnAction implements DumbAware {
 
     @Override
     public void actionPerformed(AnActionEvent e) {

@@ -1,12 +1,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE_ICON
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider.HybrisProjectSettingsConfigurable
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -16,7 +12,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 class HybrisChooseInstanceAction : AnAction(
     message("action.choose.hybris.instance.message.text"),
     message("action.choose.hybris.instance.message.title"),
-    HYBRIS_REMOTE_ICON
+    HYBRIS_REMOTE
 ) {
 
     override fun actionPerformed(e: AnActionEvent) {

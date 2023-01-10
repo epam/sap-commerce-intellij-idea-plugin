@@ -22,6 +22,7 @@ import com.intellij.diagram.AbstractDiagramElementManager;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphNode;
 import com.intellij.idea.plugin.hybris.business.process.common.BpGraphService;
 import com.intellij.idea.plugin.hybris.business.process.diagram.BpDiagramElementManager;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -60,7 +61,7 @@ public class BpDiagramElementManagerIml extends AbstractDiagramElementManager<Bp
             return null;
         }
 
-        if (!virtualFile.getName().toLowerCase(Locale.ROOT).endsWith("process.xml")) {
+        if (!virtualFile.getName().toLowerCase(Locale.ROOT).endsWith(HybrisConstants.BUSINESS_PROCESS_XML)) {
             return null;
         }
 

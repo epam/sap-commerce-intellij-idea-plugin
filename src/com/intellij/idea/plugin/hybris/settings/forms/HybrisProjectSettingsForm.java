@@ -170,7 +170,7 @@ public class HybrisProjectSettingsForm implements Disposable {
     private void createUIComponents() {
         labelActiveHacInstance = new JBLabel();
         labelActiveSolrInstance = new JBLabel();
-        labelActiveHacInstance.setIcon(HybrisIcons.HYBRIS_ICON);
+        labelActiveHacInstance.setIcon(HybrisIcons.HYBRIS);
         labelActiveSolrInstance.setIcon(HybrisIcons.CONSOLE_SOLR);
 
         panelProjectDetails = initPanel("hybris.settings.project.details.title");
