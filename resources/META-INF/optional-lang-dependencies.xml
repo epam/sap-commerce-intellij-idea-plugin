@@ -34,6 +34,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
+        <dom.fileMetaData rootTagName="process" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.businessprocess.BpSDomFileDescription"/>
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
