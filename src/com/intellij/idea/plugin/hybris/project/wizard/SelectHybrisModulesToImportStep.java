@@ -83,7 +83,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         selectionMode = UNUSED;
         final Set<String> duplicateModules = new HashSet<>();
         final Set<String> uniqueModules = new HashSet<>();
-        getContext().getList().forEach(e->{
+        getContext().getList().forEach(e -> {
             if (uniqueModules.contains(e.getName())) {
                 duplicateModules.add(e.getName());
             } else {

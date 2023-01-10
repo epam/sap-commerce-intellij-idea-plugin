@@ -34,10 +34,22 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- ####################################################################################################### -->
+        <!--                                            Business Process                                             -->
+        <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="process" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.businessprocess.BpSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpSDomFileDescription"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                            ExtensionInfo                                                -->
+        <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.extensionInfo.EiSDomFileDescription"/>
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
+        <applicationService
+            serviceInterface="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Hybris Type System                                           -->
@@ -263,12 +275,12 @@
             serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
 
         <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"
-            serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.ItemTypeCodeCompletionProvider"/>
+            serviceInterface="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"
+            serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.EnumTypeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.completion.provider.RelationTypeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
 
         <applicationService
             serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"

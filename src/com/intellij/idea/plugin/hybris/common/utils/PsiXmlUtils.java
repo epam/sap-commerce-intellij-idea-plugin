@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.common.utils;
 
+import com.intellij.patterns.PlatformPatterns;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.patterns.PsiFilePattern;
+import com.intellij.patterns.StandardPatterns;
 import com.intellij.patterns.XmlAttributeValuePattern;
 import com.intellij.patterns.XmlPatterns;
 import com.intellij.psi.PsiElement;
@@ -54,8 +56,8 @@ public class PsiXmlUtils {
                     )
             ).inside(
                 insideTagPattern(tagName)
-            ).inFile(XmlPatterns.psiFile()
-                                .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
+            ).inFile(PlatformPatterns.psiFile()
+                                .withName(StandardPatterns.string().endsWith(fileName + ".xml")));
     }
     
     /**
@@ -75,9 +77,9 @@ public class PsiXmlUtils {
                             .xmlTag()
                     )
             ).inside(
-                XmlPatterns.psiElement(XmlTag.class)
-            ).inFile(XmlPatterns.psiFile()
-                                .withName(XmlPatterns.string().endsWith(fileName + ".xml")));
+                PlatformPatterns.psiElement(XmlTag.class)
+            ).inFile(PlatformPatterns.psiFile()
+                                .withName(StandardPatterns.string().endsWith(fileName + ".xml")));
     }
     
     /**
@@ -121,7 +123,7 @@ public class PsiXmlUtils {
                         xmlTag()
                     )
             ).inside(
-                XmlPatterns.psiElement(XmlTag.class)
+                PlatformPatterns.psiElement(XmlTag.class)
             ));
     }
 
@@ -130,13 +132,13 @@ public class PsiXmlUtils {
             return getXmlFilePattern();
         }
 
-        return XmlPatterns.psiFile()
-                          .withName(XmlPatterns.string().equalTo(fileName + ".xml"));
+        return PlatformPatterns.psiFile()
+                          .withName(StandardPatterns.string().equalTo(fileName + ".xml"));
     }
 
     public static PsiFilePattern.Capture<PsiFile> getXmlFilePattern() {
-        return XmlPatterns.psiFile()
-                          .withName(XmlPatterns.string().endsWith(".xml"));
+        return PlatformPatterns.psiFile()
+                          .withName(StandardPatterns.string().endsWith(".xml"));
     }
 
     public static XmlAttributeValuePattern attributeValuePattern(final String tagName, final String attributeName) {
@@ -153,7 +155,7 @@ public class PsiXmlUtils {
     }
 
     public static PsiElementPattern.Capture<XmlTag> insideTagPattern(String insideTagName) {
-        return XmlPatterns.psiElement(XmlTag.class).withName(insideTagName);
+        return PlatformPatterns.psiElement(XmlTag.class).withName(insideTagName);
     }
 
     public static PsiElementPattern.Capture<PsiElement> tagAttributePattern(
@@ -161,7 +163,7 @@ public class PsiXmlUtils {
         String attributeName,
         String fileName
     ) {
-        return XmlPatterns
+        return PlatformPatterns
             .psiElement()
             .inside(XmlPatterns
                         .xmlAttributeValue()
