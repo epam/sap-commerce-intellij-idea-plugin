@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.business.process.jaxb.services;
 
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
+import jakarta.xml.bind.UnmarshalException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.xml.bind.UnmarshalException;
 import java.io.File;
 
 /**

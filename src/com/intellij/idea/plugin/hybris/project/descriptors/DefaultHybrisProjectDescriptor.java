@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ObjectFactory;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
@@ -40,15 +41,14 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.concurrent.GuardedBy;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -296,41 +296,18 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor) {
         Validate.notNull(configHybrisModuleDescriptor);
 
+        final File file = new File(configHybrisModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
         try {
-            return unmarshalLocalExtensions(new File(
-                configHybrisModuleDescriptor.getRootDirectory(),
-                HybrisConstants.LOCAL_EXTENSIONS_XML
-            ));
-        } catch (JAXBException e) {
-            // Log the error because this is called during project import, it is unlikely that the user is typing in
-            // "localextensions.xml" right now.
-            LOG.error(
-                "Can not unmarshal " + configHybrisModuleDescriptor.getRootDirectory().getAbsolutePath(), e
-            );
+            return (Hybrisconfig) JAXBContext.newInstance(
+                "com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions",
+                ObjectFactory.class.getClassLoader())
+                                             .createUnmarshaller()
+                                             .unmarshal(file);
+        } catch (final JAXBException e) {
+            LOG.error("Can not unmarshal " + file.getAbsolutePath(), e);
         }
 
         return null;
-    }
-
-    @Nullable
-    public static Hybrisconfig unmarshalLocalExtensions(final File localextensions) throws JAXBException {
-        if (!localextensions.exists()) {
-            return null;
-        }
-
-        final JAXBContext jaxbContext = JAXBContext.newInstance(Hybrisconfig.class);
-        if (null == jaxbContext) {
-            LOG.error(String.format(
-                "Can not unmarshal '%s' because JAXBContext has not been created.",
-                localextensions.getAbsolutePath()
-            ));
-
-            return null;
-        }
-
-        final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-
-        return (Hybrisconfig) jaxbUnmarshaller.unmarshal(localextensions);
     }
 
     @Override

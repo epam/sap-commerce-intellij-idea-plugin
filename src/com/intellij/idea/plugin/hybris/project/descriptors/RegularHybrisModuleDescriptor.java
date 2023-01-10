@@ -24,15 +24,15 @@ import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.openapi.diagnostic.Logger;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,8 +42,8 @@ import java.util.List;
 import java.util.Set;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_META_KEY_NAME;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_META_KEY_NAME;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_HAC_MODULE;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
@@ -61,9 +61,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
     private static final Logger LOG = Logger.getInstance(RegularHybrisModuleDescriptor.class);
-
-    @Nullable
-    public static final JAXBContext EXTENSION_INFO_JAXB_CONTEXT = getExtensionInfoJaxbContext();
 
     @NotNull
     protected final String moduleName;
@@ -99,30 +96,13 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         Validate.notNull(file);
 
         try {
-            if (null == EXTENSION_INFO_JAXB_CONTEXT) {
-                LOG.error(String.format(
-                    "Can not unmarshal '%s' because JAXBContext has not been created.", file.getAbsolutePath()
-                ));
-
-                return null;
-            }
-
-            final Unmarshaller jaxbUnmarshaller = EXTENSION_INFO_JAXB_CONTEXT.createUnmarshaller();
-
-            return (ExtensionInfo) jaxbUnmarshaller.unmarshal(file);
-        } catch (JAXBException e) {
+            return (ExtensionInfo) JAXBContext.newInstance(
+                "com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo",
+                ObjectFactory.class.getClassLoader())
+                                              .createUnmarshaller()
+                                              .unmarshal(file);
+        } catch (final JAXBException e) {
             LOG.error("Can not unmarshal " + file.getAbsolutePath(), e);
-        }
-
-        return null;
-    }
-
-    @Nullable
-    private static JAXBContext getExtensionInfoJaxbContext() {
-        try {
-            return JAXBContext.newInstance(ExtensionInfo.class);
-        } catch (JAXBException e) {
-            LOG.error("Can not create JAXBContext for ExtensionInfo.", e);
         }
 
         return null;
@@ -184,11 +164,11 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     }
 
     public boolean isHacAddon() {
-        return this.isMetaKeySetToTrue(HAC_MODULE_META_KEY_NAME);
+        return this.isMetaKeySetToTrue(EXTENSION_META_KEY_HAC_MODULE);
     }
 
     public boolean hasBackofficeModule() {
-        return this.isMetaKeySetToTrue(BACKOFFICE_MODULE_META_KEY_NAME) && this.doesBackofficeDirectoryExist();
+        return this.isMetaKeySetToTrue(EXTENSION_META_KEY_BACKOFFICE_MODULE) && this.doesBackofficeDirectoryExist();
     }
 
     protected boolean isMetaKeySetToTrue(@NotNull final String metaKeyName) {

@@ -22,7 +22,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.UnmarshalException;
+import jakarta.xml.bind.UnmarshalException;
 
 /**
  * Created 9:33 PM 02 February 2016.

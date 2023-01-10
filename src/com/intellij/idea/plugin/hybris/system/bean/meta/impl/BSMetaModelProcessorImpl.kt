@@ -33,11 +33,9 @@ class BSMetaModelProcessorImpl(private val myProject: Project) : BSMetaModelProc
         psiFile.virtualFile ?: return null
         val module = BSUtils.getModuleForFile(psiFile) ?: return null
         val custom = BSUtils.isCustomExtensionFile(psiFile)
-        val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java)
-
-        rootWrapper ?: return null
-
-        val root = rootWrapper.rootElement
+        val root = myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java)
+            ?.rootElement
+            ?: return null
 
         return BSMetaModelBuilder(module, psiFile, custom)
             .withEnumTypes(root.enums)

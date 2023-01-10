@@ -33,7 +33,7 @@ import com.intellij.psi.impl.source.html.HtmlFileImpl;
 import com.intellij.psi.xml.XmlFile;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.UnmarshalException;
+import jakarta.xml.bind.UnmarshalException;
 import java.util.Locale;
 
 

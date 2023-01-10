@@ -29,7 +29,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jgoodies.common.base.Objects;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.UnmarshalException;
+import jakarta.xml.bind.UnmarshalException;
 
 /**
  * Created 11:12 PM 31 January 2016.

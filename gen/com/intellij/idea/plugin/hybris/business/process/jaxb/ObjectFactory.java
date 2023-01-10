@@ -19,7 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 
 /**

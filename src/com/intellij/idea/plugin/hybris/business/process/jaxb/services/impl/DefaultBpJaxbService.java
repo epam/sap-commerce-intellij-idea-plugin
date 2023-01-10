@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl;
 
+import com.intellij.idea.plugin.hybris.business.process.jaxb.ObjectFactory;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
 import com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService;
 import com.intellij.openapi.diagnostic.Logger;
@@ -28,10 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.UnmarshalException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 
 /**
@@ -73,7 +74,8 @@ public class DefaultBpJaxbService implements BpJaxbService {
         @Override
         protected JAXBContext initialize() throws ConcurrentException {
             try {
-                return JAXBContext.newInstance(Process.class);
+                return JAXBContext.newInstance("com.intellij.idea.plugin.hybris.business.process.jaxb",
+                                               ObjectFactory.class.getClassLoader());
             } catch (JAXBException e) {
                 throw new ConcurrentException("Can not create JAXBContext for Business Process XML.", e);
             }

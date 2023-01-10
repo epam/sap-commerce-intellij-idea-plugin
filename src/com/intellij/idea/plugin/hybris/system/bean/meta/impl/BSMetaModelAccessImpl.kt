@@ -142,7 +142,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
 
     companion object {
         val topic = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
-        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEANS_MODEL_CACHE")
+        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEAN_SYSTEM_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()
         private val writeLock = lock.writeLock()

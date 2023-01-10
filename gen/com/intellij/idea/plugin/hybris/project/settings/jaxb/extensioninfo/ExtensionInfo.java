@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 
 /**

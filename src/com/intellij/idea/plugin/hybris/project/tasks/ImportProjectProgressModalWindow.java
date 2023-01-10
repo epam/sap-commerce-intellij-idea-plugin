@@ -31,21 +31,13 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
@@ -108,6 +100,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -158,27 +151,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
-        final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(e -> !(e instanceof MavenModuleDescriptor))
-            .filter(e -> !(e instanceof EclipseModuleDescriptor))
-            .filter(e -> !(e instanceof GradleModuleDescriptor))
-            .collect(Collectors.toList());
-        final LibRootsConfigurator libRootsConfigurator = configuratorFactory.getLibRootsConfigurator();
-        final List<FacetConfigurator> facetConfigurators = configuratorFactory.getFacetConfigurators();
-        final ContentRootConfigurator regularContentRootConfigurator = configuratorFactory.getRegularContentRootConfigurator();
-        final ContentRootConfigurator readOnlyContentRootConfigurator = configuratorFactory.getReadOnlyContentRootConfigurator();
-        final CompilerOutputPathsConfigurator compilerOutputPathsConfigurator = configuratorFactory.getCompilerOutputPathsConfigurator();
-        final ModulesDependenciesConfigurator modulesDependenciesConfigurator = configuratorFactory.getModulesDependenciesConfigurator();
+        final List<HybrisModuleDescriptor> allModules = getHybrisModuleDescriptors();
+
         final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
-        final GroupModuleConfigurator groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final JavadocModuleConfigurator javadocModuleConfigurator = configuratorFactory.getJavadocModuleConfigurator();
-        final ModuleSettingsConfigurator moduleSettingsConfigurator = configuratorFactory.getModuleSettingsConfigurator();
+        final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
         final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
-        final RunConfigurationConfigurator debugRunConfigurationConfigurator = configuratorFactory.getDebugRunConfigurationConfigurator();
-        final RunConfigurationConfigurator testRunConfigurationConfigurator = configuratorFactory.getTestRunConfigurationConfigurator();
-        final SearchScopeConfigurator searchScopeConfigurator = configuratorFactory.getSearchScopeConfigurator();
 
         this.initializeHybrisProjectSettings(project);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
@@ -188,16 +165,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.disableWrapOnType(ImpexLanguage.getInstance());
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
-        if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
-            indicator.setText(message("hybris.project.import.facets"));
-            if (isPluginActive(SPRING_PLUGIN_ID)) {
-                this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
-            }
-            if (isPluginActive(JAVAEE_PLUGIN_ID)) {
-                this.excludeFrameworkDetection(project, WebFacet.ID);
-                this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
-            }
-        }
+        processUltimateEdition(indicator);
+
         ModifiableModuleModel rootProjectModifiableModel = model == null
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
@@ -208,45 +177,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         int counter = 0;
 
         for (HybrisModuleDescriptor moduleDescriptor : allModules) {
-            indicator.setText(message(
-                "hybris.project.import.module.import",
-                moduleDescriptor.getName()
-            ));
-            indicator.setText2(message("hybris.project.import.module.settings"));
-            final Module javaModule = rootProjectModifiableModel.newModule(
-                moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
-            );
-
-            moduleSettingsConfigurator.configure(moduleDescriptor, javaModule);
-
-            final ModifiableRootModel modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
-            final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule);
-
-            indicator.setText2(message("hybris.project.import.module.sdk"));
-            ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
-
-            modifiableRootModel.inheritSdk();
-
-            indicator.setText2(message("hybris.project.import.module.libs"));
-            libRootsConfigurator.configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-            indicator.setText2(message("hybris.project.import.module.content"));
-
-            if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
-                readOnlyContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            } else {
-                regularContentRootConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            }
-            indicator.setText2(message("hybris.project.import.module.outputpath"));
-            compilerOutputPathsConfigurator.configure(modifiableRootModel, moduleDescriptor);
-            indicator.setText2(message("hybris.project.import.module.javadoc"));
-            javadocModuleConfigurator.configure(modifiableRootModel, moduleDescriptor,indicator);
-            indicator.setText2(message("hybris.project.import.module.groups"));
-            groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
-
-            indicator.setText2(message("hybris.project.import.module.facet"));
-            for (FacetConfigurator facetConfigurator : facetConfigurators) {
-                facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
-            }
+            final Module javaModule = createJavaModule(indicator, rootProjectModifiableModel, moduleDescriptor, groupModuleConfigurator);
             modules.add(javaModule);
             counter++;
 
@@ -265,73 +196,156 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText(message("hybris.project.import.dependencies"));
         indicator.setText2("");
-        modulesDependenciesConfigurator.configure(hybrisProjectDescriptor, modifiableModelsProvider);
+        configuratorFactory.getModulesDependenciesConfigurator().configure(hybrisProjectDescriptor, modifiableModelsProvider);
         springConfigurator.configureDependencies(hybrisProjectDescriptor, modifiableModelsProvider);
-        indicator.setText(message("hybris.project.import.runconfigurations"));
-        debugRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
 
-        if (testRunConfigurationConfigurator != null) {
-            testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache);
-        }
+        indicator.setText(message("hybris.project.import.runconfigurations"));
+        configuratorFactory.getDebugRunConfigurationConfigurator().configure(hybrisProjectDescriptor, project, cache);
+
+        Optional.ofNullable(configuratorFactory.getTestRunConfigurationConfigurator())
+                .ifPresent(testRunConfigurationConfigurator -> testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache));
+
         indicator.setText(message("hybris.project.import.vcs"));
         versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
+
         indicator.setText(message("hybris.project.import.search.scope"));
-        searchScopeConfigurator.configure(project, rootProjectModifiableModel);
+        configuratorFactory.getSearchScopeConfigurator().configure(project, rootProjectModifiableModel);
+
         indicator.setText(message("hybris.project.import.saving.project"));
 
         ApplicationManager.getApplication().invokeAndWait(
             () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
 
-        configuratorFactory.getLoadedConfigurator().configure(
-            project, hybrisProjectDescriptor.getModulesChosenForImport());
+        configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
+        configureJavaCompiler(indicator, cache);
+        configureEclipseModules(indicator, groupModuleConfigurator);
+        configureGradleModules(indicator, groupModuleConfigurator);
+        project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
+    }
+
+    private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
+        if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
+            indicator.setText(message("hybris.project.import.facets"));
+            if (isPluginActive(SPRING_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
+            }
+            if (isPluginActive(JAVAEE_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, WebFacet.ID);
+                this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+            }
+        }
+    }
+
+    @NotNull
+    private Module createJavaModule(
+        final @NotNull ProgressIndicator indicator,
+        final ModifiableModuleModel rootProjectModifiableModel,
+        final HybrisModuleDescriptor moduleDescriptor,
+        final GroupModuleConfigurator groupModuleConfigurator
+    ) {
+        indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
+        indicator.setText2(message("hybris.project.import.module.settings"));
+        final Module javaModule = rootProjectModifiableModel.newModule(
+            moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
+        );
+
+        configuratorFactory.getModuleSettingsConfigurator().configure(moduleDescriptor, javaModule);
+
+        final ModifiableRootModel modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
+        final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(javaModule);
+
+        indicator.setText2(message("hybris.project.import.module.sdk"));
+        ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
+
+        modifiableRootModel.inheritSdk();
+
+        indicator.setText2(message("hybris.project.import.module.libs"));
+        configuratorFactory.getLibRootsConfigurator().configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
+        indicator.setText2(message("hybris.project.import.module.content"));
+
+        if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
+            configuratorFactory.getReadOnlyContentRootConfigurator().configure(modifiableRootModel, moduleDescriptor);
+        } else {
+            configuratorFactory.getRegularContentRootConfigurator().configure(modifiableRootModel, moduleDescriptor);
+        }
+        indicator.setText2(message("hybris.project.import.module.outputpath"));
+        configuratorFactory.getCompilerOutputPathsConfigurator().configure(modifiableRootModel, moduleDescriptor);
+        indicator.setText2(message("hybris.project.import.module.javadoc"));
+        configuratorFactory.getJavadocModuleConfigurator().configure(modifiableRootModel, moduleDescriptor, indicator);
+        indicator.setText2(message("hybris.project.import.module.groups"));
+        groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
+
+        indicator.setText2(message("hybris.project.import.module.facet"));
+        for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
+            facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+        }
+        return javaModule;
+    }
+
+    private List<HybrisModuleDescriptor> getHybrisModuleDescriptors() {
+        return hybrisProjectDescriptor
+            .getModulesChosenForImport()
+            .stream()
+            .filter(e -> !(e instanceof MavenModuleDescriptor))
+            .filter(e -> !(e instanceof EclipseModuleDescriptor))
+            .filter(e -> !(e instanceof GradleModuleDescriptor))
+            .collect(Collectors.toList());
+    }
+
+    private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
         final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getCompilerConfigurator();
 
-        if (compilerConfigurator != null) {
-            indicator.setText(message("hybris.project.import.compiler"));
-            compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
-        }
+        if (compilerConfigurator == null) return;
+
+        indicator.setText(message("hybris.project.import.compiler"));
+        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+    }
+
+    private void configureEclipseModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
 
-        if (eclipseConfigurator != null) {
-            indicator.setText(message("hybris.project.import.eclipse"));
+        if (eclipseConfigurator == null) return;
 
-            try {
-                final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
-                    .getModulesChosenForImport()
-                    .stream()
-                    .filter(e -> e instanceof EclipseModuleDescriptor)
-                    .map(e -> (EclipseModuleDescriptor) e)
-                    .collect(Collectors.toList());
-                if (!eclipseModules.isEmpty()) {
-                    Map<String, String[]> eclipseGroupMapping = fetchGroupMapping(groupModuleConfigurator, eclipseModules);
-                    eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
-                }
-            } catch (Exception e) {
-                LOG.error("Can not import Eclipse modules due to an error.", e);
+        indicator.setText(message("hybris.project.import.eclipse"));
+
+        try {
+            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
+                .getModulesChosenForImport()
+                .stream()
+                .filter(e -> e instanceof EclipseModuleDescriptor)
+                .map(e -> (EclipseModuleDescriptor) e)
+                .collect(Collectors.toList());
+            if (!eclipseModules.isEmpty()) {
+                Map<String, String[]> eclipseGroupMapping = fetchGroupMapping(groupModuleConfigurator, eclipseModules);
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
             }
+        } catch (Exception e) {
+            LOG.error("Can not import Eclipse modules due to an error.", e);
         }
+    }
+
+    private void configureGradleModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
         final GradleConfigurator gradleConfigurator = configuratorFactory.getGradleConfigurator();
 
-        if (gradleConfigurator != null) {
-            indicator.setText(message("hybris.project.import.gradle"));
+        if (gradleConfigurator == null) return;
 
-            try {
-                final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor
-                    .getModulesChosenForImport()
-                    .stream()
-                    .filter(e -> e instanceof GradleModuleDescriptor)
-                    .map(e -> (GradleModuleDescriptor) e)
-                    .collect(Collectors.toList());
-                if (!gradleModules.isEmpty()) {
-                    Map<String, String[]> gradleRootGroupMapping = fetchGroupMapping(groupModuleConfigurator, gradleModules);
-                    gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroupMapping);
-                }
-            } catch (Exception e) {
-                LOG.error("Can not import Gradle modules due to an error.", e);
+        indicator.setText(message("hybris.project.import.gradle"));
+
+        try {
+            final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor
+                .getModulesChosenForImport()
+                .stream()
+                .filter(e -> e instanceof GradleModuleDescriptor)
+                .map(e -> (GradleModuleDescriptor) e)
+                .collect(Collectors.toList());
+            if (!gradleModules.isEmpty()) {
+                final Map<String, String[]> gradleRootGroupMapping = fetchGroupMapping(groupModuleConfigurator, gradleModules);
+                gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroupMapping);
             }
+        } catch (Exception e) {
+            LOG.error("Can not import Gradle modules due to an error.", e);
         }
-        project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
     private void updateProjectDictionary(

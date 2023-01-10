@@ -62,7 +62,13 @@ object HybrisConstants {
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
 
-    const val BACKOFFICE_MODULE_META_KEY_NAME = "backoffice-module"
+    const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
+    const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
+    const val EXTENSION_META_KEY_CLASSPATHGEN = "classpathgen"
+    const val EXTENSION_META_KEY_DEPRECATED = "deprecated"
+    const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
+    const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
+
     const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
     const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
 
@@ -72,8 +78,6 @@ object HybrisConstants {
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
-
-    const val HAC_MODULE_META_KEY_NAME = "hac-module"
     const val HAC_MODULE_DIRECTORY = "hac"
     const val HAC_WEBROOT_KEY = "hac.webroot"
 

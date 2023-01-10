@@ -43,7 +43,7 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.bind.UnmarshalException;
+import jakarta.xml.bind.UnmarshalException;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -30,8 +30,8 @@ object ProjectPropertiesUtils {
 
     fun findAllProperties(project: Project): List<IProperty> {
         val result = LinkedHashMap<String, IProperty>()
-        val configModule = obtainConfigModule(project)
-        val platformModule = obtainPlatformModule(project)
+        val configModule = obtainConfigModule(project) ?: return emptyList()
+        val platformModule = obtainPlatformModule(project) ?: return emptyList()
         val scope = createSearchScope(project, configModule, platformModule)
         val files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
         var advancedPropsFile: PropertiesFile? = null
@@ -161,10 +161,10 @@ object ProjectPropertiesUtils {
     }
 
     private fun obtainConfigModule(project: Project) =
-        ModuleManager.getInstance(project).modules.first { it.name == HybrisConstants.EXTENSION_NAME_CONFIG }
+        ModuleManager.getInstance(project).modules.firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_CONFIG }
 
     private fun obtainPlatformModule(project: Project) =
-        ModuleManager.getInstance(project).modules.first { it.name == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        ModuleManager.getInstance(project).modules.firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean ) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
