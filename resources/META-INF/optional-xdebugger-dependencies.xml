@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <debugger.compoundRendererProvider implementation="com.intellij.plugin.hybris.debugger.ui.tree.render.DefaultModelRenderer"/>
+        <debugger.compoundRendererProvider implementation="com.intellij.idea.plugin.hybris.debugger.ui.tree.render.DefaultModelRenderer"/>
     </extensions>
 
 </idea-plugin>

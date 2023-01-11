@@ -37,32 +37,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 import javax.swing.Icon
 
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-object FSKeywordTableClauseAnalyzer {
-
-    fun analyzeKeyword(parameters: CompletionParameters, completionResultSet: CompletionResultSet) {
-        if ((parameters.originalPosition == null && !isTableNameIdentifier(parameters) && !isColumnReferenceIdentifier(parameters)) || isFile(parameters)) {
-            addToResult(hashSetOf("SELECT", "FROM", "WHERE"), completionResultSet, AllIcons.Nodes.Static, true)
-        }
-        if ((isColumnReferenceIdentifier(parameters) && parameters.position.skipWhitespaceSiblingsBackward() != null && parameters.position.skipWhitespaceSiblingsBackward()!!.text != "}") ||
-                (isColumnReferenceIdentifier(parameters) && PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchSelectList::class.java) != null)) {
-            FSFieldsCompletionProvider.instance.addCompletionVariants(parameters, ProcessingContext(), completionResultSet)
-            
-        }
-        if (isFile(parameters)) {
-            addToResult(hashSetOf("SELECT", "FROM", "WHERE"), completionResultSet, AllIcons.Nodes.Static, true)
-        }
-        
-        FSSelectClauseKeywordsAnalyzer.analyzeCompletions(parameters, completionResultSet)
-        FSWhereClauseKeywordsAnalyzer.analyzeCompletions(parameters, completionResultSet)
-        FSFromClauseKeywordsAnalyzer.analyzeCompletions(parameters, completionResultSet)
-
-    }
-}
-
 fun isFile(parameters: CompletionParameters) =
         parameters.position.parent != null && parameters.position.parent.parent != null && parameters.position.parent.parent is FlexibleSearchFile
 

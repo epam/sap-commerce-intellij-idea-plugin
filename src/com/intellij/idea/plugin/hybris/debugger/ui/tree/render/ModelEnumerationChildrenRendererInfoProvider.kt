@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.plugin.hybris.debugger.ui.tree.render
+package com.intellij.idea.plugin.hybris.debugger.ui.tree.render
 
 import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.settings.NodeRendererSettings

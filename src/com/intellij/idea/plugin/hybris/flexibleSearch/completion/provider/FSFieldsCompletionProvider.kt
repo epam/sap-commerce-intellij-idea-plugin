@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -26,114 +26,124 @@ import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findSiblingBackward
 import com.intellij.util.ProcessingContext
 import java.util.*
-import java.util.stream.Stream
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
     companion object {
-        val instance: FSFieldsCompletionProvider = FSFieldsCompletionProvider()
+        val instance: CompletionProvider<CompletionParameters> =
+            ApplicationManager.getApplication().getService(FSFieldsCompletionProvider::class.java)
     }
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val project = getProject(parameters) ?: return
+        val project = parameters.editor.project ?: return
         val psiElementUnderCaret = parameters.originalPosition ?: parameters.position
 
-        if (isColumnReferenceIdentifier(parameters)) {
-            val tableNameId = findSiblingBackward(parameters.position, FlexibleSearchTypes.TABLE_NAME_IDENTIFIER, null)
+        if (!isColumnReferenceIdentifier(parameters)) return
 
-            if (tableNameId == null) {
-                val querySpecification = PsiTreeUtil.getParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
+        val tableNameId = findSiblingBackward(parameters.position, FlexibleSearchTypes.TABLE_NAME_IDENTIFIER, null)
 
-                val tableRefs = PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
-                val correlationNames = if (tableRefs.isNotEmpty()) PsiTreeUtil.findChildrenOfType(tableRefs.first(), FlexibleSearchCorrelationName::class.java) else listOf()
-
-                if (correlationNames.isNotEmpty()) {
-                    correlationNames.map { it.text }
-                            .map { LookupElementBuilder.create(it).withPresentableText(it).withIcon(AllIcons.Nodes.Parameter) }
-                            .forEach { result.addElement(it) }
-
-                } else {
-                    val tableName = PsiTreeUtil.findChildOfType(querySpecification, FlexibleSearchTableName::class.java)
-                    if (tableName != null) {
-                        fillDomAttributesCompletions(project, tableName.text, result)
-                    }
-                }
-            } else {
-                val querySpecification = PsiTreeUtil.getTopmostParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
-                val tableNames = PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
-
-                if (tableNames.isNotEmpty()) {
-                    val foundTableName = tableNames
-                            .map { PsiTreeUtil.findChildOfType(it, FlexibleSearchTableName::class.java) }
-                            .filter {
-                                if (it != null) {
-                                    val element = PsiTreeUtil.getNextSiblingOfType(it, FlexibleSearchCorrelationName::class.java)
-                                    element != null && element.text == tableNameId.text
-                                } else {
-                                    false
-                                }
-                            }
-                    if (foundTableName.isNotEmpty()) {
-                        fillDomAttributesCompletions(project, foundTableName.first()!!.text, result)
-                    }
-                }
-            }
+        if (tableNameId != null) {
+            addCompletionsWithTableName(psiElementUnderCaret, tableNameId, project, result)
+        } else {
+            addCompletionsWithoutTableName(psiElementUnderCaret, result, project)
         }
     }
 
-    private fun getProject(parameters: CompletionParameters): Project? = parameters.editor.project
+    private fun addCompletionsWithoutTableName(
+        psiElementUnderCaret: PsiElement,
+        result: CompletionResultSet,
+        project: Project
+    ) {
+        val querySpecification = PsiTreeUtil.getParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
+
+        val tableRefs = PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
+        val correlationNames =
+            if (tableRefs.isNotEmpty()) PsiTreeUtil.findChildrenOfType(tableRefs.first(), FlexibleSearchCorrelationName::class.java)
+            else listOf()
+
+        if (correlationNames.isNotEmpty()) {
+            correlationNames
+                .map { it.text }
+                .map {
+                    LookupElementBuilder.create(it)
+                        .withPresentableText(it)
+                        .withIcon(AllIcons.Nodes.Parameter)
+                }
+                .forEach { result.addElement(it) }
+
+        } else {
+            val tableName = PsiTreeUtil.findChildOfType(querySpecification, FlexibleSearchTableName::class.java) ?: return
+            fillDomAttributesCompletions(project, tableName.text, result)
+        }
+    }
+
+    private fun addCompletionsWithTableName(
+        psiElementUnderCaret: PsiElement,
+        tableNameId: PsiElement,
+        project: Project,
+        result: CompletionResultSet
+    ) {
+        val querySpecification = PsiTreeUtil.getTopmostParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
+
+        PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
+            .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchTableName::class.java) }
+            .firstOrNull {
+                val element = PsiTreeUtil.getNextSiblingOfType(it, FlexibleSearchCorrelationName::class.java)
+                element != null && element.text == tableNameId.text
+            }
+            ?.let { fillDomAttributesCompletions(project, it.text, result) }
+    }
 
     private fun fillDomAttributesCompletions(
-            project: Project,
-            itemTypeCode: String,
-            resultSet: CompletionResultSet
+        project: Project,
+        itemTypeCode: String,
+        resultSet: CompletionResultSet
     ) {
-        val metaItem = Optional.ofNullable(TSMetaModelAccess.getInstance(project).findMetaItemByName(itemTypeCode))
-
+        val metaItem = TSMetaModelAccess.getInstance(project).findMetaItemByName(itemTypeCode) ?: return
         val currentPrefix = resultSet.prefixMatcher.prefix
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
-        metaItem
-                .map { meta -> meta.allAttributes.stream() }
-                .orElse(Stream.empty())
-                .map { prop ->
-                    val name = prop.name
 
-                    val builder = LookupElementBuilder
-                            .create(name)
-                            .withIcon(HybrisIcons.TYPE_SYSTEM)
-                            .withStrikeoutness(prop.isDeprecated)
-                    val typeText = getTypePresentableText(prop.type)
-                    return@map if (StringUtil.isEmpty(typeText)) builder else builder.withTypeText(typeText, true)
-                }
-                .filter { Objects.nonNull(it) }
-                .forEach { emptyPrefixResultSet.addElement(it) }
-        metaItem
-                .map { meta -> TSMetaItemService.getInstance(project).getRelationEnds(meta, true) }
-                .orElse(emptyList())
-                .map { ref ->
-                    LookupElementBuilder
-                            .create(ref.qualifier)
-                            .withTypeText(ref.type)
-                            .withIcon(HybrisIcons.TYPE_SYSTEM)
-                }
-                .forEach { emptyPrefixResultSet.addElement(it) }
+        metaItem.allAttributes
+            .map { prop ->
+                val name = prop.name
+                val typeText = getTypePresentableText(prop.type)
+
+                val builder = LookupElementBuilder.create(name)
+                    .withStrikeoutness(prop.isDeprecated)
+                    .withIcon(HybrisIcons.ATTRIBUTE)
+                return@map if (StringUtil.isEmpty(typeText)) builder
+                else builder.withTypeText(typeText, true)
+            }
+            .forEach { emptyPrefixResultSet.addElement(it) }
+
+        metaItem.allRelationEnds
+            .map {
+                LookupElementBuilder.create(it.qualifier)
+                    .withStrikeoutness(it.isDeprecated)
+                    .withTypeText(TSMetaHelper.relationType(it))
+                    .withIcon(
+                        when (it.end) {
+                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
+                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                        }
+                    )
+            }
+            .forEach { emptyPrefixResultSet.addElement(it) }
     }
 
     private fun getTypePresentableText(type: String?): String {
-        if (type == null) {
-            return ""
-        }
+        if (type == null) return ""
         val index = type.lastIndexOf('.')
         return if (index >= 0) type.substring(index + 1) else type
     }
@@ -141,8 +151,8 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private fun String.substringAfter(delimiters: Array<Char>, missingDelimiterValue: String = this): String {
         val result = delimiters
-                .filter { delimiter -> indexOf(delimiter) != -1 }
-                .map { delimiter -> substring(indexOf(delimiter) + 1, length) }
+            .filter { delimiter -> indexOf(delimiter) != -1 }
+            .map { delimiter -> substring(indexOf(delimiter) + 1, length) }
         return if (result.isEmpty()) missingDelimiterValue else result.first()
     }
 

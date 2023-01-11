@@ -18,35 +18,40 @@
 
 package com.intellij.idea.plugin.hybris.psi.reference.contributor;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumItemReferenceProvider;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumLiteralItemReferenceProvider;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisModelItemReferenceProvider;
+import com.intellij.patterns.PlatformPatterns;
+import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.insideTagPattern;
-import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern;
 
 /**
  * @author Nosov Aleksandr
  */
 public class HybrisItemXmlReferenceContributor extends PsiReferenceContributor {
 
-    public static final String ITEMS_TYPE_FILE_NAME = "-items";
-
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
+        final var inItemsXmlFile = PlatformPatterns.psiFile()
+                                                   .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING));
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("enumtype", "code", ITEMS_TYPE_FILE_NAME),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "enumtype")
+                                .inFile(inItemsXmlFile),
             new HybrisEnumItemReferenceProvider()
         );
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("value", "code", ITEMS_TYPE_FILE_NAME).inside(insideTagPattern("enumtype")),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "value")
+                                .inside(PsiXmlUtils.INSTANCE.insideTagPattern("enumtype"))
+                                .inFile(inItemsXmlFile),
             new HybrisEnumLiteralItemReferenceProvider()
         );
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("itemtype", "code", ITEMS_TYPE_FILE_NAME),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "itemtype")
+                                .inFile(inItemsXmlFile),
             new HybrisModelItemReferenceProvider()
         );
     }

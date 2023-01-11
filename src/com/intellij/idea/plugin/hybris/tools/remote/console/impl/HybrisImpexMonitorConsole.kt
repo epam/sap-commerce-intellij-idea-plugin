@@ -97,5 +97,5 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
 
     override fun tip(): String = "Last imported Impex files"
 
-    override fun icon(): Icon = HybrisIcons.TYPE_SYSTEM
+    override fun icon(): Icon = HybrisIcons.MONITORING
 }

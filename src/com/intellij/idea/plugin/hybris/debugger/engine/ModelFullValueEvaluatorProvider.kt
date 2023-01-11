@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.plugin.hybris.debugger.ui.tree.render
+package com.intellij.idea.plugin.hybris.debugger.engine
 
 import com.intellij.debugger.engine.FullValueEvaluatorProvider
 import com.intellij.debugger.engine.JavaValue
@@ -27,6 +27,8 @@ import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.debugger.ui.tree.render.ModelEnumerationChildrenRendererInfoProvider
+import com.intellij.idea.plugin.hybris.debugger.ui.tree.render.ModelRenderer
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService

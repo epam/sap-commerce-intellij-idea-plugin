@@ -44,7 +44,8 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
     public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
-    
+    public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
+
     public static final Icon WAIT = getIcon("/icons/waitIcon.svg");
     public static final Icon END = getIcon("/icons/endIcon.svg");
     public static final Icon NOTIFY = getIcon("/icons/notifyIcon.svg");

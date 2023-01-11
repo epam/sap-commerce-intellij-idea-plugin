@@ -23,15 +23,20 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaPersistence
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.AttributeModel
-import com.intellij.idea.plugin.hybris.system.type.model.CustomProperties
-import com.intellij.idea.plugin.hybris.system.type.model.CustomProperty
-import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
+import com.intellij.idea.plugin.hybris.system.type.model.*
 import java.util.*
 
 class TSMetaHelper {
 
     companion object {
+        fun relationType(meta: TSMetaRelation.TSMetaRelationElement): String {
+            return when (meta.collectionType) {
+                Type.COLLECTION -> "Collection<${meta.type}>"
+                Type.SET -> "Set<${meta.type}>"
+                Type.LIST -> "List<${meta.type}>"
+            }
+        }
+
         fun isDeprecated(dom: AttributeModel, name: String) = dom.setters
             .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
 

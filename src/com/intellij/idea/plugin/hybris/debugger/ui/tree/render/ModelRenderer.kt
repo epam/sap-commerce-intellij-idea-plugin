@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.plugin.hybris.debugger.ui.tree.render
+package com.intellij.idea.plugin.hybris.debugger.ui.tree.render
 
 import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
@@ -23,6 +23,7 @@ import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.debugger.ui.tree.render.NodeRendererImpl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.debugger.engine.ModelFullValueEvaluatorProvider
 import com.intellij.openapi.project.Project
 import com.sun.jdi.Type
 import java.util.concurrent.CompletableFuture

@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.openapi.Disposable
@@ -34,7 +36,7 @@ class TSMetaEnumNode(val parent: TSNode, val meta: TSGlobalMetaEnum) : TSNode(pa
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(HybrisIcons.ENUM)
         if (meta.isDynamic) {
-            presentation.locationString = "dynamic"
+            presentation.locationString = message("hybris.ts.type.dynamic")
         }
     }
 

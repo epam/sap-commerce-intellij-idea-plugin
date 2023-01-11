@@ -20,9 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider;
@@ -33,10 +30,10 @@ import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItem
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordMacroCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordModeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosConfigCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.constants.ImpexKeywords;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
@@ -61,7 +58,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderType.class)
                 .inside(ImpexModifiers.class),
-            ImpexHeaderTypeModifierNameCompletionProvider.getInstance()
+            ImpexHeaderTypeModifierNameCompletionProvider.Companion.getInstance()
         );
 
         // case: header attribute's modifier name -> attribute_name
@@ -72,7 +69,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderParameter.class)
                 .inside(ImpexModifiers.class),
-            ImpexHeaderAttributeModifierNameCompletionProvider.getInstance()
+            ImpexHeaderAttributeModifierNameCompletionProvider.Companion.getInstance()
         );
 
         // case: header type value -> attribute_value
@@ -83,7 +80,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderType.class)
                 .inside(ImpexModifiers.class),
-            ImpexHeaderTypeModifierValueCompletionProvider.getInstance()
+            ImpexHeaderTypeModifierValueCompletionProvider.Companion.getInstance()
         );
 
         // case: header attribute's modifier value -> attribute_value
@@ -94,7 +91,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderParameter.class)
                 .inside(ImpexModifiers.class),
-            ImpexHeaderAttributeModifierValueCompletionProvider.getInstance()
+            ImpexHeaderAttributeModifierValueCompletionProvider.Companion.getInstance()
         );
 
         // case: itemtype-code
@@ -103,7 +100,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
-            ItemTypeCodeCompletionProvider.getInstance()
+            ItemTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         // case: enumtype-code
@@ -112,7 +109,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
-            EnumTypeCodeCompletionProvider.getInstance()
+            EnumTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         // case: relationtype-code
@@ -121,7 +118,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
-            RelationTypeCodeCompletionProvider.getInstance()
+            RelationTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         // case: item's attribute
@@ -146,18 +143,21 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             topLevel(),
-            new ImpexKeywordCompletionProvider(ImpexKeywords.keywords(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withIcon(AllIcons.Nodes.Function))
+            ImpexKeywordModeCompletionProvider.Companion.getInstance()
         );
 
         // case: macros keywords
         extend(
             CompletionType.BASIC,
             topLevel(),
-            new ImpexKeywordCompletionProvider(ImpexKeywords.keywordMacros(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withIcon(HybrisIcons.MACROS))
+            ImpexKeywordMacroCompletionProvider.Companion.getInstance()
+        );
+
+        // case: macros keywords
+        extend(
+            CompletionType.BASIC,
+            topLevel(),
+            ImpexKeywordMacroCompletionProvider.Companion.getInstance()
         );
 
         // case: impex macros
@@ -166,7 +166,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.MACRO_USAGE),
-            new ImpexMacrosCompletionProvider()
+            ImpexMacrosCompletionProvider.Companion.getInstance()
         );
 
         extend(
@@ -174,7 +174,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .inside(psiElement().withElementType(TokenSet.create(ImpexTypes.MACRO_USAGE, ImpexTypes.MACRO_DECLARATION))),
-            new ImpexMacrosConfigCompletionProvider()
+            ImpexMacrosConfigCompletionProvider.Companion.getInstance()
         );
 
     }

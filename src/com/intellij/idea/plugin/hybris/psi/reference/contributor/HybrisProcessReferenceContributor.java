@@ -18,12 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.psi.reference.contributor;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisTransitionProcessReferenceProvider;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern;
 
 /**
  * @author Nosov Aleksandr
@@ -33,15 +34,15 @@ public class HybrisProcessReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("transition", "to", "process"),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "transition", "to"),
             new HybrisTransitionProcessReferenceProvider()
         );
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("process", "start", "process"),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "process", "start"),
             new HybrisTransitionProcessReferenceProvider()
         );
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("then", "process"),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "then"),
             new HybrisTransitionProcessReferenceProvider()
         );
     }

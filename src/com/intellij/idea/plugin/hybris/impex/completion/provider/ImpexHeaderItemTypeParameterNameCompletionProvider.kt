@@ -22,20 +22,21 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import org.apache.commons.lang3.Validate
-import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -43,82 +44,83 @@ import java.util.*
 class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
-            parameters: CompletionParameters,
-            context: ProcessingContext,
-            result: CompletionResultSet
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
     ) {
         Validate.notNull(parameters)
         Validate.notNull(result)
 
-        val project = this.getProject(parameters) ?: return
-
+        val project = parameters.position.project
         val psiElementUnderCaret = parameters.position
-        val typeName = findItemTypeReference(psiElementUnderCaret)
+        val typeName = findItemTypeReference(psiElementUnderCaret) ?: return
 
-        if (typeName.isNotBlank()) {
-            fillDomAttributesCompletions(project, typeName, result)
-        }
-    }
-
-    private fun fillDomAttributesCompletions(
-            project: Project,
-            typeName: String,
-            resultSet: CompletionResultSet
-    ) {
         val metaService = TSMetaModelAccess.getInstance(project)
 
         val metaItem = metaService.findMetaItemByName(typeName)
         if (metaItem == null) {
-            val metaEnum = metaService.findMetaEnumByName(typeName)
-            if (metaEnum != null) {
-                resultSet.addElement(LookupElementBuilder.create("code").withIcon(HybrisIcons.TYPE_SYSTEM))
-            }
+            addCompletionsForEnum(metaService, typeName, result)
         } else {
-            val metaItemService = TSMetaItemService.getInstance(project)
-            metaItem.allAttributes
-                    .map { prop ->
-                        val name = prop.name
-                        val builder = LookupElementBuilder
-                                .create(name)
-                                .withIcon(HybrisIcons.TYPE_SYSTEM)
-                                .withStrikeoutness(prop.isDeprecated)
-                        val typeText = getTypePresentableText(prop.type)
-                        if (StringUtil.isEmpty(typeText)) builder else builder.withTypeText(typeText, true)
-                    }
-                    .filter { Objects.nonNull(it) }
-                    .forEach { resultSet.addElement(it) }
-
-            metaItemService.getRelationEnds(metaItem, true)
-                    .map { ref -> LookupElementBuilder.create(ref.qualifier).withIcon(HybrisIcons.TYPE_SYSTEM) }
-                    .forEach { resultSet.addElement(it) }
-
+            addCompletionsForItem(metaItem, result)
         }
-
-
     }
 
-    private fun getProject(parameters: CompletionParameters): Project? {
-        Validate.notNull(parameters)
-
-        return parameters.editor.project
-    }
-
-    private fun findItemTypeReference(element: PsiElement): String {
-        val parent = PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
-        val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java)
-        if (parameterName != null) {
-            val references = parameterName.references
-            if (references.isNotEmpty()) {
-                val reference = references.first().resolve()
-                return obtainTypeName(reference)
+    private fun addCompletionsForItem(
+        metaItem: TSGlobalMetaItem,
+        resultSet: CompletionResultSet
+    ) {
+        metaItem.allAttributes
+            .map { prop ->
+                val name = prop.name
+                val builder = LookupElementBuilder.create(name)
+                    .withIcon(HybrisIcons.ATTRIBUTE)
+                    .withStrikeoutness(prop.isDeprecated)
+                val typeText = getTypePresentableText(prop.type)
+                if (StringUtil.isEmpty(typeText)) builder else builder.withTypeText(typeText, true)
             }
-        }
-        return ""
+            .forEach { resultSet.addElement(it) }
+
+        metaItem.allRelationEnds
+            .map {
+                LookupElementBuilder.create(it.qualifier)
+                    .withStrikeoutness(it.isDeprecated)
+                    .withIcon(
+                        when (it.end) {
+                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
+                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                        }
+                    )
+            }
+            .forEach { resultSet.addElement(it) }
     }
 
-    private fun obtainTypeName(reference: PsiElement?): String {
-        val typeTag = PsiTreeUtil.findFirstParent(reference, { value -> value is XmlTag })
-        return (typeTag as XmlTag).attributes.first { it.name == "type" }.value!!
+    private fun addCompletionsForEnum(
+        metaService: TSMetaModelAccess,
+        typeName: String,
+        resultSet: CompletionResultSet
+    ) {
+        metaService.findMetaEnumByName(typeName)
+            ?.let {
+                resultSet.addElement(
+                    LookupElementBuilder.create("code")
+                        .withTailText(if (it.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
+                        .withIcon(HybrisIcons.ENUM)
+                )
+            }
+    }
+
+    private fun findItemTypeReference(element: PsiElement): String? {
+        val parent = PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
+        val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java) ?: return null
+
+        return parameterName.references
+            .mapNotNull { it.resolve() }
+            .firstNotNullOfOrNull { obtainTypeName(it) }
+    }
+
+    private fun obtainTypeName(reference: PsiElement): String? {
+        val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
+        return (typeTag as XmlTag).attributes.first { it.name == "type" }.value
     }
 
     companion object {

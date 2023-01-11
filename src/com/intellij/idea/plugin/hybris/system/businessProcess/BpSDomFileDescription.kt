@@ -25,7 +25,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class BpSDomFileDescription : DomFileDescription<Process>(Process::class.java, "process") {
+class BpSDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.BUSINESS_PROCESS_ROOT_TAG) {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BUSINESS_PROCESS
 

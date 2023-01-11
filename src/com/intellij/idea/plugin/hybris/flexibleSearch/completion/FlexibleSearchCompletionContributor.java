@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -20,15 +20,12 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywords;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -53,10 +50,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //                            .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE)))
 //                            .andNot(psiElement().inside(psiElement(TABLE_NAME_IDENTIFIER)))
                 /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
-            new FSKeywordCompletionProvider(FSKeywords.topLevelKeywords(), (keyword) ->
-                LookupElementBuilder.create(keyword)
-                                    .withCaseSensitivity(false)
-                                    .withIcon(AllIcons.Nodes.Function))
+            FSKeywordCompletionProvider.Companion.getInstance()
         );
 
         extend(
@@ -64,7 +58,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            ItemTypeCodeCompletionProvider.getInstance()
+            ItemTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         extend(
@@ -72,7 +66,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            EnumTypeCodeCompletionProvider.getInstance()
+            EnumTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         extend(
@@ -80,7 +74,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            RelationTypeCodeCompletionProvider.getInstance()
+            RelationTypeCodeCompletionProvider.Companion.getInstance()
         );
 
         extend(

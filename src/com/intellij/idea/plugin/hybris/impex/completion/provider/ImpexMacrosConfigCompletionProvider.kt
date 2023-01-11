@@ -25,7 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -42,20 +42,29 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val query = getQuery(position)
-            val module = ModuleUtil.findModuleForPsiElement(position)
-            ProjectPropertiesUtils.findAutoCompleteProperties(module!!.project, query).forEach {
-                result.addElement(LookupElementBuilder.create("${it.key}").withIcon(HybrisIcons.PROPERTY))
-            }
+            ProjectPropertiesUtils.findAutoCompleteProperties(position.project, query)
+                .mapNotNull { it.key }
+                .map {
+                    LookupElementBuilder.create(it)
+                        .withIcon(HybrisIcons.PROPERTY)
+                }
+                .forEach { result.addElement(it) }
         }
 
         if (psiElementUnderCaret.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val prefix = getPrefix(position)
-            val query = position.text.substring(prefix.length).replace("IntellijIdeaRulezzz", "")
-            val module = ModuleUtil.findModuleForPsiElement(position)
-            ProjectPropertiesUtils.findAutoCompleteProperties(module!!.project, query).forEach {
-                result.addElement(LookupElementBuilder.create(prefix+"${it.key}").withIcon(HybrisIcons.PROPERTY))
-            }
+            val query = position.text
+                .substring(prefix.length)
+                .replace("IntellijIdeaRulezzz", "")
+            ProjectPropertiesUtils.findAutoCompleteProperties(position.project, query)
+                .mapNotNull { it.key }
+                .map { prefix + it }
+                .map {
+                    LookupElementBuilder.create(it)
+                        .withIcon(HybrisIcons.PROPERTY)
+                }
+                .forEach { result.addElement(it) }
         }
     }
 
@@ -67,5 +76,10 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
 
         val index = text.indexOf(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
         return text.substring(0, index + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+    }
+
+    companion object {
+        val instance: CompletionProvider<CompletionParameters> =
+            ApplicationManager.getApplication().getService(ImpexMacrosConfigCompletionProvider::class.java)
     }
 }

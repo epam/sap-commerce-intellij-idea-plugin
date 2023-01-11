@@ -18,12 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.psi.reference.contributor;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisSpringProcessReferenceProvider;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern;
 
 /**
  * @author Nosov Aleksandr
@@ -33,7 +34,7 @@ public class HybrisSpringProcessReferenceContributor extends PsiReferenceContrib
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("action", "bean", "process"),
+            PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "action", "bean"),
             new HybrisSpringProcessReferenceProvider()
         );
     }

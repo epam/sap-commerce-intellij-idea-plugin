@@ -22,15 +22,18 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -110,8 +113,8 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaEnum meta) {
         return List.of(
-            LookupElementBuilder.create(CODE_ATTRIBUTE_NAME).withIcon(HybrisIcons.TYPE_SYSTEM),
-            LookupElementBuilder.create(NAME_ATTRIBUTE_NAME).withIcon(HybrisIcons.TYPE_SYSTEM)
+            LookupElementBuilder.create(CODE_ATTRIBUTE_NAME).withIcon(HybrisIcons.ATTRIBUTE),
+            LookupElementBuilder.create(NAME_ATTRIBUTE_NAME).withIcon(HybrisIcons.ATTRIBUTE)
         );
     }
 
@@ -123,13 +126,13 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
         completions.add(
             LookupElementBuilder.create(SOURCE_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.TYPE_SYSTEM)
+                .withIcon(HybrisIcons.RELATION_SOURCE)
                 .withStrikeoutness(metaRelation.getSource().isDeprecated())
                 .withTypeText(metaRelation.getSource().getType(), true)
         );
         completions.add(
             LookupElementBuilder.create(TARGET_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.TYPE_SYSTEM)
+                .withIcon(HybrisIcons.RELATION_TARGET)
                 .withStrikeoutness(metaRelation.getTarget().isDeprecated())
                 .withTypeText(metaRelation.getTarget().getType(), true)
         );
@@ -142,15 +145,20 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
     }
 
     private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project, final Set<String> excludeNames) {
-        final TSMetaItemService metaItemService = TSMetaItemService.getInstance(project);
-
         final var attributes = metaItem.getAllAttributes().stream()
                                        .map(attribute -> mapAttributeToLookup(excludeNames, attribute))
                                        .filter(Objects::nonNull);
 
-        final var relationEnds = metaItemService
-            .getRelationEnds(metaItem, true).stream()
-            .map(ref -> LookupElementBuilder.create(ref.getQualifier()).withIcon(HybrisIcons.TYPE_SYSTEM));
+        final var relationEnds = metaItem.getAllRelationEnds().stream()
+            .map(ref -> LookupElementBuilder.create(ref.getQualifier())
+                                            .withIcon(
+                                                switch (ref.getEnd()) {
+                                                    case SOURCE -> HybrisIcons.RELATION_SOURCE;
+                                                    case TARGET -> HybrisIcons.RELATION_TARGET;
+                                                }
+                                            )
+                                            .withTypeText(TSMetaHelper.Companion.relationType(ref), true)
+            );
 
         return Stream.concat(attributes, relationEnds).collect(Collectors.toList());
     }
@@ -165,10 +173,9 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
             return null;
         }
-        final var builder = LookupElementBuilder
-            .create(name.trim())
-            .withIcon(HybrisIcons.TYPE_SYSTEM)
-            .withTailText(attribute.isDynamic() ? " (dynamic)" : "", true)
+        final var builder = LookupElementBuilder.create(name.trim())
+            .withIcon(HybrisIcons.ATTRIBUTE)
+            .withTailText(attribute.isDynamic() ? " (" + HybrisI18NBundleUtils.message("hybris.ts.type.dynamic") + ')' : "", true)
             .withStrikeoutness(attribute.isDeprecated());
         final String typeText = getTypePresentableText(attribute.getType());
         return StringUtil.isEmpty(typeText)

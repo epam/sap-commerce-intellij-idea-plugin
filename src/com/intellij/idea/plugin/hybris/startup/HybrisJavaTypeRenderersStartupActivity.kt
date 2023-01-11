@@ -22,7 +22,7 @@ import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
-import com.intellij.plugin.hybris.debugger.ui.tree.render.ModelRenderer
+import com.intellij.idea.plugin.hybris.debugger.ui.tree.render.ModelRenderer
 
 /**
  * As for now IDEA does not save icon renderer and full value evaluator with CompoundReferenceRenderer
