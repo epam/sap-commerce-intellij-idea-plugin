@@ -58,6 +58,12 @@
                           implementation="com.intellij.idea.plugin.hybris.system.extensionInfo.EiSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
+        <!--                                            ExtensionInfo                                                -->
+        <!-- ####################################################################################################### -->
+        <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.localExtensions.LeSDomFileDescription"/>
+
+        <!-- ####################################################################################################### -->
         <!--                                            Hybris Type System                                           -->
         <!-- ####################################################################################################### -->
 

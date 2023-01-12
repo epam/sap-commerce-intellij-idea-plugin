@@ -131,6 +131,7 @@
                 <li><i>Feature:</i> Inspection for <code>beans.xml</code> rely on whole Bean System, not only current file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)</li>
                 <li><i>Feature:</i> Regrouped [y] Application settings into separate sections (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/130" target="_blank" rel="nofollow">#130</a>)</li>
                 <li><i>Feature:</i> New Remote Instance Wizard will prefill some data from [y] properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/143" target="_blank" rel="nofollow">#143</a>)</li>
+                <li><i>Feature:</i> Added localextensions.xml DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/155" target="_blank" rel="nofollow">#155</a>)</li>
                 <li><i>Feature:</i> Added extensioninfo.xml DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147" target="_blank" rel="nofollow">#147</a>)</li>
                 <li><i>Feature:</i> Added process.xml DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148" target="_blank" rel="nofollow">#148</a>)</li>
                 <li><i>Feature:</i> Decreases cognitive complexity for Code Completion and custom Icons (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/152" target="_blank" rel="nofollow">#152</a>)</li>
