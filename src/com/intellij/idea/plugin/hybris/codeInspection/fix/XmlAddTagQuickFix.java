@@ -67,11 +67,11 @@ public class XmlAddTagQuickFix implements LocalQuickFix {
 
     private static String getFixName(final String tagName, final SortedMap<String, String> attributes) {
         if (attributes == null || attributes.isEmpty()) {
-            return HybrisI18NBundleUtils.message("hybris.inspections.fix.ts.AddTag", tagName);
+            return HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.AddTag", tagName);
         }
 
         return HybrisI18NBundleUtils.message(
-            "hybris.inspections.fix.ts.AddTagWithAttributes",
+            "hybris.inspections.fix.xml.AddTagWithAttributes",
             tagName,
             attributes.entrySet()
                       .stream()

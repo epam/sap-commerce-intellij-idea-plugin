@@ -26,17 +26,14 @@ import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.findSiblingBackward
 import com.intellij.util.ProcessingContext
-import java.util.*
 
 class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
     companion object {
@@ -115,15 +112,11 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
 
         metaItem.allAttributes
-            .map { prop ->
-                val name = prop.name
-                val typeText = getTypePresentableText(prop.type)
-
-                val builder = LookupElementBuilder.create(name)
-                    .withStrikeoutness(prop.isDeprecated)
+            .map {
+                LookupElementBuilder.create(it.name)
+                    .withStrikeoutness(it.isDeprecated)
+                    .withTypeText(it.flattenType, true)
                     .withIcon(HybrisIcons.ATTRIBUTE)
-                return@map if (StringUtil.isEmpty(typeText)) builder
-                else builder.withTypeText(typeText, true)
             }
             .forEach { emptyPrefixResultSet.addElement(it) }
 
@@ -131,7 +124,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             .map {
                 LookupElementBuilder.create(it.qualifier)
                     .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(TSMetaHelper.relationType(it))
+                    .withTypeText(it.flattenType)
                     .withIcon(
                         when (it.end) {
                             TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
@@ -141,13 +134,6 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
             }
             .forEach { emptyPrefixResultSet.addElement(it) }
     }
-
-    private fun getTypePresentableText(type: String?): String {
-        if (type == null) return ""
-        val index = type.lastIndexOf('.')
-        return if (index >= 0) type.substring(index + 1) else type
-    }
-
 
     private fun String.substringAfter(delimiters: Array<Char>, missingDelimiterValue: String = this): String {
         val result = delimiters

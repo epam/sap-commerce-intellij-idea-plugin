@@ -33,7 +33,7 @@ class TSMetaRelationNode(parent: TSNode, val meta: TSGlobalMetaRelation) : TSNod
     override fun update(project: Project, presentation: PresentationData) {
         presentation.setIcon(HybrisIcons.RELATION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = "${meta.source.type} > ${meta.target.type}"
+        presentation.locationString = meta.flattenType
     }
 
     override fun getChildren() = listOf(

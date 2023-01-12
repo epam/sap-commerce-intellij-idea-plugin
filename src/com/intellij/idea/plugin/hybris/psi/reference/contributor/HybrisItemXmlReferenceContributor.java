@@ -41,18 +41,18 @@ public class HybrisItemXmlReferenceContributor extends PsiReferenceContributor {
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "enumtype")
                                 .inFile(inItemsXmlFile),
-            new HybrisEnumItemReferenceProvider()
+            HybrisEnumItemReferenceProvider.Companion.getInstance()
         );
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "value")
                                 .inside(PsiXmlUtils.INSTANCE.insideTagPattern("enumtype"))
                                 .inFile(inItemsXmlFile),
-            new HybrisEnumLiteralItemReferenceProvider()
+            HybrisEnumLiteralItemReferenceProvider.Companion.getInstance()
         );
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "itemtype")
                                 .inFile(inItemsXmlFile),
-            new HybrisModelItemReferenceProvider()
+            HybrisModelItemReferenceProvider.Companion.getInstance()
         );
     }
 

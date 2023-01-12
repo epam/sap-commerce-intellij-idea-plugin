@@ -34,6 +34,6 @@ interface TSMetaEnum : TSMetaClassifier<EnumType>  {
     }
 }
 
-interface TSGlobalMetaEnum : TSMetaEnum, TSGlobalMetaClassifier<EnumType> {
+interface TSGlobalMetaEnum : TSMetaEnum, TSGlobalMetaClassifier<EnumType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaEnum>
 }

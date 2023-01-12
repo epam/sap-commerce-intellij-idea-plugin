@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSMetaItemAttribute) : TSNode(parent), Disposable {
+class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name
@@ -33,7 +33,7 @@ class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSMetaItemAt
     override fun update(project: Project, presentation: PresentationData) {
         presentation.setIcon(HybrisIcons.ATTRIBUTE)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = meta.type
+        presentation.locationString = meta.flattenType
     }
 
 }

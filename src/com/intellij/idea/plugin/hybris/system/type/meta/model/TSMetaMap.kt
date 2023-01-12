@@ -28,6 +28,6 @@ interface TSMetaMap : TSMetaClassifier<MapType> {
     val isRedeclare: Boolean
 }
 
-interface TSGlobalMetaMap : TSMetaMap, TSGlobalMetaClassifier<MapType> {
+interface TSGlobalMetaMap : TSMetaMap, TSGlobalMetaClassifier<MapType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaMap>
 }

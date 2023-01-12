@@ -21,6 +21,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
@@ -38,9 +39,10 @@ class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>(
         val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
         TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .mapNotNull { it.name }
+            .filter { it.name != null }
             .map {
-                LookupElementBuilder.create(it)
+                LookupElementBuilder.create(it.name!!)
+                    .withTailText(if (it.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
                     .withIcon(HybrisIcons.TYPE_SYSTEM)
             }
             .forEach { resultCaseInsensitive.addElement(it) }

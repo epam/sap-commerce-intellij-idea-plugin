@@ -153,8 +153,8 @@ class TSStructureTreeElement(
             value = value.substring(TS_ATTRIBUTE_LOCALIZED_PREFIX.length)
             value += " (localized)"
         }
-        if (value.startsWith("java.lang.")) {
-            value = value.substring("java.lang.".length)
+        if (value.startsWith(HybrisConstants.TS_JAVA_LANG_PREFIX)) {
+            value = value.substring(HybrisConstants.TS_JAVA_LANG_PREFIX.length)
         }
         return value
     }

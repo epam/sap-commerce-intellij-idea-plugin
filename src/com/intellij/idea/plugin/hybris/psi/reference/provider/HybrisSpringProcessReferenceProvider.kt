@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.psi.reference.provider
 
 import com.intellij.idea.plugin.hybris.psi.reference.SpringReference
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
@@ -28,6 +29,9 @@ class HybrisSpringProcessReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext) = arrayOf(SpringReference(element))
 
+    companion object {
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(HybrisSpringProcessReferenceProvider::class.java)
+    }
 }
 
     

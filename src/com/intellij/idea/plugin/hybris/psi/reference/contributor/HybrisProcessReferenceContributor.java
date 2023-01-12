@@ -33,17 +33,18 @@ public class HybrisProcessReferenceContributor extends PsiReferenceContributor {
 
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
+        final var service = HybrisTransitionProcessReferenceProvider.Companion.getInstance();
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "transition", "to"),
-            new HybrisTransitionProcessReferenceProvider()
+            service
         );
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "process", "start"),
-            new HybrisTransitionProcessReferenceProvider()
+            service
         );
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "then"),
-            new HybrisTransitionProcessReferenceProvider()
+            service
         );
     }
 

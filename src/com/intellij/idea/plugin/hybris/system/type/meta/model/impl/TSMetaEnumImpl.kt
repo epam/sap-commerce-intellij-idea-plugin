@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
@@ -71,6 +72,7 @@ internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
     override var isDynamic = localMeta.isDynamic
     override var description = localMeta.description
     override var jaloClass = localMeta.jaloClass
+    override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaEnum) {
         jaloClass?:let { jaloClass = localMeta.jaloClass }

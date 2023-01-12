@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
@@ -33,10 +34,41 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
 
+        val allTypes = getMetaTypes().values
+            .flatMap { it.values }
+            .filter { it.name != null }
+            .filter { it is TSTypedClassifier }
+            .associate { it.name!! to (it as TSTypedClassifier) }
+
         // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .filter { it is TSGlobalMetaItemSelfMerge<*, *>}
             .forEach { (it as TSGlobalMetaItemSelfMerge<*, *>).postMerge(this) }
+
+        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+            .flatMap { it.allAttributes }
+            .filter { it.type != null }
+            .forEach {
+                var type = it.type!!
+                val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
+                if (localized) {
+                    type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+                }
+                val flattenType = allTypes[type]?.flattenType ?: it.type
+                it.flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType else flattenType
+            }
+
+        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+            .flatMap { it.allRelationEnds }
+            .forEach {
+                var type = it.type
+                val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
+                if (localized) {
+                    type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+                }
+                val flattenType = allTypes[type]?.flattenType ?: it.type
+                it.flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType else flattenType
+            }
 
         this
     }

@@ -19,23 +19,46 @@
 package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaPersistence
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import java.util.*
 
 class TSMetaHelper {
 
     companion object {
-        fun relationType(meta: TSMetaRelation.TSMetaRelationElement): String {
-            return when (meta.collectionType) {
-                Type.COLLECTION -> "Collection<${meta.type}>"
-                Type.SET -> "Set<${meta.type}>"
-                Type.LIST -> "List<${meta.type}>"
+        private fun escapeType(type: String?) = type
+            ?.replace(HybrisConstants.TS_JAVA_LANG_PREFIX, "")
+
+        private fun flattenType(type: Type, elementType: String?) = when (type) {
+            Type.COLLECTION -> "Collection<${elementType ?: '?'}>"
+            Type.SET -> "Set<${elementType ?: '?'}>"
+            Type.LIST -> "List<${elementType ?: '?'}>"
+        }
+
+        private fun mapCardinality(ref: TSMetaRelation.TSMetaRelationElement): String? {
+            val cardinality = ref.cardinality ?: return null
+
+            return when (ref.end) {
+                TSMetaRelation.RelationEnd.SOURCE -> when (cardinality) {
+                    Cardinality.ONE -> "1"
+                    Cardinality.MANY -> "n"
+                }
+                TSMetaRelation.RelationEnd.TARGET -> when (cardinality) {
+                    Cardinality.ONE -> "1"
+                    Cardinality.MANY -> "m"
+                }
             }
         }
+
+        fun flattenType(meta: TSMetaRelation.TSMetaRelationElement) = flattenType(meta.collectionType, escapeType(meta.type))
+        fun flattenType(meta: TSGlobalMetaCollection) = flattenType(meta.type, escapeType(meta.elementType))
+        fun flattenType(meta: TSGlobalMetaMap) = "Map<${escapeType(meta.argumentType) ?: '?'}, ${escapeType(meta.returnType) ?: '?'}>"
+        fun flattenType(meta: TSGlobalMetaRelation) =
+            escapeType(meta.source.type) + " [${mapCardinality(meta.source)}:${mapCardinality(meta.target)}] " + escapeType(meta.target.type)
+
+        fun flattenType(meta: TSGlobalMetaAtomic) = meta.name
+        fun flattenType(meta: TSGlobalMetaItem) = meta.name
+        fun flattenType(meta: TSGlobalMetaEnum) = meta.name
 
         fun isDeprecated(dom: AttributeModel, name: String) = dom.setters
             .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
@@ -78,9 +101,13 @@ class TSMetaHelper {
             return Collections.unmodifiableSet(tempParents)
         }
 
-        fun getAllRelationEnds(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem, extends: Set<TSGlobalMetaItem>): Collection<TSMetaRelation.TSMetaRelationElement> {
+        fun getAllRelationEnds(
+            metaModel: TSGlobalMetaModel,
+            meta: TSGlobalMetaItem,
+            extends: Set<TSGlobalMetaItem>
+        ): Collection<TSMetaRelation.TSMetaRelationElement> {
             val currentMetaRelationEnds = getMetaRelationEnds(metaModel, meta)
-            val extendsMetaRelationEnds = extends.flatMap { metaExtend -> getMetaRelationEnds(metaModel, metaExtend)}
+            val extendsMetaRelationEnds = extends.flatMap { metaExtend -> getMetaRelationEnds(metaModel, metaExtend) }
             return currentMetaRelationEnds + extendsMetaRelationEnds
         }
 

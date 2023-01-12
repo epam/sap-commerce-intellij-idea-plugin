@@ -74,6 +74,7 @@ internal class TSMetaRelationImpl(
         override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
+        override var flattenType: String? = TSMetaHelper.flattenType(this)
 
         override fun toString() = "RelationElement(module=$module, name=$name, isCustom=$isCustom)"
     }
@@ -91,6 +92,7 @@ internal class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
     override var deployment = localMeta.deployment
     override var source = localMeta.source
     override var target = localMeta.target
+    override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaRelation) = Unit
 

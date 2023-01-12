@@ -31,7 +31,7 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     val isAutoCreate: Boolean
     val isGenerate: Boolean
 
-    interface TSMetaRelationElement : TSMetaClassifier<RelationElement> {
+    interface TSMetaRelationElement : TSMetaClassifier<RelationElement>, TSTypedClassifier {
         var owner: TSMetaRelation
         val end: RelationEnd
         val qualifier: String
@@ -52,6 +52,6 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     }
 }
 
-interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation> {
+interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaRelation>
 }

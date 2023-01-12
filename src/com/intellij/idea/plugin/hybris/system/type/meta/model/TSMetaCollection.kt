@@ -29,6 +29,6 @@ interface TSMetaCollection : TSMetaClassifier<CollectionType> {
     val isGenerate: Boolean
 }
 
-interface TSGlobalMetaCollection : TSMetaCollection, TSGlobalMetaClassifier<CollectionType> {
+interface TSGlobalMetaCollection : TSMetaCollection, TSGlobalMetaClassifier<CollectionType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaCollection>
 }

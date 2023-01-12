@@ -44,6 +44,7 @@ class RelationTypeCodeCompletionProvider : CompletionProvider<CompletionParamete
             .map {
                 LookupElementBuilder.create(it.name!!)
                     .withIcon(HybrisIcons.RELATION)
+                    .withTypeText(it.flattenType)
             }
             .forEach { resultCaseInsensitive.addElement(it) }
     }

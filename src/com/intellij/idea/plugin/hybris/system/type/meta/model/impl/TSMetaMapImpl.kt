@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaSelfMerge
@@ -52,6 +53,7 @@ internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
     override var isAutoCreate = localMeta.isAutoCreate
     override var isGenerate = localMeta.isGenerate
     override var isRedeclare = localMeta.isRedeclare
+    override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaMap) {
         if (localMeta.isAutoCreate) isAutoCreate = localMeta.isAutoCreate

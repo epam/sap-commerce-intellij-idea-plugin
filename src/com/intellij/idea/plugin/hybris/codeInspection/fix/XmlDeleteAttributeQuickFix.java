@@ -38,7 +38,7 @@ public class XmlDeleteAttributeQuickFix implements LocalQuickFix {
     private final String myAttributeName;
 
     public XmlDeleteAttributeQuickFix(final String attributeName) {
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.ts.DeleteAttribute", attributeName);
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.DeleteAttribute", attributeName);
         myAttributeName = attributeName;
     }
 

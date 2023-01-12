@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaAtomic
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaAtomic
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaSelfMerge
@@ -51,6 +52,7 @@ internal class TSGlobalMetaAtomicImpl(localMeta: TSMetaAtomic)
     override var isAutoCreate = localMeta.isAutoCreate
     override var isGenerate = localMeta.isGenerate
     override var extends = localMeta.extends
+    override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaAtomic) {
         if (localMeta.isAutoCreate) isAutoCreate = localMeta.isAutoCreate

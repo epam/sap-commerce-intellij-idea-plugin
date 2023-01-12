@@ -22,6 +22,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSTreePanel
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -56,6 +57,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             setContent(myTreePane);
 
             Disposer.register(this, myTreePane)
+            myTreePane.update(BSViewSettings.ChangeType.FULL)
 
             installSettingsListener()
         }

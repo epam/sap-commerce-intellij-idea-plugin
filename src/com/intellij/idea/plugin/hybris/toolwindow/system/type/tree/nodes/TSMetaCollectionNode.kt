@@ -34,9 +34,7 @@ class TSMetaCollectionNode(parent: TSNode, val meta: TSGlobalMetaCollection) : T
     override fun update(project: Project, presentation: PresentationData) {
         presentation.setIcon(HybrisIcons.COLLECTION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        meta.retrieveDom()?.let {
-            presentation.locationString = "${(it.type.value ?: Type.COLLECTION).value} of ${it.elementType.stringValue}"
-        }
+        presentation.locationString = meta.flattenType
     }
 
 }

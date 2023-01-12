@@ -27,16 +27,12 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -103,11 +99,11 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final var typeCode = headerTypeName.getText();
 
         Optional.ofNullable(metaService.findMetaItemByName(typeCode))
-            .map(meta -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(meta, project))
+            .map(meta -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(meta))
             .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(typeCode))
                               .map(ImpexHeaderItemTypeAttributeNameCompletionProvider::getCompletions))
             .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(typeCode))
-                              .map(metaRelation -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(metaRelation, metaService, project)))
+                              .map(metaRelation -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(metaRelation, metaService)))
             .ifPresent(resultSet::addAllElements);
     }
 
@@ -118,33 +114,33 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         );
     }
 
-    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaRelation metaRelation, final TSMetaModelAccess metaService, final Project project) {
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaRelation metaRelation, final TSMetaModelAccess metaService) {
         final var linkMetaItem = metaService.findMetaItemByName("Link");
         if (linkMetaItem == null) return Collections.emptyList();
 
-        final var completions = new LinkedList<>(getCompletions(linkMetaItem, project, Set.of(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)));
+        final var completions = new LinkedList<>(getCompletions(linkMetaItem, Set.of(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)));
 
         completions.add(
             LookupElementBuilder.create(SOURCE_ATTRIBUTE_NAME)
                 .withIcon(HybrisIcons.RELATION_SOURCE)
                 .withStrikeoutness(metaRelation.getSource().isDeprecated())
-                .withTypeText(metaRelation.getSource().getType(), true)
+                .withTypeText(metaRelation.getSource().getFlattenType(), true)
         );
         completions.add(
             LookupElementBuilder.create(TARGET_ATTRIBUTE_NAME)
                 .withIcon(HybrisIcons.RELATION_TARGET)
                 .withStrikeoutness(metaRelation.getTarget().isDeprecated())
-                .withTypeText(metaRelation.getTarget().getType(), true)
+                .withTypeText(metaRelation.getTarget().getFlattenType(), true)
         );
 
         return completions;
     }
 
-    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project) {
-        return getCompletions(metaItem, project, Collections.emptySet());
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem) {
+        return getCompletions(metaItem, Collections.emptySet());
     }
 
-    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final @NotNull Project project, final Set<String> excludeNames) {
+    private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaItem metaItem, final Set<String> excludeNames) {
         final var attributes = metaItem.getAllAttributes().stream()
                                        .map(attribute -> mapAttributeToLookup(excludeNames, attribute))
                                        .filter(Objects::nonNull);
@@ -157,7 +153,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
                                                     case TARGET -> HybrisIcons.RELATION_TARGET;
                                                 }
                                             )
-                                            .withTypeText(TSMetaHelper.Companion.relationType(ref), true)
+                                            .withTypeText(ref.getFlattenType(), true)
             );
 
         return Stream.concat(attributes, relationEnds).collect(Collectors.toList());
@@ -173,23 +169,11 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         if (StringUtils.isBlank(name) || excludeNames.contains(name.trim())) {
             return null;
         }
-        final var builder = LookupElementBuilder.create(name.trim())
+        return LookupElementBuilder.create(name.trim())
             .withIcon(HybrisIcons.ATTRIBUTE)
             .withTailText(attribute.isDynamic() ? " (" + HybrisI18NBundleUtils.message("hybris.ts.type.dynamic") + ')' : "", true)
-            .withStrikeoutness(attribute.isDeprecated());
-        final String typeText = getTypePresentableText(attribute.getType());
-        return StringUtil.isEmpty(typeText)
-            ? builder
-            : builder.withTypeText(typeText, true);
-    }
-
-    @NotNull
-    private static String getTypePresentableText(@Nullable final String type) {
-        if (type == null) {
-            return "";
-        }
-        final int index = type.lastIndexOf('.');
-        return index >= 0 ? type.substring(index + 1) : type;
+            .withStrikeoutness(attribute.isDeprecated())
+            .withTypeText(attribute.getFlattenType(), true);
     }
 
     @Nullable

@@ -33,7 +33,7 @@ class TSMetaMapNode(parent: TSNode, val meta: TSGlobalMetaMap) : TSNode(parent),
     override fun update(project: Project, presentation: PresentationData) {
         presentation.setIcon(HybrisIcons.MAP)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = "${meta.argumentType ?: "?"} : ${meta.returnType ?: "?"}"
+        presentation.locationString = meta.flattenType
     }
 
 }

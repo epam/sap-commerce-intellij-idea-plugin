@@ -127,6 +127,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override var description = localMeta.description
     override var deployment = localMeta.deployment
     override var isCatalogAware = localMeta.isCatalogAware
+    override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     init {
         mergeAttributes(localMeta)
@@ -235,6 +236,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override var isSelectionOf = localMeta.isSelectionOf
         override var isLocalized = localMeta.isLocalized
         override var isDynamic = localMeta.isDynamic
+        override var flattenType: String? = null
 
         init {
             mergeCustomProperties(localMeta)

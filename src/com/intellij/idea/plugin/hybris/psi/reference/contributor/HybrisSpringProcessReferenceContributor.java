@@ -35,7 +35,7 @@ public class HybrisSpringProcessReferenceContributor extends PsiReferenceContrib
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {
         registrar.registerReferenceProvider(
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "action", "bean"),
-            new HybrisSpringProcessReferenceProvider()
+            HybrisSpringProcessReferenceProvider.Companion.getInstance()
         );
     }
 

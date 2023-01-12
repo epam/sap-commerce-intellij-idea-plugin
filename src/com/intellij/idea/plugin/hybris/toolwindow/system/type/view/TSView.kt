@@ -56,6 +56,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             setContent(myTreePane);
 
             Disposer.register(this, myTreePane)
+            myTreePane.update(TSViewSettings.ChangeType.FULL)
 
             installSettingsListener()
         }

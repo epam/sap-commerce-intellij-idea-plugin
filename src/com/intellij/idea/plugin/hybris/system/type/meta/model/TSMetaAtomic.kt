@@ -28,6 +28,6 @@ interface TSMetaAtomic : TSMetaClassifier<AtomicType> {
     val extends: String
 }
 
-interface TSGlobalMetaAtomic : TSMetaAtomic, TSGlobalMetaClassifier<AtomicType> {
+interface TSGlobalMetaAtomic : TSMetaAtomic, TSGlobalMetaClassifier<AtomicType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaAtomic>
 }

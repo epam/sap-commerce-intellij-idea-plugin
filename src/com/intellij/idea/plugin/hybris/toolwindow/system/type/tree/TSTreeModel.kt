@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
@@ -38,7 +39,7 @@ class TSTreeModel(private val root: TSNode)
     override fun getRoot() = Node(root)
 
     override fun getChildren(parent: Any?): List<Node> {
-        if (parent !is Node || !parent.allowsChildren || parent.userObject !is TSNode) {
+        if (parent !is Node || !parent.allowsChildren || parent.userObject !is TSNode || DumbService.isDumb(root.project)) {
             return emptyList();
         }
 

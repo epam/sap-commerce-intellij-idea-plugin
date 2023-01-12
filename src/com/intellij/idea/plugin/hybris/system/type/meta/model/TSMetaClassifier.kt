@@ -38,3 +38,7 @@ interface TSGlobalMetaClassifier<DOM : DomElement> : TSMetaClassifier<DOM> {
         .map { it.domAnchor }
         .mapNotNull { it.retrieveDomElement() }
 }
+
+interface TSTypedClassifier {
+    var flattenType: String?
+}

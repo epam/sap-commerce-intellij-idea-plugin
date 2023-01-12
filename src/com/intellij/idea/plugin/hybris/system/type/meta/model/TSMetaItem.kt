@@ -69,7 +69,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     }
 }
 
-interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType> {
+interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaItem>
     override val attributes: Map<String, TSGlobalMetaItemAttribute>
     override val indexes: Map<String, TSGlobalMetaItemIndex>
@@ -83,7 +83,7 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType> {
         override val declarations: MutableSet<TSMetaItem.TSMetaItemIndex>
     }
 
-    interface TSGlobalMetaItemAttribute : TSMetaItem.TSMetaItemAttribute, TSGlobalMetaClassifier<Attribute> {
+    interface TSGlobalMetaItemAttribute : TSMetaItem.TSMetaItemAttribute, TSGlobalMetaClassifier<Attribute>, TSTypedClassifier {
         override val declarations: MutableSet<TSMetaItem.TSMetaItemAttribute>
     }
 }

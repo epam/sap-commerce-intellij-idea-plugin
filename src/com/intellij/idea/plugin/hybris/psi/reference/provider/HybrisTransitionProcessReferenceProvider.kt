@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.psi.reference.provider
 
 import com.intellij.idea.plugin.hybris.psi.reference.TransitionProcessReference
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
@@ -29,6 +30,9 @@ class HybrisTransitionProcessReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> = arrayOf(TransitionProcessReference(element))
 
+    companion object {
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(HybrisTransitionProcessReferenceProvider::class.java)
+    }
 }
 
     
