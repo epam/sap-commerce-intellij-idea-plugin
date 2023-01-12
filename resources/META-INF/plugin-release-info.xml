@@ -104,6 +104,12 @@
                 <li><i>Feature:</i> Added possibility to change current Project settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/131" target="_blank" rel="nofollow">#131</a>)</li>
                 <li><i>Feature:</i> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/118" target="_blank" rel="nofollow">#118</a>)</li>
                 <li><i>Feature:</i> Added customized Structure View for <code>beans.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/113" target="_blank" rel="nofollow">#113</a>)</li>
+                <li><i>Feature:</i> Added new <code>extensioninfo.xml</code> inspection rules
+                    <ul>
+                        <li>Unknown Extension declared as dependency (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/154" target="_blank" rel="nofollow">#154</a>)</li>
+                        <li>Dependency on the same Extension declared multiple times (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/154" target="_blank" rel="nofollow">#154</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added new <code>beans.xml</code> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)
                     <ul>
                         <li>Duplicate Enum definition inspection</li>

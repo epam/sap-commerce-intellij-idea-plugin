@@ -19,9 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensionInfo.model.ExtensionInfo
 import com.intellij.idea.plugin.hybris.system.extensionInfo.model.RequiresExtension
 import com.intellij.lang.annotation.HighlightSeverity
@@ -30,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class EiUnknownExtensionDefinition : AbstractEiInspection() {
+class EiDuplicateExtensionDefinition : AbstractEiInspection() {
 
     override fun inspect(
         project: Project,
@@ -39,29 +37,24 @@ class EiUnknownExtensionDefinition : AbstractEiInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
+        val declaredDependencies = dom.extension.requiresExtensions
+            .filter { it.name.stringValue != null }
+            .groupBy { it.name.stringValue!!.lowercase() }
+
         dom.extension.requiresExtensions
-            .filterNotNull()
-            .forEach { inspect(it, holder, severity, project) }
+            .filter { it.name.stringValue != null }
+            .filter { declaredDependencies.getOrDefault(it.name.stringValue!!.lowercase(), emptyList()).size > 1 }
+            .forEach { createProblem(it, holder, severity) }
     }
 
-    private fun inspect(
+    private fun createProblem(
         dom: RequiresExtension,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity,
-        project: Project
-    ) {
-        val extensionName = dom.name.stringValue ?: return
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
-        val found = hybrisProjectSettings.completeSetOfAvailableExtensionsInHybris
-            .firstOrNull { extensionName.equals(it, true) }
-
-        if (found == null) {
-            holder.createProblem(
-                dom.name,
-                severity,
-                message("hybris.inspections.fix.ei.EiUnknownExtensionDefinition.message", extensionName),
-                XmlDeleteTagQuickFix()
-            )
-        }
-    }
+        severity: HighlightSeverity
+    ) = holder.createProblem(
+        dom.name,
+        severity,
+        message("hybris.inspections.fix.ei.EiDuplicateExtensionDefinition.message", dom.name.stringValue!!),
+        XmlDeleteTagQuickFix()
+    )
 }

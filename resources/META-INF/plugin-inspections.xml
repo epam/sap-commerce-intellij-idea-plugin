@@ -1,6 +1,16 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- Inspection Info  -->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Extension Info"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDefinition.key"
+                         shortName="EiUnknownExtensionDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo.EiUnknownExtensionDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Extension Info"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDefinition.key"
+                         shortName="EiDuplicateExtensionDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo.EiDuplicateExtensionDefinition"/>
+
         <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDefinition.key"

@@ -27,4 +27,5 @@ abstract class AbstractEiInspection : AbstractInspection<ExtensionInfo>(Extensio
 
     override fun canProcess(project: Project, file: XmlFile) = true
 
+    override fun canProcess(dom: ExtensionInfo) = dom.xmlElement != null
 }
