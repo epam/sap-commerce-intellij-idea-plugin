@@ -18,34 +18,20 @@
 
 // Generated on Mon Jan 09 16:31:21 CET 2023
 // DTD/Schema  :    null
-package com.intellij.idea.plugin.hybris.system.extensionInfo.model;
+package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:webmoduleType interface.
+ * null:hmcmoduleType interface.
  * <pre>
- * <h3>Type null:webmoduleType documentation</h3>
- * Configures an hMC module for the extension. Required directory: /web.
+ * <h3>Type null:hmcmoduleType documentation</h3>
+ * Configures an hmc module for the extension. Required directory: /hmc.
  * </pre>
  */
-public interface WebModule extends DomElement {
-
-	/**
-	 * Returns the value of the webroot child.
-	 * <pre>
-	 * <h3>Attribute null:webroot documentation</h3>
-	 * Webroot where the web application will be available at.
-	 * </pre>
-	 * @return the value of the webroot child.
-	 */
-	@NotNull
-	@Attribute ("webroot")
-	@Required
-	GenericAttributeValue<String> getWebroot();
-
+public interface HmcModule extends DomElement {
 
 	/**
 	 * Returns the value of the additionalclasspath child.
@@ -61,23 +47,23 @@ public interface WebModule extends DomElement {
 
 
 	/**
-	 * Returns the value of the jspcompile child.
+	 * Returns the value of the extensionclassname child.
 	 * <pre>
-	 * <h3>Attribute null:jspcompile documentation</h3>
-	 * If "true", JSP files will be pre-compiled as part of the build process. If "false", JSP files will be compiled when first used by the application server. Default is "true".
+	 * <h3>Attribute null:extensionclassname documentation</h3>
+	 * Name of the extension's HMCExtension class.
 	 * </pre>
-	 * @return the value of the jspcompile child.
+	 * @return the value of the extensionclassname child.
 	 */
 	@NotNull
-	@Attribute ("jspcompile")
-	GenericAttributeValue<Boolean> getJspCompile();
+	@Attribute ("extensionclassname")
+	GenericAttributeValue<String> getExtensionClassname();
 
 
 	/**
 	 * Returns the value of the sourceavailable child.
 	 * <pre>
 	 * <h3>Attribute null:sourceavailable documentation</h3>
-	 * Deprecated. Has no effect and will be evaluated always to 'true' if a 'web/src' directory is available
+	 * Deprecated. Has no effect and will be evaluated always to 'true' if a 'hmc/src' directory is available
 	 * </pre>
 	 * @return the value of the sourceavailable child.
 	 */

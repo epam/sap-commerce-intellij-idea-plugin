@@ -19,7 +19,7 @@
 // Generated on Thu Jan 12 19:15:30 CET 2023
 // DTD/Schema  :    null
 
-package com.intellij.idea.plugin.hybris.system.localExtensions.model;
+package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;

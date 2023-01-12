@@ -19,45 +19,58 @@
 // Generated on Thu Jan 12 19:15:30 CET 2023
 // DTD/Schema  :    null
 
-package com.intellij.idea.plugin.hybris.system.localExtensions.model;
+package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:extensionType interface.
+ * null:webappType interface.
  * <pre>
- * <h3>Type null:extensionType documentation</h3>
- * Adds an extension to the hybris platform.
+ * <h3>Type null:webappType documentation</h3>
+ * Adds external extension to the hybris platform.
  * </pre>
  */
-public interface Extension extends DomElement {
+public interface Webapp extends DomElement {
 
 	/**
-	 * Returns the value of the dir child.
+	 * Returns the value of the contextroot child.
 	 * <pre>
-	 * <h3>Attribute null:dir documentation</h3>
-	 * Path to the extension folder relative to the platform home.
+	 * <h3>Attribute null:contextroot documentation</h3>
+	 * External extension's webroot.
 	 * </pre>
-	 * @return the value of the dir child.
+	 * @return the value of the contextroot child.
 	 */
 	@NotNull
-	@Attribute ("dir")
-	GenericAttributeValue<String> getDir();
+	@Attribute ("contextroot")
+	GenericAttributeValue<String> getContextroot();
 
 
 	/**
-	 * Returns the value of the name child.
+	 * Returns the value of the context child.
 	 * <pre>
-	 * <h3>Attribute null:name documentation</h3>
-	 * The name of the extension. Requires at least one &lt;scan&gt; entry to be able to look up the extension location.
+	 * <h3>Attribute null:context documentation</h3>
+	 * External extension's context.xml file.
 	 * </pre>
-	 * @return the value of the name child.
+	 * @return the value of the context child.
 	 */
 	@NotNull
-	@Attribute ("name")
-	GenericAttributeValue<String> getName();
+	@Attribute ("context")
+	GenericAttributeValue<String> getContext();
+
+
+	/**
+	 * Returns the value of the path child.
+	 * <pre>
+	 * <h3>Attribute null:path documentation</h3>
+	 * Path to external extension's war file (or exploded directory).
+	 * </pre>
+	 * @return the value of the path child.
+	 */
+	@NotNull
+	@Attribute ("path")
+	GenericAttributeValue<String> getPath();
 
 
 }

@@ -18,47 +18,46 @@
 
 // Generated on Mon Jan 09 16:31:21 CET 2023
 // DTD/Schema  :    null
-package com.intellij.idea.plugin.hybris.system.extensionInfo.model;
+package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:metaType interface.
+ * null:requires-extensionType interface.
  * <pre>
- * <h3>Type null:metaType documentation</h3>
- * Configures metadata.
+ * <h3>Type null:requires-extensionType documentation</h3>
+ * Configures the set of extensions required by the extension at compile time.
  * </pre>
  */
-public interface Meta extends DomElement {
+public interface RequiresExtension extends DomElement {
 
 	/**
-	 * Returns the value of the key child.
+	 * Returns the value of the name child.
 	 * <pre>
-	 * <h3>Attribute null:key documentation</h3>
-	 * Metadata key.
+	 * <h3>Attribute null:name documentation</h3>
+	 * Name of an extension which is required at compile time.
 	 * </pre>
-	 * @return the value of the key child.
+	 * @return the value of the name child.
 	 */
 	@NotNull
-	@Attribute ("key")
+	@Attribute ("name")
 	@Required
-	GenericAttributeValue<String> getKey();
+	GenericAttributeValue<String> getName();
 
 
 	/**
-	 * Returns the value of the value child.
+	 * Returns the value of the version child.
 	 * <pre>
-	 * <h3>Attribute null:value documentation</h3>
-	 * Metadata value.
+	 * <h3>Attribute null:version documentation</h3>
+	 * Allowed range of versions of the required extension. Is used by the hybris package manager.
 	 * </pre>
-	 * @return the value of the value child.
+	 * @return the value of the version child.
 	 */
 	@NotNull
-	@Attribute ("value")
-	@Required
-	GenericAttributeValue<String> getValue();
+	@Attribute ("version")
+	GenericAttributeValue<String> getVersion();
 
 
 }

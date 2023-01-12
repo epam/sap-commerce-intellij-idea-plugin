@@ -16,16 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo
+package com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.extensionInfo.model.ExtensionInfo
-import com.intellij.idea.plugin.hybris.system.extensionInfo.model.RequiresExtension
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.RequiresExtension
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper

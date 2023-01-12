@@ -55,13 +55,13 @@
         <!--                                            ExtensionInfo                                                -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.extensionInfo.EiSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.localExtensions.LeSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Hybris Type System                                           -->

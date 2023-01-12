@@ -16,21 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.localExtensions
+// Generated on Mon Jan 09 16:31:21 CET 2023
+// DTD/Schema  :    null
+package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.localExtensions.model.Hybrisconfig
-import com.intellij.openapi.module.Module
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomFileDescription
-import javax.swing.Icon
+import com.intellij.util.xml.*;
+import com.intellij.util.xml.DomElement;
+import org.jetbrains.annotations.NotNull;
 
-class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::class.java, "hybrisconfig") {
+/**
+ * null:extensioninfoElemType interface.
+ * <pre>
+ * <h3>Type null:extensioninfoElemType documentation</h3>
+ * Configures the available modules of the extension.
+ * </pre>
+ */
+@Stubbed
+@StubbedOccurrence
+public interface ExtensionInfo extends DomElement {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.LOCAL_EXTENSIONS
+	/**
+	 * Returns the value of the extension child.
+	 * @return the value of the extension child.
+	 */
+	@NotNull
+	@SubTag ("extension")
+	@Required
+	Extension getExtension();
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
 
 }

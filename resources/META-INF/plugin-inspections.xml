@@ -1,15 +1,21 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <!-- Inspection Info  -->
+        <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDefinition.key"
                          shortName="EiUnknownExtensionDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo.EiUnknownExtensionDefinition"/>
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiUnknownExtensionDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDefinition.key"
                          shortName="EiDuplicateExtensionDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo.EiDuplicateExtensionDefinition"/>
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiDuplicateExtensionDefinition"/>
+
+        <!-- Local Extensions  -->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Local Extensions"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.le.LeUnknownExtensionDefinition.key"
+                         shortName="LeUnknownExtensionDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions.LeUnknownExtensionDefinition"/>
 
         <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Bean System"

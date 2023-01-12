@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.rule.extensionInfo
+package com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions
 
 import com.intellij.idea.plugin.hybris.codeInspection.rule.AbstractInspection
-import com.intellij.idea.plugin.hybris.system.extensionInfo.model.ExtensionInfo
+import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 
-abstract class AbstractEiInspection : AbstractInspection<ExtensionInfo>(ExtensionInfo::class.java) {
+abstract class AbstractLeInspection : AbstractInspection<Hybrisconfig>(Hybrisconfig::class.java) {
 
     override fun canProcess(project: Project, file: XmlFile) = true
 
-    override fun canProcess(dom: ExtensionInfo) = dom.xmlElement != null
+    override fun canProcess(dom: Hybrisconfig) = dom.xmlElement != null
 }

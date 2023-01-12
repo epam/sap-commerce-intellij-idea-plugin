@@ -16,48 +16,48 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Mon Jan 09 16:31:21 CET 2023
+// Generated on Thu Jan 12 19:15:30 CET 2023
 // DTD/Schema  :    null
-package com.intellij.idea.plugin.hybris.system.extensionInfo.model;
+
+package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * null:requires-extensionType interface.
+ * null:extensionType interface.
  * <pre>
- * <h3>Type null:requires-extensionType documentation</h3>
- * Configures the set of extensions required by the extension at compile time.
+ * <h3>Type null:extensionType documentation</h3>
+ * Adds an extension to the hybris platform.
  * </pre>
  */
-public interface RequiresExtension extends DomElement {
+public interface Extension extends DomElement {
+
+	/**
+	 * Returns the value of the dir child.
+	 * <pre>
+	 * <h3>Attribute null:dir documentation</h3>
+	 * Path to the extension folder relative to the platform home.
+	 * </pre>
+	 * @return the value of the dir child.
+	 */
+	@NotNull
+	@Attribute ("dir")
+	GenericAttributeValue<String> getDir();
+
 
 	/**
 	 * Returns the value of the name child.
 	 * <pre>
 	 * <h3>Attribute null:name documentation</h3>
-	 * Name of an extension which is required at compile time.
+	 * The name of the extension. Requires at least one &lt;scan&gt; entry to be able to look up the extension location.
 	 * </pre>
 	 * @return the value of the name child.
 	 */
 	@NotNull
 	@Attribute ("name")
-	@Required
 	GenericAttributeValue<String> getName();
-
-
-	/**
-	 * Returns the value of the version child.
-	 * <pre>
-	 * <h3>Attribute null:version documentation</h3>
-	 * Allowed range of versions of the required extension. Is used by the hybris package manager.
-	 * </pre>
-	 * @return the value of the version child.
-	 */
-	@NotNull
-	@Attribute ("version")
-	GenericAttributeValue<String> getVersion();
 
 
 }

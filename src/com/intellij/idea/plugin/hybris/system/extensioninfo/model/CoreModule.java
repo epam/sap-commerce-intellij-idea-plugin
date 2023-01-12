@@ -18,7 +18,7 @@
 
 // Generated on Mon Jan 09 16:31:21 CET 2023
 // DTD/Schema  :    null
-package com.intellij.idea.plugin.hybris.system.extensionInfo.model;
+package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
