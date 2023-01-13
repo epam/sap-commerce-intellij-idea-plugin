@@ -96,7 +96,9 @@ public final class CopyFileToHybrisConsoleUtils {
             if (virtualFile.isDirectory()) {
                 return Collections.emptyList();
             }
-            extensions.add(virtualFile.getExtension());
+            if (virtualFile.getExtension() != null) {
+                extensions.add(virtualFile.getExtension());
+            }
         }
         return extensions;
     }
