@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.SettingsCategory;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -33,7 +34,9 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYB
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-@State(name = "HybrisApplicationSettings", storages = {@Storage(STORAGE_HYBRIS_INTEGRATION_SETTINGS)})
+@State(name = "[y] Global Settings",
+       category = SettingsCategory.PLUGINS,
+       storages = {@Storage(value = STORAGE_HYBRIS_INTEGRATION_SETTINGS)})
 public class HybrisApplicationSettingsComponent implements PersistentStateComponent<HybrisApplicationSettings> {
 
     protected final HybrisApplicationSettings hybrisApplicationSettings = new HybrisApplicationSettings();

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.view
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.SettingsCategory
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
@@ -27,7 +28,7 @@ import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "HybrisBSView")
+@State(name = "[y] Bean System View settings", category = SettingsCategory.PLUGINS)
 @Storage(HybrisConstants.STORAGE_HYBRIS_BS_VIEW)
 class BSViewSettings(private val myProject: Project) : PersistentStateComponent<BSViewSettings.Settings> {
 
