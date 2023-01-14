@@ -147,6 +147,7 @@
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
                 <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
+                <li><i>Bug Fix:</i> Process diagram layout shows actions in reverse order (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/151" target="_blank" rel="nofollow">#151</a>)</li>
                 <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
                 <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
                 <li><i>Bug Fix:</i> Platform module should not be identified as Gradle project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/141" target="_blank" rel="nofollow">#141</a>)</li>

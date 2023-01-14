@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -86,17 +86,15 @@ public final class BpDiagramDataModel extends DiagramDataModel<BpGraphNode> {
     public void refreshDataModel() {
         this.edges.clear();
 
-        for (BpDiagramFileNode sourceBpDiagramFileNode : this.nodesMap.values()) {
-            final BpGraphNode sourceBpGraphNode = sourceBpDiagramFileNode.getIdentifyingElement();
+        for (BpDiagramFileNode targetBpDiagramFileNode : nodesMap.values()) {
+            final BpGraphNode sourceBpGraphNode = targetBpDiagramFileNode.getIdentifyingElement();
 
             for (Map.Entry<String, BpGraphNode> transition : sourceBpGraphNode.getTransitions().entrySet()) {
                 final String transitionName = transition.getKey();
 
                 final BpGraphNode targetBpGraphNode = transition.getValue();
                 if (null != targetBpGraphNode) {
-                    final BpDiagramFileNode targetBpDiagramFileNode = this.nodesMap.get(targetBpGraphNode.getGenericAction()
-                                                                                                         .getId());
-
+                    final BpDiagramFileNode sourceBpDiagramFileNode = nodesMap.get(targetBpGraphNode.getGenericAction().getId());
                     final BpDiagramFileEdge edge = new BpDiagramFileEdge(
                         sourceBpDiagramFileNode, targetBpDiagramFileNode, new BpDiagramRelationship(transitionName)
                     );
