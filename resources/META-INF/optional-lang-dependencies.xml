@@ -64,6 +64,12 @@
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
         <dom.fileMetaData rootTagName="widgets" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
+        <dom.fileMetaData rootTagName="action-definition" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngActionDefinitionDomFileDescription"/>
+        <dom.fileMetaData rootTagName="widget-definition" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
+        <dom.fileMetaData rootTagName="editor-definition" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
