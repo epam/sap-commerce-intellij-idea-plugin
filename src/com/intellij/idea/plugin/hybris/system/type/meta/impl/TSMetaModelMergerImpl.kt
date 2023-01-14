@@ -102,9 +102,9 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
         globalMetaModel.getAllRelations().putAllValues(localMetaModel.getRelations());
 
         val itemTypeDeployments = localMetaModel.getMetaType<TSMetaItem>(TSMetaType.META_ITEM).values()
-            .map { it.deployment }
+            .mapNotNull { it.deployment }
         val relationDeployments = localMetaModel.getMetaType<TSMetaRelation>(TSMetaType.META_RELATION).values()
-            .map { it.deployment }
+            .mapNotNull { it.deployment }
         (itemTypeDeployments + relationDeployments)
             .filter { it.table != null && it.typeCode != null }
             .forEach { globalMetaModel.addDeployment(it) }

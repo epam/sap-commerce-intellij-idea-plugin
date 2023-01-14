@@ -74,8 +74,6 @@ class BSViewSettings(private val myProject: Project) : PersistentStateComponent<
     companion object {
         val TOPIC: Topic<Listener> = Topic("Hybris Bean System View settings", Listener::class.java)
 
-        fun getInstance(project: Project): BSViewSettings {
-            return project.getService(BSViewSettings::class.java) as BSViewSettings
-        }
+        fun getInstance(project: Project): BSViewSettings = project.getService(BSViewSettings::class.java)
     }
 }

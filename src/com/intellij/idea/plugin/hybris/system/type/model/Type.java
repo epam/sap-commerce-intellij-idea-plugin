@@ -35,6 +35,7 @@ public enum Type implements com.intellij.util.xml.NamedEnum {
         this.value = value;
     }
 
+    @Override
     public String getValue() {
         return value;
     }

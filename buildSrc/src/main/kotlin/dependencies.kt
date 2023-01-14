@@ -1,4 +1,4 @@
-const val antVersion="1.10.9"
+const val antVersion="1.10.12"
 const val solrjVersion="8.7.0"
 const val jsoupVersion="1.11.3"
 const val dtdparserVersion="1.21"

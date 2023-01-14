@@ -30,12 +30,15 @@ class ExtensionsNameCompletionProvider : CompletionProvider<CompletionParameters
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val project = parameters.originalFile.project
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
-        val extensions = hybrisProjectSettings.completeSetOfAvailableExtensionsInHybris
-        extensions.forEach { result.addElement(LookupElementBuilder.create(it)) }
+        HybrisProjectSettingsComponent.getInstance(project)
+            .state
+            .completeSetOfAvailableExtensionsInHybris
+            .map { LookupElementBuilder.create(it) }
+            .forEach { result.addElement(it) }
     }
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ExtensionsNameCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> =
+            ApplicationManager.getApplication().getService(ExtensionsNameCompletionProvider::class.java)
     }
 }

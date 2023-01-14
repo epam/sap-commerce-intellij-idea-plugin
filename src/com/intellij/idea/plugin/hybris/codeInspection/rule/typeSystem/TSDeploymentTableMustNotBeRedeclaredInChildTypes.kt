@@ -50,13 +50,13 @@ class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() 
         val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
             ?: return
 
-        val currentMetaTypeCode = metaItem.deployment.typeCode
+        val currentMetaTypeCode = metaItem.deployment?.typeCode
 
         if (StringUtils.isBlank(currentMetaTypeCode)) return
 
         val countDeploymentTablesInParents = metaItem.allExtends
             .flatMap { it.declarations }
-            .count { StringUtils.isNotBlank(it.deployment.typeCode) }
+            .count { StringUtils.isNotBlank(it.deployment?.typeCode) }
 
         if (countDeploymentTablesInParents == 0) return
 

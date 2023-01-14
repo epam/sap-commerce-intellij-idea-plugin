@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.idea.plugin.hybris.system.type.model.Type
 
 interface TSMetaRelation : TSMetaClassifier<Relation> {
-    val deployment: TSMetaDeployment
+    val deployment: TSMetaDeployment?
     val source: TSMetaRelationElement
     val target: TSMetaRelationElement
     val description: String?

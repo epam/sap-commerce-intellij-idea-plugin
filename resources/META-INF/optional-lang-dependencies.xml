@@ -58,6 +58,12 @@
                           implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
+        <!--                                            Cockpit NG                                                   -->
+        <!-- ####################################################################################################### -->
+        <dom.fileMetaData rootTagName="config" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngDomFileDescription"/>
+
+        <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"

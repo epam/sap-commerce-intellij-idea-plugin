@@ -36,7 +36,6 @@ import com.intellij.ui.components.JBTextField;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 public class TSMetaRelationView {
 
@@ -96,11 +95,15 @@ public class TSMetaRelationView {
 
         myDeploymentTable.setText(null);
         myTypeCode.setText(null);
-        Optional.ofNullable(myMeta.getDeployment())
-            .ifPresent(deployment -> {
-                myDeploymentTable.setText(deployment.getTable());
-                myTypeCode.setText(deployment.getTypeCode());
-            });
+
+        final var deployment = myMeta.getDeployment();
+        if (deployment != null) {
+            myDeploymentTable.setText(deployment.getTable());
+            myTypeCode.setText(deployment.getTypeCode());
+        } else {
+            myDeploymentTable.setText(null);
+            myTypeCode.setText(null);
+        }
     }
 
     public JBPanel getContent(final TSGlobalMetaRelation meta) {

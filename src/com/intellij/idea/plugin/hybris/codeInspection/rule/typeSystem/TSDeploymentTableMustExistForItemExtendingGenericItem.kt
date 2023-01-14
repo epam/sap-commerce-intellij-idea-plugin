@@ -54,9 +54,9 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
         val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
             ?: return
 
-        if (StringUtils.isNotBlank(metaItem.deployment.typeCode)) return
+        if (StringUtils.isNotBlank(metaItem.deployment?.typeCode)) return
 
-        val otherDeclarationsWithDeploymentTable = metaItem.declarations.any { StringUtils.isNotBlank(it.deployment.typeCode) }
+        val otherDeclarationsWithDeploymentTable = metaItem.declarations.any { StringUtils.isNotBlank(it.deployment?.typeCode) }
 
         if (otherDeclarationsWithDeploymentTable) return
 
@@ -70,7 +70,7 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
         if (allExtends.count { "Descriptor".equals(it.name, true) } > 0) return
 
         val countDeploymentTablesInParents = allExtends
-            .count { StringUtils.isNotBlank(it.deployment.typeCode) }
+            .count { StringUtils.isNotBlank(it.deployment?.typeCode) }
 
         if (countDeploymentTablesInParents > 0) return
 

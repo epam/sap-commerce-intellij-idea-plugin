@@ -37,7 +37,7 @@ internal class TSMetaItemImpl(
     override val attributes: Map<String, TSMetaItemAttribute>,
     override val indexes: Map<String, TSMetaItemIndex>,
     override val customProperties: Map<String, TSMetaCustomProperty>,
-    override val deployment: TSMetaDeployment
+    override val deployment: TSMetaDeployment?
 ) : TSMetaItem {
 
     override val domAnchor: DomAnchor<ItemType> = DomService.getInstance().createAnchor(dom)
@@ -178,7 +178,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         if (localMeta.isSingleton) isJaloOnly = localMeta.isSingleton
         if (localMeta.isCatalogAware) isCatalogAware = localMeta.isCatalogAware
 
-        if (localMeta.deployment.retrieveDom()?.exists() == true) deployment = localMeta.deployment
+        if (localMeta.deployment?.retrieveDom()?.exists() == true) deployment = localMeta.deployment
 
         localMeta.extendedMetaItemName?.let {
             if (extendedMetaItemName != null) mergeConflicts.add("Extends should be defined only once.")

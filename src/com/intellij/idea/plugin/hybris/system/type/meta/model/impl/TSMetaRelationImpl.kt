@@ -35,7 +35,7 @@ internal class TSMetaRelationImpl(
     override val isCustom: Boolean,
     override val source: TSMetaRelationElement,
     override val target: TSMetaRelationElement,
-    override val deployment: TSMetaDeployment
+    override val deployment: TSMetaDeployment?
 ) : TSMetaRelation {
 
     override val domAnchor: DomAnchor<Relation> = DomService.getInstance().createAnchor(dom)

@@ -45,11 +45,12 @@ class RequiredExtensionsNameCompletionProvider: CompletionProvider<CompletionPar
             ?.filter { it.isNotBlank() }
             ?.map { it.lowercase() } ?: emptyList()
 
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
-        val extensions = hybrisProjectSettings.completeSetOfAvailableExtensionsInHybris
-        extensions
+        HybrisProjectSettingsComponent.getInstance(project)
+            .state
+            .completeSetOfAvailableExtensionsInHybris
             .filterNot { currentNames.contains(it.lowercase()) }
-            .forEach { result.addElement(LookupElementBuilder.create(it)) }
+            .map { LookupElementBuilder.create(it) }
+            .forEach { result.addElement(it) }
     }
 
     companion object {

@@ -102,8 +102,6 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
     companion object {
         val TOPIC: Topic<Listener> = Topic("Hybris Type System View settings", Listener::class.java)
 
-        fun getInstance(project: Project): TSViewSettings {
-            return project.getService(TSViewSettings::class.java) as TSViewSettings
-        }
+        fun getInstance(project: Project): TSViewSettings = project.getService(TSViewSettings::class.java)
     }
 }

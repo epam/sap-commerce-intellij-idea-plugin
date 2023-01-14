@@ -11,6 +11,7 @@
 .idea/encodings.xml
 .idea/codeStyles
 .idea/kotlinScripting.xml
+.idea/dataSources.local.xml
 
 /out/
 /build/

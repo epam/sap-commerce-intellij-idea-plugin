@@ -29,7 +29,7 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
     val attributes: Map<String, TSMetaItemAttribute>
     val customProperties: Map<String, TSMetaCustomProperty>
     val indexes: Map<String, TSMetaItemIndex>
-    val deployment: TSMetaDeployment
+    val deployment: TSMetaDeployment?
     val description: String?
     val jaloClass: String?
     val isAbstract: Boolean

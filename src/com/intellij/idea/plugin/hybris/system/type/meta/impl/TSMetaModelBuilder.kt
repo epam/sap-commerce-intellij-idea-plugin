@@ -89,7 +89,8 @@ class TSMetaModelBuilder(
 
     private fun create(dom: ItemType): TSMetaItem? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaItemImpl(dom, myModule, name, myCustom,
+        return TSMetaItemImpl(
+            dom, myModule, name, myCustom,
             attributes = create(dom.attributes),
             indexes = create(dom.indexes),
             customProperties = create(dom.customProperties),
@@ -99,7 +100,8 @@ class TSMetaModelBuilder(
 
     private fun create(dom: EnumType): TSMetaEnum? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaEnumImpl(dom, myModule, name, myCustom,
+        return TSMetaEnumImpl(
+            dom, myModule, name, myCustom,
             values = createEnumValues(dom)
         )
     }
@@ -116,7 +118,8 @@ class TSMetaModelBuilder(
 
     private fun create(dom: Relation): TSMetaRelation? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaRelationImpl(dom, myModule, name, myCustom,
+        return TSMetaRelationImpl(
+            dom, myModule, name, myCustom,
             deployment = create(dom.deployment),
             source = create(dom.sourceElement, TSMetaRelation.RelationEnd.SOURCE),
             target = create(dom.targetElement, TSMetaRelation.RelationEnd.TARGET)
@@ -155,9 +158,10 @@ class TSMetaModelBuilder(
         return TSMetaItemImpl.TSMetaItemIndexImpl(dom, myModule, name, myCustom)
     }
 
-    private fun create(dom: Deployment): TSMetaDeployment {
-        return TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
-    }
+    private fun create(dom: Deployment) =
+        if (dom.exists())
+            TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
+        else null
 
     private fun create(dom: Persistence): TSMetaPersistence {
         return TSMetaPersistenceImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
@@ -174,12 +178,12 @@ class TSMetaModelBuilder(
     }
 
     private fun create(dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
-        .mapNotNull {attr -> create(attr) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap())  { attr -> attr.name.trim { it <= ' ' } }
+        .mapNotNull { attr -> create(attr) }
+        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: CustomProperties): Map<String, TSMetaCustomProperty> = dom.properties
         .mapNotNull { create(it) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap())  { attr -> attr.name.trim { it <= ' ' } }
+        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: Indexes): Map<String, TSMetaItem.TSMetaItemIndex> = dom.indexes
         .mapNotNull { create(it) }
