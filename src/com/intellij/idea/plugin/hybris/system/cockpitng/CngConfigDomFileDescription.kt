@@ -21,17 +21,16 @@ package com.intellij.idea.plugin.hybris.system.cockpitng
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.Config
-import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class CngDomFileDescription : DomFileDescription<Config>(Config::class.java, "config") {
+class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.java, "config") {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_CONFIG
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name.endsWith(HybrisConstants.COCKPIT_NG_XML, true)
+            && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
 
 }

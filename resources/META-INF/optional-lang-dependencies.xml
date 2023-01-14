@@ -61,7 +61,9 @@
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="config" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
+        <dom.fileMetaData rootTagName="widgets" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
