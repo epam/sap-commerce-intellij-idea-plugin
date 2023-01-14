@@ -22,6 +22,7 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
@@ -52,9 +53,13 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
                     val result = firstReference.multiResolve(false)
 
                     if (result.isEmpty()) {
-                        problemsHolder.registerProblem(parameter,
-                                "Unknown attribute for type '${findHeaderItemTypeName(parameter).map { it.text }.orElse("")}'",
-                                ProblemHighlightType.ERROR)
+                        val typeName = findHeaderItemTypeName(parameter)
+                            .map { it.text }
+                            .orElse("")
+                        problemsHolder.registerProblem(
+                            parameter,
+                            message("hybris.inspections.bs.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),
+                            ProblemHighlightType.ERROR)
                     }
                 }
             }

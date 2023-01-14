@@ -17,7 +17,7 @@
  */
 
 const val sourceVersion="17"
-const val kotlinApiVersion="1.8"
+const val kotlinApiVersion="1.7"
 
 
 // https://www.jetbrains.com/intellij-repository/releases
@@ -39,6 +39,7 @@ const val pluginUntilBuild = "223.*"
 const val pluginVerifierIdeVersions = "223.8214.52"
 
 const val platformType = "IU"
+//const val platformVersion = "223-EAP-SNAPSHOT"
 const val platformVersion = "223.8214.52"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
