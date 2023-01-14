@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
@@ -40,7 +40,7 @@ class ImpexImplementationClassCompletionContributorImpl(val myProject: Project) 
             .map {
                 LookupElementBuilder.create(it.qualifiedName!!)
                     .withPresentableText(it.name!!)
-                    .withIcon(HybrisIcons.ITEM)
+                    .withIcon(AllIcons.FileTypes.JavaClass)
             }
             .toSet()
     }

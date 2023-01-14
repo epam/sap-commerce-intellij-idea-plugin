@@ -23,29 +23,24 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.NONE;
-
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
  */
 public enum TypeModifier implements ImpexModifier {
 
-    BATCH_MODE("batchmode", BOOLEAN),
-    CACHE_UNIQUE("cacheUnique", BOOLEAN),
-    IMPEX_LEGACY_MODE("impex.legacy.mode", BOOLEAN),
+    BATCH_MODE("batchmode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    CACHE_UNIQUE("cacheUnique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     PROCESSOR("processor") {
         @Override
         public @NotNull Set<LookupElement> getLookupElements(final Project project) {
@@ -70,26 +65,20 @@ public enum TypeModifier implements ImpexModifier {
     TypeModifier(
         @NotNull final String modifierName
     ) {
-        this(modifierName, NONE);
+        this(modifierName, Collections.emptySet());
     }
 
     TypeModifier(
         @NotNull final String modifierName,
-        @NotNull final ImpexModifierValue[] lookupElements
+        @NotNull final Set<String> modifierValues
     ) {
         Validate.notEmpty(modifierName);
-        Validate.notNull(lookupElements);
+        Validate.notNull(modifierValues);
 
         this.modifierName = modifierName;
-
-        if (ArrayUtils.isEmpty(lookupElements)) {
-            this.lookupElements = Collections.emptySet();
-        } else {
-            this.lookupElements = Arrays.stream(lookupElements)
-                                        .map(ImpexModifierValue::getModifierValue)
-                                        .map(LookupElementBuilder::create)
-                                        .collect(Collectors.toSet());
-        }
+        this.lookupElements = modifierValues.stream()
+                                            .map(LookupElementBuilder::create)
+                                            .collect(Collectors.toSet());
     }
 
     @Nullable

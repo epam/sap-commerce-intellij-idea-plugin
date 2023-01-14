@@ -23,32 +23,27 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.constants.ImpexConstants.ModifierCommonValues.NONE;
-
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
  */
 public enum AttributeModifier implements ImpexModifier {
-    UNIQUE("unique", BOOLEAN),
-    ALLOW_NULL("allownull", BOOLEAN),
-    FORCE_WRITE("forceWrite", BOOLEAN),
-    IGNORE_KEY_CASE("ignoreKeyCase", BOOLEAN),
-    IGNORE_NULL("ignorenull", BOOLEAN),
-    VIRTUAL("virtual", BOOLEAN),
-    MODE("mode", ModeModifierValue.values()),
+    UNIQUE("unique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    ALLOW_NULL("allownull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    FORCE_WRITE("forceWrite", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    IGNORE_KEY_CASE("ignoreKeyCase", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    IGNORE_NULL("ignorenull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    VIRTUAL("virtual", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
+    MODE("mode", HybrisConstants.IMPEX_MODIFIER_MODE_VALUES),
     ALIAS("alias"),
     COLLECTION_DELIMITER("collection-delimiter"),
     DATE_FORMAT("dateformat"),
@@ -59,7 +54,13 @@ public enum AttributeModifier implements ImpexModifier {
     NUMBER_FORMAT("numberformat"),
     PATH_DELIMITER("path-delimiter"),
     POS("pos"),
-    CELL_DECORATOR("cellDecorator"),
+    CELL_DECORATOR("cellDecorator") {
+        @Override
+        public @NotNull Set<LookupElement> getLookupElements(final Project project) {
+            return ImpexImplementationClassCompletionContributor.Companion.getInstance(project)
+                                                                          .getImplementationsForClass(HybrisConstants.IMPEX_CLASS_CELL_DECORATOR);
+        }
+    },
     TRANSLATOR("translator") {
         @Override
         public @NotNull Set<LookupElement> getLookupElements(final Project project) {
@@ -84,26 +85,20 @@ public enum AttributeModifier implements ImpexModifier {
     AttributeModifier(
         @NotNull final String modifierName
     ) {
-        this(modifierName, NONE);
+        this(modifierName, Collections.emptySet());
     }
 
     AttributeModifier(
         @NotNull final String modifierName,
-        @NotNull final ImpexModifierValue[] modifierValues
+        @NotNull final Set<String> modifierValues
     ) {
         Validate.notEmpty(modifierName);
         Validate.notNull(modifierValues);
 
         this.modifierName = modifierName;
-
-        if (ArrayUtils.isEmpty(modifierValues)) {
-            this.lookupElements = Collections.emptySet();
-        } else {
-            this.lookupElements = Arrays.stream(modifierValues)
-                                        .map(ImpexModifierValue::getModifierValue)
-                                        .map(LookupElementBuilder::create)
-                                        .collect(Collectors.toSet());
-        }
+        this.lookupElements = modifierValues.stream()
+                                            .map(LookupElementBuilder::create)
+                                            .collect(Collectors.toSet());
     }
 
     @Nullable

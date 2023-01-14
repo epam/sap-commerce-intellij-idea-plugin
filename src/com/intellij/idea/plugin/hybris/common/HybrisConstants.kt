@@ -228,6 +228,8 @@ object HybrisConstants {
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
 
+    @JvmField val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
+    @JvmField val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
     const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
     const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
