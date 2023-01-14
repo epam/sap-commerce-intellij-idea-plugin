@@ -20,11 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexProcessorModifier.ImpexProcessorModifierValue
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.notifications.Notifications
@@ -40,13 +36,15 @@ class ImpexHeaderTypeModifierValueCompletionProvider : CompletionProvider<Comple
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        val project = parameters.position.project
         val psiElementUnderCaret = parameters.position
         val impexAttribute = PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexAttribute::class.java) ?: return
         val modifierName = impexAttribute.anyAttributeName.text
         val impexModifier = TypeModifier.getByModifierName(modifierName)
 
         if (impexModifier != null) {
-            addCompletions(impexModifier, result)
+            impexModifier.getLookupElements(project)
+                .forEach { result.addElement(it) }
         } else {
             // show error message when not defined within hybris API
             Notifications.create(
@@ -55,29 +53,6 @@ class ImpexHeaderTypeModifierValueCompletionProvider : CompletionProvider<Comple
                 HybrisI18NBundleUtils.message("hybris.completion.error.impex.unknownTypeModifier.content", modifierName)
             )
                 .notify(parameters.position.project)
-        }
-    }
-
-    private fun addCompletions(
-        impexModifier: ImpexModifier,
-        result: CompletionResultSet
-    ) {
-        if (TypeModifier.PROCESSOR == impexModifier) {
-            val modifierValues = (impexModifier as TypeModifier).rawModifierValues
-            modifierValues
-                .filterIsInstance<ImpexProcessorModifierValue>()
-                .map { it.psiClass }
-                .filter { it.qualifiedName != null && it.name != null }
-                .map {
-                    LookupElementBuilder.create(it.qualifiedName!!)
-                        .withPresentableText(it.name!!)
-                        .withIcon(HybrisIcons.ITEM)
-                }
-                .forEach { result.addElement(it) }
-        } else {
-            impexModifier.modifierValues
-                .map { LookupElementBuilder.create(it) }
-                .forEach { result.addElement(it) }
         }
     }
 

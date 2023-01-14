@@ -1,6 +1,35 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- Impex -->
+        <localInspection groupPath="hybris" shortName="NoUniqueValueInspection" displayName="No unique value in column"
+                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
+
+        <localInspection groupPath="hybris" shortName="UnknownConfigPropertyInspection" displayName="Unknown configuration property"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownConfigPropertyInspection"/>
+
+        <localInspection groupPath="hybris" shortName="UnknownMacrosInspection" displayName="Unknown macros"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownMacrosInspection"/>
+
+        <localInspection groupPath="hybris" shortName="UnknownTypeAttributeInspection" displayName="Unknown attribute"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
+
+        <localInspection groupPath="hybris" shortName="ConfigProcessorInspection" displayName="Incorrect use of $config macros"
+                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
+
+        <localInspection groupPath="hybris" shortName="UniqueAttributeWithoutIndex" displayName="Unique attribute without an index"
+                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
+
+        <localInspection groupPath="hybris" shortName="UniqueDocumentId" displayName="Unique document Id in column"
+                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueDocumentIdInspection"/>
+
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDefinition.key"

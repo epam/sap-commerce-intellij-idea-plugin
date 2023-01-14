@@ -64,11 +64,11 @@
                           implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
-        <!--                                            Hybris Type System                                           -->
+        <!--                                            Type System                                                  -->
         <!-- ####################################################################################################### -->
 
         <dom.fileMetaData rootTagName="items" stubVersion="22"
-            implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
 
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSItemTypeGutterAnnotator"/>
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSEnumGutterAnnotator"/>
@@ -95,11 +95,11 @@
         <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
 
         <!-- ####################################################################################################### -->
-        <!--                                                Beans                                                    -->
+        <!--                                                Bean System                                              -->
         <!-- ####################################################################################################### -->
 
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
-            implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>
@@ -117,41 +117,32 @@
         <!--                                          Flexible Search                                                -->
         <!-- ####################################################################################################### -->
 
+        <!-- Support FlexibleSearch Language-->
+        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
+                  implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
+
         <!-- Core elements -->
-        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
-
-
-        <codeStyleSettingsProvider
-            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSCodeStyleSettingsProvider"/>
 
         <langCodeStyleSettingsProvider
             implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSLanguageCodeStyleSettingsProvider"/>
 
-        <!-- Support FlexibleSearch Language-->
-        <fileType name="FlexibleSearch file" fieldName="INSTANCE" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType" language="FlexibleSearch" extensions="fxs"/>
-
-        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
-
-        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
-
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
 
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+        <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
+        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
+
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
+
+        <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-
-        <lang.commenter language="FlexibleSearch"
-                        implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
-        <lang.formatter language="FlexibleSearch"
-                        implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
-        
-        <lang.braceMatcher language="FlexibleSearch" 
-                           implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
-
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector" />
-
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider"/>
-        <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->
@@ -160,12 +151,8 @@
         <!-- Core elements -->
 
         <!-- Support Impex Language-->
-        <fileType name="Impex" language="Impex" extensions="impex" implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType" fieldName="INSTANCE" />
-        <lang.parserDefinition language="Impex"
-                               implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-
-        <lang.syntaxHighlighterFactory language="Impex"
-                                       implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <fileType name="Impex" language="Impex" extensions="impex" fieldName="INSTANCE"
+                  implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
 
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
 
@@ -174,21 +161,17 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
-        <lang.commenter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
 
-        <lang.formatter language="Impex"
-                        implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-
-        <codeStyleSettingsProvider
-            implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-
-        <langCodeStyleSettingsProvider
-            implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
-
+        <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.commenter.ImpexCommenter"/>
+        <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
         <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexFoldingBuilder"/>
         <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexFoldingLinesBuilder"/>
         <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.lang.folding.ImpexMacroFoldingBuilder"/>
+
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 
@@ -228,40 +211,14 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
+
         <defaultLiveTemplates file="liveTemplates/Impex.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
 
         <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>
-        <renamePsiElementProcessor
-            implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
-
-        <localInspection groupPath="hybris" shortName="NoUniqueValueInspection" displayName="No unique value in column"
-                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
-
-        <localInspection groupPath="hybris" shortName="UnknownConfigPropertyInspection" displayName="Unknown configuration property"
-                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownConfigPropertyInspection"/>
-
-        <localInspection groupPath="hybris" shortName="UnknownMacrosInspection" displayName="Unknown macros"
-                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownMacrosInspection"/>
-
-        <localInspection groupPath="hybris" shortName="UnknownTypeAttributeInspection" displayName="Unknown attribute"
-                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
-
-        <localInspection groupPath="hybris" shortName="ConfigProcessorInspection" displayName="Incorrect use of $config macros"
-                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
-
-        <localInspection groupPath="hybris" shortName="UniqueAttributeWithoutIndex" displayName="Unique attribute without an index"
-                         groupName="Impex Performance" level="WARNING" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
-
-        <localInspection groupPath="hybris" shortName="UniqueDocumentId" displayName="Unique document Id in column"
-                         groupName="Impex Performance" level="ERROR" language="Impex" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueDocumentIdInspection"/>
+        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
@@ -295,7 +252,7 @@
         <lang.findUsagesProvider language="Impex"
                                  implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector" />
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector"/>
 
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
         <postStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>

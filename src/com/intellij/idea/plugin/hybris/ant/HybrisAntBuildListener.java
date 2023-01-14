@@ -148,7 +148,7 @@ public class HybrisAntBuildListener implements AntExecutionListener {
         final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                                           .getState();
         final File file = new File(project.getBasePath() + "/" +
-                                   hybrisProjectSettings.getHybrisDirectory() + "/config/localextensions.xml");
+                                   hybrisProjectSettings.getHybrisDirectory() + "/config/" + HybrisConstants.LOCAL_EXTENSIONS_XML);
         final VirtualFile vf = VfsUtil.findFileByIoFile(file, true);
 
         if (vf == null) {

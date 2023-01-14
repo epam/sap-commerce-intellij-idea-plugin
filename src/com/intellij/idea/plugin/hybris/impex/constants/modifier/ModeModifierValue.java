@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * https://wiki.hybris.com/pages/viewpage.action?title=ImpEx+Syntax&spaceKey=release5
+ * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
  */
 public enum ModeModifierValue implements ImpexModifierValue {
 

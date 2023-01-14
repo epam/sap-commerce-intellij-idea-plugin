@@ -228,6 +228,10 @@ object HybrisConstants {
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
 
+    const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
+    const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
+    const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+
     @JvmField val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
     @JvmField val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
     @JvmField val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")

@@ -37,14 +37,14 @@ class ImpexHeaderAttributeModifierValueCompletionProvider : CompletionProvider<C
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        val project = parameters.position.project
         val psiElementUnderCaret = parameters.position
         val impexAttribute = PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexAttribute::class.java) ?: return
         val modifierName = impexAttribute.anyAttributeName.text
         val impexModifier = AttributeModifier.getByModifierName(modifierName)
 
         if (impexModifier != null) {
-            impexModifier.modifierValues
-                .map { LookupElementBuilder.create(it) }
+            impexModifier.getLookupElements(project)
                 .forEach { result.addElement(it) }
         } else {
             // show error message when not defined within hybris API
