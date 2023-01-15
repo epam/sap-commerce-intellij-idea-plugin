@@ -59,16 +59,15 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
             return ResolveResult.EMPTY_ARRAY
         }
 
-        val metaItemService = TSMetaItemService.getInstance(project)
-        val attributes = metaItemService
-                .findAttributesByName(metaItem.get(), refName, true)
-                .mapNotNull { it.retrieveDom() }
-                .map { AttributeResolveResult(it) }
+        val attributes = metaItem.get().allAttributes
+            .filter { refName.equals(it.name, true) }
+            .mapNotNull { it.retrieveDom() }
+            .map { AttributeResolveResult(it) }
 
-        val relations = metaItemService
-                .findRelationEndsByQualifier(metaItem.get(), refName, true)
-                .mapNotNull { it.retrieveDom() }
-                .map { RelationElementResolveResult(it) }
+        val relations = metaItem.get().allRelationEnds
+            .filter { refName.equals(it.name, true) }
+            .mapNotNull { it.retrieveDom() }
+            .map { RelationElementResolveResult(it) }
 
         return (attributes + relations).toTypedArray() 
     }

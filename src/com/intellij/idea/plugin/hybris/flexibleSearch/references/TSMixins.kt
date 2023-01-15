@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
@@ -32,7 +33,7 @@ abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), 
     }
 }
 
-class TSItemRef(owner: FlexibleSearchTableName) : TSReferenceBase<FlexibleSearchTableName>(owner) {
+class TSItemRef(owner: FlexibleSearchTableName) : TSReferenceBase<FlexibleSearchTableName>(owner), HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val lookingForName = element.text.replace("!", "")

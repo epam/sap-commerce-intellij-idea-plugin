@@ -26,9 +26,9 @@ import com.intellij.util.ProcessingContext
 class TSItemReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
-        element: PsiElement,
-        context: ProcessingContext
-    ) = arrayOf(TSItemReference(element))
+        element: PsiElement, context: ProcessingContext
+    ) = if (element.text.contains(".")) emptyArray()
+    else arrayOf(TSItemReference(element))
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSItemReferenceProvider::class.java)

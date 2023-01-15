@@ -90,6 +90,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         project: Project,
         result: CompletionResultSet
     ) {
+        val resultCaseInsensitive = result.caseInsensitive()
         val querySpecification = PsiTreeUtil.getTopmostParentOfType(psiElementUnderCaret, FlexibleSearchQuerySpecification::class.java)
 
         PsiTreeUtil.findChildrenOfType(querySpecification, FlexibleSearchTableReference::class.java)
@@ -98,7 +99,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
                 val element = PsiTreeUtil.getNextSiblingOfType(it, FlexibleSearchCorrelationName::class.java)
                 element != null && element.text == tableNameId.text
             }
-            ?.let { fillDomAttributesCompletions(project, it.text, result) }
+            ?.let { fillDomAttributesCompletions(project, it.text, resultCaseInsensitive) }
     }
 
     private fun fillDomAttributesCompletions(
@@ -114,6 +115,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         metaItem.allAttributes
             .map {
                 LookupElementBuilder.create(it.name)
+//                    .withCaseSensitivity(false)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType, true)
                     .withIcon(HybrisIcons.ATTRIBUTE)
@@ -123,6 +125,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         metaItem.allRelationEnds
             .map {
                 LookupElementBuilder.create(it.qualifier)
+//                    .withCaseSensitivity(false)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType)
                     .withIcon(

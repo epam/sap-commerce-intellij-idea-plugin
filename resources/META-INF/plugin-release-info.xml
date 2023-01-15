@@ -148,6 +148,7 @@
                 <li><i>Feature:</i> Added <code>extensioninfo.xml</coed> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147" target="_blank" rel="nofollow">#147</a>)</li>
                 <li><i>Feature:</i> Added <code>process.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148" target="_blank" rel="nofollow">#148</a>)</li>
                 <li><i>Feature:</i> Decreases cognitive complexity for Code Completion and custom Icons (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/152" target="_blank" rel="nofollow">#152</a>)</li>
+                <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
                 <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>

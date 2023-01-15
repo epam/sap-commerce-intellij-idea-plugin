@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.psi.reference
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult
@@ -35,7 +36,7 @@ import com.intellij.psi.ResolveResult
  *
  * see, standard-editors-spring.xml
  */
-class TSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference {
+class TSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val text = element.text.trim()
