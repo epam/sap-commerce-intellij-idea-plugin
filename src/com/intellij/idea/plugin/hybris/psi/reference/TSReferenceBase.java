@@ -39,6 +39,10 @@ public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferen
         super(owner, false);
     }
 
+    public TSReferenceBase(@NotNull final PSI owner, final boolean soft) {
+        super(owner, soft);
+    }
+
     public TSReferenceBase(final PSI element, final TextRange rangeInElement) {
         super(element, rangeInElement, false);
     }

@@ -18,8 +18,10 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisModelItemReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisSpringProcessReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisTransitionProcessReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.TSItemReferenceProvider"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.psi.reference.contributor.HybrisItemXmlReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.psi.reference.contributor.HybrisProcessReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.psi.reference.contributor.HybrisCockpitngReferenceContributor"/>
 
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>

@@ -18,18 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemAttributesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemIndexesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementsTable;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProperty;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemAttributesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemCustomPropertiesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemIndexesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementsTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.ToolbarDecorator;
@@ -92,8 +92,6 @@ public class TSMetaItemView {
         myCode.setText(myMeta.getName());
         myDescription.setText(myMeta.getDescription());
         myJaloClass.setText(myMeta.getJaloClass());
-        myDeploymentTable.setText(myMeta.getDeployment().getTable());
-        myDeploymentTypeCode.setText(myMeta.getDeployment().getTypeCode());
         myAbstract.setSelected(myMeta.isAbstract());
         myCatalogAware.setSelected(myMeta.isCatalogAware());
         myAutoCreate.setSelected(myMeta.isAutoCreate());
@@ -101,6 +99,15 @@ public class TSMetaItemView {
         mySingleton.setSelected(myMeta.isSingleton());
         myJaloOnly.setSelected(myMeta.isJaloOnly());
         myExtends.setText(myMeta.getExtendedMetaItemName());
+
+        final var deployment = myMeta.getDeployment();
+        if (deployment != null) {
+            myDeploymentTable.setText(deployment.getTable());
+            myDeploymentTypeCode.setText(deployment.getTypeCode());
+        } else {
+            myDeploymentTable.setText(null);
+            myDeploymentTypeCode.setText(null);
+        }
     }
 
     public JBPanel getContent(final TSGlobalMetaItem meta) {
