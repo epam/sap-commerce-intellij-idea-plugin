@@ -37,6 +37,7 @@
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.CockpitngCompletionContributor"/>
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.ExtensionsNameCompletionContributor"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>

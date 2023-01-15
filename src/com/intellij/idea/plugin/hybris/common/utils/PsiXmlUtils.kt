@@ -34,10 +34,7 @@ object PsiXmlUtils {
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
             XmlPatterns.xmlAttribute(attributeName)
-                .withParent(
-                    XmlPatterns.xmlTag()
-                        .withName(tagName)
-                )
+                .withParent(XmlPatterns.xmlTag().withName(tagName))
         )
         .inside(insideTagPattern(tagName))
         .inFile(getXmlFilePattern(fileName))
@@ -67,10 +64,7 @@ object PsiXmlUtils {
         .withAncestor(6, XmlPatterns.xmlTag().withLocalName(rootTag))
         .withParent(
             XmlPatterns.xmlAttribute(attributeName)
-                .withParent(
-                    XmlPatterns.xmlTag()
-                        .withName(tagName)
-                )
+                .withParent(XmlPatterns.xmlTag().withName(tagName))
         )
         .inside(insideTagPattern(tagName))
 
@@ -108,10 +102,7 @@ object PsiXmlUtils {
     fun attributeValuePattern(tagName: String, attributeName: String) = XmlPatterns.xmlAttributeValue()
         .withParent(
             XmlPatterns.xmlAttribute(attributeName)
-                .withParent(
-                    XmlPatterns.xmlTag()
-                        .withName(tagName)
-                )
+                .withParent(XmlPatterns.xmlTag().withName(tagName))
         )
 
     fun insideTagPattern(insideTagName: String) = PlatformPatterns.psiElement(XmlTag::class.java)
