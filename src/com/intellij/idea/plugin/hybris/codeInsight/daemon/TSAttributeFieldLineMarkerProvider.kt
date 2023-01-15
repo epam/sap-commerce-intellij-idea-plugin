@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
-import com.intellij.psi.PsiJavaCodeReferenceElement
+import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.PsiLiteralExpression
-import com.intellij.psi.PsiMethod
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.util.childrenOfType
 import java.util.*
@@ -39,7 +39,22 @@ class TSAttributeFieldLineMarkerProvider : AbstractTSAttributeLineMarkerProvider
         if ((psi.type as PsiClassReferenceType).name != String::class.java.simpleName) return Optional.empty()
 
         return psi.childrenOfType<PsiLiteralExpression>()
-            .map { getPsiElementRelatedItemLineMarkerInfo(meta, it.value.toString(), psi.nameIdentifier) }
-            .firstOrNull() ?: Optional.empty()
+            .map {
+                val name = it.value.toString()
+                val nameIdentifier = psi.nameIdentifier
+                getPsiElementRelatedItemLineMarkerInfo(meta, name, nameIdentifier)
+                    .or { getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier) }
+            }
+            .firstOrNull()
+            ?: Optional.empty()
+    }
+
+    private fun getPsiElementRelatedRelationLineMarkerInfo(name: String, nameIdentifier: PsiIdentifier): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
+        val dom = TSMetaModelAccess.getInstance(nameIdentifier.project).findMetaRelationByName(name)
+            ?.retrieveDom()
+            ?.xmlElement
+            ?: return Optional.empty<RelatedItemLineMarkerInfo<PsiElement>>()
+
+        return Optional.of(createTargetsWithGutterIcon(nameIdentifier, listOf(dom), HybrisIcons.RELATION))
     }
 }

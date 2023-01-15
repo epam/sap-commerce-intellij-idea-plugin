@@ -55,7 +55,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
 
                     meta.allAttributes
                         .find { attr -> attr.name == computedConstantValue }
-                        ?.let { attribute -> return@mapNotNull getChildInfo(attribute, computedConstantValue, it.name, metaAccess, debuggerUtils) }
+                        ?.let { attribute -> return@mapNotNull createChildInfo(attribute, computedConstantValue, it.name, metaAccess, debuggerUtils) }
                     meta.allRelationEnds
                         .find { relation -> relation.name == computedConstantValue }
                         ?.let { relation -> return@mapNotNull createChildInfo(computedConstantValue, relation, it.name, debuggerUtils) }
@@ -79,7 +79,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
         true
     )
 
-    private fun getChildInfo(
+    private fun createChildInfo(
         attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute,
         attributeName: String,
         fieldName: String,
