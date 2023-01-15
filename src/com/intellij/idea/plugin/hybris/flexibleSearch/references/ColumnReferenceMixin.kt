@@ -1,5 +1,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
@@ -37,7 +38,7 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
 }
 
-internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner) {
+internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner), HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val featureName = element.text.replace("!", "")
