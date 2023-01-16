@@ -15,10 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
-package com.intellij.idea.plugin.hybris.system.bean.meta
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiFile
 
-interface BSChangeListener {
+interface CngMetaModelCollector {
 
-    fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel)
+    companion object {
+        fun getInstance(project: Project): CngMetaModelCollector = project.getService(CngMetaModelCollector::class.java)
+    }
+
+    fun collectDependencies(): Set<PsiFile>
 }

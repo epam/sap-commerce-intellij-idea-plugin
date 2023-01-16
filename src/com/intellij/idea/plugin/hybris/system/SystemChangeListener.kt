@@ -16,9 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.meta
+package com.intellij.idea.plugin.hybris.system
 
-interface TSChangeListener {
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 
-    fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel)
+interface SystemChangeListener {
+
+    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
+    fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) = Unit
+    fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) = Unit
 }

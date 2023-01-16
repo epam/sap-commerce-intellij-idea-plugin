@@ -5,12 +5,16 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpit/config:config interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Config extends DomElement {
 
     /**

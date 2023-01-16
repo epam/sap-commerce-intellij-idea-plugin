@@ -60,7 +60,6 @@ class BSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
     fun update(changeType: BSViewSettings.ChangeType) {
         if (changeType == BSViewSettings.ChangeType.FULL) {
-            selectionModel.selectionPath = null
             myTreeModel.reload()
         }
     }

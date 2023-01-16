@@ -61,7 +61,6 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
     fun update(changeType: TSViewSettings.ChangeType) {
         // handle UPDATE case better, adjust visibility of the existing nodes
         if (changeType == TSViewSettings.ChangeType.FULL || changeType == TSViewSettings.ChangeType.UPDATE) {
-            selectionModel.selectionPath = null
             myTreeModel.reload()
         }
     }

@@ -72,6 +72,18 @@
         <dom.fileMetaData rootTagName="editor-definition" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelCollectorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelMergerImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelProcessorImpl"/>
+
         <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
         <!-- ####################################################################################################### -->

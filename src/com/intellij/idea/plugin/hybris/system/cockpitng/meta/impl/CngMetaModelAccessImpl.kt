@@ -15,14 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.meta.impl
+package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.system.SystemChangeListener
-import com.intellij.idea.plugin.hybris.system.type.meta.*
-import com.intellij.idea.plugin.hybris.system.type.meta.model.*
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
@@ -34,7 +30,6 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
-import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -46,71 +41,40 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
  * 1. Global Meta Model cached at Project level with dependencies to all items.xml files in the Project.
  * - processing of the dependant PsiFiles is ignored and done during retrieval from the PsiFile cache
  * - once all dependant PsiFiles processed, each Meta Model will be merged into single one
- * 2. PsiFile (items.xml) specific cache
+ * 2. PsiFile (-config.xml) specific cache
  * - retrieving of that cache also performs processing of the PsiFile and pre-filling into MetaModel caches
  *
  * It is quite important to take into account possibility of interruption of the process, especially during Inspection and other heavy operations
  */
-class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess {
+class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAccess {
 
     private val myMessageBus = myProject.messageBus
 
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         {
-            val localMetaModels = TSMetaModelCollector.getInstance(myProject).collectDependencies()
+            val localMetaModels = CngMetaModelCollector.getInstance(myProject).collectDependencies()
                 .filter { obj: PsiFile? -> Objects.nonNull(obj) }
                 .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
-                .map { obj: CachedValue<TSMetaModel> -> obj.value }
-                .sortedBy { !it.custom }
+                .map { obj: CachedValue<CngMetaModel> -> obj.value }
 
             val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
-            val globalMetaModel = TSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
+            val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(localMetaModels)
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
-        }
-        , false
+        }, false
     )
 
-    override fun getMetaModel(): TSGlobalMetaModel {
+    override fun getMetaModel(): CngGlobalMetaModel {
         if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
             return readMetaModelWithLock()
         }
         return writeMetaModelWithLock()
     }
 
-    override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
-
-    override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
-    override fun findMetaForDom(dom: EnumType) = findMetaEnumByName(TSMetaModelNameProvider.extract(dom))
-
-    override fun findMetaItemByName(name: String?) = findMetaByName<TSGlobalMetaItem>(TSMetaType.META_ITEM, name)
-    override fun findMetaEnumByName(name: String?) = findMetaByName<TSGlobalMetaEnum>(TSMetaType.META_ENUM, name)
-    override fun findMetaAtomicByName(name: String?) = findMetaByName<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC, name)
-    override fun findMetaCollectionByName(name: String?) = findMetaByName<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION, name)
-    override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(TSMetaType.META_MAP, name)
-    override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(TSMetaType.META_RELATION, name)
-
-    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getAllRelations().values())
-        .mapNotNull { metaRelationElement -> metaRelationElement.owner }
-        .filter { ref: TSMetaRelation -> name == ref.name }
-
-    override fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>? {
-        var result: TSGlobalMetaClassifier<out DomElement>? = findMetaItemByName(name)
-        if (result == null) {
-            result = findMetaCollectionByName(name)
-        }
-        if (result == null) {
-            result = findMetaEnumByName(name)
-        }
-        return result
-    }
-
-    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
-
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
-    private fun readMetaModelWithLock(): TSGlobalMetaModel {
+    private fun readMetaModelWithLock(): CngGlobalMetaModel {
         try {
             readLock.lock()
             if (lock.isWriteLocked && writeLock.isHeldByCurrentThread) {
@@ -123,11 +87,11 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }
     }
 
-    private fun writeMetaModelWithLock(): TSGlobalMetaModel {
+    private fun writeMetaModelWithLock(): CngGlobalMetaModel {
         try {
             writeLock.lock()
             val globalMetaModel = myGlobalMetaModel.value
-            myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
+            myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
 
             return globalMetaModel
         } finally {
@@ -135,7 +99,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }
     }
 
-    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): CachedValue<TSMetaModel> {
+    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): CachedValue<CngMetaModel> {
         return Optional.ofNullable(psiFile.getUserData(SINGLE_MODEL_CACHE_KEY))
             .orElseGet {
                 val cachedValue = createSingleMetaModelCachedValue(myProject, psiFile)
@@ -144,20 +108,20 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
             }
     }
 
-    private fun createSingleMetaModelCachedValue(project: Project, psiFile: PsiFile): CachedValue<TSMetaModel> {
+    private fun createSingleMetaModelCachedValue(project: Project, psiFile: PsiFile): CachedValue<CngMetaModel> {
         return CachedValuesManager.getManager(project).createCachedValue(
             {
                 ApplicationManager.getApplication().runReadAction(
                     Computable {
-                        CachedValueProvider.Result.create(TSMetaModelProcessor.getInstance(myProject).process(psiFile), psiFile)
-                    } as Computable<CachedValueProvider.Result<TSMetaModel>>)
+                        CachedValueProvider.Result.create(CngMetaModelProcessor.getInstance(myProject).process(psiFile), psiFile)
+                    } as Computable<CachedValueProvider.Result<CngMetaModel>>)
             }, false
         )
     }
 
     companion object {
-        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", SystemChangeListener::class.java)
-        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
+        val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", SystemChangeListener::class.java)
+        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<CngMetaModel>>("SINGLE_CNG_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()
         private val writeLock = lock.writeLock()
