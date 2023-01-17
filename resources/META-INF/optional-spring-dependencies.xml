@@ -25,6 +25,7 @@
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisSpringProcessReferenceProvider"/>
 
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSAttributeHandlerGutterAnnotator"/>
 
