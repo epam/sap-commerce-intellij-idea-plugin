@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.psi.reference
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.util.TextRange
@@ -26,7 +27,7 @@ import com.intellij.spring.SpringManager
 import com.intellij.spring.model.utils.SpringModelSearchers
 import org.apache.commons.lang3.StringUtils
 
-class SpringReference(element: PsiElement) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
+class SpringReference(element: PsiElement) : PsiReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun getRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
