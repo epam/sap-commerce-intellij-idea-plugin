@@ -3,7 +3,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.file.ComponentConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.ComponentConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;

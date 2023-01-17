@@ -21,7 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
-import com.intellij.util.xml.DomElement;
+import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
+import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTagList;
@@ -30,17 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.de/xsd/processdefinition:notify interface.
  */
-public interface Notify extends DomElement {
-
-	/**
-	 * Returns the value of the id child.
-	 * @return the value of the id child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
-	@Required
-	GenericAttributeValue<String> getId();
-
+public interface Notify extends NavigableElement {
 
 	/**
 	 * Returns the value of the then child.
@@ -48,6 +39,7 @@ public interface Notify extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("then")
+	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getThen();
 
 

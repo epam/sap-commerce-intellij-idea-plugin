@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.SystemChangeListener
 import com.intellij.idea.plugin.hybris.system.bean.meta.*
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
@@ -142,7 +141,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     }
 
     companion object {
-        val topic = Topic("HYBRIS_BEANS_LISTENER", SystemChangeListener::class.java)
+        val topic = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEAN_SYSTEM_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()

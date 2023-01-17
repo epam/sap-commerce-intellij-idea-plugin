@@ -21,24 +21,16 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
-import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.de/xsd/processdefinition:scriptAction interface.
  */
-public interface ScriptAction extends DomElement {
-
-	/**
-	 * Returns the value of the id child.
-	 * @return the value of the id child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
-	@Required
-	GenericAttributeValue<String> getId();
-
+public interface ScriptAction extends NavigableElement {
 
 	/**
 	 * Returns the value of the node child.

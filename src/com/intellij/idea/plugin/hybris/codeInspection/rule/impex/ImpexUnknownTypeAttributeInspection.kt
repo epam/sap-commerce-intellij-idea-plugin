@@ -58,7 +58,7 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
                             .orElse("")
                         problemsHolder.registerProblem(
                             parameter,
-                            message("hybris.inspections.bs.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),
+                            message("hybris.inspections.impex.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),
                             ProblemHighlightType.ERROR)
                     }
                 }

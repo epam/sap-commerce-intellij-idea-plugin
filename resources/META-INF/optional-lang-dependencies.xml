@@ -37,12 +37,7 @@
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.CockpitngCompletionContributor"/>
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.ExtensionsNameCompletionContributor"/>
-
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
 
@@ -58,6 +53,20 @@
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.LocalExtensionsCompletionContributor"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                            LocalExtensions                                              -->
+        <!-- ####################################################################################################### -->
+        <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
+
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.ExtensionInfoCompletionContributor"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider"/>
+
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->
@@ -72,6 +81,8 @@
         <dom.fileMetaData rootTagName="editor-definition" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.CockpitngCompletionContributor"/>
+
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl"/>
 
@@ -83,12 +94,6 @@
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelProcessorImpl"/>
-
-        <!-- ####################################################################################################### -->
-        <!--                                            ExtensionInfo                                                -->
-        <!-- ####################################################################################################### -->
-        <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Type System                                                  -->

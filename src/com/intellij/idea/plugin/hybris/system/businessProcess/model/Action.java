@@ -21,24 +21,15 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
-import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.de/xsd/processdefinition:action interface.
  */
-public interface Action extends DomElement {
-
-	/**
-	 * Returns the value of the id child.
-	 * @return the value of the id child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
-	@Required
-	GenericAttributeValue<String> getId();
-
+public interface Action extends NavigableElement {
 
 	/**
 	 * Returns the value of the bean child.

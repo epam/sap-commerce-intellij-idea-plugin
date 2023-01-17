@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisItemXmlReferenceContributor extends PsiReferenceContributor {
+public class HybrisItemsXmlReferenceContributor extends PsiReferenceContributor {
 
     @Override
     public void registerReferenceProviders(@NotNull final PsiReferenceRegistrar registrar) {

@@ -16,29 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Tue Jan 10 21:54:19 CET 2023
-// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
+package com.intellij.idea.plugin.hybris.system.businessProcess.model
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.model;
+import com.intellij.util.xml.Attribute
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.GenericAttributeValue
+import com.intellij.util.xml.Required
 
-import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.GenericAttributeValue;
-import org.jetbrains.annotations.NotNull;
+interface NavigableElement : DomElement {
 
-/**
- * http://www.hybris.de/xsd/processdefinition:join interface.
- */
-public interface Join extends NavigableElement {
-
-	/**
-	 * Returns the value of the then child.
-	 * @return the value of the then child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("then")
-	@Convert(BpNavigableElementConverter.class)
-	GenericAttributeValue<String> getThen();
-
+    /**
+     * Returns the value of the id child.
+     * @return the value of the id child.
+     */
+    @Attribute("id")
+    @Required
+    fun getId(): GenericAttributeValue<String>
 
 }

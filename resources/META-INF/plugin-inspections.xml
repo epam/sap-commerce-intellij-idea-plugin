@@ -1,6 +1,12 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- Business Process -->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Business Process"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bp.BPDomElementsInspection.key"
+                         shortName="BPDomElementsInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.businessProcess.BPDomElementsInspection"/>
+
         <!-- Impex -->
         <localInspection groupPath="hybris" shortName="NoUniqueValueInspection" displayName="[y] No unique value in column"
                          groupName="[y] Impex" level="WARNING" language="Impex" enabledByDefault="true"

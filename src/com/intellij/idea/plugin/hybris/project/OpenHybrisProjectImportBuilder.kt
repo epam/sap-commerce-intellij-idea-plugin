@@ -43,6 +43,8 @@ class OpenHybrisProjectImportBuilder : DefaultHybrisProjectImportBuilder() {
                 }, ModalityState.NON_MODAL, project.disposed)
             }
         }
+        getHybrisProjectDescriptor().setHybrisProject(project)
+
         return super.commit(project, model, modulesProvider, artifactModel)
     }
 

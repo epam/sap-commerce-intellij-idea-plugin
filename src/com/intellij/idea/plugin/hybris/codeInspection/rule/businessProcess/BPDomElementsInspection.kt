@@ -15,30 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.codeInspection.rule.businessProcess
 
-// Generated on Tue Jan 10 21:54:19 CET 2023
-// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.util.xml.highlighting.BasicDomElementsInspection
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.model;
-
-import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.GenericAttributeValue;
-import org.jetbrains.annotations.NotNull;
-
-/**
- * http://www.hybris.de/xsd/processdefinition:join interface.
- */
-public interface Join extends NavigableElement {
-
-	/**
-	 * Returns the value of the then child.
-	 * @return the value of the then child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("then")
-	@Convert(BpNavigableElementConverter.class)
-	GenericAttributeValue<String> getThen();
-
-
-}
+class BPDomElementsInspection : BasicDomElementsInspection<Process>(Process::class.java)

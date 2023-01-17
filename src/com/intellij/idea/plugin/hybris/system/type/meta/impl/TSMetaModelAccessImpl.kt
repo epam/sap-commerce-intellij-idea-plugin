@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
-import com.intellij.idea.plugin.hybris.system.SystemChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
@@ -156,7 +155,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     companion object {
-        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", SystemChangeListener::class.java)
+        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()

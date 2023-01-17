@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.system.SystemChangeListener
+import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
@@ -53,8 +53,7 @@ class TSTreePanel(
 
         myTree.addTreeSelectionListener(myTreeSelectionListener)
 
-        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object :
-            SystemChangeListener {
+        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
             override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                 secondComponent = myDefaultPanel;
                 myTree.update(TSViewSettings.ChangeType.FULL)

@@ -21,24 +21,18 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
-import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
+import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
+import com.intellij.util.xml.Convert;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.GenericDomValue;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.de/xsd/processdefinition:wait interface.
  */
-public interface Wait extends DomElement {
-
-	/**
-	 * Returns the value of the id child.
-	 * @return the value of the id child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
-	@Required
-	GenericAttributeValue<String> getId();
-
+public interface Wait extends NavigableElement {
 
 	/**
 	 * Returns the value of the then child.
@@ -46,6 +40,7 @@ public interface Wait extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("then")
+	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getThen();
 
 

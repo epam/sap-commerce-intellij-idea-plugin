@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.SystemChangeListener
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -120,7 +119,7 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     }
 
     companion object {
-        val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", SystemChangeListener::class.java)
+        val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", CngChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<CngMetaModel>>("SINGLE_CNG_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()

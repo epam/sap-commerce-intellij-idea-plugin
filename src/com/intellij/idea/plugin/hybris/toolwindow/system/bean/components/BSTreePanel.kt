@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.system.SystemChangeListener
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaBeanView
@@ -58,7 +58,7 @@ class BSTreePanel(
 
         myTree.addTreeSelectionListener(myTreeSelectionListener)
 
-        myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : SystemChangeListener {
+        myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
             override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
                 secondComponent = myDefaultPanel;
                 myTree.update(BSViewSettings.ChangeType.FULL)

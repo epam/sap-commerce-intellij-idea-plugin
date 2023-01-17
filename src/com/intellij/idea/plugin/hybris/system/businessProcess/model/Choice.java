@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
+import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,7 @@ public interface Choice extends DomElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("then")
 	@Required
+	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getThen();
 
 

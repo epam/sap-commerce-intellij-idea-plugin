@@ -24,14 +24,9 @@ import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
 
-class ExtensionsNameCompletionContributor : CompletionContributor() {
+class ExtensionInfoCompletionContributor : CompletionContributor() {
 
     init {
-        extend(
-            CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("extension", "name", HybrisConstants.LOCAL_EXTENSIONS_XML),
-            ExtensionsNameCompletionProvider.instance
-        )
         extend(
             CompletionType.BASIC,
             PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),

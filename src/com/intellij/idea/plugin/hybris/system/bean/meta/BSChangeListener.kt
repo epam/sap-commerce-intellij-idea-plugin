@@ -16,17 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.file
+package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.ResolvingConverter
+interface BSChangeListener {
 
-class ComponentConverter : ResolvingConverter<String>() {
-
-    override fun toString(t: String?, context: ConvertContext?) = t
-
-    override fun fromString(s: String?, context: ConvertContext?) = s
-
-    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().getAllComponents()
+    fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) = Unit
 }
