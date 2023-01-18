@@ -37,5 +37,14 @@ class CockpitngCompletionContributor : CompletionContributor() {
                 ),
             ItemTypeCodeCompletionProvider.instance
         )
+        extend(
+            CompletionType.BASIC,
+            PsiXmlUtils.tagAttributePattern("context", "parent", null)
+                .inFile(
+                    PlatformPatterns.psiFile()
+                        .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
+                ),
+            ItemTypeCodeCompletionProvider.instance
+        )
     }
 }

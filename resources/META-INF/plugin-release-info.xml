@@ -133,10 +133,6 @@
                 <li><i>Feature:</i> Added navigation to <code>beans.xml</code> Bean property declaration from generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/112" target="_blank" rel="nofollow">#112</a>)</li>
                 <li><i>Feature:</i> Added navigation to alternative declarations of the beans within <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/78" target="_blank" rel="nofollow">#78</a>)</li>
                 <li><i>Feature:</i> Added navigation to <code>items.xml</code> for Types used in the Cockpitng configuration files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166" target="_blank" rel="nofollow">#166</a>)</li>
-                <li><i>Feature:</i> Added code completion for Cockpitng <code>context -> type</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165" target="_blank" rel="nofollow">#165</a>)</li>
-                <li><i>Feature:</i> Added code completion for Cockpitng <code>context -> component</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169" target="_blank" rel="nofollow">#169</a>)</li>
-                <li><i>Feature:</i> Added code completion and navigation for Cockpitng <code>actions -> action-id</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172" target="_blank" rel="nofollow">#172</a>)</li>
-                <li><i>Feature:</i> Added code completion and navigation for Cockpitng <code>widgets -> widgetDefinitionId</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/173" target="_blank" rel="nofollow">#173</a>)</li>
                 <li><i>Feature:</i> Added code completion for Impex <code>translator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158" target="_blank" rel="nofollow">#158</a>)</li>
                 <li><i>Feature:</i> Added code completion for Impex <code>cell-decorator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159" target="_blank" rel="nofollow">#159</a>)</li>
                 <li><i>Feature:</i> Added code completion and enriched navigation within Business Process (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/171" target="_blank" rel="nofollow">#171</a>)</li>
@@ -151,9 +147,18 @@
                 <li><i>Feature:</i> Added <code>-backoffice-config.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/161" target="_blank" rel="nofollow">#161</a>)</li>
                 <li><i>Feature:</i> Added <code>-backoffice-widgets.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/164" target="_blank" rel="nofollow">#164</a>)</li>
                 <li><i>Feature:</i> Added <code>localextensions.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/155" target="_blank" rel="nofollow">#155</a>)</li>
-                <li><i>Feature:</i> Added <code>extensioninfo.xml</coed> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147" target="_blank" rel="nofollow">#147</a>)</li>
+                <li><i>Feature:</i> Added <code>extensioninfo.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147" target="_blank" rel="nofollow">#147</a>)</li>
                 <li><i>Feature:</i> Added <code>process.xml</code> DOM model and custom Icon (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148" target="_blank" rel="nofollow">#148</a>)</li>
                 <li><i>Feature:</i> Decreases cognitive complexity for Code Completion and custom Icons (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/152" target="_blank" rel="nofollow">#152</a>)</li>
+                <li><i>Feature:</i> Added code completion and navigation for Cockpitng elements
+                    <ul>
+                        <li><code>context -> type</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165" target="_blank" rel="nofollow">#165</a>)</li>
+                        <li><code>context -> parent</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/174" target="_blank" rel="nofollow">#174</a>)</li>
+                        <li><code>context -> component</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169" target="_blank" rel="nofollow">#169</a>)</li>
+                        <li><code>actions -> action-id</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172" target="_blank" rel="nofollow">#172</a>)</li>
+                        <li><code>widgets -> widgetDefinitionId</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/173" target="_blank" rel="nofollow">#173</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>

@@ -18,10 +18,11 @@
 package com.intellij.idea.plugin.hybris.psi.reference.contributor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
 import com.intellij.idea.plugin.hybris.psi.reference.provider.TSItemReferenceProvider
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
+import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -33,7 +34,13 @@ class HybrisCockpitngReferenceContributor : PsiReferenceContributor() {
 
         // classes resolved by JavaXmlClassListReferenceContributor
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern("context", "type")
+            PsiXmlUtils.tagAttributeValuePattern("context", "type")
+                .inFile(cockpitngConfigFile),
+            TSItemReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            PsiXmlUtils.tagAttributeValuePattern("config", "context", "parent")
+                .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto")))
                 .inFile(cockpitngConfigFile),
             TSItemReferenceProvider.instance
         )
