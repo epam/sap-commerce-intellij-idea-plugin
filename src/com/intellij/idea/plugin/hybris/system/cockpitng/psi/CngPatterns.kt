@@ -89,6 +89,15 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
+    val SIMPLE_SEARCH_FIELD_NAME = attributeValue(
+        "name",
+        "field",
+        "simple-search",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_SIMPLE_SEARCH
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
     private fun attributeValue(
         attribute: String,
         tag: String,

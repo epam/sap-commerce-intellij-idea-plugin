@@ -54,5 +54,9 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngPatterns.ADVANCED_SEARCH_FIELD_NAME,
             TSAttributeReferenceProvider.instance
         )
+        registrar.registerReferenceProvider(
+            CngPatterns.SIMPLE_SEARCH_FIELD_NAME,
+            TSAttributeReferenceProvider.instance
+        )
     }
 }

@@ -161,6 +161,7 @@
                         <li><code>explorer-tree -> type-node -> code</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/176" target="_blank" rel="nofollow">#176</a>)</li>
                         <li><code>editorArea -> attribute -> qualifier</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/177" target="_blank" rel="nofollow">#177</a>)</li>
                         <li><code>advanced-search -> field -> name</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/178" target="_blank" rel="nofollow">#178</a>)</li>
+                        <li><code>simple-search -> field -> name</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/179" target="_blank" rel="nofollow">#179</a>)</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
