@@ -15,36 +15,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInsight.completion
+package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.StandardPatterns
 
-class CockpitngCompletionContributor : CompletionContributor() {
+class CngCompletionContributor : CompletionContributor() {
 
     init {
         extend(
             CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("context", "type", null)
-                .inFile(
-                    PlatformPatterns.psiFile()
-                        .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
-                ),
+            PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_TYPE),
             ItemTypeCodeCompletionProvider.instance
         )
         extend(
             CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("context", "parent", null)
-                .inFile(
-                    PlatformPatterns.psiFile()
-                        .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
-                ),
+            PlatformPatterns.psiElement().inside(CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE),
             ItemTypeCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_PARENT),
+            ItemTypeCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.LIST_VIEW_COLUMN_QUALIFIER),
+            CngItemAttributeCodeCompletionProvider.instance
         )
     }
 }

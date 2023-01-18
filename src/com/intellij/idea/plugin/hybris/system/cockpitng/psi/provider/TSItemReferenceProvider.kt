@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.psi.reference.provider
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
-import com.intellij.idea.plugin.hybris.psi.reference.TSItemReference
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.TSItemReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
@@ -27,8 +27,7 @@ class TSItemReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = if (element.text.contains(".")) emptyArray()
-    else arrayOf(TSItemReference(element))
+    ) = arrayOf(TSItemReference(element))
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSItemReferenceProvider::class.java)

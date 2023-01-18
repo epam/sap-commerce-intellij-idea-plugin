@@ -15,34 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.psi.reference.contributor
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
-import com.intellij.idea.plugin.hybris.psi.reference.provider.TSItemReferenceProvider
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.StandardPatterns
-import com.intellij.patterns.XmlPatterns
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.TSAttributeReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.TSItemReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
-class HybrisCockpitngReferenceContributor : PsiReferenceContributor() {
+class CngReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        val cockpitngConfigFile = PlatformPatterns.psiFile()
-            .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
-
         // classes resolved by JavaXmlClassListReferenceContributor
         registrar.registerReferenceProvider(
-            PsiXmlUtils.tagAttributeValuePattern("context", "type")
-                .inFile(cockpitngConfigFile),
+            CngPatterns.CONTEXT_TYPE,
             TSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
-            PsiXmlUtils.tagAttributeValuePattern("config", "context", "parent")
-                .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto")))
-                .inFile(cockpitngConfigFile),
+            CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE,
             TSItemReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.CONTEXT_PARENT,
+            TSItemReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.LIST_VIEW_COLUMN_QUALIFIER,
+            TSAttributeReferenceProvider.instance
         )
     }
 }
