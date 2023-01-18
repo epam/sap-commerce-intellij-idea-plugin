@@ -52,5 +52,10 @@ class CngCompletionContributor : CompletionContributor() {
             PlatformPatterns.psiElement().inside(CngPatterns.LIST_VIEW_COLUMN_QUALIFIER),
             CngItemAttributeCodeCompletionProvider.instance
         )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_ATTRIBUTE),
+            CngItemAttributeCodeCompletionProvider.instance
+        )
     }
 }

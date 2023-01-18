@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
+import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlPatterns
-import com.intellij.psi.xml.XmlTag
 
 object CngPatterns {
     const val ROOT = "config"
@@ -31,20 +31,6 @@ object CngPatterns {
 
     private val cngFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
-
-    val LIST_VIEW_COLUMN_QUALIFIER = XmlPatterns.xmlAttributeValue()
-        .withParent(
-            XmlPatterns.xmlAttribute().withLocalName("qualifier")
-                .withParent(
-                    XmlPatterns.xmlTag().withLocalName("column")
-                        .withParent(XmlPatterns.xmlTag().withLocalName("list-view"))
-                )
-        )
-        .inside(
-            XmlPatterns.xmlTag().withLocalName(CONTEXT)
-                .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("."))),
-        )
-        .inFile(cngFile)
 
     val CONTEXT_PARENT = PsiXmlUtils.tagAttributeValuePattern(ROOT, CONTEXT, "parent")
         .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto", ".")))
@@ -54,36 +40,64 @@ object CngPatterns {
         .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
         .inFile(cngFile)
 
-    val FLOW_STEP_CONTENT_PROPERTY_TYPE = XmlPatterns.xmlAttributeValue()
-        .withParent(
-            XmlPatterns.xmlAttribute().withLocalName("type")
-                .withParent(
-                    XmlPatterns.xmlTag().withLocalName("property")
-                        .inside(
-                            XmlPatterns.xmlTag()
-                                .withNamespace("http://www.hybris.com/cockpitng/config/wizard-config")
-                                .withLocalName("content")
-                        )
-                )
+    val LIST_VIEW_COLUMN_QUALIFIER = attributeValue(
+        "qualifier",
+        "column",
+        "list-view",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_LIST_VIEW
+    )
+        .inside(
+            XmlPatterns.xmlTag().withLocalName(CONTEXT)
+                .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("."))),
         )
+        .inFile(cngFile)
+
+    val FLOW_STEP_CONTENT_PROPERTY_TYPE = attributeValue(
+        "type",
+        "property",
+        "content",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+    )
         .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
-    val TREE_NODE_TYPE_CODE = XmlPatterns.xmlAttributeValue()
+    val TREE_NODE_TYPE_CODE = attributeValue(
+        "code",
+        "type-node",
+        "explorer-tree",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_EXPLORER_TREE
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
+    val EDITOR_ATTRIBUTE = attributeValue(
+        "qualifier",
+        "attribute",
+        "editorArea",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
+    private fun attributeValue(
+        attribute: String,
+        tag: String,
+        wrappingTag: String,
+        namespace: String
+    ) = XmlPatterns.xmlAttributeValue()
         .withParent(
-            XmlPatterns.xmlAttribute().withLocalName("code")
+            XmlPatterns.xmlAttribute()
+                .withLocalName(attribute)
                 .withParent(
-                    XmlPatterns.xmlTag().withLocalName("type-node")
+                    XmlPatterns.xmlTag()
+                        .withLocalName(tag)
                         .inside(
                             XmlPatterns.xmlTag()
-                                .withNamespace("http://www.hybris.com/cockpitng/config/explorertree")
-                                .withLocalName("explorer-tree")
+                                .withNamespace(namespace)
+                                .withLocalName(wrappingTag)
                         )
                 )
         )
-        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
 
 }

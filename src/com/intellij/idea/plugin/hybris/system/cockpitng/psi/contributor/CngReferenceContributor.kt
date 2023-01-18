@@ -46,5 +46,9 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngPatterns.LIST_VIEW_COLUMN_QUALIFIER,
             TSAttributeReferenceProvider.instance
         )
+        registrar.registerReferenceProvider(
+            CngPatterns.EDITOR_ATTRIBUTE,
+            TSAttributeReferenceProvider.instance
+        )
     }
 }

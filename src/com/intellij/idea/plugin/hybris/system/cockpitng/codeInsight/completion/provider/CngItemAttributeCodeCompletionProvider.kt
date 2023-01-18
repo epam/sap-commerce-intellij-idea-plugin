@@ -24,6 +24,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.findParentOfType
@@ -46,13 +47,29 @@ class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionPara
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
+        val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
+        meta
             ?.allAttributes
             ?.map {
                 LookupElementBuilder.create(it.name)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType, true)
                     .withIcon(HybrisIcons.ATTRIBUTE)
+            }
+            ?.forEach { resultCaseInsensitive.addElement(it) }
+
+        meta
+            ?.allRelationEnds
+            ?.map {
+                LookupElementBuilder.create(it.qualifier)
+                    .withStrikeoutness(it.isDeprecated)
+                    .withTypeText(it.flattenType)
+                    .withIcon(
+                        when (it.end) {
+                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
+                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                        }
+                    )
             }
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }

@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.integration;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.ConfigGenericAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -43,7 +44,7 @@ public interface Attribute extends DomElement, AbstractPositioned {
     @NotNull
     @com.intellij.util.xml.Attribute("qualifier")
     @Required
-    GenericAttributeValue<String> getQualifier();
+    ConfigGenericAttributeValue<String> getQualifier();
 
 
     /**

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.openapi.util.TextRange
@@ -42,10 +43,15 @@ class TSAttributeReference(element: PsiElement) : TSReferenceBase<PsiElement>(el
             ?: return emptyArray()
 
         val meta = metaModelAccess.findMetaItemByName(type) ?: return emptyArray()
+
         return metaItemService.findAttributesByName(meta, value, true)
-            ?.mapNotNull { it.retrieveDom() }
-            ?.map { AttributeResolveResult(it) }
-            ?.toTypedArray()
+            ?.firstOrNull()
+            ?.retrieveDom()
+            ?.let { arrayOf(AttributeResolveResult(it)) }
+            ?: metaItemService.findRelationEndsByQualifier(meta, value, true)
+                ?.firstOrNull()
+                ?.retrieveDom()
+                ?.let { arrayOf(RelationElementResolveResult(it)) }
             ?: emptyArray()
     }
 
