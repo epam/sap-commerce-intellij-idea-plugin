@@ -26,13 +26,16 @@ import com.intellij.psi.PsiReferenceRegistrar
 class CngReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        // classes resolved by JavaXmlClassListReferenceContributor
         registrar.registerReferenceProvider(
             CngPatterns.CONTEXT_TYPE,
             TSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE,
+            TSItemReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.TREE_NODE_TYPE_CODE,
             TSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(

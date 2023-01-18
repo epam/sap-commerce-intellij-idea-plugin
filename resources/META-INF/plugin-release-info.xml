@@ -158,6 +158,7 @@
                         <li><code>actions -> action-id</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172" target="_blank" rel="nofollow">#172</a>)</li>
                         <li><code>widgets -> widgetDefinitionId</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/173" target="_blank" rel="nofollow">#173</a>)</li>
                         <li><code>list-view -> qualifier</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/175" target="_blank" rel="nofollow">#175</a>)</li>
+                        <li><code>explorer-tree -> type-node -> code</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/176" target="_blank" rel="nofollow">#176</a>)</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>

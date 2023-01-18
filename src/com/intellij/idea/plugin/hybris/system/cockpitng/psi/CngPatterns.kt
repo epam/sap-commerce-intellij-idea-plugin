@@ -70,4 +70,20 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
+    val TREE_NODE_TYPE_CODE = XmlPatterns.xmlAttributeValue()
+        .withParent(
+            XmlPatterns.xmlAttribute().withLocalName("code")
+                .withParent(
+                    XmlPatterns.xmlTag().withLocalName("type-node")
+                        .inside(
+                            XmlPatterns.xmlTag()
+                                .withNamespace("http://www.hybris.com/cockpitng/config/explorertree")
+                                .withLocalName("explorer-tree")
+                        )
+                )
+        )
+        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
 }

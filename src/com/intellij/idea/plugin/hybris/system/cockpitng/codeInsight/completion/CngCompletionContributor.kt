@@ -39,6 +39,11 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.TREE_NODE_TYPE_CODE),
+            ItemTypeCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_PARENT),
             ItemTypeCodeCompletionProvider.instance
         )
