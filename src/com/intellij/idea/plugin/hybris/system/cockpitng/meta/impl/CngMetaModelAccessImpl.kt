@@ -18,8 +18,13 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
@@ -29,6 +34,8 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.DomFileElement
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -51,25 +58,57 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
 
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         {
-            val localMetaModels = CngMetaModelCollector.getInstance(myProject).collectDependencies()
-                .filter { obj: PsiFile? -> Objects.nonNull(obj) }
-                .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
-                .map { obj: CachedValue<CngMetaModel> -> obj.value }
+            val processor = CngMetaModelProcessor.getInstance(myProject)
+            val (configs, configDependencies) = collectLocalMetaModels(SINGLE_CONFIG_MODEL_CACHE_KEY, Config::class.java,
+                { file -> processor.processConfig(file) },
+                { _ -> true }
+            )
+            val (actions, actionDependencies) = collectLocalMetaModels(SINGLE_ACTION_DEFINITION_MODEL_CACHE_KEY, ActionDefinition::class.java,
+                { file -> processor.processActionDefinition(file) },
+                { dom -> dom.rootElement.id.exists() }
+            )
+            val (widgets, widgetDependencies) = collectLocalMetaModels(SINGLE_WIDGET_DEFINITION_MODEL_CACHE_KEY, WidgetDefinition::class.java,
+                { file -> processor.processWidgetDefinition(file) },
+                { dom -> dom.rootElement.id.exists() }
+            )
+            val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(
+                configs, actions, widgets
+            )
 
-            val dependencies = localMetaModels
-                .map { it.psiFile }
-                .toTypedArray()
-            val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(localMetaModels)
+            val dependencies = configDependencies + actionDependencies + widgetDependencies
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
 
+    private fun <D : DomElement, T : CngMetaModel<D>> collectLocalMetaModels(
+        key: Key<CachedValue<T>>,
+        clazz: Class<D>,
+        resultProcessor: (input: PsiFile) -> T?,
+        shouldCollect: (DomFileElement<D>) -> Boolean
+    ): Pair<List<T>, Array<PsiFile>> {
+        val localConfigMetaModels = CngMetaModelCollector.getInstance(myProject).collectDependencies(clazz, shouldCollect)
+            .filter { obj: PsiFile? -> Objects.nonNull(obj) }
+            .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile, key, resultProcessor) }
+            .map { obj: CachedValue<T> -> obj.value }
+
+        val dependencies = localConfigMetaModels
+            .map { it.psiFile }
+            .toTypedArray()
+        return Pair(localConfigMetaModels, dependencies)
+    }
+
     override fun getMetaModel(): CngGlobalMetaModel {
-        if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-            return readMetaModelWithLock()
-        }
-        return writeMetaModelWithLock()
+        return DumbService.getInstance(myProject).tryRunReadActionInSmartMode(
+            Computable {
+                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                    return@Computable readMetaModelWithLock()
+                }
+                return@Computable writeMetaModelWithLock()
+            },
+            "Computing Cockpitng System"
+        ) ?: throw ProcessCanceledException()
+//        if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
     }
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
@@ -98,29 +137,41 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         }
     }
 
-    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): CachedValue<CngMetaModel> {
-        return Optional.ofNullable(psiFile.getUserData(SINGLE_MODEL_CACHE_KEY))
+    private fun <D : DomElement, T : CngMetaModel<D>> retrieveSingleMetaModelPerFile(
+        psiFile: PsiFile,
+        key: Key<CachedValue<T>>,
+        resultProcessor: (input: PsiFile) -> T?
+    ): CachedValue<T> {
+        return Optional.ofNullable(psiFile.getUserData(key))
             .orElseGet {
-                val cachedValue = createSingleMetaModelCachedValue(myProject, psiFile)
-                psiFile.putUserData(SINGLE_MODEL_CACHE_KEY, cachedValue)
+                val cachedValue = createSingleMetaModelCachedValue(myProject, psiFile, resultProcessor)
+                psiFile.putUserData(key, cachedValue)
                 cachedValue
             }
     }
 
-    private fun createSingleMetaModelCachedValue(project: Project, psiFile: PsiFile): CachedValue<CngMetaModel> {
+    private fun <D : DomElement, T : CngMetaModel<D>> createSingleMetaModelCachedValue(
+        project: Project,
+        psiFile: PsiFile,
+        resultProcessor: (input: PsiFile) -> T?
+    ): CachedValue<T> {
         return CachedValuesManager.getManager(project).createCachedValue(
             {
                 ApplicationManager.getApplication().runReadAction(
                     Computable {
-                        CachedValueProvider.Result.create(CngMetaModelProcessor.getInstance(myProject).process(psiFile), psiFile)
-                    } as Computable<CachedValueProvider.Result<CngMetaModel>>)
+                        CachedValueProvider.Result.create(resultProcessor.invoke(psiFile), psiFile)
+                    } as Computable<CachedValueProvider.Result<T>>)
             }, false
         )
     }
 
     companion object {
         val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", CngChangeListener::class.java)
-        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<CngMetaModel>>("SINGLE_CNG_MODEL_CACHE")
+        private val SINGLE_CONFIG_MODEL_CACHE_KEY = Key.create<CachedValue<CngConfigMetaModel>>("SINGLE_CNG_CONFIG_MODEL_CACHE")
+        private val SINGLE_ACTION_DEFINITION_MODEL_CACHE_KEY =
+            Key.create<CachedValue<CngActionDefinitionMetaModel>>("SINGLE_ACTION_DEFINITION_MODEL_CACHE")
+        private val SINGLE_WIDGET_DEFINITION_MODEL_CACHE_KEY =
+            Key.create<CachedValue<CngWidgetDefinitionMetaModel>>("SINGLE_WIDGET_DEFINITION_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()
         private val writeLock = lock.writeLock()

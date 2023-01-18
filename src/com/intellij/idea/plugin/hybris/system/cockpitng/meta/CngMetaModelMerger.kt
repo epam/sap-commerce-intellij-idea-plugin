@@ -17,6 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
 import com.intellij.openapi.project.Project
 
 interface CngMetaModelMerger {
@@ -25,5 +29,9 @@ interface CngMetaModelMerger {
         fun getInstance(project: Project): CngMetaModelMerger = project.getService(CngMetaModelMerger::class.java)
     }
 
-    fun merge(localMetaModels: Collection<CngMetaModel>): CngGlobalMetaModel
+    fun merge(
+        configs: Collection<CngConfigMetaModel>,
+        actions: Collection<CngActionDefinitionMetaModel>,
+        widgets: Collection<CngWidgetDefinitionMetaModel>
+    ): CngGlobalMetaModel
 }

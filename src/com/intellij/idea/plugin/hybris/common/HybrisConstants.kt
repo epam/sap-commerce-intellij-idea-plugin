@@ -228,6 +228,8 @@ object HybrisConstants {
 
     const val QUOTE_LENGTH = 2
 
+    const val NAMESPACE_COCKPITNG_KEY = "COCKPIT_NG_NAMESPACE"
+
     private const val SRC_DIRECTORY = "src"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"

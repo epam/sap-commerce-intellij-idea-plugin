@@ -17,11 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
-import com.intellij.idea.plugin.hybris.system.type.meta.model.*
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngGlobalMetaModel
 import com.intellij.openapi.project.Project
-import com.intellij.util.xml.DomElement
 
 interface CngMetaModelAccess {
 

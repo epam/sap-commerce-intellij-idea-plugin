@@ -18,10 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelCollector
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.Config
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -31,6 +27,8 @@ import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.Processor
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.DomFileElement
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import java.util.*
@@ -38,7 +36,7 @@ import java.util.*
 class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCollector {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    override fun collectDependencies(): Set<PsiFile> {
+    override fun <T : DomElement> collectDependencies(clazz: Class<T>, shouldCollect: (DomFileElement<T>) -> Boolean): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
         try {
@@ -46,16 +44,18 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
                 .computeInNonCancelableSection(ThrowableComputable<Set<PsiFile>, Exception> {
                     StubIndex.getInstance().processElements(
                         DomElementClassIndex.KEY,
-                        Config::class.java.name,
+                        clazz.name,
                         myProject,
                         ProjectScope.getAllScope(myProject),
                         PsiFile::class.java,
                         object : Processor<PsiFile> {
                             override fun process(psiFile: PsiFile): Boolean {
                                 psiFile.virtualFile ?: return true
-                                myDomManager.getFileElement(psiFile as XmlFile, Config::class.java) ?: return true
+                                val domFileElement = myDomManager.getFileElement(psiFile as XmlFile, clazz) ?: return true
 
-                                files.add(psiFile)
+                                if (shouldCollect.invoke(domFileElement)) {
+                                    files.add(psiFile)
+                                }
                                 return true
                             }
                         }

@@ -3,9 +3,23 @@
 
         <!-- Business Process -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Business Process"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bp.BPDomElementsInspection.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="BPDomElementsInspection" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.businessProcess.BPDomElementsInspection"/>
+
+        <!-- Cockpitng -->
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngConfigDomElementsInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngConfigDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngActionsDomElementsInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngActionsDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngWidgetsDomElementsInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngWidgetsDomInspection"/>
 
         <!-- Impex -->
         <localInspection groupPath="hybris" shortName="NoUniqueValueInspection" displayName="[y] No unique value in column"

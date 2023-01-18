@@ -18,12 +18,14 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
@@ -73,10 +75,15 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     )
 
     override fun getMetaModel(): TSGlobalMetaModel {
-        if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-            return readMetaModelWithLock()
-        }
-        return writeMetaModelWithLock()
+        return DumbService.getInstance(myProject).tryRunReadActionInSmartMode(
+            Computable {
+                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                    return@Computable readMetaModelWithLock()
+                }
+                return@Computable writeMetaModelWithLock()
+            },
+            "Computing Type System"
+        ) ?: throw ProcessCanceledException()
     }
 
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values

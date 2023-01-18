@@ -31,6 +31,7 @@
                 <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> with custom automated Intellij refactorings actions.</li>
+                <li>Custom editor for <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
                 <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
@@ -134,6 +135,7 @@
                 <li><i>Feature:</i> Added navigation to <code>items.xml</code> for Types used in the Cockpitng configuration files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166" target="_blank" rel="nofollow">#166</a>)</li>
                 <li><i>Feature:</i> Added code completion for Cockpitng <code>context -> type</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165" target="_blank" rel="nofollow">#165</a>)</li>
                 <li><i>Feature:</i> Added code completion for Cockpitng <code>context -> component</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169" target="_blank" rel="nofollow">#169</a>)</li>
+                <li><i>Feature:</i> Added code completion and navigation for Cockpitng <code>actions -> action-id</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172" target="_blank" rel="nofollow">#172</a>)</li>
                 <li><i>Feature:</i> Added code completion for Impex <code>translator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158" target="_blank" rel="nofollow">#158</a>)</li>
                 <li><i>Feature:</i> Added code completion for Impex <code>cell-decorator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159" target="_blank" rel="nofollow">#159</a>)</li>
                 <li><i>Feature:</i> Added code completion and enriched navigation within Business Process (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/171" target="_blank" rel="nofollow">#171</a>)</li>

@@ -70,15 +70,16 @@
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->
-        <dom.fileMetaData rootTagName="config" stubVersion="1"
+        <dom.extender domClass="com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context" extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
+        <dom.fileMetaData rootTagName="config" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widgets" stubVersion="1"
+        <dom.fileMetaData rootTagName="widgets" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
-        <dom.fileMetaData rootTagName="action-definition" stubVersion="1"
+        <dom.fileMetaData rootTagName="action-definition" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngActionDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widget-definition" stubVersion="1"
+        <dom.fileMetaData rootTagName="widget-definition" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="editor-definition" stubVersion="1"
+        <dom.fileMetaData rootTagName="editor-definition" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.CockpitngCompletionContributor"/>

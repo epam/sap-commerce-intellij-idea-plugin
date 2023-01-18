@@ -105,15 +105,13 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
     }
         
 
-    private class AttributeResolveResult(private val myDomAttribute: Attribute) :
-        TSResolveResult {
+    private class AttributeResolveResult(private val myDomAttribute: Attribute) : TSResolveResult {
         override fun getElement() = myDomAttribute.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
         override fun getSemanticDomElement() = myDomAttribute
     }
 
-    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) :
-        TSResolveResult {
+    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TSResolveResult {
         override fun getElement() = myDomRelationEnd.qualifier.xmlAttributeValue
         override fun isValidResult() = element != null
         override fun getSemanticDomElement() = myDomRelationEnd

@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngGlobalMetaModel
+
 interface CngChangeListener {
 
     fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit

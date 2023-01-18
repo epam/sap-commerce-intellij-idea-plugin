@@ -17,27 +17,39 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelMerger
-import com.intellij.idea.plugin.hybris.system.type.meta.*
-import com.intellij.idea.plugin.hybris.system.type.meta.model.*
-import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
 import com.intellij.openapi.project.Project
-import java.util.*
 
 class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
 
-    override fun merge(localMetaModels: Collection<CngMetaModel>) = with(CngGlobalMetaModel()) {
-        localMetaModels
+    override fun merge(
+        configs: Collection<CngConfigMetaModel>,
+        actions: Collection<CngActionDefinitionMetaModel>,
+        widgets: Collection<CngWidgetDefinitionMetaModel>
+    ) = with(CngGlobalMetaModel()) {
+        configs
+            .forEach { merge(this, it) }
+        actions
+            .forEach { merge(this, it) }
+        widgets
             .forEach { merge(this, it) }
         this
     }
 
-    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngMetaModel) {
-        localMetaModel.getAllComponents()
-            .forEach { globalMetaModel.addComponent(it) }
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngConfigMetaModel) {
+        globalMetaModel.components.addAll(localMetaModel.getAllComponents())
+    }
+
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngActionDefinitionMetaModel) {
+        globalMetaModel.actionDefinitions.put(localMetaModel.id, localMetaModel)
+    }
+
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngWidgetDefinitionMetaModel) {
+        globalMetaModel.widgetDefinitions.put(localMetaModel.id, localMetaModel)
     }
 
 }

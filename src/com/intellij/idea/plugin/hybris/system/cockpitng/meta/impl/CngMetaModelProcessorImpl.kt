@@ -17,29 +17,40 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 
-class CngMetaModelProcessorImpl(private val myProject: Project) : CngMetaModelProcessor {
+class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    override fun process(psiFile: PsiFile): CngMetaModel? {
+    override fun processConfig(psiFile: PsiFile): CngConfigMetaModel? {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, Config::class.java)?.rootElement ?: return null
 
-        return with(CngMetaModel(psiFile)) {
-            dom.contexts
-                .mapNotNull { it.component.stringValue }
-                .toSet()
-                .let { it.forEach { component -> this.addComponent(component) } }
+        return CngConfigMetaModel(psiFile, dom)
+    }
 
-            this
-        }
+    override fun processActionDefinition(psiFile: PsiFile): CngActionDefinitionMetaModel? {
+        psiFile.virtualFile ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, ActionDefinition::class.java)?.rootElement ?: return null
+
+        return CngActionDefinitionMetaModel(psiFile, dom)
+    }
+
+    override fun processWidgetDefinition(psiFile: PsiFile): CngWidgetDefinitionMetaModel? {
+        psiFile.virtualFile ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)?.rootElement ?: return null
+
+        return CngWidgetDefinitionMetaModel(psiFile, dom)
     }
 
 }

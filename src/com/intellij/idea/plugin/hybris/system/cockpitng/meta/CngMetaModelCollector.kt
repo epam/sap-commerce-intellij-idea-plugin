@@ -19,6 +19,8 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.DomFileElement
 
 interface CngMetaModelCollector {
 
@@ -26,5 +28,5 @@ interface CngMetaModelCollector {
         fun getInstance(project: Project): CngMetaModelCollector = project.getService(CngMetaModelCollector::class.java)
     }
 
-    fun collectDependencies(): Set<PsiFile>
+    fun <T : DomElement> collectDependencies(clazz: Class<T>, shouldCollect: (DomFileElement<T>) -> Boolean): Set<PsiFile>
 }

@@ -28,5 +28,5 @@ class ComponentConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext?) = s
 
-    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().getAllComponents()
+    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().components
 }

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.Widgets
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription

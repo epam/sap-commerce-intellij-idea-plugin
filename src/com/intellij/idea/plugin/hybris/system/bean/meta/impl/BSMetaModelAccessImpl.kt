@@ -24,8 +24,10 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
@@ -61,10 +63,15 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     )
 
     override fun getMetaModel(): BSGlobalMetaModel {
-        if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-            return readMetaModelWithLock()
-        }
-        return writeMetaModelWithLock()
+        return DumbService.getInstance(myProject).tryRunReadActionInSmartMode(
+            Computable {
+                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                    return@Computable readMetaModelWithLock()
+                }
+                return@Computable writeMetaModelWithLock()
+            },
+            "Computing Bean System"
+        ) ?: throw ProcessCanceledException()
     }
 
     override fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType) = getMetaModel().getMetaType<T>(metaType).values

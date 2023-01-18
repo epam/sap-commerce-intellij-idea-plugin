@@ -17,6 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
@@ -26,5 +29,7 @@ interface CngMetaModelProcessor {
         fun getInstance(project: Project): CngMetaModelProcessor = project.getService(CngMetaModelProcessor::class.java)
     }
 
-    fun process(psiFile: PsiFile): CngMetaModel?
+    fun processConfig(psiFile: PsiFile): CngConfigMetaModel?
+    fun processActionDefinition(psiFile: PsiFile): CngActionDefinitionMetaModel?
+    fun processWidgetDefinition(psiFile: PsiFile): CngWidgetDefinitionMetaModel?
 }
