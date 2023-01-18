@@ -80,6 +80,15 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
+    val ADVANCED_SEARCH_FIELD_NAME = attributeValue(
+        "name",
+        "field",
+        "advanced-search",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_ADVANCED_SEARCH
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
     private fun attributeValue(
         attribute: String,
         tag: String,
