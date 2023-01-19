@@ -17,19 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.TSAttributeReference
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSItemReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 
-class TSAttributeReferenceProvider : PsiReferenceProvider() {
+class CngTSItemReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = arrayOf(TSAttributeReference(element))
+    ) = arrayOf(CngTSItemReference(element))
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSAttributeReferenceProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngTSItemReferenceProvider::class.java)
     }
 }

@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinit
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 
-class WidgetDefinitionIdConverter : ResolvingConverter<WidgetDefinition>() {
+class CngWidgetDefinitionIdConverter : ResolvingConverter<WidgetDefinition>() {
 
     override fun toString(t: WidgetDefinition?, context: ConvertContext?) = t?.id?.stringValue
 

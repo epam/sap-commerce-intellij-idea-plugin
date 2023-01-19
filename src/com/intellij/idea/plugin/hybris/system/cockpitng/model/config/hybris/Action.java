@@ -23,7 +23,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.ConfigGenericAttributeValue;
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.ActionDefinitionIdConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngActionDefinitionIdConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -54,7 +54,7 @@ public interface Action extends DomElement, Positioned {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("action-id")
-    @Convert(ActionDefinitionIdConverter.class)
+    @Convert(CngActionDefinitionIdConverter.class)
     ConfigGenericAttributeValue<String> getActionId();
 
 

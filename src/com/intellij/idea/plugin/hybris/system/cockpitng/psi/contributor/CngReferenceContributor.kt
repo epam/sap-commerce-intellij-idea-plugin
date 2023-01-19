@@ -18,8 +18,9 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.TSAttributeReferenceProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.TSItemReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSNewItemAttributeReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -28,35 +29,39 @@ class CngReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
             CngPatterns.CONTEXT_TYPE,
-            TSItemReferenceProvider.instance
+            CngTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE,
-            TSItemReferenceProvider.instance
+            CngTSItemReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.FLOW_STEP_CONTENT_PROPERTY_QUALIFIER,
+            CngTSNewItemAttributeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.TREE_NODE_TYPE_CODE,
-            TSItemReferenceProvider.instance
+            CngTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.CONTEXT_PARENT,
-            TSItemReferenceProvider.instance
+            CngTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.LIST_VIEW_COLUMN_QUALIFIER,
-            TSAttributeReferenceProvider.instance
+            CngTSItemAttributeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.EDITOR_ATTRIBUTE,
-            TSAttributeReferenceProvider.instance
+            CngTSItemAttributeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.ADVANCED_SEARCH_FIELD_NAME,
-            TSAttributeReferenceProvider.instance
+            CngTSItemAttributeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.SIMPLE_SEARCH_FIELD_NAME,
-            TSAttributeReferenceProvider.instance
+            CngTSItemAttributeReferenceProvider.instance
         )
     }
 }

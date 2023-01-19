@@ -16,31 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.findParentOfType
-import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.DomManager
 
-class TSAttributeReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
+open class CngTSItemAttributeReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
-    override fun calculateDefaultRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+    override fun calculateDefaultRangeInElement(): TextRange =
+        if (element.textLength == 0) super.calculateDefaultRangeInElement()
+        else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val type = resolveContext()
-            ?.type
-            ?.stringValue
-            ?: return emptyArray()
+        val type = resolveType(element) ?: return emptyArray()
 
         val meta = metaModelAccess.findMetaItemByName(type) ?: return emptyArray()
 
@@ -55,13 +51,6 @@ class TSAttributeReference(element: PsiElement) : TSReferenceBase<PsiElement>(el
             ?: emptyArray()
     }
 
-    private fun resolveContext(): Context? {
-        var parent = element.findParentOfType<XmlTag>()
-
-        while (parent != null && (parent.name != "context" || parent.getAttributeValue("type") == null)) {
-            parent = parent.findParentOfType()
-        }
-        return DomManager.getDomManager(element.project).getDomElement(parent) as? Context
-    }
+    protected open fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
 
 }

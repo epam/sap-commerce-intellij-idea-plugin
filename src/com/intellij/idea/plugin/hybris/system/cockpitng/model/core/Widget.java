@@ -21,7 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.WidgetDefinitionIdConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngWidgetDefinitionIdConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -66,7 +66,7 @@ public interface Widget extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("widgetDefinitionId")
     @Required
-    @Convert(WidgetDefinitionIdConverter.class)
+    @Convert(CngWidgetDefinitionIdConverter.class)
     GenericAttributeValue<String> getWidgetDefinitionId();
 
 

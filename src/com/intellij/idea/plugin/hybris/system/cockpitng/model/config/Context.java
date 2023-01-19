@@ -21,7 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.ComponentConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngComponentConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -69,7 +69,7 @@ public interface Context extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("component")
-    @Convert(ComponentConverter.class)
+    @Convert(CngComponentConverter.class)
     GenericAttributeValue<String> getComponent();
 
 

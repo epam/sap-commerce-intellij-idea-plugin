@@ -22,17 +22,14 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.findParentOfType
-import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
-import com.intellij.util.xml.DomManager
 
-class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
@@ -40,10 +37,7 @@ class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionPara
         result: CompletionResultSet
     ) {
         val project = parameters.editor.project ?: return
-        val type = resolveContext(parameters.position)
-            ?.type
-            ?.stringValue
-            ?: return
+        val type = resolveType(parameters.position) ?: return
 
         val resultCaseInsensitive = result.caseInsensitive()
 
@@ -74,14 +68,7 @@ class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionPara
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }
 
-    private fun resolveContext(element: PsiElement): Context? {
-        var parent = element.findParentOfType<XmlTag>()
-
-        while (parent != null && parent.name != "context") {
-            parent = parent.findParentOfType()
-        }
-        return DomManager.getDomManager(element.project).getDomElement(parent) as? Context
-    }
+    protected open fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =

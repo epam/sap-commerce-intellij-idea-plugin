@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -37,7 +37,7 @@ import com.intellij.psi.ResolveResult
  *
  * see, standard-editors-spring.xml
  */
-class TSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
+class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val text = element.text.trim()
@@ -50,7 +50,8 @@ class TSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element
                 val length = element.text.indexOfFirst { it == ')' } - offset
                 TextRange.from(offset, length)
             }
-            ?: TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+            ?: if (element.textLength == 0) super.calculateDefaultRangeInElement()
+            else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {

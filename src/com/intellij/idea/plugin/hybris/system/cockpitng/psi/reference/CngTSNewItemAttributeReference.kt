@@ -16,17 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.ResolvingConverter
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.psi.PsiElement
 
-class ComponentConverter : ResolvingConverter<String>() {
+class CngTSNewItemAttributeReference(element: PsiElement) : CngTSItemAttributeReference(element) {
 
-    override fun toString(t: String?, context: ConvertContext?) = t
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 
-    override fun fromString(s: String?, context: ConvertContext?) = s
-
-    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().components
 }

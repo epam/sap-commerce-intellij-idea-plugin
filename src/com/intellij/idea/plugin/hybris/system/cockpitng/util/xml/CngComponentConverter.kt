@@ -19,27 +19,14 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 
-class ActionDefinitionIdConverter : ResolvingConverter<ActionDefinition>() {
+class CngComponentConverter : ResolvingConverter<String>() {
 
-    override fun toString(t: ActionDefinition?, context: ConvertContext?) = t?.id?.stringValue
+    override fun toString(t: String?, context: ConvertContext?) = t
 
-    override fun fromString(s: String?, context: ConvertContext): ActionDefinition? {
-        if (s == null) return null
+    override fun fromString(s: String?, context: ConvertContext?) = s
 
-        return CngMetaModelAccess.getInstance(context.project).getMetaModel()
-            .actionDefinitions[s]
-            ?.retrieveDom()
-    }
-
-    override fun getVariants(context: ConvertContext): Collection<ActionDefinition> {
-        return CngMetaModelAccess.getInstance(context.project).getMetaModel()
-            .actionDefinitions
-            .values
-            .mapNotNull { it.retrieveDom() }
-    }
-
+    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().components
 }
