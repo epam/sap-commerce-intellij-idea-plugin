@@ -86,6 +86,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl"/>

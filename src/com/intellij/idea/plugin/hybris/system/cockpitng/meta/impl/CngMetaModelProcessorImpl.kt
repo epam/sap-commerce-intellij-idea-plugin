@@ -20,9 +20,11 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngEditorDefinitionMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -51,6 +53,13 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)?.rootElement ?: return null
 
         return CngWidgetDefinitionMetaModel(psiFile, dom)
+    }
+
+    override fun processEditorDefinition(psiFile: PsiFile): CngEditorDefinitionMetaModel? {
+        psiFile.virtualFile ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, EditorDefinition::class.java)?.rootElement ?: return null
+
+        return CngEditorDefinitionMetaModel(psiFile, dom)
     }
 
 }

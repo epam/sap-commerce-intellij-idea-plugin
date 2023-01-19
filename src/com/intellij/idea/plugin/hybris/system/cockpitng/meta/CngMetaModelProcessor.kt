@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngEditorDefinitionMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -32,4 +33,5 @@ interface CngMetaModelProcessor {
     fun processConfig(psiFile: PsiFile): CngConfigMetaModel?
     fun processActionDefinition(psiFile: PsiFile): CngActionDefinitionMetaModel?
     fun processWidgetDefinition(psiFile: PsiFile): CngWidgetDefinitionMetaModel?
+    fun processEditorDefinition(psiFile: PsiFile): CngEditorDefinitionMetaModel?
 }

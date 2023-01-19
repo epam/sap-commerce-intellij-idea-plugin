@@ -89,8 +89,17 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
-    val EDITOR_ATTRIBUTE = attributeValue(
+    val EDITOR_AREA_ATTRIBUTE = attributeValue(
         "qualifier",
+        "attribute",
+        "editorArea",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
+    val EDITOR_AREA_EDITOR = attributeValue(
+        "editor",
         "attribute",
         "editorArea",
         CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA

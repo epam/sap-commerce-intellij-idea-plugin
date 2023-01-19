@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider
@@ -66,8 +67,13 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_ATTRIBUTE),
+            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_AREA_ATTRIBUTE),
             CngItemAttributeCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_AREA_EDITOR),
+            CngEditorDefinitionCodeCompletionProvider.instance
         )
         extend(
             CompletionType.BASIC,

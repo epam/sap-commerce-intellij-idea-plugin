@@ -18,10 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.openapi.project.Project
 
 class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
@@ -29,13 +26,16 @@ class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
     override fun merge(
         configs: Collection<CngConfigMetaModel>,
         actions: Collection<CngActionDefinitionMetaModel>,
-        widgets: Collection<CngWidgetDefinitionMetaModel>
+        widgets: Collection<CngWidgetDefinitionMetaModel>,
+        editors: Collection<CngEditorDefinitionMetaModel>
     ) = with(CngGlobalMetaModel()) {
         configs
             .forEach { merge(this, it) }
         actions
             .forEach { merge(this, it) }
         widgets
+            .forEach { merge(this, it) }
+        editors
             .forEach { merge(this, it) }
         this
     }
@@ -45,11 +45,15 @@ class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
     }
 
     private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngActionDefinitionMetaModel) {
-        globalMetaModel.actionDefinitions.put(localMetaModel.id, localMetaModel)
+        globalMetaModel.actionDefinitions[localMetaModel.id] = localMetaModel
     }
 
     private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngWidgetDefinitionMetaModel) {
-        globalMetaModel.widgetDefinitions.put(localMetaModel.id, localMetaModel)
+        globalMetaModel.widgetDefinitions[localMetaModel.id] = localMetaModel
+    }
+
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngEditorDefinitionMetaModel) {
+        globalMetaModel.editorDefinitions[localMetaModel.id] = localMetaModel
     }
 
 }

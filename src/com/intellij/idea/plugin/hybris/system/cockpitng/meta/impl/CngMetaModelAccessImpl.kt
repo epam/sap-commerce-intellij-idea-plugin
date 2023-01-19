@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -71,11 +72,15 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
                 { file -> processor.processWidgetDefinition(file) },
                 { dom -> dom.rootElement.id.exists() }
             )
+            val (editors, editorDependencies) = collectLocalMetaModels(SINGLE_EDITOR_DEFINITION_MODEL_CACHE_KEY, EditorDefinition::class.java,
+                { file -> processor.processEditorDefinition(file) },
+                { dom -> dom.rootElement.id.exists() }
+            )
             val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(
-                configs, actions, widgets
+                configs, actions, widgets, editors
             )
 
-            val dependencies = configDependencies + actionDependencies + widgetDependencies
+            val dependencies = configDependencies + actionDependencies + widgetDependencies + editorDependencies
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
@@ -172,6 +177,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
             Key.create<CachedValue<CngActionDefinitionMetaModel>>("SINGLE_ACTION_DEFINITION_MODEL_CACHE")
         private val SINGLE_WIDGET_DEFINITION_MODEL_CACHE_KEY =
             Key.create<CachedValue<CngWidgetDefinitionMetaModel>>("SINGLE_WIDGET_DEFINITION_MODEL_CACHE")
+        private val SINGLE_EDITOR_DEFINITION_MODEL_CACHE_KEY =
+            Key.create<CachedValue<CngEditorDefinitionMetaModel>>("SINGLE_EDITOR_DEFINITION_MODEL_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()
         private val writeLock = lock.writeLock()

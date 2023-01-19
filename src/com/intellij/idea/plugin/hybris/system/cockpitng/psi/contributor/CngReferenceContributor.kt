@@ -18,10 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemAttributeReferenceProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.*
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -57,8 +54,12 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngTSItemAttributeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
-            CngPatterns.EDITOR_ATTRIBUTE,
+            CngPatterns.EDITOR_AREA_ATTRIBUTE,
             CngTSItemAttributeReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.EDITOR_AREA_EDITOR,
+            CngEditorDefinitionReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.ADVANCED_SEARCH_FIELD_NAME,
