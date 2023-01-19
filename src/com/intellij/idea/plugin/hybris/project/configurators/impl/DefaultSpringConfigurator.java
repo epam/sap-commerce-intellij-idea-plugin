@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +161,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         } catch (Exception e) {
             LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
         }
+        try {
+            processBackofficeXml(moduleDescriptorMap, moduleDescriptor);
+        } catch (Exception e) {
+            LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
+        }
     }
 
     private void processPropertiesFile(
@@ -207,6 +213,19 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     // See https://jira.hybris.com/browse/ECP-3167
     private File hackGuessLocation(final HybrisModuleDescriptor moduleDescriptor) {
         return new File(getResourceDir(moduleDescriptor), toSystemDependentName(moduleDescriptor.getName() + "/web/spring"));
+    }
+
+    private void processBackofficeXml(
+        final Map<String, HybrisModuleDescriptor> moduleDescriptorMap,
+        final HybrisModuleDescriptor moduleDescriptor
+    ) {
+        final var files = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
+            .listFiles((dir, name) -> name.endsWith("-backoffice-spring.xml"));
+
+        if (files == null || files.length == 0) return;
+
+        Arrays.stream(files)
+            .forEach(file -> processSpringFile(moduleDescriptorMap, moduleDescriptor, file));
     }
 
     private void processWebXml(

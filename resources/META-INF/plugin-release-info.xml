@@ -198,6 +198,7 @@
                 <li>
                     <strong>Ultimate only</strong>
                     <ul>
+                        <li><i>Feature:</i> Register <code>-backoffice-spring.xml</code> files, Project re-import is required (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/183" target="_blank" rel="nofollow">#183</a>)</li>
                         <li><i>Feature:</i> Introduced new <code>items.xml</code> Annotator for Attribute Handler (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/117" target="_blank" rel="nofollow">#117</a>)</li>
                         <li><i>Feature:</i> Added highlighting if Spring bean used in Business Process is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/170" target="_blank" rel="nofollow">#170</a>)</li>
                     </ul>
