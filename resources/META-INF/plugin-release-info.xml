@@ -165,6 +165,7 @@
                         <li><code>simple-search -> field -> name</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/179" target="_blank" rel="nofollow">#179</a>)</li>
                         <li><code>flow -> property-list -> property -> qualifier</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/180" target="_blank" rel="nofollow">#180</a>)</li>
                         <li><code>flow -> initialize -> type</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/181" target="_blank" rel="nofollow">#181</a>)</li>
+                        <li><code>flow -> initialize -> type</code> and other <code>spring-bean</code>, improved performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185" target="_blank" rel="nofollow">#185</a>)</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>

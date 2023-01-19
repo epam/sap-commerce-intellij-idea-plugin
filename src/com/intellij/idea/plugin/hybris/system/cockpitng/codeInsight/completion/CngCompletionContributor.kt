@@ -21,23 +21,19 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.XmlPatterns
 
 class CngCompletionContributor : CompletionContributor() {
 
     init {
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_TYPE),
-            ItemTypeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE),
+            PlatformPatterns.psiElement().inside(CngPatterns.ITEM_TYPE),
             ItemTypeCodeCompletionProvider.instance
         )
         extend(
@@ -52,38 +48,13 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.TREE_NODE_TYPE_CODE),
-            ItemTypeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_PARENT),
-            ItemTypeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.LIST_VIEW_COLUMN_QUALIFIER),
+            PlatformPatterns.psiElement().inside(CngPatterns.ITEM_ATTRIBUTE),
             CngItemAttributeCodeCompletionProvider.instance
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_AREA_ATTRIBUTE),
-            CngItemAttributeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_AREA_EDITOR),
+            PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_DEFINITION),
             CngEditorDefinitionCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.ADVANCED_SEARCH_FIELD_NAME),
-            CngItemAttributeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.SIMPLE_SEARCH_FIELD_NAME),
-            CngItemAttributeCodeCompletionProvider.instance
         )
     }
 }

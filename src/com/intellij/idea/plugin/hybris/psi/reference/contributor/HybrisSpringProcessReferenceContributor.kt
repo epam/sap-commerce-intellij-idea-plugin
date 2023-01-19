@@ -36,7 +36,7 @@ class HybrisSpringProcessReferenceContributor : PsiReferenceContributor() {
         )
 
         registrar.registerReferenceProvider(
-            CngPatterns.FLOW_STEP_CONTENT_RENDERER_SPRING_BEAN,
+            CngPatterns.SPRING_BEAN,
             HybrisSpringProcessReferenceProvider.instance
         );
     }

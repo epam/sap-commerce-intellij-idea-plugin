@@ -32,44 +32,65 @@ object CngPatterns {
     private val cngFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
 
-    val CONTEXT_PARENT = PsiXmlUtils.tagAttributeValuePattern(ROOT, CONTEXT, "parent")
-        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto", ".")))
-        .inFile(cngFile)
-
-    val CONTEXT_TYPE = PsiXmlUtils.tagAttributeValuePattern(ROOT, CONTEXT, "type")
-        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
-        .inFile(cngFile)
-
-    val LIST_VIEW_COLUMN_QUALIFIER = attributeValue(
-        "qualifier",
-        "column",
-        "list-view",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_LIST_VIEW
-    )
-        .inside(
-            XmlPatterns.xmlTag().withLocalName(CONTEXT)
-                .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("."))),
+    val EDITOR_DEFINITION = XmlPatterns.or(
+        attributeValue(
+            "editor",
+            "field",
+            "advanced-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_ADVANCED_SEARCH
         )
-        .inFile(cngFile)
-
-    val FLOW_STEP_CONTENT_PROPERTY_TYPE = attributeValue(
-        "type",
-        "property",
-        "content",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+        attributeValue(
+            "editor",
+            "attribute",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile)
     )
-        .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
 
-    val FLOW_STEP_CONTENT_RENDERER_SPRING_BEAN = attributeValue(
-        "spring-bean",
-        "renderer",
-        "flow",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+    val ITEM_ATTRIBUTE = XmlPatterns.or(
+        attributeValue(
+            "qualifier",
+            "column",
+            "list-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_LIST_VIEW
+        )
+            .inside(
+                XmlPatterns.xmlTag().withLocalName(CONTEXT)
+                    .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("."))),
+            )
+            .inFile(cngFile),
+
+        attributeValue(
+            "qualifier",
+            "attribute",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "name",
+            "field",
+            "advanced-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_ADVANCED_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "name",
+            "field",
+            "simple-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_SIMPLE_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile)
     )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
 
     val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValue(
         "qualifier",
@@ -89,50 +110,117 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
-    val TREE_NODE_TYPE_CODE = attributeValue(
-        "code",
-        "type-node",
-        "explorer-tree",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_EXPLORER_TREE
-    )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
+    val ITEM_TYPE = XmlPatterns.or(
+        PsiXmlUtils.tagAttributeValuePattern(ROOT, CONTEXT, "type")
+            .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
+            .inFile(cngFile),
 
-    val EDITOR_AREA_ATTRIBUTE = attributeValue(
-        "qualifier",
-        "attribute",
-        "editorArea",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
-    )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
+        PsiXmlUtils.tagAttributeValuePattern(ROOT, CONTEXT, "parent")
+            .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase("auto", ".")))
+            .inFile(cngFile),
 
-    val EDITOR_AREA_EDITOR = attributeValue(
-        "editor",
-        "attribute",
-        "editorArea",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
-    )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
+        attributeValue(
+            "type",
+            "property",
+            "content",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+        )
+            .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
 
-    val ADVANCED_SEARCH_FIELD_NAME = attributeValue(
-        "name",
-        "field",
-        "advanced-search",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_ADVANCED_SEARCH
+        attributeValue(
+            "code",
+            "type-node",
+            "explorer-tree",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_EXPLORER_TREE
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile)
     )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
 
-    val SIMPLE_SEARCH_FIELD_NAME = attributeValue(
-        "name",
-        "field",
-        "simple-search",
-        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_SIMPLE_SEARCH
+    val SPRING_BEAN = XmlPatterns.or(
+        attributeValue(
+            "spring-bean",
+            "mold",
+            "collection-browser",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_COLLECTION_BROWSER
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "column",
+            "list-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_LIST_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "customPanel",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "customSection",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "customTab",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "renderer",
+            "flow",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "renderer",
+            "compare-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_COMPARE_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "custom-attribute",
+            "summary-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_SUMMARY_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile),
+
+        attributeValue(
+            "spring-bean",
+            "additionalRenderer",
+            "grid-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPITNG_COMPONENT_GRID_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+            .inFile(cngFile)
     )
-        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
-        .inFile(cngFile)
 
     private fun attributeValue(
         attribute: String,

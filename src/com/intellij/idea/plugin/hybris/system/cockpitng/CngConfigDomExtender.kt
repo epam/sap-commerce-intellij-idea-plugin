@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.system.cockpitng
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Actions
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Base
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.integration.AdvancedSearch
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.integration.EditorArea
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.integration.Flow
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.integration.ListView
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.integration.SimpleSearch
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.AdvancedSearch
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.EditorArea
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListView
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.simpleSearch.SimpleSearch
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerTree
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.NotificationArea
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Flow
 import com.intellij.util.xml.reflect.DomExtender
 import com.intellij.util.xml.reflect.DomExtensionsRegistrar
 

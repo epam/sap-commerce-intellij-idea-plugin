@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.*
+import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -26,11 +27,7 @@ class CngReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
-            CngPatterns.CONTEXT_TYPE,
-            CngTSItemReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.FLOW_STEP_CONTENT_PROPERTY_TYPE,
+            CngPatterns.ITEM_TYPE,
             CngTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
@@ -42,31 +39,11 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngFlowTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
-            CngPatterns.TREE_NODE_TYPE_CODE,
-            CngTSItemReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.CONTEXT_PARENT,
-            CngTSItemReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.LIST_VIEW_COLUMN_QUALIFIER,
-            CngTSItemAttributeReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.EDITOR_AREA_ATTRIBUTE,
-            CngTSItemAttributeReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.EDITOR_AREA_EDITOR,
+            CngPatterns.EDITOR_DEFINITION,
             CngEditorDefinitionReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
-            CngPatterns.ADVANCED_SEARCH_FIELD_NAME,
-            CngTSItemAttributeReferenceProvider.instance
-        )
-        registrar.registerReferenceProvider(
-            CngPatterns.SIMPLE_SEARCH_FIELD_NAME,
+            CngPatterns.ITEM_ATTRIBUTE,
             CngTSItemAttributeReferenceProvider.instance
         )
     }
