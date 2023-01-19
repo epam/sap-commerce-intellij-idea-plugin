@@ -15,21 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSNewItemAttributeReference
-import com.intellij.openapi.application.ApplicationManager
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
+
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceProvider
-import com.intellij.util.ProcessingContext
 
-class CngTSNewItemAttributeReferenceProvider : PsiReferenceProvider() {
+class CngFlowTSItemAttributeReference(element: PsiElement) : CngTSItemAttributeReference(element) {
 
-    override fun getReferencesByElement(
-        element: PsiElement, context: ProcessingContext
-    ) = arrayOf(CngTSNewItemAttributeReference(element))
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngTSNewItemAttributeReferenceProvider::class.java)
-    }
 }

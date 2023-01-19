@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider
 
-// Generated on Wed Jan 18 00:35:54 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpitng/component/editorArea
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.psi.PsiElement
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.integration;
+class CngFlowItemAttributeCodeCompletionProvider : CngItemAttributeCodeCompletionProvider() {
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.Namespace;
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 
-/**
- * http://www.hybris.com/cockpitng/component/editorArea:abstractPositioned interface.
- */
-@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface AbstractPositioned extends DomElement, Positioned {
-
+    companion object {
+        val instance: CompletionProvider<CompletionParameters> =
+            ApplicationManager.getApplication().getService(CngFlowItemAttributeCodeCompletionProvider::class.java)
+    }
 }

@@ -27,7 +27,7 @@ import com.intellij.util.xml.Namespace;
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:langAttrType enumeration.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public enum Lang implements com.intellij.util.xml.NamedEnum {
     ZUL("zul");
 

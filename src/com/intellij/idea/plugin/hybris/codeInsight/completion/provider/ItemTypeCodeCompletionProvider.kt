@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
-class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,

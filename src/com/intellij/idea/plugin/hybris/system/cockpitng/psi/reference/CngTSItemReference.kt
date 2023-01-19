@@ -37,7 +37,7 @@ import com.intellij.psi.ResolveResult
  *
  * see, standard-editors-spring.xml
  */
-class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
+open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val text = element.text.trim()

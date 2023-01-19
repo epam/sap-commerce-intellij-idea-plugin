@@ -28,7 +28,7 @@ import com.intellij.util.xml.Namespace;
 /**
  * http://www.hybris.com/cockpitng/component/editorArea:essentialCustomSection interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface EssentialCustomSection extends DomElement, CustomSection {
 
 }

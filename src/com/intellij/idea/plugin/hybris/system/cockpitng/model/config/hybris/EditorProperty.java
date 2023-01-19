@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpit/config/hybris:editor-property interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface EditorProperty extends DomElement {
 
     /**

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/listView:list-column interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ListColumn extends DomElement, Positioned {
 
     /**

@@ -71,6 +71,15 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
+    val FLOW_INITIALIZE_TYPE = attributeValue(
+        "type",
+        "initialize",
+        "prepare",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
     val TREE_NODE_TYPE_CODE = attributeValue(
         "code",
         "type-node",

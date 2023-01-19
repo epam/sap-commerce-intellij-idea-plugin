@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpit/config/hybris:action-group interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ActionGroup extends DomElement, Positioned {
 
     /**

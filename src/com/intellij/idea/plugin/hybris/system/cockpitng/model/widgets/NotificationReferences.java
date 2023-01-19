@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/config/notifications:NotificationReferences interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface NotificationReferences extends DomElement {
 
     /**

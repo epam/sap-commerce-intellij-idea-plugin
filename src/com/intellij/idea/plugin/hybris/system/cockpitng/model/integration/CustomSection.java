@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/editorArea:customSection interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface CustomSection extends DomElement, Section {
 
     /**

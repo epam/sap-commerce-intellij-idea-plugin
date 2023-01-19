@@ -15,20 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
+
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.ResolveResult
 
-class CngNewItemAttributeCodeCompletionProvider : CngItemAttributeCodeCompletionProvider() {
+class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val lookingForName = value
 
-    companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(CngNewItemAttributeCodeCompletionProvider::class.java)
+        if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(lookingForName, true)) {
+            return CngPsiHelper.resolveContextTag(element)
+                ?.getAttribute("type")
+                ?.valueElement
+                ?.navigationElement
+                ?.let { arrayOf(PsiElementResolveResult(it)) }
+                ?: emptyArray()
+        }
+
+        return super.multiResolve(incompleteCode)
     }
+
 }

@@ -22,5 +22,5 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.Namespace
 
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 interface ConfigGenericAttributeValue<T> : GenericAttributeValue<T>

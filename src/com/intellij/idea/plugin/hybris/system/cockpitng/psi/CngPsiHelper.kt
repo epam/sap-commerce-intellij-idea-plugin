@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
@@ -25,8 +26,10 @@ import com.intellij.psi.xml.XmlTag
 
 object CngPsiHelper {
 
-    fun resolveContextType(element: PsiElement) = element.parentsOfType<XmlTag>()
+    fun resolveContextTag(element: PsiElement) = element.parentsOfType<XmlTag>()
         .firstOrNull { it.localName == "context" && it.getAttribute("type") != null }
+
+    fun resolveContextType(element: PsiElement) = resolveContextTag(element)
         ?.getAttributeValue("type")
 
     fun resolveContextTypeForNewItemInWizardFlow(element: PsiElement): String? {
@@ -42,7 +45,7 @@ object CngPsiHelper {
             ?.getAttributeValue("type")
             ?: return null
 
-        return if ("ctx.TYPE_CODE".equals(newItemType, true)) resolveContextType(element)
+        return if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) resolveContextType(element)
         else newItemType
     }
 }

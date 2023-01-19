@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/editorArea:localeCustomElement interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface LocaleCustomElement extends DomElement {
 
     /**

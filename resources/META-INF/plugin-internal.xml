@@ -17,8 +17,9 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumLiteralItemReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisModelItemReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSNewItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemAttributeReferenceProvider"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.psi.reference.contributor.HybrisItemsXmlReferenceContributor"/>
 

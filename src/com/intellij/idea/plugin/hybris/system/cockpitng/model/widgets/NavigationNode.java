@@ -28,7 +28,7 @@ import com.intellij.util.xml.Namespace;
 /**
  * http://www.hybris.com/cockpitng/config/explorertree:navigation-node interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface NavigationNode extends DomElement, ExplorerNode {
 
 }

@@ -37,7 +37,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
     override fun initializeFileDescription() {
         super.initializeFileDescription()
         registerNamespacePolicy(
-            HybrisConstants.NAMESPACE_COCKPITNG_KEY,
+            HybrisConstants.COCKPIT_NG_NAMESPACE_KEY,
             NAMESPACE_COCKPITNG_CONFIG,
             NAMESPACE_COCKPITNG_CONFIG_HYBRIS,
             NAMESPACE_COCKPITNG_COMPONENT_EDITOR_AREA,

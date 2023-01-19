@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpit/config/hybris:preview interface.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Preview extends DomElement {
 
     /**

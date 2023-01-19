@@ -27,7 +27,7 @@ import com.intellij.util.xml.Namespace;
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:positionAttrType enumeration.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public enum Position implements com.intellij.util.xml.NamedEnum {
     BOTTOM("bottom"),
     LEFT("left"),

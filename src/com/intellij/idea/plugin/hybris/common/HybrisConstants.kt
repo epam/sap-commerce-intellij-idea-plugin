@@ -228,7 +228,8 @@ object HybrisConstants {
 
     const val QUOTE_LENGTH = 2
 
-    const val NAMESPACE_COCKPITNG_KEY = "COCKPIT_NG_NAMESPACE"
+    const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
+    const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
 
     private const val SRC_DIRECTORY = "src"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"

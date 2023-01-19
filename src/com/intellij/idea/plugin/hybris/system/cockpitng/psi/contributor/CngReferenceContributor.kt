@@ -20,7 +20,8 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSNewItemAttributeReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemAttributeReferenceProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTSItemReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -37,7 +38,11 @@ class CngReferenceContributor : PsiReferenceContributor() {
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_QUALIFIER,
-            CngTSNewItemAttributeReferenceProvider.instance
+            CngFlowTSItemAttributeReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.FLOW_INITIALIZE_TYPE,
+            CngFlowTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
             CngPatterns.TREE_NODE_TYPE_CODE,

@@ -27,7 +27,7 @@ import com.intellij.util.xml.Namespace;
 /**
  * http://www.hybris.com/cockpitng/config/notifications:ImportanceLevel enumeration.
  */
-@Namespace(HybrisConstants.NAMESPACE_COCKPITNG_KEY)
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public enum ImportanceLevel {
     FAILURE,
     INFO,
