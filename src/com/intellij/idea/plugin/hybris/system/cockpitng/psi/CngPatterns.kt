@@ -62,6 +62,15 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
         .inFile(cngFile)
 
+    val FLOW_STEP_CONTENT_RENDERER_SPRING_BEAN = attributeValue(
+        "spring-bean",
+        "renderer",
+        "flow",
+        CngConfigDomFileDescription.NAMESPACE_COCKPITNG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONTEXT))
+        .inFile(cngFile)
+
     val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValue(
         "qualifier",
         "property",

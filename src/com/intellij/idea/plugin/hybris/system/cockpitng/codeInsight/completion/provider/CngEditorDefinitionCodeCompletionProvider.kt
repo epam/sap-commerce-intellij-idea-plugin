@@ -42,7 +42,7 @@ open class CngEditorDefinitionCodeCompletionProvider : CompletionProvider<Comple
             .values
             .map {
                 LookupElementBuilder.create(it.id)
-                    .withTailText(it.name, true)
+                    .withTailText(it.name?.let { name -> " $name" }, true)
                     .withIcon(HybrisIcons.COCKPIT_NG_EDITOR_DEFINITION)
             }
             .forEach { resultCaseInsensitive.addElement(it) }
