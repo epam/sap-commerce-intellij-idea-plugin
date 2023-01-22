@@ -19,19 +19,29 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult
+import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
-import com.intellij.openapi.util.TextRange
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.WidgetResolveResult
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 
-class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false),
-    PsiPolyVariantReference, HighlightedReference {
+class CngWidgetReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
-    override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
-        .editorDefinitions[value]
-        ?.retrieveDom()
-        ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
-        ?: emptyArray()
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val lookingForName = value
+
+        return CngMetaModelAccess.getInstance(element.project).getMetaModel()
+            .widgets[lookingForName]
+            ?.retrieveDom()
+            ?.let { arrayOf(WidgetResolveResult(it)) }
+            ?: emptyArray()
+    }
+
 }

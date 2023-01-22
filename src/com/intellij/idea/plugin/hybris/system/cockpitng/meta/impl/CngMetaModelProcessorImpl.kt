@@ -17,15 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngActionDefinitionMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngConfigMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngEditorDefinitionMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngWidgetDefinitionMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.*
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
@@ -34,32 +30,60 @@ import com.intellij.util.xml.DomManager
 class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    override fun processConfig(psiFile: PsiFile): CngConfigMetaModel? {
+    override fun processConfig(psiFile: PsiFile): CngConfigMeta? {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, Config::class.java)?.rootElement ?: return null
 
-        return CngConfigMetaModel(psiFile, dom)
+        return CngConfigMeta(psiFile, dom)
     }
 
-    override fun processActionDefinition(psiFile: PsiFile): CngActionDefinitionMetaModel? {
+    override fun processActionDefinition(psiFile: PsiFile): CngMetaActionDefinition? {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, ActionDefinition::class.java)?.rootElement ?: return null
 
-        return CngActionDefinitionMetaModel(psiFile, dom)
+        return CngMetaActionDefinition(psiFile, dom)
     }
 
-    override fun processWidgetDefinition(psiFile: PsiFile): CngWidgetDefinitionMetaModel? {
+    override fun processWidgetDefinition(psiFile: PsiFile): CngMetaWidgetDefinition? {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)?.rootElement ?: return null
 
-        return CngWidgetDefinitionMetaModel(psiFile, dom)
+        val settings = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetSetting>()
+        dom.settings.settings
+            .map { CngMetaWidgetSetting(psiFile, it) }
+            .forEach { settings[it.id] = it }
+
+        return CngMetaWidgetDefinition(psiFile, dom, settings)
     }
 
-    override fun processEditorDefinition(psiFile: PsiFile): CngEditorDefinitionMetaModel? {
+    override fun processEditorDefinition(psiFile: PsiFile): CngMetaEditorDefinition? {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, EditorDefinition::class.java)?.rootElement ?: return null
 
-        return CngEditorDefinitionMetaModel(psiFile, dom)
+        return CngMetaEditorDefinition(psiFile, dom)
     }
+
+    override fun processWidgets(psiFile: PsiFile): CngMetaWidgets? {
+        psiFile.virtualFile ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, Widgets::class.java)?.rootElement ?: return null
+
+        return CngMetaWidgets(
+            psiFile,
+            dom,
+            processWidgets(psiFile, dom.widgets),
+            dom.widgetExtensions
+                .map { CngMetaWidgetExtension(psiFile, it, processWidgets(psiFile, it.widgets)) }
+        )
+    }
+
+    private fun processWidgets(
+        psiFile: PsiFile,
+        widgets: List<Widget>
+    ): List<CngMetaWidget> = widgets
+        .map {
+            val subWidgets = if (it.widgets.isNotEmpty()) processWidgets(psiFile, it.widgets)
+            else emptyList()
+            CngMetaWidget(psiFile, it, subWidgets)
+        }
 
 }

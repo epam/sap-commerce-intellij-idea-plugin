@@ -17,43 +17,65 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelMerger
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.openapi.project.Project
 
 class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
 
     override fun merge(
-        configs: Collection<CngConfigMetaModel>,
-        actions: Collection<CngActionDefinitionMetaModel>,
-        widgets: Collection<CngWidgetDefinitionMetaModel>,
-        editors: Collection<CngEditorDefinitionMetaModel>
+        configs: Collection<CngConfigMeta>,
+        actions: Collection<CngMetaActionDefinition>,
+        widgetDefinitions: Collection<CngMetaWidgetDefinition>,
+        editors: Collection<CngMetaEditorDefinition>,
+        widgets: Collection<CngMetaWidgets>
     ) = with(CngGlobalMetaModel()) {
         configs
             .forEach { merge(this, it) }
         actions
             .forEach { merge(this, it) }
-        widgets
+        widgetDefinitions
             .forEach { merge(this, it) }
         editors
+            .forEach { merge(this, it) }
+        widgets
             .forEach { merge(this, it) }
         this
     }
 
-    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngConfigMetaModel) {
-        globalMetaModel.components.addAll(localMetaModel.getAllComponents())
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngConfigMeta) {
+        globalMetaModel.components.addAll(localMeta.getAllComponents())
     }
 
-    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngActionDefinitionMetaModel) {
-        globalMetaModel.actionDefinitions[localMetaModel.id] = localMetaModel
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngMetaActionDefinition) {
+        globalMetaModel.actionDefinitions[localMeta.id] = localMeta
     }
 
-    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngWidgetDefinitionMetaModel) {
-        globalMetaModel.widgetDefinitions[localMetaModel.id] = localMetaModel
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngMetaWidgetDefinition) {
+        globalMetaModel.widgetDefinitions[localMeta.id] = localMeta
     }
 
-    private fun merge(globalMetaModel: CngGlobalMetaModel, localMetaModel: CngEditorDefinitionMetaModel) {
-        globalMetaModel.editorDefinitions[localMetaModel.id] = localMetaModel
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngMetaEditorDefinition) {
+        globalMetaModel.editorDefinitions[localMeta.id] = localMeta
+    }
+
+    private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngMetaWidgets) {
+        // It is possible to extend existing widget with new widgets, those have to be processed first
+        localMeta.widgetExtensions
+            .flatMap { it.widgets }
+            .forEach { mergeWidget(it, globalMetaModel) }
+
+        localMeta.widgets
+            .forEach { mergeWidget(it, globalMetaModel) }
+    }
+
+    private fun mergeWidget(widget: CngMetaWidget, globalMetaModel: CngGlobalMetaModel) {
+        globalMetaModel.widgets[widget.id] = widget
+
+        widget.widgets.forEach { subWidget ->
+            mergeWidget(subWidget, globalMetaModel)
+        }
     }
 
 }

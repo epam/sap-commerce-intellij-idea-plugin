@@ -24,11 +24,15 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * null:Socket interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Socket extends DomElement {
 
     /**

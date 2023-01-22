@@ -3,8 +3,8 @@
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -15,17 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.psi.PsiFile
-import com.intellij.util.xml.DomAnchor
-import com.intellij.util.xml.DomElement
-import com.intellij.util.xml.DomService
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
 
-open class CngMetaModel<DOM : DomElement>(
-    val psiFile: PsiFile,
-    val dom: DOM,
-    val domAnchor: DomAnchor<DOM> = DomService.getInstance().createAnchor(dom),
-) {
-    fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.psi.ResolveResult
+
+class ActionDefinitionResolveResult(private val myDom: ActionDefinition) : ResolveResult {
+    override fun getElement() = myDom.id.xmlAttributeValue
+    override fun isValidResult() = element != null
 }

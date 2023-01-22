@@ -22,7 +22,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +39,7 @@ public interface Settings extends DomElement {
     @NotNull
     @SubTagList("setting")
     @Required
-    java.util.List<GenericDomValue<Setting>> getSettings();
+    java.util.List<Setting> getSettings();
 
     /**
      * Adds new child to the list of setting children.
@@ -48,7 +47,7 @@ public interface Settings extends DomElement {
      * @return created child
      */
     @SubTagList("setting")
-    GenericDomValue<Setting> addSetting();
+    Setting addSetting();
 
 
 }

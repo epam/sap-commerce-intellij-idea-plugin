@@ -52,9 +52,13 @@ class TSTreeModel(private val root: TSNode)
         treeNodesChanged(null, null, null)
     }
 
-    class Node(private val node : TSNode?) : DefaultMutableTreeNode(node) {
+    class Node(private val node: TSNode?) : DefaultMutableTreeNode(node) {
 
         override fun toString() = node.toString()
+
+        companion object {
+            private const val serialVersionUID: Long = -4729552031003080261L
+        }
     }
 
     override fun getInvoker() = myInvoker

@@ -16,9 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
 
-interface CngChangeListener {
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
+import com.intellij.psi.ResolveResult
 
-    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
+class WidgetDefinitionResolveResult(private val myDom: WidgetDefinition) : ResolveResult {
+    override fun getElement() = myDom.id.xmlAttributeValue
+    override fun isValidResult() = element != null
 }

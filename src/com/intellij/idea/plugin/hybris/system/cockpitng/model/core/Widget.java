@@ -21,11 +21,11 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngWidgetDefinitionIdConverter;
-import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.Stubbed;
+import com.intellij.util.xml.StubbedOccurrence;
 import com.intellij.util.xml.SubTag;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
  * Representation of widget instance. Widgets may be nested.
  * </pre>
  */
+@Stubbed
+@StubbedOccurrence
 public interface Widget extends DomElement {
 
     /**
@@ -66,7 +68,6 @@ public interface Widget extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("widgetDefinitionId")
     @Required
-    @Convert(CngWidgetDefinitionIdConverter.class)
     GenericAttributeValue<String> getWidgetDefinitionId();
 
 

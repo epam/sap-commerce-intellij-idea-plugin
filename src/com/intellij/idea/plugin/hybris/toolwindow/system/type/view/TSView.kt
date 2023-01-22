@@ -21,6 +21,9 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -52,14 +55,8 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             setContent(panel)
         }
 
-        DumbService.getInstance(myProject).runWhenSmart {
-            setContent(myTreePane);
-
-            Disposer.register(this, myTreePane)
-            myTreePane.update(TSViewSettings.ChangeType.FULL)
-
-            installSettingsListener()
-        }
+        Disposer.register(this, myTreePane)
+        installSettingsListener()
     }
 
     private fun installToolbar() {
@@ -75,6 +72,15 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         myProject.messageBus.connect(this).subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
             override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                 myTreePane.update(changeType)
+            }
+        })
+        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
+            override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+                myTreePane.update(TSViewSettings.ChangeType.FULL)
+
+                if (content != myTreePane) {
+                    setContent(myTreePane)
+                }
             }
         })
     }

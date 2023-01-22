@@ -17,15 +17,16 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetExtension
 import com.intellij.psi.PsiFile
 
-class CngWidgetDefinitionMetaModel(
+class CngMetaWidgetExtension(
     myPsiFile: PsiFile,
-    myDom: WidgetDefinition,
-) : CngMetaModel<WidgetDefinition>(myPsiFile, myDom) {
+    myDom: WidgetExtension,
+    val widgets: Collection<CngMetaWidget> = emptyList(),
+) : CngMeta<WidgetExtension>(myPsiFile, myDom) {
 
-    val id: String = dom.id.stringValue!!
-    val name: String? = dom.name.stringValue
-    val description: String? = dom.description.stringValue
+    val id: String = dom.widgetId.stringValue!!
+
+    override fun toString() = id
 }

@@ -19,19 +19,33 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 
-class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false),
-    PsiPolyVariantReference, HighlightedReference {
+class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
-    override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
-        .editorDefinitions[value]
-        ?.retrieveDom()
-        ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
-        ?: emptyArray()
+    override fun calculateDefaultRangeInElement() = TextRange.from(stubLength + 1, element.textLength - stubLength - HybrisConstants.QUOTE_LENGTH)
+
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val metaModel = CngMetaModelAccess.getInstance(element.project).getMetaModel()
+        return metaModel
+            .editorDefinitions[value]
+            ?.retrieveDom()
+            ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
+            ?: metaModel.actionDefinitions[value]
+                ?.retrieveDom()
+                ?.let { arrayOf(ActionDefinitionResolveResult(it)) }
+            ?: emptyArray()
+    }
+
+    companion object {
+        private const val stubLength = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
+    }
 }

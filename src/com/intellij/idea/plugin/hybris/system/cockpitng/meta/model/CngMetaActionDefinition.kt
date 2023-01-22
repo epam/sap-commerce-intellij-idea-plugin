@@ -17,16 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.psi.PsiFile
 
-/**
- * Component can be any string, see https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/8c75ec11866910149df9dfb10df17f03.html?locale=en-US&q=editorareaactions%20component#configuration-context
- */
-class CngGlobalMetaModel {
+class CngMetaActionDefinition(
+    myPsiFile: PsiFile,
+    myDom: ActionDefinition,
+) : CngMeta<ActionDefinition>(myPsiFile, myDom) {
 
-    val components = mutableSetOf<String>();
-    val actionDefinitions = CaseInsensitiveConcurrentHashMap<String, CngActionDefinitionMetaModel>();
-    val widgetDefinitions = CaseInsensitiveConcurrentHashMap<String, CngWidgetDefinitionMetaModel>();
-    val editorDefinitions = CaseInsensitiveConcurrentHashMap<String, CngEditorDefinitionMetaModel>();
+    val id: String = dom.id.stringValue!!
+    val name: String? = dom.name.stringValue
+    val description: String? = dom.description.stringValue
 
+    override fun toString() = id
 }

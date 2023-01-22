@@ -21,8 +21,10 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.view
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSTreePanel
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -53,14 +55,8 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             setContent(panel)
         }
 
-        DumbService.getInstance(myProject).runWhenSmart {
-            setContent(myTreePane);
-
-            Disposer.register(this, myTreePane)
-            myTreePane.update(BSViewSettings.ChangeType.FULL)
-
-            installSettingsListener()
-        }
+        Disposer.register(this, myTreePane)
+        installSettingsListener()
     }
 
     private fun installToolbar() {
@@ -76,6 +72,15 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         myProject.messageBus.connect(this).subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
             override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
                 myTreePane.update(changeType)
+            }
+        })
+        myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
+            override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
+                myTreePane.update(BSViewSettings.ChangeType.FULL)
+
+                if (content != myTreePane) {
+                    setContent(myTreePane)
+                }
             }
         })
     }

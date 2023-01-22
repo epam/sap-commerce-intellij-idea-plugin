@@ -63,14 +63,13 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     )
 
     override fun getMetaModel(): BSGlobalMetaModel {
-        return DumbService.getInstance(myProject).tryRunReadActionInSmartMode(
+        return DumbService.getInstance(myProject).runReadActionInSmartMode(
             Computable {
                 if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
                     return@Computable readMetaModelWithLock()
                 }
                 return@Computable writeMetaModelWithLock()
-            },
-            "Computing Bean System"
+            }
         ) ?: throw ProcessCanceledException()
     }
 

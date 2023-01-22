@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
@@ -60,33 +61,37 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val processor = CngMetaModelProcessor.getInstance(myProject)
-            val (configs, configDependencies) = collectLocalMetaModels(SINGLE_CONFIG_MODEL_CACHE_KEY, Config::class.java,
+            val (configs, configDependencies) = collectLocalMetaModels(SINGLE_CONFIG_CACHE_KEY, Config::class.java,
                 { file -> processor.processConfig(file) },
                 { _ -> true }
             )
-            val (actions, actionDependencies) = collectLocalMetaModels(SINGLE_ACTION_DEFINITION_MODEL_CACHE_KEY, ActionDefinition::class.java,
+            val (actions, actionDependencies) = collectLocalMetaModels(SINGLE_ACTION_DEFINITION_CACHE_KEY, ActionDefinition::class.java,
                 { file -> processor.processActionDefinition(file) },
                 { dom -> dom.rootElement.id.exists() }
             )
-            val (widgets, widgetDependencies) = collectLocalMetaModels(SINGLE_WIDGET_DEFINITION_MODEL_CACHE_KEY, WidgetDefinition::class.java,
+            val (widgetDefinitions, widgetDependencies) = collectLocalMetaModels(SINGLE_WIDGET_DEFINITION_CACHE_KEY, WidgetDefinition::class.java,
                 { file -> processor.processWidgetDefinition(file) },
                 { dom -> dom.rootElement.id.exists() }
             )
-            val (editors, editorDependencies) = collectLocalMetaModels(SINGLE_EDITOR_DEFINITION_MODEL_CACHE_KEY, EditorDefinition::class.java,
+            val (editors, editorDependencies) = collectLocalMetaModels(SINGLE_EDITOR_DEFINITION_CACHE_KEY, EditorDefinition::class.java,
                 { file -> processor.processEditorDefinition(file) },
                 { dom -> dom.rootElement.id.exists() }
             )
+            val (widgets, widgetsDependencies) = collectLocalMetaModels(SINGLE_WIDGETS_MODEL_CACHE_KEY, Widgets::class.java,
+                { file -> processor.processWidgets(file) },
+                { _ -> true }
+            )
             val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(
-                configs, actions, widgets, editors
+                configs, actions, widgetDefinitions, editors, widgets
             )
 
-            val dependencies = configDependencies + actionDependencies + widgetDependencies + editorDependencies
+            val dependencies = configDependencies + actionDependencies + widgetDependencies + editorDependencies + widgetsDependencies
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
 
-    private fun <D : DomElement, T : CngMetaModel<D>> collectLocalMetaModels(
+    private fun <D : DomElement, T : CngMeta<D>> collectLocalMetaModels(
         key: Key<CachedValue<T>>,
         clazz: Class<D>,
         resultProcessor: (input: PsiFile) -> T?,
@@ -104,14 +109,13 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     }
 
     override fun getMetaModel(): CngGlobalMetaModel {
-        return DumbService.getInstance(myProject).tryRunReadActionInSmartMode(
+        return DumbService.getInstance(myProject).runReadActionInSmartMode(
             Computable {
                 if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
                     return@Computable readMetaModelWithLock()
                 }
                 return@Computable writeMetaModelWithLock()
-            },
-            "Computing Cockpitng System"
+            }
         ) ?: throw ProcessCanceledException()
 //        if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
     }
@@ -142,7 +146,7 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         }
     }
 
-    private fun <D : DomElement, T : CngMetaModel<D>> retrieveSingleMetaModelPerFile(
+    private fun <D : DomElement, T : CngMeta<D>> retrieveSingleMetaModelPerFile(
         psiFile: PsiFile,
         key: Key<CachedValue<T>>,
         resultProcessor: (input: PsiFile) -> T?
@@ -155,7 +159,7 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
             }
     }
 
-    private fun <D : DomElement, T : CngMetaModel<D>> createSingleMetaModelCachedValue(
+    private fun <D : DomElement, T : CngMeta<D>> createSingleMetaModelCachedValue(
         project: Project,
         psiFile: PsiFile,
         resultProcessor: (input: PsiFile) -> T?
@@ -172,13 +176,15 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
 
     companion object {
         val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", CngChangeListener::class.java)
-        private val SINGLE_CONFIG_MODEL_CACHE_KEY = Key.create<CachedValue<CngConfigMetaModel>>("SINGLE_CNG_CONFIG_MODEL_CACHE")
-        private val SINGLE_ACTION_DEFINITION_MODEL_CACHE_KEY =
-            Key.create<CachedValue<CngActionDefinitionMetaModel>>("SINGLE_ACTION_DEFINITION_MODEL_CACHE")
-        private val SINGLE_WIDGET_DEFINITION_MODEL_CACHE_KEY =
-            Key.create<CachedValue<CngWidgetDefinitionMetaModel>>("SINGLE_WIDGET_DEFINITION_MODEL_CACHE")
-        private val SINGLE_EDITOR_DEFINITION_MODEL_CACHE_KEY =
-            Key.create<CachedValue<CngEditorDefinitionMetaModel>>("SINGLE_EDITOR_DEFINITION_MODEL_CACHE")
+        private val SINGLE_CONFIG_CACHE_KEY = Key.create<CachedValue<CngConfigMeta>>("SINGLE_CNG_CONFIG_CACHE")
+        private val SINGLE_ACTION_DEFINITION_CACHE_KEY =
+            Key.create<CachedValue<CngMetaActionDefinition>>("SINGLE_ACTION_DEFINITION_CACHE")
+        private val SINGLE_WIDGET_DEFINITION_CACHE_KEY =
+            Key.create<CachedValue<CngMetaWidgetDefinition>>("SINGLE_WIDGET_DEFINITION_CACHE")
+        private val SINGLE_EDITOR_DEFINITION_CACHE_KEY =
+            Key.create<CachedValue<CngMetaEditorDefinition>>("SINGLE_EDITOR_DEFINITION_CACHE")
+        private val SINGLE_WIDGETS_MODEL_CACHE_KEY =
+            Key.create<CachedValue<CngMetaWidgets>>("SINGLE_WIDGETS_CACHE")
         private val lock = ReentrantReadWriteLock()
         private val readLock = lock.readLock()
         private val writeLock = lock.writeLock()

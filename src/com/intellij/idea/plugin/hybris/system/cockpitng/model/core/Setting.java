@@ -21,24 +21,25 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
-/**
- * null:SettingType enumeration.
- */
-public enum Setting implements com.intellij.util.xml.NamedEnum {
-    BOOLEAN("Boolean"),
-    DOUBLE("Double"),
-    INTEGER("Integer"),
-    STRING("String");
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
+import org.jetbrains.annotations.NotNull;
 
-    private final String value;
+public interface Setting extends DomElement {
 
-    Setting(final String value) {
-        this.value = value;
-    }
+    @NotNull
+    @com.intellij.util.xml.Attribute("key")
+    @Required
+    GenericAttributeValue<String> getKey();
 
-    @Override
-    public String getValue() {
-        return value;
-    }
+    @NotNull
+    @com.intellij.util.xml.Attribute("default-value")
+    GenericAttributeValue<String> getDefaultValue();
+
+    @NotNull
+    @com.intellij.util.xml.Attribute("type")
+    GenericAttributeValue<String> getType();
+
 
 }

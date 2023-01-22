@@ -35,22 +35,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface WidgetSetting extends DomElement {
 
-    /**
-     * Returns the value of the simple content.
-     *
-     * @return the value of the simple content.
-     */
-    @NotNull
-    @Required
-    String getValue1();
-
-    /**
-     * Sets the value of the simple content.
-     *
-     * @param value1 the new value to set
-     */
-    void setValue1(@NotNull String value1);
-
 
     /**
      * Returns the value of the key child.
@@ -66,7 +50,6 @@ public interface WidgetSetting extends DomElement {
     @Required
     GenericAttributeValue<String> getKey();
 
-
     /**
      * Returns the value of the value child.
      * <pre>
@@ -78,7 +61,7 @@ public interface WidgetSetting extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("value")
-    GenericAttributeValue<String> getValue2();
+    GenericAttributeValue<String> getValue();
 
 
     /**
@@ -92,7 +75,7 @@ public interface WidgetSetting extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("type")
-    GenericAttributeValue<Setting> getType();
+    GenericAttributeValue<SettingType> getType();
 
 
 }

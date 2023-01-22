@@ -15,10 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.startup
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.startup.StartupActivity
 
-interface CngChangeListener {
+class PreLoadSystemsStartupActivity : StartupActivity {
 
-    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
+    override fun runActivity(project: Project) {
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            TSMetaModelAccess.getInstance(project).getMetaModel()
+            BSMetaModelAccess.getInstance(project).getMetaModel()
+            CngMetaModelAccess.getInstance(project).getMetaModel()
+        }
+    }
 }

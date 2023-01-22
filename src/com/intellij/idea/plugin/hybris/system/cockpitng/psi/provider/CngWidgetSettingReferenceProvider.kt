@@ -15,10 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngWidgetSettingReference
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
 
-interface CngChangeListener {
+class CngWidgetSettingReferenceProvider : PsiReferenceProvider() {
 
-    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
+    override fun getReferencesByElement(
+        element: PsiElement, context: ProcessingContext
+    ) = arrayOf(CngWidgetSettingReference(element))
+
+    companion object {
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngWidgetSettingReferenceProvider::class.java)
+    }
 }

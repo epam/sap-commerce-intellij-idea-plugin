@@ -27,9 +27,10 @@ interface CngMetaModelMerger {
     }
 
     fun merge(
-        configs: Collection<CngConfigMetaModel>,
-        actions: Collection<CngActionDefinitionMetaModel>,
-        widgets: Collection<CngWidgetDefinitionMetaModel>,
-        editors: Collection<CngEditorDefinitionMetaModel>
+        configs: Collection<CngConfigMeta>,
+        actions: Collection<CngMetaActionDefinition>,
+        widgetDefinitions: Collection<CngMetaWidgetDefinition>,
+        editors: Collection<CngMetaEditorDefinition>,
+        widgets: Collection<CngMetaWidgets>
     ): CngGlobalMetaModel
 }

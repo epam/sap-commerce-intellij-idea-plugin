@@ -16,9 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
+// Generated on Wed Jan 18 00:34:54 CET 2023
+// DTD/Schema  :    null
 
-interface CngChangeListener {
+package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
-    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
+/**
+ * null:SettingType enumeration.
+ */
+public enum SettingType implements com.intellij.util.xml.NamedEnum {
+    BOOLEAN("Boolean"),
+    DOUBLE("Double"),
+    INTEGER("Integer"),
+    STRING("String");
+
+    private final String value;
+
+    SettingType(final String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
 }

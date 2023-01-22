@@ -16,30 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
-import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.ResolvingConverter
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.WidgetDefinitionResolveResult
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 
-class CngWidgetDefinitionIdConverter : ResolvingConverter<WidgetDefinition>() {
+class CngWidgetDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference,
+    HighlightedReference {
 
-    override fun toString(t: WidgetDefinition?, context: ConvertContext?) = t?.id?.stringValue
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
+        val lookingForName = value
 
-    override fun fromString(s: String?, context: ConvertContext): WidgetDefinition? {
-        if (s == null) return null
-
-        return CngMetaModelAccess.getInstance(context.project).getMetaModel()
-            .widgetDefinitions[s]
+        return CngMetaModelAccess.getInstance(element.project).getMetaModel()
+            .widgetDefinitions[lookingForName]
             ?.retrieveDom()
-    }
-
-    override fun getVariants(context: ConvertContext): Collection<WidgetDefinition> {
-        return CngMetaModelAccess.getInstance(context.project).getMetaModel()
-            .widgetDefinitions
-            .values
-            .mapNotNull { it.retrieveDom() }
+            ?.let { arrayOf(WidgetDefinitionResolveResult(it)) }
+            ?: emptyArray()
     }
 
 }

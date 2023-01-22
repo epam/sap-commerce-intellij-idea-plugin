@@ -20,13 +20,9 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.XmlPatterns
 
 class CngCompletionContributor : CompletionContributor() {
 
@@ -55,6 +51,31 @@ class CngCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_DEFINITION),
             CngEditorDefinitionCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.ACTION_DEFINITION),
+            CngActionDefinitionCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_DEFINITION),
+            CngWidgetDefinitionCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_CONNECTION_WIDGET_ID),
+            CngWidgetConnectionWidgetIdCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_ID),
+            CngWidgetIdCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_SETTING),
+            CngWidgetSettingCompletionProvider.instance
         )
     }
 }

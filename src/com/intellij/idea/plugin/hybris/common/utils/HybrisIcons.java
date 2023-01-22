@@ -44,6 +44,7 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitng_config.svg");
     public static final Icon COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitng_widgets.svg");
+    public static final Icon COCKPIT_NG_WIDGET = getIcon("/icons/cockpitng_widget.svg");
     public static final Icon COCKPIT_NG_WIDGET_DEFINITION = getIcon("/icons/cockpitng_widget_definition.svg");
     public static final Icon COCKPIT_NG_ACTION_DEFINITION = getIcon("/icons/cockpitng_action_definition.svg");
     public static final Icon COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitng_editor_definition.svg");

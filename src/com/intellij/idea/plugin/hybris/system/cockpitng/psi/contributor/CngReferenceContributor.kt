@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.*
-import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
@@ -45,6 +44,26 @@ class CngReferenceContributor : PsiReferenceContributor() {
         registrar.registerReferenceProvider(
             CngPatterns.ITEM_ATTRIBUTE,
             CngTSItemAttributeReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.ACTION_DEFINITION,
+            CngActionDefinitionReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.WIDGET_ID,
+            CngWidgetReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.WIDGET_CONNECTION_WIDGET_ID,
+            CngWidgetConnectionWidgetIdReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.WIDGET_DEFINITION,
+            CngWidgetDefinitionReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            CngPatterns.WIDGET_SETTING,
+            CngWidgetSettingReferenceProvider.instance
         )
     }
 }

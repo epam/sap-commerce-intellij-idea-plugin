@@ -52,16 +52,11 @@ class TSTreePanel(
         secondComponent = myDefaultPanel
 
         myTree.addTreeSelectionListener(myTreeSelectionListener)
-
-        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
-            override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                secondComponent = myDefaultPanel;
-                myTree.update(TSViewSettings.ChangeType.FULL)
-            }
-        })
     }
 
     fun update(changeType: TSViewSettings.ChangeType) {
+        secondComponent = myDefaultPanel;
+
         myTree.update(changeType)
     }
 

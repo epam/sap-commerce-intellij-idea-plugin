@@ -20,18 +20,17 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
-import com.intellij.openapi.util.TextRange
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 
-class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false),
+class CngActionDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element),
     PsiPolyVariantReference, HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
-        .editorDefinitions[value]
+        .actionDefinitions[value]
         ?.retrieveDom()
-        ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
+        ?.let { arrayOf(ActionDefinitionResolveResult(it)) }
         ?: emptyArray()
 }

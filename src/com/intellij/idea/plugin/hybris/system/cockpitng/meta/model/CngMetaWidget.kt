@@ -17,15 +17,23 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widget
 import com.intellij.psi.PsiFile
 
-class CngEditorDefinitionMetaModel(
+class CngMetaWidget(
     myPsiFile: PsiFile,
-    myDom: EditorDefinition,
-) : CngMetaModel<EditorDefinition>(myPsiFile, myDom) {
+    myDom: Widget,
+    val widgets: Collection<CngMetaWidget> = emptyList(),
+) : CngMeta<Widget>(myPsiFile, myDom) {
 
     val id: String = dom.id.stringValue!!
-    val name: String? = dom.name.stringValue
-    val description: String? = dom.description.stringValue
+    val name: String? = dom.title.stringValue
+    val slotId: String? = dom.slotId.stringValue
+    val widgetDefinitionId: String? = dom.widgetDefinitionId.stringValue
+    val access: String? = dom.access.stringValue
+    val lastFocusedChildIndex: String? = dom.lastFocusedChildIndex.stringValue
+    val lastFocusedTemplateInstanceId: String? = dom.lastFocusedTemplateInstanceId.stringValue
+    val template = dom.template.value ?: false
+
+    override fun toString() = id
 }
