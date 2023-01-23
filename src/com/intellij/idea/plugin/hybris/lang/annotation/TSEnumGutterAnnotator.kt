@@ -73,6 +73,6 @@ class TSEnumGutterAnnotator : Annotator {
             ?.map { it.code }
             ?.sortedBy { it.module?.name }
             ?.mapNotNull { it.xmlAttributeValue }
-            ?: emptyList();
+            ?: emptyList()
 
 }

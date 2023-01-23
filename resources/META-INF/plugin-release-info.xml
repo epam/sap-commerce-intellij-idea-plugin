@@ -198,6 +198,7 @@
                 <li>
                     <strong>Ultimate only</strong>
                     <ul>
+                        <li><i>Feature:</i> Added navigation to TypeCode Interceptor declaration(s) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/188" target="_blank" rel="nofollow">#188</a>)</li>
                         <li><i>Feature:</i> Register <code>-backoffice-spring.xml</code> files, Project re-import is required (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/183" target="_blank" rel="nofollow">#183</a>)</li>
                         <li><i>Feature:</i> Added code completion and navigation for Cockpitng 'spring-bean' element (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/184" target="_blank" rel="nofollow">#184</a>)</li>
                         <li><i>Feature:</i> Introduced new <code>items.xml</code> Annotator for Attribute Handler (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/117" target="_blank" rel="nofollow">#117</a>)</li>

@@ -70,6 +70,8 @@ public final class HybrisIcons {
 
     public static final Icon MACROS = getIcon("/icons/macros.png");
 
+    public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.png");
+
     public static final Icon ATOMIC = AllIcons.Actions.GroupByModule;
     public static final Icon ITEM = AllIcons.Nodes.Class;
     public static final Icon MAP = AllIcons.Nodes.Plugin;

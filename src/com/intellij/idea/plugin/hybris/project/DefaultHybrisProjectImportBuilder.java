@@ -35,6 +35,9 @@ import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess;
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -294,6 +297,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                      .notify(project);
 
         Notifications.showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent);
+
+        DumbService.getInstance(project).runReadActionInSmartMode(() -> {
+            TSMetaModelAccess.Companion.getInstance(project).getMetaModel();
+            BSMetaModelAccess.Companion.getInstance(project).getMetaModel();
+            CngMetaModelAccess.Companion.getInstance(project).getMetaModel();
+        });
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
