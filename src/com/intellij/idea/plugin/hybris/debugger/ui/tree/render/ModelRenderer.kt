@@ -41,7 +41,8 @@ open class ModelRenderer(
     override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> {
         return Function { t ->
             CompletableFuture.completedFuture(
-                DebuggerUtils.instanceOf(t, className)
+                t?.name().equals(className)
+//                DebuggerUtils.instanceOf(t, className)
             )
         }
     }
