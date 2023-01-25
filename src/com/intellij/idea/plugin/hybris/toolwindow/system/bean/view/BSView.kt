@@ -53,6 +53,8 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             val panel = JBPanel<JBPanel<*>>(GridBagLayout())
             panel.add(JBLabel(message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
             setContent(panel)
+        } else {
+            refreshContent()
         }
 
         Disposer.register(this, myTreePane)
@@ -76,13 +78,17 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         })
         myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
             override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
-                myTreePane.update(BSViewSettings.ChangeType.FULL)
-
-                if (content != myTreePane) {
-                    setContent(myTreePane)
-                }
+                refreshContent()
             }
         })
+    }
+
+    private fun refreshContent() {
+        myTreePane.update(BSViewSettings.ChangeType.FULL)
+
+        if (content != myTreePane) {
+            setContent(myTreePane)
+        }
     }
 
     private fun initBeansViewActionGroup(): DefaultActionGroup = with(
