@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.spring
 
 import com.intellij.codeInsight.navigation.DomGotoRelatedItem
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.navigation.GotoRelatedItem
@@ -26,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.spring.SpringBundle
 import com.intellij.spring.gutter.SpringBeansPsiElementCellRenderer
@@ -41,37 +43,43 @@ import com.intellij.util.NotNullFunction
  */
 object TSInterceptorSpringBuilderFactory {
 
-    fun createGutterBuilder(project: Project, typeCode : String): SpringGutterIconBuilder<SpringBeanPointer<*>>? {
+    private val converter: (dom: SpringBeanPointer<*>) -> Set<PsiElement?> = {
+        if (it.isValid) setOf(it.springBean.identifyingPsiElement)
+        else emptySet()
+    }
+
+    private val gotoRelatedItemProvider = NotNullFunction<SpringBeanPointer<*>, Collection<GotoRelatedItem>> {
+        val bean = it.springBean
+        return@NotNullFunction if (bean is DomSpringBean) {
+            listOf(
+                DomGotoRelatedItem(
+                    bean,
+                    SpringBundle.message("autowired.dependencies.goto.related.item.group.name")
+                )
+            )
+        } else {
+            bean.identifyingPsiElement
+                ?.let { element ->
+                    listOf(
+                        GotoRelatedItem(
+                            element,
+                            SpringBundle.message("autowired.dependencies.goto.related.item.group.name")
+                        )
+                    )
+                }
+                ?: emptyList()
+        }
+    }
+
+    fun createGutterBuilder(project: Project, typeCode: String): SpringGutterIconBuilder<SpringBeanPointer<*>>? {
         val clazz = JavaPsiFacade.getInstance(project)
-            .findClass("de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping", GlobalSearchScope.allScope(project))
+            .findClass(HybrisConstants.CLASS_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
             ?: return null
 
         val builder = SpringGutterIconBuilder.createBuilder(
             HybrisIcons.INTERCEPTOR,
-            { pointer: SpringBeanPointer<*> ->
-                if (!pointer.isValid) emptySet() else setOf(
-                    pointer.springBean.identifyingPsiElement
-                )
-            },
-            NotNullFunction<SpringBeanPointer<*>, Collection<GotoRelatedItem>> { pointer: SpringBeanPointer<*> ->
-                val bean = pointer.springBean
-                if (bean is DomSpringBean) {
-                    return@NotNullFunction listOf<DomGotoRelatedItem>(
-                        DomGotoRelatedItem(
-                            bean,
-                            SpringBundle.message("autowired.dependencies.goto.related.item.group.name", *arrayOfNulls<Any>(0))
-                        )
-                    )
-                } else {
-                    val element = bean.identifyingPsiElement
-                    return@NotNullFunction if (element != null) listOf<GotoRelatedItem>(
-                        GotoRelatedItem(
-                            element,
-                            SpringBundle.message("autowired.dependencies.goto.related.item.group.name", *arrayOfNulls<Any>(0))
-                        )
-                    ) else emptyList<GotoRelatedItem>()
-                }
-            }
+            converter,
+            gotoRelatedItemProvider
         )
         builder
             .setTargets(getBeansLazy(clazz, typeCode))
@@ -102,4 +110,5 @@ object TSInterceptorSpringBuilderFactory {
             .sortedWith(SpringBeanPointer.DISPLAY_COMPARATOR)
             .toMutableList()
     }
+
 }

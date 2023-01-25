@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
@@ -55,6 +56,7 @@ class TSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
     ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
         .setTarget(psi)
         .setTooltipText(message("hybris.editor.gutter.bs.enum.value.title"))
+        .setAlignment(GutterIconRenderer.Alignment.LEFT)
         .createLineMarkerInfo(dom.nameIdentifier)
 
 }

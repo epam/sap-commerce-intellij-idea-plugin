@@ -24,6 +24,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.psi.PsiElement;
@@ -84,6 +85,7 @@ public abstract class AbstractItemLineMarkerProvider<T extends PsiElement> exten
             .setEmptyPopupText(getEmptyPopupText())
             .setPopupTitle(getPopupTitle())
             .setTooltipText(getTooltipText())
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .createLineMarkerInfo(psiIdentifier);
     }
 

@@ -28,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSDeploymentTypeCodeReservedForB2BCommerceExtension : AbstractTSInspection() {
+class TSDeploymentTypeCodeReservedForB2BCommerceExtension : AbstractCustomOnlyTSInspection() {
 
     override fun inspect(
         project: Project,

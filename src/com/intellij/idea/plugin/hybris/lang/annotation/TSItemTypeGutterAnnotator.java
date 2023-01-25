@@ -99,7 +99,7 @@ public class TSItemTypeGutterAnnotator implements Annotator {
             NavigationGutterIconBuilder
                 .create(AllIcons.Gutter.OverridenMethod, this::findAllExtendingXmlAttributes)
                 .setTarget(itemType)
-                .setAlignment(GutterIconRenderer.Alignment.LEFT)
+                .setAlignment(GutterIconRenderer.Alignment.CENTER)
                 .setTooltipText("Has subtypes")
                 .createGutterIcon(annotationHolder, psiElement);
         }

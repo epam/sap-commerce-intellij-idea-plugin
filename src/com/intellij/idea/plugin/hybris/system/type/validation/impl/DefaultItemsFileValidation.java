@@ -50,7 +50,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ITEM_ROOT_CLASS;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASS_ITEM_ROOT;
 import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getString;
 
 /**
@@ -94,7 +94,7 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
 
                 final Items itemsRootElement = fileElement.getRootElement();
                 final Map<String, PsiClass> inheritedEnumClasses = this.findAllInheritClasses(
-                    this.project, HybrisConstants.ENUM_ROOT_CLASS
+                    this.project, HybrisConstants.CLASS_ENUM_ROOT
                 );
 
                 final List<EnumType> enumTypes = itemsRootElement.getEnumTypes().getEnumTypes();
@@ -103,7 +103,7 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
                 }
 
                 final Map<String, PsiClass> inheritedItemClasses = this.findAllInheritClasses(
-                    this.project, ITEM_ROOT_CLASS
+                    this.project, CLASS_ITEM_ROOT
                 );
 
                 final List<ItemType> filteredItemTypes = this.getItemTypesExcludeRelations(itemsRootElement);

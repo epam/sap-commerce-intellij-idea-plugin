@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
@@ -59,6 +60,7 @@ class BSPropertyLineMarkerProvider : RelatedItemLineMarkerProvider() {
     ) = NavigationGutterIconBuilder.create(HybrisIcons.PROPERTY)
         .setTarget(psi)
         .setTooltipText(message("hybris.editor.gutter.bs.bean.property.title"))
+        .setAlignment(GutterIconRenderer.Alignment.LEFT)
         .createLineMarkerInfo(dom.nameIdentifier)
 
 }

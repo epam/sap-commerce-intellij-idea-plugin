@@ -18,29 +18,40 @@
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.spring.TSInterceptorSpringBuilderFactory
+import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiLiteralExpression
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import java.util.*
 
-class TSInterceptorLineMarkerProvider : AbstractItemLineMarkerProvider<PsiClass>() {
+class TSInterceptorLineMarkerProvider : AbstractItemLineMarkerProvider<PsiField>() {
 
-    override fun canProcess(psi: PsiElement?) = psi is PsiClass
+    override fun canProcess(psi: PsiElement?) = psi is PsiField
+            && psi.name == HybrisConstants.TYPECODE_FIELD_NAME
+
     override fun getEmptyPopupText() = message("hybris.editor.gutter.ts.interceptor.no.matches")
     override fun getPopupTitle() = message("hybris.editor.gutter.ts.interceptor.choose.title")
     override fun getTooltipText() = message("hybris.editor.gutter.ts.interceptor.tooltip.text")
 
-    override fun collectDeclarations(psi: PsiClass?): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        if (psi == null) return Optional.empty()
-        if (psi.nameIdentifier == null) return Optional.empty()
-
-        val name = cleanSearchName(psi.name)
+    override fun collectDeclarations(psi: PsiField?): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
+        val psiClass = psi?.parentOfType<PsiClass>() ?: return Optional.empty()
+        if (!ModelsUtils.isModelFile(psiClass)) return Optional.empty()
         val project = psi.project
 
-        return TSInterceptorSpringBuilderFactory.createGutterBuilder(project, name)
-            ?.createSpringGroupLineMarkerInfo(psi.nameIdentifier!!)
-            ?.let { Optional.of(it) }
+        return psi.childrenOfType<PsiLiteralExpression>()
+            .mapNotNull {
+                val typeCode = it.value.toString()
+                TSInterceptorSpringBuilderFactory.createGutterBuilder(project, typeCode)
+                    ?.createSpringGroupLineMarkerInfo(psi.nameIdentifier)
+            }
+            .map { Optional.of(it) }
+            .firstOrNull()
             ?: Optional.empty()
     }
 

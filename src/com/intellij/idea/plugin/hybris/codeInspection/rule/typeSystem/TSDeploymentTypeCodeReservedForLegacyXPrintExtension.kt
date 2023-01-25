@@ -28,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSDeploymentTypeCodeReservedForLegacyXPrintExtension : AbstractTSInspection() {
+class TSDeploymentTypeCodeReservedForLegacyXPrintExtension : AbstractCustomOnlyTSInspection() {
 
     override fun inspect(
         project: Project,

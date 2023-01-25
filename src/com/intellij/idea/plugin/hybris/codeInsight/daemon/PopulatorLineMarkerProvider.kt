@@ -24,6 +24,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.PsiClassReferenceType
@@ -109,6 +110,7 @@ class PopulatorLineMarkerProvider : RelatedItemLineMarkerProvider() {
             .setTooltipText(HybrisI18NBundleUtils.message(
                     "hybris.editor.gutter.populator.class.tooltip.navigate.declaration"
                 ))
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .createLineMarkerInfo(psiElement)
 
     private data class CandidateWrapper(var priority: Int, var psiClass: PsiClass)

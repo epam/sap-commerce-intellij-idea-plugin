@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -61,6 +62,7 @@ class BSTypeLineMarkerProvider : RelatedItemLineMarkerProvider() {
         .setEmptyPopupText(message("hybris.editor.gutter.navigate.no.matching.beans"))
         .setPopupTitle(message("hybris.editor.gutter.bean.type.navigate.choose.class.title"))
         .setTooltipText(message("hybris.editor.gutter.item.class.tooltip.navigate.declaration"))
+        .setAlignment(GutterIconRenderer.Alignment.LEFT)
         .createLineMarkerInfo(psiClass.nameIdentifier!!)
 
 }

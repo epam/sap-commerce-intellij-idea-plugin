@@ -17,7 +17,7 @@
         <![CDATA[
             <p>This plugin is a plugin for SAP Commerce integration.</p>
 
-            <i>If you have any questions you can send an email to::</i>
+            <i>If you have any questions you can send an email to:</i>
             <ul>
                 <li><a href="mailto:hybrisideaplugin@epam.com">EPAM Systems</a></li>
             </ul>
@@ -30,8 +30,7 @@
                 <li>Custom editor for flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
-                <li>Custom editor for <code>beans.xml</code> with custom automated Intellij refactorings actions.</li>
-                <li>Custom editor for <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
+                <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
                 <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>

@@ -33,23 +33,23 @@ import java.util.*
 class TSAttributeFieldLineMarkerProvider : AbstractTSAttributeLineMarkerProvider<PsiField>() {
 
     override fun canProcess(psi: PsiElement) = psi is PsiField
+            && psi.type is PsiClassReferenceType
+            && (psi.type as PsiClassReferenceType).name == String::class.java.simpleName
 
-    override fun collect(meta: TSGlobalMetaItem, psi: PsiField): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        if (psi.type !is PsiClassReferenceType) return Optional.empty()
-        if ((psi.type as PsiClassReferenceType).name != String::class.java.simpleName) return Optional.empty()
+    override fun collect(meta: TSGlobalMetaItem, psi: PsiField) = psi.childrenOfType<PsiLiteralExpression>()
+        .map {
+            val name = it.value.toString()
+            val nameIdentifier = psi.nameIdentifier
+            getPsiElementRelatedItemLineMarkerInfo(meta, name, nameIdentifier)
+                .or { getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier) }
+        }
+        .firstOrNull()
+        ?: Optional.empty()
 
-        return psi.childrenOfType<PsiLiteralExpression>()
-            .map {
-                val name = it.value.toString()
-                val nameIdentifier = psi.nameIdentifier
-                getPsiElementRelatedItemLineMarkerInfo(meta, name, nameIdentifier)
-                    .or { getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier) }
-            }
-            .firstOrNull()
-            ?: Optional.empty()
-    }
-
-    private fun getPsiElementRelatedRelationLineMarkerInfo(name: String, nameIdentifier: PsiIdentifier): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
+    private fun getPsiElementRelatedRelationLineMarkerInfo(
+        name: String,
+        nameIdentifier: PsiIdentifier
+    ): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
         val dom = TSMetaModelAccess.getInstance(nameIdentifier.project).findMetaRelationByName(name)
             ?.retrieveDom()
             ?.xmlElement

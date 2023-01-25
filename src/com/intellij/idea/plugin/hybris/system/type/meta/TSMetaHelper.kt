@@ -50,12 +50,12 @@ class TSMetaHelper {
             }
         }
 
+        fun flattenType(meta: TSMetaItem.TSMetaItemAttribute) = escapeType(meta.type)
         fun flattenType(meta: TSMetaRelation.TSMetaRelationElement) = flattenType(meta.collectionType, escapeType(meta.type))
         fun flattenType(meta: TSGlobalMetaCollection) = flattenType(meta.type, escapeType(meta.elementType))
         fun flattenType(meta: TSGlobalMetaMap) = "Map<${escapeType(meta.argumentType) ?: '?'}, ${escapeType(meta.returnType) ?: '?'}>"
         fun flattenType(meta: TSGlobalMetaRelation) =
             escapeType(meta.source.type) + " [${mapCardinality(meta.source)}:${mapCardinality(meta.target)}] " + escapeType(meta.target.type)
-
         fun flattenType(meta: TSGlobalMetaAtomic) = meta.name
         fun flattenType(meta: TSGlobalMetaItem) = meta.name
         fun flattenType(meta: TSGlobalMetaEnum) = meta.name
