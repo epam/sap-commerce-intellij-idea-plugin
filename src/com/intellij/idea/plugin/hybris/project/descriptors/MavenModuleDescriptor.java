@@ -32,7 +32,7 @@ public class MavenModuleDescriptor extends RootModuleDescriptor {
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
+        super(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.getName());
     }
 
     @Override

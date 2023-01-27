@@ -42,15 +42,10 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
 
     public ConfigHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
+        @NotNull final String name
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return moduleRootDirectory.getName();
+        super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
     @NotNull

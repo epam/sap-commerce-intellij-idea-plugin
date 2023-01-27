@@ -30,11 +30,11 @@ import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.impl.ModuleEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 import org.jetbrains.idea.maven.project.MavenImportListener;
@@ -209,10 +209,10 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             configuratorFactory.getGroupModuleConfigurator(),
             mavenModules
         );
-        moveMavenModulesToGroup(project, newRootModules, mavenGroupMapping);
+        updateModuleSettings(project, newRootModules, mavenGroupMapping);
     }
 
-    private static void moveMavenModulesToGroup(
+    private static void updateModuleSettings(
         final @NotNull Project project,
         final @NotNull List<Module> mavenModules,
         final @NotNull Map<String, String[]> mavenGroupMapping
@@ -232,12 +232,11 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final var model = ModuleManager.getInstance(project).getModifiableModel();
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
-        for (final Module module : mavenModules) {
-            settingsComponent.getModuleSettings(module)
-                             .setDescriptorType(HybrisModuleDescriptorType.MAVEN.name());
-            final String[] groupPath = model.getModuleGroupPath(module);
-            model.setModuleGroupPath(module, ArrayUtils.addAll(mavenGroupMapping.get(module.getName()), groupPath));
-        }
+        mavenModules.stream()
+                    .filter(it -> it instanceof ModuleEx)
+                    .map(ModuleEx.class::cast)
+                    .map(settingsComponent::getModuleSettings)
+                    .forEach(descriptor -> descriptor.setDescriptorType(HybrisModuleDescriptorType.MAVEN.name()));
         return model;
     }
 

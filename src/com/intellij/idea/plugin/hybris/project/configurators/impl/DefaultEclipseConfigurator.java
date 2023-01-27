@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleWithNameAlreadyExists;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
@@ -64,23 +65,32 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         eclipseImportBuilder.setList(projectList);
         ApplicationManager.getApplication().invokeAndWait(() -> {
             final List<Module> newRootModules = eclipseImportBuilder.commit(project);
-            moveEclipseModulesToGroup(project, newRootModules, eclipseGroupMapping);
+            updateSettings(project, newRootModules, eclipseGroupMapping);
         });
 
     }
 
-    private void moveEclipseModulesToGroup(
+    private void updateSettings(
         @NotNull final Project project,
         @NotNull final List<Module> eclipseModules,
-        @NotNull final Map<String,String[]> eclipseGroupMapping
+        @NotNull final Map<String, String[]> eclipseGroupMapping
     ) {
         final var modifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel();
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
-        for (final Module module : eclipseModules) {
+        eclipseModules.forEach(module -> {
             settingsComponent.getModuleSettings(module).setDescriptorType(HybrisModuleDescriptorType.ECLIPSE.name());
-            modifiableModuleModel.setModuleGroupPath(module, eclipseGroupMapping.get(module.getName()));
-        }
+            try {
+                final String[] groups = eclipseGroupMapping.get(module.getName());
+
+                if (groups != null && groups.length > 0) {
+                    final var newName = String.join(".", groups) + '.' + module.getName();
+                    modifiableModuleModel.renameModule(module, newName);
+                }
+            } catch (final ModuleWithNameAlreadyExists e) {
+                // skip renaming
+            }
+        });
 
         ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }

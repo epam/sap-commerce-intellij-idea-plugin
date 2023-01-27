@@ -24,11 +24,8 @@ import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.openapi.diagnostic.Logger;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +48,6 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLA
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Created 3:55 PM 13 June 2015.
@@ -63,49 +59,16 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
     private static final Logger LOG = Logger.getInstance(RegularHybrisModuleDescriptor.class);
 
     @NotNull
-    protected final String moduleName;
-    @NotNull
     protected final ExtensionInfo extensionInfo;
 
     public RegularHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
+        @NotNull final ExtensionInfo extensionInfo
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
-
-        Validate.notNull(moduleRootDirectory);
-
-        final File hybrisProjectFile = new File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML);
-
-        final ExtensionInfo extensionInfo = this.unmarshalExtensionInfo(hybrisProjectFile);
-        if (null == extensionInfo) {
-            throw new HybrisConfigurationException("Can not unmarshal " + hybrisProjectFile);
-        }
+        super(moduleRootDirectory, rootProjectDescriptor, extensionInfo.getExtension().getName());
 
         this.extensionInfo = extensionInfo;
-
-        if (null == extensionInfo.getExtension() || isBlank(extensionInfo.getExtension().getName())) {
-            throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootDirectory);
-        }
-
-        this.moduleName = extensionInfo.getExtension().getName();
-    }
-
-    @Nullable
-    private ExtensionInfo unmarshalExtensionInfo(@NotNull final File file) {
-        Validate.notNull(file);
-
-        try {
-            return (ExtensionInfo) JAXBContext.newInstance(
-                "com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo",
-                ObjectFactory.class.getClassLoader())
-                                              .createUnmarshaller()
-                                              .unmarshal(file);
-        } catch (final JAXBException e) {
-            LOG.error("Can not unmarshal " + file.getAbsolutePath(), e);
-        }
-
-        return null;
     }
 
     @Nullable
@@ -119,12 +82,6 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         }
 
         return null;
-    }
-
-    @Override
-    @NotNull
-    public String getName() {
-        return moduleName;
     }
 
     @NotNull

@@ -64,7 +64,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         @NotNull final ASTNode node, @NotNull final Document document
     ) {
         if (!(node.getPsi() instanceof final ImpexFile root)) {
-            return FoldingDescriptor.EMPTY;
+            return FoldingDescriptor.EMPTY_ARRAY;
         }
 
         final SmartList<FoldingDescriptor> results = new SmartList<>();
@@ -92,7 +92,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         // resolve local macro last
         localMacroList.forEach(macroUsage->resolveLocalMacro(macroUsage, results));
 
-        return results.toArray(FoldingDescriptor.EMPTY);
+        return results.toArray(FoldingDescriptor.EMPTY_ARRAY);
     }
 
     private void resolveIncludeExternalData(final ImpexString impexString) {

@@ -33,7 +33,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.*
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectPostStartupActivity
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.io.IOUtils
@@ -44,11 +44,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-class HybrisProjectStructureStartupActivity : StartupActivity.DumbAware {
+class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
 
     private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
             return
         }

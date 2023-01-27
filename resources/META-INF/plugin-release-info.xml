@@ -3,10 +3,10 @@
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
-    <version>2022.3.1</version>
+    <version>2023.1.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="223.7571.58" until-build="223.*"/>
+    <idea-version since-build="223.7571.58" until-build="231.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -91,6 +91,10 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.0</h3>
+            <ul>
+                <li><i>Feature:</i> Compatibility adjustments (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/187" target="_blank" rel="nofollow">#187</a>)</li>
+            </ul>
             <h3>2022.3.1</h3>
             <ul>
                 <li><i>Feature:</i> Enabled IDEA capability to open new Project as SAP Commerce Project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/132" target="_blank" rel="nofollow">#132</a>)</li>

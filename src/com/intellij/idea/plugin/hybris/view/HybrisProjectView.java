@@ -383,8 +383,4 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return HybrisApplicationSettingsComponent.getInstance().getState().getJunkDirectoryList();
     }
 
-    @Override
-    public Object getData(final Collection<AbstractTreeNode<?>> selected, final String dataName) {
-        return null;
-    }
 }

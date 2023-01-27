@@ -51,10 +51,10 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
         @NotNull final PsiElement root, @NotNull final Document document, final boolean quick
     ) {
         if (quick || !isFoldingEnabled()) {
-            return FoldingDescriptor.EMPTY;
+            return FoldingDescriptor.EMPTY_ARRAY;
         }
         if (!(root instanceof XmlFile)) {
-            return FoldingDescriptor.EMPTY;
+            return FoldingDescriptor.EMPTY_ARRAY;
         }
         if (root instanceof JspFile) {
             JspFile jspFile = (JspFile) root;
@@ -91,7 +91,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
             return results.toArray(new FoldingDescriptor[results.size()]);
         }
 
-        return FoldingDescriptor.EMPTY;
+        return FoldingDescriptor.EMPTY_ARRAY;
     }
 
     protected boolean mayResolveToProperty(@NotNull final XmlAttribute xmlAttribute) {

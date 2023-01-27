@@ -48,6 +48,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
@@ -109,7 +110,6 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IDEA_EDITION_ULTIMATE;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
-import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
@@ -314,10 +314,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 .getModulesChosenForImport()
                 .stream()
                 .filter(e -> e instanceof EclipseModuleDescriptor)
-                .map(e -> (EclipseModuleDescriptor) e)
+                .map(EclipseModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!eclipseModules.isEmpty()) {
-                Map<String, String[]> eclipseGroupMapping = fetchGroupMapping(groupModuleConfigurator, eclipseModules);
+                Map<String, String[]> eclipseGroupMapping = ModuleGroupUtils.fetchGroupMapping(groupModuleConfigurator, eclipseModules);
                 eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
             }
         } catch (Exception e) {
@@ -337,10 +337,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 .getModulesChosenForImport()
                 .stream()
                 .filter(e -> e instanceof GradleModuleDescriptor)
-                .map(e -> (GradleModuleDescriptor) e)
+                .map(GradleModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!gradleModules.isEmpty()) {
-                final Map<String, String[]> gradleRootGroupMapping = fetchGroupMapping(groupModuleConfigurator, gradleModules);
+                final Map<String, String[]> gradleRootGroupMapping = ModuleGroupUtils.fetchGroupMapping(groupModuleConfigurator, gradleModules);
                 gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroupMapping);
             }
         } catch (Exception e) {

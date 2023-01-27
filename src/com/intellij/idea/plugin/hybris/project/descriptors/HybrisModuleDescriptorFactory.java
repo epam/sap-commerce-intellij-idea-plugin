@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.openapi.application.ApplicationManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,4 +37,7 @@ public interface HybrisModuleDescriptorFactory {
         @NotNull HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException;
 
+    static HybrisModuleDescriptorFactory getInstance() {
+        return ApplicationManager.getApplication().getService(HybrisModuleDescriptorFactory.class);
+    }
 }

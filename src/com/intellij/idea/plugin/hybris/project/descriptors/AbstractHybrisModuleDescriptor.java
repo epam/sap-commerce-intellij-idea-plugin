@@ -51,22 +51,32 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected Set<String> springFileSet = new LinkedHashSet<>();
 
+    @NotNull
+    private final String name;
     private boolean inLocalExtensions;
     private IMPORT_STATUS importStatus = IMPORT_STATUS.UNUSED;
 
     public AbstractHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
+        @NotNull final String name
     ) throws HybrisConfigurationException {
         Validate.notNull(moduleRootDirectory);
         Validate.notNull(rootProjectDescriptor);
 
         this.moduleRootDirectory = moduleRootDirectory;
         this.rootProjectDescriptor = rootProjectDescriptor;
+        this.name = name;
 
         if (!this.moduleRootDirectory.isDirectory()) {
             throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
         }
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

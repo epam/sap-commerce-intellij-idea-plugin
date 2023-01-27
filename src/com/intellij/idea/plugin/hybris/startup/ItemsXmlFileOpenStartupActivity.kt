@@ -25,32 +25,34 @@ import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsF
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectPostStartupActivity
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 
 
-class ItemsXmlFileOpenStartupActivity : StartupActivity.RequiredForSmartMode {
+class ItemsXmlFileOpenStartupActivity : ProjectPostStartupActivity {
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
             return
         }
 
-        val isOutdated = FileTypeIndex.getFiles(
-            HybrisItemsXmlFileType.INSTANCE,
-            GlobalSearchScope.projectScope(project)
-        )
-            .any { file -> DefaultItemsFileValidation(project).isFileOutOfDate(file) }
-        if (isOutdated) {
-            Notifications.create(
-                NotificationType.WARNING,
-                HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
-                HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
+        ApplicationManager.getApplication().invokeLater {
+            val isOutdated = FileTypeIndex.getFiles(
+                HybrisItemsXmlFileType.INSTANCE,
+                GlobalSearchScope.projectScope(project)
             )
-                .important(true)
-                .hideAfter(10)
-                .notify(project)
+                .any { file -> DefaultItemsFileValidation(project).isFileOutOfDate(file) }
+            if (isOutdated) {
+                Notifications.create(
+                    NotificationType.WARNING,
+                    HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
+                    HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
+                )
+                    .important(true)
+                    .hideAfter(10)
+                    .notify(project)
+            }
         }
     }
 

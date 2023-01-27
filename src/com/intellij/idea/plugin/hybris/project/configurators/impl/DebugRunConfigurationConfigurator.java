@@ -70,16 +70,17 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         if (runManager.findConfigurationByName(configurationName) != null) {
             return;
         }
-        final RunnerAndConfigurationSettings runner = runManager.createConfiguration(
-            configurationName,
-            configurationFactory
-        );
-
-        final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
-        remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
-        remoteConfiguration.setAllowRunningInParallel(false);
 
         ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runWriteAction(() -> {
+            final RunnerAndConfigurationSettings runner = runManager.createConfiguration(
+                configurationName,
+                configurationFactory
+            );
+
+            final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
+            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
+            remoteConfiguration.setAllowRunningInParallel(false);
+
             runner.setActivateToolWindowBeforeRun(true);
             runner.storeInDotIdeaFolder();
             runManager.addConfiguration(runner);

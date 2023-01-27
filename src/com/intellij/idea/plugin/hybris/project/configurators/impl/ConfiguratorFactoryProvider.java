@@ -25,9 +25,12 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import com.intellij.openapi.extensions.ExtensionsArea;
 
-public class ConfiguratorFactoryProvider {
+public final class ConfiguratorFactoryProvider {
 
-    public ConfiguratorFactory get() {
+    private ConfiguratorFactoryProvider() {
+    }
+
+    public static ConfiguratorFactory get() {
         final Application application = ApplicationManager.getApplication();
         final ExtensionsArea extensionsArea = application.getExtensionArea();
 

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
@@ -37,9 +38,10 @@ public class OotbHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
     public OotbHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
+        @NotNull final ExtensionInfo extensionInfo
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
+        super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
     }
 
     @Override

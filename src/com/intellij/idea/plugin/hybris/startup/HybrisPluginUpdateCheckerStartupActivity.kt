@@ -24,12 +24,12 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectPostStartupActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
 
-class HybrisPluginUpdateCheckerStartupActivity : StartupActivity.Background {
+class HybrisPluginUpdateCheckerStartupActivity : ProjectPostStartupActivity {
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         ApplicationManager.getApplication().invokeLater {
             UpdateSettings.getInstance().state.isCheckNeeded = true
             val checker = StandalonePluginUpdateChecker(

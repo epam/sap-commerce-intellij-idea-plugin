@@ -176,7 +176,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
-        final ConfiguratorFactory configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactoryProvider.class).get();
+        final ConfiguratorFactory configuratorFactory = ConfiguratorFactoryProvider.get();
 
         this.performProjectsCleanup(allModules);
 

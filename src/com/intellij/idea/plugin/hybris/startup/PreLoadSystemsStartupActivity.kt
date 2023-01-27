@@ -22,11 +22,11 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectPostStartupActivity
 
-class PreLoadSystemsStartupActivity : StartupActivity {
+class PreLoadSystemsStartupActivity : ProjectPostStartupActivity {
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         DumbService.getInstance(project).runReadActionInSmartMode {
             TSMetaModelAccess.getInstance(project).getMetaModel()
             BSMetaModelAccess.getInstance(project).getMetaModel()

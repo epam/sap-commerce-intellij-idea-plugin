@@ -78,10 +78,8 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final ModifiableRootModel rootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
         for (HybrisModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
-            if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
-                if (extModules.contains(dependency)) {
-                    continue;
-                }
+            if (moduleDescriptor instanceof OotbHybrisModuleDescriptor && extModules.contains(dependency)) {
+                continue;
             }
 
             Optional<Module> targetDependencyModule = findModuleByNameIgnoreCase(allModules, dependency.getName());
@@ -98,7 +96,9 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final @NotNull Collection<Module> all,
         final @NotNull String name
     ) {
-        return all.stream().filter(m -> name.equalsIgnoreCase(m.getName())).findAny();
+        return all.stream()
+                  .filter(module -> name.equalsIgnoreCase(module.getName()))
+                  .findAny();
     }
 
 }

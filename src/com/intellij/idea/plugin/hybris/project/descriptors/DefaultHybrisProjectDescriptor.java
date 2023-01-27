@@ -222,7 +222,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             try {
                 final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor = new ConfigHybrisModuleDescriptor(
                     configDir,
-                    platformHybrisModuleDescriptor.getRootProjectDescriptor()
+                    platformHybrisModuleDescriptor.getRootProjectDescriptor(), configDir.getName()
                 );
                 LOG.info("Creating Overridden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
@@ -363,7 +363,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.isGroupModules());
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ApplicationManager.getApplication().getService(HybrisModuleDescriptorFactory.class);
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = HybrisModuleDescriptorFactory.getInstance();
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
@@ -469,7 +469,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
         try {
-            moduleDescriptors.add(new RootModuleDescriptor(rootDirectory, this));
+            moduleDescriptors.add(new RootModuleDescriptor(rootDirectory, this, rootDirectory.getName()));
         } catch (HybrisConfigurationException e) {
             LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
             pathsFailedToImport.add(rootDirectory);
@@ -982,9 +982,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected Set<HybrisModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = ApplicationManager.getApplication().getService(
-            HybrisModuleDescriptorFactory.class
-        );
+        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = HybrisModuleDescriptorFactory.getInstance();
 
         final Set<HybrisModuleDescriptor> existingModules = new HashSet<>();
 

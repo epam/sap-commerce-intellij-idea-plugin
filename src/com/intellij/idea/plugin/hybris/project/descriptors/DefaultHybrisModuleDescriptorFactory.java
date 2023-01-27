@@ -18,15 +18,23 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.idea.eclipse.EclipseProjectFinder;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Created 1:58 PM 20 June 2015.
@@ -61,32 +69,32 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         }
         if (hybrisProjectService.isConfigModule(resolvedFile)) {
             LOG.info("Creating Config module for " + path);
-            return new ConfigHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new ConfigHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
         }
 
         if (hybrisProjectService.isPlatformModule(resolvedFile)) {
             LOG.info("Creating Platform module for " + path);
-            return new PlatformHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new PlatformHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, HybrisConstants.EXTENSION_NAME_PLATFORM);
         }
 
         if (hybrisProjectService.isCoreExtModule(resolvedFile)) {
             LOG.info("Creating Core EXT module for " + path);
-            return new CoreHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new CoreHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isPlatformExtModule(resolvedFile)) {
             LOG.info("Creating Platform EXT module for " + path);
-            return new ExtHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new ExtHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isOutOfTheBoxModule(resolvedFile, rootProjectDescriptor)) {
             LOG.info("Creating OOTB module for " + path);
-            return new OotbHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new OotbHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isHybrisModule(resolvedFile)) {
             LOG.info("Creating Custom hybris module for " + path);
-            return new CustomHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor);
+            return new CustomHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isGradleModule(resolvedFile)) {
@@ -100,7 +108,48 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         }
 
         LOG.info("Creating eclipse module for " + path);
-        return new EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor);
+        return new EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor, getEclipseModuleDescriptorName(resolvedFile));
+    }
+
+    private String getEclipseModuleDescriptorName(final File moduleRootDirectory) {
+        String projectName = EclipseProjectFinder.findProjectName(moduleRootDirectory.getAbsolutePath());
+        if (projectName != null) {
+            projectName = projectName.trim();
+            if (!projectName.isEmpty()) {
+                return projectName;
+            }
+        }
+        return moduleRootDirectory.getName();
+    }
+
+    @NotNull
+    private ExtensionInfo getExtensionInfo(final File moduleRootDirectory) throws HybrisConfigurationException {
+        final File hybrisProjectFile = new File(moduleRootDirectory, HybrisConstants.EXTENSION_INFO_XML);
+
+        final ExtensionInfo extensionInfo = unmarshalExtensionInfo(hybrisProjectFile);
+
+        if (null == extensionInfo.getExtension() || isBlank(extensionInfo.getExtension().getName())) {
+            throw new HybrisConfigurationException("Can not find module name using path: " + moduleRootDirectory);
+        }
+
+        return extensionInfo;
+    }
+
+    @NotNull
+    private ExtensionInfo unmarshalExtensionInfo(@NotNull final File hybrisProjectFile) throws HybrisConfigurationException {
+        Validate.notNull(hybrisProjectFile);
+
+        try {
+            return (ExtensionInfo) JAXBContext.newInstance(
+                                                  "com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo",
+                                                  ObjectFactory.class.getClassLoader()
+                                              )
+                                              .createUnmarshaller()
+                                              .unmarshal(hybrisProjectFile);
+        } catch (final JAXBException e) {
+            LOG.error("Can not unmarshal " + hybrisProjectFile.getAbsolutePath(), e);
+            throw new HybrisConfigurationException("Can not unmarshal " + hybrisProjectFile);
+        }
     }
 
 }

@@ -51,15 +51,10 @@ public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescript
 
     public PlatformHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor
+        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
+        @NotNull final String name
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor);
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return HybrisConstants.EXTENSION_NAME_PLATFORM;
+        super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
     @NotNull

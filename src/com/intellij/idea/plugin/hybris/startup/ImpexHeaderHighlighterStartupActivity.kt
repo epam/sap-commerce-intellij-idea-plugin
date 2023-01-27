@@ -25,12 +25,12 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectPostStartupActivity
 import com.intellij.psi.PsiManager
 
-class ImpexHeaderHighlighterStartupActivity : StartupActivity.DumbAware, Disposable {
+class ImpexHeaderHighlighterStartupActivity : ProjectPostStartupActivity, Disposable {
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
             return
         }
