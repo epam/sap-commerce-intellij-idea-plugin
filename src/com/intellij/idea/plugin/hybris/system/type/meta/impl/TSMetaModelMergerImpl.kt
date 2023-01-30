@@ -52,7 +52,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allRelationEnds }
-            .forEach { it.flattenType = TSMetaHelper.flattenType(it.type, allTypes) }
+            .forEach { it.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it), allTypes) }
 
         this
     }

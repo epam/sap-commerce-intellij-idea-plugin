@@ -26,5 +26,5 @@ class ItemResolveResult(private val myDom: ItemType) :
     TSReferenceBase.TSResolveResult {
     override fun getSemanticDomElement(): DomElement = myDom
     override fun getElement() = myDom.code.xmlAttributeValue
-    override fun isValidResult() = element != null
+    override fun isValidResult() = element != null && myDom.isValid
 }

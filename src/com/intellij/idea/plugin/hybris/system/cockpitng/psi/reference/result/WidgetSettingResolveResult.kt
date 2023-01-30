@@ -23,5 +23,5 @@ import com.intellij.psi.ResolveResult
 
 class WidgetSettingResolveResult(private val myDom: Setting) : ResolveResult {
     override fun getElement() = myDom.key.xmlAttributeValue
-    override fun isValidResult() = element != null
+    override fun isValidResult() = element != null && myDom.isValid
 }

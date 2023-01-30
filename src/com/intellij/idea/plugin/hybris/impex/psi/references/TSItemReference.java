@@ -23,15 +23,18 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveRe
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult;
 import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult;
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.idea.plugin.hybris.system.type.model.Relation;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -48,18 +51,37 @@ class TSItemReference extends TSReferenceBase<ImpexHeaderTypeName> {
     @NotNull
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
-        final TSMetaModelAccess metaService = getMetaModelAccess();
-        final String lookingForName = getElement().getText();
+        final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+        if (indicator != null && indicator.isCanceled()) return ResolveResult.EMPTY_ARRAY;
 
-        return Optional.ofNullable(metaService.findMetaItemByName(lookingForName))
-            .map(TSItemReference::resolveItem)
-            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(lookingForName))
-                              .map(TSGlobalMetaEnum::retrieveDom)
-                              .map(TSItemReference::resolveEnum))
-            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(lookingForName))
-                              .map(TSGlobalMetaRelation::retrieveDom)
-                              .map(TSItemReference::resolveRelation))
-            .orElse(ResolveResult.EMPTY_ARRAY);
+        final var cachedResolveResult = getElement().getUserData(ImpexHeaderTypeNameMixin.CACHE_KEY);
+        if (cachedResolveResult != null) return cachedResolveResult;
+
+        final var lookingForName = getValue();
+        final var metaService = getMetaModelAccess();
+
+        final var resolvedResults = Optional.ofNullable(metaService.findMetaItemByName(lookingForName))
+                                            .map(TSItemReference::resolveItem)
+                                            .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(lookingForName))
+                                                              .map(TSGlobalMetaEnum::retrieveDom)
+                                                              .map(TSItemReference::resolveEnum))
+                                            .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(lookingForName))
+                                                              .map(TSGlobalMetaRelation::retrieveDom)
+                                                              .map(TSItemReference::resolveRelation))
+                                            .orElse(ResolveResult.EMPTY_ARRAY);
+        getElement().putUserData(ImpexHeaderTypeNameMixin.CACHE_KEY, resolvedResults);
+        return resolvedResults;
+    }
+
+    @Override
+    public @Nullable PsiElement resolve() {
+        final var resolveResults = multiResolve(false);
+        if (resolveResults.length != 1) return null;
+
+        final var result = resolveResults[0];
+        if (!result.isValidResult()) return null;
+
+        return result.getElement();
     }
 
     private static ResolveResult[] resolveItem(final TSGlobalMetaItem metaItem) {

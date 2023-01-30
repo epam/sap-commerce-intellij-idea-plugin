@@ -21,9 +21,8 @@ package com.intellij.idea.plugin.hybris.impex.psi.references.result
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 
-class RelationResolveResult(private val myDom: Relation) :
-    TSReferenceBase.TSResolveResult {
+class RelationResolveResult(private val myDom: Relation) : TSReferenceBase.TSResolveResult {
     override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom.code.xmlAttributeValue
-    override fun isValidResult() = element != null
+    override fun isValidResult() = element != null && myDom.isValid
 }

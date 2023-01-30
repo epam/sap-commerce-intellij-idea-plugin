@@ -23,5 +23,5 @@ import com.intellij.psi.ResolveResult
 
 class ActionDefinitionResolveResult(private val myDom: ActionDefinition) : ResolveResult {
     override fun getElement() = myDom.id.xmlAttributeValue
-    override fun isValidResult() = element != null
+    override fun isValidResult() = element != null && myDom.isValid
 }

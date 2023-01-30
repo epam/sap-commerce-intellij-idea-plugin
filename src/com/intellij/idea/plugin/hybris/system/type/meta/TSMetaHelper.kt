@@ -64,6 +64,7 @@ class TSMetaHelper {
             return escapeType(flattenType)
         }
 
+        fun flattenType(meta: TSMetaRelation.TSMetaRelationElement) = flattenType(meta.collectionType, escapeType(meta.type))
         fun flattenType(meta: TSGlobalMetaCollection) = flattenType(meta.type, escapeType(meta.elementType))
         fun flattenType(meta: TSGlobalMetaMap) = "Map<${escapeType(meta.argumentType) ?: '?'}, ${escapeType(meta.returnType) ?: '?'}>"
         fun flattenType(meta: TSGlobalMetaRelation) =

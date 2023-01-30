@@ -3,11 +3,15 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemTypeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 
@@ -15,12 +19,13 @@ import com.intellij.psi.ResolveResult
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 
-abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), FlexibleSearchTableName {
+abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode),
+    FlexibleSearchTableName {
 
     private var myReference: TSItemRef? = null
 
     override fun getReferences(): Array<PsiReference> {
-        if (myReference == null) {
+        if (ImpexPsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = TSItemRef(this)
         }
         return arrayOf(myReference!!)
@@ -30,6 +35,10 @@ abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), 
         val result = super.clone() as TypeNameMixin
         result.myReference = null
         return result
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -1523585420205611226L
     }
 }
 
@@ -50,18 +59,14 @@ class TSItemRef(owner: FlexibleSearchTableName) : TSReferenceBase<FlexibleSearch
         return (items + relations).toTypedArray()
     }
 
-    private class ItemTypeResolveResult(private val localMetaItem: TSMetaItem) : ResolveResult {
+    override fun resolve(): PsiElement? {
+        val resolveResults = multiResolve(false)
+        if (resolveResults.size != 1) return null
 
-        override fun getElement() = localMetaItem.retrieveDom()?.code?.xmlAttributeValue
-
-        override fun isValidResult() = element != null
-    }
-
-    private class RelationResolveResult(private val localMetaRelation: TSMetaRelation) : ResolveResult {
-
-        override fun getElement() = localMetaRelation.retrieveDom()?.code?.xmlAttributeValue
-
-        override fun isValidResult() = element != null
+        return with (resolveResults[0]) {
+            if (this.isValidResult) return@with this.element
+            return@with null
+        }
     }
 
 }

@@ -65,7 +65,7 @@ public interface CollectionType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("elementtype")
-    @Convert(CompositeConverter.TypeOrEnum.class)
+    @Convert(CompositeConverter.TypeOrEnumOrAtomic.class)
     @Required
     GenericAttributeValue<String> getElementType();
 

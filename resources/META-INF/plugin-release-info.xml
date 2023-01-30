@@ -166,6 +166,7 @@
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185" target="_blank" rel="nofollow">#185</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/186" target="_blank" rel="nofollow">#186</a>)
                 </li>
+                <li><i>Bug Fix:</i> Wrong range in reference in Impex files in case of header Type or Columns changes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/196" target="_blank" rel="nofollow">#196</a>)</li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>

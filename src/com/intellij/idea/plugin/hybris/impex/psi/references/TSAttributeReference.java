@@ -33,6 +33,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -61,12 +62,15 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
     @Override
     public ResolveResult[] multiResolve(final boolean incompleteCode) {
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
-        if (indicator == null || indicator.isCanceled()) {
-            return ResolveResult.EMPTY_ARRAY;
-        }
+        if (indicator != null && indicator.isCanceled()) return ResolveResult.EMPTY_ARRAY;
+
+        final var cachedResolveResult = getElement().getUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY);
+        if (cachedResolveResult != null) return cachedResolveResult;
+
+        final String featureName = getValue();
+
         final TSMetaModelAccess metaModelAccess = getMetaModelAccess();
         final TSMetaItemService metaItemService = getMetaItemService();
-        final String featureName = getElement().getText().trim();
 
         List<? extends ResolveResult> result = tryResolveForItemType(metaModelAccess, metaItemService, featureName);
 
@@ -82,7 +86,20 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
             return ResolveResult.EMPTY_ARRAY;
         }
 
-        return result.toArray(new ResolveResult[0]);
+        final var resolvedResult = result.toArray(new ResolveResult[0]);
+        getElement().putUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY, resolvedResult);
+        return resolvedResult;
+    }
+
+    @Override
+    public @Nullable PsiElement resolve() {
+        final var resolveResults = multiResolve(false);
+        if (resolveResults.length != 1) return null;
+
+        final var result = resolveResults[0];
+        if (!result.isValidResult()) return null;
+
+        return result.getElement();
     }
 
     private List<EnumResolveResult> tryResolveForEnumType(final TSMetaModelAccess metaService, final String featureName) {

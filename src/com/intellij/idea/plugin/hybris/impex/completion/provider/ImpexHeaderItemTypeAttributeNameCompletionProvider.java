@@ -109,8 +109,12 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
 
     private static List<LookupElementBuilder> getCompletions(final TSGlobalMetaEnum meta) {
         return List.of(
-            LookupElementBuilder.create(CODE_ATTRIBUTE_NAME).withIcon(HybrisIcons.ATTRIBUTE),
-            LookupElementBuilder.create(NAME_ATTRIBUTE_NAME).withIcon(HybrisIcons.ATTRIBUTE)
+            LookupElementBuilder.create(CODE_ATTRIBUTE_NAME)
+                                .withIcon(HybrisIcons.ATTRIBUTE)
+                                .withTypeText("String", true),
+            LookupElementBuilder.create(NAME_ATTRIBUTE_NAME)
+                                .withIcon(HybrisIcons.ATTRIBUTE)
+                                .withTypeText("String", true)
         );
     }
 

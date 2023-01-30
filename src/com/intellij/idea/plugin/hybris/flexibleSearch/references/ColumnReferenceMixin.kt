@@ -3,6 +3,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
@@ -18,12 +19,13 @@ import java.util.*
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnReference {
+abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
+    FlexibleSearchColumnReference {
 
     private var reference: TSAttributeReference? = null
 
     override fun getReferences(): Array<PsiReference?> {
-        if (reference == null) {
+        if (ImpexPsiUtils.shouldCreateNewReference(reference, text)) {
             reference = TSAttributeReference(this)
         }
         return arrayOf(reference)
@@ -33,6 +35,10 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
         val result = super.clone() as ColumnReferenceMixin
         result.reference = null
         return result
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -4980389791496425285L
     }
 
 }
@@ -45,6 +51,16 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
             return findReference(deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
         }
         return findReference(findItemTypeReference(), featureName)
+    }
+
+    override fun resolve(): PsiElement? {
+        val resolveResults = multiResolve(false)
+        if (resolveResults.size != 1) return null
+
+        return with (resolveResults[0]) {
+            if (this.isValidResult) return@with this.element
+            return@with null
+        }
     }
 
     private fun hasPrefix(element: FlexibleSearchColumnReference) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
@@ -106,13 +122,13 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
 
     private class AttributeResolveResult(private val myDomAttribute: Attribute) : TSResolveResult {
         override fun getElement() = myDomAttribute.qualifier.xmlAttributeValue
-        override fun isValidResult() = element != null
+        override fun isValidResult() = element != null && myDomAttribute.isValid
         override fun getSemanticDomElement() = myDomAttribute
     }
 
     private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TSResolveResult {
         override fun getElement() = myDomRelationEnd.qualifier.xmlAttributeValue
-        override fun isValidResult() = element != null
+        override fun isValidResult() = element != null && myDomRelationEnd.isValid
         override fun getSemanticDomElement() = myDomRelationEnd
     }
 

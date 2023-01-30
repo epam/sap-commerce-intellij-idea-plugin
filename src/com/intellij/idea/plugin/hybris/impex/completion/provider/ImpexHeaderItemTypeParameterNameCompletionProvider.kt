@@ -70,13 +70,11 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         resultSet: CompletionResultSet
     ) {
         metaItem.allAttributes
-            .map { prop ->
-                val name = prop.name
-                val builder = LookupElementBuilder.create(name)
+            .map {
+                LookupElementBuilder.create(it.name)
                     .withIcon(HybrisIcons.ATTRIBUTE)
-                    .withStrikeoutness(prop.isDeprecated)
-                val typeText = getTypePresentableText(prop.type)
-                if (StringUtil.isEmpty(typeText)) builder else builder.withTypeText(typeText, true)
+                    .withStrikeoutness(it.isDeprecated)
+                    .withTypeText(it.flattenType, true)
             }
             .forEach { resultSet.addElement(it) }
 
@@ -84,6 +82,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             .map {
                 LookupElementBuilder.create(it.qualifier)
                     .withStrikeoutness(it.isDeprecated)
+                    .withTypeText(it.flattenType, true)
                     .withIcon(
                         when (it.end) {
                             TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
@@ -125,15 +124,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
 
     companion object {
 
-        val instance: CompletionProvider<CompletionParameters>
-            get() = ApplicationManager.getApplication().getService(ImpexHeaderItemTypeParameterNameCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ImpexHeaderItemTypeParameterNameCompletionProvider::class.java)
 
-        private fun getTypePresentableText(type: String?): String {
-            if (type == null) {
-                return ""
-            }
-            val index = type.lastIndexOf('.')
-            return if (index >= 0) type.substring(index + 1) else type
-        }
     }
 }

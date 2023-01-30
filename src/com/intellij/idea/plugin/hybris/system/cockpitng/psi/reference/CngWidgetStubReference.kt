@@ -45,6 +45,16 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
             ?: emptyArray()
     }
 
+    override fun resolve(): PsiElement? {
+        val resolveResults = multiResolve(false)
+        if (resolveResults.size != 1) return null
+
+        return with (resolveResults[0]) {
+            if (this.isValidResult) return@with this.element
+            return@with null
+        }
+    }
+
     companion object {
         private const val stubLength = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
     }

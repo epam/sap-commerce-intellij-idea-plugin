@@ -39,4 +39,14 @@ class CngWidgetDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<
             ?: emptyArray()
     }
 
+    override fun resolve(): PsiElement? {
+        val resolveResults = multiResolve(false)
+        if (resolveResults.size != 1) return null
+
+        return with (resolveResults[0]) {
+            if (this.isValidResult) return@with this.element
+            return@with null
+        }
+    }
+
 }

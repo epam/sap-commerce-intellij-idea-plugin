@@ -21,20 +21,13 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.checker.FSFromClauseKeywordsAnalyzer
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.checker.FSSelectClauseKeywordsAnalyzer
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.checker.FSWhereClauseKeywordsAnalyzer
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinCondition
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectList
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.ProcessingContext
 import javax.swing.Icon
 
 fun isFile(parameters: CompletionParameters) =

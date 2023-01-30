@@ -101,6 +101,17 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
         }
     }
 
+    public static class TypeOrEnumOrAtomic extends CompositeConverter<DomElement> {
+
+        public TypeOrEnumOrAtomic() {
+            super(
+                new EnumTypeConverter(),
+                new ItemTypeConverter(),
+                new AtomicTypeConverter()
+            );
+        }
+    }
+
     public static class AnyClassifier extends CompositeConverter<DomElement> {
 
         public AnyClassifier() {

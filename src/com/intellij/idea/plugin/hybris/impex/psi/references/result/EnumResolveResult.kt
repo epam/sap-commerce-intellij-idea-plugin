@@ -28,5 +28,5 @@ class EnumResolveResult(private val myDom: EnumType) :
     TSReferenceBase.TSResolveResult {
     override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom.xmlTag
-    override fun isValidResult() = element != null
+    override fun isValidResult() = element != null && myDom.isValid
 }

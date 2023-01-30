@@ -22,23 +22,26 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.tree.IElementType
-import java.util.Optional
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
+import java.util.*
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
 
-    private var myReference: PsiReference? = null
+    private var myReference: PsiReferenceBase.Poly<out PsiElement>? = null
 
     override fun getReferences(): Array<PsiReference> {
-        val leafType = Optional.ofNullable(firstChild)
-                .map<ASTNode> { it.node }
-                .map<IElementType> { it.elementType }
-                .orElse(null)
+        val leafType = firstChild
+            ?.node
+            ?.elementType
 
         if (ImpexTypes.DOCUMENT_ID == leafType) {
             if (myReference == null) {
@@ -47,7 +50,7 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             return arrayOf(myReference!!)
         }
 
-        if (myReference == null) {
+        if (ImpexPsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FunctionTSAttributeReference(this)
         }
         return arrayOf(myReference!!)
@@ -57,5 +60,14 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
         val result = super.clone() as ImpexParameterMixin
         result.myReference = null
         return result
+    }
+
+    override fun subtreeChanged() {
+        putUserData(CACHE_KEY, null)
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = -8834268360363491069L
+        val CACHE_KEY = Key.create<Array<ResolveResult>>("ATTRIBUTE_RESOLVED_RESULTS")
     }
 }

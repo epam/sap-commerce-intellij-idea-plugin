@@ -19,13 +19,20 @@ package com.intellij.idea.plugin.hybris.impex.psi.references;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -34,10 +41,24 @@ import java.util.Optional;
 public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElement implements
                                                                                     ImpexAnyHeaderParameterName {
 
+    public static final Key<ResolveResult[]> CACHE_KEY = Key.create("ATTRIBUTE_RESOLVED_RESULTS");
     private TSAttributeReference myReference;
 
     public ImpexAnyHeaderParameterNameMixin(@NotNull final ASTNode astNode) {
         super(astNode);
+    }
+
+    @Override
+    public void subtreeChanged() {
+        putUserData(CACHE_KEY, null);
+
+        final var header = PsiTreeUtil.getParentOfType(this, ImpexFullHeaderParameter.class);
+        if (header != null) {
+            header.getParametersList().stream()
+                  .map(ImpexParameters::getParameterList)
+                  .flatMap(Collection::stream)
+                  .forEach(it -> it.putUserData(ImpexParameterMixin.Companion.getCACHE_KEY(), null));
+        }
     }
 
     @NotNull
@@ -57,11 +78,11 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
         }
 
         //optimisation: dont even try for macro's and documents
-        if (!ImpexTypes.HEADER_PARAMETER_NAME.equals(leafType) && 
+        if (!ImpexTypes.HEADER_PARAMETER_NAME.equals(leafType) &&
             !ImpexTypes.FUNCTION.equals(leafType)) {
             return PsiReference.EMPTY_ARRAY;
         }
-        if (myReference == null) {
+        if (ImpexPsiUtils.shouldCreateNewReference(myReference, getText())) {
             myReference = new TSAttributeReference(this);
         }
         return new PsiReference[]{myReference};
