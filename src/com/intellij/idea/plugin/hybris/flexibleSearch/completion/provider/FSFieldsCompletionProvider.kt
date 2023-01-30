@@ -108,33 +108,11 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         itemTypeCode: String,
         resultSet: CompletionResultSet
     ) {
-        val metaItem = TSMetaModelAccess.getInstance(project).findMetaItemByName(itemTypeCode) ?: return
         val currentPrefix = resultSet.prefixMatcher.prefix
         val delimiters = arrayOf('.', ':')
         val emptyPrefixResultSet = resultSet.withPrefixMatcher(currentPrefix.substringAfter(delimiters))
 
-        metaItem.allAttributes
-            .map {
-                LookupElementBuilder.create(it.name)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType, true)
-                    .withIcon(HybrisIcons.ATTRIBUTE)
-            }
-            .forEach { emptyPrefixResultSet.addElement(it) }
-
-        metaItem.allRelationEnds
-            .map {
-                LookupElementBuilder.create(it.qualifier)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType)
-                    .withIcon(
-                        when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
-                        }
-                    )
-            }
-            .forEach { emptyPrefixResultSet.addElement(it) }
+        emptyPrefixResultSet.addAllElements(TSCompletionService.getInstance(project).getCompletions(itemTypeCode))
     }
 
     private fun String.substringAfter(delimiters: Array<Char>, missingDelimiterValue: String = this): String {
