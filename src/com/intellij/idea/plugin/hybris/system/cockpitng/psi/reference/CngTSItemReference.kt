@@ -20,13 +20,14 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -58,33 +59,23 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
         val lookingForName = value
 
         return metaModelAccess.findMetaItemByName(lookingForName)
-            ?.let { resolve(it) }
+            ?.let { PsiUtils.getValidResults(resolve(it)) }
             ?: metaModelAccess.findMetaEnumByName(lookingForName)
-                ?.let { resolve(it) }
+                ?.let { PsiUtils.getValidResults(resolve(it)) }
             ?: metaModelAccess.findMetaRelationByName(lookingForName)
-                ?.let { resolve(it) }
+                ?.let { PsiUtils.getValidResults(resolve(it)) }
             ?: emptyArray()
     }
 
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
-
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
-    }
-
-    private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.retrieveAllDoms()
+    private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.declarations
         .map { ItemResolveResult(it) }
         .toTypedArray()
 
-    private fun resolve(meta: TSGlobalMetaEnum): Array<ResolveResult> = meta.retrieveAllDoms()
+    private fun resolve(meta: TSGlobalMetaEnum): Array<ResolveResult> = meta.declarations
         .map { EnumResolveResult(it) }
         .toTypedArray()
 
-    private fun resolve(meta: TSGlobalMetaRelation): Array<ResolveResult> = meta.retrieveAllDoms()
+    private fun resolve(meta: TSGlobalMetaRelation): Array<ResolveResult> = meta.declarations
         .map { RelationResolveResult(it) }
         .toTypedArray()
 

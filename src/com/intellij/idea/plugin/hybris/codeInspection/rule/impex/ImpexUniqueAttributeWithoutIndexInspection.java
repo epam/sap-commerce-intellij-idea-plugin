@@ -178,6 +178,7 @@ public class ImpexUniqueAttributeWithoutIndexInspection extends LocalInspectionT
                          .map(resolve -> ObjectUtils.tryCast(resolve, TSResolveResult.class))
                          .filter(Objects::nonNull)
                          .map(TSResolveResult::getSemanticDomElement)
+                         .filter(Objects::nonNull)
                          .map(dom -> ObjectUtils.tryCast(dom, Attribute.class))
                          .filter(Objects::nonNull)
                          .findAny()

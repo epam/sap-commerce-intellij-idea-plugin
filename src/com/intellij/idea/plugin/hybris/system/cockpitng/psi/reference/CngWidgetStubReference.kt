@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
@@ -37,22 +38,10 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
         val metaModel = CngMetaModelAccess.getInstance(element.project).getMetaModel()
         return metaModel
             .editorDefinitions[value]
-            ?.retrieveDom()
-            ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
+            ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
             ?: metaModel.actionDefinitions[value]
-                ?.retrieveDom()
-                ?.let { arrayOf(ActionDefinitionResolveResult(it)) }
+                ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
             ?: emptyArray()
-    }
-
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
-
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
     }
 
     companion object {

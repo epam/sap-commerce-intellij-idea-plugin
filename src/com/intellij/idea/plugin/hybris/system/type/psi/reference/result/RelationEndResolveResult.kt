@@ -18,12 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
-import com.intellij.psi.ResolveResult
+import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 
-class ItemTypeResolveResult(private val localMetaItem: TSMetaItem) : ResolveResult {
-
-    override fun getElement() = localMetaItem.retrieveDom()?.code?.xmlAttributeValue
-
-    override fun isValidResult() = element != null && (localMetaItem.retrieveDom()?.isValid ?: false)
+class RelationEndResolveResult(
+    myMeta: TSMetaRelation.TSMetaRelationElement
+) : TSReferenceBase.TSResolveResult {
+    private val myDom: RelationElement? = myMeta.retrieveDom()
+    override fun getSemanticDomElement() = myDom
+    override fun getElement() = myDom?.qualifier?.xmlAttributeValue
+    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

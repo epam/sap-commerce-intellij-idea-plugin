@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
@@ -82,7 +82,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
             !ImpexTypes.FUNCTION.equals(leafType)) {
             return PsiReference.EMPTY_ARRAY;
         }
-        if (ImpexPsiUtils.shouldCreateNewReference(myReference, getText())) {
+        if (PsiUtils.shouldCreateNewReference(myReference, getText())) {
             myReference = new TSAttributeReference(this);
         }
         return new PsiReference[]{myReference};

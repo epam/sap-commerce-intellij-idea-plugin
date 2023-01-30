@@ -18,27 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeResolveResult;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult;
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult;
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase;
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult;
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -64,8 +62,8 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
         final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
         if (indicator != null && indicator.isCanceled()) return ResolveResult.EMPTY_ARRAY;
 
-        final var cachedResolveResult = getElement().getUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY);
-        if (cachedResolveResult != null) return cachedResolveResult;
+        var resolvedResult = getElement().getUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY);
+        if (resolvedResult != null) return PsiUtils.getValidResults(resolvedResult);
 
         final String featureName = getValue();
 
@@ -86,20 +84,9 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
             return ResolveResult.EMPTY_ARRAY;
         }
 
-        final var resolvedResult = result.toArray(new ResolveResult[0]);
+        resolvedResult = PsiUtils.getValidResults(result.toArray(new ResolveResult[0]));
         getElement().putUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY, resolvedResult);
         return resolvedResult;
-    }
-
-    @Override
-    public @Nullable PsiElement resolve() {
-        final var resolveResults = multiResolve(false);
-        if (resolveResults.length != 1) return null;
-
-        final var result = resolveResults[0];
-        if (!result.isValidResult()) return null;
-
-        return result.getElement();
     }
 
     private List<EnumResolveResult> tryResolveForEnumType(final TSMetaModelAccess metaService, final String featureName) {
@@ -107,7 +94,6 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
             .map(PsiElement::getText)
             .map(metaService::findMetaEnumByName)
             .filter(it -> CODE_ATTRIBUTE_NAME.equals(featureName) || NAME_ATTRIBUTE_NAME.equals(featureName))
-            .map(TSMetaEnum::retrieveDom)
             .map(EnumResolveResult::new)
             .map(Collections::singletonList)
             .orElse(null);
@@ -126,9 +112,7 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
 
         metaItemService.findRelationEndsByQualifier(metaItem.get(), featureName, true)
                        .stream()
-                       .map(TSMetaRelation.TSMetaRelationElement::retrieveDom)
-                       .filter(Objects::nonNull)
-                       .map(RelationElementResolveResult::new)
+                       .map(RelationEndResolveResult::new)
                        .collect(Collectors.toCollection(() -> result));
 
         return result;
@@ -140,18 +124,12 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
             .map(metaService::findMetaRelationByName)
             .<List<ResolveResult>>map(meta -> {
                 if (SOURCE_ATTRIBUTE_NAME.equalsIgnoreCase(featureName)) {
-                    final var dom = meta.getSource().retrieveDom();
-                    return dom != null
-                        ? Collections.singletonList(new RelationElementResolveResult(dom))
-                        : null;
+                    return Collections.singletonList(new RelationEndResolveResult(meta.getSource()));
                 } else if (TARGET_ATTRIBUTE_NAME.equalsIgnoreCase(featureName)) {
-                    final var dom = meta.getTarget().retrieveDom();
-                    return dom != null
-                        ? Collections.singletonList(new RelationElementResolveResult(dom))
-                        : null;
+                    return Collections.singletonList(new RelationEndResolveResult(meta.getTarget()));
                 }
 
-                return Optional.ofNullable(metaService.findMetaItemByName("Link"))
+                return Optional.ofNullable(metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK))
                     .map(metaLink -> resolveMetaItemAttributes(metaItemService, featureName, metaLink))
                     .orElse(null);
             })
@@ -164,8 +142,6 @@ class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> 
         final TSGlobalMetaItem metaItem
     ) {
         return metaItemService.findAttributesByName(metaItem, featureName, true).stream()
-                              .map(TSGlobalMetaItem.TSGlobalMetaItemAttribute::retrieveDom)
-                              .filter(Objects::nonNull)
                               .map(AttributeResolveResult::new)
                               .collect(Collectors.toCollection(LinkedList::new));
     }

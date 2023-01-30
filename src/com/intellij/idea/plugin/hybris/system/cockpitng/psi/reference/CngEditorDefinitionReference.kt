@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
 import com.intellij.openapi.util.TextRange
@@ -31,17 +32,7 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
 
     override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
         .editorDefinitions[value]
-        ?.retrieveDom()
-        ?.let { arrayOf(EditorDefinitionResolveResult(it)) }
+        ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
         ?: emptyArray()
 
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
-
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
-    }
 }

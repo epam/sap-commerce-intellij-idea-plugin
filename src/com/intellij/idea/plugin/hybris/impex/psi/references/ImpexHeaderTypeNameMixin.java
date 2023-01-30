@@ -21,7 +21,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiReference;
@@ -56,7 +56,7 @@ public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement impl
     @NotNull
     @Override
     public final PsiReference[] getReferences() {
-        if (ImpexPsiUtils.shouldCreateNewReference(myReference, getText())) {
+        if (PsiUtils.shouldCreateNewReference(myReference, getText())) {
             myReference = new TSItemReference(this);
         }
         return new PsiReference[]{myReference};

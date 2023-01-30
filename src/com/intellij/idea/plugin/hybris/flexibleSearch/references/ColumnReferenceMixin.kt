@@ -2,19 +2,24 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute
-import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import java.util.*
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -25,7 +30,7 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
     private var reference: TSAttributeReference? = null
 
     override fun getReferences(): Array<PsiReference?> {
-        if (ImpexPsiUtils.shouldCreateNewReference(reference, text)) {
+        if (PsiUtils.shouldCreateNewReference(reference, text)) {
             reference = TSAttributeReference(this)
         }
         return arrayOf(reference)
@@ -43,59 +48,81 @@ abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
 
 }
 
-internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner), HighlightedReference {
+internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner),
+    HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val featureName = element.text.replace("!", "")
-        if (hasPrefix(element)) {
-            return findReference(deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
+        val result = if (hasPrefix(element)) {
+            findReference(deepSearchOfTypeReference(element, element.firstChild.text), element.lastChild.text)
+        } else {
+            findReference(findItemTypeReference(), featureName)
         }
-        return findReference(findItemTypeReference(), featureName)
+        return PsiUtils.getValidResults(result)
     }
 
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
+    private fun hasPrefix(element: FlexibleSearchColumnReference) =
+        ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
 
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
-    }
-
-    private fun hasPrefix(element: FlexibleSearchColumnReference) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
-
-    private fun findReference(itemType: Optional<FlexibleSearchTableName>, refName: String): Array<ResolveResult> {
+    private fun findReference(itemType: FlexibleSearchTableName?, refName: String): Array<ResolveResult> {
         val metaService = TSMetaModelAccess.getInstance(project)
-        val metaItem = itemType
-                .map { it.text.replace("!", "") }
-                .map { metaService.findMetaItemByName(it) }
+        val type = itemType
+            ?.text
+            ?.replace("!", "")
+            ?: return ResolveResult.EMPTY_ARRAY
+        return tryResolveByItemType(type, refName, metaService)
+            ?: tryResolveByRelationType(type, refName, metaService)
+            ?: tryResolveByEnumType(type, refName, metaService)
+            ?: ResolveResult.EMPTY_ARRAY
+    }
 
-        if (!metaItem.isPresent) {
-            return ResolveResult.EMPTY_ARRAY
+    private fun tryResolveByItemType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? =
+        metaService.findMetaItemByName(type)
+            ?.let {
+                val attributes = it.allAttributes
+                    .filter { refName.equals(it.name, true) }
+                    .map { AttributeResolveResult(it) }
+
+                val relations = it.allRelationEnds
+                    .filter { refName.equals(it.name, true) }
+                    .map { RelationEndResolveResult(it) }
+
+                (attributes + relations).toTypedArray()
+            }
+
+    private fun tryResolveByRelationType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
+        val meta = metaService.findMetaRelationByName(type) ?: return null
+
+        if (SOURCE_ATTRIBUTE_NAME.equals(refName, true)) {
+            return arrayOf(RelationEndResolveResult(meta.source))
+        } else if (TARGET_ATTRIBUTE_NAME.equals(refName, true)) {
+            return arrayOf(RelationEndResolveResult(meta.target))
         }
 
-        val attributes = metaItem.get().allAttributes
-            .filter { refName.equals(it.name, true) }
-            .mapNotNull { it.retrieveDom() }
-            .map { AttributeResolveResult(it) }
-
-        val relations = metaItem.get().allRelationEnds
-            .filter { refName.equals(it.name, true) }
-            .mapNotNull { it.retrieveDom() }
-            .map { RelationElementResolveResult(it) }
-
-        return (attributes + relations).toTypedArray() 
+        return metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
+            ?.attributes
+            ?.get(refName)
+            ?.let { arrayOf(AttributeResolveResult(it)) }
     }
 
-    private fun findItemTypeReference(): Optional<FlexibleSearchTableName> {
-        return Optional.ofNullable(PsiTreeUtil.getParentOfType(element, FlexibleSearchQuerySpecification::class.java))
-                .map { PsiTreeUtil.findChildOfType(it, FlexibleSearchFromClause::class.java) }
-                .map { it!!.tableReferenceList }
-                .map { PsiTreeUtil.findChildOfType(it, FlexibleSearchTableName::class.java) }
+    private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
+        val meta = metaService.findMetaEnumByName(type) ?: return null
+
+        return if (CODE_ATTRIBUTE_NAME == refName || NAME_ATTRIBUTE_NAME == refName) {
+            arrayOf(EnumResolveResult(meta))
+        } else return null
     }
 
-    private fun deepSearchOfTypeReference(elem: PsiElement, prefix: String): Optional<FlexibleSearchTableName> {
+    private fun findItemTypeReference(): FlexibleSearchTableName? {
+        return PsiTreeUtil.getParentOfType(element, FlexibleSearchQuerySpecification::class.java)
+            ?.let {
+                PsiTreeUtil.findChildOfType(it, FlexibleSearchFromClause::class.java)
+                    ?.tableReferenceList
+                    ?.let { PsiTreeUtil.findChildOfType(it, FlexibleSearchTableName::class.java) }
+            }
+    }
+
+    private fun deepSearchOfTypeReference(elem: PsiElement, prefix: String): FlexibleSearchTableName? {
         val parent = PsiTreeUtil.getParentOfType(elem, FlexibleSearchQuerySpecification::class.java)
         val tables = PsiTreeUtil.findChildrenOfType(parent, FlexibleSearchTableReference::class.java).toList()
 
@@ -107,29 +134,16 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
         return if (tableReference == null && parent != null) {
             deepSearchOfTypeReference(parent, prefix)
         } else {
-            Optional.ofNullable(PsiTreeUtil.findChildOfType(tableReference, FlexibleSearchTableName::class.java))
+            PsiTreeUtil.findChildOfType(tableReference, FlexibleSearchTableName::class.java)
         }
     }
 
-    private fun findCorName(tableName: FlexibleSearchTableName?) : String {
+    private fun findCorName(tableName: FlexibleSearchTableName?): String {
         val corNameEl = PsiTreeUtil.findSiblingForward(tableName!!.originalElement, FlexibleSearchTypes.CORRELATION_NAME, null)
         if (corNameEl == null) {
             return tableName.text
-        } 
+        }
         return corNameEl.text
-    }
-        
-
-    private class AttributeResolveResult(private val myDomAttribute: Attribute) : TSResolveResult {
-        override fun getElement() = myDomAttribute.qualifier.xmlAttributeValue
-        override fun isValidResult() = element != null && myDomAttribute.isValid
-        override fun getSemanticDomElement() = myDomAttribute
-    }
-
-    private class RelationElementResolveResult(private val myDomRelationEnd: RelationElement) : TSResolveResult {
-        override fun getElement() = myDomRelationEnd.qualifier.xmlAttributeValue
-        override fun isValidResult() = element != null && myDomRelationEnd.isValid
-        override fun getSemanticDomElement() = myDomRelationEnd
     }
 
 }

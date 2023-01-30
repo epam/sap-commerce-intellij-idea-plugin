@@ -36,7 +36,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
@@ -650,12 +649,4 @@ public final class ImpexPsiUtils {
         return parameterSeparators.get(columnNumber);
     }
 
-    public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase.Poly<? extends PsiElement> reference, final String text) {
-        return reference == null
-               || (text != null
-                   && (
-                       text.length() != reference.getRangeInElement().getLength()
-                       || !text.equals(reference.getValue()))
-               );
-    }
 }

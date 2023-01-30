@@ -27,6 +27,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -75,7 +76,7 @@ public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferen
 
     public interface TSResolveResult extends ResolveResult {
 
-        @NotNull
+        @Nullable
         DomElement getSemanticDomElement();
 
     }

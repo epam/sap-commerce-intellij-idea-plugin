@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.AttributeResolveResult
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationElementResolveResult
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -42,23 +43,11 @@ open class CngTSItemAttributeReference(element: PsiElement) : TSReferenceBase<Ps
 
         return metaItemService.findAttributesByName(meta, value, true)
             ?.firstOrNull()
-            ?.retrieveDom()
-            ?.let { arrayOf(AttributeResolveResult(it)) }
+            ?.let { PsiUtils.getValidResults(arrayOf(AttributeResolveResult(it))) }
             ?: metaItemService.findRelationEndsByQualifier(meta, value, true)
                 ?.firstOrNull()
-                ?.retrieveDom()
-                ?.let { arrayOf(RelationElementResolveResult(it)) }
+                ?.let { PsiUtils.getValidResults(arrayOf(RelationEndResolveResult(it))) }
             ?: emptyArray()
-    }
-
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
-
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
     }
 
     protected open fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)

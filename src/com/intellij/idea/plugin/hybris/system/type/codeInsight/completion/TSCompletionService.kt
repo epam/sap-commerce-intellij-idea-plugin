@@ -16,15 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
+package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMetaActionDefinition
-import com.intellij.psi.ResolveResult
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.project.Project
 
-class ActionDefinitionResolveResult(
-    meta: CngMetaActionDefinition
-) : ResolveResult {
-    private val myDom = meta.retrieveDom()
-    override fun getElement() = myDom?.id?.xmlAttributeValue
-    override fun isValidResult() = element != null && myDom?.isValid ?: false
+interface TSCompletionService {
+
+    /**
+     * This method should return lookup elements for possible type code, it can be Item/Enum or Relation
+     */
+    fun getCompletions(typeCode: String): List<LookupElementBuilder>
+
+    companion object {
+        fun getInstance(project: Project): TSCompletionService = project.getService(TSCompletionService::class.java)
+    }
 }

@@ -28,10 +28,15 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static com.intellij.openapi.util.io.FileUtil.normalize;
 
@@ -96,5 +101,21 @@ public final class PsiUtils {
             return false;
         }
         return true;
+    }
+
+    public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase.Poly<? extends PsiElement> reference, final String text) {
+        return reference == null
+               || (text != null
+                   && (
+                       text.length() != reference.getRangeInElement().getLength()
+                       || !text.equals(reference.getValue()))
+               );
+    }
+
+    @NotNull
+    public static ResolveResult[] getValidResults(final ResolveResult[] resolveResults) {
+        return Arrays.stream(resolveResults)
+                     .filter(ResolveResult::isValidResult)
+                     .toArray(ResolveResult[]::new);
     }
 }

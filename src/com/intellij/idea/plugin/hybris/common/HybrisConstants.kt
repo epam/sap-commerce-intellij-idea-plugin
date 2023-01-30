@@ -165,6 +165,7 @@ object HybrisConstants {
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
+    const val TS_TYPE_LINK = "Link"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_JAVA_LANG_PREFIX = "java.lang."
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"

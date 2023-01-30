@@ -23,9 +23,9 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.ide.highlighter.JavaHighlightingColors.CLASS_NAME_ATTRIBUTES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACES;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.BRACKETS;
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.FUNCTION_DECLARATION;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INSTANCE_FIELD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.LINE_COMMENT;
@@ -49,7 +49,7 @@ public final class FlexibleSearchHighlighterColors {
     public static final TextAttributesKey FS_NUMBER = key("NUMBER", NUMBER);
 
     public static final TextAttributesKey FS_COLUMN = key("COLUMN", INSTANCE_FIELD);
-    public static final TextAttributesKey FS_TABLE = key("TABLE NAME", CLASS_NAME_ATTRIBUTES);
+    public static final TextAttributesKey FS_TABLE = key("TABLE NAME", FUNCTION_DECLARATION);
 
     public static final TextAttributesKey FS_COMMENT = key("COMMENT", LINE_COMMENT);
 

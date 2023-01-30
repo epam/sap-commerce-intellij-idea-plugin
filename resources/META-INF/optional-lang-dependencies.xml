@@ -278,6 +278,8 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordMacroCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordModeCompletionProvider"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl.DefaultTSCompletionService"/>
 
         <!-- ####################################################################################################### -->
 

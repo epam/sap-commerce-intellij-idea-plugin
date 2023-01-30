@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange

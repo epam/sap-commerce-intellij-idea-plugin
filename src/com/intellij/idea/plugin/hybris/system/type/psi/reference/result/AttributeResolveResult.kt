@@ -16,15 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
+package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMetaActionDefinition
-import com.intellij.psi.ResolveResult
+import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 
-class ActionDefinitionResolveResult(
-    meta: CngMetaActionDefinition
-) : ResolveResult {
-    private val myDom = meta.retrieveDom()
-    override fun getElement() = myDom?.id?.xmlAttributeValue
-    override fun isValidResult() = element != null && myDom?.isValid ?: false
+class AttributeResolveResult(
+    myMeta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
+) : TSReferenceBase.TSResolveResult {
+    private val myDom: Attribute? = myMeta.retrieveDom()
+    override fun getSemanticDomElement() = myDom
+    override fun getElement() = myDom?.qualifier?.xmlAttributeValue
+    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

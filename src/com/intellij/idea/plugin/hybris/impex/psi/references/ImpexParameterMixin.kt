@@ -22,14 +22,13 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import java.util.*
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -50,7 +49,7 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             return arrayOf(myReference!!)
         }
 
-        if (ImpexPsiUtils.shouldCreateNewReference(myReference, text)) {
+        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FunctionTSAttributeReference(this)
         }
         return arrayOf(myReference!!)

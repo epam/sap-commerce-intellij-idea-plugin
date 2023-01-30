@@ -19,14 +19,9 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.EnumResolveResult
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.ItemResolveResult
-import com.intellij.idea.plugin.hybris.impex.psi.references.result.RelationResolveResult
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.WidgetResolveResult
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
@@ -39,19 +34,8 @@ class CngWidgetReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement
 
         return CngMetaModelAccess.getInstance(element.project).getMetaModel()
             .widgets[lookingForName]
-            ?.retrieveDom()
-            ?.let { arrayOf(WidgetResolveResult(it)) }
+            ?.let { PsiUtils.getValidResults(arrayOf(WidgetResolveResult(it))) }
             ?: emptyArray()
-    }
-
-    override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        if (resolveResults.size != 1) return null
-
-        return with (resolveResults[0]) {
-            if (this.isValidResult) return@with this.element
-            return@with null
-        }
     }
 
 }

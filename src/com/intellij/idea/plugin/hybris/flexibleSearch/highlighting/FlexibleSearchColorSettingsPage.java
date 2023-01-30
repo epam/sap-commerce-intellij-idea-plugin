@@ -41,6 +41,7 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.Flexib
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARAMETER;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_PARENTHESES;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_SYMBOL;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FS_TABLE;
 
 public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
 
@@ -51,6 +52,7 @@ public class FlexibleSearchColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Column", FS_COLUMN),
         new AttributesDescriptor("Comma", FS_SYMBOL),
         new AttributesDescriptor("Number", FS_NUMBER),
+        new AttributesDescriptor("Table", FS_TABLE),
         new AttributesDescriptor("Braces", FS_BRACES),
         new AttributesDescriptor("Brackets", FS_BRACKETS),
         new AttributesDescriptor("Parentheses", FS_PARENTHESES),
