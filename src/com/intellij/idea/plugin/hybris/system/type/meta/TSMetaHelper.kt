@@ -43,6 +43,7 @@ class TSMetaHelper {
                     Cardinality.ONE -> "1"
                     Cardinality.MANY -> "n"
                 }
+
                 TSMetaRelation.RelationEnd.TARGET -> when (cardinality) {
                     Cardinality.ONE -> "1"
                     Cardinality.MANY -> "m"
@@ -50,12 +51,24 @@ class TSMetaHelper {
             }
         }
 
-        fun flattenType(meta: TSMetaItem.TSMetaItemAttribute) = escapeType(meta.type)
-        fun flattenType(meta: TSMetaRelation.TSMetaRelationElement) = flattenType(meta.collectionType, escapeType(meta.type))
+        fun flattenType(plainType: String, allTypes: Map<String, TSTypedClassifier>): String? {
+            var type = plainType
+            val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
+            if (localized) {
+                type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
+            }
+            var flattenType = allTypes[type]?.flattenType ?: plainType
+            flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType
+            else flattenType
+
+            return escapeType(flattenType)
+        }
+
         fun flattenType(meta: TSGlobalMetaCollection) = flattenType(meta.type, escapeType(meta.elementType))
         fun flattenType(meta: TSGlobalMetaMap) = "Map<${escapeType(meta.argumentType) ?: '?'}, ${escapeType(meta.returnType) ?: '?'}>"
         fun flattenType(meta: TSGlobalMetaRelation) =
             escapeType(meta.source.type) + " [${mapCardinality(meta.source)}:${mapCardinality(meta.target)}] " + escapeType(meta.target.type)
+
         fun flattenType(meta: TSGlobalMetaAtomic) = meta.name
         fun flattenType(meta: TSGlobalMetaItem) = meta.name
         fun flattenType(meta: TSGlobalMetaEnum) = meta.name

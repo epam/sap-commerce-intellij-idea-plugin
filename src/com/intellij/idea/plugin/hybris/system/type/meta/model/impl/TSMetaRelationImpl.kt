@@ -74,7 +74,8 @@ internal class TSMetaRelationImpl(
         override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
-        override var flattenType: String? = TSMetaHelper.flattenType(this)
+        // type will be flattened after merge, we need to know exact type to expand it
+        override var flattenType: String? = null
 
         override fun toString() = "RelationElement(module=$module, name=$name, isCustom=$isCustom)"
     }

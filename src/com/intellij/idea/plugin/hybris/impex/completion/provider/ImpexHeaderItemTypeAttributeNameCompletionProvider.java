@@ -99,7 +99,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
         final var typeCode = headerTypeName.getText();
 
         Optional.ofNullable(metaService.findMetaItemByName(typeCode))
-            .map(meta -> ImpexHeaderItemTypeAttributeNameCompletionProvider.getCompletions(meta))
+            .map(ImpexHeaderItemTypeAttributeNameCompletionProvider::getCompletions)
             .or(() -> Optional.ofNullable(metaService.findMetaEnumByName(typeCode))
                               .map(ImpexHeaderItemTypeAttributeNameCompletionProvider::getCompletions))
             .or(() -> Optional.ofNullable(metaService.findMetaRelationByName(typeCode))

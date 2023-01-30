@@ -48,27 +48,11 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allAttributes }
             .filter { it.type != null }
-            .forEach {
-                var type = it.type!!
-                val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
-                if (localized) {
-                    type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
-                }
-                val flattenType = allTypes[type]?.flattenType ?: it.type
-                it.flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType else flattenType
-            }
+            .forEach { it.flattenType = TSMetaHelper.flattenType(it.type!!, allTypes) }
 
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allRelationEnds }
-            .forEach {
-                var type = it.type
-                val localized = type.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
-                if (localized) {
-                    type = type.replace(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, "")
-                }
-                val flattenType = allTypes[type]?.flattenType ?: it.type
-                it.flattenType = if (localized) HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX + flattenType else flattenType
-            }
+            .forEach { it.flattenType = TSMetaHelper.flattenType(it.type, allTypes) }
 
         this
     }

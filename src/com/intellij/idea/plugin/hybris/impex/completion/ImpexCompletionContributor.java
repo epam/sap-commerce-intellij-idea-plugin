@@ -153,13 +153,6 @@ public class ImpexCompletionContributor extends CompletionContributor {
             ImpexKeywordMacroCompletionProvider.Companion.getInstance()
         );
 
-        // case: macros keywords
-        extend(
-            CompletionType.BASIC,
-            topLevel(),
-            ImpexKeywordMacroCompletionProvider.Companion.getInstance()
-        );
-
         // case: impex macros
         extend(
             CompletionType.BASIC,
