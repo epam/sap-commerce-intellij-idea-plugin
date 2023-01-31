@@ -18,41 +18,36 @@
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.idea.plugin.hybris.spring.TSInterceptorSpringBuilderFactory
-import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
-import com.intellij.psi.PsiClass
+import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiLiteralExpression
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.parentOfType
-import java.util.*
+import com.intellij.psi.util.nextLeaf
+import com.intellij.psi.xml.XmlAttribute
+import com.intellij.psi.xml.XmlAttributeValue
+import com.intellij.psi.xml.XmlTag
 
-class TSInterceptorLineMarkerProvider : AbstractItemLineMarkerProvider<PsiField>() {
+class TSInterceptorLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
-    override fun canProcess(psi: PsiElement?) = psi is PsiField
-            && psi.name == HybrisConstants.TYPECODE_FIELD_NAME
+    override fun collectNavigationMarkers(
+        psi: PsiElement,
+        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
+    ) {
+        if (psi !is XmlAttributeValue || !psi.isValid) return
+        if (!TSUtils.isTypeSystemXmlFile(psi.getContainingFile())) return
 
-    override fun getEmptyPopupText() = message("hybris.editor.gutter.ts.interceptor.no.matches")
-    override fun getPopupTitle() = message("hybris.editor.gutter.ts.interceptor.choose.title")
-    override fun getTooltipText() = message("hybris.editor.gutter.ts.interceptor.tooltip.text")
+        val xmlAttribute = psi.parent
+        if (!(xmlAttribute.isValid && xmlAttribute is XmlAttribute && xmlAttribute.name == "code")) return
 
-    override fun collectDeclarations(psi: PsiField?): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        val psiClass = psi?.parentOfType<PsiClass>() ?: return Optional.empty()
-        if (!ModelsUtils.isModelFile(psiClass)) return Optional.empty()
-        val project = psi.project
+        val xmlTag = xmlAttribute.parent
+        if (!(xmlTag.isValid && xmlTag is XmlTag && xmlTag.name == "itemtype")) return
 
-        return psi.childrenOfType<PsiLiteralExpression>()
-            .mapNotNull {
-                val typeCode = it.value.toString()
-                TSInterceptorSpringBuilderFactory.createGutterBuilder(project, typeCode)
-                    ?.createSpringGroupLineMarkerInfo(psi.nameIdentifier)
+        psi.nextLeaf { it.text.trim().replace("\"", "") != "" }
+            ?.let { leaf ->
+                TSInterceptorSpringBuilderFactory.createGutterBuilder(psi.project, psi.value)
+                    ?.createSpringGroupLineMarkerInfo(leaf)
+                    ?.let { result.add(it) }
             }
-            .map { Optional.of(it) }
-            .firstOrNull()
-            ?: Optional.empty()
     }
 
 }

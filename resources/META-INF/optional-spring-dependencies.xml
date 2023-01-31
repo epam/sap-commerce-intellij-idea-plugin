@@ -27,8 +27,8 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringConfigurator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisSpringProcessReferenceProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorLineMarkerProvider"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSInterceptorGutterAnnotator"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorModelLineMarkerProvider"/>
 
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSAttributeHandlerGutterAnnotator"/>
 
