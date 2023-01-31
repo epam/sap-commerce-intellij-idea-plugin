@@ -22,10 +22,8 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.idea.plugin.hybris.spring.TSInterceptorSpringBuilderFactory
 import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.nextLeaf
-import com.intellij.psi.xml.XmlAttribute
-import com.intellij.psi.xml.XmlAttributeValue
-import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.xml.*
 
 class TSInterceptorLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
@@ -42,7 +40,8 @@ class TSInterceptorLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val xmlTag = xmlAttribute.parent
         if (!(xmlTag.isValid && xmlTag is XmlTag && xmlTag.name == "itemtype")) return
 
-        psi.nextLeaf { it.text.trim().replace("\"", "") != "" }
+        psi.childrenOfType<XmlToken>()
+            .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?.let { leaf ->
                 TSInterceptorSpringBuilderFactory.createGutterBuilder(psi.project, psi.value)
                     ?.createSpringGroupLineMarkerInfo(leaf)
