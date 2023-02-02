@@ -27,10 +27,8 @@ import javax.swing.JComponent
 
 class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun createConfigurable() = if (HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject)
-        HybrisProjectRemoteInstancesSettingsConfigurable(project)
-    else
-        null
+    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+    override fun createConfigurable() = HybrisProjectRemoteInstancesSettingsConfigurable(project)
 
     class HybrisProjectRemoteInstancesSettingsConfigurable(project: Project) : Configurable {
         private val settingsForm = HybrisProjectRemoteInstancesSettingsForm(project)

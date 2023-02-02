@@ -28,10 +28,8 @@ import javax.swing.JComponent
 
 class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun createConfigurable() = if (HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject)
-        HybrisProjectSettingsConfigurable(project)
-    else
-        null
+    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+    override fun createConfigurable() = HybrisProjectSettingsConfigurable(project)
 
     class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable {
         private val settingsForm = HybrisProjectSettingsForm()

@@ -94,6 +94,7 @@
             <h3>2023.1.0</h3>
             <ul>
                 <li><i>Feature:</i> Compatibility adjustments (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195" target="_blank" rel="nofollow">#195</a>)</li>
+                <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/202" target="_blank" rel="nofollow">#202</a>)</li>
             </ul>
             <h3>2022.3.1</h3>
             <ul>
