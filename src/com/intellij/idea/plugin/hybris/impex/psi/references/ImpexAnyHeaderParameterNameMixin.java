@@ -42,7 +42,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
                                                                                     ImpexAnyHeaderParameterName {
 
     public static final Key<ResolveResult[]> CACHE_KEY = Key.create("ATTRIBUTE_RESOLVED_RESULTS");
-    private TSAttributeReference myReference;
+    private ImpexTSAttributeReference myReference;
 
     public ImpexAnyHeaderParameterNameMixin(@NotNull final ASTNode astNode) {
         super(astNode);
@@ -83,7 +83,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
             return PsiReference.EMPTY_ARRAY;
         }
         if (PsiUtils.shouldCreateNewReference(myReference, getText())) {
-            myReference = new TSAttributeReference(this);
+            myReference = new ImpexTSAttributeReference(this);
         }
         return new PsiReference[]{myReference};
     }

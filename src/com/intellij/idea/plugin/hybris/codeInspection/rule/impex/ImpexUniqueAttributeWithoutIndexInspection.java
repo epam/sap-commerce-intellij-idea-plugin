@@ -123,9 +123,8 @@ public class ImpexUniqueAttributeWithoutIndexInspection extends LocalInspectionT
             //it also may be in the separate representation
 
             final TSGlobalMetaItem merged = TSMetaModelAccess.Companion.getInstance(myHolder.getProject()).findMetaForDom(domItemType);
-            return merged != null && merged.retrieveAllDoms().stream()
-                                           .filter(it -> !domItemType.equals(it))
-                                           .anyMatch(it -> hasLocalIndexForAttribute(it, attributeName));
+            return merged != null && merged.getAllIndexes().stream()
+                                           .anyMatch(it -> it.getKeys().contains(attributeName));
         }
 
         private static boolean hasLocalIndexForAttribute(

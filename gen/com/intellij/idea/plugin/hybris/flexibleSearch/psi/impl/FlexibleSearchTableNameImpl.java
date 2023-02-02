@@ -19,14 +19,14 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableName;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeNameMixin;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_NAME_IDENTIFIER;
 
 public class FlexibleSearchTableNameImpl extends TypeNameMixin implements FlexibleSearchTableName {
 

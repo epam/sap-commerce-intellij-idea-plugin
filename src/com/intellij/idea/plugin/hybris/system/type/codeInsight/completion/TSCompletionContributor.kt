@@ -16,14 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
+package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeDeclarationReference
-import com.intellij.psi.PsiElement
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPatterns
+import com.intellij.patterns.PlatformPatterns
 
-class CngFlowTSItemAttributeReference(element: PsiElement) : AttributeDeclarationReference(element) {
+class TSCompletionContributor : CompletionContributor() {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
-
+    init {
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(TSPatterns.INDEX_KEY_ATTRIBUTE),
+            TSAttributeDeclarationCompletionProvider.instance
+        )
+    }
 }

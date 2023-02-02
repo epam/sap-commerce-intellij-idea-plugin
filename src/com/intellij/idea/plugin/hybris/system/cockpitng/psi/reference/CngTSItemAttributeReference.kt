@@ -18,38 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
-import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
-import com.intellij.openapi.util.TextRange
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeDeclarationReference
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.ResolveResult
 
-open class CngTSItemAttributeReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
+class CngTSItemAttributeReference(element: PsiElement) : AttributeDeclarationReference(element) {
 
-    override fun calculateDefaultRangeInElement(): TextRange =
-        if (element.textLength == 0) super.calculateDefaultRangeInElement()
-        else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
-
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val type = resolveType(element) ?: return emptyArray()
-
-        val meta = metaModelAccess.findMetaItemByName(type) ?: return emptyArray()
-
-        return metaItemService.findAttributesByName(meta, value, true)
-            ?.firstOrNull()
-            ?.let { PsiUtils.getValidResults(arrayOf(AttributeResolveResult(it))) }
-            ?: metaItemService.findRelationEndsByQualifier(meta, value, true)
-                ?.firstOrNull()
-                ?.let { PsiUtils.getValidResults(arrayOf(RelationEndResolveResult(it))) }
-            ?: emptyArray()
-    }
-
-    protected open fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
 
 }

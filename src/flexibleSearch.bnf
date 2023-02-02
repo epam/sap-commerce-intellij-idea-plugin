@@ -154,7 +154,7 @@ private table_primary_recover ::= !(JOIN)
 table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
 {
     pin=1 
-    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.TypeNameMixin"
+    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.TypeNameMixin"
     recoverWhile = table_name_recover
 }
 private table_name_recover ::= !(RIGHT_BRACE | AS | JOIN | ON | SPACE | " ")
@@ -288,7 +288,7 @@ parameter_reference ::= QUESTION_MARK PARAMETER_IDENTIFIER
 column_reference ::= identifier_chain
 {
     pin = 1 
-    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.references.ColumnReferenceMixin"
+    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.ColumnReferenceMixin"
     recoverWhile = column_reference_recover
 }
 private column_reference_recover ::= !(<<eof>> | IDENTIFIER | LINE_TERMINATOR | RIGHT_BRACE | FROM | LEFT_BRACKET | SEMICOLON | WHITE_SPACE | AND | ORDER | IS | OR | COMMA | RIGHT_PAREN | IN | RIGHT_DOUBLE_BRACE | comp_op)

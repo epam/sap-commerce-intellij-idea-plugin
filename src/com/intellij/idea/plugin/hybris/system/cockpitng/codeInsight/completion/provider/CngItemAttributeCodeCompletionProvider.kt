@@ -23,52 +23,16 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
-open class CngItemAttributeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class CngItemAttributeCodeCompletionProvider : AttributeDeclarationCompletionProvider() {
 
-    public override fun addCompletions(
-        parameters: CompletionParameters,
-        context: ProcessingContext,
-        result: CompletionResultSet
-    ) {
-        val project = parameters.editor.project ?: return
-        val type = resolveType(parameters.position) ?: return
-
-        val resultCaseInsensitive = result.caseInsensitive()
-
-        val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
-        meta
-            ?.allAttributes
-            ?.map {
-                LookupElementBuilder.create(it.name)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType, true)
-                    .withIcon(HybrisIcons.ATTRIBUTE)
-            }
-            ?.forEach { resultCaseInsensitive.addElement(it) }
-
-        meta
-            ?.allRelationEnds
-            ?.map {
-                LookupElementBuilder.create(it.qualifier)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType)
-                    .withIcon(
-                        when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
-                        }
-                    )
-            }
-            ?.forEach { resultCaseInsensitive.addElement(it) }
-    }
-
-    protected open fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =

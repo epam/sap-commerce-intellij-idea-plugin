@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
+package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeDeclarationReference
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
 import com.intellij.psi.PsiElement
 
-class CngFlowTSItemAttributeReference(element: PsiElement) : AttributeDeclarationReference(element) {
+class TSAttributeDeclarationReference(element: PsiElement) : AttributeDeclarationReference(element) {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+    override fun resolveType(element: PsiElement) = TSPsiHelper.resolveTypeCode(element)
 
 }

@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumItemReferenceProvider;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisEnumLiteralItemReferenceProvider;
 import com.intellij.idea.plugin.hybris.psi.reference.provider.HybrisModelItemReferenceProvider;
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPatterns;
+import com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiReferenceContributor;
@@ -53,6 +55,10 @@ public class HybrisItemsXmlReferenceContributor extends PsiReferenceContributor 
             PsiXmlUtils.INSTANCE.tagAttributeValuePattern("code", "itemtype")
                                 .inFile(inItemsXmlFile),
             HybrisModelItemReferenceProvider.Companion.getInstance()
+        );
+        registrar.registerReferenceProvider(
+            TSPatterns.INSTANCE.getINDEX_KEY_ATTRIBUTE(),
+            TSItemAttributeReferenceProvider.Companion.getInstance()
         );
     }
 

@@ -16,14 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
+package com.intellij.idea.plugin.hybris.system.type.psi
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeDeclarationReference
-import com.intellij.psi.PsiElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.insideTagPattern
+import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.StandardPatterns
 
-class CngFlowTSItemAttributeReference(element: PsiElement) : AttributeDeclarationReference(element) {
+object TSPatterns {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+    private val itemsXmlFile = PlatformPatterns.psiFile()
+        .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
 
+    val INDEX_KEY_ATTRIBUTE = tagAttributeValuePattern("key", "attribute")
+        .inside(
+            insideTagPattern("indexes")
+                .inside(insideTagPattern("itemtype"))
+        )
+        .inFile(itemsXmlFile)
 }

@@ -1,7 +1,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
@@ -14,41 +13,12 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
-import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
-    FlexibleSearchColumnReference {
-
-    private var reference: TSAttributeReference? = null
-
-    override fun getReferences(): Array<PsiReference?> {
-        if (PsiUtils.shouldCreateNewReference(reference, text)) {
-            reference = TSAttributeReference(this)
-        }
-        return arrayOf(reference)
-    }
-
-    override fun clone(): Any {
-        val result = super.clone() as ColumnReferenceMixin
-        result.reference = null
-        return result
-    }
-
-    companion object {
-        private const val serialVersionUID: Long = -4980389791496425285L
-    }
-
-}
-
-internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner),
+internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner),
     HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
@@ -78,12 +48,12 @@ internal class TSAttributeReference(owner: FlexibleSearchColumnReference) : TSRe
 
     private fun tryResolveByItemType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? =
         metaService.findMetaItemByName(type)
-            ?.let {
-                val attributes = it.allAttributes
+            ?.let { meta ->
+                val attributes = meta.allAttributes
                     .filter { refName.equals(it.name, true) }
                     .map { AttributeResolveResult(it) }
 
-                val relations = it.allRelationEnds
+                val relations = meta.allRelationEnds
                     .filter { refName.equals(it.name, true) }
                     .map { RelationEndResolveResult(it) }
 

@@ -50,9 +50,9 @@ import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.findHead
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
-class TSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> {
+class ImpexTSAttributeReference extends TSReferenceBase<ImpexAnyHeaderParameterName> {
 
-    public TSAttributeReference(@NotNull final ImpexAnyHeaderParameterNameMixin owner) {
+    public ImpexTSAttributeReference(@NotNull final ImpexAnyHeaderParameterNameMixin owner) {
         super(owner);
     }
 

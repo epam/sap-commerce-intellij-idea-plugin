@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnReference;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
-import com.intellij.idea.plugin.hybris.flexibleSearch.references.ColumnReferenceMixin;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;

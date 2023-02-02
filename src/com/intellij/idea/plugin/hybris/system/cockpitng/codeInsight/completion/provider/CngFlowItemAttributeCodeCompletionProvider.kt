@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 
-class CngFlowItemAttributeCodeCompletionProvider : CngItemAttributeCodeCompletionProvider() {
+class CngFlowItemAttributeCodeCompletionProvider : AttributeDeclarationCompletionProvider() {
 
     override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 

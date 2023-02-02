@@ -117,6 +117,9 @@
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.BSEnumGutterAnnotator"/>
         <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.BSBeanGutterAnnotator"/>
 
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionContributor"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
+
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl"/>
 
@@ -131,6 +134,8 @@
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider" order="first"/>
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider" order="first"/>
