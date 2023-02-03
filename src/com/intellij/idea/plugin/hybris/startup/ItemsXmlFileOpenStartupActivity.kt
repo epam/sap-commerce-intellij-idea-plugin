@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectPostStartupActivity
 import com.intellij.psi.search.FileTypeIndex
@@ -37,12 +38,13 @@ class ItemsXmlFileOpenStartupActivity : ProjectPostStartupActivity {
             return
         }
 
-        ApplicationManager.getApplication().invokeLater {
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            val validation = DefaultItemsFileValidation(project)
             val isOutdated = FileTypeIndex.getFiles(
                 HybrisItemsXmlFileType.INSTANCE,
                 GlobalSearchScope.projectScope(project)
             )
-                .any { file -> DefaultItemsFileValidation(project).isFileOutOfDate(file) }
+                .any { file -> validation.isFileOutOfDate(file) }
             if (isOutdated) {
                 Notifications.create(
                     NotificationType.WARNING,
@@ -55,5 +57,4 @@ class ItemsXmlFileOpenStartupActivity : ProjectPostStartupActivity {
             }
         }
     }
-
 }

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.psi.reference;
+package com.intellij.idea.plugin.hybris.system.type.psi.reference;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.project.Project;
@@ -37,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisModelItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class ModelItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-    public HybrisModelItemReference(final PsiElement element, final boolean soft) {
+    public ModelItemReference(final PsiElement element, final boolean soft) {
         super(element, soft);
     }
 

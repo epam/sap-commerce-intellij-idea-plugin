@@ -15,23 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.psi.reference.provider
+package com.intellij.idea.plugin.hybris.system.type.psi.provider
 
-import com.intellij.idea.plugin.hybris.psi.reference.HybrisModelItemReference
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.EnumItemReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 
-class HybrisModelItemReferenceProvider : PsiReferenceProvider() {
+class TSEnumItemReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement,
         context: ProcessingContext
-    ) = arrayOf(HybrisModelItemReference(element, true))
+    ) = arrayOf(EnumItemReference(element, true))
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(HybrisModelItemReferenceProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSEnumItemReferenceProvider::class.java)
     }
 }

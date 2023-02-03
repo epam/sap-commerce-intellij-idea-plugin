@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.psi.reference;
+package com.intellij.idea.plugin.hybris.system.type.psi.reference;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.project.Project;
@@ -41,9 +41,9 @@ import static java.util.Arrays.stream;
 /**
  * @author Nosov Aleksandr
  */
-public class HybrisEnumLiteralItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class EnumLiteralItemReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
-    public HybrisEnumLiteralItemReference(final PsiElement element, final boolean soft) {
+    public EnumLiteralItemReference(final PsiElement element, final boolean soft) {
         super(element, soft);
     }
 

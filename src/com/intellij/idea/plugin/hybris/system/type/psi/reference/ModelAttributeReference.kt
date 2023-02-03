@@ -30,7 +30,7 @@ import com.intellij.psi.util.MethodSignatureUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 
-class AttributeReference(
+class ModelAttributeReference(
     element: PsiElement
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
     override fun resolve(): PsiElement? {

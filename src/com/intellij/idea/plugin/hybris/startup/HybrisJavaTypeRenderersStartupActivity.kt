@@ -28,6 +28,8 @@ import com.intellij.openapi.startup.ProjectPostStartupActivity
  * As for now IDEA does not save icon renderer and full value evaluator with CompoundReferenceRenderer
  * see writeExternal and readExternal methods
  * Due that we have to reset these fields after each start for possible custom [y] renderers
+ *
+ * related issue report: https://youtrack.jetbrains.com/issue/IDEA-312351
  */
 class HybrisJavaTypeRenderersStartupActivity : ProjectPostStartupActivity {
 

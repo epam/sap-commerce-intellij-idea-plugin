@@ -15,14 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.type.psi.provider
 
-package com.intellij.idea.plugin.hybris.system.type.psi.reference
-
-import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.ModelItemReference
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
 
-class TSAttributeDeclarationReference(element: PsiElement) : AttributeDeclarationReference(element) {
+class TSModelItemReferenceProvider : PsiReferenceProvider() {
 
-    override fun resolveType(element: PsiElement) = TSPsiHelper.resolveTypeCode(element)
+    override fun getReferencesByElement(
+        element: PsiElement,
+        context: ProcessingContext
+    ) = arrayOf(ModelItemReference(element, true))
 
+    companion object {
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSModelItemReferenceProvider::class.java)
+    }
 }

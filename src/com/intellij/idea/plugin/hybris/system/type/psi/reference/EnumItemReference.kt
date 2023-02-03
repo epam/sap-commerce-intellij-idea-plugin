@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.psi.reference
+package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.util.TextRange
@@ -27,7 +27,7 @@ import com.intellij.psi.search.PsiShortNamesCache
 /**
  * @author Nosov Aleksandr
  */
-class HybrisEnumItemReference(element: PsiElement, soft: Boolean) : PsiReferenceBase<PsiElement>(element, soft), PsiPolyVariantReference {
+class EnumItemReference(element: PsiElement, soft: Boolean) : PsiReferenceBase<PsiElement>(element, soft), PsiPolyVariantReference {
 
     override fun getRangeInElement(): TextRange = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 

@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.psi.provider
 
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.TSAttributeDeclarationReference
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeDeclarationReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
@@ -27,7 +27,7 @@ class TSItemAttributeReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = arrayOf(TSAttributeDeclarationReference(element))
+    ) = arrayOf(AttributeDeclarationReference(element))
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSItemAttributeReferenceProvider::class.java)

@@ -17,9 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectPostStartupActivity
@@ -27,9 +29,19 @@ import com.intellij.openapi.startup.ProjectPostStartupActivity
 class PreLoadSystemsStartupActivity : ProjectPostStartupActivity {
 
     override suspend fun execute(project: Project) {
+        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
+            return
+        }
+
         DumbService.getInstance(project).runReadActionInSmartMode {
             TSMetaModelAccess.getInstance(project).getMetaModel()
+        }
+
+        DumbService.getInstance(project).runReadActionInSmartMode {
             BSMetaModelAccess.getInstance(project).getMetaModel()
+        }
+
+        DumbService.getInstance(project).runReadActionInSmartMode {
             CngMetaModelAccess.getInstance(project).getMetaModel()
         }
     }

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.converter
 
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.AttributeReference
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.ModelAttributeReference
 import com.intellij.psi.*
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
@@ -26,7 +26,7 @@ import com.intellij.util.xml.GenericDomValue
 
 class AttributeReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
-    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?) = arrayOf(AttributeReference(element))
+    override fun createReferences(value: GenericDomValue<String>?, element: PsiElement, context: ConvertContext?) = arrayOf(ModelAttributeReference(element))
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
 
