@@ -75,6 +75,9 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
     fun isShowMetaItemCustomProperties(): Boolean = mySettings.showMetaItemCustomProperties
     fun setShowMetaItemCustomProperties(state: Boolean) = state.also { mySettings.showMetaItemCustomProperties = state }
 
+    fun isGroupItemByParent(): Boolean = mySettings.groupItemByParent
+    fun setGroupItemByParent(state: Boolean) = state.also { mySettings.groupItemByParent = state }
+
     override fun getState(): Settings = mySettings
     override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
 
@@ -90,6 +93,7 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         var showMetaItemIndexes = true
         var showMetaItemAttributes = true
         var showMetaItemCustomProperties = true
+        var groupItemByParent = false
     }
 
     enum class ChangeType {

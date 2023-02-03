@@ -27,7 +27,11 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent), Disposable {
+class TSMetaItemNode(
+    parent: TSNode,
+    val meta: TSGlobalMetaItem,
+    val groupedByExtends: Map<String?, List<TSGlobalMetaItem>> = emptyMap()
+) : TSNode(parent), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
@@ -35,12 +39,19 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(HybrisIcons.ITEM)
-        presentation.locationString = ": ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
+        if (name != HybrisConstants.TS_TYPE_GENERIC_ITEM) {
+            presentation.locationString = ": ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
+        }
     }
 
     override fun getChildren(): Collection<TSNode> {
         val settings = TSViewSettings.getInstance(myProject)
         val showOnlyCustom = settings.isShowOnlyCustom()
+
+        val childrenItems = groupedByExtends[meta.name]
+            ?.map { TSMetaItemNode(this, it, groupedByExtends) }
+            ?.sortedBy { it.name }
+            ?: emptyList()
 
         val indexes = if (!settings.isShowMetaItemIndexes()) emptyList() else meta.indexes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
@@ -57,7 +68,7 @@ class TSMetaItemNode(parent: TSNode, val meta: TSGlobalMetaItem) : TSNode(parent
             .map { TSMetaItemAttributeNode(this, it) }
             .sortedBy { it.name }
 
-        return indexes + customProperties + attributes
+        return childrenItems + indexes + customProperties + attributes
     }
 
 }

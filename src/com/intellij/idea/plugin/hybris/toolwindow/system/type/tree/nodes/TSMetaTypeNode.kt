@@ -20,16 +20,16 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
-import java.util.*
 
 class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(parent), Disposable {
 
@@ -47,7 +47,6 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-
         val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
         val entries = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType).values
             .filter { if (showOnlyCustom) it.isCustom else true }
@@ -60,10 +59,37 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     override fun getChildren(): Collection<TSNode?> {
         val settings = TSViewSettings.getInstance(myProject)
 
-        return TSMetaModelAccess.getInstance(myProject).getMetaModel()
+        if (metaType == TSMetaType.META_ITEM && settings.isGroupItemByParent()) {
+            return getGroupedByParentMetaItemChildren(settings)
+        }
+        return getChildren(metaType, settings)
+    }
+
+    private fun getGroupedByParentMetaItemChildren(settings: TSViewSettings): Collection<TSNode?> {
+        if (!settings.isShowMetaItems()) return emptyList()
+
+        val items = TSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+            .values
+            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+
+        val groupedByName = items.associateBy { it.name }
+        val groupedByExtends = items
+            .filterNot { it.name == HybrisConstants.TS_TYPE_GENERIC_ITEM }
+            .groupBy {
+                if (groupedByName.containsKey(it.extendedMetaItemName)) it.extendedMetaItemName else HybrisConstants.TS_TYPE_GENERIC_ITEM
+            }
+
+        // we always have to have "Item" element
+        return (groupedByExtends[HybrisConstants.TS_TYPE_GENERIC_ITEM] ?: emptyList())
+            .map { TSMetaItemNode(this, it, groupedByExtends) }
+            .sortedBy { it.name }
+    }
+
+    private fun getChildren(metaType: TSMetaType, settings: TSViewSettings): Collection<TSNode?> =
+        TSMetaModelAccess.getInstance(myProject).getMetaModel()
             .getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType).values
             .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
-            .map {
+            .mapNotNull {
                 when (it) {
                     is TSGlobalMetaItem -> if (settings.isShowMetaItems()) TSMetaItemNode(this, it) else null
                     is TSGlobalMetaEnum -> if (settings.isShowMetaEnums()) TSMetaEnumNode(this, it) else null
@@ -74,8 +100,6 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
                     else -> null
                 }
             }
-            .filter { Objects.nonNull(it) }
-            .sortedBy { it!!.name }
-    }
+            .sortedBy { it.name }
 
 }

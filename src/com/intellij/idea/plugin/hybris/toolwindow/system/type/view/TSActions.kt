@@ -156,3 +156,15 @@ class ShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : ToggleA
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
+
+class GroupItemByParentAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.group_by_parent.text"), null, null) {
+
+    override fun isSelected(e: AnActionEvent): Boolean = settings.isGroupItemByParent()
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        settings.setGroupItemByParent(state)
+        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+}

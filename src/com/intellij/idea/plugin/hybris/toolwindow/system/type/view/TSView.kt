@@ -114,6 +114,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         add(ShowMetaItemIndexesAction(mySettings))
         add(ShowMetaItemAttributesAction(mySettings))
         add(ShowMetaItemCustomPropertiesAction(mySettings))
+        add(GroupItemByParentAction(mySettings))
         this
     }
 
