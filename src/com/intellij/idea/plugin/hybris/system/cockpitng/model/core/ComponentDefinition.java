@@ -23,6 +23,8 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.NameValue;
+import com.intellij.util.xml.Stubbed;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,6 +39,8 @@ public interface ComponentDefinition extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("id")
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getId();
 
 

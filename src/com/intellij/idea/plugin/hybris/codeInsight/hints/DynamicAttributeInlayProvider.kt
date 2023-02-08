@@ -23,10 +23,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import javax.swing.JPanel
 
-class HybrisDynamicAttributeInlayProvider : InlayHintsProvider<NoSettings> {
+class DynamicAttributeInlayProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink) =
-        HybrisDynamicAttributeHintsCollector(editor)
+        DynamicAttributeHintsCollector(editor)
 
     override val previewText: String = """
 public void foo() {

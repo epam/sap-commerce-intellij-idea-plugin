@@ -45,7 +45,7 @@
         <!--                                            Business Process                                             -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="process" stubVersion="2"
-                          implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpSDomFileDescription"/>
+                          implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            ExtensionInfo                                                -->
@@ -71,15 +71,15 @@
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->
         <dom.extender domClass="com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context" extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
-        <dom.fileMetaData rootTagName="config" stubVersion="2"
+        <dom.fileMetaData rootTagName="config" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widgets" stubVersion="2"
+        <dom.fileMetaData rootTagName="widgets" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
-        <dom.fileMetaData rootTagName="action-definition" stubVersion="2"
+        <dom.fileMetaData rootTagName="action-definition" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngActionDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widget-definition" stubVersion="2"
+        <dom.fileMetaData rootTagName="widget-definition" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="editor-definition" stubVersion="2"
+        <dom.fileMetaData rootTagName="editor-definition" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionContributor"/>

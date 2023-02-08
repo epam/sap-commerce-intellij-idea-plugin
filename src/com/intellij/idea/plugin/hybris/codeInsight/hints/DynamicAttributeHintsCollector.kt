@@ -35,7 +35,7 @@ import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiMethodCallExpression
 
-class HybrisDynamicAttributeHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
+class DynamicAttributeHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
 
     override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
         if (!element.isValid || element.project.isDefault) {

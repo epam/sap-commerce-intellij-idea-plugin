@@ -84,7 +84,7 @@
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.PopulatorLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
 
-        <codeInsight.inlayProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.HybrisDynamicAttributeInlayProvider"/>
+        <codeInsight.inlayProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.DynamicAttributeInlayProvider"/>
     </extensions>
 
 </idea-plugin>

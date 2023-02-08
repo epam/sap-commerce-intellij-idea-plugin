@@ -80,6 +80,8 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         psiFile: PsiFile,
         widgets: List<Widget>
     ): List<CngMetaWidget> = widgets
+        // if ID is null we may need to re-index the project, faced such issue due broken Stubs
+        .filter { it.id.exists() }
         .map {
             val subWidgets = if (it.widgets.isNotEmpty()) processWidgets(psiFile, it.widgets)
             else emptyList()

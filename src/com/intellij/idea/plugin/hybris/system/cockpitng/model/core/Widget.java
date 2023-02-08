@@ -23,6 +23,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.NameValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.Stubbed;
 import com.intellij.util.xml.StubbedOccurrence;
@@ -53,6 +54,8 @@ public interface Widget extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("id")
     @Required
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getId();
 
 

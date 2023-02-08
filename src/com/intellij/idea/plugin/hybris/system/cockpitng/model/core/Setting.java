@@ -23,7 +23,9 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.core;
 
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.NameValue;
 import com.intellij.util.xml.Required;
+import com.intellij.util.xml.Stubbed;
 import org.jetbrains.annotations.NotNull;
 
 public interface Setting extends DomElement {
@@ -31,6 +33,8 @@ public interface Setting extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("key")
     @Required
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getKey();
 
     @NotNull
