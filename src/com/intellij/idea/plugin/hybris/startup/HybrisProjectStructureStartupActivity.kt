@@ -49,10 +49,6 @@ class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
     private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
-
         if (project.isDisposed) return
 
         val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
