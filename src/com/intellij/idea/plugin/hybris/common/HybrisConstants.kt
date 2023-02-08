@@ -191,7 +191,7 @@ object HybrisConstants {
     val TS_TYPECODE_RANGE_PRINT = 23400 .. 23999
     val TS_TYPECODE_RANGE_PROCESSING = 32700 .. 32799
 
-    val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction")
+    val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction", "choice")
 
     const val HYBRIS = "[y]"
     const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS

@@ -60,6 +60,7 @@ public interface Process extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("onError")
+	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getOnError();
 
 
