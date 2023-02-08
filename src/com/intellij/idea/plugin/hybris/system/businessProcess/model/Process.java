@@ -29,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.de/xsd/processdefinition:processElemType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Process extends DomElement {
 
 	/**

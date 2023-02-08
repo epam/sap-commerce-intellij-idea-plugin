@@ -66,3 +66,4 @@ This project exists thanks to all the people who contribute.
 * Viktors Jengovatovs
 * Rustam Burmenskyi
 * Oleksandr Dihtiar
+* Andrei Lisetskii

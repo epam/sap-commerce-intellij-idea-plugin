@@ -18,11 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model
 
-import com.intellij.util.xml.Attribute
-import com.intellij.util.xml.DomElement
-import com.intellij.util.xml.GenericAttributeValue
-import com.intellij.util.xml.Required
+import com.intellij.util.xml.*
 
+@Stubbed
+@StubbedOccurrence
 interface NavigableElement : DomElement {
 
     /**
@@ -31,6 +30,8 @@ interface NavigableElement : DomElement {
      */
     @Attribute("id")
     @Required
+    @Stubbed
+    @NameValue
     fun getId(): GenericAttributeValue<String>
 
 }

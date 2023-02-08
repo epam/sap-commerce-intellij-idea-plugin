@@ -44,7 +44,7 @@
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->
         <!-- ####################################################################################################### -->
-        <dom.fileMetaData rootTagName="process" stubVersion="1"
+        <dom.fileMetaData rootTagName="process" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpSDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
