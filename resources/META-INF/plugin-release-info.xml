@@ -98,7 +98,7 @@
                 <li><i>Feature:</i> Added possibility to group by Item parent for Type System preview (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/211" target="_blank" rel="nofollow">#211</a>)</li>
                 <li><i>Feature:</i> Added completion and navigation for Index attributes within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/207" target="_blank" rel="nofollow">#207</a>)</li>
                 <li><i>Feature:</i> Improved project startup performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/210" target="_blank" rel="nofollow">#210</a>)</li>
-                <li><i>Feature:</i> Added listing of references for <code>id</code> attribute within Business Process definition (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/210" target="_blank" rel="nofollow">#210</a>)</li>
+                <li><i>Feature:</i> Added listing of references for <code>id</code> attribute within Business Process definition (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/214" target="_blank" rel="nofollow">#214</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
             </ul>
             <h3>2022.3.1</h3>
