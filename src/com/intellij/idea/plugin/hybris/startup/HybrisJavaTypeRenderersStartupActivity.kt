@@ -22,7 +22,7 @@ import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.project.Project
 import com.intellij.idea.plugin.hybris.debugger.ui.tree.render.ModelRenderer
-import com.intellij.openapi.startup.ProjectPostStartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 
 /**
  * As for now IDEA does not save icon renderer and full value evaluator with CompoundReferenceRenderer
@@ -31,7 +31,7 @@ import com.intellij.openapi.startup.ProjectPostStartupActivity
  *
  * related issue report: https://youtrack.jetbrains.com/issue/IDEA-312351
  */
-class HybrisJavaTypeRenderersStartupActivity : ProjectPostStartupActivity {
+class HybrisJavaTypeRenderersStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         val rendererSettings = NodeRendererSettings.getInstance()

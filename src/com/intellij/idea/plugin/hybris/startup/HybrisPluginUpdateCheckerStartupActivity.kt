@@ -24,10 +24,10 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.ProjectPostStartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
 
-class HybrisPluginUpdateCheckerStartupActivity : ProjectPostStartupActivity {
+class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         ApplicationManager.getApplication().invokeLater {

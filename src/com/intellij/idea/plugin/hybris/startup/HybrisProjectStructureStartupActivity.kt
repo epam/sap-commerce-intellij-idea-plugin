@@ -32,8 +32,8 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
-import com.intellij.openapi.project.*
-import com.intellij.openapi.startup.ProjectPostStartupActivity
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.io.IOUtils
@@ -44,7 +44,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
+class HybrisProjectStructureStartupActivity : ProjectActivity {
 
     private val logger = Logger.getInstance(HybrisProjectStructureStartupActivity::class.java)
 
@@ -59,7 +59,10 @@ class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
                 Notifications.create(
                     NotificationType.INFORMATION,
                     HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
-                    HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.text", HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion)
+                    HybrisI18NBundleUtils.message(
+                        "hybris.notification.project.open.outdated.text",
+                        HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion
+                    )
                 )
                     .important(true)
                     .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
@@ -127,11 +130,12 @@ class HybrisProjectStructureStartupActivity : ProjectPostStartupActivity {
 
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
         val compilingXml = File(
-            FileUtilRt.toSystemDependentName(project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
-                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+            FileUtilRt.toSystemDependentName(
+                project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
+                        + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
             )
         )
-        if (!compilingXml.isFile)  return
+        if (!compilingXml.isFile) return
 
         var content = try {
             IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)

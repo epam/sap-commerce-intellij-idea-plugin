@@ -26,12 +26,12 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.ProjectPostStartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 
 
-class ItemsXmlFileOpenStartupActivity : ProjectPostStartupActivity {
+class ItemsXmlFileOpenStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {

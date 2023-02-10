@@ -24,9 +24,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.ProjectPostStartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 
-class PreLoadSystemsStartupActivity : ProjectPostStartupActivity {
+class PreLoadSystemsStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
