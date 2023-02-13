@@ -102,6 +102,7 @@
                 <li><i>Feature:</i> Added listing of references for multiple Cockpitng definitions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/216" target="_blank" rel="nofollow">#216</a>)</li>
                 <li><i>Feature:</i> Added completion and navigation for <code>onError</code> attribute within Business Process definition (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/215" target="_blank" rel="nofollow">#215</a>)</li>
                 <li><i>Feature:</i> Improved Project Structure information notification content (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/217" target="_blank" rel="nofollow">#217</a>)</li>
+                <li><i>Feature:</i> Improved code completion within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/221" target="_blank" rel="nofollow">#221</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
             </ul>
             <h3>2022.3.1</h3>
