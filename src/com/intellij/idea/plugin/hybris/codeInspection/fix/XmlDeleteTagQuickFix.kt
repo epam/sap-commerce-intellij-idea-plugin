@@ -21,7 +21,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.project.Project
-import com.intellij.psi.xml.XmlAttributeValue
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 
 class XmlDeleteTagQuickFix : LocalQuickFix {
@@ -33,6 +33,6 @@ class XmlDeleteTagQuickFix : LocalQuickFix {
 
         (currentElement as? XmlTag)
             ?.delete()
-            ?: (currentElement as? XmlAttributeValue)?.parent?.parent?.delete()
+            ?: PsiTreeUtil.getParentOfType(currentElement, XmlTag::class.java)?.delete()
     }
 }

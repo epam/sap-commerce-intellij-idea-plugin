@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem
 
+import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
@@ -52,29 +53,19 @@ class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
 
         if (metas.isEmpty()) return
 
+        val currentBeanProperties = dom.properties
+                .filter{ it.name.stringValue != null }
+                .groupBy { it.name.stringValue }
+
         dom.properties.forEach { property ->
             val otherPropertyDeclarations = metas
                 .flatMap { it.declarations }
                 .map { it.properties }
                 .mapNotNull { it[property.name.stringValue] }
 
-                if (otherPropertyDeclarations.size > 1) {
+                if (otherPropertyDeclarations.size > 1 || (currentBeanProperties[property.name.stringValue]?.size ?: 1) > 1) {
                     createProblem(holder, property, severity, displayName)
             }
-
-            val beanProperties = mutableMapOf<String, MutableList<Property>>()
-
-            dom.properties.forEach { property ->
-                val currentKey = property.name.toString()
-                beanProperties.getOrPut(currentKey) { mutableListOf() }.add(property)
-            }
-
-            beanProperties.filterValues { it.size > 1 }
-                    .flatMap { (key, properties) -> properties.map { key to it } }
-                    .filter { (key, property) -> property.name.stringValue == key }
-                    .forEach { (_, property) ->
-                        createProblem(holder, property, severity, displayName)
-                    }
         }
     }
 
@@ -83,7 +74,5 @@ class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
             property: Property,
             severity: HighlightSeverity,
             displayName: String
-    ) {
-        holder.createProblem(property.name, severity, displayName)
-    }
+    ) = holder.createProblem(property.name, severity, displayName, XmlDeleteTagQuickFix())
 }
