@@ -25,6 +25,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import com.intellij.idea.plugin.hybris.system.bean.model.Property
 
 class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
 
@@ -57,13 +58,32 @@ class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
                 .map { it.properties }
                 .mapNotNull { it[property.name.stringValue] }
 
-            if (otherPropertyDeclarations.size > 1) {
-                holder.createProblem(
-                    property.name,
-                    severity,
-                    displayName
-                )
+                if (otherPropertyDeclarations.size > 1) {
+                    createProblem(holder, property, severity, displayName)
             }
+
+            val beanProperties = mutableMapOf<String, MutableList<Property>>()
+
+            dom.properties.forEach { property ->
+                val currentKey = property.name.toString()
+                beanProperties.getOrPut(currentKey) { mutableListOf() }.add(property)
+            }
+
+            beanProperties.filterValues { it.size > 1 }
+                    .flatMap { (key, properties) -> properties.map { key to it } }
+                    .filter { (key, property) -> property.name.stringValue == key }
+                    .forEach { (_, property) ->
+                        createProblem(holder, property, severity, displayName)
+                    }
         }
+    }
+
+    private fun createProblem(
+            holder: DomElementAnnotationHolder,
+            property: Property,
+            severity: HighlightSeverity,
+            displayName: String
+    ) {
+        holder.createProblem(property.name, severity, displayName)
     }
 }
