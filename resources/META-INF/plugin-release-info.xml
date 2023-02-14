@@ -103,6 +103,7 @@
                 <li><i>Feature:</i> Improved Project Structure information notification content (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/217" target="_blank" rel="nofollow">#217</a>)</li>
                 <li><i>Feature:</i> Improved code completion within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/221" target="_blank" rel="nofollow">#221</a>)</li>
                 <li><i>Feature:</i> Improved validation of properties within bean declaration to highlight duplicate properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/220" target="_blank" rel="nofollow">#220</a>)</li>
+                <li><i>Bug Fix:</i> Impex & FlexibleSearch actions always visible (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/223" target="_blank" rel="nofollow">#223</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
                 <li><i>Other:</i> Upgraded to Gradle 8 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/222" target="_blank" rel="nofollow">#222</a>)</li>
             </ul>
