@@ -49,7 +49,6 @@
                 <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>
                 <li>Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name.</li>
                 <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>§
-                <li>Join community on <a href="https://gitter.im/sap-commerce-intellij-idea-plugin/community">Gitter</a></li>
             </ul>
 
             <h3>Contributors and Developers</h3>
@@ -103,8 +102,9 @@
                 <li><i>Feature:</i> Added completion and navigation for <code>onError</code> attribute within Business Process definition (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/215" target="_blank" rel="nofollow">#215</a>)</li>
                 <li><i>Feature:</i> Improved Project Structure information notification content (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/217" target="_blank" rel="nofollow">#217</a>)</li>
                 <li><i>Feature:</i> Improved code completion within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/221" target="_blank" rel="nofollow">#221</a>)</li>
-                <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
                 <li><i>Feature:</i> Improved validation of properties within bean declaration to highlight duplicate properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/220" target="_blank" rel="nofollow">#220</a>)</li>
+                <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
+                <li><i>Other:</i> Upgraded to Gradle 8 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/222" target="_blank" rel="nofollow">#222</a>)</li>
             </ul>
             <h3>2022.3.1</h3>
             <ul>

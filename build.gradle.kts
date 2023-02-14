@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.13.0"
+    id("org.jetbrains.intellij") version "1.13.1-SNAPSHOT"
 }
 
 sourceSets.main {
