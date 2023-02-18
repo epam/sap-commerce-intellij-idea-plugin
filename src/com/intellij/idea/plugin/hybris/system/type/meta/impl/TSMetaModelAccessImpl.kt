@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
@@ -70,20 +69,19 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
             val globalMetaModel = TSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
-        }
-        , false
+        }, false
     )
 
-    override fun getMetaModel(): TSGlobalMetaModel {
-        return DumbService.getInstance(myProject).runReadActionInSmartMode(
-            Computable {
-                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-                    return@Computable readMetaModelWithLock()
-                }
-                return@Computable writeMetaModelWithLock()
+    override fun getMetaModel() = DumbService.getInstance(myProject).runReadActionInSmartMode(
+        Computable {
+            if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
+
+            if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                return@Computable readMetaModelWithLock()
             }
-        ) ?: throw ProcessCanceledException()
-    }
+            return@Computable writeMetaModelWithLock()
+        }
+    ) ?: throw ProcessCanceledException()
 
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
 
@@ -112,7 +110,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         return result
     }
 
-    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
+    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
+        getMetaModel().getMetaType<T>(metaType)[name]
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
     private fun readMetaModelWithLock(): TSGlobalMetaModel {
