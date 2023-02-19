@@ -103,6 +103,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
@@ -285,11 +286,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private List<HybrisModuleDescriptor> getHybrisModuleDescriptors() {
         return hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(e -> !(e instanceof MavenModuleDescriptor))
-            .filter(e -> !(e instanceof EclipseModuleDescriptor))
-            .filter(e -> !(e instanceof GradleModuleDescriptor))
+            .getModulesChosenForImport().stream()
+            .filter(e -> !(e instanceof MavenModuleDescriptor)
+                         && !(e instanceof EclipseModuleDescriptor)
+                         && !(e instanceof GradleModuleDescriptor)
+            )
             .collect(Collectors.toList());
     }
 
@@ -313,7 +314,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
                 .getModulesChosenForImport()
                 .stream()
-                .filter(e -> e instanceof EclipseModuleDescriptor)
+                .filter(EclipseModuleDescriptor.class::isInstance)
                 .map(EclipseModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!eclipseModules.isEmpty()) {
@@ -336,7 +337,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor
                 .getModulesChosenForImport()
                 .stream()
-                .filter(e -> e instanceof GradleModuleDescriptor)
+                .filter(GradleModuleDescriptor.class::isInstance)
                 .map(GradleModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!gradleModules.isEmpty()) {
@@ -479,7 +480,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final Set<String> completeSetOfHybrisModules = new HashSet<>();
         hybrisProjectDescriptor.getFoundModules().stream()
-                               .filter(e -> e instanceof OotbHybrisModuleDescriptor || e instanceof CustomHybrisModuleDescriptor)
+                               .filter(e -> !(e instanceof MavenModuleDescriptor)
+                                            && !(e instanceof EclipseModuleDescriptor)
+                                            && !(e instanceof GradleModuleDescriptor)
+                               )
                                .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
