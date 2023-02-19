@@ -108,7 +108,7 @@
                 "description": "The location of the properties file to be imported. The path must be relative to the core-customize directory and in unix format (with slashes, not backslashes)."
               },
               "aspect": {
-                "type": "string",
+                "$ref": "#/$types/aspect",
                 "description": "The aspect where properties are applied. Properties assigned to a given aspect attribute are applied at deployment time (when the aspect is known), so they aren’t applicable at build time."
               },
               "persona": {
@@ -192,13 +192,7 @@
         ],
         "properties": {
           "name": {
-            "enum": [
-              "accstorefront",
-              "backoffice",
-              "backgroundProcessing",
-              "admin",
-              "api"
-            ],
+            "$ref": "#/$types/aspect",
             "description": "The aspect name. Possible values: accstorefront, backoffice, backgroundProcessing, api and admin."
           },
           "properties": {
@@ -308,6 +302,15 @@
         "development",
         "staging",
         "production"
+      ]
+    },
+    "aspect": {
+      "enum": [
+        "accstorefront",
+        "backoffice",
+        "backgroundProcessing",
+        "admin",
+        "api"
       ]
     }
   }

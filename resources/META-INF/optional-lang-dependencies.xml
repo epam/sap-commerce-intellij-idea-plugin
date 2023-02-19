@@ -33,7 +33,7 @@
     </projectListeners>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.ManifestJSONSchemaProviderFactory"/>
+        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.ManifestJsonSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -47,6 +47,9 @@
         <!-- ####################################################################################################### -->
         <!--                                            CCv2 manifest.json                                             -->
         <!-- ####################################################################################################### -->
+
+        <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.ccv2.codeInsight.completion.ManifestJsonCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->
