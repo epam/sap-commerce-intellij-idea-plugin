@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInsight.completion
+package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
@@ -28,9 +27,9 @@ class ExtensionInfoCompletionContributor : CompletionContributor() {
 
     init {
         extend(
-            CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
-            RequiredExtensionsNameCompletionProvider.instance
+                CompletionType.BASIC,
+                PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
+                RequiredExtensionsNameCompletionProvider.instance
         )
     }
 }

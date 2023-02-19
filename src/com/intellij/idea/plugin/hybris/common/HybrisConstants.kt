@@ -80,6 +80,15 @@ object HybrisConstants {
     const val EXTENSION_META_KEY_EXT_GEN = "extgen-template-extension"
     const val EXTENSION_META_KEY_MODULE_GEN = "modulegen-name"
 
+    val EXTENSION_INFO_META_KEYS = listOf(
+            EXTENSION_META_KEY_BACKOFFICE_MODULE,
+            EXTENSION_META_KEY_HAC_MODULE,
+            EXTENSION_META_KEY_CLASSPATHGEN,
+            EXTENSION_META_KEY_DEPRECATED,
+            EXTENSION_META_KEY_EXT_GEN,
+            EXTENSION_META_KEY_MODULE_GEN
+    )
+
     const val BACKOFFICE_MODULE_DIRECTORY = "backoffice"
     const val BACKOFFICE_LIBRARY_GROUP = "Backoffice Library"
 

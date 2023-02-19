@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.Manifest
 import com.intellij.openapi.project.Project
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 
-class ManifestJSONSchemaProviderFactory : JsonSchemaProviderFactory {
+class ManifestJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
             ManifestCommerceJsonSchemaFileProvider(project),

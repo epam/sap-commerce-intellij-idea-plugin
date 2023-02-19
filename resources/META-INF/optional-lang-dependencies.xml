@@ -43,6 +43,8 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            CCv2 manifest.json                                             -->
@@ -63,9 +65,7 @@
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.LocalExtensionsCompletionContributor"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion.ExtensionInfoCompletionContributor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            LocalExtensions                                              -->
@@ -73,9 +73,7 @@
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.completion.ExtensionInfoCompletionContributor"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider"/>
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->

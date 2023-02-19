@@ -20,6 +20,9 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
+import com.intellij.idea.plugin.hybris.system.extensioninfo.file.MetaKeyConverter;
+import com.intellij.idea.plugin.hybris.system.extensioninfo.file.MetaValueConverter;
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +47,8 @@ public interface Meta extends DomElement {
 	@NotNull
 	@Attribute ("key")
 	@Required
+	@Convert(MetaKeyConverter.class)
+	@NoSpellchecking
 	GenericAttributeValue<String> getKey();
 
 
@@ -57,6 +62,7 @@ public interface Meta extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("value")
+	@Convert(MetaValueConverter.class)
 	@Required
 	GenericAttributeValue<String> getValue();
 
