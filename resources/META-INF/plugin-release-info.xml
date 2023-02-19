@@ -94,7 +94,7 @@
             <h3>2023.1.0</h3>
             <ul>
                 <li><i>Feature:</i> Compatibility adjustments (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195" target="_blank" rel="nofollow">#195</a>)</li>
-                <li><i>Feature:</i> Added CCv2 SAP Commerce Cloud <code>manifest.json</code> schema support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/224" target="_blank" rel="nofollow">#224</a>)</li>
+                <li><i>Feature:</i> Added CCv2 SAP Commerce Cloud <code>manifest.json</code> schema support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225" target="_blank" rel="nofollow">#225</a>)</li>
                 <li><i>Feature:</i> Added possibility to group by Item parent for Type System preview (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/211" target="_blank" rel="nofollow">#211</a>)</li>
                 <li><i>Feature:</i> Added completion and navigation for Index attributes within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/207" target="_blank" rel="nofollow">#207</a>)</li>
                 <li><i>Feature:</i> Improved project startup performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/210" target="_blank" rel="nofollow">#210</a>)</li>
