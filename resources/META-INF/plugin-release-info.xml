@@ -112,7 +112,7 @@
                 <li><i>Feature:</i> Disable spell check for properties with custom named values (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/228" target="_blank" rel="nofollow">#228</a>)</li>
                 <li><i>Bug Fix:</i> Impex & FlexibleSearch actions always visible (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/223" target="_blank" rel="nofollow">#223</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
-                <li><i>Bug Fix:</i> Not all extension names shown in the code completion (project refresh required)</req> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/232" target="_blank" rel="nofollow">#232</a>)</li>
+                <li><i>Bug Fix:</i> Not all extension names shown in the code completion (project refresh required) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/232" target="_blank" rel="nofollow">#232</a>)</li>
                 <li><i>Other:</i> Upgraded to Gradle 8 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/222" target="_blank" rel="nofollow">#222</a>)</li>
             </ul>
             <h3>2022.3.1</h3>

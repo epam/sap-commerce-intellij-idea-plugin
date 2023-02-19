@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.debugger.ui.tree.render
 
-import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
@@ -42,7 +41,6 @@ open class ModelRenderer(
         return Function { t ->
             CompletableFuture.completedFuture(
                 t?.name().equals(className)
-//                DebuggerUtils.instanceOf(t, className)
             )
         }
     }

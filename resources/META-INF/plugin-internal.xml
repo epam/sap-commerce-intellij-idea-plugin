@@ -88,11 +88,11 @@
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
-        <action id="GenerateDomModel"
-                class="com.intellij.idea.plugin.hybris.system.type.model.generator.GenerateDomModelAction"
-                text="Generate DOM Model...">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
+<!--        <action id="GenerateDomModel"-->
+<!--                class="com.intellij.idea.plugin.hybris.system.type.model.generator.GenerateDomModelAction"-->
+<!--                text="Generate DOM Model...">-->
+<!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
+<!--        </action>-->
         <action id="Console.Execute.Immediately"
                 class="com.intellij.openapi.actionSystem.EmptyAction"
                 text="Execute Current Statement">
