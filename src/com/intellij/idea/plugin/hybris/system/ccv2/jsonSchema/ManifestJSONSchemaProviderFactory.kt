@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema
 
 import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
 import com.intellij.openapi.project.Project
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 
@@ -26,7 +27,8 @@ class ManifestJSONSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
             ManifestCommerceJsonSchemaFileProvider(project),
-            ManifestDataHubJsonSchemaFileProvider(project)
+            ManifestDataHubJsonSchemaFileProvider(project),
+            ManifestJavascriptStorefrontJsonSchemaFileProvider(project)
     )
 
 }

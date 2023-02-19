@@ -1,0 +1,91 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "applications"
+  ],
+  "properties": {
+    "nodeVersion": {
+      "$ref": "#/$types/nodeVersion",
+      "description": "Global Node.js version used during the build. The available versions are 14 and 16."
+    },
+    "disableImageReuse": {
+      "type": "boolean",
+      "description": "Disables the image reuse mechanism.\nBy default, disableImageReuse is set to false, which means the ability to resuse images is enabled. In this case, the build process checks in the target Docker Registry whether the Solr and Zookeeper images are already built, and if they are, it skips the rebuild process.\n\nIf the disableImageReuse flag is set to true, then the mechanism is disabled. In this case, the build process generates new Solr and Zookeeper images with every build."
+    },
+    "applications": {
+      "type": "array",
+      "description": "Contains the list of Javascript Applications considered by the Builder.\nThe Application is defined by its name and path. The Builder visits all Applications and checks if they’re built (if <path>/dist exists).\n\nIf yes - the build step is skipped and Application is put in the image “as is”.\nIf no - the Builder triggers yarn install and yarn build (or yarn build:ssr).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "path"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The technical name of the Application.\n\nUsed in deploy-time configuration."
+          },
+          "path": {
+            "type": "string",
+            "description": "The path with Application source code.\n\nThe path contains:\nfor compiled Applications:\ndist subdirectory with the Application in “ready to use” form (index.html file and its dependencies)\nfor noncompiled Applications:\npackage.json file (used by yarn tool),\nsrc subdirectory with the Application source code."
+          },
+          "ssr": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Contains SSR options fields.",
+            "required": [
+              "enabled",
+              "path"
+            ],
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "If true - the SSR build is triggered (yarn build:ssr)"
+              },
+              "path": {
+                "type": "string",
+                "description": "The path to the JavaScript Application entrypoint. Only letters, digits, and the “-” (hyphen), “.” (period), “/” (forward slash), and “_”(underscore) symbols are allowed."
+              }
+            }
+          },
+          "csr": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Contains CSR options fields.",
+            "required": [
+              "webroot"
+            ],
+            "properties": {
+              "webroot": {
+                "type": "string",
+                "description": "The path to the compiled browser part. Only letters, digits, and the “-” (hyphen), “.” (period), “/” (forward slash), and “_”(underscore) symbols are allowed."
+              }
+            }
+          },
+          "fileExtensions": {
+            "type": "array",
+            "description": "A list of static file extensions served directly from js-apps. If the requested file with one of these extensions is not locally available, a 404 error is returned.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nodeVersion": {
+            "$ref": "#/$types/nodeVersion",
+            "description": "Node.js version used during the build. The available versions are 14 and 16."
+          }
+        }
+      }
+    }
+  },
+  "$types": {
+    "nodeVersion": {
+      "enum": [
+        "14",
+        "16"
+      ]
+    }
+  }
+}
