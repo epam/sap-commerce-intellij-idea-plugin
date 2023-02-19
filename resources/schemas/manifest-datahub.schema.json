@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataHubVersion",
+    "extensions"
+  ],
+  "properties": {
+    "dataHubVersion": {
+      "type": "string",
+      "description": "The exact version of the Data Hub artifact to download. The format is \"<major_version>.<patch_version>\"."
+    },
+    "extensionPacks": {
+      "type": "array",
+      "description": "The list of extension pack artifacts to use.\n\nEach extension pack is specified by its name and version. The name and version are used to resolve the final artifact ID.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the artifact to download."
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the artifact to download."
+          }
+        }
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "description": "A list of extensions to be enabled.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "disableImageReuse": {
+      "type": "boolean",
+      "description": "Disables the image reuse mechanism.\nBy default, disableImageReuse is set to false, which means the ability to resuse images is enabled. In this case, the build process checks in the target Docker Registry whether the Solr and Zookeeper images are already built, and if they are, it skips the rebuild process.\n\nIf the disableImageReuse flag is set to true, then the mechanism is disabled. In this case, the build process generates new Solr and Zookeeper images with every build."
+    }
+  }
+}
