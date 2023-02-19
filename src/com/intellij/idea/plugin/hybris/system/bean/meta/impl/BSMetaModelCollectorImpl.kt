@@ -37,30 +37,25 @@ class BSMetaModelCollectorImpl(private val myProject: Project) : BSMetaModelColl
     override fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
-        try {
-            StubIndex.getInstance().processElements(
-                DomElementClassIndex.KEY,
-                Beans::class.java.name,
-                myProject,
-                ProjectScope.getAllScope(myProject),
-                PsiFile::class.java,
-                object : Processor<PsiFile> {
-                    override fun process(psiFile: PsiFile): Boolean {
-                        psiFile.virtualFile ?: return true
-                        // cannot process file without a module
-                        BSUtils.getModuleForFile(psiFile) ?: return true
-                        myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java) ?: return true
+        StubIndex.getInstance().processElements(
+            DomElementClassIndex.KEY,
+            Beans::class.java.name,
+            myProject,
+            ProjectScope.getAllScope(myProject),
+            PsiFile::class.java,
+            object : Processor<PsiFile> {
+                override fun process(psiFile: PsiFile): Boolean {
+                    psiFile.virtualFile ?: return true
+                    // cannot process file without a module
+                    BSUtils.getModuleForFile(psiFile) ?: return true
+                    myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java) ?: return true
 
-                        files.add(psiFile)
-                        return true
-                    }
+                    files.add(psiFile)
+                    return true
                 }
-            )
+            }
+        )
 
-            return Collections.unmodifiableSet(files)
-        } catch (e: Exception) {
-            // can happen due broken Stub index, and requested reindex via FileBasedIndexImpl, cancel for now and try again later
-            throw ProcessCanceledException(e);
-        }
+        return Collections.unmodifiableSet(files)
     }
 }

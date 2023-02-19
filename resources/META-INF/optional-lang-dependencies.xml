@@ -32,14 +32,21 @@
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
 
-    <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.ManifestJSONSchemaProviderFactory"/>
+    </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                            CCv2 manifest.json                                             -->
+        <!-- ####################################################################################################### -->
 
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->

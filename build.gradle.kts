@@ -68,8 +68,21 @@ tasks {
         }
     }
 
+    setupDependencies {
+        doLast {
+            // Fixes IDEA-298989.
+            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
+        }
+    }
+
+    // TODO: remove before final commit
+    buildSearchableOptions {
+        enabled = false
+    }
+
     runIde {
         jvmArgs = listOf(intellijJvmArgs)
+        maxHeapSize = "3g"
     }
 
     patchPluginXml {

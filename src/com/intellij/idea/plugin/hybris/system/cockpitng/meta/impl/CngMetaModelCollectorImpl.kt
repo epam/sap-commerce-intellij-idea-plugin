@@ -37,30 +37,25 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
     override fun <T : DomElement> collectDependencies(clazz: Class<T>, shouldCollect: (DomFileElement<T>) -> Boolean): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
-        try {
-            StubIndex.getInstance().processElements(
-                DomElementClassIndex.KEY,
-                clazz.name,
-                myProject,
-                ProjectScope.getAllScope(myProject),
-                PsiFile::class.java,
-                object : Processor<PsiFile> {
-                    override fun process(psiFile: PsiFile): Boolean {
-                        psiFile.virtualFile ?: return true
-                        val domFileElement = myDomManager.getFileElement(psiFile as XmlFile, clazz) ?: return true
+        StubIndex.getInstance().processElements(
+            DomElementClassIndex.KEY,
+            clazz.name,
+            myProject,
+            ProjectScope.getAllScope(myProject),
+            PsiFile::class.java,
+            object : Processor<PsiFile> {
+                override fun process(psiFile: PsiFile): Boolean {
+                    psiFile.virtualFile ?: return true
+                    val domFileElement = myDomManager.getFileElement(psiFile as XmlFile, clazz) ?: return true
 
-                        if (shouldCollect.invoke(domFileElement)) {
-                            files.add(psiFile)
-                        }
-                        return true
+                    if (shouldCollect.invoke(domFileElement)) {
+                        files.add(psiFile)
                     }
+                    return true
                 }
-            )
+            }
+        )
 
-            return Collections.unmodifiableSet(files)
-        } catch (e: Exception) {
-            // can happen due broken Stub index, and requested reindex via FileBasedIndexImpl, cancel for now and try again later
-            throw ProcessCanceledException(e);
-        }
+        return Collections.unmodifiableSet(files)
     }
 }
