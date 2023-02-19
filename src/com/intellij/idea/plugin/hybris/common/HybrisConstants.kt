@@ -27,6 +27,11 @@ import java.io.File
  */
 object HybrisConstants {
 
+    const val CCV2_MANIFEST_NAME = "manifest.json"
+    const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
+    const val CCV2_DATAHUB_NAME = "datahub"
+    const val CCV2_JS_STOREFRONT_NAME = "js-storefront"
+
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 
     const val IDEA_EDITION_ULTIMATE = "Ultimate Edition"

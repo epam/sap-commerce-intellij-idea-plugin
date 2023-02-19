@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,13 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.tools.remote.action
 
-rootProject.name = "SAP-Commerce-Developers-Toolset"
-include("rt-ant")
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.ActionButton
 
-pluginManagement {
-    repositories {
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        gradlePluginPortal()
+class ImpexActionsGroup : DefaultActionGroup({ "Impex" }, true) {
+
+    init {
+        templatePresentation.icon = HybrisIcons.IMPEX
+        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
+        templatePresentation.isHideGroupIfEmpty = true
     }
 }

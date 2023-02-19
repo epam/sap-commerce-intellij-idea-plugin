@@ -37,11 +37,12 @@ const val pluginUntilBuild = "231.*"
 // https://github.com/JetBrains/gradle-intellij-plugin#plugin-verifier-dsl
 // See https://jb.gg/intellij-platform-builds-list for available build versions
 // EAP snapshots -> https://www.jetbrains.com/intellij-repository/snapshots
-const val pluginVerifierIdeVersions = "231.4840.387"
+const val pluginVerifierIdeVersions = "231.6890.12"
 
 const val platformType = "IU"
 const val platformVersion = "LATEST-EAP-SNAPSHOT"
 const val platformDownloadSources = true
 // Plugin Dependencies -> https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
+// Platform explorer (Plugin) -> https://plugins.jetbrains.com/intellij-platform-explorer/extensions
 // Example: platformPlugins = com.intellij.java, com.jetbrains.php:203.4449.22
 const val platformPlugins = "ant, Spring, uml, junit, JavaEE, maven, eclipse, gradle, properties, Groovy, java-i18n, java, gradle-java, PsiViewer:231-SNAPSHOT, copyright"

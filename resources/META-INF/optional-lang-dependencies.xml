@@ -32,14 +32,21 @@
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
 
-    <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.ManifestJSONSchemaProviderFactory"/>
+    </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                            CCv2 manifest.json                                             -->
+        <!-- ####################################################################################################### -->
 
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->
@@ -341,7 +348,7 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="ImpexTableFormat.Actions" text="Impex Table Formatter" popup="true" icon="/icons/hybrisIcon.svg">
+        <group id="ImpexTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
             <!-- This feature not ready for production. Temporary disabled.  -->
             <!--<action id="ImpexTableFormatter.FormatAllTables"-->
             <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
@@ -361,11 +368,6 @@
                 <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
             </action>
 
-            <add-to-group group-id="CodeMenu" anchor="last"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </group>
-
-        <group id="ImpexRemoteControl.Actions" text="Impex Remote Control" popup="true" icon="/icons/hybrisIcon.svg">
             <action id="ImpexRemoteControl.Validate"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
                     icon="/icons/hybrisIcon.svg">
@@ -380,7 +382,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <group id="FSRemoteControl.Actions" text="FlexibleSearch Remote Control" popup="true" icon="/icons/hybrisIcon.svg">
+        <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.FlexibleSearchActionsGroup">
             <action id="FSRemoteControl.Execute"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ExecuteFlexibleSearchAction"
                     text="Execute selected FlexibleSearch Statement"

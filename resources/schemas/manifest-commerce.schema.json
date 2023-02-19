@@ -1,0 +1,314 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "commerceSuiteVersion",
+    "extensions"
+  ],
+  "properties": {
+    "commerceSuiteVersion": {
+      "description": "Defines the major version of the SAP Commerce Cloud artifact to download. The latest patch is automatically included.\nIf you need a specific patch version, you can add the string as '<major_version>.<patch_version>', but this is not a best practice.",
+      "examples": [
+      ],
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "major",
+              "keepPriorPatchCount"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "major": {
+                "type": "string"
+              },
+              "keepPriorPatchCount": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "enableImageProcessingService": {
+      "type": "boolean"
+    },
+    "solrVersion": {
+      "type": "string"
+    },
+    "extensionPacks": {
+      "type": "array",
+      "description": "The extension packs to support industry accelerators or any additional ZIPs. Can either specify a name and version or the URL of the artifact. Specifying the artifact overrides name+version.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the maven artifact to be downloaded."
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the maven artifact to be downloaded. The format is '<major_version>.<patch_version>'."
+          },
+          "artifact": {
+            "type": "string",
+            "description": "The maven artifact to be downloaded. The maven artifact string is in Gradle format."
+          }
+        }
+      }
+    },
+    "disableImageReuse": {
+      "type": "boolean",
+      "description": "Disables the image reuse mechanism.\nBy default, disableImageReuse is set to false, which means the ability to resuse images is enabled. In this case, the build process checks in the target Docker Registry whether the Solr and Zookeeper images are already built, and if they are, it skips the rebuild process.\n\nIf the disableImageReuse flag is set to true, then the mechanism is disabled. In this case, the build process generates new Solr and Zookeeper images with every build."
+    },
+    "useConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Allows the reuse of the configuration available in the repository with a customer project. It consists of extensions, properties, Solr configuration, and languages.",
+      "properties": {
+        "extensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The reference to the existing localextensions.xml file.",
+          "required": [
+            "location"
+          ],
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The location of the localextensions.xml file that imports extensions names. The path must be relative to the core-customize directory and in Unix format (with slashes, not backslashes)."
+            },
+            "exclude": {
+              "type": "array",
+              "description": "The extensions to exclude (not imported from the localextensions.xml file).",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "properties": {
+          "type": "array",
+          "description": "Specifies a group of properties files to be imported.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "location"
+            ],
+            "properties": {
+              "location": {
+                "type": "string",
+                "description": "The location of the properties file to be imported. The path must be relative to the core-customize directory and in unix format (with slashes, not backslashes)."
+              },
+              "aspect": {
+                "type": "string",
+                "description": "The aspect where properties are applied. Properties assigned to a given aspect attribute are applied at deployment time (when the aspect is known), so they aren’t applicable at build time."
+              },
+              "persona": {
+                "$ref": "#/$types/persona",
+                "description": "The environment persona for which the properties are applied. The properties assigned to a given environment persona are applied at deployment time (when the aspect is known), so they aren’t applicable at build time."
+              }
+            }
+          }
+        },
+        "solr": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Configuration of the Solr customization.",
+          "required": [
+            "location"
+          ],
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The location of the Solr customization that is copied to the Solr directory. The path must be relative to the core-customize directory and in unix format (with slashes, not backslashes)."
+            }
+          }
+        },
+        "languages": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Configuration of the languages customization.",
+          "required": [
+            "location"
+          ],
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "The location of the directory that includes language packs. The path must be relative to the core-customize directory and in unix format (with slashes, not backslashes). The language packs must be named langpack*.zip."
+            }
+          }
+        }
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "description": "A list of extensions to be enabled.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "storefrontAddons": {
+      "type": "array",
+      "description": "The AddOns installed by the Platform during the build process.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "addon": {
+            "type": "string",
+            "description": "The AddOn name."
+          },
+          "storefront": {
+            "type": "string",
+            "description": "The storefront extension name."
+          },
+          "template": {
+            "type": "string",
+            "description": "The storefront template extension name."
+          }
+        }
+      }
+    },
+    "properties": {
+      "$ref": "#/$types/properties",
+      "description": "Properties to set in local properties (for all aspects)."
+    },
+    "aspects": {
+      "type": "array",
+      "description": "The aspect-specific configuration.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "enum": [
+              "accstorefront",
+              "backoffice",
+              "backgroundProcessing",
+              "admin",
+              "api"
+            ],
+            "description": "The aspect name. Possible values: accstorefront, backoffice, backgroundProcessing, api and admin."
+          },
+          "properties": {
+            "$ref": "#/$types/properties",
+            "description": "The Platform properties to be set for a given aspect only. The deployment process of SAP Commerce Cloud may force some properties such as db.url. For more information, see Properties."
+          },
+          "webapps": {
+            "type": "array",
+            "description": "Web applications (web module part of extensions) that are enabled in a given aspect. For more information, see Aspects, section Webapps aspect.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The extension name."
+                },
+                "contextPath": {
+                  "type": "string",
+                  "description": "Web application context path. This path overrides the context path of a given extension (web application) for a particular aspect. If the value isn’t provided, the context path is determined by Platform in a regular way (by considering the <extension>.webroot property or webroot attribute from the extensioninfo.xml file).\nThe system applies this configuration at deployment time only, when the aspect is known. All web applications (extensions) must have unique context paths at build time, because Platform should also be able to start in a standalone mode outside of SAP Commerce Cloud."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tests": {
+      "$ref": "#/$types/tests",
+      "description": "Define the extension tests run by the build process."
+    },
+    "webTests": {
+      "$ref": "#/$types/tests",
+      "description": "Configuration of the extension webtests run by the build process."
+    }
+  },
+  "$types": {
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Define the extension tests run by the build process.",
+      "properties": {
+        "extensions": {
+          "type": "array",
+          "description": "Enables any annotated test classes from a given set.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "annotations": {
+          "type": "array",
+          "description": "Enables test classes annotated with any annotation from the given set. If not provided, Platform assumes unittests, demotests, and integrationtests.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "packages": {
+          "type": "array",
+          "description": "Enables test classes inside any package of the given set.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludedPackages": {
+          "type": "array",
+          "description": "Disables test classes inside any package from the given set. de.hybris.* and com.hybris.* are always added at the end.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "properties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "value"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The property key (name)."
+          },
+          "value": {
+            "type": "string",
+            "description": "The property value."
+          },
+          "persona": {
+            "$ref": "#/$types/persona",
+            "description": "The environment type. Possible values are development, staging, and production. If empty, the property applies to all environments of all types."
+          },
+          "secret": {
+            "type": "boolean",
+            "description": "If true, then the system considers the property value as secret and doesn’t display it in the build logs. The default value is false."
+          }
+        }
+      }
+    },
+    "persona": {
+      "enum": [
+        "development",
+        "staging",
+        "production"
+      ]
+    }
+  }
+}

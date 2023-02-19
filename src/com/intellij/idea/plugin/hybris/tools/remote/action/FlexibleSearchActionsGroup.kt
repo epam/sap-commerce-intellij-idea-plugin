@@ -15,24 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInspection.fix
+package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.openapi.project.Project
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.xml.XmlTag
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.ActionButton
 
-class XmlDeleteTagQuickFix : LocalQuickFix {
+class FlexibleSearchActionsGroup : DefaultActionGroup({ "Flexible Search" }, true) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteTag")
-
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val currentElement = descriptor.psiElement
-
-        (currentElement as? XmlTag)
-            ?.delete()
-            ?: PsiTreeUtil.getParentOfType(currentElement, XmlTag::class.java)?.delete()
+    init {
+        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
+        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
+        templatePresentation.isHideGroupIfEmpty = true
     }
 }

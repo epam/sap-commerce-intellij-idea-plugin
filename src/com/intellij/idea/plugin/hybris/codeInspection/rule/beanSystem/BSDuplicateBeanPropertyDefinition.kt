@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem
 
+import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
@@ -25,6 +26,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import com.intellij.idea.plugin.hybris.system.bean.model.Property
 
 class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
 
@@ -51,19 +53,26 @@ class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
 
         if (metas.isEmpty()) return
 
+        val currentBeanProperties = dom.properties
+                .filter{ it.name.stringValue != null }
+                .groupBy { it.name.stringValue }
+
         dom.properties.forEach { property ->
             val otherPropertyDeclarations = metas
                 .flatMap { it.declarations }
                 .map { it.properties }
                 .mapNotNull { it[property.name.stringValue] }
 
-            if (otherPropertyDeclarations.size > 1) {
-                holder.createProblem(
-                    property.name,
-                    severity,
-                    displayName
-                )
+                if (otherPropertyDeclarations.size > 1 || (currentBeanProperties[property.name.stringValue]?.size ?: 1) > 1) {
+                    createProblem(holder, property, severity, displayName)
             }
         }
     }
+
+    private fun createProblem(
+            holder: DomElementAnnotationHolder,
+            property: Property,
+            severity: HighlightSeverity,
+            displayName: String
+    ) = holder.createProblem(property.name, severity, displayName, XmlDeleteTagQuickFix())
 }

@@ -19,9 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelCollector
 import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
 import com.intellij.psi.stubs.StubIndex
@@ -39,33 +37,25 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
     override fun <T : DomElement> collectDependencies(clazz: Class<T>, shouldCollect: (DomFileElement<T>) -> Boolean): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
-        try {
-            return ProgressManager.getInstance()
-                .computeInNonCancelableSection(ThrowableComputable<Set<PsiFile>, Exception> {
-                    StubIndex.getInstance().processElements(
-                        DomElementClassIndex.KEY,
-                        clazz.name,
-                        myProject,
-                        ProjectScope.getAllScope(myProject),
-                        PsiFile::class.java,
-                        object : Processor<PsiFile> {
-                            override fun process(psiFile: PsiFile): Boolean {
-                                psiFile.virtualFile ?: return true
-                                val domFileElement = myDomManager.getFileElement(psiFile as XmlFile, clazz) ?: return true
+        StubIndex.getInstance().processElements(
+            DomElementClassIndex.KEY,
+            clazz.name,
+            myProject,
+            ProjectScope.getAllScope(myProject),
+            PsiFile::class.java,
+            object : Processor<PsiFile> {
+                override fun process(psiFile: PsiFile): Boolean {
+                    psiFile.virtualFile ?: return true
+                    val domFileElement = myDomManager.getFileElement(psiFile as XmlFile, clazz) ?: return true
 
-                                if (shouldCollect.invoke(domFileElement)) {
-                                    files.add(psiFile)
-                                }
-                                return true
-                            }
-                        }
-                    )
+                    if (shouldCollect.invoke(domFileElement)) {
+                        files.add(psiFile)
+                    }
+                    return true
+                }
+            }
+        )
 
-                    Collections.unmodifiableSet(files)
-                })
-        } catch (e : Exception) {
-            // can happen due broken Stub index, and requested reindex via FileBasedIndexImpl, cancel for now and try again later
-            throw ProcessCanceledException(e);
-        }
+        return Collections.unmodifiableSet(files)
     }
 }

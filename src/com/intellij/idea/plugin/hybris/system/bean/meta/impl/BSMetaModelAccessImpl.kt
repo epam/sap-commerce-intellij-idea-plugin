@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
@@ -58,20 +57,19 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
             val globalMetaModel = BSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
 
             CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
-        }
-        , false
+        }, false
     )
 
-    override fun getMetaModel(): BSGlobalMetaModel {
-        return DumbService.getInstance(myProject).runReadActionInSmartMode(
-            Computable {
-                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-                    return@Computable readMetaModelWithLock()
-                }
-                return@Computable writeMetaModelWithLock()
+    override fun getMetaModel() = DumbService.getInstance(myProject).runReadActionInSmartMode(
+        Computable {
+            if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
+
+            if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                return@Computable readMetaModelWithLock()
             }
-        ) ?: throw ProcessCanceledException()
-    }
+            return@Computable writeMetaModelWithLock()
+        }
+    ) ?: throw ProcessCanceledException()
 
     override fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType) = getMetaModel().getMetaType<T>(metaType).values
 
@@ -80,6 +78,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         val name = BSMetaModelNameProvider.extract(dom) ?: return emptyList()
         return findMetaBeansByName(name)
     }
+
     override fun findMetaBeansByName(name: String): List<BSGlobalMetaBean> {
         return listOfNotNull(
             findMetaByName(BSMetaType.META_BEAN, name),
@@ -87,6 +86,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
             findMetaByName(BSMetaType.META_EVENT, name)
         )
     }
+
     override fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> {
         return listOfNotNull(
             findMetaByName(BSMetaType.META_ENUM, name),
@@ -98,7 +98,8 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
 
     override fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
 
-    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? = getMetaModel().getMetaType<T>(metaType)[name]
+    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? =
+        getMetaModel().getMetaType<T>(metaType)[name]
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
     private fun readMetaModelWithLock(): BSGlobalMetaModel {

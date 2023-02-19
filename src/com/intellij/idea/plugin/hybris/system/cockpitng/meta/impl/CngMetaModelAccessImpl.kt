@@ -108,17 +108,16 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         return Pair(localConfigMetaModels, dependencies)
     }
 
-    override fun getMetaModel(): CngGlobalMetaModel {
-        return DumbService.getInstance(myProject).runReadActionInSmartMode(
-            Computable {
-                if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-                    return@Computable readMetaModelWithLock()
-                }
-                return@Computable writeMetaModelWithLock()
+    override fun getMetaModel() = DumbService.getInstance(myProject).runReadActionInSmartMode(
+        Computable {
+            if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
+
+            if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
+                return@Computable readMetaModelWithLock()
             }
-        ) ?: throw ProcessCanceledException()
-//        if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
-    }
+            return@Computable writeMetaModelWithLock()
+        }
+    ) ?: throw ProcessCanceledException()
 
     // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
     private fun readMetaModelWithLock(): CngGlobalMetaModel {

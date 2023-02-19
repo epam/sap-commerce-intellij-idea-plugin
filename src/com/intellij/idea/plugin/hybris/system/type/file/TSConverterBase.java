@@ -36,15 +36,15 @@ import java.util.function.Function;
 
 public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
 
-    private final Class<? extends DOM> myResolvesToClass;
+    private final Class<DOM> myResolvesToClass;
 
     protected abstract DOM searchForName(
         @NotNull String name, @NotNull ConvertContext context, TSMetaModelAccess meta
     );
 
-    protected abstract Collection<? extends DOM> searchAll(@NotNull ConvertContext context, TSMetaModelAccess meta);
+    protected abstract Collection<DOM> searchAll(@NotNull ConvertContext context, TSMetaModelAccess meta);
 
-    public TSConverterBase(@NotNull final Class<? extends DOM> resolvesToClass) {
+    public TSConverterBase(@NotNull final Class<DOM> resolvesToClass) {
         myResolvesToClass = resolvesToClass;
     }
 
@@ -53,7 +53,7 @@ public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
         return myResolvesToClass.isAssignableFrom(elementClass);
     }
 
-    public Class<? extends DOM> getResolvesToClass() {
+    public Class<DOM> getResolvesToClass() {
         return myResolvesToClass;
     }
 
@@ -101,6 +101,7 @@ public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
         return TSMetaModelAccess.Companion.getInstance(context.getProject());
     }
 
+    @Nullable
     protected static <D extends DomElement> XmlAttributeValue navigateToValue(
         @Nullable final D dom,
         @NotNull final Function<? super D, GenericAttributeValue<?>> attribute
@@ -122,4 +123,5 @@ public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
                     .map(GenericAttributeValue::getValue)
                     .orElse(null);
     }
+
 }

@@ -15,24 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInspection.fix
+package com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema
 
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
 import com.intellij.openapi.project.Project
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.xml.XmlTag
+import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 
-class XmlDeleteTagQuickFix : LocalQuickFix {
+class ManifestJSONSchemaProviderFactory : JsonSchemaProviderFactory {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteTag")
+    override fun getProviders(project: Project) = listOf(
+            ManifestCommerceJsonSchemaFileProvider(project),
+            ManifestDataHubJsonSchemaFileProvider(project),
+            ManifestJavascriptStorefrontJsonSchemaFileProvider(project)
+    )
 
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val currentElement = descriptor.psiElement
-
-        (currentElement as? XmlTag)
-            ?.delete()
-            ?: PsiTreeUtil.getParentOfType(currentElement, XmlTag::class.java)?.delete()
-    }
 }

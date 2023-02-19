@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.file;
 
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiDocCommentOwner;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.xml.ConvertContext;
@@ -27,21 +28,22 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
+public abstract class CompositeConverter<DOM extends DomElement> extends ResolvingConverter<DOM> {
 
     private final TSConverterBase<? extends DOM>[] myDelegates;
+    private final Map<Class<? extends DOM>, TSConverterBase<? extends DOM>> converters;
 
-    public CompositeConverter(TSConverterBase<? extends DOM>... converters) {
+    public CompositeConverter(final TSConverterBase<? extends DOM>... converters) {
         myDelegates = converters;
-    }
-
-    @Override
-    public boolean canResolveTo(final Class<? extends PsiElement> elementClass) {
-        return !PsiDocCommentOwner.class.isAssignableFrom(elementClass);
+        this.converters = Arrays.stream(converters)
+                                .collect(Collectors.toMap(TSConverterBase::getResolvesToClass, it -> it));
     }
 
     @NotNull
@@ -52,6 +54,26 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
             result.addAll(next.getVariants(context));
         }
         return result;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getPsiElement(@Nullable final DOM dom) {
+        final TSConverterBase<DOM> converter = getConverter(dom);
+        if (converter == null) return null;
+        return converter.tryGetPsiElement(dom);
+    }
+
+    @Override
+    public boolean canResolveTo(final Class<? extends PsiElement> elementClass) {
+        return !PsiDocCommentOwner.class.isAssignableFrom(elementClass);
+    }
+
+    @Override
+    public @Nullable LookupElement createLookupElement(final DOM dom) {
+        final TSConverterBase<DOM> converter = getConverter(dom);
+        if (converter == null) return null;
+        return converter.createLookupElement(dom);
     }
 
     @Nullable
@@ -70,35 +92,18 @@ public abstract class CompositeConverter<DOM> extends ResolvingConverter<DOM> {
 
     @Nullable
     @Override
-    public String toString(@Nullable final DOM t, final ConvertContext context) {
-        for (TSConverterBase<? extends DOM> next : myDelegates) {
-            final String nextToString = next.tryToString(t, context);
-            if (nextToString != null) {
-                return nextToString;
-            }
-        }
-        return null;
+    public String toString(@Nullable final DOM dom, final ConvertContext context) {
+        final TSConverterBase<DOM> converter = getConverter(dom);
+        if (converter == null) return null;
+        return converter.tryToString(dom, context);
     }
 
     @Nullable
-    @Override
-    public PsiElement getPsiElement(@Nullable final DOM resolvedValue) {
-        for (TSConverterBase<? extends DOM> next : myDelegates) {
-            if (next.getResolvesToClass().isInstance(resolvedValue)) {
-                final PsiElement nextResult = next.tryGetPsiElement(resolvedValue);
-                if (nextResult != null) {
-                    return nextResult;
-                }
-            }
-        }
-        return null;
-    }
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
+    private TSConverterBase<DOM> getConverter(@Nullable final DOM dom) {
+        if (dom == null) return null;
 
-    public static class TypeOrEnum extends CompositeConverter<DomElement> {
-
-        public TypeOrEnum() {
-            super(new EnumTypeConverter(), new ItemTypeConverter());
-        }
+        return (TSConverterBase<DOM>) converters.get(dom.getDomElementType());
     }
 
     public static class TypeOrEnumOrAtomic extends CompositeConverter<DomElement> {
