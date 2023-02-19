@@ -20,6 +20,7 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -48,6 +49,7 @@ public interface Extension extends DomElement {
 	@NotNull
 	@Attribute ("name")
 	@Required
+	@NoSpellchecking
 	GenericAttributeValue<String> getName();
 
 
@@ -74,6 +76,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("classprefix")
+	@NoSpellchecking
 	GenericAttributeValue<String> getClassPrefix();
 
 
@@ -87,6 +90,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("abstractclassprefix")
+	@NoSpellchecking
 	GenericAttributeValue<String> getAbstractClassPrefix();
 
 
@@ -126,6 +130,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("managername")
+	@NoSpellchecking
 	GenericAttributeValue<String> getManagerName();
 
 

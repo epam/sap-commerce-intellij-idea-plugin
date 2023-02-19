@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -45,6 +46,7 @@ public interface Import extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("resource")
     @Required
+    @NoSpellchecking
     GenericAttributeValue<String> getResource();
 
 

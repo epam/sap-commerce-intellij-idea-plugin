@@ -20,6 +20,7 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,7 @@ public interface RequiresExtension extends DomElement {
 	@NotNull
 	@Attribute ("name")
 	@Required
+	@NoSpellchecking
 	GenericAttributeValue<String> getName();
 
 

@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
+import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("name")
+	@NoSpellchecking
 	GenericAttributeValue<String> getName();
 
 
