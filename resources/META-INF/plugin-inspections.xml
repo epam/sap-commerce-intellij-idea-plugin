@@ -1,6 +1,12 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <!-- manifest.json - Commerce -->
+        <localInspection groupPath="hybris" shortName="ManifestUnknownExtensionInspection" displayName="[y] Unknown extension"
+                         groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionInspection.key"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceExtensionInspection"/>
+
         <!-- Business Process -->
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Business Process"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"

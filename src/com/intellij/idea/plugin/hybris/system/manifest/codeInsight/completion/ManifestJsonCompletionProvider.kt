@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.ccv2.codeInsight.completion
+package com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider
-import com.intellij.idea.plugin.hybris.system.ccv2.psi.ManifestPatterns
+import com.intellij.idea.plugin.hybris.system.manifest.psi.ManifestPatterns
 
 class ManifestJsonCompletionProvider : CompletionContributor() {
 

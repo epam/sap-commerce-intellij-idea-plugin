@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.ccv2.psi
+package com.intellij.idea.plugin.hybris.system.manifest.psi
 
 import com.intellij.json.JsonElementTypes
 import com.intellij.json.psi.JsonArray
@@ -31,7 +31,6 @@ object ManifestPatterns {
 
     private inline fun <reified T : PsiElement> PsiElementPattern<*, *>.withParent() = this.withParent(T::class.java)
 
-    private fun jsonPropertyName() = PlatformPatterns.psiElement(JsonElementTypes.IDENTIFIER)
     private fun jsonStringValue() = PlatformPatterns.psiElement(JsonElementTypes.DOUBLE_QUOTED_STRING)
             .withParent<JsonStringLiteral>()
 

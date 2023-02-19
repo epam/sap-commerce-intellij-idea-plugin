@@ -160,6 +160,11 @@
       "description": "The AddOns installed by the Platform during the build process.",
       "items": {
         "type": "object",
+        "required": [
+          "addon",
+          "storefront",
+          "template"
+        ],
         "additionalProperties": false,
         "properties": {
           "addon": {

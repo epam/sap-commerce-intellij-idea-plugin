@@ -33,7 +33,7 @@
     </projectListeners>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.ManifestJsonSchemaProviderFactory"/>
+        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.ManifestJsonSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -51,7 +51,10 @@
         <!-- ####################################################################################################### -->
 
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
-                                implementationClass="com.intellij.idea.plugin.hybris.system.ccv2.codeInsight.completion.ManifestJsonCompletionProvider"/>
+                                implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->

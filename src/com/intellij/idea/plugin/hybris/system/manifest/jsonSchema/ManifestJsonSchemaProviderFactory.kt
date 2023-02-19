@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema
+package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema
 
-import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
-import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
-import com.intellij.idea.plugin.hybris.system.ccv2.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
 import com.intellij.openapi.project.Project
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 
 class ManifestJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
-            ManifestCommerceJsonSchemaFileProvider(project),
-            ManifestDataHubJsonSchemaFileProvider(project),
-            ManifestJavascriptStorefrontJsonSchemaFileProvider(project)
+            ManifestCommerceJsonSchemaFileProvider.instance(project),
+            ManifestDataHubJsonSchemaFileProvider.instance(project),
+            ManifestJavascriptStorefrontJsonSchemaFileProvider.instance(project)
     )
 
 }
