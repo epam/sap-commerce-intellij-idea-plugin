@@ -103,7 +103,7 @@
                 <li><i>Feature:</i> Added completion and navigation for <code>onError</code> attribute within Business Process definition (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/215" target="_blank" rel="nofollow">#215</a>)</li>
                 <li><i>Feature:</i> Improved Project Structure information notification content (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/217" target="_blank" rel="nofollow">#217</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
-                <li><i>Feature:</i> Disable spell check for properties with custom named values (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/217" target="_blank" rel="nofollow">#217</a>)</li>
+                <li><i>Feature:</i> Disable spell check for properties with custom named values (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/228" target="_blank" rel="nofollow">#228</a>)</li>
             </ul>
             <h3>2022.3.1</h3>
             <ul>
