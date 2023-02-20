@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+package com.intellij.idea.plugin.hybris.settings
 
-/**
- * @author Eugene.Kudelevsky
- */
-public enum HybrisModuleDescriptorType {
-    CONFIG, CUSTOM, EXT, NONE, OOTB, PLATFORM, ECLIPSE, MAVEN, GRADLE, CCV2
-}
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+
+data class ExtensionDescriptor(
+        var name: String = "",
+        var type: HybrisModuleDescriptorType? = null,
+        var backofficeModule: Boolean = false,
+        var hacModule: Boolean = false,
+        var deprecated: Boolean = false,
+        var extGenTemplateExtension: Boolean = false,
+        var classPathGen: String? = null,
+        var moduleGenName: String? = null,
+)

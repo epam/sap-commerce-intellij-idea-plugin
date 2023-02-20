@@ -41,15 +41,12 @@ import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigu
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -98,12 +95,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
@@ -428,9 +423,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void saveImportedSettings(final Project project) {
-        final HybrisProjectSettings hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
-                                                                                          .getState();
-        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var hybrisSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
+        final var hybrisProjectSettings = hybrisSettingsComponent.getState();
+        final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null && extDir.isDirectory()) {
@@ -478,14 +473,17 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
         hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
-        final Set<String> completeSetOfHybrisModules = new HashSet<>();
-        hybrisProjectDescriptor.getFoundModules().stream()
+        final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
                                .filter(e -> !(e instanceof MavenModuleDescriptor)
                                             && !(e instanceof EclipseModuleDescriptor)
                                             && !(e instanceof GradleModuleDescriptor)
+                                            && !(e instanceof ConfigHybrisModuleDescriptor)
                                )
-                               .forEach(e -> completeSetOfHybrisModules.add(e.getName()));
-        hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules);
+                               .collect(Collectors.toSet());
+        hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
+        hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
+                                                                              .map(HybrisModuleDescriptor::getName)
+                                                                              .collect(Collectors.toSet()));
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
 
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);

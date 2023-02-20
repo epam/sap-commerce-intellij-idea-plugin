@@ -65,6 +65,7 @@ import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
 public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected final Project project;
+    protected final HybrisProjectSettingsComponent hybrisProjectSettingsComponent;
     protected final HybrisProjectSettings hybrisProjectSettings;
     protected final HybrisApplicationSettings hybrisApplicationSettings;
     private final String[] commerceGroupName;
@@ -74,7 +75,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         Validate.notNull(project);
 
         this.project = project;
-        this.hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        this.hybrisProjectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
+        this.hybrisProjectSettings = hybrisProjectSettingsComponent.getState();
         this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         this.commerceGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         this.platformGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
@@ -362,7 +364,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     protected boolean isNotHybrisProject() {
-        return null != this.hybrisProjectSettings && !this.hybrisProjectSettings.isHybrisProject();
+        return null != this.hybrisProjectSettings && !this.hybrisProjectSettingsComponent.isHybrisProject();
     }
 
     protected boolean isJunk(@NotNull final VirtualFile virtualFile, @NotNull final List<String> junkFileNames) {

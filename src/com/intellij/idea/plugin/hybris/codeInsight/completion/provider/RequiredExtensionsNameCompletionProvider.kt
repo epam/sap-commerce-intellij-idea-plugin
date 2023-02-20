@@ -47,9 +47,9 @@ class RequiredExtensionsNameCompletionProvider: CompletionProvider<CompletionPar
 
         HybrisProjectSettingsComponent.getInstance(project)
             .state
-            .completeSetOfAvailableExtensionsInHybris
-            .filterNot { currentNames.contains(it.lowercase()) }
-            .map { LookupElementBuilder.create(it) }
+            .availableExtensions.entries
+            .filterNot { currentNames.contains(it.key) }
+            .map { LookupElementBuilder.create(it.value) }
             .forEach { result.addElement(it) }
     }
 

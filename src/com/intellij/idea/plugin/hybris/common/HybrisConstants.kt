@@ -31,6 +31,23 @@ object HybrisConstants {
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
     const val CCV2_DATAHUB_NAME = "datahub"
     const val CCV2_JS_STOREFRONT_NAME = "js-storefront"
+    val CCV2_COMMERCE_CLOUD_EXTENSIONS = arrayOf(
+            "azurecloudhotfolder",
+            "cloudmediaconversion",
+            "cloudcommons",
+            "cloudhotfolder",
+            "cloudstorestorefront",
+            "cloudstoreinitialdata",
+            "cloudstorefulfilmentprocess",
+            "cloudstorefacades",
+            "cloudstorecore",
+            "cloudstorecockpits"
+    )
+    val CCV2_COMMERCE_EXTENSION_PACKS = arrayOf(
+            "hybris-commerce-integrations",
+            "cx-commerce-crm-integrations",
+            "media-telco"
+    )
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 
@@ -199,11 +216,11 @@ object HybrisConstants {
     val TS_PRIMITIVE_TYPES = setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
 
     val TS_TYPECODE_MIN_ALLOWED = 10000
-    val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED .. 10099
-    val TS_TYPECODE_RANGE_COMMONS = 13200 .. 13299
-    val TS_TYPECODE_RANGE_XPRINT = 24400 .. 24599
-    val TS_TYPECODE_RANGE_PRINT = 23400 .. 23999
-    val TS_TYPECODE_RANGE_PROCESSING = 32700 .. 32799
+    val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED..10099
+    val TS_TYPECODE_RANGE_COMMONS = 13200..13299
+    val TS_TYPECODE_RANGE_XPRINT = 24400..24599
+    val TS_TYPECODE_RANGE_PRINT = 23400..23999
+    val TS_TYPECODE_RANGE_PROCESSING = 32700..32799
 
     val BP_NAVIGABLE_ELEMENTS = setOf("action", "end", "wait", "join", "notify", "split", "scriptAction", "choice")
 
@@ -254,89 +271,152 @@ object HybrisConstants {
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
 
-    @JvmField val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
-    @JvmField val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
+    @JvmField
+    val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
+    @JvmField
+    val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
     const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
     const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
 
-    @JvmField val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
-    @JvmField val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
-    @JvmField val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
+    @JvmField
+    val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
+    @JvmField
+    val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
+    @JvmField
+    val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
 
-    @JvmField val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")
-    @JvmField val PLATFORM_MODULE_PREFIX = FileUtilRt.toSystemDependentName("/bin/platform/")
-    @JvmField val PLATFORM_EXT_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/platform/ext/")
-    @JvmField val PLATFORM_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/ext-")
-    @JvmField val PLATFORM_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("bin/modules/")
-    @JvmField val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
+    @JvmField
+    val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")
+    @JvmField
+    val PLATFORM_MODULE_PREFIX = FileUtilRt.toSystemDependentName("/bin/platform/")
+    @JvmField
+    val PLATFORM_EXT_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/platform/ext/")
+    @JvmField
+    val PLATFORM_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("bin/ext-")
+    @JvmField
+    val PLATFORM_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("bin/modules/")
+    @JvmField
+    val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
 
-    @JvmField val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX
-    @JvmField val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX_2019
+    @JvmField
+    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX
+    @JvmField
+    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX_2019
 
-    @JvmField val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
-    @JvmField val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
-    @JvmField val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
-    @JvmField val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
-    @JvmField val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
-    @JvmField val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
-    @JvmField val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
+    @JvmField
+    val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
+    @JvmField
+    val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
+    @JvmField
+    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
+    @JvmField
+    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
+    @JvmField
+    val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
+    @JvmField
+    val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
+    @JvmField
+    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
 
-    @JvmField val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
-    @JvmField val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
-    @JvmField val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
-    @JvmField val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
-    @JvmField val EXCLUDE_DATA_DIRECTORY = FileUtilRt.toSystemDependentName("/data")
-    @JvmField val EXCLUDE_SVN_DIRECTORY = FileUtilRt.toSystemDependentName("/.svn")
-    @JvmField val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
-    @JvmField val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
-    @JvmField val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")
-    @JvmField val EXCLUDE_MACOSX_DIRECTORY = FileUtilRt.toSystemDependentName("/__MACOSX")
+    @JvmField
+    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
+    @JvmField
+    val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
+    @JvmField
+    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
+    @JvmField
+    val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
+    @JvmField
+    val EXCLUDE_DATA_DIRECTORY = FileUtilRt.toSystemDependentName("/data")
+    @JvmField
+    val EXCLUDE_SVN_DIRECTORY = FileUtilRt.toSystemDependentName("/.svn")
+    @JvmField
+    val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
+    @JvmField
+    val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
+    @JvmField
+    val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")
+    @JvmField
+    val EXCLUDE_MACOSX_DIRECTORY = FileUtilRt.toSystemDependentName("/__MACOSX")
 
-    @JvmField val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
-    @JvmField val CONFIG_RELATIVE_PATH = FileUtilRt.toSystemDependentName("/../../$EXTENSION_NAME_CONFIG")
-    @JvmField val ADVANCED_PROPERTIES = FileUtilRt.toSystemDependentName("$RESOURCES_DIRECTORY/advanced.properties")
-    @JvmField val BUILD_NUMBER_FILE_PATH = FileUtilRt.toSystemDependentName("/bin/platform/build.number")
+    @JvmField
+    val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
+    @JvmField
+    val CONFIG_RELATIVE_PATH = FileUtilRt.toSystemDependentName("/../../$EXTENSION_NAME_CONFIG")
+    @JvmField
+    val ADVANCED_PROPERTIES = FileUtilRt.toSystemDependentName("$RESOURCES_DIRECTORY/advanced.properties")
+    @JvmField
+    val BUILD_NUMBER_FILE_PATH = FileUtilRt.toSystemDependentName("/bin/platform/build.number")
 
-    @JvmField val WEB_ROOT_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_ROOT_DIRECTORY")
-    @JvmField val WEB_INF_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_ROOT_DIRECTORY_RELATIVE_PATH/$WEB_INF_DIRECTORY")
-    @JvmField val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_INF_DIRECTORY_RELATIVE_PATH/$WEB_XML_FILE_NAME")
-    @JvmField val WEB_INF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
-    @JvmField val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/webroot/WEB-INF/classes")
-    @JvmField val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")
-    @JvmField val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
+    @JvmField
+    val WEB_ROOT_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_ROOT_DIRECTORY")
+    @JvmField
+    val WEB_INF_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_ROOT_DIRECTORY_RELATIVE_PATH/$WEB_INF_DIRECTORY")
+    @JvmField
+    val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_INF_DIRECTORY_RELATIVE_PATH/$WEB_XML_FILE_NAME")
+    @JvmField
+    val WEB_INF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
+    @JvmField
+    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/webroot/WEB-INF/classes")
+    @JvmField
+    val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")
+    @JvmField
+    val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
 
-    @JvmField val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$COMMON_WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
-    @JvmField val HMC_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
-    @JvmField val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
+    @JvmField
+    val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$COMMON_WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
+    @JvmField
+    val HMC_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
+    @JvmField
+    val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
 
-    @JvmField val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$BIN_DIRECTORY")
-    @JvmField val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$GEN_SRC_DIRECTORY")
-    @JvmField val PL_TOMCAT_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/lib")
-    @JvmField val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/$BIN_DIRECTORY")
-    @JvmField val PL_TOMCAT_6_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/lib")
-    @JvmField val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/$BIN_DIRECTORY")
-    @JvmField val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
+    @JvmField
+    val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$BIN_DIRECTORY")
+    @JvmField
+    val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$GEN_SRC_DIRECTORY")
+    @JvmField
+    val PL_TOMCAT_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/lib")
+    @JvmField
+    val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/$BIN_DIRECTORY")
+    @JvmField
+    val PL_TOMCAT_6_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/lib")
+    @JvmField
+    val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/$BIN_DIRECTORY")
+    @JvmField
+    val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
 
-    @JvmField val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
+    @JvmField
+    val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
-    @JvmField val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/$BIN_DIRECTORY")
-    @JvmField val BACKOFFICE_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("resources/backoffice")
-    @JvmField val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField val BACKOFFICE_WEB_INF_LIB_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField val BACKOFFICE_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes")
-    @JvmField val BACKOFFICE_WEB_INF_CLASSES_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes")
+    @JvmField
+    val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/$BIN_DIRECTORY")
+    @JvmField
+    val BACKOFFICE_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("resources/backoffice")
+    @JvmField
+    val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
+    @JvmField
+    val BACKOFFICE_WEB_INF_LIB_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib")
+    @JvmField
+    val BACKOFFICE_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes")
+    @JvmField
+    val BACKOFFICE_WEB_INF_CLASSES_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes")
 
-    @JvmField val QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage"
-    @JvmField val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
-    @JvmField val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
+    @JvmField
+    val QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage"
+    @JvmField
+    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
+    @JvmField
+    val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
-    @JvmField val LOCAL_GROUP_OVERRIDE_COMMENTS = """
+    @JvmField
+    val LOCAL_GROUP_OVERRIDE_COMMENTS = """
         In this file you can override default module grouping and add additional ant parameters.
         Add a property group.override and value group name.
         If you use subgroups use / as a separator. For example group.override=mygroup/mysubgroup
         """.trimIndent()
-    @JvmField val GLOBAL_GROUP_OVERRIDE_COMMENTS = """
+    @JvmField
+    val GLOBAL_GROUP_OVERRIDE_COMMENTS = """
         In this file you can override default module group for your extensions.
         Add a property <modulename>.group.override and group name as a value.
         If you use subgroups use / as a separator. For example myextension.group.override=mygroup/mysubgroup.
@@ -345,86 +425,89 @@ object HybrisConstants {
         Use ANT_OPTS to override ant properties. Current default value is
         ANT_OPTS=-Xmx512m -Dfile.encoding=UTF-8
         """.trimIndent()
-    @JvmField val DICTIONARY_WORDS = setOf(
-        "argumenttype",
-        "atomictype",
-        "autocreate",
-        "backoffice",
-        "beanutils",
-        "builddate",
-        "cockpitng",
-        "collectiontype",
-        "columntype",
-        "creationmode",
-        "cronjobs",
-        "defaultvalue",
-        "dontoptimize",
-        "elementtype",
-        "extname",
-        "hybris",
-        "impex",
-        "itemtype",
-        "jalo",
-        "jaloclass",
-        "jaloonly",
-        "jalosession",
-        "jspc",
-        "jstl",
-        "maptypes",
-        "metatype",
-        "metatype",
-        "nimda",
-        "NOPMD",
-        "partof",
-        "pojos",
-        "positiveshort",
-        "postgresql",
-        "propertytable",
-        "releasedate",
-        "returntype",
-        "servicelayer",
-        "solr",
-        "solrconfig",
-        "sqlserver",
-        "taglibs",
-        "typecode",
-        "typegroup",
-        "typesystem",
-        "webroot",
-        "ybackoffice",
-        "ybootstrap"
+    @JvmField
+    val DICTIONARY_WORDS = setOf(
+            "argumenttype",
+            "atomictype",
+            "autocreate",
+            "backoffice",
+            "beanutils",
+            "builddate",
+            "cockpitng",
+            "collectiontype",
+            "columntype",
+            "creationmode",
+            "cronjobs",
+            "defaultvalue",
+            "dontoptimize",
+            "elementtype",
+            "extname",
+            "hybris",
+            "impex",
+            "itemtype",
+            "jalo",
+            "jaloclass",
+            "jaloonly",
+            "jalosession",
+            "jspc",
+            "jstl",
+            "maptypes",
+            "metatype",
+            "metatype",
+            "nimda",
+            "NOPMD",
+            "partof",
+            "pojos",
+            "positiveshort",
+            "postgresql",
+            "propertytable",
+            "releasedate",
+            "returntype",
+            "servicelayer",
+            "solr",
+            "solrconfig",
+            "sqlserver",
+            "taglibs",
+            "typecode",
+            "typegroup",
+            "typesystem",
+            "webroot",
+            "ybackoffice",
+            "ybootstrap"
     )
 
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties
-    @JvmField val UNDO_REDO_EDITOR_ACTIONS = arrayOf("Undo", "Redo")
+    @JvmField
+    val UNDO_REDO_EDITOR_ACTIONS = arrayOf("Undo", "Redo")
 
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/ActionsBundle.properties
     // See ideaIU-LATEST-EAP-SNAPSHOT/lib/resources_en.jar!/messages/EditorBundle.properties
-    @JvmField val TYPING_EDITOR_ACTIONS = arrayOf(
-        "Typing",
-        "Delete to Word Start",
-        "Delete to Word End",
-        "Duplicate Line or Selection",
-        "Duplicate Entire Lines",
-        "Backspace",
-        "Delete",
-        "Delete Line",
-        "Cut",
-        "Paste",
-        "Paste _without Formatting",
-        "Paste without formatting, autoimport, literal escaping etc.",
-        "Paste from X clipboard",
-        "Hungry Backspace",
-        "Acts as the Backspace except that removes all whitespace symbols before the caret (if any)",
-        "Move Line Up",
-        "Move Line Down",
-        "Move Statement Up",
-        "Move Statement Down",
-        "Move Element Left",
-        "Move Element Right",
-        "Reformat Code",
-        "Undo Reformat Code",
-        "Auto-Indent Lines"
+    @JvmField
+    val TYPING_EDITOR_ACTIONS = arrayOf(
+            "Typing",
+            "Delete to Word Start",
+            "Delete to Word End",
+            "Duplicate Line or Selection",
+            "Duplicate Entire Lines",
+            "Backspace",
+            "Delete",
+            "Delete Line",
+            "Cut",
+            "Paste",
+            "Paste _without Formatting",
+            "Paste without formatting, autoimport, literal escaping etc.",
+            "Paste from X clipboard",
+            "Hungry Backspace",
+            "Acts as the Backspace except that removes all whitespace symbols before the caret (if any)",
+            "Move Line Up",
+            "Move Line Down",
+            "Move Statement Up",
+            "Move Statement Down",
+            "Move Element Left",
+            "Move Element Right",
+            "Reformat Code",
+            "Undo Reformat Code",
+            "Auto-Indent Lines"
     )
 }

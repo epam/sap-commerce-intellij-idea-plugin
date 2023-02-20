@@ -55,13 +55,15 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val isHybrisProject = commonIdeaService.isHybrisProject(project)
 
         if (isHybrisProject) {
+            commonIdeaService.refreshProjectSettings(project)
+
             if (commonIdeaService.isOutDatedHybrisProject(project)) {
                 Notifications.create(
                     NotificationType.INFORMATION,
                     HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
                     HybrisI18NBundleUtils.message(
                         "hybris.notification.project.open.outdated.text",
-                        HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion
+                        HybrisProjectSettingsComponent.getInstance(project).state.importedByVersion ?: "old"
                     )
                 )
                     .important(true)

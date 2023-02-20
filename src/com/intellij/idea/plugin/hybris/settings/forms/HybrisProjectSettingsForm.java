@@ -102,11 +102,11 @@ public class HybrisProjectSettingsForm implements Disposable {
             developerSettingsComponent.getSolrRemoteConnectionSettings()
         );
 
-        createBackwardCyclicDependenciesForAddons.setSelected(projectSettings.isCreateBackwardCyclicDependenciesForAddOns());
-        followSymlink.setSelected(projectSettings.isFollowSymlink());
-        scanThroughExternalModule.setSelected(projectSettings.isScanThroughExternalModule());
-        excludeTestSources.setSelected(projectSettings.isExcludeTestSources());
-        importOotbModulesInReadOnlyMode.setSelected(projectSettings.isImportOotbModulesInReadOnlyMode());
+        createBackwardCyclicDependenciesForAddons.setSelected(projectSettings.getCreateBackwardCyclicDependenciesForAddOns());
+        followSymlink.setSelected(projectSettings.getFollowSymlink());
+        scanThroughExternalModule.setSelected(projectSettings.getScanThroughExternalModule());
+        excludeTestSources.setSelected(projectSettings.getExcludeTestSources());
+        importOotbModulesInReadOnlyMode.setSelected(projectSettings.getImportOotbModulesInReadOnlyMode());
         hybrisVersion.setText(projectSettings.getHybrisVersion());
         javadocUrl.setText(projectSettings.getJavadocUrl());
         hybrisDirectory.setText(projectSettings.getHybrisDirectory());
@@ -142,10 +142,10 @@ public class HybrisProjectSettingsForm implements Disposable {
             return false;
         }
 
-        return createBackwardCyclicDependenciesForAddons.isSelected() != projectSettings.isCreateBackwardCyclicDependenciesForAddOns()
-               || importOotbModulesInReadOnlyMode.isSelected() != projectSettings.isImportOotbModulesInReadOnlyMode()
-               || scanThroughExternalModule.isSelected() != projectSettings.isScanThroughExternalModule()
-               || followSymlink.isSelected() != projectSettings.isFollowSymlink()
+        return createBackwardCyclicDependenciesForAddons.isSelected() != projectSettings.getCreateBackwardCyclicDependenciesForAddOns()
+               || importOotbModulesInReadOnlyMode.isSelected() != projectSettings.getImportOotbModulesInReadOnlyMode()
+               || scanThroughExternalModule.isSelected() != projectSettings.getScanThroughExternalModule()
+               || followSymlink.isSelected() != projectSettings.getFollowSymlink()
                || !StringUtil.equals(hybrisVersion.getText(), projectSettings.getHybrisVersion())
                || !StringUtil.equals(javadocUrl.getText(), projectSettings.getJavadocUrl())
                || !StringUtil.equals(hybrisDirectory.getText(), projectSettings.getHybrisDirectory())

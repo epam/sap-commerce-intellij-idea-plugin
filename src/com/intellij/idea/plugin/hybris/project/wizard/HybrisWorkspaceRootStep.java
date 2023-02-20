@@ -611,11 +611,11 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExternalExtensionsDirectory(toFile(settings.getExternalExtensionsDirectory(), true));
         hybrisProjectDescriptor.setExternalConfigDirectory(toFile(settings.getExternalConfigDirectory(), true));
         hybrisProjectDescriptor.setExternalDbDriversDirectory(toFile(settings.getExternalDbDriversDirectory(), true));
-        hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.isCreateBackwardCyclicDependenciesForAddOns());
-        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.isImportOotbModulesInReadOnlyMode());
-        hybrisProjectDescriptor.setFollowSymlink(settings.isFollowSymlink());
-        hybrisProjectDescriptor.setExcludeTestSources(settings.isExcludeTestSources());
-        hybrisProjectDescriptor.setScanThroughExternalModule(settings.isScanThroughExternalModule());
+        hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.getCreateBackwardCyclicDependenciesForAddOns());
+        hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
+        hybrisProjectDescriptor.setFollowSymlink(settings.getFollowSymlink());
+        hybrisProjectDescriptor.setExcludeTestSources(settings.getExcludeTestSources());
+        hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());

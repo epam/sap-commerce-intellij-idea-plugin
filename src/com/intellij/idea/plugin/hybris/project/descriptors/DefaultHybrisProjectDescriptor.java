@@ -320,10 +320,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (hybrisProjectSettings == null) {
             return;
         }
-        if (hybrisProjectSettings.getState() != null) {
-            if (hybrisProjectSettings.getState().isHybrisProject()) {
-                setHybrisProject(project);
-            }
+        if (hybrisProjectSettings.isHybrisProject()) {
+            setHybrisProject(project);
         }
     }
 

@@ -22,6 +22,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
@@ -31,14 +34,39 @@ class ExtensionsNameCompletionProvider : CompletionProvider<CompletionParameters
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val project = parameters.originalFile.project
         HybrisProjectSettingsComponent.getInstance(project)
-            .state
-            .completeSetOfAvailableExtensionsInHybris
-            .map { LookupElementBuilder.create(it) }
-            .forEach { result.addElement(it) }
+                .state
+                .availableExtensions.values
+                .map {
+                    LookupElementBuilder.create(it.name)
+                            .withTailText(tail(it), true)
+                            .withTypeText(it.type?.name, true)
+                            .withIcon(
+                                    when (it.type) {
+                                        HybrisModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
+                                        HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                                        HybrisModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                                        HybrisModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                                        HybrisModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
+                                        else -> null
+                                    }
+                            )
+                }
+                .forEach { result.addElement(it) }
+    }
+
+    private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
+        val tail = listOfNotNull(
+                if (extensionDescriptor.deprecated) "deprecated" else null,
+                if (extensionDescriptor.extGenTemplateExtension) "template" else null,
+                if (extensionDescriptor.hacModule) "hac" else null,
+                if (extensionDescriptor.backofficeModule) "backoffice" else null,
+        ).joinToString(", ")
+        return if (tail.isBlank()) null
+        else " ($tail)"
     }
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ExtensionsNameCompletionProvider::class.java)
+                ApplicationManager.getApplication().getService(ExtensionsNameCompletionProvider::class.java)
     }
 }

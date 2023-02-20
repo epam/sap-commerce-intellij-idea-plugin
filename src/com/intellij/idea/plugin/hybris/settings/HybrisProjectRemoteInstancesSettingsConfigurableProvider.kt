@@ -27,7 +27,7 @@ import javax.swing.JComponent
 
 class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = HybrisProjectRemoteInstancesSettingsConfigurable(project)
 
     class HybrisProjectRemoteInstancesSettingsConfigurable(project: Project) : Configurable {

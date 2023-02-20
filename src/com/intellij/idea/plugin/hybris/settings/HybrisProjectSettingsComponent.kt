@@ -15,50 +15,59 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.settings
 
-package com.intellij.idea.plugin.hybris.settings;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.util.xmlb.XmlSerializerUtil
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.NotNull;
+@State(name = "HybrisProjectSettings", storages = [Storage(STORAGE_HYBRIS_PROJECT_SETTINGS)])
+class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSettings> {
+    private val hybrisProjectSettings = HybrisProjectSettings()
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS;
+    override fun getState() = hybrisProjectSettings
+    override fun loadState(state: HybrisProjectSettings) = XmlSerializerUtil.copyBean(state, hybrisProjectSettings)
 
-/**
- * Created 6:43 PM 28 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-@State(name = "HybrisProjectSettings", storages = {@Storage(STORAGE_HYBRIS_PROJECT_SETTINGS)})
-public class HybrisProjectSettingsComponent implements PersistentStateComponent<HybrisProjectSettings> {
+    fun isHybrisProject() = state.hybrisProject
 
-    private final HybrisProjectSettings hybrisProjectSettings = new HybrisProjectSettings();
+    fun getModuleSettings(module: Module): ModuleSettings = getModuleSettings(module.name)
+    fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
+        if (state.availableExtensions.isEmpty()) {
+            synchronized(hybrisProjectSettings) {
+                state.availableExtensions.clear()
 
-    public static HybrisProjectSettingsComponent getInstance(@NotNull final Project project) {
-        return project.getService(HybrisProjectSettingsComponent.class);
+                val availableExtensions = state.completeSetOfAvailableExtensionsInHybris
+                        .map { Pair(it, ExtensionDescriptor(name = it)) }
+                state.availableExtensions.putAll(availableExtensions)
+                registerCloudExtensions()
+            }
+        }
+        return state.availableExtensions
     }
 
-    @NotNull
-    @Override
-    public HybrisProjectSettings getState() {
-        return this.hybrisProjectSettings;
+    fun setAvailableExtensions(descriptors: Set<HybrisModuleDescriptor>) {
+        state.availableExtensions.clear()
+        descriptors
+                .map { it.extensionDescriptor }
+                .forEach { state.availableExtensions[it.name] = it }
+        registerCloudExtensions()
     }
 
-    public HybrisProjectSettings.ModuleSettings getModuleSettings(final Module module) {
-        return getModuleSettings(module.getName());
-    }
+    fun registerCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
+            .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, HybrisModuleDescriptorType.CCV2) }
 
-    public HybrisProjectSettings.ModuleSettings getModuleSettings(final String moduleName) {
-        return getState().getModuleSettings()
-                         .computeIfAbsent(moduleName, s -> new HybrisProjectSettings.ModuleSettings());
-    }
+    private fun getModuleSettings(moduleName: String) = state.moduleSettings
+            .computeIfAbsent(moduleName) { _ -> ModuleSettings() }
 
-    @Override
-    public void loadState(final HybrisProjectSettings state) {
-        XmlSerializerUtil.copyBean(state, this.hybrisProjectSettings);
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): HybrisProjectSettingsComponent = project.getService(HybrisProjectSettingsComponent::class.java)
     }
 }

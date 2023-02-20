@@ -233,7 +233,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
         mavenModules.stream()
-                    .filter(it -> it instanceof ModuleEx)
+                    .filter(ModuleEx.class::isInstance)
                     .map(ModuleEx.class::cast)
                     .map(settingsComponent::getModuleSettings)
                     .forEach(descriptor -> descriptor.setDescriptorType(HybrisModuleDescriptorType.MAVEN.name()));

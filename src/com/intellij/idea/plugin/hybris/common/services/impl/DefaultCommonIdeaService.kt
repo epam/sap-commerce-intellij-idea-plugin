@@ -70,7 +70,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     override fun isHybrisProject(project: Project): Boolean {
-        return HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+        return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     }
 
     override fun isOutDatedHybrisProject(project: Project): Boolean {
@@ -189,6 +189,10 @@ class DefaultCommonIdeaService : CommonIdeaService {
                 state.activeSolrConnectionID = newSettings.uuid
             }
         }
+    }
+
+    override fun refreshProjectSettings(project: Project) {
+        HybrisProjectSettingsComponent.getInstance(project).registerCloudExtensions()
     }
 
     private fun prepareSslRemoteConnectionSettings(connectionSettings: HybrisRemoteConnectionSettings) {

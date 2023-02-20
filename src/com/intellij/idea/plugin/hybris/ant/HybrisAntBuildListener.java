@@ -91,10 +91,10 @@ public class HybrisAntBuildListener implements AntExecutionListener {
 
     private void findAntResult(final Map<Project, AntGenResult> resultMap) {
         for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-            final HybrisProjectSettings hybrisProjectSettings =
-                HybrisProjectSettingsComponent.getInstance(project).getState();
+            final var settings = HybrisProjectSettingsComponent.getInstance(project);
+            final var hybrisProjectSettings = settings.getState();
 
-            if (!hybrisProjectSettings.isHybrisProject()) {
+            if (!settings.isHybrisProject()) {
                 continue;
             }
 

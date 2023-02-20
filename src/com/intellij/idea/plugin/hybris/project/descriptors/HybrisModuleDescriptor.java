@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
@@ -100,4 +101,13 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     void setImportStatus(IMPORT_STATUS importStatus);
 
     IMPORT_STATUS getImportStatus();
+
+    @NotNull default ExtensionDescriptor getExtensionDescriptor() {
+        return new ExtensionDescriptor(
+            getName(),
+            getDescriptorType(),
+            false, false, false, false,
+            null, null
+        );
+    }
 }

@@ -79,8 +79,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             return false;
         }
         final Project project = configuration.getProject();
-        final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
-        return settings.isHybrisProject();
+        return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject();
     }
 
 }

@@ -71,4 +71,6 @@ public interface CommonIdeaService {
 
     @NotNull
     String getActiveSslProtocol(@NotNull Project project, @Nullable HybrisRemoteConnectionSettings settings);
+
+    void refreshProjectSettings(Project project);
 }

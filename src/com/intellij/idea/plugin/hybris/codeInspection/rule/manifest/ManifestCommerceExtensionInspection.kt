@@ -43,7 +43,7 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).state.completeSetOfAvailableExtensionsInHybris.contains(o.value)) {
+            if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
                         o,
                         HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)
@@ -56,7 +56,5 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
                         || (parent is JsonProperty && JsonPsiUtil.isPropertyValue(o) && (parent.name == "addon" || parent.name == "storefront") && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons")
                         || (parent is JsonProperty && JsonPsiUtil.isPropertyValue(o) && (parent.name == "name") && parent.parentOfType<JsonProperty>()?.name == "webapps"))
 
-
     }
-
 }

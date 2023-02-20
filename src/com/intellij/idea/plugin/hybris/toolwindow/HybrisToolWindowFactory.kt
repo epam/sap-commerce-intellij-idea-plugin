@@ -39,7 +39,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     }
 
     override fun shouldBeAvailable(project: Project): Boolean {
-        return HybrisProjectSettingsComponent.getInstance(project).state.isHybrisProject
+        return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     }
 
     companion object {
