@@ -21,14 +21,22 @@ package com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider
+import com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider
 import com.intellij.idea.plugin.hybris.system.manifest.psi.ManifestPatterns
 
 class ManifestJsonCompletionProvider : CompletionContributor() {
 
     init {
-        extend(CompletionType.BASIC,
+        extend(
+                CompletionType.BASIC,
                 ManifestPatterns.EXTENSION_NAME,
-                ExtensionsNameCompletionProvider.instance)
+                ExtensionsNameCompletionProvider.instance
+        )
+        extend(
+                CompletionType.BASIC,
+                ManifestPatterns.EXTENSION_PACK_NAME,
+                ExtensionPackNameCompletionProvider.instance
+        )
     }
 
 }

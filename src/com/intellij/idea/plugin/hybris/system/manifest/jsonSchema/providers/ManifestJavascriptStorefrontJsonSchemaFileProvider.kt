@@ -13,7 +13,7 @@ class ManifestJavascriptStorefrontJsonSchemaFileProvider(val project: Project) :
             && HybrisConstants.CCV2_JS_STOREFRONT_NAME == file.parent.name
             && HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 
-    override fun getName() = "Javascript Storefront Manifest"
+    override fun getName() = "SAP Javascript Storefront Manifest"
     override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-js-storefront.schema.json")
     override fun getSchemaType() = SchemaType.embeddedSchema
 

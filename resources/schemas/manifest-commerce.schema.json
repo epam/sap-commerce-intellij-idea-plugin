@@ -36,7 +36,8 @@
       ]
     },
     "enableImageProcessingService": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Enables the image processing service in media conversion."
     },
     "solrVersion": {
       "type": "string"

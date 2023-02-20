@@ -13,7 +13,7 @@ class ManifestDataHubJsonSchemaFileProvider(val project: Project) : JsonSchemaFi
             && HybrisConstants.CCV2_DATAHUB_NAME == file.parent.name
             && HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 
-    override fun getName() = "DataHub Manifest"
+    override fun getName() = "SAP DataHub Manifest"
     override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-datahub.schema.json")
     override fun getSchemaType() = SchemaType.embeddedSchema
 

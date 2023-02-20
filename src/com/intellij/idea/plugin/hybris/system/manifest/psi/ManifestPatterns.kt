@@ -53,5 +53,10 @@ object ManifestPatterns {
                     .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("webapps"))
     )
 
+    val EXTENSION_PACK_NAME = StandardPatterns.or(
+            jsonStringValue()
+                    .withSuperParent(2, PlatformPatterns.psiElement(JsonProperty::class.java).withName("name"))
+                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("extensionPacks"))
+    )
 
 }

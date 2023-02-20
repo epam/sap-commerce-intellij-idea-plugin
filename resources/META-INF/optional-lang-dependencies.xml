@@ -50,6 +50,8 @@
         <!--                                            CCv2 manifest.json                                             -->
         <!-- ####################################################################################################### -->
 
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider"/>
+
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider"/>
