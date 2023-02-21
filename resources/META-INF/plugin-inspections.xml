@@ -6,6 +6,10 @@
                          groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionInspection.key"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceExtensionInspection"/>
+        <localInspection groupPath="hybris" shortName="ManifestUnknownTemplateExtensionInspection" displayName="[y] Unknown template extension"
+                         groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownTemplateExtensionInspection.key"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceTemplateExtensionInspection"/>
         <localInspection groupPath="hybris" shortName="ManifestUnknownExtensionPackInspection" displayName="[y] Unknown extension pack"
                          groupName="[y] Manifest - Commerce" level="WEAK WARNING" language="JSON" enabledByDefault="true"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionPackInspection.key"

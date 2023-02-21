@@ -19,8 +19,7 @@ package com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.compl
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider
+import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
 
@@ -30,7 +29,7 @@ class LocalExtensionsCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PsiXmlUtils.tagAttributePattern("extension", "name", HybrisConstants.LOCAL_EXTENSIONS_XML),
-            ExtensionsNameCompletionProvider.instance
+            ExtensionNameCompletionProvider.instance
         )
     }
 }

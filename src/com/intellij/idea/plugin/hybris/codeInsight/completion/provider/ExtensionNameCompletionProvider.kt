@@ -27,15 +27,14 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 import com.intellij.util.ProcessingContext
 
-class ExtensionsNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val project = parameters.originalFile.project
-        HybrisProjectSettingsComponent.getInstance(project)
-                .state
-                .availableExtensions.values
+        getExtensionDescriptors(project)
                 .map {
                     LookupElementBuilder.create(it.name)
                             .withTailText(tail(it), true)
@@ -54,6 +53,10 @@ class ExtensionsNameCompletionProvider : CompletionProvider<CompletionParameters
                 .forEach { result.addElement(it) }
     }
 
+    open fun getExtensionDescriptors(project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
+            .state
+            .availableExtensions.values
+
     private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
         val tail = listOfNotNull(
                 if (extensionDescriptor.deprecated) "deprecated" else null,
@@ -67,6 +70,6 @@ class ExtensionsNameCompletionProvider : CompletionProvider<CompletionParameters
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =
-                ApplicationManager.getApplication().getService(ExtensionsNameCompletionProvider::class.java)
+                ApplicationManager.getApplication().getService(ExtensionNameCompletionProvider::class.java)
     }
 }

@@ -43,7 +43,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionsNameCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
@@ -51,6 +51,7 @@
         <!-- ####################################################################################################### -->
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider"/>
 
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>

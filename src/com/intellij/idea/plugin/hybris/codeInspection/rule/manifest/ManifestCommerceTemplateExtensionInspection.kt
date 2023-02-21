@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.manifest
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.json.psi.JsonElementVisitor
 import com.intellij.json.psi.JsonProperty
@@ -32,7 +32,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
 
-class ManifestCommerceExtensionPackInspection : LocalInspectionTool() {
+class ManifestCommerceTemplateExtensionInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val file = holder.file
@@ -46,18 +46,18 @@ class ManifestCommerceExtensionPackInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !HybrisConstants.CCV2_COMMERCE_EXTENSION_PACKS.contains(o.value)) {
+            if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
                         o,
-                        HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionPackInspection.message", o.value)
+                        HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownTemplateExtensionInspection.message", o.value)
                 )
             }
         }
 
         private fun isApplicable(parent: PsiElement?, o: JsonStringLiteral) = parent is JsonProperty
                 && JsonPsiUtil.isPropertyValue(o)
-                && parent.name == "name"
-                && parent.parentOfType<JsonProperty>()?.name == "extensionPacks"
+                && parent.name == "template"
+                && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons"
 
     }
 }
