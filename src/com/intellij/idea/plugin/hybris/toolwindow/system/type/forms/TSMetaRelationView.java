@@ -69,8 +69,8 @@ public class TSMetaRelationView {
         mySourceView = new TSMetaRelationElementView(myProject);
         myTargetView = new TSMetaRelationElementView(myProject);
 
-        myTabs.insertTab("Source", HybrisIcons.RELATION_SOURCE, mySourceView.getContent(), null, TAB_SOURCE_INDEX);
-        myTabs.insertTab("Target", HybrisIcons.RELATION_TARGET, myTargetView.getContent(), null, TAB_TARGET_INDEX);
+        myTabs.insertTab("Source", HybrisIcons.TS_RELATION_SOURCE, mySourceView.getContent(), null, TAB_SOURCE_INDEX);
+        myTabs.insertTab("Target", HybrisIcons.TS_RELATION_TARGET, myTargetView.getContent(), null, TAB_TARGET_INDEX);
     }
 
     private void initData(final TSMetaRelation myMeta) {

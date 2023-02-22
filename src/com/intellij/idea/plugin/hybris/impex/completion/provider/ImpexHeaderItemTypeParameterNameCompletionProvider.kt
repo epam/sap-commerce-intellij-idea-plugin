@@ -22,7 +22,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
@@ -31,7 +30,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
@@ -72,7 +70,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         metaItem.allAttributes
             .map {
                 LookupElementBuilder.create(it.name)
-                    .withIcon(HybrisIcons.ATTRIBUTE)
+                    .withIcon(HybrisIcons.TS_ATTRIBUTE)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType, true)
             }
@@ -85,8 +83,8 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                     .withTypeText(it.flattenType, true)
                     .withIcon(
                         when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
+                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
                         }
                     )
             }
@@ -103,7 +101,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
                 resultSet.addElement(
                     LookupElementBuilder.create("code")
                         .withTailText(if (it.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                        .withIcon(HybrisIcons.ENUM)
+                        .withIcon(HybrisIcons.TS_ENUM)
                 )
             }
     }

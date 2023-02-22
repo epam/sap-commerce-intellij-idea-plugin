@@ -46,7 +46,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
                 .mapNotNull { it.key }
                 .map {
                     LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.PROPERTY)
+                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
                 }
                 .forEach { result.addElement(it) }
         }
@@ -62,7 +62,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
                 .map { prefix + it }
                 .map {
                     LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.PROPERTY)
+                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
                 }
                 .forEach { result.addElement(it) }
         }

@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
 import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
@@ -51,7 +50,7 @@ class CollectionTypeConverter : TSConverterBase<CollectionType>(CollectionType::
         return dom.let {
             LookupElementBuilder.create(meta.name!!)
                 .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.COLLECTION)
+                .withIcon(HybrisIcons.TS_COLLECTION)
         }
     }
 }

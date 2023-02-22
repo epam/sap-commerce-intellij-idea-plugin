@@ -32,7 +32,7 @@ class TSMetaEnumValueNode(val parent: TSMetaEnumNode, val meta: TSMetaEnumValue)
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.ENUM_VALUE)
+        presentation.setIcon(HybrisIcons.TS_ENUM_VALUE)
     }
 
 }

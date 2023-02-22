@@ -34,13 +34,13 @@ class TSMetaItemIndexNode(val parent: TSMetaItemNode, val meta: TSMetaItemIndex)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.keys.joinToString()
 
-        presentation.setIcon(HybrisIcons.INDEX)
+        presentation.setIcon(HybrisIcons.TS_INDEX)
         if (meta.isUnique) {
-            presentation.setIcon(HybrisIcons.INDEX_UNIQUE)
+            presentation.setIcon(HybrisIcons.TS_INDEX_UNIQUE)
         } else if (meta.isReplace) {
-            presentation.setIcon(HybrisIcons.INDEX_FUN)
+            presentation.setIcon(HybrisIcons.TS_INDEX_REPLACE)
         } else if (meta.isRemove) {
-            presentation.setIcon(HybrisIcons.INDEX_CLUSTER)
+            presentation.setIcon(HybrisIcons.TS_INDEX_REMOVE)
         }
 
     }

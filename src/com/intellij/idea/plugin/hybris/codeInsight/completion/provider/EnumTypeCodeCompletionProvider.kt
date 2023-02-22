@@ -43,7 +43,7 @@ class EnumTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>(
             .map {
                 LookupElementBuilder.create(it.name!!)
                     .withTailText(if (it.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                    .withIcon(HybrisIcons.ENUM)
+                    .withIcon(HybrisIcons.TS_ENUM)
             }
             .forEach { resultCaseInsensitive.addElement(it) }
     }

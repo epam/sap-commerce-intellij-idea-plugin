@@ -43,7 +43,7 @@ class RelationTypeCodeCompletionProvider : CompletionProvider<CompletionParamete
             .filter { it.name != null }
             .map {
                 LookupElementBuilder.create(it.name!!)
-                    .withIcon(HybrisIcons.RELATION)
+                    .withIcon(HybrisIcons.TS_RELATION)
                     .withTypeText(it.flattenType)
             }
             .forEach { resultCaseInsensitive.addElement(it) }

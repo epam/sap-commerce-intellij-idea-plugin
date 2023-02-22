@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSM
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import icons.DvcsImplIcons
 
 class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRelationElement) : TSNode(parent), Disposable {
 
@@ -39,8 +38,8 @@ class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRela
                 (if (meta.qualifier.isNotBlank()) " as ${meta.qualifier}" else "")
 
         when (meta.end) {
-            TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(HybrisIcons.RELATION_SOURCE)
-            TSMetaRelation.RelationEnd.TARGET -> presentation.setIcon(HybrisIcons.RELATION_TARGET)
+            TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(HybrisIcons.TS_RELATION_SOURCE)
+            TSMetaRelation.RelationEnd.TARGET -> presentation.setIcon(HybrisIcons.TS_RELATION_TARGET)
         }
 
     }

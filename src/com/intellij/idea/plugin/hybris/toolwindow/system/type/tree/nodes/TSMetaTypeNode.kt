@@ -38,12 +38,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
-            TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.ATOMIC)
-            TSMetaType.META_ITEM -> presentation.setIcon(AllIcons.Actions.GroupByClass)
-            TSMetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
-            TSMetaType.META_COLLECTION -> presentation.setIcon(AllIcons.Actions.GroupByPrefix)
-            TSMetaType.META_MAP -> presentation.setIcon(AllIcons.Actions.GroupByPackage)
-            TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.RELATION)
+            TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.TS_GROUP_ATOMIC)
+            TSMetaType.META_ITEM -> presentation.setIcon(HybrisIcons.TS_GROUP_ITEM)
+            TSMetaType.META_ENUM -> presentation.setIcon(HybrisIcons.TS_GROUP_ENUM)
+            TSMetaType.META_COLLECTION -> presentation.setIcon(HybrisIcons.TS_GROUP_COLLECTION)
+            TSMetaType.META_MAP -> presentation.setIcon(HybrisIcons.TS_GROUP_MAP)
+            TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.TS_GROUP_RELATION)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 

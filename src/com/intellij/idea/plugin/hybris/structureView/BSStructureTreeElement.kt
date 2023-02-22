@@ -65,12 +65,12 @@ class BSStructureTreeElement(
     }
 
     override fun getIcon(open: Boolean) = when (element) {
-        is Enum -> HybrisIcons.ENUM
+        is Enum -> HybrisIcons.BS_ENUM
         is Bean -> HybrisIcons.BEAN
-        is Annotations -> HybrisIcons.ANNOTATION
-        is Import -> HybrisIcons.IMPORT
-        is EnumValue -> HybrisIcons.ENUM_VALUE
-        is Property -> HybrisIcons.PROPERTY
+        is Annotations -> HybrisIcons.TS_ANNOTATION
+        is Import -> HybrisIcons.TS_IMPORT
+        is EnumValue -> HybrisIcons.BS_ENUM_VALUE
+        is Property -> HybrisIcons.BS_PROPERTY
         else -> null
     }
 

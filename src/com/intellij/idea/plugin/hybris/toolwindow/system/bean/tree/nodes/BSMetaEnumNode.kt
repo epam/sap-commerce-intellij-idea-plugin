@@ -33,7 +33,7 @@ class BSMetaEnumNode(val parent: BSNode, val meta: BSGlobalMetaEnum) : BSNode(pa
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.ENUM)
+        presentation.setIcon(HybrisIcons.BS_ENUM)
         if (meta.isDeprecated) {
             presentation.locationString = "deprecated"
         }

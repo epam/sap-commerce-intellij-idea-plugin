@@ -51,10 +51,10 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
     private fun getCompletions() = listOf(
         LookupElementBuilder.create(CODE_ATTRIBUTE_NAME)
-            .withIcon(HybrisIcons.ATTRIBUTE)
+            .withIcon(HybrisIcons.TS_ATTRIBUTE)
             .withTypeText("String", true),
         LookupElementBuilder.create(NAME_ATTRIBUTE_NAME)
-            .withIcon(HybrisIcons.ATTRIBUTE)
+            .withIcon(HybrisIcons.TS_ATTRIBUTE)
             .withTypeText("String", true)
     )
 
@@ -63,13 +63,13 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         val completions = LinkedList(getCompletions(linkMetaItem, setOf(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)))
         completions.add(
             LookupElementBuilder.create(SOURCE_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.RELATION_SOURCE)
+                .withIcon(HybrisIcons.TS_RELATION_SOURCE)
                 .withStrikeoutness(metaRelation.source.isDeprecated)
                 .withTypeText(metaRelation.source.flattenType, true)
         )
         completions.add(
             LookupElementBuilder.create(TARGET_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.RELATION_TARGET)
+                .withIcon(HybrisIcons.TS_RELATION_TARGET)
                 .withStrikeoutness(metaRelation.target.isDeprecated)
                 .withTypeText(metaRelation.target.flattenType, true)
         )
@@ -86,8 +86,8 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
                 LookupElementBuilder.create(it.qualifier)
                     .withIcon(
                         when (it.end) {
-                            RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
-                            RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                            RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
+                            RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
                         }
                     )
                     .withTypeText(it.flattenType, true)
@@ -103,7 +103,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         return if (StringUtils.isBlank(name) || excludeNames.contains(name.trim { it <= ' ' })) {
             null
         } else LookupElementBuilder.create(name.trim { it <= ' ' })
-            .withIcon(HybrisIcons.ATTRIBUTE)
+            .withIcon(HybrisIcons.TS_ATTRIBUTE)
             .withTailText(if (attribute.isDynamic) " (" + HybrisI18NBundleUtils.message("hybris.ts.type.dynamic") + ')' else "", true)
             .withStrikeoutness(attribute.isDeprecated)
             .withTypeText(attribute.flattenType, true)

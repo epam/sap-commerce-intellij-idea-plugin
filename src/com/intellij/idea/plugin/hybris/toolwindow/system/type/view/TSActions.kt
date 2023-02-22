@@ -85,7 +85,7 @@ class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(mes
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.RELATION) {
+class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TS_RELATION) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaRelations()
 
@@ -97,7 +97,7 @@ class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(messa
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.ATOMIC) {
+class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TS_ATOMIC) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaAtomics()
 

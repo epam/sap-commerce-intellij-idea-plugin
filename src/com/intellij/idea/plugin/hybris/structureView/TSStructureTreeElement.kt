@@ -161,18 +161,18 @@ class TSStructureTreeElement(
 
     override fun getIcon(open: Boolean) = when (element) {
         is Description -> AllIcons.Windows.Help
-        is AtomicType -> HybrisIcons.ATOMIC
-        is EnumType -> HybrisIcons.ENUM
-        is EnumValue -> HybrisIcons.ENUM_VALUE
-        is Attribute -> HybrisIcons.ATTRIBUTE
-        is Index -> HybrisIcons.INDEX
-        is ItemType -> HybrisIcons.ITEM
-        is CollectionType -> HybrisIcons.COLLECTION
-        is CustomProperty -> HybrisIcons.PROPERTY
-        is MapType -> HybrisIcons.MAP
-        is Relation -> HybrisIcons.RELATION
-        is RelationSourceElement -> HybrisIcons.RELATION_SOURCE
-        is RelationTargetElement -> HybrisIcons.RELATION_TARGET
+        is AtomicType -> HybrisIcons.TS_ATOMIC
+        is EnumType -> HybrisIcons.TS_ENUM
+        is EnumValue -> HybrisIcons.TS_ENUM_VALUE
+        is Attribute -> HybrisIcons.TS_ATTRIBUTE
+        is Index -> HybrisIcons.TS_INDEX
+        is ItemType -> HybrisIcons.TS_ITEM
+        is CollectionType -> HybrisIcons.TS_COLLECTION
+        is CustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY
+        is MapType -> HybrisIcons.TS_MAP
+        is Relation -> HybrisIcons.TS_RELATION
+        is RelationSourceElement -> HybrisIcons.TS_RELATION_SOURCE
+        is RelationTargetElement -> HybrisIcons.TS_RELATION_TARGET
         else -> null
     }
 

@@ -50,7 +50,7 @@ class MapTypeConverter : TSConverterBase<MapType>(MapType::class.java) {
         return dom.let {
             LookupElementBuilder.create(meta.name!!)
                 .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.MAP)
+                .withIcon(HybrisIcons.TS_MAP)
         }
     }
 }

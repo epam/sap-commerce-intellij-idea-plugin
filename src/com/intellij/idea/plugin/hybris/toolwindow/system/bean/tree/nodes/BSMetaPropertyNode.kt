@@ -32,7 +32,7 @@ class BSMetaPropertyNode(val parent: BSMetaBeanNode, val meta: BSMetaProperty) :
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.PROPERTY)
+        presentation.setIcon(HybrisIcons.BS_PROPERTY)
     }
 
 }

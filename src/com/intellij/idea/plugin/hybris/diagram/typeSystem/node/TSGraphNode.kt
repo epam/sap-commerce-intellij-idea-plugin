@@ -30,12 +30,12 @@ class TSGraphNode(val item: TSGraphItem, provider: DiagramProvider<TSGraphItem>)
         val meta = item.meta ?: return HybrisIcons.TYPE_SYSTEM
 
         return when (meta) {
-            is TSGlobalMetaAtomic -> HybrisIcons.ATOMIC
-            is TSGlobalMetaEnum -> HybrisIcons.ENUM
-            is TSGlobalMetaItem -> HybrisIcons.ITEM
-            is TSGlobalMetaCollection -> HybrisIcons.COLLECTION
-            is TSGlobalMetaMap -> HybrisIcons.MAP
-            is TSGlobalMetaRelation -> HybrisIcons.RELATION
+            is TSGlobalMetaAtomic -> HybrisIcons.TS_ATOMIC
+            is TSGlobalMetaEnum -> HybrisIcons.TS_ENUM
+            is TSGlobalMetaItem -> HybrisIcons.TS_ITEM
+            is TSGlobalMetaCollection -> HybrisIcons.TS_COLLECTION
+            is TSGlobalMetaMap -> HybrisIcons.TS_MAP
+            is TSGlobalMetaRelation -> HybrisIcons.TS_RELATION
             else -> return HybrisIcons.TYPE_SYSTEM
         }
     }

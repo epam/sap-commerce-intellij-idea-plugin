@@ -53,7 +53,7 @@ class TSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private fun createTargetsWithGutterIcon(
         dom: PsiField,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.TS_ENUM_VALUE)
         .setTarget(psi)
         .setTooltipText(message("hybris.editor.gutter.bs.enum.value.title"))
         .setAlignment(GutterIconRenderer.Alignment.LEFT)

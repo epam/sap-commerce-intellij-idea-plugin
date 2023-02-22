@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
@@ -42,10 +41,10 @@ class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
-            BSMetaType.META_ENUM -> presentation.setIcon(AllIcons.Actions.GroupByTestProduction)
-            BSMetaType.META_BEAN -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_DTO)
-            BSMetaType.META_WS_BEAN -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_WS)
-            BSMetaType.META_EVENT -> presentation.setIcon(HybrisIcons.GROUP_BY_BEAN_EVENT)
+            BSMetaType.META_ENUM -> presentation.setIcon(HybrisIcons.BS_GROUP_BY_ENUM)
+            BSMetaType.META_BEAN -> presentation.setIcon(HybrisIcons.BS_GROUP_BY_BEAN_DTO)
+            BSMetaType.META_WS_BEAN -> presentation.setIcon(HybrisIcons.BS_GROUP_BY_BEAN_WS)
+            BSMetaType.META_EVENT -> presentation.setIcon(HybrisIcons.BS_GROUP_BY_BEAN_EVENT)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 

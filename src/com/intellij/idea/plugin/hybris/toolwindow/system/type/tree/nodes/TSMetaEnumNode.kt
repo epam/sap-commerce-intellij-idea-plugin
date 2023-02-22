@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
@@ -34,7 +33,7 @@ class TSMetaEnumNode(val parent: TSNode, val meta: TSGlobalMetaEnum) : TSNode(pa
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.ENUM)
+        presentation.setIcon(HybrisIcons.TS_ENUM)
         if (meta.isDynamic) {
             presentation.locationString = message("hybris.ts.type.dynamic")
         }

@@ -55,6 +55,6 @@ class TSAttributeFieldLineMarkerProvider : AbstractTSAttributeLineMarkerProvider
             ?.xmlElement
             ?: return Optional.empty<RelatedItemLineMarkerInfo<PsiElement>>()
 
-        return Optional.of(createTargetsWithGutterIcon(nameIdentifier, listOf(dom), HybrisIcons.RELATION))
+        return Optional.of(createTargetsWithGutterIcon(nameIdentifier, listOf(dom), HybrisIcons.TS_RELATION))
     }
 }

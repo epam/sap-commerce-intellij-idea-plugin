@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.common.utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
-import icons.DvcsImplIcons;
 
 import javax.swing.*;
 
@@ -56,11 +55,14 @@ public final class HybrisIcons {
     public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
 
+    public static final Icon MODULE_CCV2 = getIcon("/icons/module_cloud.svg");
+    public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module_cloud_group.svg");
+
     public static final Icon EXTENSION_CLOUD = getIcon("/icons/extension-cloud.svg");
-    public static final Icon EXTENSION_PLATFORM = getIcon("/icons/hybrisIcon.svg");
     public static final Icon EXTENSION_CUSTOM = getIcon("/icons/extension-custom.svg");
-    public static final Icon EXTENSION_EXT = getIcon("/icons/hybrisIcon.svg");
-    public static final Icon EXTENSION_OOTB = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon EXTENSION_PLATFORM = HYBRIS;
+    public static final Icon EXTENSION_EXT = HYBRIS;
+    public static final Icon EXTENSION_OOTB = HYBRIS;
 
     public static final Icon WAIT = getIcon("/icons/waitIcon.svg");
     public static final Icon END = getIcon("/icons/endIcon.svg");
@@ -71,9 +73,6 @@ public final class HybrisIcons {
     public static final Icon SCRIPT = getIcon("/icons/scriptIcon.svg");
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
-    public static final Icon ENUM = AllIcons.Nodes.Enum;
-    public static final Icon ENUM_VALUE = AllIcons.Nodes.AnonymousClass;
-    public static final Icon BEAN = getIcon("/icons/beanIcon.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
 
@@ -81,25 +80,38 @@ public final class HybrisIcons {
 
     public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.png");
 
-    public static final Icon ATOMIC = AllIcons.Actions.GroupByModule;
-    public static final Icon ITEM = AllIcons.Nodes.Class;
-    public static final Icon MAP = AllIcons.Nodes.Plugin;
-    public static final Icon RELATION = AllIcons.Actions.GroupByModuleGroup;
-    public static final Icon IMPORT = AllIcons.ToolbarDecorator.Import;
-    public static final Icon ANNOTATION = AllIcons.Nodes.Annotationtype;
-    public static final Icon PROPERTY = AllIcons.Nodes.Property;
-    public static final Icon ATTRIBUTE = getIcon("/icons/attribute.svg");
-    public static final Icon RELATION_SOURCE = DvcsImplIcons.Outgoing;
-    public static final Icon RELATION_TARGET = DvcsImplIcons.Incoming;
-    public static final Icon COLLECTION = getIcon("/icons/collection.svg");
-    public static final Icon INDEX = getIcon("/icons/index.svg");
-    public static final Icon INDEX_UNIQUE = getIcon("/icons/indexUnique.svg");
-    public static final Icon INDEX_FUN = getIcon("/icons/indexFun.svg");
-    public static final Icon INDEX_CLUSTER = getIcon("/icons/indexCluster.svg");
+    public static final Icon TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupBy_atomic.svg");
+    public static final Icon TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupBy_enum.svg");
+    public static final Icon TS_GROUP_COLLECTION = getIcon("/icons/typeSystem/groupBy_collection.svg");
+    public static final Icon TS_GROUP_ITEM = getIcon("/icons/typeSystem/groupBy_item.svg");
+    public static final Icon TS_GROUP_MAP = getIcon("/icons/typeSystem/groupBy_map.svg");
+    public static final Icon TS_GROUP_RELATION = getIcon("/icons/typeSystem/groupBy_relation.svg");
+    public static final Icon TS_ENUM = getIcon("/icons/typeSystem/enum.svg");
+    public static final Icon TS_ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg");
+    public static final Icon TS_ATOMIC = getIcon("/icons/typeSystem/atomic.svg");
+    public static final Icon TS_ITEM = getIcon("/icons/typeSystem/item.svg");
+    public static final Icon TS_MAP = getIcon("/icons/typeSystem/map.svg");
+    public static final Icon TS_RELATION = getIcon("/icons/typeSystem/relation.svg");
+    public static final Icon TS_CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg");
+    public static final Icon TS_ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg");
+    public static final Icon TS_RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg");
+    public static final Icon TS_RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg");
+    public static final Icon TS_COLLECTION = getIcon("/icons/typeSystem/collection.svg");
+    public static final Icon TS_INDEX = getIcon("/icons/typeSystem/index.svg");
+    public static final Icon TS_INDEX_UNIQUE = getIcon("/icons/typeSystem/indexUnique.svg");
+    public static final Icon TS_INDEX_REPLACE = getIcon("/icons/typeSystem/indexReplace.svg");
+    public static final Icon TS_INDEX_REMOVE = getIcon("/icons/typeSystem/indexRemove.svg");
+    public static final Icon TS_IMPORT = AllIcons.ToolbarDecorator.Import;
+    public static final Icon TS_ANNOTATION = AllIcons.Nodes.Annotationtype;
 
-    public static final Icon GROUP_BY_BEAN_DTO = getIcon("/icons/groupByBeanDto.svg");
-    public static final Icon GROUP_BY_BEAN_EVENT = getIcon("/icons/groupByBeanEvent.svg");
-    public static final Icon GROUP_BY_BEAN_WS = getIcon("/icons/groupByBeanWS.svg");
+    public static final Icon BS_GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupBy_DTO.svg");
+    public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupBy_event.svg");
+    public static final Icon BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupBy_WS.svg");
+    public static final Icon BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupBy_enum.svg");
+    public static final Icon BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
+    public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
+    public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
+    public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

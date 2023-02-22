@@ -54,13 +54,13 @@ public class TSTypeLineMarkerProvider extends AbstractItemLineMarkerProvider<Psi
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)
                                             .collect(Collectors.toList()))
-                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TYPE_SYSTEM));
+                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TS_ITEM));
         } else if (ModelsUtils.isEnumFile(psi)) {
             return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaEnumByName(name))
                            .map(meta -> meta.retrieveAllDoms().stream()
                                             .map(DomElement::getXmlElement)
                                             .collect(Collectors.toList()))
-                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TYPE_SYSTEM));
+                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TS_ENUM));
         }
         return Optional.empty();
     }

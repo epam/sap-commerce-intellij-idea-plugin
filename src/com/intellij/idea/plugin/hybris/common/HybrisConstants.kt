@@ -300,31 +300,31 @@ object HybrisConstants {
     val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
 
     @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX
+    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/$PLATFORM_OOTB_MODULE_PREFIX")
     @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/") + PLATFORM_OOTB_MODULE_PREFIX_2019
+    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/$PLATFORM_OOTB_MODULE_PREFIX_2019")
 
     @JvmField
     val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
     @JvmField
     val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
     @JvmField
-    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
+    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_TOMCAT_DIRECTORY")
     @JvmField
-    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
+    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_TOMCAT_6_DIRECTORY")
     @JvmField
     val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
     @JvmField
     val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
     @JvmField
-    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
+    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$ECLIPSE_BIN_DIRECTORY")
 
     @JvmField
-    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
+    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_BOOTSTRAP_DIRECTORY")
     @JvmField
     val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
     @JvmField
-    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
+    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/$DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES")
     @JvmField
     val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
     @JvmField

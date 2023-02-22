@@ -31,7 +31,7 @@ class TSMetaItemAttributeNode(val parent: TSMetaItemNode, val meta: TSGlobalMeta
     override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.ATTRIBUTE)
+        presentation.setIcon(HybrisIcons.TS_ATTRIBUTE)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.flattenType
     }

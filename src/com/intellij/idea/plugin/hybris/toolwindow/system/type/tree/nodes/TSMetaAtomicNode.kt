@@ -31,7 +31,7 @@ class TSMetaAtomicNode(parent: TSNode, val meta: TSGlobalMetaAtomic) : TSNode(pa
     override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.ATOMIC)
+        presentation.setIcon(HybrisIcons.TS_ATOMIC)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 

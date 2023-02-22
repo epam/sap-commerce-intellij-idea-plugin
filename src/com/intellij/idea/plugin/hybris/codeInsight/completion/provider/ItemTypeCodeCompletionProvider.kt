@@ -43,7 +43,7 @@ open class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParamet
             .map {
                 LookupElementBuilder.create(it.name!!)
                     .withTailText(if (it.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
-                    .withIcon(HybrisIcons.TYPE_SYSTEM)
+                    .withIcon(HybrisIcons.TS_ITEM)
             }
             .forEach { resultCaseInsensitive.addElement(it) }
     }

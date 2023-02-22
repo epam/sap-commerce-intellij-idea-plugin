@@ -53,7 +53,7 @@ class BSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private fun createTargetsWithGutterIcon(
         dom: PsiEnumConstant,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(HybrisIcons.ENUM_VALUE)
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.BS_ENUM_VALUE)
         .setTarget(psi)
         .setTooltipText(message("hybris.editor.gutter.bs.enum.value.title"))
         .setAlignment(GutterIconRenderer.Alignment.LEFT)

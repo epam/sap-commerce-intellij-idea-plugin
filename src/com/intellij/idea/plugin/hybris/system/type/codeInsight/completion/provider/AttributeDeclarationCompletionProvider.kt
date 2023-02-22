@@ -46,7 +46,7 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
                 LookupElementBuilder.create(it.name)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType, true)
-                    .withIcon(HybrisIcons.ATTRIBUTE)
+                    .withIcon(HybrisIcons.TS_ATTRIBUTE)
             }
             ?.forEach { resultCaseInsensitive.addElement(it) }
 
@@ -58,8 +58,8 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
                     .withTypeText(it.flattenType)
                     .withIcon(
                         when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.RELATION_TARGET
+                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
+                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
                         }
                     )
             }

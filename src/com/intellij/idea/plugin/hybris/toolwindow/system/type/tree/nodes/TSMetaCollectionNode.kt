@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
-import com.intellij.idea.plugin.hybris.system.type.model.Type
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
@@ -32,7 +31,7 @@ class TSMetaCollectionNode(parent: TSNode, val meta: TSGlobalMetaCollection) : T
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.COLLECTION)
+        presentation.setIcon(HybrisIcons.TS_COLLECTION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.flattenType
     }

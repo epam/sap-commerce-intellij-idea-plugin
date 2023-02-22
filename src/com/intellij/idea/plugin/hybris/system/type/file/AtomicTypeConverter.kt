@@ -40,6 +40,6 @@ class AtomicTypeConverter : TSConverterBase<AtomicType>(AtomicType::class.java) 
     override fun createLookupElement(dom: AtomicType?) = dom?.clazz?.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.ATOMIC)
+                .withIcon(HybrisIcons.TS_ATOMIC)
         }
 }

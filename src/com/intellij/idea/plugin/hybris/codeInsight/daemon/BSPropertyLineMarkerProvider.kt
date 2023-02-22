@@ -57,7 +57,7 @@ class BSPropertyLineMarkerProvider : RelatedItemLineMarkerProvider() {
     private fun createTargetsWithGutterIcon(
         dom: PsiField,
         psi: PsiElement
-    ) = NavigationGutterIconBuilder.create(HybrisIcons.PROPERTY)
+    ) = NavigationGutterIconBuilder.create(HybrisIcons.BS_PROPERTY)
         .setTarget(psi)
         .setTooltipText(message("hybris.editor.gutter.bs.bean.property.title"))
         .setAlignment(GutterIconRenderer.Alignment.LEFT)

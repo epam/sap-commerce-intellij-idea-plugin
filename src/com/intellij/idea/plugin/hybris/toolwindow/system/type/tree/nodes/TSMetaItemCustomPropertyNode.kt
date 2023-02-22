@@ -31,7 +31,7 @@ class TSMetaItemCustomPropertyNode(val parent: TSMetaItemNode, val meta: TSMetaC
     override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.PROPERTY)
+        presentation.setIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 

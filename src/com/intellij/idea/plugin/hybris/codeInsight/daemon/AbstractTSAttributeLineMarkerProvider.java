@@ -68,16 +68,16 @@ public abstract class AbstractTSAttributeLineMarkerProvider< T extends PsiElemen
         if (elements.isEmpty()) {
             final var groupedRelElements = getRelations(meta, name);
             return getRelationMarkers(groupedRelElements, TSMetaRelation.RelationEnd.SOURCE,
-                                      HybrisIcons.RELATION_SOURCE,
+                                      HybrisIcons.TS_RELATION_SOURCE,
                                       nameIdentifier
             )
                 .or(() -> getRelationMarkers(
                     groupedRelElements,
                     TSMetaRelation.RelationEnd.TARGET,
-                    HybrisIcons.RELATION_TARGET, nameIdentifier
+                    HybrisIcons.TS_RELATION_TARGET, nameIdentifier
                 ));
         } else {
-            return Optional.of(createTargetsWithGutterIcon(nameIdentifier, elements, HybrisIcons.ATTRIBUTE));
+            return Optional.of(createTargetsWithGutterIcon(nameIdentifier, elements, HybrisIcons.TS_ATTRIBUTE));
         }
     }
 

@@ -31,7 +31,7 @@ class TSMetaMapNode(parent: TSNode, val meta: TSGlobalMetaMap) : TSNode(parent),
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.MAP)
+        presentation.setIcon(HybrisIcons.TS_MAP)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.flattenType
     }

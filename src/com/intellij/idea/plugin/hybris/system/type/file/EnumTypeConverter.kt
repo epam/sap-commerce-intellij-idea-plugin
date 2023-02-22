@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
@@ -41,6 +40,6 @@ class EnumTypeConverter : TSConverterBase<EnumType>(EnumType::class.java) {
     override fun createLookupElement(dom: EnumType?) = dom?.code?.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.ENUM)
+                .withIcon(HybrisIcons.TS_ENUM)
         }
 }

@@ -32,7 +32,7 @@ class BSMetaEnumValueNode(val parent: BSMetaEnumNode, val meta: BSMetaEnum.BSMet
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.ENUM_VALUE)
+        presentation.setIcon(HybrisIcons.BS_ENUM_VALUE)
     }
 
 }
