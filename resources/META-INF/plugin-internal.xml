@@ -3,8 +3,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <treeStructureProvider implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
+        <treeStructureProvider order="last" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
+        <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectViewNodeDecorator"/>
+        
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"

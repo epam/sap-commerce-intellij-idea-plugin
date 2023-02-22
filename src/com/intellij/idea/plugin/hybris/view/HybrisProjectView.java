@@ -55,8 +55,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
-
 /**
  * Created 10:14 PM 27 June 2015.
  *
@@ -70,6 +68,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     protected final HybrisApplicationSettings hybrisApplicationSettings;
     private final String[] commerceGroupName;
     private final String[] platformGroupName;
+    private final String[] ccv2GroupName;
 
     public HybrisProjectView(@NotNull final Project project) {
         Validate.notNull(project);
@@ -78,8 +77,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         this.hybrisProjectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         this.hybrisProjectSettings = hybrisProjectSettingsComponent.getState();
         this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        this.commerceGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
-        this.platformGroupName = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
+        this.commerceGroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
+        this.platformGroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
+        this.ccv2GroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
     }
 
     @Override
@@ -122,16 +122,19 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         final Collection<AbstractTreeNode<?>> children
     ) {
         if (parent.getValue() != null) {
-            ModuleGroup moduleGroup = parent.getValue();
+            final ModuleGroup moduleGroup = parent.getValue();
             if (Arrays.equals(moduleGroup.getGroupPath(), commerceGroupName) ||
                 Arrays.equals(moduleGroup.getGroupPath(), platformGroupName)) {
                 parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
             }
+            if (Arrays.equals(moduleGroup.getGroupPath(), ccv2GroupName)) {
+                parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
+            }
         }
         children.stream()
-                .filter(child -> child instanceof PsiDirectoryNode)
+                .filter(PsiDirectoryNode.class::isInstance)
                 .filter(child -> child.getParent() == null)
-                .map(child -> (PsiDirectoryNode) child)
+                .map(PsiDirectoryNode.class::cast)
                 .forEach(child -> {
                     final VirtualFile vf = child.getVirtualFile();
                     if (vf == null) {
@@ -154,7 +157,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                             if (superParent != null) {
                                 superParent.getPresentation().setIcon(HybrisIcons.HYBRIS);
                             }
-                            return;
+                            break;
+                        case CCV2:
+                            child.getPresentation().setIcon(HybrisIcons.MODULE_CCV2);
+                            break;
                     }
                 });
     }
