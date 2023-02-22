@@ -49,6 +49,19 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     }
 
     @Override
+    public boolean isCCv2Module(@NotNull final File file) {
+        Validate.notNull(file);
+
+        return
+            (
+                file.getAbsolutePath().contains(HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME)
+                || file.getAbsolutePath().contains(HybrisConstants.CCV2_DATAHUB_NAME)
+                || file.getAbsolutePath().contains(HybrisConstants.CCV2_JS_STOREFRONT_NAME)
+            )
+            && new File(file, HybrisConstants.CCV2_MANIFEST_NAME).isFile();
+    }
+
+    @Override
     public boolean isPlatformModule(@NotNull final File file) {
         Validate.notNull(file);
 

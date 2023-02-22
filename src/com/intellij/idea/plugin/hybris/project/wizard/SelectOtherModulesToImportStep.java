@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -44,9 +46,9 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     public void updateStep() {
         super.updateStep();
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
-            final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
-            if (hybrisModuleDescriptor instanceof EclipseModuleDescriptor) {
-                fileChooser.setElementMarked(hybrisModuleDescriptor, true);
+            final var descriptor = fileChooser.getElementAt(index);
+            if (descriptor instanceof EclipseModuleDescriptor || descriptor instanceof CCv2HybrisModuleDescriptor) {
+                fileChooser.setElementMarked(descriptor, true);
             }
         }
     }
@@ -65,6 +67,9 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         }
         if (module instanceof GradleModuleDescriptor) {
             return GradleIcons.Gradle;
+        }
+        if (module instanceof CCv2HybrisModuleDescriptor) {
+            return HybrisIcons.MODULE_CCV2;
         }
 
         return null;

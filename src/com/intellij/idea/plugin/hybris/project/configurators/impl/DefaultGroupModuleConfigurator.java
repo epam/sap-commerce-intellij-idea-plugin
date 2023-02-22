@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -67,6 +68,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private String[] groupHybris;
     private String[] groupPlatform;
     private String[] groupOtherHybris;
+    private String[] groupCCv2;
 
     public DefaultGroupModuleConfigurator() {
         readSettings();
@@ -176,6 +178,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor instanceof CCv2HybrisModuleDescriptor) {
+            return groupCCv2;
+        }
+
         if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
             return groupPlatform;
         }
@@ -262,6 +268,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
         groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
         groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
+        groupCCv2 = toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
     }
 
 }

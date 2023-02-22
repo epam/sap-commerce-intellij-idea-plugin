@@ -72,6 +72,11 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
             return new ConfigHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
         }
 
+        if (hybrisProjectService.isCCv2Module(resolvedFile)) {
+            LOG.info("Creating CCv2 module for " + path);
+            return new CCv2HybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
+        }
+
         if (hybrisProjectService.isPlatformModule(resolvedFile)) {
             LOG.info("Creating Platform module for " + path);
             return new PlatformHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, HybrisConstants.EXTENSION_NAME_PLATFORM);

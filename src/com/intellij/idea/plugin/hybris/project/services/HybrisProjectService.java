@@ -32,6 +32,8 @@ public interface HybrisProjectService {
 
     boolean isConfigModule(@NotNull File file);
 
+    boolean isCCv2Module(@NotNull File file);
+
     boolean isPlatformModule(@NotNull File file);
 
     boolean isPlatformExtModule(@NotNull File file);

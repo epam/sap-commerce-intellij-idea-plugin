@@ -93,7 +93,8 @@
         <![CDATA[
             <h3>2023.1.1</h3>
             <ul>
-                <li><i>Feature:</i> Added more custom icons (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195" target="_blank" rel="nofollow">#195</a>)</li>
+                <li><i>Feature:</i> Added possibility to import CCv2 folders as modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/238" target="_blank" rel="nofollow">#238</a>)</li>
+                <li><i>Feature:</i> Added more custom icons (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/237" target="_blank" rel="nofollow">#237</a>)</li>
             </ul>
             <h3>2023.1.0</h3>
             <ul>

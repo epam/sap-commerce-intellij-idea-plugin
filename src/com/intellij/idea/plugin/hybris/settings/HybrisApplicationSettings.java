@@ -104,6 +104,9 @@ public class HybrisApplicationSettings {
     @PropertyName("groupPlatform")
     private String groupPlatform = "Platform";
 
+    @PropertyName("groupCCv2")
+    private String groupCCv2 = "CCv2";
+
     @PropertyName("hideEmptyMiddleFolders")
     private boolean hideEmptyMiddleFolders = true;
 
@@ -260,6 +263,14 @@ public class HybrisApplicationSettings {
         this.groupPlatform = groupPlatform;
     }
 
+    public String getGroupCCv2() {
+        return groupCCv2;
+    }
+
+    public void setGroupCCv2(final String groupCCv2) {
+        this.groupCCv2 = groupCCv2;
+    }
+
     public boolean isWarnIfGeneratedItemsAreOutOfDate() {
         return warnIfGeneratedItemsAreOutOfDate;
     }
@@ -394,6 +405,7 @@ public class HybrisApplicationSettings {
             .append(groupOtherCustom)
             .append(groupNonHybris)
             .append(groupPlatform)
+            .append(groupCCv2)
             .append(hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly)
             .append(followSymlink)
@@ -438,6 +450,7 @@ public class HybrisApplicationSettings {
             .append(groupOtherCustom, other.groupOtherCustom)
             .append(groupNonHybris, other.groupNonHybris)
             .append(groupPlatform, other.groupPlatform)
+            .append(groupCCv2, other.groupCCv2)
             .append(hideEmptyMiddleFolders, other.hideEmptyMiddleFolders)
             .append(defaultPlatformInReadOnly, other.defaultPlatformInReadOnly)
             .append(followSymlink, other.followSymlink)
@@ -473,6 +486,7 @@ public class HybrisApplicationSettings {
         sb.append(", groupOtherCustom='").append(groupOtherCustom).append('\'');
         sb.append(", groupNonHybris='").append(groupNonHybris).append('\'');
         sb.append(", groupPlatform='").append(groupPlatform).append('\'');
+        sb.append(", groupCCv2='").append(groupCCv2).append('\'');
         sb.append(", hideEmptyMiddleFolders='").append(hideEmptyMiddleFolders).append('\'');
         sb.append(", defaultPlatformInReadOnly='").append(defaultPlatformInReadOnly).append('\'');
         sb.append(", followSymlink='").append(followSymlink).append('\'');

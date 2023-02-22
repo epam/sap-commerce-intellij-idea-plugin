@@ -542,6 +542,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
             }
+
+            if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
+                LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                return;
+            }
         }
 
         scanSubrirectories(
@@ -586,28 +592,23 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     private boolean isDirectoryExcluded(final Path file) {
-        if (file.toString().endsWith(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_6_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TCSERVER_DIRECTORY) ||
-            file.toString().endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY)) {
-            return true;
-        }
-        if (file.toString().contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY)) {
-            return true;
-        }
-        return false;
+        return file.toString().endsWith(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_TOMCAT_6_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_TCSERVER_DIRECTORY) ||
+               file.toString().endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY) ||
+               file.toString().contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY);
     }
 
     protected void buildDependencies(@NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors) {
