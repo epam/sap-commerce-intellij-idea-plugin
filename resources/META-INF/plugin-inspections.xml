@@ -156,6 +156,11 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSTypeNameMustPointToExistingType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSMetaTypeNameMustPointToExistingMetaType.key"
+                         shortName="MetaTypeNameMustPointToExistingMetaType" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSMetaTypeNameMustPointToExistingMetaType"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.BooleanFieldCannotBeOptional.key"
                          shortName="BooleanFieldCannotBeOptional" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSBooleanFieldCannotBeOptional"/>
