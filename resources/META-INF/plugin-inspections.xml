@@ -22,18 +22,26 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.businessProcess.BPDomElementsInspection"/>
 
         <!-- Cockpitng -->
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngConfigDomElementsInspection" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngConfigDomInspection"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngActionsDomElementsInspection" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngActionsDomInspection"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpitng"
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngWidgetsDomElementsInspection" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngWidgetsDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextMergeByPointToExistingContextAttribute.key"
+                         shortName="CngContextMergeByPointToExistingContextAttribute" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextMergeByPointToExistingContextAttribute"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="hybris" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextParentIsNotValid.key"
+                         shortName="CngContextParentIsNotValid" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
 
         <!-- Impex -->
         <localInspection groupPath="hybris" shortName="NoUniqueValueInspection" displayName="[y] No unique value in column"

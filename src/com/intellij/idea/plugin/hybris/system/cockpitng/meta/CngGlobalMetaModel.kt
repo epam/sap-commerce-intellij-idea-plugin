@@ -28,10 +28,11 @@ import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.Cas
  */
 class CngGlobalMetaModel {
 
-    val components = mutableSetOf<String>();
-    val actionDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaActionDefinition>();
-    val widgetDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetDefinition>();
-    val editorDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaEditorDefinition>();
-    val widgets = CaseInsensitiveConcurrentHashMap<String, CngMetaWidget>();
+    val components = mutableSetOf<String>()
+    val contextAttributes = mutableMapOf<String, MutableSet<String>>()
+    val actionDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaActionDefinition>()
+    val widgetDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetDefinition>()
+    val editorDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaEditorDefinition>()
+    val widgets = CaseInsensitiveConcurrentHashMap<String, CngMetaWidget>()
 
 }

@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngComponentConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngMergeByConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -33,14 +34,24 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Context extends DomElement {
 
+    String MERGE_BY = "merge-by";
+    String TYPE = "type";
+    String PRINCIPAL = "principal";
+    String COMPONENT = "component";
+    String AUTHORITY = "authority";
+    String PARENT = "parent";
+    String PARENT_AUTO = "auto";
+
     /**
      * Returns the value of the merge-by child.
      *
      * @return the value of the merge-by child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("merge-by")
-    GenericAttributeValue<MergeAttrTypeKnown> getMergeBy();
+    @com.intellij.util.xml.Attribute(MERGE_BY)
+    // Actually, is can be anything beside MergeAttrTypeKnown
+    @Convert(CngMergeByConverter.class)
+    GenericAttributeValue<String> getMergeBy();
 
     /**
      * Returns the value of the type child.
@@ -48,7 +59,7 @@ public interface Context extends DomElement {
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     GenericAttributeValue<String> getType();
 
 
@@ -58,7 +69,7 @@ public interface Context extends DomElement {
      * @return the value of the principal child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("principal")
+    @com.intellij.util.xml.Attribute(PRINCIPAL)
     GenericAttributeValue<String> getPrincipal();
 
 
@@ -68,7 +79,7 @@ public interface Context extends DomElement {
      * @return the value of the component child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("component")
+    @com.intellij.util.xml.Attribute(COMPONENT)
     @Convert(CngComponentConverter.class)
     GenericAttributeValue<String> getComponent();
 
@@ -79,8 +90,18 @@ public interface Context extends DomElement {
      * @return the value of the authority child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("authority")
+    @com.intellij.util.xml.Attribute(AUTHORITY)
     GenericAttributeValue<String> getAuthority();
+
+
+    /**
+     * Returns the value of the parent child.
+     *
+     * @return the value of the parent child.
+     */
+    @NotNull
+    @com.intellij.util.xml.Attribute(PARENT)
+    GenericAttributeValue<String> getParentAttribute();
 
 
     /**

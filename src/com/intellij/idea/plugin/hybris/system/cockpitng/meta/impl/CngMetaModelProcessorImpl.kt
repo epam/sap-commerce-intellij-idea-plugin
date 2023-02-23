@@ -34,19 +34,26 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, Config::class.java)?.rootElement ?: return null
 
-        return CngConfigMeta(psiFile, dom)
+        val contexts = dom.contexts
+            .filter { it.component.stringValue != null }
+            .map { CngContextMeta(psiFile, it, it.component.stringValue!!) }
+        return CngConfigMeta(psiFile, dom, contexts)
     }
 
     override fun processActionDefinition(psiFile: PsiFile): CngMetaActionDefinition? {
         psiFile.virtualFile ?: return null
-        val dom = myDomManager.getFileElement(psiFile as XmlFile, ActionDefinition::class.java)?.rootElement ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, ActionDefinition::class.java)
+            ?.rootElement
+            ?: return null
 
         return CngMetaActionDefinition(psiFile, dom)
     }
 
     override fun processWidgetDefinition(psiFile: PsiFile): CngMetaWidgetDefinition? {
         psiFile.virtualFile ?: return null
-        val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)?.rootElement ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)
+            ?.rootElement
+            ?: return null
 
         val settings = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetSetting>()
         dom.settings.settings
@@ -58,14 +65,18 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
 
     override fun processEditorDefinition(psiFile: PsiFile): CngMetaEditorDefinition? {
         psiFile.virtualFile ?: return null
-        val dom = myDomManager.getFileElement(psiFile as XmlFile, EditorDefinition::class.java)?.rootElement ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, EditorDefinition::class.java)
+            ?.rootElement
+            ?: return null
 
         return CngMetaEditorDefinition(psiFile, dom)
     }
 
     override fun processWidgets(psiFile: PsiFile): CngMetaWidgets? {
         psiFile.virtualFile ?: return null
-        val dom = myDomManager.getFileElement(psiFile as XmlFile, Widgets::class.java)?.rootElement ?: return null
+        val dom = myDomManager.getFileElement(psiFile as XmlFile, Widgets::class.java)
+            ?.rootElement
+            ?: return null
 
         return CngMetaWidgets(
             psiFile,

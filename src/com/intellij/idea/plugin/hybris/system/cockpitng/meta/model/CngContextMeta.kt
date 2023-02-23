@@ -17,16 +17,21 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.psi.PsiFile
-import io.ktor.util.*
 
-class CngConfigMeta(
-    private val myPsiFile: PsiFile,
-    myDom: Config,
-    val contexts: List<CngContextMeta>
-) : CngMeta<Config>(myPsiFile, myDom) {
+class CngContextMeta(
+    myPsiFile: PsiFile,
+    myDom: Context,
+    val name: String
+) : CngMeta<Context>(myPsiFile, myDom) {
 
-    override fun toString() = myPsiFile.name
+    val attributes = myDom.xmlTag
+        ?.attributes
+        ?.filter { it.value != null }
+        ?.associate { it.name to it.value!! }
+        ?: emptyMap()
+
+    override fun toString() = name
 
 }

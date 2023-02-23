@@ -100,6 +100,7 @@
                 <li><i>Feature:</i> Added inspection for <code>items.xml</code> - <code>metatype</code> attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/243" target="_blank" rel="nofollow">#243</a>)</li>
                 <li><i>Feature:</i> Added possibility to identify if extension is an addon (project refresh required) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/245" target="_blank" rel="nofollow">#245</a>)</li>
                 <li><i>Feature:</i> CockpitNG: added <code>merge-by</code> dependant contribution for <code>parent</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/247" target="_blank" rel="nofollow">#247</a>)</li>
+                <li><i>Feature:</i> CockpitNG: added <code>merge-by</code> dependant complex contribution &amp; inspections for <code>parent</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/248" target="_blank" rel="nofollow">#248</a>)</li>
                 <li><i>Feature:</i> Updated custom icons for Business Process diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/246" target="_blank" rel="nofollow">#246</a>)</li>
                 <li><i>Bug Fix:</i> Fixed code completion for <code>requires-extension</code> within <code>extensioninfo</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/244" target="_blank" rel="nofollow">#244</a>)</li>
             </ul>

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.check
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.*
@@ -33,7 +34,7 @@ import com.intellij.psi.util.PsiTreeUtil
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 object FSFromClauseKeywordsAnalyzer {
-    private val errorIdendifier = "IntellijIdeaRulezzz"
+    private val errorIdendifier = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
 
     fun analyzeCompletions(parameters: CompletionParameters, completionResultSet: CompletionResultSet) {
         val context = parameters.originalPosition ?: parameters.position

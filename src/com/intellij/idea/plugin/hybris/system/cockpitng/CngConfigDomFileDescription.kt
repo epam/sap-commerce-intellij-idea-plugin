@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
@@ -32,7 +33,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_CONFIG
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
+            && CngUtils.isConfigFile(file)
 
     override fun initializeFileDescription() {
         super.initializeFileDescription()

@@ -16,30 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:41:57 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpit/config
+package com.intellij.idea.plugin.hybris.system.cockpitng.util
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.openapi.project.Project
+import com.intellij.psi.xml.XmlFile
 
-/**
- * http://www.hybris.com/cockpit/config:mergeAttrTypeKnown enumeration.
- */
-public enum MergeAttrTypeKnown implements com.intellij.util.xml.NamedEnum {
-    AUTHORITY("authority"),
-    PRINCIPAL("principal"),
-    TYPE("type"),
-    MODULE("module"),
-    SOURCE("source");
+object CngUtils {
 
-    private final String value;
+    fun isConfigFile(file: XmlFile) = file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
 
-    MergeAttrTypeKnown(final String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
+    fun getValidMergeByValues(project: Project) = CngMetaModelAccess.getInstance(project).getMetaModel()
+        .contextAttributes
+        .keys
+        // exclude itself
+        .filter { Context.MERGE_BY != it }
 }

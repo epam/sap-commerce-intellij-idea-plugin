@@ -45,7 +45,12 @@ class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
     }
 
     private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngConfigMeta) {
-        globalMetaModel.components.addAll(localMeta.getAllComponents())
+        localMeta.contexts
+            .flatMap { it.attributes.entries }
+            .forEach {
+                globalMetaModel.contextAttributes.computeIfAbsent(it.key) { _ -> mutableSetOf() }
+                globalMetaModel.contextAttributes[it.key]!!.add(it.value)
+            }
     }
 
     private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngMetaActionDefinition) {

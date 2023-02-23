@@ -16,30 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:41:57 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpit/config
+package com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
+import com.intellij.idea.plugin.hybris.codeInspection.rule.AbstractInspection
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
+import com.intellij.idea.plugin.hybris.system.type.model.Items
+import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.openapi.project.Project
+import com.intellij.psi.xml.XmlFile
 
-/**
- * http://www.hybris.com/cockpit/config:mergeAttrTypeKnown enumeration.
- */
-public enum MergeAttrTypeKnown implements com.intellij.util.xml.NamedEnum {
-    AUTHORITY("authority"),
-    PRINCIPAL("principal"),
-    TYPE("type"),
-    MODULE("module"),
-    SOURCE("source");
+abstract class AbstractCngConfigInspection : AbstractInspection<Config>(Config::class.java) {
 
-    private final String value;
-
-    MergeAttrTypeKnown(final String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
+    override fun canProcess(project: Project, file: XmlFile) = CngUtils.isConfigFile(file)
 }

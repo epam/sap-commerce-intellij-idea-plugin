@@ -16,30 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:41:57 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpit/config
+package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.config;
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
+import com.intellij.util.xml.ConvertContext
+import com.intellij.util.xml.ResolvingConverter
 
-/**
- * http://www.hybris.com/cockpit/config:mergeAttrTypeKnown enumeration.
- */
-public enum MergeAttrTypeKnown implements com.intellij.util.xml.NamedEnum {
-    AUTHORITY("authority"),
-    PRINCIPAL("principal"),
-    TYPE("type"),
-    MODULE("module"),
-    SOURCE("source");
+class CngMergeByConverter : ResolvingConverter<String>() {
 
-    private final String value;
+    override fun toString(t: String?, context: ConvertContext?) = t
 
-    MergeAttrTypeKnown(final String value) {
-        this.value = value;
-    }
+    override fun fromString(s: String?, context: ConvertContext?) = s
 
-    @Override
-    public String getValue() {
-        return value;
-    }
-
+    override fun getVariants(context: ConvertContext) = CngUtils.getValidMergeByValues(context.project)
 }

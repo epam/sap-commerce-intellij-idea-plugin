@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 
@@ -28,5 +29,6 @@ class CngComponentConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext?) = s
 
-    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().components
+    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().contextAttributes[Context.COMPONENT]
+        ?: emptySet()
 }

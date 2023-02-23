@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngContextParentNonItemTypeCompletionProvider
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
@@ -31,6 +32,11 @@ class CngCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.ITEM_TYPE),
             ItemTypeCodeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_PARENT_NON_ITEM_TYPE),
+            CngContextParentNonItemTypeCompletionProvider.instance
         )
         extend(
             CompletionType.BASIC,
