@@ -329,6 +329,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             isMetaKeySetToTrue(EXTENSION_META_KEY_HAC_MODULE),
             isMetaKeySetToTrue(EXTENSION_META_KEY_DEPRECATED),
             isMetaKeySetToTrue(EXTENSION_META_KEY_EXT_GEN),
+            getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT),
             metas.get(EXTENSION_META_KEY_CLASSPATHGEN),
             metas.get(EXTENSION_META_KEY_MODULE_GEN)
         );

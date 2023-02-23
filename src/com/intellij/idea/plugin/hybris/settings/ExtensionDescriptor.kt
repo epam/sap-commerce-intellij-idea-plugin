@@ -27,6 +27,7 @@ data class ExtensionDescriptor(
         var hacModule: Boolean = false,
         var deprecated: Boolean = false,
         var extGenTemplateExtension: Boolean = false,
+        var addon: Boolean = false,
         var classPathGen: String? = null,
         var moduleGenName: String? = null,
 )

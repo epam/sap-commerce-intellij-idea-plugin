@@ -106,7 +106,7 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
         return new ExtensionDescriptor(
             getName(),
             getDescriptorType(),
-            false, false, false, false,
+            false, false, false, false, false,
             null, null
         );
     }

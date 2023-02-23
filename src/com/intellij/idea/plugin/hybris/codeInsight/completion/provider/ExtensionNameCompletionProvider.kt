@@ -61,6 +61,7 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
         val tail = listOfNotNull(
                 if (extensionDescriptor.deprecated) "deprecated" else null,
                 if (extensionDescriptor.extGenTemplateExtension) "template" else null,
+                if (extensionDescriptor.addon) "addon" else null,
                 if (extensionDescriptor.hacModule) "hac" else null,
                 if (extensionDescriptor.backofficeModule) "backoffice" else null,
         ).joinToString(", ")

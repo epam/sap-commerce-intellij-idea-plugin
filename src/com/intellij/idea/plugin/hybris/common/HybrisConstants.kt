@@ -89,6 +89,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_HMC = "hmc"
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
+    const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
 
     const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
     const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
