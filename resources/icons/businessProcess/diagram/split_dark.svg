@@ -4,8 +4,15 @@
 	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#389FD6;}
+	.st1{fill:#AFB1B3;}
 </style>
-<title>Layer 1</title>
-<path class="st0" d="M12.5,2H13V1H3v1h0.5v2.2L7.3,8l-3.8,3.8V14H3v1h10v-1h-0.5v-2.2L8.7,8l3.8-3.8V2z M10.1,10.8H5.9L8,8.7
-	L10.1,10.8z M9.9,5.4H6.1L4.5,3.8V2h7v1.8L9.9,5.4z"/>
+<g>
+	<polygon class="st1" points="7,6.5 9,6.5 9,4 11,4 8,1 5,4 7,4 	"/>
+	<polygon class="st1" points="9,9.5 7,9.5 7,12 5,12 8,15 11,12 9,12 	"/>
+</g>
+<g>
+	<polygon class="st1" points="15,8 12,5 12,7 9.5,7 9.5,9 12,9 12,11 	"/>
+	<polygon class="st1" points="4,9 6.5,9 6.5,7 4,7 4,5 1,8 4,11 	"/>
+</g>
+<circle class="st0" cx="8" cy="8" r="0.9"/>
 </svg>

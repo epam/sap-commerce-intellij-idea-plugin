@@ -60,25 +60,25 @@ public class BpDiagramFileNode extends DiagramNodeBase<BpGraphNode> {
     public Icon getIcon() {
         final BpGenericAction genericAction = this.diagramNode.getGenericAction();
         if (genericAction instanceof Action) {
-            return HybrisIcons.ACTION;
+            return HybrisIcons.BP_DIAGRAM_ACTION;
 
         } else if (genericAction instanceof Split) {
-            return HybrisIcons.SPLIT;
+            return HybrisIcons.BP_DIAGRAM_SPLIT;
 
         } else if (genericAction instanceof Wait) {
-            return HybrisIcons.WAIT;
+            return HybrisIcons.BP_DIAGRAM_WAIT;
 
         } else if (genericAction instanceof Join) {
-            return HybrisIcons.JOIN;
+            return HybrisIcons.BP_DIAGRAM_JOIN;
 
         } else if (genericAction instanceof End) {
-            return HybrisIcons.END;
+            return HybrisIcons.BP_DIAGRAM_END;
 
         } else if (genericAction instanceof ScriptAction) {
-            return HybrisIcons.SCRIPT;
+            return HybrisIcons.BP_DIAGRAM_SCRIPT;
 
         } else if (genericAction instanceof Notify) {
-            return HybrisIcons.NOTIFY;
+            return HybrisIcons.BP_DIAGRAM_NOTIFY;
         }
 
         return null;
