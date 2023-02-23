@@ -28,7 +28,7 @@ import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSMetaTypeNameMustPointToExistingMetaType : AbstractTSInspection() {
+class TSMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
 
     override fun inspect(
             project: Project,
