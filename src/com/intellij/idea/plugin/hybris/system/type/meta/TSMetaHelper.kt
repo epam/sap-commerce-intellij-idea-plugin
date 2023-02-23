@@ -27,7 +27,7 @@ class TSMetaHelper {
 
     companion object {
         private fun escapeType(type: String?) = type
-            ?.replace(HybrisConstants.TS_JAVA_LANG_PREFIX, "")
+                ?.replace(HybrisConstants.TS_JAVA_LANG_PREFIX, "")
 
         private fun flattenType(type: Type, elementType: String?) = when (type) {
             Type.COLLECTION -> "Collection<${elementType ?: '?'}>"
@@ -68,41 +68,41 @@ class TSMetaHelper {
         fun flattenType(meta: TSGlobalMetaCollection) = flattenType(meta.type, escapeType(meta.elementType))
         fun flattenType(meta: TSGlobalMetaMap) = "Map<${escapeType(meta.argumentType) ?: '?'}, ${escapeType(meta.returnType) ?: '?'}>"
         fun flattenType(meta: TSGlobalMetaRelation) =
-            escapeType(meta.source.type) + " [${mapCardinality(meta.source)}:${mapCardinality(meta.target)}] " + escapeType(meta.target.type)
+                escapeType(meta.source.type) + " [${mapCardinality(meta.source)}:${mapCardinality(meta.target)}] " + escapeType(meta.target.type)
 
         fun flattenType(meta: TSGlobalMetaAtomic) = meta.name
         fun flattenType(meta: TSGlobalMetaItem) = meta.name
         fun flattenType(meta: TSGlobalMetaEnum) = meta.name
 
         fun isDeprecated(dom: AttributeModel, name: String) = dom.setters
-            .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
+                .any { name == it.name.stringValue && java.lang.Boolean.TRUE == it.deprecated.value }
 
         fun isLocalized(type: String?) = type?.startsWith(HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX, true)
-            ?: false
+                ?: false
 
         fun isDynamic(persistence: TSMetaPersistence) = PersistenceType.DYNAMIC == persistence.type
 
         fun isCatalogAware(dom: CustomProperties) = getProperty(dom, HybrisConstants.TS_CATALOG_ITEM_TYPE)
-            ?.let { parseBooleanValue(it) }
-            ?: false
+                ?.let { parseBooleanValue(it) }
+                ?: false
 
         fun getProperty(dom: CustomProperties, name: String) = dom.properties
-            .firstOrNull { name.equals(it.name.stringValue, true) }
+                .firstOrNull { name.equals(it.name.stringValue, true) }
 
         fun parseStringValue(customProperty: CustomProperty) = customProperty.value.rawText?.replace("\"", "")
 
         fun parseBooleanValue(customProperty: CustomProperty) =
-            "java.lang.Boolean.TRUE" == customProperty.value.rawText
-                    || "Boolean.TRUE" == customProperty.value.rawText
+                "java.lang.Boolean.TRUE" == customProperty.value.rawText
+                        || "Boolean.TRUE" == customProperty.value.rawText
 
         fun parseIntValue(customProperty: CustomProperty) = customProperty.value.rawText
-            ?.replace("Integer.valueOf(", "")
-            ?.replace(")", "")
-            ?.toIntOrNull()
+                ?.replace("Integer.valueOf(", "")
+                ?.replace(")", "")
+                ?.toIntOrNull()
 
         fun parseCommaSeparatedStringValue(customProperty: CustomProperty) = parseStringValue(customProperty)
-            ?.split(",")
-            ?.map { it.trim() }
+                ?.split(",")
+                ?.map { it.trim() }
 
         fun getAllExtends(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): Set<TSGlobalMetaItem> {
             val tempParents = LinkedHashSet<TSGlobalMetaItem>()
@@ -116,14 +116,18 @@ class TSMetaHelper {
         }
 
         fun getAllRelationEnds(
-            metaModel: TSGlobalMetaModel,
-            meta: TSGlobalMetaItem,
-            extends: Set<TSGlobalMetaItem>
+                metaModel: TSGlobalMetaModel,
+                meta: TSGlobalMetaItem,
+                extends: Set<TSGlobalMetaItem>
         ): Collection<TSMetaRelation.TSMetaRelationElement> {
             val currentMetaRelationEnds = getMetaRelationEnds(metaModel, meta)
             val extendsMetaRelationEnds = extends.flatMap { metaExtend -> getMetaRelationEnds(metaModel, metaExtend) }
             return currentMetaRelationEnds + extendsMetaRelationEnds
         }
+
+        fun isAttributeDescriptor(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == it.name
+                || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
+
 
         private fun getMetaItem(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): TSGlobalMetaItem? {
             val realExtendedMetaItemName = meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM

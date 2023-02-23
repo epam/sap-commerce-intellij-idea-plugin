@@ -37,7 +37,7 @@ public final class HybrisIcons {
 
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
     public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
-    public static final Icon BEAN_FILE = getIcon("/icons/beanIcon.svg");
+    public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
 
     public static final Icon IMPEX = getIcon("/icons/impex.svg");
     public static final Icon FLEXIBLE_SEARCH = getIcon("/icons/flexibleSearch.svg");

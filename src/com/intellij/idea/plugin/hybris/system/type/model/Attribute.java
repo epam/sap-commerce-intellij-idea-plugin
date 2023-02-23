@@ -23,6 +23,7 @@ package com.intellij.idea.plugin.hybris.system.type.model;
 
 import com.intellij.idea.plugin.hybris.system.type.converter.AttributeReferenceConverter;
 import com.intellij.idea.plugin.hybris.system.type.file.CompositeConverter;
+import com.intellij.idea.plugin.hybris.system.type.file.ItemMetaTypeConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -111,6 +112,7 @@ public interface Attribute extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(META_TYPE)
+    @Convert(value = ItemMetaTypeConverter.class)
     GenericAttributeValue<String> getMetaType();
 
 

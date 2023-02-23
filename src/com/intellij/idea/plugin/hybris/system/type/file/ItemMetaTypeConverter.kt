@@ -17,29 +17,21 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.file
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
-import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
 
-open class ItemTypeConverter : TSConverterBase<ItemType>(ItemType::class.java) {
+class ItemMetaTypeConverter : ItemTypeConverter() {
 
     override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaItemByName(name)
-        ?.retrieveDom()
+            ?.takeIf { TSMetaHelper.isAttributeDescriptor(it) }
+            ?.retrieveDom()
 
     override fun searchAll(context: ConvertContext, meta: TSMetaModelAccess) = meta.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-        .mapNotNull { it.retrieveDom() }
+            .filter { TSMetaHelper.isAttributeDescriptor(it) }
+            .mapNotNull { it.retrieveDom() }
 
-    override fun toString(dom: ItemType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
-    override fun getPsiElement(resolvedValue: ItemType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
-
-    override fun createLookupElement(dom: ItemType?) = dom?.code?.stringValue
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TS_ITEM)
-        }
 }
