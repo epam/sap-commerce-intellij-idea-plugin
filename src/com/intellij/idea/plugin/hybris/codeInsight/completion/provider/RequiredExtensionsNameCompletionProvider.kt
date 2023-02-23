@@ -20,37 +20,34 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomManager
 
-class RequiredExtensionsNameCompletionProvider: CompletionProvider<CompletionParameters>() {
+class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider() {
 
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> {
         val file = parameters.originalFile
-        if (file !is XmlFile) return
+        if (file !is XmlFile) return emptyList()
 
-        val project = file.project
         val currentNames = DomManager.getDomManager(project)
-            .getFileElement(file, ExtensionInfo::class.java)
-            ?.rootElement
-            ?.extension
-            ?.requiresExtensions
-            ?.mapNotNull { it.name.stringValue }
-            ?.filter { it.isNotBlank() }
-            ?.map { it.lowercase() } ?: emptyList()
+                .getFileElement(file, ExtensionInfo::class.java)
+                ?.rootElement
+                ?.extension
+                ?.requiresExtensions
+                ?.mapNotNull { it.name.stringValue }
+                ?.filter { it.isNotBlank() }
+                ?.map { it.lowercase() } ?: emptyList()
 
-        HybrisProjectSettingsComponent.getInstance(project)
-            .state
-            .availableExtensions.entries
-            .filterNot { currentNames.contains(it.key) }
-            .map { LookupElementBuilder.create(it.value) }
-            .forEach { result.addElement(it) }
+        return HybrisProjectSettingsComponent.getInstance(project)
+                .state
+                .availableExtensions.entries
+                .filterNot { currentNames.contains(it.key) }
+                .map { it.value }
     }
 
     companion object {

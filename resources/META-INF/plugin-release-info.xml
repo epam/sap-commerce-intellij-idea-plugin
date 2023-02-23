@@ -98,6 +98,7 @@
                 <li><i>Feature:</i> Added custom icons for CCv2 project tree modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/239" target="_blank" rel="nofollow">#239</a>)</li>
                 <li><i>Feature:</i> Added completion and navigation for <code>items.xml</code> - <code>metatype</code> attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/242" target="_blank" rel="nofollow">#242</a>)</li>
                 <li><i>Feature:</i> Added inspection for <code>items.xml</code> - <code>metatype</code> attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/243" target="_blank" rel="nofollow">#243</a>)</li>
+                <li><i>Bug Fix:</i> Fixed code completion for <code>requires-extension</code> within <code>extensioninfo</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/244" target="_blank" rel="nofollow">#244</a>)</li>
             </ul>
             <h3>2023.1.0</h3>
             <ul>

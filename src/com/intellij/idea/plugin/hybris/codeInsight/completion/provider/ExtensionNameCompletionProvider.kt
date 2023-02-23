@@ -34,7 +34,7 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val project = parameters.originalFile.project
-        getExtensionDescriptors(project)
+        getExtensionDescriptors(parameters, project)
                 .map {
                     LookupElementBuilder.create(it.name)
                             .withTailText(tail(it), true)
@@ -53,7 +53,7 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
                 .forEach { result.addElement(it) }
     }
 
-    open fun getExtensionDescriptors(project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
+    open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
             .state
             .availableExtensions.values
 
