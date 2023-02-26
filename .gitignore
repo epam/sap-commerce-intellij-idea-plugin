@@ -30,3 +30,5 @@
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/.gitignore
+
+/rt-ant/out/

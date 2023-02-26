@@ -20,63 +20,53 @@ package com.intellij.idea.plugin.hybris.codeInsight.hints
 
 import com.intellij.codeInsight.completion.CompletionMemory
 import com.intellij.codeInsight.completion.JavaMethodCallElement
-import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
-import com.intellij.codeInsight.hints.InlayHintsSink
+import com.intellij.codeInsight.hints.declarative.InlayTreeSink
+import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
+import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.*
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiMethodCallExpression
 
-class DynamicAttributeHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
+class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
-    override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
-        if (!element.isValid || element.project.isDefault) {
-            return false
-        }
-        if (element !is PsiMethodCallExpression) {
-            return true
-        }
+    override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
+        if (!element.isValid || element.project.isDefault) return
+        if (element !is PsiMethodCallExpression) return
 
         val method = (if(JavaMethodCallElement.isCompletionMode(element)) CompletionMemory.getChosenMethod(element) else null)
             ?: element.resolveMethodGenerics().element
-            ?: return true
+            ?: return
 
-        if (method !is PsiMethod) return true
-        if (method.containingClass == null) return true
-        if (!ModelsUtils.isModelFile(method.containingClass)) return true
+        if (method !is PsiMethod) return
+        if (method.containingClass == null) return
+        if (!ModelsUtils.isModelFile(method.containingClass)) return
 
-        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return true
-        val annotation = method.getAnnotation("de.hybris.bootstrap.annotations.Accessor") ?: return true
+        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return
+        val annotation = method.getAnnotation("de.hybris.bootstrap.annotations.Accessor") ?: return
 
         val qualifier = annotation.parameterList.attributes
             .filter { it.name == Attribute.QUALIFIER }
             .map { it.value }
             .filterIsInstance<PsiLiteralExpression>()
             .map { it.value }
-            .firstOrNull { it != null } ?: return true
+            .firstOrNull { it != null } ?: return
 
         meta.allAttributes
             .filter { it.persistence.type == PersistenceType.DYNAMIC }
-            .firstOrNull { it.name == qualifier } ?: return true
+            .firstOrNull { it.name == qualifier } ?: return
 
-        submitInlayHint(element.methodExpression.lastChild.textRange, sink)
+        val identifier = element.methodExpression.lastChild
 
-        return true
-    }
-
-    private fun submitInlayHint(identifierRange: TextRange?, sink: InlayHintsSink) {
-        identifierRange ?: return
-        val typeRepresentation = factory.smallText(message("hybris.ts.type.dynamic"))
-        val (offset, representation) = identifierRange.startOffset to factory.seq(typeRepresentation, factory.smallText(" "))
-        sink.addInlineElement(offset, true, factory.roundWithBackground(representation), false)
+        sink.addPresentation(InlineInlayPosition(identifier.textRange.startOffset, true), hasBackground = true) {
+            text(message("hybris.ts.type.dynamic"))
+        }
     }
 
     private fun cleanSearchName(searchName: String?): String? {

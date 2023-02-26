@@ -3,7 +3,7 @@
 
 ![Rating](https://img.shields.io/jetbrains/plugin/r/rating/12867-sap-commerce-developers-toolset)
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
-![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)
+[![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)](https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset)
 
 ## SAP Commerce Developers Toolset ##
 
@@ -39,34 +39,21 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 This project exists thanks to all the people who contribute.
 
-<img src="https://img.shields.io/badge/-Alexander%20Bartash-grey"/>
-<img src="https://img.shields.io/badge/-Vlad%20Bozhenok-grey"/>
-<img src="https://img.shields.io/badge/-Martin%20Zdarsky--Jones-grey"/>
-<img src="https://img.shields.io/badge/-Alexander%20Nosov-grey"/>
-<img src="https://img.shields.io/badge/-Eugene%20Kudelevsky-grey"/>
-<img src="https://img.shields.io/badge/-Cristian%20Caprar-grey"/>
-<img src="https://img.shields.io/badge/-Daniel%20Carter-grey"/>
-<img src="https://img.shields.io/badge/-Oleksandr%20Mishchuk-grey"/>
-<img src="https://img.shields.io/badge/-Michael%20Golubev-grey"/>
-<img src="https://img.shields.io/badge/-Nicko%20Cadell-grey"/>
-<img src="https://img.shields.io/badge/-Dan%20Wanigasekera-grey"/>
-<img src="https://img.shields.io/badge/-Markus%20Priegl-grey"/>
-<img src="https://img.shields.io/badge/-Sergei%20Aksenenko-grey"/>
-<img src="https://img.shields.io/badge/-Roger%20Ye-grey"/>
-<img src="https://img.shields.io/badge/-Hector%20Longarte-grey"/>
-<img src="https://img.shields.io/badge/-Fabian%20Necci-grey"/>
-<img src="https://img.shields.io/badge/-Markus%20Perndorfer-grey"/>
-<img src="https://img.shields.io/badge/-FAIR%20Consulting%20Group-grey"/>
-<img src="https://img.shields.io/badge/-Mykyta%20Kostiuk-grey"/>
-<img src="https://img.shields.io/badge/-Dmytro%20Lytvynenko-grey"/>
-<img src="https://img.shields.io/badge/-Oleksandr%20Shkurat-grey"/>
-<img src="https://img.shields.io/badge/-Maxim%20Bilohay-grey"/>
-<img src="https://img.shields.io/badge/-Eugene%20Koryakin-grey"/>
-<img src="https://img.shields.io/badge/-Yevhenii%20Koshevyi-grey"/>
-<img src="https://img.shields.io/badge/-Mykhailo%20Lytvyn-grey"/>
-<img src="https://img.shields.io/badge/-Viktors%20Jengovatovs-grey"/>
-<img src="https://img.shields.io/badge/-Rustam%20Burmenskyi-grey"/>
-<img src="https://img.shields.io/badge/-Oleksandr%20Dihtiar-grey"/>
+
+<img src="https://img.shields.io/badge/-Alexander%20Bartash-grey"/> <img src="https://img.shields.io/badge/-Vlad%20Bozhenok-grey"/> 
+<img src="https://img.shields.io/badge/-Martin%20Zdarsky--Jones-grey"/> <img src="https://img.shields.io/badge/-Alexander%20Nosov-grey"/>
+<img src="https://img.shields.io/badge/-Eugene%20Kudelevsky-grey"/> <img src="https://img.shields.io/badge/-Cristian%20Caprar-grey"/>
+<img src="https://img.shields.io/badge/-Daniel%20Carter-grey"/> <img src="https://img.shields.io/badge/-Oleksandr%20Mishchuk-grey"/>
+<img src="https://img.shields.io/badge/-Michael%20Golubev-grey"/> <img src="https://img.shields.io/badge/-Nicko%20Cadell-grey"/>
+<img src="https://img.shields.io/badge/-Dan%20Wanigasekera-grey"/> <img src="https://img.shields.io/badge/-Markus%20Priegl-grey"/>
+<img src="https://img.shields.io/badge/-Sergei%20Aksenenko-grey"/> <img src="https://img.shields.io/badge/-Roger%20Ye-grey"/>
+<img src="https://img.shields.io/badge/-Hector%20Longarte-grey"/> <img src="https://img.shields.io/badge/-Fabian%20Necci-grey"/>
+<img src="https://img.shields.io/badge/-Markus%20Perndorfer-grey"/> <img src="https://img.shields.io/badge/-FAIR%20Consulting%20Group-grey"/>
+<img src="https://img.shields.io/badge/-Mykyta%20Kostiuk-grey"/> <img src="https://img.shields.io/badge/-Dmytro%20Lytvynenko-grey"/>
+<img src="https://img.shields.io/badge/-Oleksandr%20Shkurat-grey"/> <img src="https://img.shields.io/badge/-Maxim%20Bilohay-grey"/>
+<img src="https://img.shields.io/badge/-Eugene%20Koryakin-grey"/> <img src="https://img.shields.io/badge/-Yevhenii%20Koshevyi-grey"/>
+<img src="https://img.shields.io/badge/-Mykhailo%20Lytvyn-grey"/> <img src="https://img.shields.io/badge/-Viktors%20Jengovatovs-grey"/>
+<img src="https://img.shields.io/badge/-Rustam%20Burmenskyi-grey"/> <img src="https://img.shields.io/badge/-Oleksandr%20Dihtiar-grey"/>
 <img src="https://img.shields.io/badge/-Andrei%20Lisetskii-grey"/>
 
 ## Licence ##
