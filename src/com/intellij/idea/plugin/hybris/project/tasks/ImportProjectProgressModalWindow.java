@@ -51,6 +51,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsCompone
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -488,10 +489,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
 
-        StartupManager.getInstance(project).runAfterOpened(() -> {
-            project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
-            project.getMessageBus().syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged();
-        });
+        project.putUserData(HybrisProjectImportStartupActivity.Companion.getSyncProjectSettingsKey(), true);
     }
 
     private Set<String> createModulesOnBlackList() {

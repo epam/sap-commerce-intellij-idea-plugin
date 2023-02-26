@@ -22,23 +22,16 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
-import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
+import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -46,12 +39,11 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
+import kotlin.Pair;
+import kotlin.Triple;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -184,92 +176,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             project, model, configuratorFactory, hybrisProjectDescriptor, modules
         ).queue();
 
-        final boolean[] finished = {false};
+        project.putUserData(HybrisProjectImportStartupActivity.Companion.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
 
-        StartupManager.getInstance(project).runAfterOpened(() -> {
-            activateToolWindowAfterImport(project);
-
-            DumbService.getInstance(project).runWhenSmart(() -> {
-                finished[0] = true;
-
-                finishImport(
-                    project,
-                    hybrisProjectDescriptor,
-                    allModules,
-                    configuratorFactory,
-                    () -> notifyImportFinished(project)
-                );
-            });
-        });
-
-        if (!finished[0]) {
-            notifyImportNotFinishedYet(project);
-        }
+        notifyImportNotFinishedYet(project);
         return modules;
-    }
-
-    private void activateToolWindowAfterImport(final Project project) {
-        final var yToolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
-        if (yToolWindow == null) return;
-
-        ApplicationManager.getApplication().invokeLater(() -> {
-            yToolWindow.setAvailable(true);
-            yToolWindow.activate(null, true);
-        });
-    }
-
-    private static void finishImport(
-        @NotNull final Project project,
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final List<HybrisModuleDescriptor> allHybrisModules,
-        @NotNull final ConfiguratorFactory configuratorFactory,
-        @NotNull final Runnable callback
-    ) {
-        try {
-            final AntConfigurator antConfigurator = configuratorFactory.getAntConfigurator();
-
-            if (antConfigurator != null) {
-                antConfigurator.configure(hybrisProjectDescriptor, allHybrisModules, project);
-            }
-        } catch (Exception e) {
-            LOG.error("Can not configure Ant due to an error.", e);
-        }
-        final DataSourcesConfigurator dataSourcesConfigurator = configuratorFactory.getDataSourcesConfigurator();
-
-        if (dataSourcesConfigurator != null) {
-            try {
-                dataSourcesConfigurator.configure(project);
-            } catch (Exception e) {
-                LOG.error("Can not import data sources due to an error.", e);
-            }
-        }
-        // invokeLater is needed to avoid a problem with transaction validation:
-        // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
-        ApplicationManager.getApplication().invokeLater(() -> {
-            if (project.isDisposed()) {
-                return;
-            }
-            final MavenConfigurator mavenConfigurator = configuratorFactory.getMavenConfigurator();
-
-            if (mavenConfigurator != null) {
-                try {
-                    final List<MavenModuleDescriptor> mavenModules = hybrisProjectDescriptor
-                        .getModulesChosenForImport()
-                        .stream()
-                        .filter(e -> e instanceof MavenModuleDescriptor)
-                        .map(e -> (MavenModuleDescriptor) e)
-                        .collect(Collectors.toList());
-
-                    if (!mavenModules.isEmpty()) {
-                        mavenConfigurator.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory);
-                    }
-                } catch (Exception e) {
-                    LOG.error("Can not import Maven modules due to an error.", e);
-                } finally {
-                    callback.run();
-                }
-            }
-        });
     }
 
     private void notifyImportNotFinishedYet(@NotNull final Project project) {
@@ -281,28 +191,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Notifications.create(NotificationType.INFORMATION, notificationTitle,
                              message("hybris.notification.import.or.refresh.process.not.finished.yet.content"))
                      .notify(project);
-    }
-
-    private void notifyImportFinished(@NotNull final Project project) {
-
-        final String notificationContent = refresh
-            ? message("hybris.notification.project.refresh.finished.content")
-            : message("hybris.notification.project.import.finished.content");
-
-        final String notificationTitle = refresh
-            ? message("hybris.notification.project.refresh.title")
-            : message("hybris.notification.project.import.title");
-
-        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
-                     .notify(project);
-
-        Notifications.showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent);
-
-        DumbService.getInstance(project).runReadActionInSmartMode(() -> {
-            TSMetaModelAccess.Companion.getInstance(project).getMetaModel();
-            BSMetaModelAccess.Companion.getInstance(project).getMetaModel();
-            CngMetaModelAccess.Companion.getInstance(project).getMetaModel();
-        });
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {

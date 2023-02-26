@@ -17,14 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.project
 
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ModalityState
+import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ui.configuration.IdeaProjectSettingsService
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
-import com.intellij.openapi.startup.StartupManager
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 
 class OpenHybrisProjectImportBuilder : DefaultHybrisProjectImportBuilder() {
@@ -36,12 +33,7 @@ class OpenHybrisProjectImportBuilder : DefaultHybrisProjectImportBuilder() {
         artifactModel: ModifiableArtifactModel?
     ): MutableList<Module>? {
         if (isOpenProjectSettingsAfter) {
-            StartupManager.getInstance(project).runAfterOpened {
-                // ensure the dialog is shown after all startup activities are done
-                ApplicationManager.getApplication().invokeLater({
-                    IdeaProjectSettingsService.getInstance(project).openProjectSettings()
-                }, ModalityState.NON_MODAL, project.disposed)
-            }
+            project.putUserData(HybrisProjectImportStartupActivity.openSettingsKey, true)
         }
         getHybrisProjectDescriptor().setHybrisProject(project)
 
