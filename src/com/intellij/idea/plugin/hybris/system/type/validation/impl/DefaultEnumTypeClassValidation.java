@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
-import com.intellij.idea.plugin.hybris.system.type.validation.AbstractTSClassesValidation;
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.idea.plugin.hybris.system.type.model.EnumValue;
 import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils;
@@ -32,7 +31,7 @@ import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getStrin
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
  */
-public class EnumTypeClassValidation extends AbstractTSClassesValidation<EnumType, EnumValue> {
+public class DefaultEnumTypeClassValidation extends AbstractClassesValidation<EnumType, EnumValue> {
 
     @NotNull
     @Override

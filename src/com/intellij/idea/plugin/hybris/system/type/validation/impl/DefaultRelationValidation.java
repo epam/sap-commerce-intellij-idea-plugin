@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.type.validation.TSRelationsValidation;
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
 import com.intellij.idea.plugin.hybris.system.type.model.Relation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
@@ -42,20 +42,17 @@ import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getStrin
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
  */
-public class DefaultTSRelationValidation implements TSRelationsValidation {
+public class DefaultRelationValidation implements ItemsXmlValidator<Relation> {
 
     @Override
-    public boolean validateRelations(
-        @Nullable final List<Relation> relationsList,
-        @NotNull final Map<String, PsiClass> generatedClasses
-    ) {
-        if (null == relationsList) {
+    public boolean validate(@Nullable final List<? extends Relation> dom, @NotNull final Map<String, ? extends PsiClass> psi) {
+        if (null == dom) {
             return false;
         }
 
-        final Map<String, PsiClass> filteredClasses = this.filterRelationClasses(generatedClasses, relationsList);
+        final Map<String, PsiClass> filteredClasses = this.filterRelationClasses(psi, dom);
 
-        for (final Relation relation : relationsList) {
+        for (final Relation relation : dom) {
             final boolean isOutOfDate = this.isRelationOutOfDate(relation, filteredClasses);
             if (isOutOfDate) {
                 return true;
@@ -126,8 +123,8 @@ public class DefaultTSRelationValidation implements TSRelationsValidation {
 
     @NotNull
     private Map<String, PsiClass> filterRelationClasses(
-        @NotNull final Map<String, PsiClass> generatedClasses,
-        @NotNull final Collection<Relation> relationsList
+        @NotNull final Map<String, ? extends PsiClass> generatedClasses,
+        @NotNull final Collection<? extends Relation> relationsList
     ) {
         final Map<String, PsiClass> filteredClasses = new CaseInsensitiveMap<>();
 
@@ -151,7 +148,7 @@ public class DefaultTSRelationValidation implements TSRelationsValidation {
     }
 
     @NotNull
-    private Set<String> getRelationClassNames(@NotNull final Collection<Relation> relationsList) {
+    private Set<String> getRelationClassNames(@NotNull final Collection<? extends Relation> relationsList) {
         final Set<String> sourceRelationClasses = relationsList.stream().map(
             relation -> getString(relation.getSourceElement().getType())
         ).collect(Collectors.toSet());

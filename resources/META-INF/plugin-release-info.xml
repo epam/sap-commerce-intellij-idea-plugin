@@ -106,6 +106,7 @@
                 <li><i>Feature:</i> Show progress of the Type System Global Meta Model creation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/252" target="_blank" rel="nofollow">#252</a>)</li>
                 <li><i>Feature:</i> Show progress of the Bean System Global Meta Model creation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/253" target="_blank" rel="nofollow">#253</a>)</li>
                 <li><i>Feature:</i> Show progress of the CockpitNG Global Meta Model creation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/254" target="_blank" rel="nofollow">#254</a>)</li>
+                <li><i>Feature:</i> Improved project startup and shutdown, show <code>items.xml</code> validation progress (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/255" target="_blank" rel="nofollow">#255</a>)</li>
                 <li><i>Bug Fix:</i> Fixed code completion for <code>requires-extension</code> within <code>extensioninfo</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/244" target="_blank" rel="nofollow">#244</a>)</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/251" target="_blank" rel="nofollow">#251</a>)</li>
             </ul>

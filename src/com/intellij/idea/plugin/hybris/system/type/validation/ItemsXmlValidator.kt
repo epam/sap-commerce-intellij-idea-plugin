@@ -16,21 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.validation;
+package com.intellij.idea.plugin.hybris.system.type.validation
 
-import com.intellij.idea.plugin.hybris.system.type.model.Relation;
-import com.intellij.psi.PsiClass;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiClass
+import com.intellij.util.xml.DomElement
 
-import java.util.List;
-import java.util.Map;
+interface ItemsXmlValidator<T : DomElement> {
 
-/**
- * @author Vlad Bozhenok <vladbozhenok@gmail.com>
- */
-public interface TSRelationsValidation {
+    fun validate(dom: List<T>?, psi: Map<String, PsiClass>): Boolean
 
-    boolean validateRelations(@Nullable List<Relation> relationsList, @NotNull Map<String, PsiClass> generatedClasses);
-
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun <T : DomElement> getInstance(project: Project): ItemsXmlValidator<T> = project.getService(ItemsXmlValidator::class.java) as ItemsXmlValidator<T>
+    }
 }

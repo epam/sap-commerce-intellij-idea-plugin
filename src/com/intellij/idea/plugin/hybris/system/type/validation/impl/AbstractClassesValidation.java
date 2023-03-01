@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.validation;
+package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.util.xml.DomElement;
@@ -31,18 +32,20 @@ import java.util.Map;
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
  */
-public abstract class AbstractTSClassesValidation<T extends DomElement, M extends DomElement> {
+public abstract class AbstractClassesValidation<T extends DomElement, M extends DomElement> implements ItemsXmlValidator<T> {
 
-    public boolean areGeneratedClassesOutOfDate(
-        @NotNull final List<T> itemTypes,
-        @NotNull final Map<String, PsiClass> javaClasses
-    ) {
-        for (final T itemType : itemTypes) {
+    @Override
+    public boolean validate(@Nullable List<? extends T> dom, @NotNull Map<String, ? extends PsiClass> psi) {
+        if (dom == null) {
+            return false;
+        }
+
+        for (final T itemType : dom) {
             if (this.isJavaClassGenerationDisabledForItemType(itemType)) {
                 continue;
             }
 
-            final PsiClass javaClass = this.getJavaClassForItemType(itemType, javaClasses);
+            final PsiClass javaClass = this.getJavaClassForItemType(itemType, psi);
 
             if (null == javaClass) {
                 return true;
@@ -98,7 +101,7 @@ public abstract class AbstractTSClassesValidation<T extends DomElement, M extend
     @Nullable
     private PsiClass getJavaClassForItemType(
         @NotNull final T itemType,
-        @NotNull final Map<String, PsiClass> generatedClasses
+        @NotNull final Map<String, ? extends PsiClass> generatedClasses
     ) {
         final String className = this.buildGeneratedClassName(itemType);
 

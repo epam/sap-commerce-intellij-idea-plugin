@@ -19,11 +19,14 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.*
 import com.intellij.idea.plugin.hybris.common.utils.HybrisItemsXmlFileType
-import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation
-import com.intellij.notification.NotificationType
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
@@ -38,23 +41,23 @@ class ItemsXmlFileOpenStartupActivity : ProjectActivity {
             return
         }
 
-        DumbService.getInstance(project).runReadActionInSmartMode {
-            val validation = DefaultItemsFileValidation(project)
-            val isOutdated = FileTypeIndex.getFiles(
-                HybrisItemsXmlFileType.INSTANCE,
-                GlobalSearchScope.projectScope(project)
-            )
-                .any { file -> validation.isFileOutOfDate(file) }
-            if (isOutdated) {
-                Notifications.create(
-                    NotificationType.WARNING,
-                    HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
-                    HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
-                )
-                    .important(true)
-                    .hideAfter(10)
-                    .notify(project)
+        val task = object : Task.Backgroundable(project, message("hybris.startupActivity.itemsXmlValidation.progress.title")) {
+            override fun run(indicator: ProgressIndicator) {
+                ApplicationManager.getApplication().runReadAction {
+                    val validation = ItemsFileValidation.getInstance(project)
+                    val isOutdated = FileTypeIndex.getFiles(
+                        HybrisItemsXmlFileType.INSTANCE,
+                        GlobalSearchScope.projectScope(project)
+                    )
+                        .any { file -> validation.isFileOutOfDate(file) }
+                    if (isOutdated) {
+                        validation.showNotification()
+                    }
+                }
             }
+        }
+        DumbService.getInstance(project).smartInvokeLater {
+            ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
         }
     }
 }

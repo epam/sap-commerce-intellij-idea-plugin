@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
-import com.intellij.idea.plugin.hybris.system.type.validation.AbstractTSClassesValidation;
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute;
 import com.intellij.idea.plugin.hybris.system.type.model.Attributes;
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
@@ -34,7 +33,7 @@ import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getStrin
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
  */
-public class ItemTypeClassValidation extends AbstractTSClassesValidation<ItemType, Attribute> {
+public class DefaultItemTypeClassValidation extends AbstractClassesValidation<ItemType, Attribute> {
 
     @NotNull
     @Override

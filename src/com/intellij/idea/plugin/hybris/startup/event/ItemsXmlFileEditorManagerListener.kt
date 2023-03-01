@@ -18,32 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.startup.event
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation
-import com.intellij.idea.plugin.hybris.system.type.validation.impl.DefaultItemsFileValidation
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
-    private val validator: ItemsFileValidation
-
-    init {
-        validator = DefaultItemsFileValidation(project)
-    }
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-        if (validator.isFileOutOfDate(file)) {
-            Notifications.create(
-                NotificationType.WARNING,
-                HybrisI18NBundleUtils.message("hybris.notification.ts.validation.title"),
-                HybrisI18NBundleUtils.message("hybris.notification.ts.validation.content")
-            )
-                .hideAfter(10)
-                .notify(project)
+        val itemsFileValidation = ItemsFileValidation.getInstance(project)
+        if (itemsFileValidation.isFileOutOfDate(file)) {
+            itemsFileValidation.showNotification()
         }
     }
 }

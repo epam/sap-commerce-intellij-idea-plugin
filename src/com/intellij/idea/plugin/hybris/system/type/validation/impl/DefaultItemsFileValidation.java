@@ -19,14 +19,18 @@
 package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation;
-import com.intellij.idea.plugin.hybris.system.type.validation.TSRelationsValidation;
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
 import com.intellij.idea.plugin.hybris.system.type.model.Items;
 import com.intellij.idea.plugin.hybris.system.type.model.Relation;
 import com.intellij.idea.plugin.hybris.system.type.model.TypeGroup;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -51,6 +55,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASS_ITEM_ROOT;
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getString;
 
 /**
@@ -60,11 +65,11 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
 
     private static final Logger LOG = Logger.getInstance(DefaultItemsFileValidation.class);
 
-    private static final ItemTypeClassValidation ITEM_TYPE_VALIDATION = new ItemTypeClassValidation();
-    private static final EnumTypeClassValidation ENUM_TYPE_VALIDATION = new EnumTypeClassValidation();
-    private static final TSRelationsValidation RELATIONS_VALIDATION = new DefaultTSRelationValidation();
+    private static final ItemsXmlValidator<EnumType> ENUMS_VALIDATOR = new DefaultEnumTypeClassValidation();
+    private static final ItemsXmlValidator<ItemType> ITEM_TYPES_VALIDATOR = new DefaultItemTypeClassValidation();
+    private static final ItemsXmlValidator<Relation> RELATIONS_VALIDATOR = new DefaultRelationValidation();
 
-    private Project project;
+    private final Project project;
 
     public DefaultItemsFileValidation(@NotNull final Project project) {
         this.project = project;
@@ -79,15 +84,32 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
         return false;
     }
 
+    @Override
+    public void showNotification() {
+        Notifications.create(
+                NotificationType.WARNING,
+                message("hybris.notification.ts.validation.title"),
+                message("hybris.notification.ts.validation.content")
+            )
+            .hideAfter(10)
+            .notify(project);
+    }
+
     private boolean isFileOutOfDateWithGeneratedClasses(@NotNull final VirtualFile file) {
         try {
+            final ProgressIndicator indicator = ProgressManager.getInstance().getProgressIndicator();
+
+            if (indicator != null) {
+                indicator.setText2(message("hybris.startupActivity.itemsXmlValidation.progress.subTitle.validating", file.getName()));
+            }
+
             final DomManager domManager = DomManager.getDomManager(this.project);
 
             final PsiManager psiManager = PsiManager.getInstance(this.project);
             final PsiFile psiFile = psiManager.findFile(file);
 
-            if (psiFile instanceof XmlFile) {
-                final DomFileElement<Items> fileElement = domManager.getFileElement((XmlFile) psiFile, Items.class);
+            if (psiFile instanceof final XmlFile xmlFile) {
+                final DomFileElement<Items> fileElement = domManager.getFileElement(xmlFile, Items.class);
                 if (null == fileElement) {
                     return true;
                 }
@@ -98,7 +120,7 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
                 );
 
                 final List<EnumType> enumTypes = itemsRootElement.getEnumTypes().getEnumTypes();
-                if (ENUM_TYPE_VALIDATION.areGeneratedClassesOutOfDate(enumTypes, inheritedEnumClasses)) {
+                if (ENUMS_VALIDATOR.validate(enumTypes, inheritedEnumClasses)) {
                     return true;
                 }
 
@@ -107,20 +129,20 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
                 );
 
                 final List<ItemType> filteredItemTypes = this.getItemTypesExcludeRelations(itemsRootElement);
-                if (ITEM_TYPE_VALIDATION.areGeneratedClassesOutOfDate(filteredItemTypes, inheritedItemClasses)) {
+                if (ITEM_TYPES_VALIDATOR.validate(filteredItemTypes, inheritedItemClasses)) {
                     return true;
                 }
 
                 final List<TypeGroup> typeGroups = itemsRootElement.getItemTypes().getTypeGroups();
                 for (TypeGroup typeGroup : typeGroups) {
                     final List<ItemType> groupedItemTypeList = typeGroup.getItemTypes();
-                    if (ITEM_TYPE_VALIDATION.areGeneratedClassesOutOfDate(groupedItemTypeList, inheritedItemClasses)) {
+                    if (ITEM_TYPES_VALIDATOR.validate(groupedItemTypeList, inheritedItemClasses)) {
                         return true;
                     }
                 }
 
                 final List<Relation> relations = itemsRootElement.getRelations().getRelations();
-                if (RELATIONS_VALIDATION.validateRelations(relations, inheritedItemClasses)) {
+                if (RELATIONS_VALIDATOR.validate(relations, inheritedItemClasses)) {
                     return true;
                 }
             }
