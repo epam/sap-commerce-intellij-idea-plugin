@@ -17,10 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.bean.BSUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelCollector
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -36,6 +37,8 @@ class BSMetaModelCollectorImpl(private val myProject: Project) : BSMetaModelColl
 
     override fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.bs.access.progress.subTitle.collectingDependencies")
 
         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
@@ -55,6 +58,8 @@ class BSMetaModelCollectorImpl(private val myProject: Project) : BSMetaModelColl
                 }
             }
         )
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.bs.access.progress.subTitle.collectedDependencies", files.size)
 
         return Collections.unmodifiableSet(files)
     }

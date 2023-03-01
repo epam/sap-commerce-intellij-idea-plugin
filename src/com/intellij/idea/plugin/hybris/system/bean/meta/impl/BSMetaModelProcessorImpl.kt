@@ -17,10 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.bean.BSUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
@@ -36,6 +38,8 @@ class BSMetaModelProcessorImpl(private val myProject: Project) : BSMetaModelProc
         val root = myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java)
             ?.rootElement
             ?: return null
+
+        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.processing", psiFile.name)
 
         return BSMetaModelBuilder(module, psiFile, custom)
             .withEnumTypes(root.enums)

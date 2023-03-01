@@ -17,12 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.BSGlobalMetaBeanImpl
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.BSGlobalMetaEnumImpl
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import java.util.*
@@ -30,6 +32,8 @@ import java.util.*
 class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
 
     override fun merge(localMetaModels: Collection<BSMetaModel>) = with(BSGlobalMetaModel()) {
+        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.merging")
+
         localMetaModels
             // ideally we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }
