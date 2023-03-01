@@ -23,9 +23,9 @@ import com.intellij.psi.PsiFile
 class CngMetaEditorDefinition(
     myPsiFile: PsiFile,
     myDom: EditorDefinition,
+    val id: String,
 ) : CngMeta<EditorDefinition>(myPsiFile, myDom) {
 
-    val id: String = dom.id.stringValue!!
     val name: String? = dom.name.stringValue
     val description: String? = dom.description.stringValue
 

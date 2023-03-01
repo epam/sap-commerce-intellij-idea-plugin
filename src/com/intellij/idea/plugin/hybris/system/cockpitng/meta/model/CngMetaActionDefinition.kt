@@ -23,9 +23,9 @@ import com.intellij.psi.PsiFile
 class CngMetaActionDefinition(
     myPsiFile: PsiFile,
     myDom: ActionDefinition,
+    val id: String,
 ) : CngMeta<ActionDefinition>(myPsiFile, myDom) {
 
-    val id: String = dom.id.stringValue!!
     val name: String? = dom.name.stringValue
     val description: String? = dom.description.stringValue
 

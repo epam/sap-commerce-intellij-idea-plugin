@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
@@ -24,8 +25,13 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinit
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
+import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
@@ -57,6 +63,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAccess {
 
     private val myMessageBus = myProject.messageBus
+    @Volatile
+    private var building: Boolean = false
 
     private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
         {
@@ -108,41 +116,30 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         return Pair(localConfigMetaModels, dependencies)
     }
 
-    override fun getMetaModel() = DumbService.getInstance(myProject).runReadActionInSmartMode(
-        Computable {
-            if (DumbService.isDumb(myProject)) throw ProcessCanceledException()
+    override fun getMetaModel(): CngGlobalMetaModel {
+        if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
-            if (myGlobalMetaModel.hasUpToDateValue() || lock.isWriteLocked || writeLock.isHeldByCurrentThread) {
-                return@Computable readMetaModelWithLock()
-            }
-            return@Computable writeMetaModelWithLock()
-        }
-    ) ?: throw ProcessCanceledException()
-
-    // parameter for Meta Model cached value is not required, we have to pass new cache holder only during write process
-    private fun readMetaModelWithLock(): CngGlobalMetaModel {
-        try {
-            readLock.lock()
-            if (lock.isWriteLocked && writeLock.isHeldByCurrentThread) {
-                // Same thread cannot be used to read and write TypeSystem Model, double check all getters
-                throw ProcessCanceledException()
-            }
+        if (myGlobalMetaModel.hasUpToDateValue()) {
             return myGlobalMetaModel.value
-        } finally {
-            readLock.unlock()
         }
-    }
 
-    private fun writeMetaModelWithLock(): CngGlobalMetaModel {
-        try {
-            writeLock.lock()
-            val globalMetaModel = myGlobalMetaModel.value
-            myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
+        val task = object : Task.Backgroundable(myProject, HybrisI18NBundleUtils.message("hybris.cng.access.progress.title.building")) {
+            override fun run(indicator: ProgressIndicator) {
+                DumbService.getInstance(project).runReadActionInSmartMode(
+                    Computable {
+                        if (DumbService.isDumb(project)) throw ProcessCanceledException()
 
-            return globalMetaModel
-        } finally {
-            writeLock.unlock()
+                        building = true
+                        val globalMetaModel = myGlobalMetaModel.value
+                        building = false
+                        myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
+                    }
+                )
+            }
         }
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+
+        throw ProcessCanceledException()
     }
 
     private fun <D : DomElement, T : CngMeta<D>> retrieveSingleMetaModelPerFile(
@@ -184,8 +181,5 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
             Key.create<CachedValue<CngMetaEditorDefinition>>("SINGLE_EDITOR_DEFINITION_CACHE")
         private val SINGLE_WIDGETS_MODEL_CACHE_KEY =
             Key.create<CachedValue<CngMetaWidgets>>("SINGLE_WIDGETS_CACHE")
-        private val lock = ReentrantReadWriteLock()
-        private val readLock = lock.readLock()
-        private val writeLock = lock.writeLock()
     }
 }

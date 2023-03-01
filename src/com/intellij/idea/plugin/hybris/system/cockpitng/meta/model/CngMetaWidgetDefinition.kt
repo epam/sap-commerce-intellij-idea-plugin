@@ -23,10 +23,10 @@ import com.intellij.psi.PsiFile
 class CngMetaWidgetDefinition(
     myPsiFile: PsiFile,
     myDom: WidgetDefinition,
+    val id: String,
     val settings: Map<String, CngMetaWidgetSetting>,
 ) : CngMeta<WidgetDefinition>(myPsiFile, myDom) {
 
-    val id: String = dom.id.stringValue!!
     val name: String? = dom.name.stringValue
     val description: String? = dom.description.stringValue
 

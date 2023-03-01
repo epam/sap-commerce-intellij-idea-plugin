@@ -17,8 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelCollector
-import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -36,6 +42,8 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
 
     override fun <T : DomElement> collectDependencies(clazz: Class<T>, shouldCollect: (DomFileElement<T>) -> Boolean): Set<PsiFile> {
         val files = HashSet<PsiFile>()
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.collectingDependencies", getDescriptor(clazz))
 
         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
@@ -56,6 +64,18 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
             }
         )
 
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.collectedDependencies", files.size, getDescriptor(clazz))
+
         return Collections.unmodifiableSet(files)
+    }
+
+    private fun <T : DomElement> getDescriptor(clazz: Class<T>): String {
+        if (Config::class.java == clazz) return "Configuration"
+        if (ActionDefinition::class.java == clazz) return "Configuration"
+        if (WidgetDefinition::class.java == clazz) return "Action Definition"
+        if (EditorDefinition::class.java == clazz) return "Widget Definition"
+        if (Widgets::class.java == clazz) return "Editor Definition"
+        if (Config::class.java == clazz) return "Widgets"
+        return "Other"
     }
 }

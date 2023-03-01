@@ -17,11 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.*
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
@@ -34,8 +37,11 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         psiFile.virtualFile ?: return null
         val dom = myDomManager.getFileElement(psiFile as XmlFile, Config::class.java)?.rootElement ?: return null
 
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.processing", psiFile.name)
+
         val contexts = dom.contexts
             .filter { it.component.stringValue != null }
+            .filter { it.component.stringValue!!.isNotBlank() }
             .map { CngContextMeta(psiFile, it, it.component.stringValue!!) }
         return CngConfigMeta(psiFile, dom, contexts)
     }
@@ -45,8 +51,11 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         val dom = myDomManager.getFileElement(psiFile as XmlFile, ActionDefinition::class.java)
             ?.rootElement
             ?: return null
+        val id = CngMetaModelNameProvider.extract(dom) ?: return null
 
-        return CngMetaActionDefinition(psiFile, dom)
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.processing", psiFile.name)
+
+        return CngMetaActionDefinition(psiFile, dom, id)
     }
 
     override fun processWidgetDefinition(psiFile: PsiFile): CngMetaWidgetDefinition? {
@@ -54,13 +63,16 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         val dom = myDomManager.getFileElement(psiFile as XmlFile, WidgetDefinition::class.java)
             ?.rootElement
             ?: return null
+        val id = CngMetaModelNameProvider.extract(dom) ?: return null
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.processing", psiFile.name)
 
         val settings = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetSetting>()
         dom.settings.settings
             .map { CngMetaWidgetSetting(psiFile, it) }
             .forEach { settings[it.id] = it }
 
-        return CngMetaWidgetDefinition(psiFile, dom, settings)
+        return CngMetaWidgetDefinition(psiFile, dom, id, settings)
     }
 
     override fun processEditorDefinition(psiFile: PsiFile): CngMetaEditorDefinition? {
@@ -68,8 +80,11 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         val dom = myDomManager.getFileElement(psiFile as XmlFile, EditorDefinition::class.java)
             ?.rootElement
             ?: return null
+        val id = CngMetaModelNameProvider.extract(dom) ?: return null
 
-        return CngMetaEditorDefinition(psiFile, dom)
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.processing", psiFile.name)
+
+        return CngMetaEditorDefinition(psiFile, dom, id)
     }
 
     override fun processWidgets(psiFile: PsiFile): CngMetaWidgets? {
@@ -77,6 +92,8 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
         val dom = myDomManager.getFileElement(psiFile as XmlFile, Widgets::class.java)
             ?.rootElement
             ?: return null
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.processing", psiFile.name)
 
         return CngMetaWidgets(
             psiFile,
@@ -93,6 +110,7 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
     ): List<CngMetaWidget> = widgets
         // if ID is null we may need to re-index the project, faced such issue due broken Stubs
         .filter { it.id.exists() }
+        .filter { it.id.stringValue != null && it.id.stringValue!!.isNotBlank() }
         .map {
             val subWidgets = if (it.widgets.isNotEmpty()) processWidgets(psiFile, it.widgets)
             else emptyList()
