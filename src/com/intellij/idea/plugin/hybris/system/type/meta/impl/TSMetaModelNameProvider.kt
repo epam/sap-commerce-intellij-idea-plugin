@@ -21,17 +21,17 @@ import com.intellij.idea.plugin.hybris.system.type.model.*
 
 object TSMetaModelNameProvider {
 
-    fun extract(dom: ItemType): String? = dom.code.stringValue
-    fun extract(dom: EnumType): String? = dom.code.stringValue
-    fun extract(dom: CollectionType): String? = dom.code.stringValue
-    fun extract(dom: Relation): String? = dom.code.stringValue
-    fun extract(dom: AtomicType): String? = dom.clazz.stringValue
-    fun extract(dom: MapType): String? = dom.code.stringValue
-    fun extract(dom: CustomProperty): String? = dom.name.stringValue
-    fun extract(dom: Deployment): String? = dom.table.stringValue
-    fun extract(dom: EnumValue): String? = dom.code.stringValue
-    fun extract(dom: Index): String? = dom.name.stringValue
-    fun extract(dom: Attribute): String? = dom.qualifier.stringValue
-    fun extract(dom: Persistence): String? = dom.type.stringValue
+    fun extract(dom: ItemType): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: EnumType): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: CollectionType): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: Relation): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: AtomicType): String? = dom.clazz.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: MapType): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: CustomProperty): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: Deployment): String? = dom.table.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: EnumValue): String? = dom.code.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: Index): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: Attribute): String? = dom.qualifier.stringValue?.takeIf { it.isNotBlank() }
+    fun extract(dom: Persistence): String? = dom.type.stringValue?.takeIf { it.isNotBlank() }
 
 }

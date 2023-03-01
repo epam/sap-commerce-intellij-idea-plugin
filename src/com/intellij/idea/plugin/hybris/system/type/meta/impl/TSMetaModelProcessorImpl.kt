@@ -17,11 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.TypeGroup
 import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
@@ -40,6 +42,8 @@ class TSMetaModelProcessorImpl(private val myProject: Project) : TSMetaModelProc
         rootWrapper ?: return null
 
         val items = rootWrapper.rootElement
+
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.ts.access.progress.subTitle.processing", psiFile.name)
 
         return TSMetaModelBuilder(module, psiFile, custom)
             .withItemTypes(items.itemTypes.itemTypes)

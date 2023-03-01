@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
@@ -34,15 +35,27 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
         }
 
         DumbService.getInstance(project).runReadActionInSmartMode {
-            TSMetaModelAccess.getInstance(project).getMetaModel()
+            try {
+                TSMetaModelAccess.getInstance(project).getMetaModel()
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            }
         }
 
         DumbService.getInstance(project).runReadActionInSmartMode {
-            BSMetaModelAccess.getInstance(project).getMetaModel()
+            try {
+                BSMetaModelAccess.getInstance(project).getMetaModel()
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            }
         }
 
         DumbService.getInstance(project).runReadActionInSmartMode {
-            CngMetaModelAccess.getInstance(project).getMetaModel()
+            try {
+                CngMetaModelAccess.getInstance(project).getMetaModel()
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            }
         }
     }
 }

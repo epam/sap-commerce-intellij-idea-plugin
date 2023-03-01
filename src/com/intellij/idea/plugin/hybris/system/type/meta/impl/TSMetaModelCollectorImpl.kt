@@ -17,10 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
-import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -36,6 +37,8 @@ class TSMetaModelCollectorImpl(private val myProject: Project) : TSMetaModelColl
 
     override fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
+
+        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.ts.access.progress.subTitle.collectingDependencies")
 
         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
@@ -55,6 +58,7 @@ class TSMetaModelCollectorImpl(private val myProject: Project) : TSMetaModelColl
                 }
             }
         )
+        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.ts.access.progress.subTitle.collectedDependencies", files.size)
 
         return Collections.unmodifiableSet(files)
     }

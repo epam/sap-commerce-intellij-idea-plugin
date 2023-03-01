@@ -103,6 +103,7 @@
                 <li><i>Feature:</i> CockpitNG: added <code>merge-by</code> dependant contribution for <code>parent</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/247" target="_blank" rel="nofollow">#247</a>)</li>
                 <li><i>Feature:</i> CockpitNG: added <code>merge-by</code> dependant complex contribution &amp; inspections for <code>parent</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/248" target="_blank" rel="nofollow">#248</a>)</li>
                 <li><i>Feature:</i> Updated custom icons for Business Process diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/246" target="_blank" rel="nofollow">#246</a>)</li>
+                <li><i>Feature:</i> Show progress during TS Global Meta Model creation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/253" target="_blank" rel="nofollow">#253</a>)</li>
                 <li><i>Bug Fix:</i> Fixed code completion for <code>requires-extension</code> within <code>extensioninfo</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/244" target="_blank" rel="nofollow">#244</a>)</li>
                 <li><i>Deprecation:</i> Decreased usage of the Deprecated API (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/251" target="_blank" rel="nofollow">#251</a>)</li>
             </ul>

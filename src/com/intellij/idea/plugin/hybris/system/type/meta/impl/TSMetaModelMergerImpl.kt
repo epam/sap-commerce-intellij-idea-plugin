@@ -17,18 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import java.util.*
 
 class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
     override fun merge(localMetaModels: Collection<TSMetaModel>) = with(TSGlobalMetaModel()) {
+        ProgressManager.getInstance().progressIndicator.text2 = message("hybris.ts.access.progress.subTitle.merging")
+
         localMetaModels
             // ideally we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }
