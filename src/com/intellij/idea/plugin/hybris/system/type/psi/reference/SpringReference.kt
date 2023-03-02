@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -36,7 +36,7 @@ class SpringReference(
     override fun getRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val module = ModuleUtil.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
+        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
 
         val springModels = SpringManager.getInstance(project).getAllModels(module)
         val pointer = findBean(springModels, name) ?: return ResolveResult.EMPTY_ARRAY

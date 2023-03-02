@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.utils.CommonPsiUtils
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -41,7 +40,7 @@ class PlainXmlReference(
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val psiSearchHelper = PsiSearchHelper.getInstance(project)
-        val module = ModuleUtil.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
+        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
         val searchText = value.stringValue?.trim() ?: return ResolveResult.EMPTY_ARRAY
         val foundEls = mutableListOf<PsiElement>()
 

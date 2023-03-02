@@ -18,47 +18,57 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.impl;
 
-import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class CaseInsensitive {
+public final class CaseInsensitive {
 
-    @NotNull
-    public static String eraseCase(final @NotNull String key) {
-        return key.toLowerCase();
+    private CaseInsensitive() {
     }
 
     public static class NoCaseMultiMap<V> {
 
-        private final MultiMap<String, V> myMultiMap = MultiMap.createLinked();
+        private final CaseInsensitiveConcurrentHashMap<String, Collection<V>> myMap = new CaseInsensitiveConcurrentHashMap<>();
 
         public void putValue(final @NotNull String key, final @NotNull V value) {
-            myMultiMap.putValue(eraseCase(key), value);
+            myMap
+                .computeIfAbsent(key, s -> new LinkedList<>())
+                .add(value);
+        }
+
+        public Set<Map.Entry<String, Collection<V>>> entrySet() {
+            return myMap.entrySet();
         }
 
         @NotNull
         public Collection<V> values() {
-            return myMultiMap.values();
+            return myMap.values().parallelStream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
         }
 
         public void putAllValues(@NotNull final NoCaseMultiMap<V> map) {
-            myMultiMap.putAllValues(map.myMultiMap);
+            map.entrySet().forEach(entry ->
+                myMap
+                    .computeIfAbsent(entry.getKey(), s -> new LinkedList<>())
+                    .addAll(entry.getValue())
+            );
         }
 
-        @NotNull
+        @Nullable
         public Collection<V> get(final @NotNull String key) {
-            return myMultiMap.get(eraseCase(key));
+            return myMap.get(key);
         }
 
         public void clear() {
-            myMultiMap.clear();
+            myMap.clear();
         }
 
     }
@@ -115,6 +125,4 @@ public class CaseInsensitive {
         }
     }
 
-
 }
-

@@ -48,7 +48,7 @@
                 <li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html">How to Configure Project Environment For Plugin Developers</a></li>
                 <li>We are working with <a href="https://help.github.com/articles/about-pull-requests/">Pull Requests</a>. You need to fork this repository, implement a feature in a separate branch, then send us a pull request.</li>
                 <li>Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name.</li>
-                <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>§
+                <li>For additional questions you can send an <a href="mailto:hybrisideaplugin@epam.com">email</a></li>
             </ul>
 
             <h3>Contributors and Developers</h3>
@@ -91,6 +91,10 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.2</h3>
+            <ul>
+                <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
+            </ul>
             <h3>2023.1.1</h3>
             <ul>
                 <li><i>Feature:</i> Added possibility to import CCv2 folders as modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/238" target="_blank" rel="nofollow">#238</a>)</li>

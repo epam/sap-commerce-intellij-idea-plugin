@@ -236,6 +236,7 @@ object HybrisConstants {
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
+    const val CLASS_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val SOURCE_ATTRIBUTE_NAME = "source"

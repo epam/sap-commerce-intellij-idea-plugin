@@ -76,7 +76,7 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
 
         val attributes = sortedMapOf(
             Deployment.TABLE to dom.code.stringValue,
-            Deployment.TYPE_CODE to TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString(),
+            Deployment.TYPE_CODE to TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString(),
         )
 
         holder.createProblem(

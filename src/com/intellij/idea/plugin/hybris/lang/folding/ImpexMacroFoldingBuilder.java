@@ -37,7 +37,7 @@ import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.psi.PsiElement;
@@ -227,7 +227,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
             final String propertyName = text.substring(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length());
-            final Module module = ModuleUtil.findModuleForPsiElement(macroUsage);
+            final Module module = ModuleUtilCore.findModuleForPsiElement(macroUsage);
             if (module == null) {
                 return;
             }

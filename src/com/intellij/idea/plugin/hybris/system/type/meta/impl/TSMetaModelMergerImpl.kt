@@ -27,7 +27,9 @@ import com.intellij.util.xml.DomElement
 
 class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
-    override fun merge(localMetaModels: Collection<TSMetaModel>) = with(TSGlobalMetaModel()) {
+    override fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
+        globalMetaModel.clear()
+
         ProgressManager.getInstance().progressIndicator.text2 = message("hybris.ts.access.progress.subTitle.merging")
 
         localMetaModels
@@ -54,8 +56,6 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allRelationEnds }
             .forEach { it.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it), allTypes) }
-
-        this
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -54,7 +54,7 @@ class TSDeploymentTypeCodeMustBeGreaterThanTenThousand : AbstractCustomOnlyTSIns
                 displayName,
                 XmlUpdateAttributeQuickFix(
                     Deployment.TYPE_CODE,
-                    TSMetaModelAccess.getInstance(project).getMetaModel().getNextAvailableTypeCode().toString()
+                    TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString()
                 )
             )
         }

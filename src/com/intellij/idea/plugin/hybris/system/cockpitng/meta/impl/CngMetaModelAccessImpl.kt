@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinit
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
-import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -45,7 +44,7 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomFileElement
 import java.util.*
-import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.concurrent.Semaphore
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -62,11 +61,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
  */
 class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAccess {
 
+    private val myGlobalMetaModel = CngGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
     @Volatile
     private var building: Boolean = false
+    private val semaphore = Semaphore(1)
 
-    private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
+    private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val processor = CngMetaModelProcessor.getInstance(myProject)
             val (configs, configDependencies) = collectLocalMetaModels(SINGLE_CONFIG_CACHE_KEY, Config::class.java,
@@ -89,13 +90,13 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
                 { file -> processor.processWidgets(file) },
                 { _ -> true }
             )
-            val globalMetaModel = CngMetaModelMerger.getInstance(myProject).merge(
-                configs, actions, widgetDefinitions, editors, widgets
+            CngMetaModelMerger.getInstance(myProject).merge(
+                myGlobalMetaModel, configs, actions, widgetDefinitions, editors, widgets
             )
 
             val dependencies = configDependencies + actionDependencies + widgetDependencies + editorDependencies + widgetsDependencies
 
-            CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+            CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
 
@@ -119,20 +120,26 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     override fun getMetaModel(): CngGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
-        if (myGlobalMetaModel.hasUpToDateValue()) {
-            return myGlobalMetaModel.value
+        if (myGlobalMetaModelCache.hasUpToDateValue()) {
+            return myGlobalMetaModelCache.value
         }
 
         val task = object : Task.Backgroundable(myProject, HybrisI18NBundleUtils.message("hybris.cng.access.progress.title.building")) {
             override fun run(indicator: ProgressIndicator) {
                 DumbService.getInstance(project).runReadActionInSmartMode(
                     Computable {
-                        if (DumbService.isDumb(project)) throw ProcessCanceledException()
+                        val lock = semaphore.tryAcquire()
 
-                        building = true
-                        val globalMetaModel = myGlobalMetaModel.value
-                        building = false
-                        myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
+                        if (lock) {
+                            try {
+                                building = true
+                                val globalMetaModel = myGlobalMetaModelCache.value
+                                building = false
+                                myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
+                            } finally {
+                                semaphore.release();
+                            }
+                        }
                     }
                 )
             }

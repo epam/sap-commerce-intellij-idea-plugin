@@ -28,31 +28,26 @@ import com.intellij.psi.PsiField
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
-import java.util.*
 
-class TSInterceptorModelLineMarkerProvider : AbstractItemLineMarkerProvider<PsiField>() {
+class TSInterceptorModelLineMarkerProvider : AbstractTSItemLineMarkerProvider<PsiField>() {
 
-    override fun canProcess(psi: PsiElement?) = psi is PsiField
+    override fun canProcess(psi: PsiElement) = psi is PsiField
             && psi.name == HybrisConstants.TYPECODE_FIELD_NAME
 
     override fun getEmptyPopupText() = message("hybris.editor.gutter.ts.interceptor.no.matches")
     override fun getPopupTitle() = message("hybris.editor.gutter.ts.interceptor.choose.title")
     override fun getTooltipText() = message("hybris.editor.gutter.ts.interceptor.tooltip.text")
 
-    override fun collectDeclarations(psi: PsiField?): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        val psiClass = psi?.parentOfType<PsiClass>() ?: return Optional.empty()
-        if (!ModelsUtils.isModelFile(psiClass)) return Optional.empty()
+    override fun collectDeclarations(psi: PsiField): RelatedItemLineMarkerInfo<PsiElement>? {
+        val psiClass = psi.parentOfType<PsiClass>() ?: return null
+        if (!ModelsUtils.isModelFile(psiClass)) return null
         val project = psi.project
 
-        return psi.childrenOfType<PsiLiteralExpression>()
-            .mapNotNull {
-                val typeCode = it.value.toString()
-                TSInterceptorSpringBuilderFactory.createGutterBuilder(project, typeCode)
-                    ?.createSpringGroupLineMarkerInfo(psi.nameIdentifier)
-            }
-            .map { Optional.of(it) }
-            .firstOrNull()
-            ?: Optional.empty()
+        return psi.childrenOfType<PsiLiteralExpression>().firstNotNullOfOrNull {
+            val typeCode = it.value.toString()
+            TSInterceptorSpringBuilderFactory.createGutterBuilder(project, typeCode)
+                ?.createSpringGroupLineMarkerInfo(psi.nameIdentifier)
+        }
     }
 
 }

@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
 
@@ -39,7 +39,7 @@ class BSEnumValueLineMarkerProvider : RelatedItemLineMarkerProvider() {
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
         if (element !is PsiEnumConstant || element.containingClass == null) return
-        val module = ModuleUtil.findModuleForPsiElement(element) ?: return
+        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return
         val psiClass = element.containingClass!!
         if (getDescriptorType(module) != HybrisModuleDescriptorType.PLATFORM) return
         if (!BeansUtils.isEnumFile(psiClass)) return

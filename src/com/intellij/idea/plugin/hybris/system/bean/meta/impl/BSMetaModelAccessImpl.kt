@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.bean.meta.*
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
@@ -26,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -45,15 +43,17 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
 import java.util.*
-import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.concurrent.Semaphore
 
 class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess {
 
+    private val myGlobalMetaModel = BSGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
     @Volatile
     private var building: Boolean = false
+    private val semaphore = Semaphore(1)
 
-    private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
+    private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = BSMetaModelCollector.getInstance(myProject).collectDependencies()
                 .filter { obj: PsiFile? -> Objects.nonNull(obj) }
@@ -64,29 +64,35 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
             val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
-            val globalMetaModel = BSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
+            BSMetaModelMerger.getInstance(myProject).merge(myGlobalMetaModel, localMetaModels)
 
-            CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+            CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
 
     override fun getMetaModel(): BSGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
-        if (myGlobalMetaModel.hasUpToDateValue()) {
-            return myGlobalMetaModel.value
+        if (myGlobalMetaModelCache.hasUpToDateValue()) {
+            return myGlobalMetaModelCache.value
         }
 
         val task = object : Task.Backgroundable(myProject, message("hybris.bs.access.progress.title.building")) {
             override fun run(indicator: ProgressIndicator) {
                 DumbService.getInstance(project).runReadActionInSmartMode(
                     Computable {
-                        if (DumbService.isDumb(project)) throw ProcessCanceledException()
+                        val lock = semaphore.tryAcquire()
 
-                        building = true
-                        val globalMetaModel = myGlobalMetaModel.value
-                        building = false
-                        myMessageBus.syncPublisher(topic).beanSystemChanged(globalMetaModel)
+                        if (lock) {
+                            try {
+                                building = true
+                                val globalMetaModel = myGlobalMetaModelCache.value
+                                building = false
+                                myMessageBus.syncPublisher(topic).beanSystemChanged(globalMetaModel)
+                            } finally {
+                                semaphore.release();
+                            }
+                        }
                     }
                 )
             }

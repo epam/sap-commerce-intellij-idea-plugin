@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
@@ -39,7 +39,7 @@ class TSAttributeHandlerGutterAnnotator : Annotator {
 
         val attribute = psiElement as XmlAttributeValue
         val project = psiElement.project
-        val module = ModuleUtil.findModuleForPsiElement(psiElement) ?: return
+        val module = ModuleUtilCore.findModuleForPsiElement(psiElement) ?: return
 
         val springBeans = SpringManager.getInstance(project).getAllModels(module)
             .mapNotNull { SpringModelSearchers.findBean(it, attribute.value) }

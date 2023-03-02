@@ -27,11 +27,12 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.BSGlobalMetaE
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import java.util.*
 
 class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
 
-    override fun merge(localMetaModels: Collection<BSMetaModel>) = with(BSGlobalMetaModel()) {
+    override fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
+        globalMetaModel.clear()
+
         ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.merging")
 
         localMetaModels
@@ -45,7 +46,7 @@ class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
         getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
         beans.keys.removeAll(wsBeans.keys)
 
-        this
+        Unit
     }
 
     @Suppress("UNCHECKED_CAST")

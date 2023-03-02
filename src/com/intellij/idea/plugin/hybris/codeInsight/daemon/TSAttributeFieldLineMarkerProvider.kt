@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
@@ -28,33 +28,28 @@ import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.util.childrenOfType
-import java.util.*
 
 class TSAttributeFieldLineMarkerProvider : AbstractTSAttributeLineMarkerProvider<PsiField>() {
 
     override fun canProcess(psi: PsiElement) = psi is PsiField
-            && psi.type is PsiClassReferenceType
-            && (psi.type as PsiClassReferenceType).name == String::class.java.simpleName
+        && psi.name != HybrisConstants.TYPECODE_FIELD_NAME
+        && psi.type is PsiClassReferenceType
+        && (psi.type as PsiClassReferenceType).name == String::class.java.simpleName
 
     override fun collect(meta: TSGlobalMetaItem, psi: PsiField) = psi.childrenOfType<PsiLiteralExpression>()
-        .map {
+        .firstNotNullOfOrNull {
             val name = it.value.toString()
             val nameIdentifier = psi.nameIdentifier
+
             getPsiElementRelatedItemLineMarkerInfo(meta, name, nameIdentifier)
-                .or { getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier) }
+                ?: getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier)
         }
-        .firstOrNull()
-        ?: Optional.empty()
 
     private fun getPsiElementRelatedRelationLineMarkerInfo(
         name: String,
         nameIdentifier: PsiIdentifier
-    ): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        val dom = TSMetaModelAccess.getInstance(nameIdentifier.project).findMetaRelationByName(name)
-            ?.retrieveDom()
-            ?.xmlElement
-            ?: return Optional.empty<RelatedItemLineMarkerInfo<PsiElement>>()
-
-        return Optional.of(createTargetsWithGutterIcon(nameIdentifier, listOf(dom), HybrisIcons.TS_RELATION))
-    }
+    ) = TSMetaModelAccess.getInstance(nameIdentifier.project).findMetaRelationByName(name)
+        ?.retrieveDom()
+        ?.xmlElement
+        ?.let { createTargetsWithGutterIcon(nameIdentifier, listOf(it), HybrisIcons.TS_RELATION) }
 }

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.spring.SpringManager
@@ -35,7 +35,7 @@ class SpringReference(element: PsiElement) : PsiReferenceBase<PsiElement>(elemen
         val project = myElement.project
         val name = myElement.text.replace("[\"\']".toRegex(), StringUtils.EMPTY)
 
-        val module = ModuleUtil.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
+        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
 
         return SpringManager.getInstance(project).getAllModels(module)
             .mapNotNull { SpringModelSearchers.findBean(it, name) }

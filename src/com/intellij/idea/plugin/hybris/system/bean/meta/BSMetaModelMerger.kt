@@ -25,5 +25,5 @@ interface BSMetaModelMerger {
         fun getInstance(project: Project): BSMetaModelMerger = project.getService(BSMetaModelMerger::class.java)
     }
 
-    fun merge(localMetaModels: Collection<BSMetaModel>): BSGlobalMetaModel
+    fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>)
 }

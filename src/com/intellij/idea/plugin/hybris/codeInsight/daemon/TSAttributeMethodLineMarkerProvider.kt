@@ -18,24 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
-import java.util.*
 
 class TSAttributeMethodLineMarkerProvider : AbstractTSAttributeLineMarkerProvider<PsiMethod>() {
 
     override fun canProcess(psi: PsiElement) = psi is PsiMethod
 
-    override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod): Optional<RelatedItemLineMarkerInfo<PsiElement>> {
-        val annotation = psi.getAnnotation("de.hybris.bootstrap.annotations.Accessor")
-            ?: return Optional.empty()
-
-        return Arrays.stream(annotation.parameterList.attributes)
-            .filter { it.name == Attribute.QUALIFIER }
-            .findFirst()
-            .flatMap { getPsiElementRelatedItemLineMarkerInfo(meta, it.literalValue, it.nameIdentifier) }
-    }
+    override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod) = psi.getAnnotation(HybrisConstants.CLASS_ANNOTATION_ACCESSOR)
+        ?.parameterList
+        ?.attributes
+        ?.filter { it.literalValue != null && it.nameIdentifier != null }
+        ?.firstOrNull { it.name == Attribute.QUALIFIER }
+        ?.let { getPsiElementRelatedItemLineMarkerInfo(meta, it.literalValue!!, it.nameIdentifier!!) }
 }

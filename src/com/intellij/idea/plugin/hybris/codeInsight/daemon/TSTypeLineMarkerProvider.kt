@@ -15,68 +15,44 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-package com.intellij.idea.plugin.hybris.codeInsight.daemon;
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
+import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiIdentifier
+import javax.swing.Icon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.xml.DomElement;
+class TSTypeLineMarkerProvider : AbstractTSItemLineMarkerProvider<PsiClass>() {
 
-import java.util.Optional;
-import java.util.stream.Collectors;
+    override fun canProcess(psi: PsiElement) = psi is PsiClass
+    override fun getTooltipText() = HybrisI18NBundleUtils.message("hybris.editor.gutter.item.class.tooltip.navigate.declaration")
+    override fun getPopupTitle() = HybrisI18NBundleUtils.message("hybris.editor.gutter.bean.type.navigate.choose.class.title")
+    override fun getEmptyPopupText() = HybrisI18NBundleUtils.message("hybris.editor.gutter.navigate.no.matching.beans")
 
-/**
- * Class for show gutter icon for navigation between *-item.xml and generated classes.
- *
- * @author Nosov Aleksandr
- */
-public class TSTypeLineMarkerProvider extends AbstractItemLineMarkerProvider<PsiClass> {
-
-    @Override
-    protected boolean canProcess(final PsiElement psi) {
-        return psi instanceof PsiClass;
-    }
-
-    @Override
-    protected Optional<RelatedItemLineMarkerInfo<PsiElement>> collectDeclarations(
-        final PsiClass psi
-    ) {
-        final var name = cleanSearchName(psi.getName());
-        final var psiNameIdentifier = psi.getNameIdentifier();
+    override fun collectDeclarations(
+        psi: PsiClass
+    ): RelatedItemLineMarkerInfo<PsiElement>? {
+        val name = cleanSearchName(psi.name)
+        val psiNameIdentifier = psi.nameIdentifier
 
         if (ModelsUtils.isModelFile(psi)) {
-            return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaItemByName(name))
-                           .map(meta -> meta.retrieveAllDoms().stream()
-                                            .map(DomElement::getXmlElement)
-                                            .collect(Collectors.toList()))
-                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TS_ITEM));
+            return collectItemTypes(TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(name), psiNameIdentifier, HybrisIcons.TS_ITEM)
         } else if (ModelsUtils.isEnumFile(psi)) {
-            return Optional.ofNullable(TSMetaModelAccess.Companion.getInstance(psi.getProject()).findMetaEnumByName(name))
-                           .map(meta -> meta.retrieveAllDoms().stream()
-                                            .map(DomElement::getXmlElement)
-                                            .collect(Collectors.toList()))
-                           .map(elements -> createTargetsWithGutterIcon(psiNameIdentifier, elements, HybrisIcons.TS_ENUM));
+            return collectItemTypes(TSMetaModelAccess.getInstance(psi.project).findMetaEnumByName(name), psiNameIdentifier, HybrisIcons.TS_ENUM)
         }
-        return Optional.empty();
+        return null
     }
 
-    @Override
-    protected String getTooltipText() {
-        return HybrisI18NBundleUtils.message("hybris.editor.gutter.item.class.tooltip.navigate.declaration");
-    }
+    private fun collectItemTypes(meta: TSGlobalMetaClassifier<*>?, psiNameIdentifier: PsiIdentifier?, icon: Icon) = meta
+        ?.retrieveAllDoms()
+        ?.mapNotNull { it.xmlElement }
+        ?.toList()
+        ?.let { createTargetsWithGutterIcon(psiNameIdentifier, it, icon) }
 
-    @Override
-    protected String getPopupTitle() {
-        return HybrisI18NBundleUtils.message("hybris.editor.gutter.bean.type.navigate.choose.class.title");
-    }
-
-    @Override
-    protected String getEmptyPopupText() {
-        return HybrisI18NBundleUtils.message("hybris.editor.gutter.navigate.no.matching.beans");
-    }
 }

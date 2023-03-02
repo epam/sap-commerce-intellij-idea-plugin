@@ -22,16 +22,21 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class BSGlobalMetaModel : Disposable {
+class BSGlobalMetaModel : ModificationTracker, Disposable {
 
+    private var modificationTracker = Long.MIN_VALUE
     private val myMetaCache: MutableMap<BSMetaType, Map<String, BSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
 
-    override fun dispose() {
-        myMetaCache.clear()
+    fun clear() {
+        cleanup()
+
+        if (modificationTracker == Long.MAX_VALUE) modificationTracker = 0L
+        modificationTracker++
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -41,5 +46,12 @@ class BSGlobalMetaModel : Disposable {
     fun getMetaEnum(name: String?) = getMetaType<BSGlobalMetaEnum>(BSMetaType.META_ENUM)[name]
 
     fun getMetaTypes() = myMetaCache;
+
+    override fun getModificationCount() = modificationTracker
+    override fun dispose() = cleanup()
+
+    private fun cleanup() {
+        myMetaCache.clear()
+    }
 
 }

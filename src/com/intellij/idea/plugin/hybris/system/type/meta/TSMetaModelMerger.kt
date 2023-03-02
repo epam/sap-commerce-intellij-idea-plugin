@@ -25,5 +25,5 @@ interface TSMetaModelMerger {
         fun getInstance(project: Project): TSMetaModelMerger = project.getService(TSMetaModelMerger::class.java)
     }
 
-    fun merge(localMetaModels: Collection<TSMetaModel>): TSGlobalMetaModel
+    fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>)
 }

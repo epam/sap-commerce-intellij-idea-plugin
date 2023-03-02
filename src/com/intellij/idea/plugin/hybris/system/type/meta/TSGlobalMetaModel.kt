@@ -17,39 +17,32 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class TSGlobalMetaModel : Disposable {
+class TSGlobalMetaModel : ModificationTracker, Disposable {
 
+    private var modificationTracker = Long.MIN_VALUE
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
 
-    override fun dispose() {
-        myMetaCache.clear()
-        myReferencesBySourceTypeName.clear()
-        myDeploymentTables.clear()
+    fun clear() {
+        cleanup()
+
+        if (modificationTracker == Long.MAX_VALUE) modificationTracker = 0L
+        modificationTracker++
     }
 
-    fun getDeploymentForTable(table: String?) : TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
-    fun getDeploymentForTypeCode(typeCode: Int?) : TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
-    fun getDeploymentForTypeCode(typeCode: String?) : TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
-    fun getNextAvailableTypeCode(): Int = myDeploymentTypeCodes.keys
-        .asSequence()
-        .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
-        .maxOf { it } + 1
+    fun getDeploymentForTable(table: String?): TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
+    fun getDeploymentForTypeCode(typeCode: Int?): TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
+    fun getDeploymentForTypeCode(typeCode: String?): TSMetaDeployment? = getDeploymentForTypeCode(typeCode?.toIntOrNull())
 
     @Suppress("UNCHECKED_CAST")
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: TSMetaType): ConcurrentMap<String, T> =
@@ -67,6 +60,7 @@ class TSGlobalMetaModel : Disposable {
     fun getRelations(name: String?): Collection<TSMetaRelation.TSMetaRelationElement>? = name?.let { getAllRelations()[it] }
 
     fun getAllRelations() = myReferencesBySourceTypeName;
+    fun getDeploymentTypeCodes() = myDeploymentTypeCodes
 
     fun addDeployment(deployment: TSMetaDeployment) {
         myDeploymentTables[deployment.table] = deployment
@@ -76,4 +70,14 @@ class TSGlobalMetaModel : Disposable {
         }
     }
 
+    override fun getModificationCount() = modificationTracker
+    override fun dispose() = cleanup()
+
+    @Synchronized
+    private fun cleanup() {
+        myMetaCache.clear()
+        myReferencesBySourceTypeName.clear()
+        myDeploymentTables.clear()
+        myDeploymentTypeCodes.clear()
+    }
 }

@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelMerger
@@ -28,12 +27,15 @@ import com.intellij.openapi.project.Project
 class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
 
     override fun merge(
+        globalMetaModel: CngGlobalMetaModel,
         configs: Collection<CngConfigMeta>,
         actions: Collection<CngMetaActionDefinition>,
         widgetDefinitions: Collection<CngMetaWidgetDefinition>,
         editors: Collection<CngMetaEditorDefinition>,
         widgets: Collection<CngMetaWidgets>
-    ) = with(CngGlobalMetaModel()) {
+    ) = with(globalMetaModel) {
+        globalMetaModel.clear()
+
         ProgressManager.getInstance().progressIndicator.text2 = message("hybris.cng.access.progress.subTitle.merging")
 
         configs
@@ -46,7 +48,6 @@ class CngMetaModelMergerImpl(val myProject: Project) : CngMetaModelMerger {
             .forEach { merge(this, it) }
         widgets
             .forEach { merge(this, it) }
-        this
     }
 
     private fun merge(globalMetaModel: CngGlobalMetaModel, localMeta: CngConfigMeta) {

@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.*
@@ -41,6 +42,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
+import java.util.concurrent.Semaphore
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -57,11 +59,13 @@ import java.util.*
  */
 class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess {
 
+    private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
     @Volatile
     private var building: Boolean = false
+    private val semaphore = Semaphore(1)
 
-    private val myGlobalMetaModel = CachedValuesManager.getManager(myProject).createCachedValue(
+    private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = TSMetaModelCollector.getInstance(myProject).collectDependencies()
                 .filter { obj: PsiFile? -> Objects.nonNull(obj) }
@@ -72,17 +76,18 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
             val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
-            val globalMetaModel = TSMetaModelMerger.getInstance(myProject).merge(localMetaModels)
 
-            CachedValueProvider.Result.create(globalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+            TSMetaModelMerger.getInstance(myProject).merge(myGlobalMetaModel, localMetaModels)
+
+            CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
 
     override fun getMetaModel(): TSGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
-        if (myGlobalMetaModel.hasUpToDateValue()) {
-            return myGlobalMetaModel.value
+        if (myGlobalMetaModelCache.hasUpToDateValue()) {
+            return myGlobalMetaModelCache.value
         }
 
         val task = object : Task.Backgroundable(myProject, message("hybris.ts.access.progress.title.building")) {
@@ -90,11 +95,18 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
                 DumbService.getInstance(project).runReadActionInSmartMode(
                         Computable {
                             if (DumbService.isDumb(project)) throw ProcessCanceledException()
+                            val lock = semaphore.tryAcquire()
 
-                            building = true
-                            val globalMetaModel = myGlobalMetaModel.value
-                            building = false
-                            myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
+                            if (lock) {
+                                try {
+                                    building = true
+                                    val globalMetaModel = myGlobalMetaModelCache.value
+                                    building = false
+                                    myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
+                                } finally {
+                                    semaphore.release();
+                                }
+                            }
                         }
                 )
             }
@@ -129,6 +141,16 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }
         return result
     }
+
+    override fun getNextAvailableTypeCode(): Int = getMetaModel().getDeploymentTypeCodes().keys
+        .asSequence()
+        .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
+        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
+        .maxOf { it } + 1
 
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]

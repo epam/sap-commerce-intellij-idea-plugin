@@ -22,22 +22,20 @@ import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.PlainXmlReference
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
-import com.intellij.psi.*
+import com.intellij.psi.PsiDocCommentOwner
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.ResolvingHint
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 
 class AttributeHandlerReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
-    override fun createReferences(value: GenericDomValue<String>, element: PsiElement, context: ConvertContext): Array<PsiReference>
-            = if (isPluginActive(SPRING_PLUGIN_ID)) createSpringReferences(element, value) else createPlainXMLReference(element, value)
-
-    private fun createPlainXMLReference(element: PsiElement, value: GenericDomValue<String>): Array<PsiReference> = arrayOf(PlainXmlReference(element, value))
-
-    private fun createSpringReferences(element: PsiElement, value: GenericDomValue<String>): Array<PsiReference> {
-        val name = value.stringValue!!.trim()
-
-        return arrayOf(SpringReference(element, name))
+    override fun createReferences(value: GenericDomValue<String>, element: PsiElement, context: ConvertContext): Array<PsiReference> = if (isPluginActive(SPRING_PLUGIN_ID)) {
+        arrayOf(SpringReference(element, value.stringValue!!.trim()))
+    } else {
+        arrayOf(PlainXmlReference(element, value))
     }
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
