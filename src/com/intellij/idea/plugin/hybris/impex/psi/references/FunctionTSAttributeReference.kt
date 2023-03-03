@@ -28,65 +28,73 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.Attribut
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlTag
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
 
-        var result = element.getUserData(ImpexParameterMixin.CACHE_KEY)
-
-        if (result != null) return PsiUtils.getValidResults(result)
-
-        val metaService = TSMetaModelAccess.getInstance(project)
-        val featureName = element.text.trim()
-        val typeName = findItemTypeReference()
-        val metaItem = metaService.findMetaItemByName(typeName)
-
-        if (metaItem == null) {
-            result = metaService.findMetaEnumByName(typeName)
-                ?.let { arrayOf(EnumResolveResult(it)) }
-                ?: ResolveResult.EMPTY_ARRAY
-        } else {
-            val attributes = TSMetaItemService.getInstance(project)
-                .findAttributesByName(metaItem, featureName, true)
-                .map { AttributeResolveResult(it) }
-
-            val relations = TSMetaItemService.getInstance(project)
-                .findRelationEndsByQualifier(metaItem, featureName, true)
-                .map { RelationEndResolveResult(it) }
-
-            result = (attributes + relations).toTypedArray()
-        }
-
-        element.putUserData(ImpexParameterMixin.CACHE_KEY, result)
-        return PsiUtils.getValidResults(result!!)
+        return CachedValuesManager.getManager(project)
+            .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+            .let { PsiUtils.getValidResults(it) }
     }
 
-    private fun findItemTypeReference(): String {
-        val parent = element.parent.parent
-        val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java)
-        if (parameterName != null) {
-            val references = parameterName.references
-            if (references.isNotEmpty()) {
-                val reference = references.first().resolve()
-                return obtainTypeName(reference)
+    companion object {
+        @JvmStatic
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FunctionTSAttributeReference> { ref ->
+            val metaService = TSMetaModelAccess.getInstance(ref.project)
+            val featureName = ref.element.text.trim()
+            val typeName = findItemTypeReference(ref.element)
+            val metaItem = metaService.findMetaItemByName(typeName)
+            val result: Array<ResolveResult> = if (metaItem == null) {
+                metaService.findMetaEnumByName(typeName)
+                    ?.let { arrayOf(EnumResolveResult(it)) }
+                    ?: ResolveResult.EMPTY_ARRAY
+            } else {
+                val itemService = TSMetaItemService.getInstance(ref.project)
+                val attributes = itemService
+                    .findAttributesByName(metaItem, featureName, true)
+                    .map { AttributeResolveResult(it) }
+
+                val relations = itemService
+                    .findRelationEndsByQualifier(metaItem, featureName, true)
+                    .map { RelationEndResolveResult(it) }
+
+                (attributes + relations).toTypedArray()
             }
-        }
-        return ""
-    }
 
-    private fun obtainTypeName(reference: PsiElement?): String {
-        val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
-        return if (typeTag != null) (typeTag as XmlTag).attributes.first { it.name == "type" }.value!! else ""
+            // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
+            CachedValueProvider.Result.create(
+                result,
+                metaService.getMetaModel()
+            )
+        }
+
+        private fun findItemTypeReference(element: PsiElement): String {
+            val parent = element.parent.parent
+            val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java)
+            if (parameterName != null) {
+                val references = parameterName.references
+                if (references.isNotEmpty()) {
+                    val reference = references.first().resolve()
+                    return obtainTypeName(reference)
+                }
+            }
+            return ""
+        }
+
+        private fun obtainTypeName(reference: PsiElement?): String {
+            val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
+            return if (typeTag != null) (typeTag as XmlTag).attributes.first { it.name == "type" }.value!! else ""
+        }
     }
 
 }

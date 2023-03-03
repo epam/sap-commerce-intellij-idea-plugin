@@ -22,16 +22,19 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
+import com.intellij.psi.util.*
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/8b59d395866910149db8889c5087a5ef.html?locale=en-US&q=ExtendedMultiReference
@@ -55,31 +58,43 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
             else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
     }
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val lookingForName = value
-
-        return metaModelAccess.findMetaItemByName(lookingForName)
-            ?.let { PsiUtils.getValidResults(resolve(it)) }
-            ?: metaModelAccess.findMetaEnumByName(lookingForName)
-                ?.let { PsiUtils.getValidResults(resolve(it)) }
-            ?: metaModelAccess.findMetaRelationByName(lookingForName)
-                ?.let { PsiUtils.getValidResults(resolve(it)) }
-            ?: emptyArray()
-    }
-
-    private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.declarations
-        .map { ItemResolveResult(it) }
-        .toTypedArray()
-
-    private fun resolve(meta: TSGlobalMetaEnum): Array<ResolveResult> = meta.declarations
-        .map { EnumResolveResult(it) }
-        .toTypedArray()
-
-    private fun resolve(meta: TSGlobalMetaRelation): Array<ResolveResult> = meta.declarations
-        .map { RelationResolveResult(it) }
-        .toTypedArray()
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .let { PsiUtils.getValidResults(it) }
 
     companion object {
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngTSItemReference> { ref ->
+            val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
+
+            val name = ref.value
+            val result = metaModelAccess.findMetaItemByName(name)
+                ?.let { resolve(it) }
+                ?: metaModelAccess.findMetaEnumByName(name)
+                    ?.let { resolve(it) }
+                ?: metaModelAccess.findMetaRelationByName(name)
+                    ?.let { resolve(it) }
+                ?: emptyArray()
+
+            CachedValueProvider.Result.create(
+                result,
+                metaModelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
+
+        private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.declarations
+            .map { ItemResolveResult(it) }
+            .toTypedArray()
+
+        private fun resolve(meta: TSGlobalMetaEnum): Array<ResolveResult> = meta.declarations
+            .map { EnumResolveResult(it) }
+            .toTypedArray()
+
+        private fun resolve(meta: TSGlobalMetaRelation): Array<ResolveResult> = meta.declarations
+            .map { RelationResolveResult(it) }
+            .toTypedArray()
+
         private val regexes = arrayOf(
             "^Localized\\((.*)\\)\$".toRegex(),
             "^LocalizedSimple\\((.*)\\)\$".toRegex(),

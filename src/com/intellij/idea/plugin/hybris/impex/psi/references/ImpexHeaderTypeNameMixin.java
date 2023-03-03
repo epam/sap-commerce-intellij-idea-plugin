@@ -23,19 +23,20 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.Serial;
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
  */
 public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement implements ImpexHeaderTypeName {
 
-    public static final Key<ResolveResult[]> CACHE_KEY = Key.create("TYPE_RESOLVED_RESULTS");
-    private TSItemReference myReference;
+    @Serial
+    private static final long serialVersionUID = -4201751443049498642L;
+    private ImpexTSItemReference myReference;
 
     public ImpexHeaderTypeNameMixin(@NotNull final ASTNode astNode) {
         super(astNode);
@@ -43,13 +44,13 @@ public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement impl
 
     @Override
     public void subtreeChanged() {
-        putUserData(CACHE_KEY, null);
+        putUserData(ImpexTSItemReference.getCACHE_KEY(), null);
 
         final var header = PsiTreeUtil.getParentOfType(this, ImpexHeaderLine.class);
         if (header != null) {
             header.getFullHeaderParameterList().stream()
                   .map(ImpexFullHeaderParameter::getAnyHeaderParameterName)
-                  .forEach(it -> it.putUserData(ImpexAnyHeaderParameterNameMixin.CACHE_KEY, null));
+                  .forEach(it -> it.putUserData(ImpexTSAttributeReference.getCACHE_KEY(), null));
         }
     }
 
@@ -57,7 +58,7 @@ public abstract class ImpexHeaderTypeNameMixin extends ASTWrapperPsiElement impl
     @Override
     public final PsiReference[] getReferences() {
         if (PsiUtils.shouldCreateNewReference(myReference, getText())) {
-            myReference = new TSItemReference(this);
+            myReference = new ImpexTSItemReference(this);
         }
         return new PsiReference[]{myReference};
     }

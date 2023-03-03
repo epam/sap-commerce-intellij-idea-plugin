@@ -31,7 +31,7 @@ import com.intellij.openapi.util.ModificationTracker
  */
 class CngGlobalMetaModel : ModificationTracker, Disposable {
 
-    private var modificationTracker = Long.MIN_VALUE
+    private var modificationTracker = 0L
     val components = mutableSetOf<String>()
     val contextAttributes = mutableMapOf<String, MutableSet<String>>()
     val actionDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaActionDefinition>()

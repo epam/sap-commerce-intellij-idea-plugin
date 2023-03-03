@@ -54,8 +54,8 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
 
                     if (result.isEmpty()) {
                         val typeName = findHeaderItemTypeName(parameter)
-                            .map { it.text }
-                            .orElse("")
+                            ?.text
+                            ?: ""
                         problemsHolder.registerProblem(
                             parameter,
                             message("hybris.inspections.impex.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),

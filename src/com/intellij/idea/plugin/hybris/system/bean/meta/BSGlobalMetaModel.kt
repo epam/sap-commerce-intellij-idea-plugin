@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentMap
 
 class BSGlobalMetaModel : ModificationTracker, Disposable {
 
-    private var modificationTracker = Long.MIN_VALUE
+    private var modificationTracker = 0L
     private val myMetaCache: MutableMap<BSMetaType, Map<String, BSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
 
     fun clear() {

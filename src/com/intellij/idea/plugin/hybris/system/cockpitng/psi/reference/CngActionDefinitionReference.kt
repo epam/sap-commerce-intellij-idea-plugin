@@ -25,11 +25,12 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.Act
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 
 class CngActionDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element),
     PsiPolyVariantReference, HighlightedReference {
 
-    override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CngMetaModelAccess.getInstance(element.project).getMetaModel()
         .actionDefinitions[value]
         ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
         ?: emptyArray()

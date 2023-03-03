@@ -35,12 +35,9 @@ class ImpexDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val originalFile = element.containingFile
 
-        val documentRefs = PsiTreeUtil.collectElements(
-                originalFile,
-                { psiElement -> psiElement.node.elementType == ImpexTypes.DOCUMENT_ID }
-        )
+        val documentRefs = PsiTreeUtil.collectElements(originalFile) { psiElement -> psiElement.node.elementType == ImpexTypes.DOCUMENT_ID }
 
-        if (!documentRefs.isEmpty()) {
+        if (documentRefs.isNotEmpty()) {
             val references = ArrayList<PsiElement>()
             for (docID in documentRefs) {
                 if (element.firstChild != docID && element.textMatches(docID.text)) {

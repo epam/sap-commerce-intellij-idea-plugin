@@ -26,11 +26,12 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 
 class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false),
     PsiPolyVariantReference, HighlightedReference {
 
-    override fun multiResolve(incompleteCode: Boolean) = CngMetaModelAccess.getInstance(element.project).getMetaModel()
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CngMetaModelAccess.getInstance(element.project).getMetaModel()
         .editorDefinitions[value]
         ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
         ?: emptyArray()

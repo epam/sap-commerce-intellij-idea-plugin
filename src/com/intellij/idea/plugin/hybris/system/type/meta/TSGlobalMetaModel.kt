@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap
 
 class TSGlobalMetaModel : ModificationTracker, Disposable {
 
-    private var modificationTracker = Long.MIN_VALUE
+    private var modificationTracker = 0L
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();

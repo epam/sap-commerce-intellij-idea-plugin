@@ -30,6 +30,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlElement
 import javax.swing.Icon
 
@@ -53,7 +54,7 @@ abstract class AbstractTSItemLineMarkerProvider<T : PsiElement> : RelatedItemLin
         CachedValuesManager.getCachedValue(element) {
             CachedValueProvider.Result.create(
                 collectDeclarations(element as T),
-                TSMetaModelAccess.getInstance(element.project).getMetaModel()
+                TSMetaModelAccess.getInstance(element.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
             ?.let { result.add(it) }

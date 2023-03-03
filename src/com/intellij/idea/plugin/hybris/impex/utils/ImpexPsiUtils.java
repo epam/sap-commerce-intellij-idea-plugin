@@ -18,21 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.utils;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexBeanShell;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexComment;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexRootMacroUsage;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine;
+import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
@@ -47,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -597,10 +582,13 @@ public final class ImpexPsiUtils {
         return -1;
     }
 
-    public static Optional<ImpexHeaderTypeName> findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
-        return Optional.ofNullable(PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class))
-                       .map(ImpexHeaderLine::getFullHeaderType)
-                       .map(ImpexFullHeaderType::getHeaderTypeName);
+    public static @Nullable ImpexHeaderTypeName findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
+        final var parent = PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class);
+        if (parent == null) return null;
+        final var fullHeader = parent.getFullHeaderType();
+        if (fullHeader == null) return null;
+
+        return fullHeader.getHeaderTypeName();
     }
 
     @Nullable

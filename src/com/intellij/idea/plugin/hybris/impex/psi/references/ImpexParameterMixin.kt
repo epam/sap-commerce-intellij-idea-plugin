@@ -24,11 +24,9 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
 
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
@@ -62,11 +60,10 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
     }
 
     override fun subtreeChanged() {
-        putUserData(CACHE_KEY, null)
+        putUserData(FunctionTSAttributeReference.CACHE_KEY, null)
     }
 
     companion object {
         private const val serialVersionUID: Long = -8834268360363491069L
-        val CACHE_KEY = Key.create<Array<ResolveResult>>("ATTRIBUTE_RESOLVED_RESULTS")
     }
 }

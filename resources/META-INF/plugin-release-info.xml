@@ -93,6 +93,7 @@
         <![CDATA[
             <h3>2023.1.2</h3>
             <ul>
+                <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
             </ul>
             <h3>2023.1.1</h3>

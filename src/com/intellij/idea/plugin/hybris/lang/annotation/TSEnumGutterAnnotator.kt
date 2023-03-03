@@ -66,13 +66,14 @@ class TSEnumGutterAnnotator : Annotator {
     }
 
     private fun canProcess(psiElement: PsiElement) = psiElement is XmlAttributeValue
-            && TSUtils.isTypeSystemXmlFile(psiElement.getContainingFile())
+        && TSUtils.isTypeSystemXmlFile(psiElement.getContainingFile())
 
-    private fun findAlternativeDoms(sourceDom: EnumType, project: Project) = getInstance(project).findMetaForDom(sourceDom)?.retrieveAllDoms()
-            ?.filter { dom -> dom != sourceDom }
-            ?.map { it.code }
-            ?.sortedBy { it.module?.name }
-            ?.mapNotNull { it.xmlAttributeValue }
-            ?: emptyList()
+    private fun findAlternativeDoms(sourceDom: EnumType, project: Project) = getInstance(project).findMetaForDom(sourceDom)
+        ?.retrieveAllDoms()
+        ?.filter { dom -> dom != sourceDom }
+        ?.map { it.code }
+        ?.sortedBy { it.module?.name }
+        ?.mapNotNull { it.xmlAttributeValue }
+        ?: emptyList()
 
 }
