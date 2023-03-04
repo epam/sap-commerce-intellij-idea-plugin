@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.idea.plugin.hybris.ant.HybrisAntBuildListener
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
@@ -98,7 +97,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     private fun continueOpening(project: Project) {
         if (project.isDisposed) return
 
-        registerAntListener(project)
         resetSpringGeneralSettings(project)
         fixBackOfficeJRebelSupport(project)
 
@@ -113,14 +111,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             val springGeneralSettings = SpringGeneralSettings.getInstance(project)
             springGeneralSettings.isShowMultipleContextsPanel = false
             springGeneralSettings.isShowProfilesPanel = false
-        }
-    }
-
-    private fun registerAntListener(project: Project) {
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
-
-        if (commonIdeaService.isHybrisProject(project) && PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) {
-            HybrisAntBuildListener.registerAntListener(project)
         }
     }
 

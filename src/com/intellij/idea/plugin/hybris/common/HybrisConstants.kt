@@ -150,7 +150,6 @@ object HybrisConstants {
     const val STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS = "hybrisDeveloperSpecificProjectSettings.xml"
     const val STORAGE_HYBRIS_TS_VIEW = "hybrisTypeSystemViewSettings.xml"
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
-    const val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = "idea-module-files"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
     const val JREBEL_PLUGIN_ID = "JRebelPlugin"
     const val CONFIGURATOR_FACTORY_ID = "$PLUGIN_ID.hybrisConfiguratorFactory"
@@ -282,6 +281,9 @@ object HybrisConstants {
     const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
 
     @JvmField
+    val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")
+
+    @JvmField
     val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
     @JvmField
     val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
@@ -326,7 +328,7 @@ object HybrisConstants {
     @JvmField
     val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
     @JvmField
-    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/$DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES")
+    val EXCLUDE_IDEA_MODULE_FILES_DIRECTORY = FileUtilRt.toSystemDependentName("/idea-module-files")
     @JvmField
     val EXCLUDE_LOG_DIRECTORY = FileUtilRt.toSystemDependentName("/log")
     @JvmField

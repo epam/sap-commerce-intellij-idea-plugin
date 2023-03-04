@@ -17,7 +17,6 @@
 /buildsrc/build
 /buildsrc/.gradle
 /common/build/
-/rt-ant/build/
 /.gradle/
 
 **/.directory
@@ -29,7 +28,6 @@
 /.idea/jarRepositories.xml
 /.idea/misc.xml
 /.idea/vcs.xml
+/.idea/php.xml
 /.idea/.gitignore
 /.idea/hybrisProjectSettings.xml
-
-/rt-ant/out/

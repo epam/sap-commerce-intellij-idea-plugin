@@ -112,7 +112,5 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpcore")
         exclude("org.apache.httpcomponents", "httpmime")
     }
-
-    implementation(project(":rt-ant"))
 }
 

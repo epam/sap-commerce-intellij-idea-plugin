@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -44,6 +43,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
 import java.util.*
 import java.util.concurrent.Semaphore
+import javax.annotation.concurrent.GuardedBy
 
 class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess {
 
@@ -53,6 +53,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
+    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = BSMetaModelCollector.getInstance(myProject).collectDependencies()

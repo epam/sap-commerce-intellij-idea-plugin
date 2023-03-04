@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
+import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
@@ -42,7 +43,6 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
-import kotlin.Pair;
 import kotlin.Triple;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -52,13 +52,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -176,8 +170,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             project, model, configuratorFactory, hybrisProjectDescriptor, modules
         ).queue();
 
-        project.putUserData(HybrisProjectImportStartupActivity.Companion.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
-
+        if (refresh) {
+            PostImportConfigurator.Companion.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
+        } else {
+            project.putUserData(HybrisProjectImportStartupActivity.Companion.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+        }
         notifyImportNotFinishedYet(project);
         return modules;
     }

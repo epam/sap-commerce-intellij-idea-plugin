@@ -45,6 +45,7 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomFileElement
 import java.util.*
 import java.util.concurrent.Semaphore
+import javax.annotation.concurrent.GuardedBy
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -67,6 +68,7 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
+    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val processor = CngMetaModelProcessor.getInstance(myProject)

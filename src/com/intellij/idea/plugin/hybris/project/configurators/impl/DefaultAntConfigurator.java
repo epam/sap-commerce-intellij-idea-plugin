@@ -25,34 +25,19 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.lang.ant.config.AntNoFileException;
 import com.intellij.lang.ant.config.execution.AntRunConfiguration;
 import com.intellij.lang.ant.config.execution.AntRunConfigurationType;
-import com.intellij.lang.ant.config.impl.AllJarsUnderDirEntry;
-import com.intellij.lang.ant.config.impl.AntBuildFileImpl;
-import com.intellij.lang.ant.config.impl.AntClasspathEntry;
-import com.intellij.lang.ant.config.impl.AntInstallation;
-import com.intellij.lang.ant.config.impl.BuildFileProperty;
-import com.intellij.lang.ant.config.impl.ExecuteCompositeTargetEvent;
-import com.intellij.lang.ant.config.impl.GlobalAntConfiguration;
-import com.intellij.lang.ant.config.impl.SinglePathEntry;
-import com.intellij.lang.ant.config.impl.TargetFilter;
+import com.intellij.lang.ant.config.impl.*;
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.rt.ant.execution.HybrisIdeaAntLogger;
 import com.intellij.util.config.AbstractProperty;
 import com.intellij.util.config.ListProperty;
 import org.jetbrains.annotations.NotNull;
@@ -63,11 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ANT_OPTS;
@@ -81,31 +62,71 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     public final List<String> desirablePlatformTargets = new ArrayList<>(asList(
         "clean",
-        "customize",
-        "all",
-        "deployment",
         "build",
-        "extgen",
-        "modulegen",
-        "initialize",
-        "updatesystem",
-        "yunitinit",
-        "integrationtests",
-        "unittests",
-        "performancetests",
-        "manualtests",
-        "bugprooftests",
-        "demotests",
-        "allwebtests",
+        "all",
+        "addonclean",
         "alltests",
+        "allwebtests",
+        "apidoc",
+        "bugprooftests",
+        "classpathgen",
+        "cleanMavenDependencies",
+        "cleanear",
+        "clearAdministrationLock",
+        "clearOrphanedTypes",
+        "codequality",
+        "commonwebclean",
+        "copyFromTemplate",
+        "createConfig",
+        "createPlatformImageStructure",
+        "createtypesystem",
+        "customize",
+        "demotests",
+        "deploy",
+        "deployDist",
+        "deployDistWithSources",
+        "dist",
+        "distWithSources",
+        "droptypesystem",
+        "ear",
+        "executeScript",
+        "executesql",
+        "extensionsxml",
+        "extgen",
+        "generateLicenseOverview",
+        "gradle",
+        "importImpex",
+        "initialize",
+        "initializetenantdb",
+        "integrationtests",
         "localizationtest",
-        "sonar",
-        "pmd",
-        "typecodetest",
+        "localproperties",
+        "manualtests",
+        "metadata",
+        "modulegen",
+        "performancetests",
+        "production",
+        "runcronjob",
+        "sanitycheck",
+        "sassclean",
+        "sasscompile",
+        "server",
+        "sonarcheck",
+        "sourcezip",
+        "startAdminServer",
         "startHybrisServer",
-        "startAdminServer"
+        "syncaddons",
+        "testMavenDependencies",
+        "typecodetest",
+        "unittests",
+        "updateMavenDependencies",
+        "updateSpringXsd",
+        "updatesystem",
+        "webservice_nature",
+        "yunitinit",
+        "yunitupdate"
     ));
-    public final List<String> desirableCustomTargets = new ArrayList<>(asList("build"));
+    public final List<String> desirableCustomTargets = new ArrayList<>(List.of("build"));
     public final String[][] metaTargets = new String[][]{
         {"clean", "all"},
         {"clean", "customize", "all", "initialize"},
@@ -273,13 +294,6 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private void createAntClassPath(final File platformDir) {
         classPaths = new ArrayList<>();
-        //brutal hack. Do not do this at home, kids!
-        //we are hiding class in a classpath to confuse the classloader and pick our implementation
-        final String entry = PathManager.getResourceRoot(
-            HybrisIdeaAntLogger.class, "/" + HybrisIdeaAntLogger.class.getName().replace('.', '/') + ".class"
-        );
-        classPaths.add(new SinglePathEntry(entry));
-        //end of hack
         final File platformLibDir = new File(platformDir, HybrisConstants.LIB_DIRECTORY);
         classPaths.add(new AllJarsUnderDirEntry(platformLibDir));
         classPaths.addAll(

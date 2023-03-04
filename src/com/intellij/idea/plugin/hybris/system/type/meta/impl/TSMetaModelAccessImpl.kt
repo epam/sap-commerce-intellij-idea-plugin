@@ -43,6 +43,7 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.Semaphore
+import javax.annotation.concurrent.GuardedBy
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -65,6 +66,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
+    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = TSMetaModelCollector.getInstance(myProject).collectDependencies()
