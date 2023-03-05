@@ -96,6 +96,7 @@
                 <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
+                <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
                 <li><i>Bug Fix:</i> Fixed Ant targets registration after Project Refresh</li>
                 <li><i>Other:</i> Added registration of the latest Ant targets</li>
                 <li><i>Other:</i> Updated to Kotlin 1.8</li>

@@ -19,15 +19,15 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.content.Content
 
 
-class HybrisConsolesToolWindow(val project: Project) : Disposable, DumbAware {
+class HybrisConsolesToolWindow(val project: Project) : DumbAware {
 
     companion object {
         const val ID = "Consoles"
@@ -41,12 +41,12 @@ class HybrisConsolesToolWindow(val project: Project) : Disposable, DumbAware {
      * @param toolWindow
      */
     fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        Disposer.register(this, consolesPanel)
+        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
+        Disposer.register(toolWindow.disposable, consolesPanel)
         val content = toolWindow.contentManager.factory.createContent(consolesPanel.component, ID, true)
         content.icon = AllIcons.Debugger.Console
         content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         return content
     }
 
-    override fun dispose() = Unit
 }

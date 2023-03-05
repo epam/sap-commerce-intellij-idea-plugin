@@ -38,6 +38,7 @@ import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
+import java.io.Serial
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 import javax.swing.JPanel
@@ -98,4 +99,9 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
     override fun tip(): String = "Last imported Impex files"
 
     override fun icon(): Icon = HybrisIcons.MONITORING
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 4809264328611290133L
+    }
 }

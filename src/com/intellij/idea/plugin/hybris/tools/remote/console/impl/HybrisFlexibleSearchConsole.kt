@@ -33,6 +33,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.awt.Insets
+import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
@@ -107,4 +108,9 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
     override fun tip(): String = "Flexible Search Console"
 
     override fun icon(): Icon = HybrisIcons.FS_FILE
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -112651125533211607L
+    }
 }

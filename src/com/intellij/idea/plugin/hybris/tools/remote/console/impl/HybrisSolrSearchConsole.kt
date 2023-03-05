@@ -48,6 +48,7 @@ import org.apache.solr.client.solrj.SolrServerException
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Insets
+import java.io.Serial
 import java.util.*
 import javax.swing.*
 import javax.swing.border.EmptyBorder
@@ -170,5 +171,10 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
                 .map { it as SolrCoreData }
                 .map { it.core }
                 .map { SolrQueryObject(query, it, maxRowsSpinner.value as Int) }
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -2047695844446905788L
     }
 }

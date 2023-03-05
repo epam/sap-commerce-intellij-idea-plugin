@@ -37,6 +37,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import org.apache.commons.lang.StringUtils
 import java.awt.BorderLayout
+import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
@@ -123,6 +124,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     }
 
     companion object {
+        @Serial
         private const val serialVersionUID: Long = -8798339041999147739L
     }
 }

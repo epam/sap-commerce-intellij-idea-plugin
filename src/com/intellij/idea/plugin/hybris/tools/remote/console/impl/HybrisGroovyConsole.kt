@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -33,6 +32,7 @@ import icons.JetgroovyIcons
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
 import java.awt.FlowLayout
+import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
@@ -82,4 +82,9 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     override fun tip(): String = "Groovy Console"
 
     override fun icon(): Icon = JetgroovyIcons.Groovy.Groovy_16x16
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -3858827004057439840L
+    }
 }
