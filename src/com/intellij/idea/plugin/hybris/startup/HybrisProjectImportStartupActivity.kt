@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
@@ -31,7 +31,6 @@ import com.intellij.openapi.roots.ui.configuration.IdeaProjectSettingsService
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
-import com.intellij.openapi.wm.ToolWindowManager
 
 private const val OPEN_SETTINGS_DIALOG = "hybrisProjectImportOpenSettingsDialog"
 private const val SYNC_PROJECT_SETTINGS = "hybrisProjectImportSyncProjectSettings"
@@ -43,7 +42,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
-            activateToolWindow(project)
+            HybrisToolWindowService.getInstance(project).activateToolWindow()
 
             project.getUserData(openSettingsKey)
                 ?.let {
@@ -69,22 +68,16 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
     }
 
-    private fun activateToolWindow(project: Project) = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
-        ?.let {
-            ApplicationManager.getApplication().invokeLater {
-                it.isAvailable = true
-                it.activate(null, true)
-            }
-        }
-
     // ensure the dialog is shown after all startup activities are done
     private fun openSettingsForProject(project: Project) = ApplicationManager.getApplication().invokeLater({
         IdeaProjectSettingsService.getInstance(project).openProjectSettings()
     }, ModalityState.NON_MODAL, project.disposed)
 
     private fun syncProjectSettingsForProject(project: Project) {
-        project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged()
-        project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).solrConnectionSettingsChanged()
+        with (project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
+            hacConnectionSettingsChanged()
+            solrConnectionSettingsChanged()
+        }
     }
 
 

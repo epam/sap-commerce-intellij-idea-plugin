@@ -71,16 +71,18 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installSettingsListener() {
-        myProject.messageBus.connect(this).subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
-            override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
-                myTreePane.update(changeType)
-            }
-        })
-        myProject.messageBus.connect(this).subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
-            override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
-                refreshContent()
-            }
-        })
+        with(myProject.messageBus.connect(this)) {
+            subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
+                override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
+                    myTreePane.update(changeType)
+                }
+            })
+            subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
+                override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
+                    refreshContent()
+                }
+            })
+        }
     }
 
     private fun refreshContent() {

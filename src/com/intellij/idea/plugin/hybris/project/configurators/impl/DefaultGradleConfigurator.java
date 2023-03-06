@@ -48,6 +48,8 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
             return;
         }
 
+        final var messageBus = project.getMessageBus().connect();
+
         final var projectDataImportListener = new ProjectDataImportListener() {
 
             @Override
@@ -58,13 +60,14 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
                             final var module = ModuleManager.getInstance(project)
                                                             .findModuleByName(projectPath.substring(projectPath.lastIndexOf('/') + 1));
                             updateModuleSettings(project, module);
+                            messageBus.dispose();
                         }
                     });
                 }
             }
         };
 
-        project.getMessageBus().connect().subscribe(
+        messageBus.subscribe(
             ProjectDataImportListener.TOPIC,
             projectDataImportListener
         );

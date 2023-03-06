@@ -71,16 +71,18 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installSettingsListener() {
-        myProject.messageBus.connect(this).subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
-            override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
-                myTreePane.update(changeType)
-            }
-        })
-        myProject.messageBus.connect(this).subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
-            override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                refreshContent()
-            }
-        })
+        with(myProject.messageBus.connect(this)) {
+            subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
+                override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
+                    myTreePane.update(changeType)
+                }
+            })
+            subscribe(TSMetaModelAccessImpl.topic, object : TSChangeListener {
+                override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+                    refreshContent()
+                }
+            })
+        }
     }
 
     private fun refreshContent() {

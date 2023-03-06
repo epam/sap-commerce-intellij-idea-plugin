@@ -1,9 +1,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.action;
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -12,8 +10,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractExecuteAction extends AnAction implements DumbAware  {
@@ -31,27 +27,24 @@ public abstract class AbstractExecuteAction extends AnAction implements DumbAwar
     @Override
     public void actionPerformed(@NotNull final AnActionEvent e) {
         final Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
-        if (editor != null) {
+        final var project = e.getProject();
+        if (editor != null && project != null) {
             final SelectionModel selectionModel = editor.getSelectionModel();
             String content = selectionModel.getSelectedText();
             if (content == null || content.trim().isEmpty()) {
                 content = editor.getDocument().getText();
             }
 
-            final HybrisConsolesToolWindow consolePanelView = e.getProject().getService(HybrisConsolesToolWindow.class);
-            final HybrisConsolesPanel consolePanel = consolePanelView.getConsolesPanel();
-
-            final HybrisConsole console = consolePanel.findConsole(getConsoleName());
+            final var consolesPanel = HybrisToolWindowService.Companion.getInstance(project).getConsolesPanel();
+            final var console = consolesPanel.findConsole(getConsoleName());
             if (console == null) {
-                LOG.warn("unable to find console "+getConsoleName());
+                LOG.warn("unable to find console " + getConsoleName());
                 return;
             }
-            consolePanel.setActiveConsole(console);
-            consolePanel.sendTextToConsole(console, content);
-            doExecute(consolePanel);
-
-            final ToolWindow toolWindow = ToolWindowManager.getInstance(e.getProject()).getToolWindow(HybrisToolWindowFactory.ID);
-            toolWindow.activate(null);
+            consolesPanel.setActiveConsole(console);
+            consolesPanel.sendTextToConsole(console, content);
+            HybrisToolWindowService.Companion.getInstance(project).activateToolWindow();
+            doExecute(consolesPanel);
         }
     }
 

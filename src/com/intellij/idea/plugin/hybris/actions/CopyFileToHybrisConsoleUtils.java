@@ -24,13 +24,12 @@ import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow;
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog;
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory;
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -40,11 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DIALOG_TITLE;
@@ -55,7 +50,7 @@ public final class CopyFileToHybrisConsoleUtils {
     private CopyFileToHybrisConsoleUtils() {
     }
 
-    private static <R, T> Optional<T> cast(@NotNull R obj, Class<T> clazz) {
+    private static <R, T> Optional<T> cast(@NotNull final R obj, final Class<T> clazz) {
         if (clazz.isAssignableFrom(obj.getClass())) {
             return Optional.ofNullable((T) obj);
         } else {
@@ -63,13 +58,13 @@ public final class CopyFileToHybrisConsoleUtils {
         }
     }
 
-    public static void copySelectedFilesToHybrisConsole(Project project, String consoleTitle, String dialogTitle) {
-        var hybrisConsole = getHybrisConsole(project, consoleTitle);
+    public static void copySelectedFilesToHybrisConsole(final Project project, final String consoleTitle, final String dialogTitle) {
+        final var hybrisConsole = HybrisToolWindowService.Companion.getInstance(project).getConsolesPanel().findConsole(consoleTitle);
         if (hybrisConsole != null) {
-            boolean isConsoleNotEmpty = StringUtils.isNotEmpty(getTextFromHybrisConsole(project, hybrisConsole));
-            String query = getQueryFromSelectedFiles(project);
+            final boolean isConsoleNotEmpty = StringUtils.isNotEmpty(getTextFromHybrisConsole(project, hybrisConsole));
+            final String query = getQueryFromSelectedFiles(project);
             if (isConsoleNotEmpty) {
-                var consoleDialog = new CopyFileToHybrisConsoleDialog(
+                final var consoleDialog = new CopyFileToHybrisConsoleDialog(
                     project,
                     getDialogTitleFromProperties(dialogTitle)
                 );
@@ -80,18 +75,18 @@ public final class CopyFileToHybrisConsoleUtils {
         }
     }
 
-    public static boolean isRequiredSingleFileExtension(Project project, String fileExtension) {
-        var fileExtensions = getFileExtensions(project);
+    public static boolean isRequiredSingleFileExtension(final Project project, final String fileExtension) {
+        final var fileExtensions = getFileExtensions(project);
         return fileExtensions.size() == 1 && fileExtensions.get(0).equals(fileExtension);
     }
 
-    public static boolean isRequiredMultipleFileExtension(Project project, String fileExtension) {
-        var fileExtensions = getFileExtensions(project);
+    public static boolean isRequiredMultipleFileExtension(final Project project, final String fileExtension) {
+        final var fileExtensions = getFileExtensions(project);
         return !fileExtensions.isEmpty() && fileExtensions.stream().allMatch(fileExtension::equals);
     }
 
-    private static List<String> getFileExtensions(Project project) {
-        var extensions = new ArrayList<String>();
+    private static List<String> getFileExtensions(final Project project) {
+        final var extensions = new ArrayList<String>();
         for (var virtualFile : getSelectedFiles(project)) {
             if (virtualFile.isDirectory()) {
                 return Collections.emptyList();
@@ -103,23 +98,18 @@ public final class CopyFileToHybrisConsoleUtils {
         return extensions;
     }
 
-    private static HybrisConsole getHybrisConsole(Project project, String consoleTitle) {
-        var hybrisConsolePanel = HybrisConsolesToolWindow.Companion.getInstance(project).getConsolesPanel();
-        return hybrisConsolePanel.findConsole(consoleTitle);
-    }
-
-    private static String getQueryFromSelectedFiles(Project project) {
+    private static String getQueryFromSelectedFiles(final Project project) {
         return getSelectedFiles(project).stream()
                                         .map(virtualFile -> getPsiFileNode(project, virtualFile))
                                         .map(PsiElement::getText)
                                         .collect(Collectors.joining(lineSeparator()));
     }
 
-    private static PsiFile getPsiFileNode(Project project, VirtualFile virtualFile) {
+    private static PsiFile getPsiFileNode(final Project project, final VirtualFile virtualFile) {
         return PsiManager.getInstance(project).findFile(virtualFile);
     }
 
-    private static List<VirtualFile> getSelectedFiles(Project project) {
+    private static List<VirtualFile> getSelectedFiles(final Project project) {
         return Arrays.stream(getSelectedTreePaths(project))
                      .map(CopyFileToHybrisConsoleUtils::getVirtualFile)
                      .filter(Optional::isPresent)
@@ -135,52 +125,33 @@ public final class CopyFileToHybrisConsoleUtils {
     }
 
     private static TreePath[] getSelectedTreePaths(final Project project) {
-        var currentProjectViewPane = ProjectView.getInstance(project).getCurrentProjectViewPane();
-        var selectionPaths = currentProjectViewPane.getSelectionPaths();
+        final var currentProjectViewPane = ProjectView.getInstance(project).getCurrentProjectViewPane();
+        final var selectionPaths = currentProjectViewPane.getSelectionPaths();
         return ObjectUtils.getIfNull(selectionPaths, () -> new TreePath[0]);
     }
 
-    private static HybrisConsolesPanel getHybrisConsolePanel(Project project) {
-        return HybrisConsolesToolWindow.Companion.getInstance(project).getConsolesPanel();
+    private static String getTextFromHybrisConsole(final Project project, final HybrisConsole hybrisConsole) {
+        final var helper = new LanguageConsoleImpl.Helper(project, hybrisConsole.getVirtualFile());
+        final var consoleExecutionEditor = new ConsoleExecutionEditor(helper);
+        final var text = consoleExecutionEditor.getDocument().getText();
+        Disposer.dispose(consoleExecutionEditor);
+        return text;
     }
 
-    private static String getTextFromHybrisConsole(Project project, HybrisConsole hybrisConsole) {
-        var helper = new LanguageConsoleImpl.Helper(project, hybrisConsole.getVirtualFile());
-        var consoleExecutionEditor = new ConsoleExecutionEditor(helper);
-        return consoleExecutionEditor.getDocument().getText();
-    }
-
-    private static void copyToHybrisConsole(Project project, String consoleTitle, String query) {
-        var hybrisConsolePanel = getHybrisConsolePanel(project);
-        var hybrisConsole = hybrisConsolePanel.findConsole(consoleTitle);
+    private static void copyToHybrisConsole(final Project project, final String consoleTitle, final String query) {
+        final var consolesPanel = HybrisToolWindowService.Companion.getInstance(project).getConsolesPanel();
+        final var hybrisConsole = consolesPanel.findConsole(consoleTitle);
         if (hybrisConsole != null) {
-            setActiveConsolesTab(project);
+            final var toolWindowService = HybrisToolWindowService.Companion.getInstance(project);
+            toolWindowService.activateToolWindow();
+            toolWindowService.activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID);
+            consolesPanel.setActiveConsole(hybrisConsole);
             hybrisConsole.clear();
             hybrisConsole.setInputText(query);
-            hybrisConsolePanel.setActiveConsole(hybrisConsole);
-            openHybrisConsole(project);
         }
     }
 
-    private static void setActiveConsolesTab(final Project project) {
-        Optional.ofNullable(ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID))
-            .ifPresent(toolWindow -> {
-                final var contentManager = toolWindow.getContentManager();
-                final var consolesTab = contentManager.findContent(HybrisConsolesToolWindow.ID);
-                if (consolesTab != null) {
-                    contentManager.setSelectedContent(consolesTab);
-                }
-            });
-    }
-
-    private static void openHybrisConsole(Project project) {
-        var toolWindow = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID);
-        if (toolWindow != null) {
-            toolWindow.activate(null);
-        }
-    }
-
-    private static String getDialogTitleFromProperties(String fileExtension) {
+    private static String getDialogTitleFromProperties(final String fileExtension) {
         return HybrisI18NBundleUtils.message(DIALOG_TITLE + fileExtension);
     }
 }

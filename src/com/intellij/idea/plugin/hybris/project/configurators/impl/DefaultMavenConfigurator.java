@@ -35,6 +35,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 import org.jetbrains.idea.maven.project.MavenImportListener;
@@ -79,8 +80,9 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                                                           .toList();
 
         if (mavenImportListener == null) {
-            mavenImportListener = new HybrisMavenImportListener(project);
-            project.getMessageBus().connect().subscribe(MavenImportListener.TOPIC, mavenImportListener);
+            final var messageBus = project.getMessageBus().connect();
+            mavenImportListener = new HybrisMavenImportListener(project, messageBus);
+            messageBus.subscribe(MavenImportListener.TOPIC, mavenImportListener);
         }
         mavenImportListener.setMavenModulesConfig(mavenProjectFiles, mavenModules, configuratorFactory);
 
@@ -121,12 +123,14 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     static class HybrisMavenImportListener implements MavenImportListener {
 
         private final Project project;
+        private final MessageBusConnection messageBus;
         private List<VirtualFile> pomList;
         private List<MavenModuleDescriptor> mavenModules;
         private ConfiguratorFactory configuratorFactory;
 
-        public HybrisMavenImportListener(final Project project) {
+        public HybrisMavenImportListener(final Project project, final MessageBusConnection messageBus) {
             this.project = project;
+            this.messageBus = messageBus;
         }
 
         @Override
@@ -143,6 +147,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                         importedProjects,
                         newModules
                     );
+                    messageBus.dispose();
                 }
             });
         }

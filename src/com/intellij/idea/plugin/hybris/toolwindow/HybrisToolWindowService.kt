@@ -16,30 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.system.type
+package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindow
-import com.intellij.ui.content.Content
 
-
-class TSToolWindow(val myProject: Project) : Disposable {
+interface HybrisToolWindowService {
 
     companion object {
-        const val ID = "Type System"
-        fun getInstance(project: Project): TSToolWindow = project.getService(TSToolWindow::class.java)
+        fun getInstance(project: Project): HybrisToolWindowService = project.getService(HybrisToolWindowService::class.java)
     }
 
-    fun createToolWindowContent(toolWindow: ToolWindow): Content {
-        val content = toolWindow.contentManager.factory.createContent(TSView(myProject), ID, true)
-        content.icon = HybrisIcons.TYPE_SYSTEM
-        content.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-        return content
-    }
+    val consolesPanel: HybrisConsolesPanel
+    val tsViewPanel: TSView
+    val bsViewPanel: BSView
 
-    override fun dispose() {
-    }
+    fun activateToolWindow()
+    fun activateToolWindowTab(id: String)
 }

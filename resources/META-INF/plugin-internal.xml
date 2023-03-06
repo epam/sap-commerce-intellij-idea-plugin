@@ -28,17 +28,15 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetSettingReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetConnectionWidgetIdReferenceProvider"/>
+
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.ItemsXmlReferenceContributor"/>
 
         <internalFileTemplate name="FlexibleSearch File"/>
         <internalFileTemplate name="Impex File"/>
 
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow"/>
-
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow"/>
-
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.impl.HybrisToolWindowServiceImpl"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
@@ -64,10 +62,14 @@
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsConfigurable"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  instance="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurable"/>
+
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider"/>
         <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
+
+        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+                    factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
     </extensions>
 
     <project-components>
@@ -101,11 +103,6 @@
             <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
         </action>
     </actions>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
-                    factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
-    </extensions>
 
     <extensionPoints>
         <extensionPoint

@@ -49,7 +49,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val consoles = arrayOf(impexConsole, groovyConsole, monitorConsole, flexibleSearchConsole, solrSearchConsole)
         consoles.forEach { Disposer.register(this, it) }
-        hybrisTabs = HybrisTabs(project, TOP, consoles)
+        hybrisTabs = HybrisTabs(project, TOP, consoles, this)
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
         actionToolbar.targetComponent = hybrisTabs.component
@@ -97,14 +97,11 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
         return null
     }
 
-    fun validateImpex() {
-        val action = actionToolbar.actions.first { it is HybrisImpexValidateAction }
-        val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
-        action.actionPerformed(event)
-    }
+    fun validateImpex() = performAction(HybrisImpexValidateAction::class.java)
+    fun execute() = performAction(HybrisExecuteImmediatelyAction::class.java)
 
-    fun execute() {
-        val action = actionToolbar.actions.first { it is HybrisExecuteImmediatelyAction }
+    private fun performAction(clazz: Class<out AnAction>) {
+        val action = actionToolbar.actions.first { clazz.isInstance(clazz) }
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
     }
@@ -114,7 +111,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
     }
 }
 
-class HybrisTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole>) : JBTabsPaneImpl(project, tabPlacement, Disposable { }) {
+class HybrisTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
 
     private val consoles = arrayListOf<HybrisConsole>()
 

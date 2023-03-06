@@ -17,12 +17,16 @@
  */
 package com.intellij.idea.plugin.hybris.toolwindow
 
+import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesToolWindow
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.BSToolWindow
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.TSToolWindow
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 
@@ -32,9 +36,9 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         project: Project, toolWindow: ToolWindow
     ) {
         arrayOf(
-            TSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
-            BSToolWindow.getInstance(project).createToolWindowContent(toolWindow),
-            HybrisConsolesToolWindow.getInstance(project).createToolWindowContent(toolWindow),
+            createTSContent(toolWindow, HybrisToolWindowService.getInstance(project).tsViewPanel),
+            createBSContent(toolWindow, HybrisToolWindowService.getInstance(project).bsViewPanel),
+            createConsolesContent(toolWindow, project, HybrisToolWindowService.getInstance(project).consolesPanel),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
@@ -42,7 +46,36 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     }
 
+    private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
+        Disposer.register(toolWindow.disposable, panel)
+
+        icon = HybrisIcons.TYPE_SYSTEM
+        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+
+        this
+    }
+
+    private fun createBSContent(toolWindow: ToolWindow, panel: BSView) = with(toolWindow.contentManager.factory.createContent(panel, BS_ID, true)) {
+        Disposer.register(toolWindow.disposable, panel)
+
+        icon = HybrisIcons.BEAN_FILE
+        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+        this
+    }
+
+    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesPanel) = with(toolWindow.contentManager.factory.createContent(panel.component, CONSOLES_ID, true)) {
+        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
+        Disposer.register(toolWindow.disposable, panel)
+
+        icon = AllIcons.Debugger.Console
+        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+        this
+    }
+
     companion object {
         const val ID = "SAP Commerce"
+        const val CONSOLES_ID = "Consoles"
+        const val TS_ID = "Type System"
+        const val BS_ID = "Bean System"
     }
 }
