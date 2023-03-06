@@ -19,17 +19,15 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaBeanView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaEnumView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.*
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
@@ -38,8 +36,8 @@ import javax.swing.event.TreeSelectionListener
 class BSTreePanel(
     private val myProject: Project,
 ) : OnePixelSplitter(false, 0.25f), Disposable {
-    private var myTree = BSTree(myProject)
-    private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
+    val tree = BSTree(myProject)
+    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
     private val myMetaEnumView: BSMetaEnumView by lazy {
         BSMetaEnumView(
             myProject
@@ -53,20 +51,22 @@ class BSTreePanel(
     private val myTreeSelectionListener: TreeSelectionListener = treeSelectionListener()
 
     init {
-        firstComponent = JBScrollPane(myTree)
+        firstComponent = JBScrollPane(tree)
         secondComponent = myDefaultPanel
 
-        myTree.addTreeSelectionListener(myTreeSelectionListener)
+        tree.addTreeSelectionListener(myTreeSelectionListener)
+
+        Disposer.register(this, tree)
     }
 
     fun update(changeType: BSViewSettings.ChangeType) {
         secondComponent = myDefaultPanel;
 
-        myTree.update(changeType)
+        tree.update(changeType)
     }
 
     override fun dispose() {
-        myTree.removeTreeSelectionListener { myTreeSelectionListener }
+        tree.removeTreeSelectionListener { myTreeSelectionListener }
     }
 
     private fun treeSelectionListener() = TreeSelectionListener { tls ->

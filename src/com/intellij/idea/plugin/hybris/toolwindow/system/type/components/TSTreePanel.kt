@@ -19,16 +19,14 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.ide.IdeBundle
-import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
@@ -37,8 +35,8 @@ import javax.swing.event.TreeSelectionListener
 class TSTreePanel(
     private val myProject: Project,
 ) : OnePixelSplitter(false, 0.25f), Disposable {
-    private var myTree = TSTree(myProject)
-    private var myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
+    val tree = TSTree(myProject)
+    private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
     private val myMetaItemView: TSMetaItemView by lazy { TSMetaItemView(myProject) }
     private val myMetaEnumView: TSMetaEnumView by lazy { TSMetaEnumView(myProject) }
     private val myMetaAtomicView: TSMetaAtomicView by lazy { TSMetaAtomicView(myProject) }
@@ -48,20 +46,22 @@ class TSTreePanel(
     private val myTreeSelectionListener: TreeSelectionListener = treeSelectionListener()
 
     init {
-        firstComponent = JBScrollPane(myTree)
+        firstComponent = JBScrollPane(tree)
         secondComponent = myDefaultPanel
 
-        myTree.addTreeSelectionListener(myTreeSelectionListener)
+        tree.addTreeSelectionListener(myTreeSelectionListener)
+
+        Disposer.register(this, tree)
     }
 
     fun update(changeType: TSViewSettings.ChangeType) {
         secondComponent = myDefaultPanel;
 
-        myTree.update(changeType)
+        tree.update(changeType)
     }
 
     override fun dispose() {
-        myTree.removeTreeSelectionListener { myTreeSelectionListener }
+        tree.removeTreeSelectionListener { myTreeSelectionListener }
     }
 
     private fun treeSelectionListener() = TreeSelectionListener { tls ->

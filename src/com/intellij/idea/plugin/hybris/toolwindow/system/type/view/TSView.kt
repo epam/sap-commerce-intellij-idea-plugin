@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
 import com.intellij.icons.AllIcons
+import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
@@ -62,8 +63,12 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installToolbar() {
+        val actionsManager = CommonActionsManager.getInstance()
         val toolbar = with(DefaultActionGroup()) {
             add(myItemsViewActionGroup)
+            addSeparator()
+            add(actionsManager.createExpandAllHeaderAction(myTreePane.tree))
+            add(actionsManager.createCollapseAllHeaderAction(myTreePane.tree))
             ActionManager.getInstance().createActionToolbar("HybrisTSView", this, false)
         }
         toolbar.targetComponent = this
