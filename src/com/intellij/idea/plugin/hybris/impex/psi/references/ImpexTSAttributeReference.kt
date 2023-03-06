@@ -36,7 +36,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin) : TSReferenceBase<ImpexAnyHeaderParameterName?>(owner) {
+internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
@@ -94,7 +94,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             ?.let {
                 val attributes = resolveMetaItemAttributes(metaItemService, featureName, it)
                 val relationEnds = metaItemService.findRelationEndsByQualifier(it, featureName, true)
-                    .map { RelationEndResolveResult(it) }
+                    .map { relation -> RelationEndResolveResult(relation) }
                 (attributes + relationEnds)
             }
 

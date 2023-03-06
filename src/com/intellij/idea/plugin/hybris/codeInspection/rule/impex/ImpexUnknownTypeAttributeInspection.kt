@@ -47,20 +47,20 @@ private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder)
     override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
         if (isNotMacros(parameter) && isNotDocumentId(parameter.firstChild)) {
             val references = parameter.references
-            if (references.isNotEmpty()) {
-                val firstReference = references.first()
-                if (!firstReference.canonicalText.contains(".") && firstReference is TSReferenceBase<*>) {
-                    val result = firstReference.multiResolve(false)
+            if (references.isEmpty()) return
 
-                    if (result.isEmpty()) {
-                        val typeName = findHeaderItemTypeName(parameter)
-                            ?.text
-                            ?: ""
-                        problemsHolder.registerProblem(
-                            parameter,
-                            message("hybris.inspections.impex.ImpexUnknownTypeAttributeInspection.key", parameter.text, typeName),
-                            ProblemHighlightType.ERROR)
-                    }
+            val firstReference = references.first()
+            if (!firstReference.canonicalText.contains(".") && firstReference is TSReferenceBase<*>) {
+                val result = firstReference.multiResolve(false)
+
+                if (result.isEmpty()) {
+                    val typeName = findHeaderItemTypeName(parameter)
+                        ?.text
+                        ?: ""
+                    problemsHolder.registerProblem(
+                        parameter,
+                        message("hybris.inspections.UnknownTypeAttributeInspection.key", parameter.text, typeName),
+                        ProblemHighlightType.ERROR)
                 }
             }
         }

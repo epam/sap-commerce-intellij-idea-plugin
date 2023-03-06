@@ -29,8 +29,7 @@ import com.intellij.psi.PsiReference
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 
-abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode),
-    FlexibleSearchTableName {
+abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), FlexibleSearchTableName {
 
     private var myReference: FxsTSItemReference? = null
 

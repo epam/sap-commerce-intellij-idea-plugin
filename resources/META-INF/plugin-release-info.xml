@@ -97,6 +97,12 @@
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
                 <li><i>Feature:</i> Added collapse/expand all actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
+                <li><i>Feature:</i> Added new <strong>Flexible Search</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
+                    <ul>
+                        <li>Item Type is not defined</li>
+                        <li>Attribute is not defined</li>
+                    </ul>
+                </li>
                 <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
                 <li><i>Bug Fix:</i> Fixed Ant targets registration after Project Refresh</li>
                 <li><i>Other:</i> Improved cleanup on Project dispose</li>

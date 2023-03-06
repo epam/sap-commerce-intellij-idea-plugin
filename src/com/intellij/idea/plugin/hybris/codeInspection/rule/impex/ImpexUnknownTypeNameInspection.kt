@@ -55,7 +55,7 @@ private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder)
 
         problemsHolder.registerProblem(
             parameter,
-            HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeNameInspection.key", parameter.text),
+            HybrisI18NBundleUtils.message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
             ProblemHighlightType.ERROR
         )
     }

@@ -32,7 +32,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-internal class ImpexTSItemReference(owner: ImpexHeaderTypeName) : TSReferenceBase<ImpexHeaderTypeName?>(owner) {
+class ImpexTSItemReference(owner: ImpexHeaderTypeName) : TSReferenceBase<ImpexHeaderTypeName>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator

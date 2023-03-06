@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectSettingsForm
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -31,11 +32,11 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = HybrisProjectSettingsConfigurable(project)
 
-    class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable {
+    class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable, Disposable {
         private val settingsForm = HybrisProjectSettingsForm()
 
         init {
-            Disposer.register({}, settingsForm)
+            Disposer.register(this, settingsForm)
         }
 
         override fun getDisplayName() = message("hybris.settings.project.title")
@@ -54,6 +55,10 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
 
         override fun disposeUIResources() {
             Disposer.dispose(settingsForm)
+        }
+
+        override fun dispose() {
+            // NOP
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
-import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
@@ -20,12 +19,22 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.*
 
-internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner),
-    HighlightedReference {
+internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
+
+    fun getType(): String? {
+        val itemType = if (hasPrefix(element)) {
+            deepSearchOfTypeReference(element, element.firstChild.text)
+        } else {
+            findItemTypeReference(element)
+        }
+        return itemType
+            ?.text
+            ?.replace("!", "")
+    }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")

@@ -30,12 +30,10 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.Relation
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference,
-    HighlightedReference {
+abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), HighlightedReference {
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
