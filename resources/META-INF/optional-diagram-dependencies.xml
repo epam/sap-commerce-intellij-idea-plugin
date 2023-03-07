@@ -31,11 +31,8 @@
 <!--        <diagram.Provider id="HybrisTypeSystemDependencies"-->
 <!--                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>-->
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.jaxb.services.BpJaxbService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.jaxb.services.impl.DefaultBpJaxbService"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.business.process.common.BpGraphService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.business.process.common.impl.DefaultBpGraphService"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpGraphService"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"
                             serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>

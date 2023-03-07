@@ -15,19 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.openapi.editor.colors.ColorKey
-import com.intellij.openapi.editor.colors.ColorKey.createColorKeyWithFallback
-import com.intellij.openapi.editor.colors.ColorKey.find
+import com.intellij.diagram.DiagramVfsResolver
 
-object BpColors {
-
-    val OK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_OK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-    val NOK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_NOK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-    val TIMEOUT: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_TIMEOUT_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-    val CYCLE: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_CYCLE_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-    val CANCEL: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_CANCEL_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-    val DEFAULT: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_DEFAULT_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
-}
+interface BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?>

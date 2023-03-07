@@ -15,26 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.model;
+import com.intellij.diagram.DiagramEdgeBase
+import com.intellij.diagram.DiagramNode
+import com.intellij.diagram.DiagramRelationshipInfo
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
+import java.io.Serial
 
+class BpDiagramFileEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo
+) : DiagramEdgeBase<BpGraphNode>(source, target, relationship) {
 
-public interface BpGenericAction {
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return possible object is
-     * {@link String }
-     */
-    String getId();
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value allowed object is
-     *              {@link String }
-     */
-    void setId(String value);
-
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 2559027965802259164L
+    }
 }

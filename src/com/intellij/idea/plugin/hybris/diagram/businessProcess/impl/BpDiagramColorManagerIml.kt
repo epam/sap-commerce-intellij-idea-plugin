@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramEdge
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.CANCEL
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.CYCLE
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.DEFAULT
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.NOK
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.OK
@@ -28,6 +30,9 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColorMan
 import com.intellij.openapi.editor.colors.ColorKey
 import org.apache.commons.lang3.StringUtils
 
+/**
+ * TODO: Add user-defined project-based mapping for custom transition names
+ */
 class BpDiagramColorManagerIml : BpDiagramColorManager() {
 
     private val badEdges = arrayOf("NOK", "ERROR", "FAIL")
@@ -38,12 +43,16 @@ class BpDiagramColorManagerIml : BpDiagramColorManager() {
         return when {
             isOK(edgeType) -> OK
             isNOK(edgeType) -> NOK
-            isTIMEOUT(edgeType) -> TIMEOUT
+            isCancel(edgeType) -> CANCEL
+            isTimeout(edgeType) -> TIMEOUT
+            isCycle(edge) -> CYCLE
             else -> DEFAULT
         }
     }
 
     private fun isOK(edgeType: String) = StringUtils.isBlank(edgeType) || "OK".equals(edgeType, ignoreCase = true)
     private fun isNOK(edgeType: String) = badEdges.contains(edgeType.uppercase())
-    private fun isTIMEOUT(edgeType: String) = StringUtils.startsWith(edgeType, message("hybris.business.process.timeout"))
+    private fun isCancel(edgeType: String) = "CANCEL".equals(edgeType, ignoreCase = true)
+    private fun isTimeout(edgeType: String) = StringUtils.startsWith(edgeType, message("hybris.business.process.timeout"))
+    private fun isCycle(edge: DiagramEdge<*>) = edge.source == edge.target
 }

@@ -15,16 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess;
+import com.intellij.diagram.DiagramColorManagerBase
 
-import com.intellij.diagram.DiagramColorManagerBase;
-
-/**
- * Created 10:33 PM 02 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public abstract class BpDiagramColorManager extends DiagramColorManagerBase {
-
-}
+abstract class BpDiagramColorManager : DiagramColorManagerBase()

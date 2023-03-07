@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,24 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-package com.intellij.idea.plugin.hybris.business.process.jaxb.services;
+import com.intellij.diagram.DiagramElementManager
 
-import com.intellij.idea.plugin.hybris.business.process.jaxb.Process;
-import jakarta.xml.bind.UnmarshalException;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import java.io.File;
-
-/**
- * Created 9:12 PM 02 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface BpJaxbService {
-
-    @Nonnull
-    Process unmarshallBusinessProcessXml(@NotNull File file) throws UnmarshalException;
-
-}
+interface BpDiagramElementManager : DiagramElementManager<BpGraphNode>

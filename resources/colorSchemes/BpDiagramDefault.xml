@@ -6,6 +6,8 @@
         <option name="BP_DIAGRAM_OK_EDGE" value="098000"/>
         <option name="BP_DIAGRAM_NOK_EDGE" value="A1312A"/>
         <option name="BP_DIAGRAM_TIMEOUT_EDGE" value="A1312A"/>
+        <option name="BP_DIAGRAM_CYCLE_EDGE" value="9407ED"/>
+        <option name="BP_DIAGRAM_CANCEL_EDGE" value="F78058"/>
         <option name="BP_DIAGRAM_DEFAULT_EDGE" value="474747"/>
 
     </colors>

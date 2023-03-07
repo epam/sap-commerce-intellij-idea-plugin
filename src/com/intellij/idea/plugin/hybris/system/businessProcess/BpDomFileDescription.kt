@@ -30,7 +30,6 @@ class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, Hy
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BUSINESS_PROCESS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name.endsWith(HybrisConstants.BUSINESS_PROCESS_XML, true)
             && file.rootTag?.namespace.equals("http://www.hybris.de/xsd/processdefinition")
 
 }
