@@ -16,17 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
+package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
-import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.ResolvingConverter
+import com.intellij.openapi.editor.colors.ColorKey
+import com.intellij.openapi.editor.colors.ColorKey.createColorKeyWithFallback
+import com.intellij.openapi.editor.colors.ColorKey.find
 
-class CngMergeByConverter : ResolvingConverter<String>() {
+object BpColors {
 
-    override fun toString(t: String?, context: ConvertContext?) = t
-
-    override fun fromString(s: String?, context: ConvertContext?) = s
-
-    override fun getVariants(context: ConvertContext) = CngUtils.getValidMergeByValues(context.project)
+    val OK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_OK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
+    val NOK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_NOK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
+    val TIMEOUT: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_TIMEOUT_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
+    val DEFAULT: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_DEFAULT_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
 }

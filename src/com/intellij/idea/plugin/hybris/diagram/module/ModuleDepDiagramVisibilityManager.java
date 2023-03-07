@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.diagram.module;
 
 import com.intellij.diagram.AbstractUmlVisibilityManager;
 import com.intellij.diagram.VisibilityLevel;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.util.ArrayUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -29,7 +29,7 @@ import java.util.Comparator;
 /**
  * @author Eugene.Kudelevsky
  */
-public class ModuleDepDiagramVisibilityManager extends AbstractUmlVisibilityManager {
+public final class ModuleDepDiagramVisibilityManager extends AbstractUmlVisibilityManager {
 
     public static final VisibilityLevel SMALL = new VisibilityLevel("Small");
     public static final VisibilityLevel MEDIUM = new VisibilityLevel("Medium");
@@ -37,16 +37,15 @@ public class ModuleDepDiagramVisibilityManager extends AbstractUmlVisibilityMana
 
     private static final VisibilityLevel[] LEVELS = {SMALL, MEDIUM, LARGE};
 
-    private final Comparator<VisibilityLevel> COMPARATOR = (level1, level2) ->
-        Comparing.compare(ArrayUtil.indexOf(LEVELS, level1), ArrayUtil.indexOf(LEVELS, level2));
+    private final Comparator<VisibilityLevel> COMPARATOR = Comparator.comparingInt(level -> ArrayUtil.indexOf(LEVELS, level));
 
     public ModuleDepDiagramVisibilityManager() {
         setCurrentVisibilityLevel(SMALL);
     }
 
     @Override
-    public VisibilityLevel[] getVisibilityLevels() {
-        return LEVELS;
+    public VisibilityLevel @NotNull [] getVisibilityLevels() {
+        return LEVELS.clone();
     }
 
     @Nullable
@@ -56,7 +55,7 @@ public class ModuleDepDiagramVisibilityManager extends AbstractUmlVisibilityMana
     }
 
     @Override
-    public Comparator<VisibilityLevel> getComparator() {
+    public @NotNull Comparator<VisibilityLevel> getComparator() {
         return COMPARATOR;
     }
 

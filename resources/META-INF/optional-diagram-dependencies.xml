@@ -19,6 +19,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <additionalTextAttributes scheme="Default" file="colorSchemes/BpDiagramDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/BpDiagramDarcula.xml"/>
 
         <diagram.Provider id="BusinessProcessDiagramProvider"
                           implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>

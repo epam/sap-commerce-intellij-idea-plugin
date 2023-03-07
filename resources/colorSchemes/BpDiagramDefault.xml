@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list>
+    <colors>
+        <!-- EDGES -->
+
+        <option name="BP_DIAGRAM_OK_EDGE" value="098000"/>
+        <option name="BP_DIAGRAM_NOK_EDGE" value="A1312A"/>
+        <option name="BP_DIAGRAM_TIMEOUT_EDGE" value="A1312A"/>
+        <option name="BP_DIAGRAM_DEFAULT_EDGE" value="474747"/>
+
+    </colors>
+</list>
