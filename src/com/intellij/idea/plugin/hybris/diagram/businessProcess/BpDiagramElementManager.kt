@@ -18,5 +18,12 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.DiagramElementManager
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.openapi.application.ApplicationManager
 
-interface BpDiagramElementManager : DiagramElementManager<BpGraphNode>
+interface BpDiagramElementManager : DiagramElementManager<BpGraphNode> {
+
+    companion object {
+        val instance: BpDiagramElementManager = ApplicationManager.getApplication().getService(BpDiagramElementManager::class.java)
+    }
+}

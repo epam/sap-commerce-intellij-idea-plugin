@@ -18,5 +18,11 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.DiagramColorManagerBase
+import com.intellij.openapi.application.ApplicationManager
 
-abstract class BpDiagramColorManager : DiagramColorManagerBase()
+abstract class BpDiagramColorManager : DiagramColorManagerBase() {
+
+    companion object {
+        val instance: BpDiagramColorManager = ApplicationManager.getApplication().getService(BpDiagramColorManager::class.java)
+    }
+}

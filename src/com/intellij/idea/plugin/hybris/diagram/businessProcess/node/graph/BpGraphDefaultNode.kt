@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.xml.DomElement
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
-class DefaultBpGraphNode(
-    override val nodeName: String,
+open class BpGraphDefaultNode(
+    override val name: String,
     override val navigableElement: DomElement,
     override val virtualFile: VirtualFile,
-    override val process: Process
+    override val process: Process,
+    override val properties: Array<BpGraphParameterNodeField> = emptyArray()
 ) : BpGraphNode {
     override val transitions: MutableMap<String, BpGraphNode> = HashMap()
 
@@ -39,17 +39,17 @@ class DefaultBpGraphNode(
         if (other == null || javaClass != other.javaClass) {
             return false
         }
-        val otherNode = other as DefaultBpGraphNode
+        val otherNode = other as BpGraphDefaultNode
 
         return EqualsBuilder()
-            .append(nodeName, otherNode.nodeName)
+            .append(name, otherNode.name)
             .isEquals
     }
 
     override fun hashCode(): Int = HashCodeBuilder(17, 37)
-        .append(nodeName)
+        .append(name)
         .toHashCode()
 
-    override fun toString() = "DefaultBpGraphNode{genericAction=$nodeName}"
+    override fun toString() = "DefaultBpGraphNode{genericAction=$name}"
 
 }

@@ -30,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface End extends NavigableElement {
 
+	String STATE = "state";
+
 	/**
 	 * Returns the value of the simple content.
 	 * @return the value of the simple content.
@@ -48,7 +50,7 @@ public interface End extends NavigableElement {
 	 * @return the value of the state child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("state")
+	@com.intellij.util.xml.Attribute (STATE)
 	GenericAttributeValue<EndState> getState();
 
 

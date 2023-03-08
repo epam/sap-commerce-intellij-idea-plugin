@@ -15,30 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
 
-// Generated on Tue Jan 10 21:54:19 CET 2023
-// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
+import com.intellij.diagram.DiagramRelationshipInfoAdapter
+import com.intellij.diagram.presentation.DiagramLineType
+import java.awt.Shape
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.model;
+internal class BpDiagramRelationship(
+    label: String?,
+    lineType: DiagramLineType = DiagramLineType.SOLID,
+    fromLabel: String = "",
+    toLabel: String = "",
+    width: Int = 1
+) : DiagramRelationshipInfoAdapter(label, lineType, label, fromLabel, toLabel, width) {
 
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
-import org.jetbrains.annotations.NotNull;
-
-/**
- * http://www.hybris.de/xsd/processdefinition:scriptAction interface.
- */
-public interface ScriptAction extends Action {
-
-	String SCRIPT = "script";
-
-	/**
-	 * Returns the value of the script child.
-	 * @return the value of the script child.
-	 */
-	@NotNull
-	@SubTag (SCRIPT)
-	@Required
-	Script getScript();
-
+    override fun getStartArrow(): Shape = STANDARD
 }

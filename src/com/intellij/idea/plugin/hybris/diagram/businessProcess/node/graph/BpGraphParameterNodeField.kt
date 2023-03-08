@@ -16,18 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.openapi.vfs.VirtualFile
-
-class BpRootGraphNode(
-    override var nodeName: String,
-    override val navigableElement: Process,
-    override val virtualFile: VirtualFile,
-    override val process: Process,
-) : BpGraphNode {
-
-    override val transitions: MutableMap<String, BpGraphNode> = HashMap()
-}
+data class BpGraphParameterNodeField(
+    val name: String,
+    val value: String,
+)

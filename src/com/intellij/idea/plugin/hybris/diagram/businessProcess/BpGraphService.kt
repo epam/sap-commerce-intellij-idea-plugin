@@ -17,9 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramFileEdge
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramFileNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpRootGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramFileEdge
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramFileNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -27,7 +28,7 @@ import com.intellij.openapi.vfs.VirtualFile
 interface BpGraphService {
     fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode?
 
-    fun buildNodes(rootGraphNode: BpRootGraphNode): Map<String, BpGraphNode>
+    fun buildNodes(rootGraphNode: BpGraphRootNode): Map<String, BpGraphNode>
 
     fun buildEdge(name: String, source: BpDiagramFileNode, target: BpDiagramFileNode): BpDiagramFileEdge
 

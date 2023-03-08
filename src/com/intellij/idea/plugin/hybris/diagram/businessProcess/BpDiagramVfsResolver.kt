@@ -18,5 +18,12 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.DiagramVfsResolver
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.openapi.application.ApplicationManager
 
-interface BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?>
+interface BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?> {
+
+    companion object {
+        val instance: BpDiagramVfsResolver = ApplicationManager.getApplication().getService(BpDiagramVfsResolver::class.java)
+    }
+}

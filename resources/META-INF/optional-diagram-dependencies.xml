@@ -23,7 +23,7 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/BpDiagramDarcula.xml"/>
 
         <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
-                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>
+                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramProviderImpl"/>
 
         <diagram.Provider id="HybrisModuleDependencies"
                           implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
@@ -32,19 +32,17 @@
 <!--                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>-->
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpGraphService"/>
-
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>
-
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramProviderImpl"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramElementManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramElementManagerIml"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramVfsResolver"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramVfsResolver"/>
-
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramVfsResolverImpl"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColorManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramColorManagerIml"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramNodeContentManager"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramNodeContentManagerImpl"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramVisibilityManager"
                             serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramVisibilityManagerImpl"/>

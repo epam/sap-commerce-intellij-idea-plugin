@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess
+
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.xml.DomElement
 
-interface BpGraphNode {
-    val nodeName: String
-    val navigableElement: DomElement
-    val transitions: MutableMap<String, BpGraphNode>
-    val virtualFile: VirtualFile
-    val process: Process
-}
+class BpGraphRootNode(
+    override var name: String,
+    override val navigableElement: Process,
+    override val virtualFile: VirtualFile,
+    override val process: Process,
+    override val transitions: MutableMap<String, BpGraphNode> = HashMap(),
+    override val properties: Array<BpGraphParameterNodeField> = emptyArray()
+) : BpGraphNode

@@ -93,6 +93,7 @@
         <![CDATA[
             <h3>2023.1.2</h3>
             <ul>
+                <li><i>Feature:</i> Added node properties for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267" target="_blank" rel="nofollow">#267</a>)</li>
                 <li><i>Feature:</i> Added edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
                 <li><i>Feature:</i> Added cycle edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>
                 <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>

@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.PARTIAL
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.START
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpColors.TIMEOUT
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColorManager
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.*
 
 /**
  * TODO: Add user-defined project-based mapping for custom transition names

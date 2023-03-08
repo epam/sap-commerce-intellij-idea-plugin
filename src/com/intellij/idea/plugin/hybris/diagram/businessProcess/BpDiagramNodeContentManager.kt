@@ -16,29 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Tue Jan 10 21:54:19 CET 2023
-// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
+package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.model;
+import com.intellij.diagram.DiagramNodeContentManager
+import com.intellij.openapi.application.ApplicationManager
 
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
-import org.jetbrains.annotations.NotNull;
+interface BpDiagramNodeContentManager : DiagramNodeContentManager {
 
-/**
- * http://www.hybris.de/xsd/processdefinition:scriptAction interface.
- */
-public interface ScriptAction extends Action {
-
-	String SCRIPT = "script";
-
-	/**
-	 * Returns the value of the script child.
-	 * @return the value of the script child.
-	 */
-	@NotNull
-	@SubTag (SCRIPT)
-	@Required
-	Script getScript();
-
+    companion object {
+        val instance: BpDiagramNodeContentManager = ApplicationManager.getApplication().getService(BpDiagramNodeContentManager::class.java)
+    }
 }

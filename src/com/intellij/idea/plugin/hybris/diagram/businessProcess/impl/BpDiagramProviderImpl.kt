@@ -18,22 +18,27 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
 import com.intellij.diagram.*
+import com.intellij.diagram.extras.DiagramExtras
+import com.intellij.diagram.settings.DiagramConfigElement
+import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.*
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramDataModel
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
 
-class DefaultBpDiagramProvider : BpDiagramProvider() {
+class BpDiagramProviderImpl : BpDiagramProvider() {
 
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisBusinessProcessDiagramProvider"
     override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.business.process.provider.name")
 
-    override fun getElementManager(): DiagramElementManager<BpGraphNode> = ApplicationManager.getApplication().getService(BpDiagramElementManager::class.java)
-    override fun getVfsResolver(): BpDiagramVfsResolver = ApplicationManager.getApplication().getService(BpDiagramVfsResolver::class.java)
-    override fun getColorManager(): DiagramColorManager = ApplicationManager.getApplication().getService(BpDiagramColorManager::class.java)
+    override fun createNodeContentManager(): DiagramNodeContentManager = BpDiagramNodeContentManager.instance
+    override fun getElementManager(): DiagramElementManager<BpGraphNode> = BpDiagramElementManager.instance
+    override fun getVfsResolver(): BpDiagramVfsResolver = BpDiagramVfsResolver.instance
+    override fun getColorManager(): DiagramColorManager = BpDiagramColorManager.instance
 
     override fun createDataModel(
         project: Project,
@@ -41,5 +46,17 @@ class DefaultBpDiagramProvider : BpDiagramProvider() {
         virtualFile: VirtualFile?,
         diagramPresentationModel: DiagramPresentationModel
     ) = BpDiagramDataModel(project, node)
+
+    override fun getExtras(): DiagramExtras<BpGraphNode> {
+        return object : DiagramExtras<BpGraphNode>() {
+            override fun getAdditionalDiagramSettings(): Array<DiagramConfigGroup> {
+                val elements = DiagramConfigGroup("Categories")
+                elements.addElement(
+                    DiagramConfigElement("Parameters", true)
+                )
+                return arrayOf(elements)
+            }
+        }
+    }
 
 }

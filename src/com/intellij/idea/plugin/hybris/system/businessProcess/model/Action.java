@@ -31,12 +31,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Action extends NavigableElement {
 
+	String CAN_JOIN_PREVIOUS_NODE = "canJoinPreviousNode";
+	String NODE_GROUP = "nodeGroup";
+	String NODE = "node";
+	String BEAN = "bean";
+
 	/**
 	 * Returns the value of the bean child.
 	 * @return the value of the bean child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("bean")
+	@com.intellij.util.xml.Attribute (BEAN)
 	@Required
 	GenericAttributeValue<String> getBean();
 
@@ -46,7 +51,7 @@ public interface Action extends NavigableElement {
 	 * @return the value of the node child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("node")
+	@com.intellij.util.xml.Attribute (NODE)
 	GenericAttributeValue<Integer> getNode();
 
 
@@ -55,7 +60,7 @@ public interface Action extends NavigableElement {
 	 * @return the value of the nodeGroup child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("nodeGroup")
+	@com.intellij.util.xml.Attribute (NODE_GROUP)
 	GenericAttributeValue<String> getNodeGroup();
 
 
@@ -64,7 +69,7 @@ public interface Action extends NavigableElement {
 	 * @return the value of the canJoinPreviousNode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("canJoinPreviousNode")
+	@com.intellij.util.xml.Attribute (CAN_JOIN_PREVIOUS_NODE)
 	GenericAttributeValue<Boolean> getCanJoinPreviousNode();
 
 

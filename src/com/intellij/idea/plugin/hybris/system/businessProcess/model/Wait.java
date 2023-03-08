@@ -22,17 +22,15 @@
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.de/xsd/processdefinition:wait interface.
  */
 public interface Wait extends NavigableElement {
+
+	String PREPEND_PROCESS_CODE = "prependProcessCode";
 
 	/**
 	 * Returns the value of the then child.
@@ -49,7 +47,7 @@ public interface Wait extends NavigableElement {
 	 * @return the value of the prependProcessCode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("prependProcessCode")
+	@com.intellij.util.xml.Attribute (PREPEND_PROCESS_CODE)
 	GenericAttributeValue<Boolean> getPrependProcessCode();
 
 

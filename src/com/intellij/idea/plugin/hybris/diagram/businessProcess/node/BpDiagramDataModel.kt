@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
 
 import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import org.jetbrains.annotations.Contract
@@ -30,21 +30,21 @@ import java.io.Serial
 
 class BpDiagramDataModel(
     project: Project,
-    val rootBpGraphNode: BpGraphNode?
-) : DiagramDataModel<BpGraphNode?>(project, ApplicationManager.getApplication().getService(BpDiagramProvider::class.java)) {
+    private val rootBpGraphNode: BpGraphNode?
+) : DiagramDataModel<BpGraphNode?>(project, BpDiagramProvider.instance) {
 
     private val edges: MutableCollection<BpDiagramFileEdge> = ArrayList()
     private val nodesMap: MutableMap<String, BpDiagramFileNode> = HashMap()
 
     override fun getNodes() = nodesMap.values
     override fun getEdges() = edges
-    override fun getNodeName(diagramNode: DiagramNode<BpGraphNode?>) = diagramNode.identifyingElement.nodeName
+    override fun getNodeName(diagramNode: DiagramNode<BpGraphNode?>) = diagramNode.identifyingElement.name
 
     @Contract(value = "_ -> null", pure = true)
     override fun addElement(t: BpGraphNode?): BpDiagramFileNode? = null
 
     override fun refreshDataModel() {
-        if (rootBpGraphNode !is BpRootGraphNode) return
+        if (rootBpGraphNode !is BpGraphRootNode) return
 
         edges.clear()
         nodesMap.clear()
@@ -54,10 +54,10 @@ class BpDiagramDataModel(
             .values
             .forEach {
                 val bpDiagramFileNode = BpDiagramFileNode(it)
-                nodesMap[it.nodeName] = bpDiagramFileNode
+                nodesMap[it.name] = bpDiagramFileNode
             }
 
-        nodesMap[rootBpGraphNode.nodeName] = BpDiagramFileNode(rootBpGraphNode)
+        nodesMap[rootBpGraphNode.name] = BpDiagramFileNode(rootBpGraphNode)
 
         nodesMap.values
             .forEach { targetBpDiagramFileNode ->
@@ -65,12 +65,11 @@ class BpDiagramDataModel(
 
                 sourceBpGraphNode.transitions
                     .forEach { (transitionName, targetBpGraphNode) ->
-                        nodesMap[targetBpGraphNode.nodeName]
+                        nodesMap[targetBpGraphNode.name]
                             ?.let { sourceBpDiagramFileNode -> graphService.buildEdge(transitionName, sourceBpDiagramFileNode, targetBpDiagramFileNode) }
                             ?.let { edges.add(it) }
                     }
             }
-
     }
 
     @Contract(pure = true)

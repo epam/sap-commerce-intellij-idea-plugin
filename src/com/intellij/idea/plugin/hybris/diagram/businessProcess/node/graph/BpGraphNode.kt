@@ -15,19 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
-import com.intellij.diagram.DiagramRelationshipInfoAdapter
-import com.intellij.diagram.presentation.DiagramLineType
-import java.awt.Shape
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.xml.DomElement
 
-internal class BpDiagramRelationship(
-    label: String?,
-    lineType: DiagramLineType = DiagramLineType.SOLID,
-    fromLabel: String = "",
-    toLabel: String = "",
-    width: Int = 1
-) : DiagramRelationshipInfoAdapter(label, lineType, label, fromLabel, toLabel, width) {
-
-    override fun getStartArrow(): Shape = STANDARD
+interface BpGraphNode {
+    val name: String
+    val navigableElement: DomElement
+    val transitions: MutableMap<String, BpGraphNode>
+    val virtualFile: VirtualFile
+    val process: Process
+    val properties: Array<BpGraphParameterNodeField>
 }

@@ -112,6 +112,11 @@ public final class HybrisIcons {
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");
 
+    public static final Icon BS_DIAGRAM_PROPERTY = BS_PROPERTY;
+    public static final Icon BS_DIAGRAM_SPRING_BEAN = SPRING_BEAN;
+    public static final Icon BS_DIAGRAM_NODE = AllIcons.Nodes.FieldPK;
+    public static final Icon BS_DIAGRAM_FIELD = AllIcons.Nodes.Field;
+
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
