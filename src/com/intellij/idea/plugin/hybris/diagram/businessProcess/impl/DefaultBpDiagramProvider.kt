@@ -40,10 +40,6 @@ class DefaultBpDiagramProvider : BpDiagramProvider() {
         node: BpGraphNode?,
         virtualFile: VirtualFile?,
         diagramPresentationModel: DiagramPresentationModel
-    ): DiagramDataModel<BpGraphNode?> {
-        val bpDiagramDataModel = BpDiagramDataModel(project, node)
-        bpDiagramDataModel.refreshDataModel()
-        return bpDiagramDataModel
-    }
+    ) = BpDiagramDataModel(project, node)
 
 }

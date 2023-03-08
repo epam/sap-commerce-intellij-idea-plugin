@@ -17,14 +17,21 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramFileEdge
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramFileNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpRootGraphNode
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.xml.DomElement
 
-interface BpGraphNode {
-    val nodeName: String
-    val navigableElement: DomElement
-    val transitions: MutableMap<String, BpGraphNode>
-    val virtualFile: VirtualFile
-    val process: Process
+interface BpGraphService {
+    fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode?
+
+    fun buildNodes(rootGraphNode: BpRootGraphNode): Map<String, BpGraphNode>
+
+    fun buildEdge(name: String, source: BpDiagramFileNode, target: BpDiagramFileNode): BpDiagramFileEdge
+
+    companion object {
+        fun getInstance(): BpGraphService = ApplicationManager.getApplication().getService(BpGraphService::class.java)
+    }
 }

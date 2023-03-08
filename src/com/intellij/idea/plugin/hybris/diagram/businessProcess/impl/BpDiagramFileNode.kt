@@ -24,15 +24,14 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import com.intellij.openapi.application.ApplicationManager
 import java.io.Serial
-import javax.swing.Action
 
 class BpDiagramFileNode(private val diagramNode: BpGraphNode) : DiagramNodeBase<BpGraphNode>(ApplicationManager.getApplication().getService(BpDiagramProvider::class.java)) {
 
     override fun getIdentifyingElement() = diagramNode
-    override fun getTooltip() = identifyingElement.navigableElement.getId().stringValue
-        ?: ""
+    override fun getTooltip() = identifyingElement.nodeName
 
     override fun getIcon() = when (diagramNode.navigableElement) {
+        is Process -> HybrisIcons.BUSINESS_PROCESS
         is Action -> HybrisIcons.BP_DIAGRAM_ACTION
         is Split -> HybrisIcons.BP_DIAGRAM_SPLIT
         is Wait -> HybrisIcons.BP_DIAGRAM_WAIT

@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
+import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
@@ -27,10 +28,13 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import org.apache.commons.collections4.CollectionUtils
+import org.apache.commons.lang3.StringUtils
 
 class DefaultBpGraphService : BpGraphService {
 
-    override fun buildGraphFromXmlFile(project: Project?, virtualFile: VirtualFile?): BpGraphNode? {
+    private val badEdges = arrayOf("NOK", "ERROR", "FAIL", "ON ERROR")
+
+    override fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode? {
         if (project == null || virtualFile == null) return null
 
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) as? XmlFile ?: return null
@@ -40,16 +44,58 @@ class DefaultBpGraphService : BpGraphService {
 
         val process = fileElement.rootElement
 
-        if (!process.start.isValid) return null
+        return BpRootGraphNode(
+            process.name.stringValue ?: virtualFile.nameWithoutExtension,
+            process,
+            virtualFile,
+            process
+        )
+    }
 
-        val nodes = process.nodes
+    override fun buildNodes(rootGraphNode: BpRootGraphNode): Map<String, BpGraphNode> {
+        rootGraphNode.nodeName = rootGraphNode.process.name.stringValue
+            ?: rootGraphNode.virtualFile.nameWithoutExtension
+        rootGraphNode.transitions.clear()
+
+        val nodes = rootGraphNode.process.nodes
             .filter { it.getId().isValid }
 
-        if (CollectionUtils.isEmpty(nodes)) return null
-
-        val nodesMap = buildNodesMap(virtualFile, process, nodes)
+        val nodesMap = nodes
+            .filter { it.getId().stringValue != null }
+            .associate {
+                val nodeName = it.getId().stringValue!!
+                nodeName to DefaultBpGraphNode(nodeName, it, rootGraphNode.virtualFile, rootGraphNode.process)
+            }
         populateNodesTransitions(nodesMap, nodes)
-        return nodesMap[process.start.stringValue]
+
+        rootGraphNode.navigableElement.start.stringValue
+            ?.let { nodesMap[it] }
+            ?.let { rootGraphNode.transitions["Start"] = it }
+        rootGraphNode.navigableElement.onError.stringValue
+            ?.let { nodesMap[it] }
+            ?.let { rootGraphNode.transitions["On Error"] = it }
+
+        return nodesMap
+    }
+
+    override fun buildEdge(name: String, source: BpDiagramFileNode, target: BpDiagramFileNode) = if (source == target) {
+        BpDiagramFileCycleEdge(source, target, BpDiagramRelationship(name, DiagramLineType.DASHED))
+    } else if ("Start".equals(name, true)) {
+        BpDiagramFileStartEdge(source, target, BpDiagramRelationship(name))
+    } else if ("Cancel".equals(name, true)) {
+        BpDiagramFileCancelEdge(source, target, BpDiagramRelationship(name))
+    } else if ("Partial".equals(name, true)) {
+        BpDiagramFilePartialEdge(source, target, BpDiagramRelationship(name))
+    } else if (name.isBlank() || "OK".equals(name, ignoreCase = true)) {
+        BpDiagramFileOKEdge(source, target, BpDiagramRelationship(name))
+    } else if (StringUtils.startsWith(name, message("hybris.business.process.timeout"))) {
+        BpDiagramFileTimeoutEdge(source, target, BpDiagramRelationship(name))
+    } else if (StringUtils.startsWith(name, message("hybris.business.process.timeout"))) {
+        BpDiagramFileTimeoutEdge(source, target, BpDiagramRelationship(name))
+    } else if (badEdges.contains(name.uppercase())) {
+        BpDiagramFileNOKEdge(source, target, BpDiagramRelationship(name))
+    } else {
+        BpDiagramFileDefaultEdge(source, target, BpDiagramRelationship(name))
     }
 
     private fun populateNodesTransitions(
@@ -69,63 +115,36 @@ class DefaultBpGraphService : BpGraphService {
         }
     }
 
-    private fun getTransitionIdsForAction(navigableElement: NavigableElement): Map<String, String?> {
-        val transitionsIds: MutableMap<String, String?> = HashMap()
+    private fun getTransitionIdsForAction(navigableElement: NavigableElement): Map<String, String?> = when (navigableElement) {
+        is Join -> mapOf("" to navigableElement.then.stringValue)
 
-        when (navigableElement) {
-            is Join -> {
-                transitionsIds[""] = navigableElement.then.stringValue
+        is Notify -> mapOf("" to navigableElement.then.stringValue)
+
+        is Action -> navigableElement.transitions
+            .associate { (it.name.stringValue ?: "") to it.to.stringValue }
+
+        is Split -> navigableElement.targetNodes
+            .associate { (it.name.stringValue ?: "") to it.name.stringValue }
+
+        is ScriptAction -> navigableElement.transitions
+            .associate { (it.name.stringValue ?: "") to it.to.stringValue }
+
+        is Wait -> {
+            val transitions = mutableMapOf(
+                "" to navigableElement.then.stringValue
+            )
+
+            if (navigableElement.case.isValid && CollectionUtils.isNotEmpty(navigableElement.case.choices)) {
+                navigableElement.case.choices
+                    .filter { it.getId().stringValue != null }
+                    .forEach { transitions[it.getId().stringValue!!] = it.then.stringValue }
             }
-
-            is Notify -> {
-                transitionsIds[""] = navigableElement.then.stringValue
+            if (navigableElement.timeout.isValid) {
+                transitions["${message("hybris.business.process.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
             }
-
-            is Action -> {
-                for (transition in navigableElement.transitions) {
-                    transitionsIds[transition.name.stringValue!!] = transition.to.stringValue
-                }
-            }
-
-            is Split -> {
-                for (targetNode in navigableElement.targetNodes) {
-                    transitionsIds[""] = targetNode.name.stringValue
-                }
-            }
-
-            is Wait -> {
-                transitionsIds[""] = navigableElement.then.stringValue
-                if (navigableElement.case.isValid && CollectionUtils.isNotEmpty(navigableElement.case.choices)) {
-                    for (choice in navigableElement.case.choices) {
-                        transitionsIds[choice.getId().stringValue!!] = choice.then.stringValue
-                    }
-                }
-                if (navigableElement.timeout.isValid) {
-                    transitionsIds["${message("hybris.business.process.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
-                }
-            }
-
-            is ScriptAction -> {
-                for (transition in navigableElement.transitions) {
-                    transitionsIds[""] = transition.to.stringValue
-                }
-            }
-
+            transitions
         }
 
-        return transitionsIds
-    }
-
-    private fun buildNodesMap(
-        virtualFile: VirtualFile,
-        process: Process,
-        nodes: List<NavigableElement>
-    ): Map<String, BpGraphNode> {
-        val nodesMap: MutableMap<String, BpGraphNode> = HashMap()
-
-        for (action in nodes) {
-            nodesMap[action.getId().stringValue!!] = DefaultBpGraphNode(action, nodesMap, virtualFile, process)
-        }
-        return nodesMap
+        else -> emptyMap()
     }
 }

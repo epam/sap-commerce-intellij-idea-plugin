@@ -24,6 +24,8 @@ import com.intellij.openapi.editor.colors.ColorKey.find
 
 object BpColors {
 
+    val START: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_START_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
+    val PARTIAL: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_PARTIAL_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
     val OK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_OK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
     val NOK: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_NOK_EDGE", find("DIAGRAM_DEFAULT_EDGE"))
     val TIMEOUT: ColorKey = createColorKeyWithFallback("BP_DIAGRAM_TIMEOUT_EDGE", find("DIAGRAM_DEFAULT_EDGE"))

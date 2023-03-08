@@ -22,7 +22,7 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/BpDiagramDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/BpDiagramDarcula.xml"/>
 
-        <diagram.Provider id="BusinessProcessDiagramProvider"
+        <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
                           implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.DefaultBpDiagramProvider"/>
 
         <diagram.Provider id="HybrisModuleDependencies"

@@ -23,7 +23,7 @@ import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import java.io.Serial
 
-class BpDiagramFileEdge(
+abstract class BpDiagramFileEdge(
     source: DiagramNode<BpGraphNode>,
     target: DiagramNode<BpGraphNode>,
     relationship: DiagramRelationshipInfo
@@ -32,5 +32,93 @@ class BpDiagramFileEdge(
     companion object {
         @Serial
         private const val serialVersionUID: Long = 2559027965802259164L
+    }
+}
+
+class BpDiagramFileCycleEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 1109695684478969817L
+    }
+}
+
+class BpDiagramFileStartEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 5732011492071389878L
+    }
+}
+
+class BpDiagramFileOKEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -261196942015337711L
+    }
+}
+
+class BpDiagramFileNOKEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 6605498804231635111L
+    }
+}
+
+class BpDiagramFileCancelEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -5502578267095995858L
+    }
+}
+
+class BpDiagramFilePartialEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -2843747361304072195L
+    }
+}
+
+class BpDiagramFileTimeoutEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -1236008898547054199L
+    }
+}
+
+class BpDiagramFileDefaultEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+) : BpDiagramFileEdge(source, target, relationship) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -8473761360059983132L
     }
 }

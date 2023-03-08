@@ -20,17 +20,15 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramVfsResolver
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
 
 class DefaultBpDiagramVfsResolver : BpDiagramVfsResolver {
 
     override fun getQualifiedName(t: BpGraphNode?) = t
-        ?.takeIf { it.process.start.stringValue == it.navigableElement.getId().stringValue }
-        ?.xmlVirtualFile
+        ?.virtualFile
         ?.url
 
-    override fun resolveElementByFQN(s: String, project: Project) = ApplicationManager.getApplication().getService(BpGraphService::class.java)
-        .buildGraphFromXmlFile(project, VirtualFileManager.getInstance().findFileByUrl(s))
+    override fun resolveElementByFQN(s: String, project: Project) = BpGraphService.getInstance()
+        .buildRootNode(project, VirtualFileManager.getInstance().findFileByUrl(s))
 }

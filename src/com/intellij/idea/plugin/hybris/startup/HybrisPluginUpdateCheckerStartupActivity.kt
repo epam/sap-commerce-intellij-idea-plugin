@@ -21,13 +21,15 @@ import com.intellij.ide.plugins.StandalonePluginUpdateChecker
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.notification.NotificationGroupManager
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
+import com.intellij.openapi.util.Disposer
 
-class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
+class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity, Disposable {
 
     override suspend fun execute(project: Project) {
         ApplicationManager.getApplication().invokeLater {
@@ -38,7 +40,12 @@ class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
                 NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
                 HybrisIcons.HYBRIS
             )
+            Disposer.register(this, checker)
             checker.pluginUsed()
         }
+    }
+
+    override fun dispose() {
+        // NOP
     }
 }

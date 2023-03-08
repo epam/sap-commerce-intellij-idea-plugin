@@ -16,20 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess;
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.openapi.vfs.VirtualFile
 
-/**
- * Created 9:33 PM 02 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface BpGraphService {
+class BpRootGraphNode(
+    override var nodeName: String,
+    override val navigableElement: Process,
+    override val virtualFile: VirtualFile,
+    override val process: Process,
+) : BpGraphNode {
 
-    @Nullable
-    BpGraphNode buildGraphFromXmlFile(@Nullable Project project, @Nullable VirtualFile virtualFile);
-
+    override val transitions: MutableMap<String, BpGraphNode> = HashMap()
 }

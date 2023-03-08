@@ -21,6 +21,7 @@ import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -29,33 +30,34 @@ import java.io.Serial
 
 class BpDiagramDataModel(
     project: Project,
-    rootBpGraphNode: BpGraphNode?
+    val rootBpGraphNode: BpGraphNode?
 ) : DiagramDataModel<BpGraphNode?>(project, ApplicationManager.getApplication().getService(BpDiagramProvider::class.java)) {
 
     private val edges: MutableCollection<BpDiagramFileEdge> = ArrayList()
     private val nodesMap: MutableMap<String, BpDiagramFileNode> = HashMap()
 
-    init {
-        rootBpGraphNode
-            ?.nodesMap
-            ?.values
-            ?.filter { it.navigableElement.getId().stringValue != null }
-            ?.forEach {
-                val bpDiagramFileNode = BpDiagramFileNode(it)
-                nodesMap[it.navigableElement.getId().stringValue!!] = bpDiagramFileNode
-            }
-    }
-
     override fun getNodes() = nodesMap.values
     override fun getEdges() = edges
-    override fun getNodeName(diagramNode: DiagramNode<BpGraphNode?>) = diagramNode.identifyingElement.navigableElement.getId().stringValue
-        ?: "node"
+    override fun getNodeName(diagramNode: DiagramNode<BpGraphNode?>) = diagramNode.identifyingElement.nodeName
 
     @Contract(value = "_ -> null", pure = true)
     override fun addElement(t: BpGraphNode?): BpDiagramFileNode? = null
 
     override fun refreshDataModel() {
+        if (rootBpGraphNode !is BpRootGraphNode) return
+
         edges.clear()
+        nodesMap.clear()
+
+        val graphService = BpGraphService.getInstance()
+        graphService.buildNodes(rootBpGraphNode)
+            .values
+            .forEach {
+                val bpDiagramFileNode = BpDiagramFileNode(it)
+                nodesMap[it.nodeName] = bpDiagramFileNode
+            }
+
+        nodesMap[rootBpGraphNode.nodeName] = BpDiagramFileNode(rootBpGraphNode)
 
         nodesMap.values
             .forEach { targetBpDiagramFileNode ->
@@ -63,10 +65,9 @@ class BpDiagramDataModel(
 
                 sourceBpGraphNode.transitions
                     .forEach { (transitionName, targetBpGraphNode) ->
-                        nodesMap[targetBpGraphNode.navigableElement.getId().stringValue]
-                            ?.let { sourceBpDiagramFileNode ->
-                                edges.add(BpDiagramFileEdge(sourceBpDiagramFileNode, targetBpDiagramFileNode, BpDiagramRelationship(transitionName)))
-                            }
+                        nodesMap[targetBpGraphNode.nodeName]
+                            ?.let { sourceBpDiagramFileNode -> graphService.buildEdge(transitionName, sourceBpDiagramFileNode, targetBpDiagramFileNode) }
+                            ?.let { edges.add(it) }
                     }
             }
 

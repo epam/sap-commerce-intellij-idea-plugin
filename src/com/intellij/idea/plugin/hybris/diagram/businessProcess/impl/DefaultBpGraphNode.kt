@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.NavigableElement
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.xml.DomElement
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
 class DefaultBpGraphNode(
-    override val navigableElement: NavigableElement,
-    override val nodesMap: Map<String, BpGraphNode>,
-    override val xmlVirtualFile: VirtualFile,
+    override val nodeName: String,
+    override val navigableElement: DomElement,
+    override val virtualFile: VirtualFile,
     override val process: Process
 ) : BpGraphNode {
     override val transitions: MutableMap<String, BpGraphNode> = HashMap()
@@ -40,16 +40,16 @@ class DefaultBpGraphNode(
             return false
         }
         val otherNode = other as DefaultBpGraphNode
-        if (!navigableElement.getId().isValid || !otherNode.navigableElement.getId().isValid) return false
 
         return EqualsBuilder()
-            .append(navigableElement.getId().stringValue, otherNode.navigableElement.getId().stringValue)
+            .append(nodeName, otherNode.nodeName)
             .isEquals
     }
 
     override fun hashCode(): Int = HashCodeBuilder(17, 37)
-        .append(navigableElement.getId().stringValue)
+        .append(nodeName)
         .toHashCode()
 
-    override fun toString() = "DefaultBpGraphNode{genericAction=${navigableElement.getId().stringValue}}"
+    override fun toString() = "DefaultBpGraphNode{genericAction=$nodeName}"
+
 }

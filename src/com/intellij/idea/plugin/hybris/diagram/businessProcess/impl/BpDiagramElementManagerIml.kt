@@ -24,20 +24,24 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.application.ApplicationManager
 
 class BpDiagramElementManagerIml : AbstractDiagramElementManager<BpGraphNode>(), BpDiagramElementManager {
 
     override fun findInDataContext(dataContext: DataContext): BpGraphNode? {
         if (!ActionUtils.isHybrisContext(dataContext)) return null
 
-        return ApplicationManager.getApplication().getService(BpGraphService::class.java).buildGraphFromXmlFile(
+        return BpGraphService.getInstance().buildRootNode(
             CommonDataKeys.PROJECT.getData(dataContext),
             CommonDataKeys.VIRTUAL_FILE.getData(dataContext)
         )
     }
 
     override fun isAcceptableAsNode(o: Any?) = o is BpGraphNode
-    override fun getElementTitle(t: BpGraphNode) = t.navigableElement.getId().stringValue
-    override fun getNodeTooltip(t: BpGraphNode) = t.navigableElement.getId().stringValue
+    override fun getElementTitle(t: BpGraphNode) = t.nodeName
+    override fun getNodeTooltip(t: BpGraphNode) = t.nodeName
+
+    override fun getNodeItems(parent: BpGraphNode?): Array<Any> {
+        // TODO: add properties for each node here
+        return emptyArray()
+    }
 }
