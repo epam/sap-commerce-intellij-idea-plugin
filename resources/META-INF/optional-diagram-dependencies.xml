@@ -19,11 +19,11 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <additionalTextAttributes scheme="Default" file="colorSchemes/BpDiagramDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/BpDiagramDarcula.xml"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/HybrisDiagramDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/HybrisDiagramDarcula.xml"/>
 
         <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
-                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramProviderImpl"/>
+                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"/>
 
         <diagram.Provider id="HybrisModuleDependencies"
                           implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
@@ -31,32 +31,14 @@
 <!--        <diagram.Provider id="HybrisTypeSystemDependencies"-->
 <!--                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>-->
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramProviderImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramElementManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramElementManagerIml"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramVfsResolver"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramVfsResolverImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColorManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramColorManagerIml"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramNodeContentManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpDiagramNodeContentManagerImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramVisibilityManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramVisibilityManagerImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramVfsResolver"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramVfsResolverImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramNodeContentManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramNodeContentManagerImpl"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramElementManager"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramElementManagerImpl"/>
     </extensions>
 
     <actions>
         <action id="ShowModuleDependencyDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.module.ShowModuleDependencyDiagramAction"
+                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowModuleDependencyDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>

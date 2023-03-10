@@ -17,13 +17,46 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.diagram.BaseDiagramProvider
+import com.intellij.diagram.*
+import com.intellij.diagram.extras.DiagramExtras
+import com.intellij.diagram.settings.DiagramConfigElement
+import com.intellij.diagram.settings.DiagramConfigGroup
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.*
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import org.intellij.lang.annotations.Pattern
 
-abstract class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
+class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
 
-    companion object {
-        val instance: BpDiagramProvider = ApplicationManager.getApplication().getService(BpDiagramProvider::class.java)
+    @Pattern("[a-zA-Z0-9_-]*")
+    override fun getID() = "HybrisBusinessProcessDiagramProvider"
+    override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.business.process.provider.name")
+
+    override fun createNodeContentManager(): DiagramNodeContentManager = BpDiagramNodeContentManager()
+    override fun getElementManager(): DiagramElementManager<BpGraphNode> = BpDiagramElementManager()
+    override fun getVfsResolver(): BpDiagramVfsResolver = BpDiagramVfsResolver()
+    override fun getColorManager(): DiagramColorManager = BpDiagramColorManager()
+
+    override fun createDataModel(
+        project: Project,
+        node: BpGraphNode?,
+        virtualFile: VirtualFile?,
+        diagramPresentationModel: DiagramPresentationModel
+    ) = BpDiagramDataModel(project, node, this)
+
+    override fun getExtras(): DiagramExtras<BpGraphNode> {
+        return object : DiagramExtras<BpGraphNode>() {
+            override fun getAdditionalDiagramSettings(): Array<DiagramConfigGroup> {
+                val elements = DiagramConfigGroup("Categories")
+                elements.addElement(
+                    DiagramConfigElement("Parameters", true)
+                )
+                return arrayOf(elements)
+            }
+        }
     }
+
 }

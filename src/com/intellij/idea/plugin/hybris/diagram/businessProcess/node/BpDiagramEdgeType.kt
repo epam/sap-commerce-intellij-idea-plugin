@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
 
-interface BpGraphService {
-    fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode?
-
-    fun buildNodes(rootGraphNode: BpGraphRootNode): Map<String, BpGraphNode>
-
-    companion object {
-        fun getInstance(project: Project): BpGraphService = project.getService(BpGraphService::class.java)
-    }
+enum class BpDiagramEdgeType {
+    OK,
+    NOK,
+    START,
+    CANCEL,
+    PARTIAL,
+    CYCLE,
+    TIMEOUT,
+    DEFAULT
 }

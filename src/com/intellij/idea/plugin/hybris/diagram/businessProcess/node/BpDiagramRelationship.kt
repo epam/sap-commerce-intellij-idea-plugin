@@ -21,7 +21,7 @@ import com.intellij.diagram.DiagramRelationshipInfoAdapter
 import com.intellij.diagram.presentation.DiagramLineType
 import java.awt.Shape
 
-internal class BpDiagramRelationship(
+class BpDiagramRelationship(
     label: String?,
     lineType: DiagramLineType = DiagramLineType.SOLID,
     fromLabel: String = "",

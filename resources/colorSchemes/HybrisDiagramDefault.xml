@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list>
+    <colors>
+        <!-- Business Process Diagram -->
+        <!-- EDGES -->
+
+        <option name="BP_DIAGRAM_EDGE_START" value="00BBEE"/>
+        <option name="BP_DIAGRAM_EDGE_PARTIAL" value="007BA1"/>
+        <option name="BP_DIAGRAM_EDGE_OK" value="098000"/>
+        <option name="BP_DIAGRAM_EDGE_NOK" value="A1312A"/>
+        <option name="BP_DIAGRAM_EDGE_TIMEOUT" value="A1312A"/>
+        <option name="BP_DIAGRAM_EDGE_CYCLE" value="9407ED"/>
+        <option name="BP_DIAGRAM_EDGE_CANCEL" value="F78058"/>
+        <option name="BP_DIAGRAM_EDGE_DEFAULT" value="474747"/>
+
+        <!-- Module Dependencies Diagram -->
+        <!-- EDGES -->
+
+        <option name="MODULE_DEP_DIAGRAM_EDGE_CIRCULAR" value="FF0000"/>
+
+        <!-- HEADERS -->
+
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM" value="31425A"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_NON_CUSTOM" value="31425A"/>
+    </colors>
+</list>

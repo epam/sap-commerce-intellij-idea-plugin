@@ -19,11 +19,15 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.DiagramVfsResolver
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFileManager
 
-interface BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?> {
+class BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?> {
 
-    companion object {
-        val instance: BpDiagramVfsResolver = ApplicationManager.getApplication().getService(BpDiagramVfsResolver::class.java)
-    }
+    override fun getQualifiedName(t: BpGraphNode?) = t
+        ?.virtualFile
+        ?.url
+
+    override fun resolveElementByFQN(s: String, project: Project) = BpGraphService.getInstance(project)
+        .buildRootNode(project, VirtualFileManager.getInstance().findFileByUrl(s))
 }

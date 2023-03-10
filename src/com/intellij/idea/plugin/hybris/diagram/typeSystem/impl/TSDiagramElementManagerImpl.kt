@@ -34,21 +34,23 @@ class TSDiagramElementManagerImpl : AbstractDiagramElementManager<TSGraphItem>()
         return TSGraphItem()
     }
 
-    override fun findElementsInDataContext(context: DataContext) =
-        if (ActionUtils.isHybrisContext(context)) mutableListOf(TSGraphItem())
-        else mutableListOf()
+    override fun findElementsInDataContext(context: DataContext) = if (ActionUtils.isHybrisContext(context))
+        mutableListOf(TSGraphItem())
+    else mutableListOf()
 
     override fun isAcceptableAsNode(item: Any?) = item is TSGraphItem
 
     override fun getNodeTooltip(node: TSGraphItem?): String? {
-        return node?.meta?.let { """
+        return node?.meta?.let {
+            """
             <html>
                 <body>
                     <p><strong>Module</strong>: ${it.module.name}</p>
                     <p><strong>Custom</strong>: ${if (it.isCustom) "Yes" else "No"}</p>
                 </body>
             </html>
-        """.trimIndent() }
+        """.trimIndent()
+        }
     }
 
     override fun canCollapse(item: TSGraphItem?) = item != null
@@ -63,6 +65,7 @@ class TSDiagramElementManagerImpl : AbstractDiagramElementManager<TSGraphItem>()
             is TSGlobalMetaItem -> meta.attributes.values
                 .map { it.name }
                 .toTypedArray()
+
             else -> emptyArray()
         }
     }

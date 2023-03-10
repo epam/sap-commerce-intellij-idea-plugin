@@ -16,10 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module;
+package com.intellij.idea.plugin.hybris.diagram.module.actions;
 
 import com.intellij.diagram.DiagramProvider;
 import com.intellij.idea.plugin.hybris.actions.ActionUtils;
+import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.uml.core.actions.ShowDiagram;
 import org.jetbrains.annotations.NotNull;

@@ -15,19 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess
+package com.intellij.idea.plugin.hybris.diagram.module.node
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.diagram.DiagramEdgeBase
+import com.intellij.diagram.DiagramRelationshipInfo
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
+import java.io.Serial
 
-interface BpGraphService {
-    fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode?
+class ModuleDepDiagramEdge(
+    from: ModuleDepDiagramNode,
+    to: ModuleDepDiagramNode,
+    relationship: DiagramRelationshipInfo
+) : DiagramEdgeBase<ModuleDepGraphNode>(from, to, relationship) {
 
-    fun buildNodes(rootGraphNode: BpGraphRootNode): Map<String, BpGraphNode>
+    @JvmField
+    var circleNumber = -1
+
+    @JvmField
+    var numberOfCircles = 0
+
+    fun isCircular() = circleNumber > -1
 
     companion object {
-        fun getInstance(project: Project): BpGraphService = project.getService(BpGraphService::class.java)
+        @Serial
+        private const val serialVersionUID: Long = -7068334246818700799L
     }
 }

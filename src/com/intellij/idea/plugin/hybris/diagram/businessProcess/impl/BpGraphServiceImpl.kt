@@ -17,11 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
-import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.*
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
@@ -31,11 +29,8 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import org.apache.commons.collections4.CollectionUtils
-import org.apache.commons.lang3.StringUtils
 
 class BpGraphServiceImpl : BpGraphService {
-
-    private val badEdges = arrayOf("NOK", "ERROR", "FAIL", "ON ERROR")
 
     override fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode? {
         if (project == null || virtualFile == null) return null
@@ -67,7 +62,7 @@ class BpGraphServiceImpl : BpGraphService {
             .filter { it.getId().stringValue != null }
             .associate {
                 val nodeName = it.getId().stringValue!!
-                nodeName to buildNode(nodeName, it, rootGraphNode)
+                nodeName to BpGraphFactory.buildNode(nodeName, it, rootGraphNode)
             }
         populateNodesTransitions(nodesMap, nodes)
 
@@ -79,35 +74,6 @@ class BpGraphServiceImpl : BpGraphService {
             ?.let { rootGraphNode.transitions["On Error"] = it }
 
         return nodesMap
-    }
-
-    private fun buildNode(nodeName: String, element: NavigableElement, rootGraphNode: BpGraphRootNode) = when (element) {
-        is ScriptAction -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-        is Action -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-        is End -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-        is Wait -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-        is Notify -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-        else -> BpGraphFactory.buildNode(nodeName, element, rootGraphNode)
-    }
-
-    override fun buildEdge(name: String, source: BpDiagramFileNode, target: BpDiagramFileNode) = if (source == target) {
-        BpDiagramFileCycleEdge(source, target, BpDiagramRelationship(name, DiagramLineType.DASHED))
-    } else if ("Start".equals(name, true)) {
-        BpDiagramFileStartEdge(source, target, BpDiagramRelationship(name))
-    } else if ("Cancel".equals(name, true)) {
-        BpDiagramFileCancelEdge(source, target, BpDiagramRelationship(name))
-    } else if ("Partial".equals(name, true)) {
-        BpDiagramFilePartialEdge(source, target, BpDiagramRelationship(name))
-    } else if (name.isBlank() || "OK".equals(name, ignoreCase = true)) {
-        BpDiagramFileOKEdge(source, target, BpDiagramRelationship(name))
-    } else if (StringUtils.startsWith(name, message("hybris.business.process.timeout"))) {
-        BpDiagramFileTimeoutEdge(source, target, BpDiagramRelationship(name))
-    } else if (StringUtils.startsWith(name, message("hybris.business.process.timeout"))) {
-        BpDiagramFileTimeoutEdge(source, target, BpDiagramRelationship(name))
-    } else if (badEdges.contains(name.uppercase())) {
-        BpDiagramFileNOKEdge(source, target, BpDiagramRelationship(name))
-    } else {
-        BpDiagramFileDefaultEdge(source, target, BpDiagramRelationship(name))
     }
 
     private fun populateNodesTransitions(

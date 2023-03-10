@@ -18,12 +18,24 @@
 
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.diagram.DiagramNodeContentManager
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.diagram.AbstractDiagramNodeContentManager
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramCategory
+import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphParameterNodeField
 
-interface BpDiagramNodeContentManager : DiagramNodeContentManager {
+class BpDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
+
+    override fun getContentCategories() = CATEGORIES
+
+    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (nodeElement) {
+        is BpGraphParameterNodeField -> category == PARAMETERS
+        else -> super.isInCategory(nodeElement, item, category, builder)
+    }
 
     companion object {
-        val instance: BpDiagramNodeContentManager = ApplicationManager.getApplication().getService(BpDiagramNodeContentManager::class.java)
+        private val PARAMETERS = DiagramCategory({ "Parameters" }, AllIcons.Nodes.Property, true, false)
+        private val CATEGORIES = arrayOf(PARAMETERS)
     }
+
 }

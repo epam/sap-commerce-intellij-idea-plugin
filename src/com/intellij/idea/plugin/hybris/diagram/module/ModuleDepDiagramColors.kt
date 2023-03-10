@@ -16,24 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module;
+package com.intellij.idea.plugin.hybris.diagram.module
 
-import com.intellij.diagram.DiagramVfsResolver;
-import com.intellij.openapi.project.Project;
+import com.intellij.diagram.DiagramColors
+import com.intellij.openapi.editor.colors.ColorKey
+import com.intellij.openapi.editor.colors.ColorKey.createColorKeyWithFallback
 
-/**
- * @author Eugene.Kudelevsky
- */
-@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
-public class ModuleDepDiagramVfsResolver implements DiagramVfsResolver<ModuleDepDiagramItem> {
+object ModuleDepDiagramColors {
 
-    @Override
-    public String getQualifiedName(final ModuleDepDiagramItem element) {
-        return element.getQualifiedName();
-    }
-
-    @Override
-    public ModuleDepDiagramItem resolveElementByFQN(final String fqn, final Project project) {
-        return ModuleDepDiagramItem.fromFQN(fqn, project);
-    }
+    val HEADER_CUSTOM: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CUSTOM", DiagramColors.NODE_HEADER)
+    val HEADER_NON_CUSTOM: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_NON_CUSTOM", DiagramColors.NODE_HEADER)
+    val EDGE_CIRCULAR: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_EDGE_CIRCULAR", DiagramColors.BAD_EDGE)
 }

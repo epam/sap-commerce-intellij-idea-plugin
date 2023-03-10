@@ -15,32 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
 
-package com.intellij.idea.plugin.hybris.diagram.module;
+import com.intellij.diagram.DiagramEdgeBase
+import com.intellij.diagram.DiagramNode
+import com.intellij.diagram.DiagramRelationshipInfo
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import java.io.Serial
 
-import com.intellij.diagram.AbstractDiagramNodeContentManager;
-import com.intellij.diagram.DiagramBuilder;
-import com.intellij.diagram.DiagramCategory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+class BpDiagramEdge(
+    source: DiagramNode<BpGraphNode>,
+    target: DiagramNode<BpGraphNode>,
+    relationship: DiagramRelationshipInfo,
+    val type: BpDiagramEdgeType = BpDiagramEdgeType.DEFAULT
+) : DiagramEdgeBase<BpGraphNode>(source, target, relationship) {
 
-/**
- * @author Eugene.Kudelevsky
- */
-public class ModuleDepDiagramNodeContentManager extends AbstractDiagramNodeContentManager {
-
-    @Override
-    public boolean isInCategory(
-        @Nullable final Object nodeElement,
-        @Nullable final Object item,
-        @NotNull final DiagramCategory category,
-        @Nullable final DiagramBuilder builder
-    ) {
-        return false;
-    }
-
-    @Override
-    public DiagramCategory[] getContentCategories() {
-        return DiagramCategory.EMPTY_ARRAY;
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 2559027965802259164L
     }
 }
+

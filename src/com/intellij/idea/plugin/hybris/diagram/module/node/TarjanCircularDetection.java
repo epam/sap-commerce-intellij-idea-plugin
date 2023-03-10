@@ -16,24 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module;
+package com.intellij.idea.plugin.hybris.diagram.module.node;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TarjanCircularDetection {
 
     private int index;
     private Collection<ModuleDepDiagramEdge> myEdges;
-    private Collection<ModuleDepDiagramItem> myNodes;
-    private Stack<ModuleDepDiagramItem> stack;
-    private Map<ModuleDepDiagramItem, Integer> indexMap;
-    private Map<ModuleDepDiagramItem, Integer> lowLinkMap;
+    private Collection<ModuleDepGraphNode> myNodes;
+    private Stack<ModuleDepGraphNode> stack;
+    private Map<ModuleDepGraphNode, Integer> indexMap;
+    private Map<ModuleDepGraphNode, Integer> lowLinkMap;
 
     public TarjanCircularDetection(
         final Collection<ModuleDepDiagramNode> diagramNodes,
@@ -47,26 +44,26 @@ public class TarjanCircularDetection {
     }
 
     public void detectAndMarkCircles() {
-        final List<List<ModuleDepDiagramItem>> nodeSegments = computeTarjan();
+        final List<List<ModuleDepGraphNode>> nodeSegments = computeTarjan();
         int segmentId = 0;
-        for (List<ModuleDepDiagramItem> segment : nodeSegments) {
+        for (List<ModuleDepGraphNode> segment : nodeSegments) {
             final int finalSegmentId = segmentId;
             myEdges.stream()
                    .filter(edge -> segment.contains(edge.getSource().getIdentifyingElement()))
                    .filter(edge -> segment.contains(edge.getTarget().getIdentifyingElement()))
                    .forEach(edge -> {
-                       edge.setCircleNumber(finalSegmentId);
-                       edge.setNumberOfCircles(nodeSegments.size());
+                       edge.circleNumber = finalSegmentId;
+                       edge.numberOfCircles = nodeSegments.size();
                    });
             segmentId++;
         }
     }
 
-    public List<List<ModuleDepDiagramItem>> computeTarjan() {
+    public List<List<ModuleDepGraphNode>> computeTarjan() {
         this.index = 0;
         stack = new Stack<>();
-        List<List<ModuleDepDiagramItem>> result = new ArrayList<>();
-        for (ModuleDepDiagramItem v : this.myNodes) {
+        List<List<ModuleDepGraphNode>> result = new ArrayList<>();
+        for (ModuleDepGraphNode v : this.myNodes) {
             if (indexMap.get(v) == null) {
                 result.addAll(this.strongConnect(v));
             }
@@ -75,13 +72,13 @@ public class TarjanCircularDetection {
     }
 
 
-    public List<List<ModuleDepDiagramItem>> strongConnect(ModuleDepDiagramItem v) {
+    public List<List<ModuleDepGraphNode>> strongConnect(ModuleDepGraphNode v) {
         indexMap.put(v, index);
         lowLinkMap.put(v, index);
         index++;
         stack.push(v);
-        List<List<ModuleDepDiagramItem>> result = new ArrayList<>();
-        for (ModuleDepDiagramItem w : getSuccessors(v)) {
+        List<List<ModuleDepGraphNode>> result = new ArrayList<>();
+        for (ModuleDepGraphNode w : getSuccessors(v)) {
             if (indexMap.get(w) == null) {
                 result.addAll(strongConnect(w));
                 lowLinkMap.put(v, Math.min(lowLinkMap.get(v), lowLinkMap.get(w)));
@@ -93,9 +90,9 @@ public class TarjanCircularDetection {
         }
 
         if (lowLinkMap.get(v).equals(indexMap.get(v))) {
-            List<ModuleDepDiagramItem> sccList = new ArrayList<>();
+            List<ModuleDepGraphNode> sccList = new ArrayList<>();
             while (true) {
-                ModuleDepDiagramItem w = stack.pop();
+                ModuleDepGraphNode w = stack.pop();
                 sccList.add(w);
                 if (w.equals(v)) {
                     break;
@@ -108,7 +105,7 @@ public class TarjanCircularDetection {
         return result;
     }
 
-    private List<ModuleDepDiagramItem> getSuccessors(final ModuleDepDiagramItem v) {
+    private List<ModuleDepGraphNode> getSuccessors(final ModuleDepGraphNode v) {
         return myEdges.stream()
                       .filter(edge -> edge.getSource().getIdentifyingElement().equals(v))
                       .map(edge -> edge.getTarget().getIdentifyingElement()).collect(Collectors.toList());

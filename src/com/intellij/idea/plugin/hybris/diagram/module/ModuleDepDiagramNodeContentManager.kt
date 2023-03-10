@@ -15,28 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
+package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.AbstractDiagramNodeContentManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramCategory
-import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramNodeContentManager
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphParameterNodeField
 
-class BpDiagramNodeContentManagerImpl : AbstractDiagramNodeContentManager(), BpDiagramNodeContentManager {
+class ModuleDepDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
 
-    override fun getContentCategories() = CATEGORIES
-
-    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (nodeElement) {
-        is BpGraphParameterNodeField -> category == PARAMETERS
-        else -> super<AbstractDiagramNodeContentManager>.isInCategory(nodeElement, item, category, builder)
-    }
-
-    companion object {
-        private val PARAMETERS = DiagramCategory({ "Parameters" }, AllIcons.Nodes.Property, true, false)
-        private val CATEGORIES = arrayOf(PARAMETERS)
-    }
-
+    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = false
+    override fun getContentCategories(): Array<DiagramCategory> = DiagramCategory.EMPTY_ARRAY
 }

@@ -15,34 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
+package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.diagram.DiagramNodeBase
+import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import java.io.Serial
 
-class BpDiagramFileNode(private val diagramNode: BpGraphNode) : DiagramNodeBase<BpGraphNode>(BpDiagramProvider.instance) {
+class ModuleDepDiagramNode(private val graphNode: ModuleDepGraphNode, provider: DiagramProvider<ModuleDepGraphNode>) : DiagramNodeBase<ModuleDepGraphNode>(provider) {
 
-    override fun getIdentifyingElement() = diagramNode
+    override fun getIdentifyingElement() = graphNode
     override fun getTooltip() = identifyingElement.name
-
-    override fun getIcon() = when (diagramNode.navigableElement) {
-        is Process -> HybrisIcons.BUSINESS_PROCESS
-        is ScriptAction -> HybrisIcons.BP_DIAGRAM_SCRIPT
-        is Action -> HybrisIcons.BP_DIAGRAM_ACTION
-        is Split -> HybrisIcons.BP_DIAGRAM_SPLIT
-        is Wait -> HybrisIcons.BP_DIAGRAM_WAIT
-        is Join -> HybrisIcons.BP_DIAGRAM_JOIN
-        is End -> HybrisIcons.BP_DIAGRAM_END
-        is Notify -> HybrisIcons.BP_DIAGRAM_NOTIFY
-        else -> null
-    }
+    override fun getIcon() = if (graphNode.isCustomExtension)
+        null
+    else HybrisIcons.MODULE_OOTB
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 1719193590375939088L
+        private const val serialVersionUID: Long = -2453613292735510114L
     }
+
 }

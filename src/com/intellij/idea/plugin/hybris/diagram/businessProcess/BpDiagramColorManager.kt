@@ -17,12 +17,38 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
+import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramColorManagerBase
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.diagram.DiagramEdge
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_CANCEL
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_CYCLE
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_DEFAULT
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_NOK
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_OK
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_PARTIAL
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_START
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_TIMEOUT
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdge
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdgeType
 
-abstract class BpDiagramColorManager : DiagramColorManagerBase() {
+/**
+ * TODO: Add user-defined project-based mapping for custom transition names
+ */
+class BpDiagramColorManager : DiagramColorManagerBase() {
 
-    companion object {
-        val instance: BpDiagramColorManager = ApplicationManager.getApplication().getService(BpDiagramColorManager::class.java)
+    override fun getEdgeColorKey(builder: DiagramBuilder, edge: DiagramEdge<*>) = when (edge) {
+        is BpDiagramEdge -> when (edge.type) {
+            BpDiagramEdgeType.OK -> EDGE_OK
+            BpDiagramEdgeType.NOK -> EDGE_NOK
+            BpDiagramEdgeType.START -> EDGE_START
+            BpDiagramEdgeType.CANCEL -> EDGE_CANCEL
+            BpDiagramEdgeType.PARTIAL -> EDGE_PARTIAL
+            BpDiagramEdgeType.CYCLE -> EDGE_CYCLE
+            BpDiagramEdgeType.TIMEOUT -> EDGE_TIMEOUT
+            else -> EDGE_DEFAULT
+        }
+
+        else -> EDGE_DEFAULT
     }
+
 }
