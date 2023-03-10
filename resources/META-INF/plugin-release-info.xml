@@ -110,9 +110,12 @@
                 <li><i>Bug Fix:</i> Fixed Ant targets registration after Project Refresh</li>
                 <li><i>Other:</i> Improved cleanup on Project dispose</li>
                 <li><i>Other:</i> Added registration of the latest Ant targets</li>
+                <li><i>Other:</i> Added custom module icons</li>
                 <li><i>Other:</i> Removed Business Process JAXB mapping</li>
                 <li><i>Other:</i> Migrated Business Process Diagram generation to Kotlin</li>
+                <li><i>Other:</i> Migrated Module Dependencies Diagram generation to Kotlin</li>
                 <li><i>Other:</i> Updated to Kotlin 1.8</li>
+                <li><i>Other:</i> Updated to Gradle plugin to 1.13.2</li>
                 <li><i>Other:</i> Removed custom <code>rt-ant</code> support, it did not work at all</li>
             </ul>
             <h3>2023.1.1</h3>

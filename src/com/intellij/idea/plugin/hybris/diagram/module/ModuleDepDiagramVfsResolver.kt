@@ -18,32 +18,21 @@
 package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.DiagramVfsResolver
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphModuleNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 
 class ModuleDepDiagramVfsResolver : DiagramVfsResolver<ModuleDepGraphNode> {
 
-    override fun getQualifiedName(element: ModuleDepGraphNode?) = element?.qualifiedName ?: "module"
+    override fun getQualifiedName(element: ModuleDepGraphNode?) = element
+        ?.takeIf { it is ModuleDepGraphModuleNode }
+        ?.name
 
-    override fun resolveElementByFQN(fqn: String, project: Project): ModuleDepGraphNode? {
-        var moduleName: String? = null
-        var customExtension = false
-
-        if (fqn.startsWith(ModuleDepGraphNode.MODULE_PREFIX)) {
-            moduleName = fqn.substring(ModuleDepGraphNode.MODULE_PREFIX.length)
-            customExtension = false
-        } else if (fqn.startsWith(ModuleDepGraphNode.CUSTOM_MODULE_PREFIX)) {
-            moduleName = fqn.substring(ModuleDepGraphNode.CUSTOM_MODULE_PREFIX.length)
-            customExtension = true
-        }
-        if (moduleName == null) {
-            return ModuleDepGraphNode(null, false)
-        }
-
-        return ModuleManager.getInstance(project).findModuleByName(moduleName)
-            ?.let { ModuleDepGraphNode(it, customExtension) }
-    }
-
+    override fun resolveElementByFQN(fqn: String, project: Project) = fqn
+        .takeIf { fqn == "null" }
+        ?.let { ModuleManager.getInstance(project).findModuleByName(fqn) }
+        ?.let { ModuleDepGraphFactory.buildNode(it) }
 
 }

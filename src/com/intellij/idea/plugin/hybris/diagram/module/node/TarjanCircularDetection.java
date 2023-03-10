@@ -49,12 +49,12 @@ public class TarjanCircularDetection {
         for (List<ModuleDepGraphNode> segment : nodeSegments) {
             final int finalSegmentId = segmentId;
             myEdges.stream()
-                   .filter(edge -> segment.contains(edge.getSource().getIdentifyingElement()))
-                   .filter(edge -> segment.contains(edge.getTarget().getIdentifyingElement()))
-                   .forEach(edge -> {
-                       edge.circleNumber = finalSegmentId;
-                       edge.numberOfCircles = nodeSegments.size();
-                   });
+                .filter(edge -> segment.contains(edge.getSource().getIdentifyingElement()))
+                .filter(edge -> segment.contains(edge.getTarget().getIdentifyingElement()))
+                .forEach(edge -> {
+                    edge.circleNumber = finalSegmentId;
+                    edge.numberOfCircles = nodeSegments.size();
+                });
             segmentId++;
         }
     }
@@ -107,7 +107,7 @@ public class TarjanCircularDetection {
 
     private List<ModuleDepGraphNode> getSuccessors(final ModuleDepGraphNode v) {
         return myEdges.stream()
-                      .filter(edge -> edge.getSource().getIdentifyingElement().equals(v))
-                      .map(edge -> edge.getTarget().getIdentifyingElement()).collect(Collectors.toList());
+            .filter(edge -> edge.getSource().getIdentifyingElement().equals(v))
+            .map(edge -> edge.getTarget().getIdentifyingElement()).collect(Collectors.toList());
     }
 }

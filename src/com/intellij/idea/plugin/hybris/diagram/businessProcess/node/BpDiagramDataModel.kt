@@ -21,6 +21,7 @@ import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
 import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
 import com.intellij.openapi.project.Project

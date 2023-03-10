@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphDefaultNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphParameterNodeField
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdge
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdgeType
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramRelationship
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import com.intellij.util.xml.DomElement
 import org.apache.commons.lang3.StringUtils

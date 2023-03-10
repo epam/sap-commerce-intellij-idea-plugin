@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.diagram.module.actions
 
-package com.intellij.idea.plugin.hybris.settings
+import com.intellij.idea.plugin.hybris.actions.ActionUtils
+import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.uml.core.actions.ShowDiagram
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+class ShowModuleDependencyDiagramAction : ShowDiagram() {
 
-data class ExtensionDescriptor(
-    var name: String = "",
-    var type: HybrisModuleDescriptorType = HybrisModuleDescriptorType.NONE,
-    var backofficeModule: Boolean = false,
-    var hacModule: Boolean = false,
-    var deprecated: Boolean = false,
-    var extGenTemplateExtension: Boolean = false,
-    var addon: Boolean = false,
-    var classPathGen: String? = null,
-    var moduleGenName: String? = null,
-)
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
+    }
+
+    override fun getForcedProvider(e: AnActionEvent) = ModuleDepDiagramProvider()
+
+}

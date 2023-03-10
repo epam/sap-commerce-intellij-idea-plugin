@@ -54,14 +54,13 @@ public final class HybrisIcons {
     public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
 
-    public static final Icon MODULE_OOTB = HYBRIS;
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
 
     public static final Icon EXTENSION_CLOUD = getIcon("/icons/extension/cloud.svg");
     public static final Icon EXTENSION_CUSTOM = getIcon("/icons/extension/custom.svg");
-    public static final Icon EXTENSION_PLATFORM = HYBRIS;
-    public static final Icon EXTENSION_EXT = HYBRIS;
+    public static final Icon EXTENSION_PLATFORM = getIcon("/icons/extension/platform.svg");
+    public static final Icon EXTENSION_EXT = getIcon("/icons/extension/ext.svg");
     public static final Icon EXTENSION_OOTB = HYBRIS;
 
     public static final Icon BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg");

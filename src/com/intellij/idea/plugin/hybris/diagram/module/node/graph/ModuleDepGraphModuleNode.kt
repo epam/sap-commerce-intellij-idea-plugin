@@ -16,18 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.openapi.module.Module
 
-data class ExtensionDescriptor(
-    var name: String = "",
-    var type: HybrisModuleDescriptorType = HybrisModuleDescriptorType.NONE,
-    var backofficeModule: Boolean = false,
-    var hacModule: Boolean = false,
-    var deprecated: Boolean = false,
-    var extGenTemplateExtension: Boolean = false,
-    var addon: Boolean = false,
-    var classPathGen: String? = null,
-    var moduleGenName: String? = null,
-)
+data class ModuleDepGraphModuleNode(
+    val module: Module,
+    val type: HybrisModuleDescriptorType,
+    override val name: String
+) : ModuleDepGraphNode

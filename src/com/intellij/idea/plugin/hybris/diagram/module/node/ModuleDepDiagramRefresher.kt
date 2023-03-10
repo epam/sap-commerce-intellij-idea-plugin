@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.openapi.module.Module
@@ -49,37 +49,37 @@ object ModuleDepDiagramRefresher {
 
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
-                .filter { isCustomExtension(it) || isOotbOrPlatformExtension(it) }
+                .filter { isCustomExtension(HybrisModuleDescriptor.getDescriptorType(it)) || isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(it) }
+            .filter { isCustomExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(it) }
+            .filter { isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(module) }
+                    .any { module: Module -> isCustomExtension(HybrisModuleDescriptor.getDescriptorType(module)) }
             }
-            .filter { isOotbOrPlatformExtension(it) }
+            .filter { isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
         return customExtModules + dependencies + backwardDependencies
     }
 
-    private fun isCustomExtension(module: Module) = HybrisModuleDescriptor.getDescriptorType(module) == HybrisModuleDescriptorType.CUSTOM
+    private fun isCustomExtension(descriptorType: HybrisModuleDescriptorType) = descriptorType == HybrisModuleDescriptorType.CUSTOM
 
-    private fun isOotbOrPlatformExtension(module: Module) = with(HybrisModuleDescriptor.getDescriptorType(module)) {
-        this == HybrisModuleDescriptorType.OOTB || this == HybrisModuleDescriptorType.PLATFORM
+    private fun isOotbOrPlatformExtension(descriptorType: HybrisModuleDescriptorType) = with(descriptorType) {
+        this == HybrisModuleDescriptorType.OOTB || this == HybrisModuleDescriptorType.PLATFORM || this == HybrisModuleDescriptorType.EXT
     }
 
     private fun createAdaptedEdges(model: ModuleDepDiagramDataModel, edges: Collection<ModulesUmlEdge>): List<ModuleDepDiagramEdge> = edges
         .map {
             val from = it.source.identifyingElement.module
-            val fromItem = ModuleDepGraphNode(from, isCustomExtension(from))
+            val fromItem = ModuleDepGraphFactory.buildNode(from)
             val to = it.target.identifyingElement.module
-            val toItem = ModuleDepGraphNode(to, isCustomExtension(to))
+            val toItem = ModuleDepGraphFactory.buildNode(to)
             ModuleDepDiagramEdge(
                 ModuleDepDiagramNode(fromItem, model.provider),
                 ModuleDepDiagramNode(toItem, model.provider),
@@ -89,6 +89,6 @@ object ModuleDepDiagramRefresher {
 
     private fun createAdaptedNodes(model: ModuleDepDiagramDataModel, items: Collection<ModuleItem>): List<ModuleDepDiagramNode> = items
         .map {
-            ModuleDepDiagramNode(ModuleDepGraphNode(it.module, isCustomExtension(it.module)), model.provider)
+            ModuleDepDiagramNode(ModuleDepGraphFactory.buildNode(it.module), model.provider)
         }
 }

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpGraphFactory
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*

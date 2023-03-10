@@ -22,6 +22,8 @@ import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import java.io.Serial
 
+
+// TODO: improve static fields usage
 class ModuleDepDiagramEdge(
     from: ModuleDepDiagramNode,
     to: ModuleDepDiagramNode,

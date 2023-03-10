@@ -38,7 +38,7 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
                 .map {
                     LookupElementBuilder.create(it.name)
                             .withTailText(tail(it), true)
-                            .withTypeText(it.type?.name, true)
+                            .withTypeText(it.type.name, true)
                             .withIcon(
                                     when (it.type) {
                                         HybrisModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD

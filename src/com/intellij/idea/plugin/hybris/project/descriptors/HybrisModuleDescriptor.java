@@ -85,16 +85,15 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     @NotNull
     HybrisModuleDescriptorType getDescriptorType();
 
-    @Nullable
     static HybrisModuleDescriptorType getDescriptorType(@NotNull final Module module) {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(module.getProject());
         final var descriptorTypeName = settingsComponent.getModuleSettings(module).getDescriptorType();
         try {
             return descriptorTypeName == null
-                ? null
+                ? HybrisModuleDescriptorType.NONE
                 : HybrisModuleDescriptorType.valueOf(descriptorTypeName);
         } catch (IllegalArgumentException e) {
-            return null;
+            return HybrisModuleDescriptorType.NONE;
         }
     }
 

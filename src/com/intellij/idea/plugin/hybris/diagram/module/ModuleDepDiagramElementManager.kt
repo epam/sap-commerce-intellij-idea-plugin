@@ -21,22 +21,18 @@ import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphRootNode
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
 
 class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGraphNode>() {
 
     override fun findInDataContext(dataContext: DataContext) = if (ActionUtils.isHybrisContext(dataContext))
-        ModuleDepGraphNode(null, false)
+        ModuleDepGraphRootNode()
     else null
 
-    // need to return mutable collection to avoid UOE from the platform
-    override fun findElementsInDataContext(context: DataContext) = if (ActionUtils.isHybrisContext(context))
-        mutableListOf(ModuleDepGraphNode(null, false))
-    else mutableListOf()
-
     override fun isAcceptableAsNode(element: Any?) = element is ModuleDepGraphNode
-    override fun getElementTitle(node: ModuleDepGraphNode) = node.toString()
+    override fun getElementTitle(node: ModuleDepGraphNode) = node.name
 
     override fun getItemName(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = if (nodeElement != null)
         SimpleColoredText(nodeElement.name, DEFAULT_TITLE_ATTR)
