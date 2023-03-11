@@ -37,6 +37,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface MapType extends DomElement {
 
+    String ARGUMENTTYPE = "argumenttype";
+    String RETURNTYPE = "returntype";
+
     /**
      * Returns the value of the code child.
      * <pre>
@@ -62,7 +65,7 @@ public interface MapType extends DomElement {
      * @return the value of the argumenttype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("argumenttype")
+    @com.intellij.util.xml.Attribute(ARGUMENTTYPE)
     @Required
     @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getArgumentType();
@@ -78,7 +81,7 @@ public interface MapType extends DomElement {
      * @return the value of the returntype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("returntype")
+    @com.intellij.util.xml.Attribute(RETURNTYPE)
     @Required
     @Convert(value = CompositeConverter.AnyClassifier.class, soft = true)
     GenericAttributeValue<String> getReturnType();

@@ -21,14 +21,14 @@ import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphRootNode
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeRoot
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
 
 class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGraphNode>() {
 
     override fun findInDataContext(dataContext: DataContext) = if (ActionUtils.isHybrisContext(dataContext))
-        ModuleDepGraphRootNode()
+        ModuleDepGraphNodeRoot()
     else null
 
     override fun isAcceptableAsNode(element: Any?) = element is ModuleDepGraphNode

@@ -19,15 +19,15 @@ package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.DiagramVfsResolver
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphModuleNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 
 class ModuleDepDiagramVfsResolver : DiagramVfsResolver<ModuleDepGraphNode> {
 
     override fun getQualifiedName(element: ModuleDepGraphNode?) = element
-        ?.takeIf { it is ModuleDepGraphModuleNode }
+        ?.takeIf { it is ModuleDepGraphNodeModule }
         ?.name
 
     override fun resolveElementByFQN(fqn: String, project: Project) = fqn

@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.*
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.*
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
@@ -32,7 +32,7 @@ class ModuleDepDiagramProvider : BaseDiagramProvider<ModuleDepGraphNode>() {
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisModuleDependencies"
     override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name")
-    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.HYBRIS
+    override fun getActionIcon(isPopup: Boolean): Icon = AllIcons.Actions.DiagramDiff
 
     override fun createVisibilityManager() = ModuleDepDiagramVisibilityManager()
     override fun createNodeContentManager() = ModuleDepDiagramNodeContentManager()

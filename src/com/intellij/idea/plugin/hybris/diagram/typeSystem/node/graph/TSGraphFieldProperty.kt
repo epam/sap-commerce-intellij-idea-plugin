@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-data class BpGraphParameterNodeField(
-    val name: String,
-    val value: String,
-)
+data class TSGraphFieldProperty(
+    override val name: String,
+    val value: String
+) : TSGraphField

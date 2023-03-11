@@ -25,7 +25,12 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdg
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramRelationship
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.DomManager
 import org.apache.commons.lang3.StringUtils
 
 object BpGraphFactory {
@@ -33,7 +38,23 @@ object BpGraphFactory {
     //TODO: mby read all possible "bad" edges from the hybris4intellij.properties file
     private val badEdges = arrayOf("NOK", "ERROR", "FAIL", "ON ERROR")
 
-    fun buildNode(nodeName: String, element: NavigableElement, rootGraphNode: BpGraphRootNode) = when (element) {
+    fun buildNode(project: Project, virtualFile: VirtualFile): BpGraphNode? {
+        val psiFile = PsiManager.getInstance(project).findFile(virtualFile) as? XmlFile ?: return null
+        val fileElement = DomManager.getDomManager(project).getFileElement(psiFile, Process::class.java)
+
+        if (fileElement == null || !fileElement.isValid || !fileElement.rootElement.isValid) return null
+
+        val process = fileElement.rootElement
+
+        return BpGraphNodeRoot(
+            process.name.stringValue ?: virtualFile.nameWithoutExtension,
+            process,
+            virtualFile,
+            process
+        )
+    }
+
+    fun buildNode(nodeName: String, element: NavigableElement, rootGraphNode: BpGraphNodeRoot) = when (element) {
         is ScriptAction -> build(nodeName, element, rootGraphNode)
         is Action -> build(nodeName, element, rootGraphNode)
         is End -> build(nodeName, element, rootGraphNode)
@@ -78,55 +99,55 @@ object BpGraphFactory {
         )
     }
 
-    private fun build(nodeName: String, element: Action, rootGraphNode: BpGraphRootNode): BpGraphNode {
+    private fun build(nodeName: String, element: Action, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
         val properties = mutableListOf(
-            BpGraphParameterNodeField(Action.CAN_JOIN_PREVIOUS_NODE, (element.canJoinPreviousNode.stringValue
+            BpGraphFieldParameter(Action.CAN_JOIN_PREVIOUS_NODE, (element.canJoinPreviousNode.stringValue
                 ?: "false"))
         )
         element.node.stringValue
-            ?.let { properties.add(BpGraphParameterNodeField(Action.NODE, it)) }
+            ?.let { properties.add(BpGraphFieldParameter(Action.NODE, it)) }
         element.nodeGroup.stringValue
-            ?.let { properties.add(BpGraphParameterNodeField(Action.NODE_GROUP, it)) }
+            ?.let { properties.add(BpGraphFieldParameter(Action.NODE_GROUP, it)) }
         element.bean.stringValue
-            ?.let { properties.add(BpGraphParameterNodeField(Action.BEAN, it)) }
+            ?.let { properties.add(BpGraphFieldParameter(Action.BEAN, it)) }
         element.parameters
             .forEach {
-                properties.add(BpGraphParameterNodeField(it.name.stringValue ?: "", it.value.stringValue ?: ""))
+                properties.add(BpGraphFieldParameter(it.name.stringValue ?: "", it.value.stringValue ?: ""))
             }
 
-        return BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
     }
 
-    private fun build(nodeName: String, element: End, rootGraphNode: BpGraphRootNode): BpGraphNode {
+    private fun build(nodeName: String, element: End, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
         val properties = (element.state.stringValue
-            ?.let { arrayOf(BpGraphParameterNodeField(End.STATE, it)) }
+            ?.let { arrayOf(BpGraphFieldParameter(End.STATE, it)) }
             ?: emptyArray())
-        return BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphRootNode): BpGraphNode {
+    private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
         val properties = mutableListOf(
-            BpGraphParameterNodeField(Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue
+            BpGraphFieldParameter(Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue
                 ?: "true"))
         )
-        return BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
     }
 
-    private fun build(nodeName: String, element: Notify, rootGraphNode: BpGraphRootNode): BpGraphNode {
+    private fun build(nodeName: String, element: Notify, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
         val properties = element.userGroups
             .filter { it.name.stringValue?.isNotEmpty() ?: false }
-            .map { BpGraphParameterNodeField(it.name.stringValue!!, "") }
+            .map { BpGraphFieldParameter(it.name.stringValue!!, "") }
             .toTypedArray()
-        return BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: ScriptAction, rootGraphNode: BpGraphRootNode): BpGraphNode {
+    private fun build(nodeName: String, element: ScriptAction, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
         val properties = element.script.type.stringValue
-            ?.let { arrayOf(BpGraphParameterNodeField(ScriptAction.SCRIPT, it)) }
+            ?.let { arrayOf(BpGraphFieldParameter(ScriptAction.SCRIPT, it)) }
             ?: emptyArray()
-        return BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphRootNode) = BpGraphDefaultNode(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process)
+    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphNodeRoot) = BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process)
 
 }

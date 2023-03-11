@@ -29,7 +29,7 @@ class ModuleDepDiagramVisibilityManager : AbstractUmlVisibilityManager() {
 
     override fun getVisibilityLevels() = LEVELS.clone()
     override fun getVisibilityLevel(o: Any?) = null
-    override fun getComparator(): Comparator<VisibilityLevel> = COMPARATOR
+    override fun getComparator(): Comparator<VisibilityLevel?> = COMPARATOR
     override fun isRelayoutNeeded() = true
 
     companion object {
@@ -37,6 +37,6 @@ class ModuleDepDiagramVisibilityManager : AbstractUmlVisibilityManager() {
         val CUSTOM_WITH_DEPENDENCIES = VisibilityLevel("Custom with Dependencies")
         val ALL_MODULES = VisibilityLevel("All")
         private val LEVELS = arrayOf(ONLY_CUSTOM_MODULES, CUSTOM_WITH_DEPENDENCIES, ALL_MODULES)
-        private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel -> ArrayUtil.indexOf(LEVELS, level) }
+        private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel? -> ArrayUtil.indexOf(LEVELS, level) }
     }
 }

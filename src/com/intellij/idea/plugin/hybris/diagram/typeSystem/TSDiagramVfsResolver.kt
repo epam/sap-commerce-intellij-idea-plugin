@@ -19,12 +19,16 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
 import com.intellij.diagram.DiagramVfsResolver
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSGraphItem
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphFactory
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.openapi.project.Project
 
-interface TSDiagramVfsResolver : DiagramVfsResolver<TSGraphItem> {
+class TSDiagramVfsResolver : DiagramVfsResolver<TSGraphNode> {
 
-    companion object {
-        val instance: TSDiagramVfsResolver = ApplicationManager.getApplication().getService(TSDiagramVfsResolver::class.java)
-    }
+    override fun getQualifiedName(item: TSGraphNode?) = item?.name
+
+    override fun resolveElementByFQN(fqn: String, project: Project) = fqn
+        .takeIf { it != "null" }
+        ?.let { TSGraphFactory.buildNode(project, fqn) }
+
 }

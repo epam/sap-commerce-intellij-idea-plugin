@@ -22,11 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.type.model;
 
 import com.intellij.idea.plugin.hybris.system.type.file.CompositeConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.NameValue;
-import com.intellij.util.xml.Required;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,6 +33,9 @@ import org.jetbrains.annotations.NotNull;
  * </pre>
  */
 public interface CollectionType extends DomElement {
+
+    String ELEMENTTYPE = "elementtype";
+    String TYPE = "type";
 
     /**
      * Returns the value of the code child.
@@ -64,7 +63,7 @@ public interface CollectionType extends DomElement {
      * @return the value of the elementtype child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("elementtype")
+    @com.intellij.util.xml.Attribute(ELEMENTTYPE)
     @Convert(CompositeConverter.TypeOrEnumOrAtomic.class)
     @Required
     GenericAttributeValue<String> getElementType();
@@ -108,7 +107,7 @@ public interface CollectionType extends DomElement {
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     GenericAttributeValue<Type> getType();
 
 

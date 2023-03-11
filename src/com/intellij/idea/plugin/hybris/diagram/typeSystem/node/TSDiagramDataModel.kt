@@ -19,87 +19,32 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 
 import com.intellij.diagram.DiagramDataModel
-import com.intellij.diagram.DiagramEdge
 import com.intellij.diagram.DiagramNode
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
 import com.intellij.openapi.project.Project
+import org.jetbrains.annotations.Contract
 
-class TSDiagramDataModel(myProject: Project, val root: TSGraphItem, provider: TSDiagramProvider) :
-    DiagramDataModel<TSGraphItem>(myProject, provider) {
+class TSDiagramDataModel(myProject: Project, provider: TSDiagramProvider)
+    : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
-    private val myNodes: MutableMap<String, TSGraphNode> = hashMapOf()
-    private val myEdges: MutableSet<TSDiagramEdge> = mutableSetOf()
+    private val edges: MutableCollection<TSDiagramEdge> = ArrayList()
+    private val nodesMap: MutableMap<String, TSDiagramNode> = HashMap()
 
     override fun dispose() {
-        myEdges.clear()
-        myNodes.clear()
+        edges.clear()
+        nodesMap.clear()
     }
 
-    override fun getNodes(): Collection<TSGraphNode> = myNodes.values
+    override fun getNodes() = nodesMap.values
+    override fun getEdges() = edges
+    override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
+    override fun addElement(node: TSGraphNode?) = null
 
-    override fun getEdges() = myEdges
-
+    @Contract(pure = true)
     override fun getModificationTracker() = this
 
-    override fun addElement(item: TSGraphItem?) = null
-
-    override fun createEdge(from: DiagramNode<TSGraphItem>, to: DiagramNode<TSGraphItem>): DiagramEdge<TSGraphItem>? {
-        return super.createEdge(from, to)
-    }
-
-    override fun getNodeName(node: DiagramNode<TSGraphItem>) = node.identifyingElement.meta?.name ?: "root node"
-
-    override fun refreshDataModel() {
-        myEdges.clear()
-        myNodes.clear()
-
-        TSMetaModelAccess.getInstance(project).getMetaModel().getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .values
-            .filter { it.name != null }
-            .filter { it.isCustom }
-            .forEach {
-                myNodes[it.name!!.lowercase()] = TSGraphNode(TSGraphItem(it), provider)
-            }
-
-        myNodes.values
-            .filter { it.item.meta?.name != null }
-            .forEach { sourceNode ->
-                when (val meta = sourceNode.item.meta) {
-                    is TSGlobalMetaItem -> {
-                        processEdge(meta, sourceNode)
-                    }
-                }
-            }
-    }
-
-    private fun processEdge(
-        meta: TSGlobalMetaItem,
-        sourceNode: TSGraphNode
-    ) {
-        val extendsName = meta.extendedMetaItemName?.lowercase() ?: HybrisConstants.TS_TYPE_ITEM.lowercase()
-        var targetNode = myNodes[extendsName]
-
-        if (targetNode == null) {
-            val extendsMeta = TSMetaModelAccess.getInstance(project).findMetaItemByName(extendsName)
-
-            if (extendsMeta?.name != null) {
-                targetNode = TSGraphNode(TSGraphItem(extendsMeta), provider)
-                myNodes[extendsMeta.name!!.lowercase()] = targetNode
-
-                if (extendsName != HybrisConstants.TS_TYPE_ITEM.lowercase()) {
-                    processEdge(extendsMeta, targetNode)
-                }
-            }
-        }
-
-        if (targetNode != null) {
-            myEdges.add(TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship("extends")))
-        }
-    }
+    override fun refreshDataModel() = TSDiagramRefresher.refresh(this, nodesMap, edges)
 
     companion object {
         private const val serialVersionUID: Long = 4148393944331345630L

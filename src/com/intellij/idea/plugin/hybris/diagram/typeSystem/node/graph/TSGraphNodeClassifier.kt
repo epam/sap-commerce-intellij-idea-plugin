@@ -15,17 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeRoot
-import com.intellij.openapi.project.Project
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-interface BpGraphService {
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 
-    fun buildNodes(rootGraphNode: BpGraphNodeRoot): Map<String, BpGraphNode>
+data class TSGraphNodeClassifier(
+    override val name: String,
+    val meta: TSGlobalMetaClassifier<*>,
+    override val fields: Array<TSGraphField> = emptyArray()
+) : TSGraphNode {
 
-    companion object {
-        fun getInstance(project: Project): BpGraphService = project.getService(BpGraphService::class.java)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TSGraphNodeClassifier) return false
+
+        if (name != other.name) return false
+        if (meta != other.meta) return false
+        return fields.contentEquals(other.fields)
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + meta.hashCode()
+        result = 31 * result + fields.contentHashCode()
+        return result
     }
 }

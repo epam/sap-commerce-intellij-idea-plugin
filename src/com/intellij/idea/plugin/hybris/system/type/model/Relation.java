@@ -21,11 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,6 +39,8 @@ public interface Relation extends DomElement {
     String AUTO_CREATE = "autocreate";
     String GENERATE = "generate";
     String DESCRIPTION = "description";
+    String SOURCE_ELEMENT = "sourceElement";
+    String TARGET_ELEMENT = "targetElement";
 
     /**
      * Returns the value of the simple content.
@@ -171,7 +169,7 @@ public interface Relation extends DomElement {
      * @return the value of the sourceElement child.
      */
     @NotNull
-    @SubTag("sourceElement")
+    @SubTag(SOURCE_ELEMENT)
     @Required
     RelationSourceElement getSourceElement();
 
@@ -186,7 +184,7 @@ public interface Relation extends DomElement {
      * @return the value of the targetElement child.
      */
     @NotNull
-    @SubTag("targetElement")
+    @SubTag(TARGET_ELEMENT)
     @Required
     RelationTargetElement getTargetElement();
 

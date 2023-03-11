@@ -16,19 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-import com.intellij.diagram.DiagramEdgeBase
-import com.intellij.diagram.DiagramNode
-import com.intellij.diagram.DiagramRelationshipInfo
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 
-class TSDiagramEdge(
-    from: DiagramNode<TSGraphNode>,
-    to: DiagramNode<TSGraphNode>,
-    relationship: DiagramRelationshipInfo
-) : DiagramEdgeBase<TSGraphNode>(from, to, relationship) {
-    companion object {
-        private const val serialVersionUID: Long = -6563151123755071622L
+data class TSGraphNodeRoot(
+    override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.name"),
+    override val fields: Array<TSGraphField> = emptyArray()
+) : TSGraphNode {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TSGraphNodeRoot) return false
+
+        if (name != other.name) return false
+        return fields.contentEquals(other.fields)
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + fields.contentHashCode()
+        return result
     }
 }

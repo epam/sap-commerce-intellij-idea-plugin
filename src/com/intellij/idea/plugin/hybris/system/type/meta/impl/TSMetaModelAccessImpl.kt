@@ -118,6 +118,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         throw ProcessCanceledException()
     }
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
+    override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.values()
+        .flatMap { getAll(it) }
 
     override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))
     override fun findMetaForDom(dom: EnumType) = findMetaEnumByName(TSMetaModelNameProvider.extract(dom))

@@ -23,7 +23,7 @@ import com.intellij.openapi.module.Module
 
 object ModuleDepGraphFactory {
 
-    fun buildNode(module: Module) = ModuleDepGraphModuleNode(
+    fun buildNode(module: Module) = ModuleDepGraphNodeModule(
         module,
         HybrisModuleDescriptor.getDescriptorType(module),
         module.name

@@ -23,7 +23,10 @@ import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.Cas
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemIndex
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
+import com.intellij.idea.plugin.hybris.system.type.model.Index
+import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
@@ -108,6 +111,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override val attributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
     override val indexes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemIndex>()
+    override val relationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
 
     override val allAttributes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
@@ -157,13 +161,15 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
 
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
         val extends = TSMetaHelper.getAllExtends(globalMetaModel, this)
-        val relationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
+        val currentRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, emptySet())
+        val combinedRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
 
         allExtends.addAll(extends)
         allAttributes.addAll(attributes.values + extends.flatMap { it.attributes.values })
         allCustomProperties.addAll(customProperties.values + extends.flatMap { it.customProperties.values })
         allIndexes.addAll(indexes.values + extends.flatMap { it.indexes.values })
-        allRelationEnds.addAll(relationEnds)
+        allRelationEnds.addAll(combinedRelationEnds)
+        relationEnds.addAll(currentRelationEnds)
 
         if (!isCatalogAware) {
             isCatalogAware = extends.any { it.isCatalogAware }

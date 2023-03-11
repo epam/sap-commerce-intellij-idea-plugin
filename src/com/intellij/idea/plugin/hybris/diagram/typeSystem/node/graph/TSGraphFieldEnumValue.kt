@@ -16,19 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-import com.intellij.diagram.DiagramEdgeBase
-import com.intellij.diagram.DiagramNode
-import com.intellij.diagram.DiagramRelationshipInfo
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
 
-class TSDiagramEdge(
-    from: DiagramNode<TSGraphNode>,
-    to: DiagramNode<TSGraphNode>,
-    relationship: DiagramRelationshipInfo
-) : DiagramEdgeBase<TSGraphNode>(from, to, relationship) {
-    companion object {
-        private const val serialVersionUID: Long = -6563151123755071622L
-    }
-}
+data class TSGraphFieldEnumValue(
+    override val name: String,
+    val meta: TSMetaEnum.TSMetaEnumValue,
+) : TSGraphField

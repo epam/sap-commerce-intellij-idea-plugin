@@ -23,7 +23,7 @@ import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeRoot
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import org.jetbrains.annotations.Contract
@@ -46,7 +46,7 @@ class BpDiagramDataModel(
     override fun addElement(t: BpGraphNode?): BpDiagramNode? = null
 
     override fun refreshDataModel() {
-        if (rootBpGraphNode !is BpGraphRootNode) return
+        if (rootBpGraphNode !is BpGraphNodeRoot) return
 
         edges.clear()
         nodesMap.clear()
@@ -77,7 +77,10 @@ class BpDiagramDataModel(
     @Contract(pure = true)
     override fun getModificationTracker(): ModificationTracker = this
 
-    override fun dispose() {}
+    override fun dispose() {
+        edges.clear()
+        nodesMap.clear()
+    }
 
     companion object {
         @Serial

@@ -22,20 +22,21 @@ import com.intellij.diagram.AbstractDiagramNodeContentManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramCategory
 import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphParameterNodeField
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFieldParameter
 
 class BpDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
 
     override fun getContentCategories() = CATEGORIES
 
     override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (nodeElement) {
-        is BpGraphParameterNodeField -> category == PARAMETERS
+        is BpGraphFieldParameter -> category == PARAMETERS
         else -> super.isInCategory(nodeElement, item, category, builder)
     }
 
     companion object {
-        private val PARAMETERS = DiagramCategory({ "Parameters" }, AllIcons.Nodes.Property, true, false)
-        private val CATEGORIES = arrayOf(PARAMETERS)
+        val PARAMETERS = DiagramCategory({ message("hybris.diagram.bp.provider.category.parameters") }, AllIcons.Nodes.Property, true, false)
+        val CATEGORIES = arrayOf(PARAMETERS)
     }
 
 }

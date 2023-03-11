@@ -16,12 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
-import javax.swing.Icon
-
-class TSGraphItem(val meta: TSGlobalMetaClassifier<*>?) {
-    constructor() : this(null)
-}
+data class BpGraphFieldParameter(
+    val name: String,
+    val value: String,
+)

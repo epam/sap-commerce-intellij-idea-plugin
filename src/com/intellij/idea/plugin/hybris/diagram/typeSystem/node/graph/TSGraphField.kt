@@ -16,10 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.typeSystem.impl
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-import com.intellij.diagram.DiagramColorManager
-
-class TSDiagramColorManagerImpl : DiagramColorManager() {
-
+interface TSGraphField {
+    val name: String
 }

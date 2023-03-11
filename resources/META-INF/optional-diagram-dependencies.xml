@@ -28,8 +28,8 @@
         <diagram.Provider id="HybrisModuleDependencies"
                           implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
 
-<!--        <diagram.Provider id="HybrisTypeSystemDependencies"-->
-<!--                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>-->
+        <diagram.Provider id="HybrisTypeSystemDependencies"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
@@ -37,8 +37,14 @@
     </extensions>
 
     <actions>
+        <action id="ShowTypeSystemDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowTypeSystemDiagramAction"
+                text="Show Type System Diagram"
+                icon="AllIcons.FileTypes.Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
         <action id="ShowModuleDependencyDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowModuleDependencyDiagramAction"
+                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowTypeSystemDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>

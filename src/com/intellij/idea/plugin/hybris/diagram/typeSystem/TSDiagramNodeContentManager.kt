@@ -18,12 +18,37 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
-import com.intellij.diagram.DiagramNodeContentManager
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.diagram.AbstractDiagramNodeContentManager
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.diagram.DiagramCategory
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
 
-interface TSDiagramNodeContentManager : DiagramNodeContentManager {
+class TSDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
+
+    override fun getContentCategories() = CATEGORIES
+
+    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (item) {
+        is TSGraphFieldProperty -> category == PROPERTIES
+        is TSGraphFieldDeployment -> category == DEPLOYMENT
+        is TSGraphFieldAttribute -> category == ATTRIBUTES
+        is TSGraphFieldRelationEnd -> category == RELATION_ENDS
+        is TSGraphFieldCustomProperty -> category == CUSTOM_PROPERTIES
+        is TSGraphFieldIndex -> category == INDEXES
+        is TSGraphFieldEnumValue -> category == ENUM_VALUES
+        else -> false
+    }
 
     companion object {
-        val instance: TSDiagramNodeContentManager = ApplicationManager.getApplication().getService(TSDiagramNodeContentManager::class.java)
+        val PROPERTIES = DiagramCategory({ message("hybris.diagram.ts.provider.category.properties") }, HybrisIcons.TS_DIAGRAM_PROPERTY, true, false)
+        val DEPLOYMENT = DiagramCategory({ message("hybris.diagram.ts.provider.category.deployment") }, HybrisIcons.TS_DIAGRAM_DEPLOYMENT, true, false)
+        val ATTRIBUTES = DiagramCategory({ message("hybris.diagram.ts.provider.category.attributes") }, HybrisIcons.TS_ATTRIBUTE, true, false)
+        val RELATION_ENDS = DiagramCategory({ message("hybris.diagram.ts.provider.category.relation_ends") }, HybrisIcons.TS_RELATION, true, false)
+        val CUSTOM_PROPERTIES = DiagramCategory({ message("hybris.diagram.ts.provider.category.custom_properties") }, HybrisIcons.TS_CUSTOM_PROPERTY, true, false)
+        val INDEXES = DiagramCategory({ message("hybris.diagram.ts.provider.category.indexes") }, HybrisIcons.TS_INDEX, true, false)
+        val ENUM_VALUES = DiagramCategory({ message("hybris.diagram.ts.provider.category.enum_values") }, HybrisIcons.TS_ENUM_VALUE, true, false)
+        val CATEGORIES = arrayOf(PROPERTIES, CUSTOM_PROPERTIES, ATTRIBUTES, RELATION_ENDS, INDEXES, ENUM_VALUES, DEPLOYMENT)
     }
+
 }

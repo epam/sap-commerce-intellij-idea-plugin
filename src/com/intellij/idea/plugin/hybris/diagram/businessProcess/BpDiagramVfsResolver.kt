@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.DiagramVfsResolver
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -28,6 +29,8 @@ class BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?> {
         ?.virtualFile
         ?.url
 
-    override fun resolveElementByFQN(s: String, project: Project) = BpGraphService.getInstance(project)
-        .buildRootNode(project, VirtualFileManager.getInstance().findFileByUrl(s))
+    override fun resolveElementByFQN(fqn: String, project: Project) = fqn
+        .takeIf { it != "null" }
+        ?.let { VirtualFileManager.getInstance().findFileByUrl(fqn) }
+        ?.let { BpGraphFactory.buildNode(project, it) }
 }

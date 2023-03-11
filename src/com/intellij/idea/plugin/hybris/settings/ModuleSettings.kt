@@ -18,6 +18,6 @@
 package com.intellij.idea.plugin.hybris.settings
 
 data class ModuleSettings(
-        var isReadonly: Boolean = false,
-        var descriptorType: String? = null
+    var isReadonly: Boolean = false,
+    var descriptorType: String? = null
 )

@@ -18,32 +18,47 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
 import com.intellij.diagram.*
+import com.intellij.diagram.extras.DiagramExtras
+import com.intellij.diagram.settings.DiagramConfigElement
+import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.*
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.*
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSGraphItem
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import org.intellij.lang.annotations.Pattern
+import javax.swing.Icon
 
-class TSDiagramProvider : BaseDiagramProvider<TSGraphItem>() {
+class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
 
+    @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisTypeSystemDependencies"
     override fun getPresentableName() = message("hybris.diagram.ts.provider.name")
+    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.TYPE_SYSTEM
 
     override fun createDataModel(
         project: Project,
-        node: TSGraphItem?,
+        node: TSGraphNode?,
         virtualFile: VirtualFile?,
         model: DiagramPresentationModel
-    ) = with(TSDiagramDataModel(project, TSGraphItem(), this)) {
-        refreshDataModel()
-        this
-    }
+    ) = TSDiagramDataModel(project, this)
 
-    override fun getColorManager() = TSDiagramColorManagerImpl()
-    override fun createNodeContentManager() = TSDiagramNodeContentManager.instance
-//    override fun createVisibilityManager() = TSDiagramVisibilityManager.instance
-    override fun getElementManager() = TSDiagramElementManager.instance
-    override fun getVfsResolver() = TSDiagramVfsResolver.instance
+    override fun createNodeContentManager() = TSDiagramNodeContentManager()
+    override fun createVisibilityManager() = TSDiagramVisibilityManager()
+    override fun getElementManager() = TSDiagramElementManager()
+    override fun getVfsResolver() = TSDiagramVfsResolver()
+
+    override fun getExtras(): DiagramExtras<TSGraphNode> {
+        return object : DiagramExtras<TSGraphNode>() {
+            override fun getAdditionalDiagramSettings() = with(DiagramConfigGroup("Categories")) {
+                TSDiagramNodeContentManager.CATEGORIES
+                    .map { DiagramConfigElement(it.name, true) }
+                    .forEach { addElement(it) }
+
+                arrayOf(this)
+            }
+        }
+    }
 }

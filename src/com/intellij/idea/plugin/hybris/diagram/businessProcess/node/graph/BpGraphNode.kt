@@ -27,5 +27,5 @@ interface BpGraphNode {
     val transitions: MutableMap<String, BpGraphNode>
     val virtualFile: VirtualFile
     val process: Process
-    val properties: Array<BpGraphParameterNodeField>
+    val properties: Array<BpGraphFieldParameter>
 }

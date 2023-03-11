@@ -15,15 +15,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
-import com.intellij.diagram.DiagramVisibilityManager
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.diagram.AbstractUmlVisibilityManager
+import com.intellij.diagram.VisibilityLevel
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
+import com.intellij.util.ArrayUtil
 
-interface TSDiagramVisibilityManager : DiagramVisibilityManager {
+class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
+
+    init {
+        currentVisibilityLevel = ONLY_CUSTOM_FIELDS
+    }
+
+    override fun getVisibilityLevels() = LEVELS.clone()
+    override fun getVisibilityLevel(o: Any?) = when (o) {
+        is TSGraphFieldEnumValue -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldIndex -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldAttribute -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldRelationEnd -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldCustomProperty -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        else -> null
+    }
+
+    override fun getComparator(): Comparator<VisibilityLevel?> = COMPARATOR
+    override fun isRelayoutNeeded() = true
 
     companion object {
-        val instance: TSDiagramVisibilityManager = ApplicationManager.getApplication().getService(TSDiagramVisibilityManager::class.java)
+        val ONLY_CUSTOM_FIELDS = VisibilityLevel(message("hybris.diagram.ts.provider.visibility.only_custom_fields"))
+        val ALL_FIELDS = VisibilityLevel(message("hybris.diagram.ts.provider.visibility.all_fields"))
+        private val LEVELS = arrayOf(ONLY_CUSTOM_FIELDS, ALL_FIELDS)
+        private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel? -> ArrayUtil.indexOf(LEVELS, level) }
     }
 }

@@ -117,6 +117,9 @@ public final class HybrisIcons {
     public static final Icon BS_DIAGRAM_NODE = AllIcons.Nodes.FieldPK;
     public static final Icon BS_DIAGRAM_FIELD = AllIcons.Nodes.Field;
 
+    public static final Icon TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property;
+    public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
+
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");

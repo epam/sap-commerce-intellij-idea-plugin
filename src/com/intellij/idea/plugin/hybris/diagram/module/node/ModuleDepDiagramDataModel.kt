@@ -35,7 +35,10 @@ class ModuleDepDiagramDataModel(project: Project, provider: DiagramProvider<Modu
     override fun addElement(moduleItem: ModuleDepGraphNode?) = null
     override fun getNodeName(node: DiagramNode<ModuleDepGraphNode>) = node.identifyingElement.name
     override fun refreshDataModel() = ModuleDepDiagramRefresher.refresh(this, myNodes, myEdges)
-    override fun dispose() {}
+    override fun dispose() {
+        myNodes.clear()
+        myEdges.clear()
+    }
 
     companion object {
         @Serial

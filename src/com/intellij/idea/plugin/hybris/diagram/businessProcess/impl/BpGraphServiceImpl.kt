@@ -21,36 +21,13 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphRootNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeRoot
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomManager
 import org.apache.commons.collections4.CollectionUtils
 
 class BpGraphServiceImpl : BpGraphService {
 
-    override fun buildRootNode(project: Project?, virtualFile: VirtualFile?): BpGraphNode? {
-        if (project == null || virtualFile == null) return null
-
-        val psiFile = PsiManager.getInstance(project).findFile(virtualFile) as? XmlFile ?: return null
-        val fileElement = DomManager.getDomManager(project).getFileElement(psiFile, Process::class.java)
-
-        if (fileElement == null || !fileElement.isValid || !fileElement.rootElement.isValid) return null
-
-        val process = fileElement.rootElement
-
-        return BpGraphRootNode(
-            process.name.stringValue ?: virtualFile.nameWithoutExtension,
-            process,
-            virtualFile,
-            process
-        )
-    }
-
-    override fun buildNodes(rootGraphNode: BpGraphRootNode): Map<String, BpGraphNode> {
+    override fun buildNodes(rootGraphNode: BpGraphNodeRoot): Map<String, BpGraphNode> {
         rootGraphNode.name = rootGraphNode.process.name.stringValue
             ?: rootGraphNode.virtualFile.nameWithoutExtension
         rootGraphNode.transitions.clear()

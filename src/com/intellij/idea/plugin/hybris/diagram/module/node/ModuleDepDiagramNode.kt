@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphModuleNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import java.io.Serial
 import javax.swing.Icon
@@ -31,8 +31,8 @@ class ModuleDepDiagramNode(private val graphNode: ModuleDepGraphNode, provider: 
     override fun getIdentifyingElement() = graphNode
     override fun getTooltip() = identifyingElement.name
     override fun getIcon(): Icon? = graphNode
-        .takeIf { it is ModuleDepGraphModuleNode }
-        ?.let { (it as ModuleDepGraphModuleNode).type }
+        .takeIf { it is ModuleDepGraphNodeModule }
+        ?.let { (it as ModuleDepGraphNodeModule).type }
         ?.let {
             when (it) {
                 HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM

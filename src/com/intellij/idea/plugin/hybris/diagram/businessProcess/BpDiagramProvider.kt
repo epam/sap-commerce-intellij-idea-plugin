@@ -22,18 +22,21 @@ import com.intellij.diagram.extras.DiagramExtras
 import com.intellij.diagram.settings.DiagramConfigElement
 import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.*
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
+import javax.swing.Icon
 
 class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
 
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisBusinessProcessDiagramProvider"
-    override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.business.process.provider.name")
+    override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.bp.provider.name")
+    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.BUSINESS_PROCESS
 
     override fun createNodeContentManager(): DiagramNodeContentManager = BpDiagramNodeContentManager()
     override fun getElementManager(): DiagramElementManager<BpGraphNode> = BpDiagramElementManager()
@@ -49,12 +52,12 @@ class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
 
     override fun getExtras(): DiagramExtras<BpGraphNode> {
         return object : DiagramExtras<BpGraphNode>() {
-            override fun getAdditionalDiagramSettings(): Array<DiagramConfigGroup> {
-                val elements = DiagramConfigGroup("Categories")
-                elements.addElement(
-                    DiagramConfigElement("Parameters", true)
-                )
-                return arrayOf(elements)
+            override fun getAdditionalDiagramSettings() = with(DiagramConfigGroup("Categories")) {
+                BpDiagramNodeContentManager.CATEGORIES
+                    .map { DiagramConfigElement(it.name, true) }
+                    .forEach { addElement(it) }
+
+                arrayOf(this)
             }
         }
     }

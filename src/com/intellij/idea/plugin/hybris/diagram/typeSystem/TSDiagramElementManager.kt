@@ -18,13 +18,61 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
-import com.intellij.diagram.DiagramElementManager
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSGraphItem
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.diagram.AbstractDiagramElementManager
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.idea.plugin.hybris.actions.ActionUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.ui.SimpleColoredText
+import com.intellij.ui.SimpleTextAttributes
 
-interface TSDiagramElementManager : DiagramElementManager<TSGraphItem> {
+class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
 
-    companion object {
-        val instance: TSDiagramElementManager = ApplicationManager.getApplication().getService(TSDiagramElementManager::class.java)
+    override fun findInDataContext(dataContext: DataContext) = if (ActionUtils.isHybrisContext(dataContext))
+        TSGraphNodeRoot()
+    else null
+
+    override fun isAcceptableAsNode(item: Any?) = item is TSGraphNode
+    override fun getElementTitle(node: TSGraphNode?) = node?.name
+    override fun getNodeTooltip(node: TSGraphNode?) = node?.name
+    override fun getNodeItems(node: TSGraphNode?) = node?.fields
+        ?: emptyArray()
+
+    override fun getItemName(nodeElement: TSGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = when (nodeItem) {
+        is TSGraphField -> SimpleColoredText(nodeItem.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        else -> null
     }
+
+    override fun getItemType(element: Any?) = when (element) {
+        is TSGraphFieldDeployment -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldProperty -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldIndex -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldAttribute -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldRelationElement -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldRelationEnd -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        else -> null
+    }
+
+    override fun getItemIcon(nodeElement: TSGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
+        is TSGraphFieldEnumValue -> HybrisIcons.TS_ENUM_VALUE
+        is TSGraphFieldProperty -> HybrisIcons.TS_DIAGRAM_PROPERTY
+        is TSGraphFieldDeployment -> HybrisIcons.TS_DIAGRAM_DEPLOYMENT
+        is TSGraphFieldAttribute -> HybrisIcons.TS_ATTRIBUTE
+        is TSGraphFieldCustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY
+        is TSGraphFieldRelationEnd -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
+        else HybrisIcons.TS_RELATION_TARGET
+        is TSGraphFieldRelationElement -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
+        else HybrisIcons.TS_RELATION_TARGET
+        is TSGraphFieldIndex -> {
+            if (nodeItem.meta.isRemove) HybrisIcons.TS_INDEX_REMOVE
+            else if (nodeItem.meta.isReplace) HybrisIcons.TS_INDEX_REPLACE
+            else if (nodeItem.meta.isUnique) HybrisIcons.TS_INDEX_UNIQUE
+            else HybrisIcons.TS_INDEX
+        }
+
+        else -> null
+    }
+
 }

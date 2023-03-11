@@ -21,27 +21,29 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNodeClassifier
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import javax.swing.Icon
 
-class TSGraphNode(val item: TSGraphItem, provider: DiagramProvider<TSGraphItem>) : DiagramNodeBase<TSGraphItem>(provider) {
+class TSDiagramNode(val graphNode: TSGraphNode, provider: DiagramProvider<TSGraphNode>) : DiagramNodeBase<TSGraphNode>(provider) {
 
-    override fun getIcon(): Icon {
-        val meta = item.meta ?: return HybrisIcons.TYPE_SYSTEM
-
-        return when (meta) {
-            is TSGlobalMetaAtomic -> HybrisIcons.TS_ATOMIC
-            is TSGlobalMetaEnum -> HybrisIcons.TS_ENUM
-            is TSGlobalMetaItem -> HybrisIcons.TS_ITEM
-            is TSGlobalMetaCollection -> HybrisIcons.TS_COLLECTION
-            is TSGlobalMetaMap -> HybrisIcons.TS_MAP
-            is TSGlobalMetaRelation -> HybrisIcons.TS_RELATION
-            else -> return HybrisIcons.TYPE_SYSTEM
+    override fun getIdentifyingElement() = graphNode
+    override fun getTooltip() = graphNode.name
+    override fun getIcon(): Icon? = identifyingElement
+        .takeIf { it is TSGraphNodeClassifier }
+        ?.let { it as TSGraphNodeClassifier }
+        ?.let {
+            when (it.meta) {
+                is TSGlobalMetaAtomic -> HybrisIcons.TS_ATOMIC
+                is TSGlobalMetaEnum -> HybrisIcons.TS_ENUM
+                is TSGlobalMetaItem -> HybrisIcons.TS_ITEM
+                is TSGlobalMetaCollection -> HybrisIcons.TS_COLLECTION
+                is TSGlobalMetaMap -> HybrisIcons.TS_MAP
+                is TSGlobalMetaRelation -> HybrisIcons.TS_RELATION
+                else -> HybrisIcons.TYPE_SYSTEM
+            }
         }
-    }
-
-    override fun getIdentifyingElement() = item
-    override fun getTooltip() = item.meta?.name ?: "Root Type"
 
     companion object {
         private const val serialVersionUID: Long = -8508256123440006334L

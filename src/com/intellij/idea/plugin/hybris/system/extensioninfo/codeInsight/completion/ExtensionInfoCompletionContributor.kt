@@ -27,9 +27,9 @@ class ExtensionInfoCompletionContributor : CompletionContributor() {
 
     init {
         extend(
-                CompletionType.BASIC,
-                PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
-                RequiredExtensionsNameCompletionProvider.instance
+            CompletionType.BASIC,
+            PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
+            RequiredExtensionsNameCompletionProvider.instance
         )
     }
 }

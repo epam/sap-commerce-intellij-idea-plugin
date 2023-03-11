@@ -41,5 +41,6 @@ interface TSMetaModelAccess {
     fun findMetaForDom(dom: ItemType): TSGlobalMetaItem?
     fun findMetaForDom(dom: EnumType): TSGlobalMetaEnum?
     fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType): Collection<T>
+    fun getAll(): Collection<TSGlobalMetaClassifier<*>>
     fun getNextAvailableTypeCode(): Int
 }

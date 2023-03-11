@@ -16,8 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module.node.graph
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 
-data class ModuleDepGraphRootNode(override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name")) : ModuleDepGraphNode
+data class TSGraphFieldIndex(
+    override val name: String,
+    val meta: TSGlobalMetaItem.TSGlobalMetaItemIndex,
+    val type: String = meta.creationMode?.name ?: "?"
+) : TSGraphField
