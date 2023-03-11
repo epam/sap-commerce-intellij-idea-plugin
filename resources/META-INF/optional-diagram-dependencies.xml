@@ -18,6 +18,13 @@
 
 <idea-plugin>
 
+    <!--  Nice references:
+    Intellij Flash:     https://github.com/JetBrains/intellij-plugins/blob/master/flex/src/com/intellij/lang/javascript/uml
+    Intellij Angular:   https://github.com/JetBrains/intellij-plugins/tree/master/AngularJS/src/org/angularjs/diagram
+    jHipster:           https://github.com/jreznot/jdl-intellij-plugin
+
+     -->
+
     <extensions defaultExtensionNs="com.intellij">
         <additionalTextAttributes scheme="Default" file="colorSchemes/HybrisDiagramDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/HybrisDiagramDarcula.xml"/>
@@ -34,21 +41,33 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramToolbarActionsProviderImpl"/>
+
     </extensions>
 
     <actions>
         <action id="ShowTypeSystemDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowTypeSystemDiagramAction"
+                class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
                 text="Show Type System Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
         <action id="ShowModuleDependencyDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowTypeSystemDiagramAction"
+                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowModuleDependencyDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
+
+        <group id="Diagram.Hybris.TypeSystem.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Actions.ResetExclusions"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction"
+                    text="Reset Exclusions"
+                    icon="/icons/resetView.svg"
+                    description="Reset all previously excluded Diagram Nodes">
+            </action>
+        </group>
     </actions>
 
 </idea-plugin>

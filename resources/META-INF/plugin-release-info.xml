@@ -93,7 +93,13 @@
         <![CDATA[
             <h3>2023.1.2</h3>
             <ul>
-                <li><i>Feature:</i> Introduced Type System Diagram (dev in progress) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
+                <li>Introduced Type System Diagram
+                <ul>
+                    <li><i>Feature:</i> Initial version (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
+                    <li><i>Feature:</i> Added nodes removal &amp; Reset Exclusions Action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/271" target="_blank" rel="nofollow">#271</a>)</li>
+                </ul>
+                </li>
+                <li><i>Feature:</i> Type System Diagram (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
                 <li><i>Feature:</i> Added node properties for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267" target="_blank" rel="nofollow">#267</a>)</li>
                 <li><i>Feature:</i> Added edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
                 <li><i>Feature:</i> Added cycle edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>

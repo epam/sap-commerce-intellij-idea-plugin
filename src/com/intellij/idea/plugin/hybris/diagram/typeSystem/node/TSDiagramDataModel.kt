@@ -22,29 +22,48 @@ import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import org.jetbrains.annotations.Contract
 
-class TSDiagramDataModel(myProject: Project, provider: TSDiagramProvider)
+class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
-    private val edges: MutableCollection<TSDiagramEdge> = ArrayList()
-    private val nodesMap: MutableMap<String, TSDiagramNode> = HashMap()
+    private val edges: MutableCollection<TSDiagramEdge> = mutableListOf()
+    private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
+    val removedNodes: MutableSet<String> = mutableSetOf()
+
+    fun resetExclusions() {
+        removedNodes.clear()
+    }
 
     override fun dispose() {
         edges.clear()
         nodesMap.clear()
     }
 
+    override fun addElement(node: TSGraphNode?): DiagramNode<TSGraphNode>? {
+        removedNodes.remove(node?.name)
+
+        return nodesMap[node?.name]
+    }
+    override fun removeNode(node: DiagramNode<TSGraphNode>) {
+        val name = node.identifyingElement.name
+        if (nodesMap.containsKey(name)) {
+            removedNodes.add(name)
+        }
+    }
+//    override fun isDependencyDiagramSupported() = true
     override fun getNodes() = nodesMap.values
     override fun getEdges() = edges
     override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
-    override fun addElement(node: TSGraphNode?) = null
 
     @Contract(pure = true)
     override fun getModificationTracker() = this
 
-    override fun refreshDataModel() = TSDiagramRefresher.refresh(this, nodesMap, edges)
+    override fun refreshDataModel() = DumbService.getInstance(myProject).runWhenSmart {
+        TSDiagramRefresher.refresh(this, nodesMap, edges)
+    }
 
     companion object {
         private const val serialVersionUID: Long = 4148393944331345630L

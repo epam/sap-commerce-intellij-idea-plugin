@@ -15,19 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
+package com.intellij.idea.plugin.hybris.diagram.typeSystem.impl
 
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.uml.core.actions.ShowDiagram
+import com.intellij.diagram.DiagramBuilder
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 
-class ShowTypeSystemDiagramAction : ShowDiagram() {
+class TSDiagramToolbarActionsProviderImpl : TSDiagramToolbarActionsProvider() {
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
+    override fun addToolbarActionsTo(group: DefaultActionGroup, builder: DiagramBuilder) {
+        ActionManager.getInstance().getAction("Diagram.Hybris.TypeSystem.Actions")
+            ?.let {
+                group.add(it)
+                group.addSeparator()
+            }
+
+        super.addToolbarActionsTo(group, builder)
     }
-
-    override fun getForcedProvider(e: AnActionEvent) = TSDiagramProvider()
-
 }

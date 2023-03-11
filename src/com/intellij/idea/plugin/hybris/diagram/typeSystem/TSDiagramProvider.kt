@@ -18,9 +18,6 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
 import com.intellij.diagram.*
-import com.intellij.diagram.extras.DiagramExtras
-import com.intellij.diagram.settings.DiagramConfigElement
-import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.*
@@ -32,6 +29,8 @@ import org.intellij.lang.annotations.Pattern
 import javax.swing.Icon
 
 class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
+
+    private val diagramExtras = TSDiagramExtras()
 
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisTypeSystemDependencies"
@@ -49,16 +48,6 @@ class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
     override fun createVisibilityManager() = TSDiagramVisibilityManager()
     override fun getElementManager() = TSDiagramElementManager()
     override fun getVfsResolver() = TSDiagramVfsResolver()
+    override fun getExtras() = diagramExtras
 
-    override fun getExtras(): DiagramExtras<TSGraphNode> {
-        return object : DiagramExtras<TSGraphNode>() {
-            override fun getAdditionalDiagramSettings() = with(DiagramConfigGroup("Categories")) {
-                TSDiagramNodeContentManager.CATEGORIES
-                    .map { DiagramConfigElement(it.name, true) }
-                    .forEach { addElement(it) }
-
-                arrayOf(this)
-            }
-        }
-    }
 }

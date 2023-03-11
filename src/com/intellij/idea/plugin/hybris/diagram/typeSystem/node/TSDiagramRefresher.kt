@@ -45,12 +45,13 @@ object TSDiagramRefresher {
     private fun collectNodesBasic(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
         TSMetaModelAccess.getInstance(model.project).getAll()
             .filter { it.name != null }
+            .filter { !model.removedNodes.contains(it.name) }
             .filter { it.isCustom }
             .forEach {
-                if (nodesMap.containsKey(it.name!!.lowercase())) {
-                    logger.warn("Classifier name collision: " + it + " vs " + nodesMap.containsKey(it.name!!.lowercase()))
+                if (nodesMap.containsKey(it.name!!)) {
+                    logger.warn("Classifier name collision: " + it + " vs " + nodesMap.containsKey(it.name!!))
                 }
-                nodesMap[it.name!!.lowercase()] = TSDiagramNode(TSGraphFactory.buildNode(it), model.provider)
+                nodesMap[it.name!!] = TSDiagramNode(TSGraphFactory.buildNode(it), model.provider)
             }
     }
 
@@ -65,6 +66,7 @@ object TSDiagramRefresher {
                         return@flatMap meta.allExtends
                             .filter { extendsMeta -> extendsMeta.name != null }
                             .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
+                            .filter { extendsMeta -> !model.removedNodes.contains(extendsMeta.name) }
                             .map { extendsMeta -> TSDiagramNode(TSGraphFactory.buildNode(extendsMeta), model.provider) }
                     }
                 }

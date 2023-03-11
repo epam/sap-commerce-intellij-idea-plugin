@@ -17,17 +17,24 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
+import com.intellij.diagram.DiagramAction
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.uml.core.actions.ShowDiagram
 
-class ShowTypeSystemDiagramAction : ShowDiagram() {
+class ResetExclusionsDiagramAction : DiagramAction() {
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
+    override fun perform(event: AnActionEvent) {
+        getBuilder(event)
+            ?.dataModel
+            ?.takeIf { it is TSDiagramDataModel }
+            ?.let { it as TSDiagramDataModel }
+            ?.let {
+                it.resetExclusions()
+                ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually").actionPerformed(event)
+            }
     }
 
-    override fun getForcedProvider(e: AnActionEvent) = TSDiagramProvider()
-
+    override fun getActionName() = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.actions.reset_exclusions")
 }
