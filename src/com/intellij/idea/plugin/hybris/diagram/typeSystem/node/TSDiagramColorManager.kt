@@ -21,8 +21,11 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramColorManagerBase
 import com.intellij.diagram.DiagramEdge
+import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramColors
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNodeClassifier
+import java.awt.Color
 
 class TSDiagramColorManager : DiagramColorManagerBase() {
 
@@ -37,4 +40,21 @@ class TSDiagramColorManager : DiagramColorManagerBase() {
 
         else -> BpDiagramColors.EDGE_DEFAULT
     }
+
+    override fun getNodeHeaderBackground(builder: DiagramBuilder, node: DiagramNode<*>, graphNode: Any?): Color = when (graphNode) {
+        is TSGraphNodeClassifier -> {
+            (if (graphNode.meta.isCustom) builder.colorScheme.getColor(TSDiagramColors.NODE_HEADER_CUSTOM) else null)
+                ?: super.getNodeHeaderBackground(builder, node, graphNode)
+        }
+
+        else -> super.getNodeHeaderBackground(builder, node, graphNode)
+    }
+
+    private fun color(builder: DiagramBuilder, graphNode: TSGraphNodeClassifier): Color? {
+        if (graphNode.meta.isCustom) {
+            return builder.colorScheme.getColor(TSDiagramColors.NODE_HEADER_CUSTOM)
+        }
+        return null
+    }
+
 }

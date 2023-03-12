@@ -30,5 +30,8 @@
         <option name="TS_DIAGRAM_EDGE_EXTENDS" value="749A54"/>
         <option name="TS_DIAGRAM_EDGE_DEPENDENCY" value="3CADD4"/>
         <option name="TS_DIAGRAM_EDGE_TRANSITIVE_DEPENDENCY" value="99EEFF"/>
+
+        <!-- HEADERS -->
+        <option name="TS_DIAGRAM_NODE_HEADER_CUSTOM" value="C8C8C8"/>
     </colors>
 </list>
