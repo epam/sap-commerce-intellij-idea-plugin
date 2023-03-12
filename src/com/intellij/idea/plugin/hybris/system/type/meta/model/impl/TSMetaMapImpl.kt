@@ -30,7 +30,7 @@ internal class TSMetaMapImpl(
     dom: MapType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override var isCustom: Boolean
 ) : TSMetaMap {
 
     override val domAnchor: DomAnchor<MapType> = DomService.getInstance().createAnchor(dom)

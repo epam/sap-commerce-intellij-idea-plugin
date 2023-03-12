@@ -52,8 +52,9 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
 
         meta
             ?.allRelationEnds
+            ?.filter { it.qualifier != null }
             ?.map {
-                LookupElementBuilder.create(it.qualifier)
+                LookupElementBuilder.create(it.qualifier!!)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType)
                     .withIcon(

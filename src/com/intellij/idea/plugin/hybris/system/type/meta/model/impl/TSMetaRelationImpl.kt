@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.idea.plugin.hybris.system.type.model.Type
@@ -32,7 +33,7 @@ internal class TSMetaRelationImpl(
     dom: Relation,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean,
+    override var isCustom: Boolean,
     override val source: TSMetaRelationElement,
     override val target: TSMetaRelationElement,
     override val deployment: TSMetaDeployment?
@@ -54,7 +55,7 @@ internal class TSMetaRelationImpl(
     internal class TSMetaRelationElementImpl(
         dom: RelationElement,
         override val module: Module,
-        override val isCustom: Boolean,
+        override var isCustom: Boolean,
         override val end: RelationEnd,
         override val modifiers: TSMetaModifiers,
         override val customProperties: Map<String, TSMetaCustomProperty>
@@ -65,13 +66,13 @@ internal class TSMetaRelationImpl(
         override val domAnchor: DomAnchor<RelationElement> = DomService.getInstance().createAnchor(dom)
 
         override val type = dom.type.stringValue ?: ""
-        override val qualifier = dom.qualifier.stringValue ?: ""
+        override val qualifier = dom.qualifier.stringValue
         override val name = qualifier
         override val isNavigable = dom.navigable.value ?: true
         override val isOrdered = java.lang.Boolean.TRUE == dom.ordered.value
         override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
         override val collectionType = dom.collectionType.value ?: Type.COLLECTION
-        override val cardinality = dom.cardinality.value
+        override val cardinality = dom.cardinality.value ?: Cardinality.MANY
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
         // type will be flattened after merge, we need to know exact type to expand it

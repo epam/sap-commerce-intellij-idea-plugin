@@ -33,7 +33,7 @@ internal class TSMetaEnumImpl(
     dom: EnumType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean,
+    override var isCustom: Boolean,
     override val values: Map<String, TSMetaEnumValue>
 ) : TSMetaEnum {
 
@@ -49,7 +49,7 @@ internal class TSMetaEnumImpl(
     internal class TSMetaEnumValueImpl(
         dom: EnumValue,
         override val module: Module,
-        override val isCustom: Boolean,
+        override var isCustom: Boolean,
         override val name: String
     ) : TSMetaEnumValue {
 

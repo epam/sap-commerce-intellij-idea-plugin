@@ -82,8 +82,9 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         val attributes = metaItem.allAttributes
             .mapNotNull { mapAttributeToLookup(excludeNames, it) }
         val relationEnds = metaItem.allRelationEnds
+            .filter { it.qualifier != null }
             .map {
-                LookupElementBuilder.create(it.qualifier)
+                LookupElementBuilder.create(it.qualifier!!)
                     .withIcon(
                         when (it.end) {
                             RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE

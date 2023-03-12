@@ -20,5 +20,5 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
 data class TSGraphFieldTyped(
     override val name: String,
-    val value: String
+    val value: String,
 ) : TSGraphField

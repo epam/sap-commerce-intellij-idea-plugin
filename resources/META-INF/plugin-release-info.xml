@@ -100,6 +100,7 @@
                     <li><i>Feature:</i> Added Scope support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/272" target="_blank" rel="nofollow">#272</a>)</li>
                     <li><i>Feature:</i> Added Transitive Dependencies support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/273" target="_blank" rel="nofollow">#273</a>)</li>
                     <li><i>Feature:</i> Added PartOf edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/274" target="_blank" rel="nofollow">#274</a>)</li>
+                    <li><i>Feature:</i> Added Dependencies edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/276" target="_blank" rel="nofollow">#276</a>)</li>
                     <li><i>Feature:</i> Different header background color for Custom Type Nodes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/275" target="_blank" rel="nofollow">#275</a>)</li>
                 </ul>
                 </li>

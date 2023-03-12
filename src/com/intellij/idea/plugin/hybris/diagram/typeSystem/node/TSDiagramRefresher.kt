@@ -25,9 +25,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
+import java.awt.Shape
 
 object TSDiagramRefresher {
 
@@ -64,6 +64,7 @@ object TSDiagramRefresher {
             .asSequence()
             .filter { it.name != null }
             .filterNot { model.removedNodes.contains(it.name) }
+            .filter { it.deployment != null }
             .map { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
@@ -164,19 +165,28 @@ object TSDiagramRefresher {
                 DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
                     .filterIsInstance<TSGraphField>()
                     .mapNotNull { graphField ->
+                        var name: String? = null
+                        var type: String? = null
+
                         when (graphField) {
-                            is TSGraphFieldRelationElement -> if (graphField.meta.modifiers.isPartOf) (graphField.name to graphField.meta.type) else null
-                            is TSGraphFieldAttribute -> if (graphField.meta.modifiers.isPartOf) (graphField.name to graphField.meta.type) else null
-                            else -> null
+                            is TSGraphFieldRelationElement -> if (graphField.meta.modifiers.isPartOf) {
+                                name = graphField.name
+                                type = graphField.meta.type
+                            }
+
+                            is TSGraphFieldAttribute -> if (graphField.meta.modifiers.isPartOf) {
+                                name = graphField.name
+                                type = graphField.meta.type
+                            }
                         }
-                    }
-                    .mapNotNull { pair ->
-                        val targetNode = nodesMap[pair.second] ?: return@mapNotNull null
+                        if (name == null || type == null) return@mapNotNull null
+
+                        val targetNode = nodesMap[type] ?: return@mapNotNull null
                         val relationship = TSDiagramRelationship(
-                            upperCenterLabel = message("hybris.diagram.ts.provider.edge.part_of", pair.first),
+                            upperCenterLabel = message("hybris.diagram.ts.provider.edge.part_of", name),
                             lineType = DiagramLineType.DOTTED,
-                            targetArrow =  DiagramRelationshipInfo.CONVEX,
-                            sourceArrow =  DiagramRelationshipInfo.CONCAVE
+                            targetArrow = DiagramRelationshipInfo.CONVEX,
+                            sourceArrow = DiagramRelationshipInfo.CONCAVE
                         )
                         TSDiagramEdge(sourceNode, targetNode, relationship, TSDiagramEdgeType.PART_OF)
                     }
@@ -187,38 +197,77 @@ object TSDiagramRefresher {
 
     private fun collectEdgesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
         nodesMap.values.forEach { sourceNode ->
-            val graphNode = sourceNode.graphNode
+            val sourceGraphNode = sourceNode.graphNode
 
-//            if (graphNode is TSGraphNodeClassifier) {
-//                DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
-//                    .filterIsInstance<TSGraphField>()
-//                    .mapNotNull { graphField ->
-//                        when (graphField) {
-//                            is TSGraphFieldRelationEnd -> graphField.meta.type
-//                            is TSGraphFieldRelationElement -> graphField.meta.type
-//                            is TSGraphFieldAttribute -> graphField.meta.modifiers.type
-//                            is TSGraphFieldTyped -> graphField.value
-//                            else -> null
-//                        }
-//                    }
-//                    .mapNotNull { dependencyType ->
-//                        val targetNode = nodesMap[dependencyType] ?: return@mapNotNull  null
-//
-//                        if (model.removedNodes.contains(dependencyType)) return@mapNotNull null
-//                        if (stopTypes.contains(dependencyType)) return@mapNotNull null
-//                        if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
-//
-//                        return@mapNotNull TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
-//                    }
-//
-//
-//                val meta = graphNode.meta
-//                if (meta is TSGlobalMetaItem) {
-//                    nodesMap[meta.extendedMetaItemName]
-//                        ?.let { targetNode -> TSDiagramEdge(targetNode, sourceNode, TSDiagramRelationship("11")) }
-//                        ?.let { edge -> edges.add(edge) }
-//                }
-//            }
+            if (sourceGraphNode is TSGraphNodeClassifier) {
+                DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(sourceGraphNode, model.builder)
+                    .filterIsInstance<TSGraphField>()
+                    .mapNotNull { graphField ->
+                        var name: String? = null
+                        var type: String? = null
+                        var sourceArrow: Shape? = null
+                        var targetArrow: Shape? = null
+                        var navigable = true
+
+                        when (graphField) {
+                            is TSGraphFieldRelationEnd -> {
+                                name = graphField.name
+                                type = graphField.meta.type
+                                navigable = graphField.meta.isNavigable
+                                sourceArrow = if (graphField.meta.modifiers.isOptional) DiagramRelationshipInfo.CROWS_FOOT_ONE_OPTIONAL
+                                else DiagramRelationshipInfo.CROWS_FOOT_ONE
+                                targetArrow = if (graphField.meta.cardinality == Cardinality.ONE) DiagramRelationshipInfo.CROWS_FOOT_ONE
+                                else DiagramRelationshipInfo.CROWS_FOOT_MANY
+                            }
+
+                            is TSGraphFieldRelationElement -> {
+                                name = graphField.name
+                                type = graphField.meta.type
+                                navigable = graphField.meta.isNavigable
+                                sourceArrow = if (graphField.meta.modifiers.isOptional) DiagramRelationshipInfo.CROWS_FOOT_ONE_OPTIONAL
+                                else DiagramRelationshipInfo.CROWS_FOOT_ONE
+                                targetArrow = if (graphField.meta.cardinality == Cardinality.ONE) DiagramRelationshipInfo.CROWS_FOOT_ONE
+                                else DiagramRelationshipInfo.CROWS_FOOT_MANY
+                            }
+
+                            is TSGraphFieldAttribute -> {
+                                name = graphField.name
+                                type = graphField.meta.type
+                                sourceArrow = if (graphField.meta.modifiers.isOptional) DiagramRelationshipInfo.CROWS_FOOT_ONE_OPTIONAL
+                                else DiagramRelationshipInfo.CROWS_FOOT_ONE
+                            }
+
+                            is TSGraphFieldTyped -> {
+                                name = graphField.name
+                                type = graphField.value
+                            }
+                        }
+                        if (name == null || type == null) return@mapNotNull null
+
+                        val targetNode = nodesMap[type] ?: return@mapNotNull null
+                        val targetGraphNode = targetNode.graphNode
+
+                        if (targetGraphNode !is TSGraphNodeClassifier) return@mapNotNull null
+
+                        val targetMeta = targetGraphNode.meta
+
+                        if (targetMeta is TSGlobalMetaCollection || targetMeta is TSGlobalMetaMap) {
+                            targetArrow = DiagramRelationshipInfo.CROWS_FOOT_MANY
+                        }
+                        val relationship = TSDiagramRelationship(
+                            upperCenterLabel = name,
+                            lineType = DiagramLineType.DASHED,
+                            sourceArrow = sourceArrow ?: DiagramRelationshipInfo.CROWS_FOOT_ONE,
+                            targetArrow = targetArrow
+                        )
+
+                        val edgeType = if (navigable) TSDiagramEdgeType.DEPENDENCY_NAVIGABLE
+                        else TSDiagramEdgeType.DEPENDENCY
+
+                        TSDiagramEdge(sourceNode, targetNode, relationship, edgeType)
+                    }
+                    .forEach { edges.add(it) }
+            }
         }
     }
 
@@ -231,10 +280,12 @@ object TSDiagramRefresher {
                 val meta = graphNode.meta
                 if (meta is TSGlobalMetaItem) {
                     nodesMap[meta.extendedMetaItemName]
-                        ?.let { targetNode -> TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship(
-                            upperCenterLabel = label,
-                            targetArrow =  DiagramRelationshipInfo.DELTA
-                        ), TSDiagramEdgeType.EXTENDS) }
+                        ?.let { targetNode ->
+                            TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship(
+                                upperCenterLabel = label,
+                                targetArrow = DiagramRelationshipInfo.DELTA
+                            ), TSDiagramEdgeType.EXTENDS)
+                        }
                         ?.let { edge -> edges.add(edge) }
                 }
             }

@@ -28,7 +28,7 @@ internal class TSMetaPersistenceImpl(
     dom: Persistence,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override var isCustom: Boolean
 ) : TSMetaPersistence {
 
     override val domAnchor: DomAnchor<Persistence> = DomService.getInstance().createAnchor(dom)

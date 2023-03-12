@@ -27,7 +27,7 @@ interface TSMetaClassifier<DOM : DomElement> {
     val name: String?
         get() = null
     val module: Module
-    val isCustom: Boolean
+    var isCustom: Boolean
     val domAnchor: DomAnchor<DOM>
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()
 }

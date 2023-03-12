@@ -32,10 +32,12 @@ object TSGraphFactory {
 
     fun buildNode(project: Project, name: String) = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(name)
         ?.takeIf { it.name != null }
+        ?.takeIf { it !is TSGlobalMetaAtomic }
         ?.let { buildNode(it) }
 
     fun buildTransitiveNode(project: Project, name: String) = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(name)
         ?.takeIf { it.name != null }
+        ?.takeIf { it !is TSGlobalMetaAtomic }
         ?.let { buildTransitiveNode(it) }
 
     fun buildNode(meta: TSGlobalMetaClassifier<out DomElement>) = buildNode(meta, false)

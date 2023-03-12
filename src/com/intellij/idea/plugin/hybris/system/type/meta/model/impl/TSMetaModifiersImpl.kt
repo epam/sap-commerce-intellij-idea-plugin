@@ -26,7 +26,7 @@ import com.intellij.util.xml.DomService
 internal class TSMetaModifiersImpl(
     dom: Modifiers,
     override val module: Module,
-    override val isCustom: Boolean
+    override var isCustom: Boolean
 ) : TSMetaModifiers {
 
     override val domAnchor: DomAnchor<Modifiers> = DomService.getInstance().createAnchor(dom)

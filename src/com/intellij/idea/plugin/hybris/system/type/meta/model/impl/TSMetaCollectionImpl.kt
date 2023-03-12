@@ -31,7 +31,7 @@ internal class TSMetaCollectionImpl(
     dom: CollectionType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override var isCustom: Boolean
 ) : TSMetaCollection {
 
     override val domAnchor: DomAnchor<CollectionType> = DomService.getInstance().createAnchor(dom)

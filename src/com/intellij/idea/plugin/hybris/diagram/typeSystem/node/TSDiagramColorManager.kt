@@ -34,7 +34,7 @@ class TSDiagramColorManager : DiagramColorManagerBase() {
             TSDiagramEdgeType.EXTENDS -> TSDiagramColors.EDGE_EXTENDS
             TSDiagramEdgeType.PART_OF -> TSDiagramColors.EDGE_PART_OF
             TSDiagramEdgeType.DEPENDENCY -> TSDiagramColors.EDGE_DEPENDENCY
-            TSDiagramEdgeType.TRANSITIVE_DEPENDENCY -> TSDiagramColors.EDGE_TRANSITIVE_DEPENDENCY
+            TSDiagramEdgeType.DEPENDENCY_NAVIGABLE -> TSDiagramColors.EDGE_DEPENDENCY_NAVIGABLE
             else -> BpDiagramColors.EDGE_DEFAULT
         }
 

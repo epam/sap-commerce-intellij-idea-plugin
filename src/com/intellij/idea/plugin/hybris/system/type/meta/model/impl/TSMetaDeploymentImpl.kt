@@ -27,7 +27,7 @@ internal class TSMetaDeploymentImpl(
     dom: Deployment,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean
+    override var isCustom: Boolean
 ) : TSMetaDeployment {
 
     override val domAnchor: DomAnchor<Deployment> = DomService.getInstance().createAnchor(dom)

@@ -22,6 +22,6 @@ enum class TSDiagramEdgeType {
     EXTENDS,
     PART_OF,
     DEPENDENCY,
-    TRANSITIVE_DEPENDENCY,
+    DEPENDENCY_NAVIGABLE,
     DEFAULT
 }

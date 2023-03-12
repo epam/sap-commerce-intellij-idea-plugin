@@ -33,9 +33,9 @@ class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRela
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = (meta.cardinality?.value ?: "") +
-                (if (meta.isOrdered) " ordered" else "") +
-                (if (meta.qualifier.isNotBlank()) " as ${meta.qualifier}" else "")
+        presentation.locationString = (meta.cardinality.value) +
+            (if (meta.isOrdered) " ordered" else "") +
+            (meta.qualifier?.let { " as ${meta.qualifier}" } ?: "")
 
         when (meta.end) {
             TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(HybrisIcons.TS_RELATION_SOURCE)

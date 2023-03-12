@@ -22,10 +22,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService;
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +62,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
         final TSGlobalMetaItem meta, @NotNull final String qualifier, final boolean includeInherited
     ) {
         return getRelationEnds(meta, includeInherited).stream()
-                                                      .filter(ref -> ref.getQualifier().equalsIgnoreCase(qualifier))
+                                                      .filter(ref -> qualifier.equalsIgnoreCase(ref.getQualifier()))
                                                       .collect(Collectors.toList());
     }
 

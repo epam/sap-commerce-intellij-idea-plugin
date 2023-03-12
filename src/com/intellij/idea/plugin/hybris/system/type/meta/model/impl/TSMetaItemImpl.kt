@@ -36,7 +36,7 @@ internal class TSMetaItemImpl(
     dom: ItemType,
     override val module: Module,
     override val name: String?,
-    override val isCustom: Boolean,
+    override var isCustom: Boolean,
     override val attributes: Map<String, TSMetaItemAttribute>,
     override val indexes: Map<String, TSMetaItemIndex>,
     override val customProperties: Map<String, TSMetaCustomProperty>,
@@ -60,7 +60,7 @@ internal class TSMetaItemImpl(
         dom: Index,
         override val module: Module,
         override val name: String,
-        override val isCustom: Boolean
+        override var isCustom: Boolean
     ) : TSMetaItemIndex {
 
         override val domAnchor: DomAnchor<Index> = DomService.getInstance().createAnchor(dom)
@@ -82,7 +82,7 @@ internal class TSMetaItemImpl(
         dom: Attribute,
         override val module: Module,
         override val name: String,
-        override val isCustom: Boolean,
+        override var isCustom: Boolean,
         override val persistence: TSMetaPersistence,
         override val modifiers: TSMetaModifiers,
         override val customProperties: Map<String, TSMetaCustomProperty>

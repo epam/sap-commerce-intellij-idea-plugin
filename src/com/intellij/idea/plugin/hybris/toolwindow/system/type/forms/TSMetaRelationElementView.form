@@ -118,7 +118,6 @@
                     </constraints>
                     <properties>
                       <enabled value="true"/>
-                      <model/>
                     </properties>
                   </component>
                   <component id="45c61" class="javax.swing.JLabel">

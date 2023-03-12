@@ -26,7 +26,7 @@ import com.intellij.util.xml.DomService
 internal class TSMetaCustomPropertyImpl(
     dom: CustomProperty,
     override val module: Module,
-    override val isCustom: Boolean,
+    override var isCustom: Boolean,
     override val name: String
 ) : TSMetaCustomProperty {
 

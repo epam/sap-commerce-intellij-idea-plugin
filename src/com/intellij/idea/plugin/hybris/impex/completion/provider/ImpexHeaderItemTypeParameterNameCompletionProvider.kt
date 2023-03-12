@@ -77,8 +77,9 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             .forEach { resultSet.addElement(it) }
 
         metaItem.allRelationEnds
+            .filter { it.qualifier != null }
             .map {
-                LookupElementBuilder.create(it.qualifier)
+                LookupElementBuilder.create(it.qualifier!!)
                     .withStrikeoutness(it.isDeprecated)
                     .withTypeText(it.flattenType, true)
                     .withIcon(

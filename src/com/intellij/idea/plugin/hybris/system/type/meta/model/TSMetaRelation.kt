@@ -34,12 +34,12 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     interface TSMetaRelationElement : TSMetaClassifier<RelationElement>, TSTypedClassifier {
         var owner: TSMetaRelation
         val end: RelationEnd
-        val qualifier: String
+        val qualifier: String?
         val type: String
         val modifiers: TSMetaModifiers
         val customProperties: Map<String, TSMetaCustomProperty>
         val collectionType: Type
-        val cardinality: Cardinality?
+        val cardinality: Cardinality
         val description: String?
         val metaType: String?
         val isOrdered: Boolean

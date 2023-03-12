@@ -57,6 +57,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
                         .find { attr -> attr.name == computedConstantValue }
                         ?.let { attribute -> return@mapNotNull createChildInfo(attribute, computedConstantValue, it.name, metaAccess, debuggerUtils) }
                     meta.allRelationEnds
+                        .filter { relation -> relation.isNavigable }
                         .find { relation -> relation.name == computedConstantValue }
                         ?.let { relation -> return@mapNotNull createChildInfo(computedConstantValue, relation, it.name, debuggerUtils) }
                 }

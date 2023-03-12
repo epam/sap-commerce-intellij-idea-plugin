@@ -26,7 +26,7 @@ object TSDiagramColors {
     val EDGE_EXTENDS = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_EXTENDS", DiagramColors.DEFAULT_EDGE)
     val EDGE_PART_OF = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_PART_OF", DiagramColors.DEFAULT_EDGE)
     val EDGE_DEPENDENCY = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_DEPENDENCY", DiagramColors.DEFAULT_EDGE)
-    val EDGE_TRANSITIVE_DEPENDENCY = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_TRANSITIVE_DEPENDENCY", DiagramColors.DEFAULT_EDGE)
+    val EDGE_DEPENDENCY_NAVIGABLE = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_DEPENDENCY_NAVIGABLE", DiagramColors.DEFAULT_EDGE)
     val NODE_HEADER_CUSTOM = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_NODE_HEADER_CUSTOM", DiagramColors.NODE_HEADER)
 
 }

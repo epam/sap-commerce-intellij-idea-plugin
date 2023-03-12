@@ -35,7 +35,6 @@ class TSDiagramNode(val graphNode: TSGraphNode, provider: DiagramProvider<TSGrap
         ?.let { it as TSGraphNodeClassifier }
         ?.let {
             when (it.meta) {
-                is TSGlobalMetaAtomic -> HybrisIcons.TS_ATOMIC
                 is TSGlobalMetaEnum -> HybrisIcons.TS_ENUM
                 is TSGlobalMetaItem -> HybrisIcons.TS_ITEM
                 is TSGlobalMetaCollection -> HybrisIcons.TS_COLLECTION
