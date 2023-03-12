@@ -18,6 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
+import com.intellij.diagram.DiagramColors
+import com.intellij.openapi.editor.colors.ColorKey
+
 object TSDiagramColors {
+
+    val EDGE_EXTENDS = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_EXTENDS", DiagramColors.DEFAULT_EDGE)
+    val EDGE_PART_OF = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_PART_OF", DiagramColors.DEFAULT_EDGE)
+    val EDGE_DEPENDENCY = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_DEPENDENCY", DiagramColors.DEFAULT_EDGE)
+    val EDGE_TRANSITIVE_DEPENDENCY = ColorKey.createColorKeyWithFallback("TS_DIAGRAM_EDGE_TRANSITIVE_DEPENDENCY", DiagramColors.DEFAULT_EDGE)
 
 }

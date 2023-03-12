@@ -21,6 +21,7 @@ import com.intellij.diagram.*
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.*
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramColorManager
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
 import com.intellij.openapi.project.Project
@@ -47,6 +48,7 @@ class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
     override fun createNodeContentManager() = TSDiagramNodeContentManager()
     override fun createVisibilityManager() = TSDiagramVisibilityManager()
     override fun createScopeManager(project: Project) = TSDiagramScopeManager(project)
+    override fun getColorManager() = TSDiagramColorManager()
     override fun getElementManager() = TSDiagramElementManager()
     override fun getVfsResolver() = TSDiagramVfsResolver()
     override fun getExtras() = diagramExtras

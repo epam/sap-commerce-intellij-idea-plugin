@@ -35,8 +35,8 @@ class BpDiagramDataModel(
     provider: DiagramProvider<BpGraphNode?>
 ) : DiagramDataModel<BpGraphNode?>(project, provider) {
 
-    private val edges: MutableCollection<BpDiagramEdge> = ArrayList()
-    private val nodesMap: MutableMap<String, BpDiagramNode> = HashMap()
+    private val edges: MutableCollection<BpDiagramEdge> = mutableSetOf()
+    private val nodesMap: MutableMap<String, BpDiagramNode> = mutableMapOf()
 
     override fun getNodes() = nodesMap.values
     override fun getEdges() = edges

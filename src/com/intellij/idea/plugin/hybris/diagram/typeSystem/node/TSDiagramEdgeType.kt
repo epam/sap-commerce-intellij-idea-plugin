@@ -18,18 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 
-import com.intellij.diagram.DiagramEdgeBase
-import com.intellij.diagram.DiagramNode
-import com.intellij.diagram.DiagramRelationshipInfo
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
-
-class TSDiagramEdge(
-    from: DiagramNode<TSGraphNode>,
-    to: DiagramNode<TSGraphNode>,
-    relationship: DiagramRelationshipInfo,
-    val type: TSDiagramEdgeType = TSDiagramEdgeType.DEFAULT
-) : DiagramEdgeBase<TSGraphNode>(from, to, relationship) {
-    companion object {
-        private const val serialVersionUID: Long = -6563151123755071622L
-    }
+enum class TSDiagramEdgeType {
+    EXTENDS,
+    PART_OF,
+    DEPENDENCY,
+    TRANSITIVE_DEPENDENCY,
+    DEFAULT
 }

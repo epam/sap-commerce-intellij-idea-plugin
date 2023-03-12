@@ -135,16 +135,11 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         .mapNotNull { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
 
-    override fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>? {
-        var result: TSGlobalMetaClassifier<out DomElement>? = findMetaItemByName(name)
-        if (result == null) {
-            result = findMetaCollectionByName(name)
-        }
-        if (result == null) {
-            result = findMetaEnumByName(name)
-        }
-        return result
-    }
+    override fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>? = findMetaItemByName(name)
+        ?: findMetaCollectionByName(name)
+        ?: findMetaEnumByName(name)
+        ?: findMetaMapByName(name)
+        ?: findMetaAtomicByName(name)
 
     override fun getNextAvailableTypeCode(): Int = getMetaModel().getDeploymentTypeCodes().keys
         .asSequence()

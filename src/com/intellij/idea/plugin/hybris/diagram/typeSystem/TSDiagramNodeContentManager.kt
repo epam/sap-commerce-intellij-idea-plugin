@@ -31,9 +31,11 @@ class TSDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
 
     override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (item) {
         is TSGraphFieldProperty -> category == PROPERTIES
+        is TSGraphFieldTyped -> category == PROPERTIES
         is TSGraphFieldDeployment -> category == DEPLOYMENT
         is TSGraphFieldAttribute -> category == ATTRIBUTES
         is TSGraphFieldRelationEnd -> category == RELATION_ENDS
+        is TSGraphFieldRelationElement -> category == RELATION_ENDS
         is TSGraphFieldCustomProperty -> category == CUSTOM_PROPERTIES
         is TSGraphFieldIndex -> category == INDEXES
         is TSGraphFieldEnumValue -> category == ENUM_VALUES

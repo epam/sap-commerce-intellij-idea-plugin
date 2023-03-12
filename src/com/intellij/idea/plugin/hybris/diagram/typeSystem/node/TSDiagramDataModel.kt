@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Contract
 class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
-    private val edges: MutableCollection<TSDiagramEdge> = mutableListOf()
+    private val edges: MutableCollection<TSDiagramEdge> = mutableSetOf()
     private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
     val removedNodes: MutableSet<String> = mutableSetOf()
 

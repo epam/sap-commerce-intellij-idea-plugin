@@ -35,6 +35,7 @@ class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
         is TSGraphFieldIndex -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
         is TSGraphFieldAttribute -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
         is TSGraphFieldRelationEnd -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldRelationElement -> if (o.meta.isCustom || o.meta.owner.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
         is TSGraphFieldCustomProperty -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
         else -> null
     }

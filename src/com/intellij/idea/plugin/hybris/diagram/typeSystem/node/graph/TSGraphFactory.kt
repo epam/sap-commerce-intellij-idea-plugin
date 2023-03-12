@@ -53,18 +53,18 @@ object TSGraphFactory {
 
     private fun buildNode(meta: TSGlobalMetaItem, transitiveNode: Boolean): TSGraphNodeClassifier {
         val deploymentProperties = deploymentFields(meta.deployment)
-        val customProperties = meta.customProperties.entries
-            .map { (name, customProperty) -> TSGraphFieldCustomProperty(name, customProperty) }
+        val customProperties = meta.customProperties.values
+            .map { customProperty -> TSGraphFieldCustomProperty(customProperty.name, customProperty) }
             .sortedBy { it.name }
-        val attributes = meta.attributes.entries
-            .map { (name, attribute) -> TSGraphFieldAttribute(name, attribute) }
+        val attributes = meta.attributes.values
+            .map { attribute -> TSGraphFieldAttribute(attribute.name, attribute) }
             .sortedBy { it.name }
         val relationEnds = meta.relationEnds
             .filter { it.name != null }
             .map { TSGraphFieldRelationEnd(it.name!!, it) }
             .sortedWith(compareBy({ it.meta.end }, { it.name }))
-        val indexes = meta.indexes.entries
-            .map { (name, index) -> TSGraphFieldIndex(name, index) }
+        val indexes = meta.indexes.values
+            .map { index -> TSGraphFieldIndex(index.name, index) }
             .sortedBy { it.name }
 
         val fields = deploymentProperties + customProperties + attributes + relationEnds + indexes
@@ -73,8 +73,8 @@ object TSGraphFactory {
 
     private fun buildNode(meta: TSGlobalMetaMap, transitiveNode: Boolean): TSGraphNodeClassifier {
         val properties = listOf(
-            TSGraphFieldProperty(MapType.ARGUMENTTYPE, meta.argumentType ?: "?"),
-            TSGraphFieldProperty(MapType.RETURNTYPE, meta.returnType ?: "?"),
+            TSGraphFieldTyped(MapType.ARGUMENTTYPE, meta.argumentType ?: "?"),
+            TSGraphFieldTyped(MapType.RETURNTYPE, meta.returnType ?: "?"),
         )
 
         return buildNode(meta.name, meta, properties.toTypedArray(), transitiveNode)
@@ -94,7 +94,7 @@ object TSGraphFactory {
     private fun buildNode(meta: TSGlobalMetaCollection, transitiveNode: Boolean): TSGraphNodeClassifier {
         val fields = listOf(
             TSGraphFieldProperty(CollectionType.TYPE, meta.type.value),
-            TSGraphFieldProperty(CollectionType.ELEMENTTYPE, meta.elementType),
+            TSGraphFieldTyped(CollectionType.ELEMENTTYPE, meta.elementType),
         )
 
         return buildNode(meta.name, meta, fields.toTypedArray(), transitiveNode)

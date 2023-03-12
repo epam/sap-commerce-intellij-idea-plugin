@@ -22,7 +22,16 @@ import com.intellij.diagram.DiagramRelationshipInfoAdapter
 import com.intellij.diagram.presentation.DiagramLineType
 import java.awt.Shape
 
-class TSDiagramRelationship(myLabel: String) : DiagramRelationshipInfoAdapter(myLabel, DiagramLineType.SOLID, myLabel, "", "", 1) {
-
-    override fun getStartArrow(): Shape = STANDARD
-}
+class TSDiagramRelationship(
+    name: String? = null,
+    upperCenterLabel: String? = null,
+    bottomCenterLabel: String? = null,
+    upperSourceLabel: String? = null,
+    bottomSourceLabel: String? = null,
+    upperTargetLabel: String? = null,
+    bottomTargetLabel: String? = null,
+    lineType: DiagramLineType = DiagramLineType.SOLID,
+    width: Int = 1,
+    sourceArrow: Shape? = null,
+    targetArrow: Shape? = null,
+) : DiagramRelationshipInfoAdapter(name, lineType, width, sourceArrow, targetArrow, upperCenterLabel, bottomCenterLabel, upperSourceLabel, bottomSourceLabel, upperTargetLabel, bottomTargetLabel)

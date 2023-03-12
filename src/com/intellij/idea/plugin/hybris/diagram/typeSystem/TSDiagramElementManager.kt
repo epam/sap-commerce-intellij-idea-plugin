@@ -48,6 +48,7 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
     override fun getItemType(element: Any?) = when (element) {
         is TSGraphFieldDeployment -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         is TSGraphFieldProperty -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is TSGraphFieldTyped -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         is TSGraphFieldIndex -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         is TSGraphFieldAttribute -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         is TSGraphFieldRelationElement -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
@@ -58,6 +59,7 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
     override fun getItemIcon(nodeElement: TSGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
         is TSGraphFieldEnumValue -> HybrisIcons.TS_ENUM_VALUE
         is TSGraphFieldProperty -> HybrisIcons.TS_DIAGRAM_PROPERTY
+        is TSGraphFieldTyped -> HybrisIcons.TS_DIAGRAM_PROPERTY
         is TSGraphFieldDeployment -> HybrisIcons.TS_DIAGRAM_DEPLOYMENT
         is TSGraphFieldAttribute -> HybrisIcons.TS_ATTRIBUTE
         is TSGraphFieldCustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY

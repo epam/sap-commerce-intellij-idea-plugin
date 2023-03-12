@@ -22,5 +22,13 @@
 
         <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM" value="31425A"/>
         <option name="MODULE_DEP_DIAGRAM_HEADER_NON_CUSTOM" value="31425A"/>
+
+        <!-- Type System Diagram -->
+        <!-- EDGES -->
+
+        <option name="TS_DIAGRAM_EDGE_PART_OF" value="FFB16D"/>
+        <option name="TS_DIAGRAM_EDGE_EXTENDS" value="749A54"/>
+        <option name="TS_DIAGRAM_EDGE_DEPENDENCY" value="3CADD4"/>
+        <option name="TS_DIAGRAM_EDGE_TRANSITIVE_DEPENDENCY" value="99EEFF"/>
     </colors>
 </list>
