@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphFactory
-import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNodeClassifier
+import com.intellij.diagram.DiagramElementManager
+import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
@@ -59,8 +59,63 @@ object TSDiagramRefresher {
             }
     }
 
+    private fun collectNodesRelations(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+        TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
+            .asSequence()
+            .filter { it.name != null }
+            .filterNot { model.removedNodes.contains(it.name) }
+            .filter { it.deployment != null }
+            .map { TSGraphFactory.buildNode(it) }
+            .filter { model.scopeManager?.contains(it) ?: true }
+            .map { TSDiagramNode(it, model.provider) }
+            .toList()
+            .forEach {
+                nodesMap[it.graphNode.name] = it
+            }
+    }
+
     /**
-     * This collector will create special type of the GraphNode with flag `additionalNode` = true.
+     * Additional dependency nodes will be shown only if User selected "Show Dependencies".
+     * Each Node field will be traversed and corresponding new Node (`transitiveNode` = true) will be created.
+     * Nested dependencies will not be created as we're not interested at this stage in complete picture.
+     * If All possible dependencies will be needed, another Type Specific filter can be introduced with Scope = "All"
+     */
+    private fun collectNodesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+        if (!model.isShowDependencies) return
+        val stopTypes = HybrisApplicationSettingsComponent.getInstance().state.tsdStopTypeList
+
+        nodesMap.values
+            .flatMap { sourceNode ->
+                val graphNode = sourceNode.graphNode
+
+                if (graphNode is TSGraphNodeClassifier) {
+                    return@flatMap DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
+                        .filterIsInstance<TSGraphField>()
+                        .mapNotNull { graphField ->
+                            when (graphField) {
+                                is TSGraphFieldRelationEnd -> graphField.meta.type
+                                is TSGraphFieldRelationElement -> graphField.meta.type
+                                is TSGraphFieldAttribute -> graphField.meta.type
+                                else -> null
+                            }
+                        }
+                        .mapNotNull { dependencyType ->
+                            if (model.removedNodes.contains(dependencyType)) return@mapNotNull null
+                            if (stopTypes.contains(dependencyType)) return@mapNotNull null
+                            if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
+
+                            return@mapNotNull TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
+                        }
+                }
+
+                return@flatMap emptyList()
+            }
+            .map { TSDiagramNode(it, model.provider) }
+            .forEach { nodesMap[it.graphNode.name] = it }
+    }
+
+    /**
+     * This collector will create special type of the GraphNode with flag `transitiveNode` = true.
      * It is required to not produce too many non-custom `extends` nodes.
      * Such nodes will be shown only in case of Scope level: "Custom with Extends" or "All"
      *
@@ -81,37 +136,16 @@ object TSDiagramRefresher {
                             .filterNot { extendsMeta -> stopTypes.contains(extendsMeta.name) }
                             .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
                             .filterNot { extendsMeta -> model.removedNodes.contains(extendsMeta.name) }
-                            .map { extendsMeta -> TSGraphFactory.buildNode(extendsMeta, true) }
+                            .map { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }
                             .filter { extendsGraphNode -> model.scopeManager?.contains(extendsGraphNode) ?: true }
-                            .map { extendsGraphNode -> TSDiagramNode(extendsGraphNode, model.provider) }
                             .toList()
                     }
                 }
 
                 return@flatMap emptyList()
             }
-            .forEach { nodesMap[it.graphNode.name] = it }
-    }
-
-    private fun collectNodesRelations(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
-        TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
-            .asSequence()
-            .filter { it.name != null }
-            .filterNot { model.removedNodes.contains(it.name) }
-            .filter { it.deployment != null }
-            .map { TSGraphFactory.buildNode(it) }
-            .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
-            .toList()
-            .forEach {
-                nodesMap[it.graphNode.name] = it
-            }
-    }
-
-    private fun collectNodesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
-        if (model.isShowDependencies) {
-
-        }
+            .forEach { nodesMap[it.graphNode.name] = it }
     }
 
     private fun refreshEdges(nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {

@@ -98,6 +98,7 @@
                     <li><i>Feature:</i> Initial version (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
                     <li><i>Feature:</i> Added nodes removal &amp; Reset Exclusions Action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/271" target="_blank" rel="nofollow">#271</a>)</li>
                     <li><i>Feature:</i> Added Scope support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/272" target="_blank" rel="nofollow">#272</a>)</li>
+                    <li><i>Feature:</i> Added Transitive Dependencies support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/273" target="_blank" rel="nofollow">#273</a>)</li>
                 </ul>
                 </li>
                 <li><i>Feature:</i> Type System Diagram (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>

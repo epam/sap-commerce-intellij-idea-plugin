@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 
 /**
- * `additionalNode` can be true in following cases:
+ * `transitiveNode` can be true in following cases:
  *  - non-custom Extends Node (will be taken into account only in case of "Custom + Extends" or "All" current Scope
  *  - non-custom Dependency Node (will be taken into account only in combination with `model.isShowDependencies == true`
  */
@@ -29,7 +29,7 @@ data class TSGraphNodeClassifier(
     override val name: String,
     val meta: TSGlobalMetaClassifier<*>,
     override val fields: Array<TSGraphField> = emptyArray(),
-    val additionalNode: Boolean = false
+    val transitiveNode: Boolean = false
 ) : TSGraphNode {
 
     override fun equals(other: Any?): Boolean {

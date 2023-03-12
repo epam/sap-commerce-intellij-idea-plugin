@@ -43,7 +43,7 @@ class TSDiagramScopeManager(project: Project) : DiagramScopeManager<TSGraphNode>
         val isCustom = graphNode.meta.isCustom
 
         return (scope == scopeCustom && isCustom)
-            || (scope == scopeCustomExtends && (isCustom || graphNode.additionalNode))
+            || (scope == scopeCustomExtends && (isCustom || graphNode.transitiveNode))
             || (scope == scopeOOTB && !isCustom)
     }
 
