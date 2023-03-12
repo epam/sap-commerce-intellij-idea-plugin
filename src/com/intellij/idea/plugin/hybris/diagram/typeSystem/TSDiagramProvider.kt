@@ -46,6 +46,7 @@ class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
 
     override fun createNodeContentManager() = TSDiagramNodeContentManager()
     override fun createVisibilityManager() = TSDiagramVisibilityManager()
+    override fun createScopeManager(project: Project) = TSDiagramScopeManager(project)
     override fun getElementManager() = TSDiagramElementManager()
     override fun getVfsResolver() = TSDiagramVfsResolver()
     override fun getExtras() = diagramExtras

@@ -62,10 +62,7 @@
 
         <group id="Diagram.Hybris.TypeSystem.Actions">
             <action id="Diagram.Hybris.TypeSystem.Actions.ResetExclusions"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction"
-                    text="Reset Exclusions"
-                    icon="/icons/resetView.svg"
-                    description="Reset all previously excluded Diagram Nodes">
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction">
             </action>
         </group>
     </actions>

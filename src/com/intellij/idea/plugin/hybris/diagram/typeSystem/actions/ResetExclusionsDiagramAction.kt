@@ -18,12 +18,17 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ResetExclusionsDiagramAction : DiagramAction() {
+class ResetExclusionsDiagramAction : DiagramAction(
+    message("hybris.diagram.ts.provider.actions.reset_exclusions"),
+    message("hybris.diagram.ts.provider.actions.reset_exclusions.description"),
+    HybrisIcons.TS_DIAGRAM_RESET_VIEW
+) {
 
     override fun perform(event: AnActionEvent) {
         getBuilder(event)
@@ -31,10 +36,10 @@ class ResetExclusionsDiagramAction : DiagramAction() {
             ?.takeIf { it is TSDiagramDataModel }
             ?.let { it as TSDiagramDataModel }
             ?.let {
-                it.resetExclusions()
+                it.removedNodes.clear()
                 ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually").actionPerformed(event)
             }
     }
 
-    override fun getActionName() = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.actions.reset_exclusions")
+    override fun getActionName() = message("hybris.diagram.ts.provider.actions.reset_exclusions")
 }

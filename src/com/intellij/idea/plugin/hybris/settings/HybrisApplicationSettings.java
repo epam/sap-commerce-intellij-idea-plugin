@@ -53,6 +53,7 @@ public class HybrisApplicationSettings {
         HybrisConstants.TS_TYPE_GENERIC_ITEM,
         HybrisConstants.TS_TYPE_ITEM,
         HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
+        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM,
         HybrisConstants.TS_TYPE_CRON_JOB
     );
 

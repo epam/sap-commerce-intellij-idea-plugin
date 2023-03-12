@@ -25,11 +25,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsCompone
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.scope.packageSet.FilePatternPackageSet;
-import com.intellij.psi.search.scope.packageSet.NamedScope;
-import com.intellij.psi.search.scope.packageSet.NamedScopeManager;
-import com.intellij.psi.search.scope.packageSet.PackageSet;
-import com.intellij.psi.search.scope.packageSet.UnionPackageSet;
+import com.intellij.psi.search.scope.packageSet.*;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,11 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_IMPEX_XML_FILE_ENDING;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_GROUP_PREFIX;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SEARCH_SCOPE_Y_PREFIX;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 /**
  * Created by Martin Zdarsky-Jones on 04/07/2017.
@@ -72,12 +64,12 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.files"),
-                createCustomTSFilesPattern()
+                HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.files"),
+                new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
             ));
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.custom.ts.beans.impex.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.beans.impex.files"),
                 createCustomTsImpexBeansFilesPattern()
             ));
         }
@@ -97,11 +89,11 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(createScope(nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.ts.files"),
+            HybrisI18NBundleUtils.message("hybris.scope.editable.all.ts.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
         ));
         newScopes.add(new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.all.beans.files"),
+            HybrisI18NBundleUtils.message("hybris.scope.editable.all.beans.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_BEANS_XML_FILE_ENDING)
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
@@ -111,12 +103,6 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             FindSettings.getInstance().setCustomScope(defaultScope.getPresentableName());
             FindSettings.getInstance().setDefaultScopeName(defaultScope.getPresentableName());
         }
-    }
-
-    @NotNull
-    public static FilePatternPackageSet createCustomTSFilesPattern() {
-        final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
-        return new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING);
     }
 
     @NotNull

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.uml.core.actions.DiagramToolbarActionsProviderImpl
 
-open class TSDiagramToolbarActionsProvider : DiagramToolbarActionsProviderImpl() {
+abstract class TSDiagramToolbarActionsProvider : DiagramToolbarActionsProviderImpl() {
 
     companion object {
         val instance: TSDiagramToolbarActionsProvider = ApplicationManager.getApplication().getService(TSDiagramToolbarActionsProvider::class.java)

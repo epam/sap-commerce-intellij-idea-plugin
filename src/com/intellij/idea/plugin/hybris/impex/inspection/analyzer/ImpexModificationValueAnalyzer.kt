@@ -10,7 +10,7 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
-fun notKeyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filter { !keyAttrPredicate(it) }
+fun notKeyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filterNot { keyAttrPredicate(it) }
 
 fun keyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filter { keyAttrPredicate(it) }
 

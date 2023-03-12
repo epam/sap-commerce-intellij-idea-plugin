@@ -26,6 +26,9 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import org.jetbrains.annotations.Contract
 
+/**
+ * We need to override addElement method to ensure that Node will be re-added when Type System Diagram generated from the DiagramState (2nd+ generation)
+ */
 class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
@@ -33,36 +36,34 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
     val removedNodes: MutableSet<String> = mutableSetOf()
 
-    fun resetExclusions() {
-        removedNodes.clear()
-    }
-
-    override fun dispose() {
-        edges.clear()
-        nodesMap.clear()
-    }
+    @Contract(pure = true)
+    override fun getModificationTracker() = this
+    override fun isDependencyDiagramSupported() = true
+    override fun getNodes() = nodesMap.values
+    override fun getEdges() = edges
+    override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
 
     override fun addElement(node: TSGraphNode?): DiagramNode<TSGraphNode>? {
         removedNodes.remove(node?.name)
 
         return nodesMap[node?.name]
     }
+
     override fun removeNode(node: DiagramNode<TSGraphNode>) {
         val name = node.identifyingElement.name
         if (nodesMap.containsKey(name)) {
             removedNodes.add(name)
         }
     }
-//    override fun isDependencyDiagramSupported() = true
-    override fun getNodes() = nodesMap.values
-    override fun getEdges() = edges
-    override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
-
-    @Contract(pure = true)
-    override fun getModificationTracker() = this
 
     override fun refreshDataModel() = DumbService.getInstance(myProject).runWhenSmart {
         TSDiagramRefresher.refresh(this, nodesMap, edges)
+    }
+
+    override fun dispose() {
+        edges.clear()
+        nodesMap.clear()
+        removedNodes.clear()
     }
 
     companion object {
