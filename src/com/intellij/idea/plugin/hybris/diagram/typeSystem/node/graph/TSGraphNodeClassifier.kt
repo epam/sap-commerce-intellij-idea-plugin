@@ -28,8 +28,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassi
 data class TSGraphNodeClassifier(
     override val name: String,
     val meta: TSGlobalMetaClassifier<*>,
-    override val fields: Array<TSGraphField> = emptyArray(),
-    val transitiveNode: Boolean = false
+    override val fields: MutableList<TSGraphField> = mutableListOf(),
+    val transitiveNode: Boolean = false,
+    override var collapsed: Boolean = false
 ) : TSGraphNode {
 
     override fun equals(other: Any?): Boolean {
@@ -38,13 +39,13 @@ data class TSGraphNodeClassifier(
 
         if (name != other.name) return false
         if (meta != other.meta) return false
-        return fields.contentEquals(other.fields)
+        return fields.toTypedArray().contentEquals(other.fields.toTypedArray())
     }
 
     override fun hashCode(): Int {
         var result = name.hashCode()
         result = 31 * result + meta.hashCode()
-        result = 31 * result + fields.contentHashCode()
+        result = 31 * result + fields.toTypedArray().contentHashCode()
         return result
     }
 }

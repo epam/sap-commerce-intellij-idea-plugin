@@ -50,10 +50,10 @@ object TSGraphFactory {
         is TSGlobalMetaRelation -> buildNode(meta, transitiveNode)
         is TSGlobalMetaMap -> buildNode(meta, transitiveNode)
         is TSGlobalMetaItem -> buildNode(meta, transitiveNode)
-        else -> buildNode(meta.name, meta, emptyArray(), transitiveNode)
+        else -> buildNode(meta.name, meta, mutableListOf(), transitiveNode)
     }
 
-    private fun buildNode(meta: TSGlobalMetaItem, transitiveNode: Boolean): TSGraphNodeClassifier {
+    private fun buildNode(meta: TSGlobalMetaItem, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val deploymentProperties = deploymentFields(meta.deployment)
         val customProperties = meta.customProperties.values
             .map { customProperty -> TSGraphFieldCustomProperty(customProperty.name, customProperty) }
@@ -69,20 +69,21 @@ object TSGraphFactory {
             .map { index -> TSGraphFieldIndex(index.name, index) }
             .sortedBy { it.name }
 
-        val fields = deploymentProperties + customProperties + attributes + relationEnds + indexes
+        val fields = (deploymentProperties + customProperties + attributes + relationEnds + indexes).toMutableList()
         return buildNode(meta.name, meta, fields, transitiveNode)
     }
 
-    private fun buildNode(meta: TSGlobalMetaMap, transitiveNode: Boolean): TSGraphNodeClassifier {
-        val properties = listOf(
+    private fun buildNode(meta: TSGlobalMetaMap, transitiveNode: Boolean): TSGraphNodeClassifier? {
+        val properties: MutableList<TSGraphField> = listOf(
             TSGraphFieldTyped(MapType.ARGUMENTTYPE, meta.argumentType ?: "?"),
             TSGraphFieldTyped(MapType.RETURNTYPE, meta.returnType ?: "?"),
         )
+            .toMutableList()
 
-        return buildNode(meta.name, meta, properties.toTypedArray(), transitiveNode)
+        return buildNode(meta.name, meta, properties, transitiveNode)
     }
 
-    private fun buildNode(meta: TSGlobalMetaRelation, transitiveNode: Boolean): TSGraphNodeClassifier {
+    private fun buildNode(meta: TSGlobalMetaRelation, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val deploymentFields = deploymentFields(meta.deployment)
         val properties = listOf(
             TSGraphFieldRelationElement(Relation.SOURCE_ELEMENT, meta.source),
@@ -90,19 +91,20 @@ object TSGraphFactory {
         )
 
         val fields = deploymentFields + properties
-        return buildNode(meta.name, meta, fields, transitiveNode)
+        return buildNode(meta.name, meta, fields.toMutableList(), transitiveNode)
     }
 
-    private fun buildNode(meta: TSGlobalMetaCollection, transitiveNode: Boolean): TSGraphNodeClassifier {
+    private fun buildNode(meta: TSGlobalMetaCollection, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val fields = listOf(
             TSGraphFieldProperty(CollectionType.TYPE, meta.type.value),
             TSGraphFieldTyped(CollectionType.ELEMENTTYPE, meta.elementType),
         )
+            .toMutableList()
 
-        return buildNode(meta.name, meta, fields.toTypedArray(), transitiveNode)
+        return buildNode(meta.name, meta, fields, transitiveNode)
     }
 
-    private fun buildNode(meta: TSGlobalMetaEnum, transitiveNode: Boolean): TSGraphNodeClassifier {
+    private fun buildNode(meta: TSGlobalMetaEnum, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val properties = listOf(
             TSGraphFieldProperty(HybrisConstants.CODE_ATTRIBUTE_NAME, "String"),
             TSGraphFieldProperty(HybrisConstants.NAME_ATTRIBUTE_NAME, "String"),
@@ -112,7 +114,9 @@ object TSGraphFactory {
             .map { (name, metaEnumValue) -> TSGraphFieldEnumValue(name, metaEnumValue) }
             .sortedBy { it.name }
 
-        return buildNode(meta.name, meta, (properties + values).toTypedArray(), transitiveNode)
+        val fields = (properties + values).toMutableList()
+
+        return buildNode(meta.name, meta, fields, transitiveNode)
     }
 
     private fun deploymentFields(deployment: TSMetaDeployment?): Array<TSGraphField> {
@@ -130,8 +134,8 @@ object TSGraphFactory {
     private fun buildNode(
         name: String?,
         meta: TSGlobalMetaClassifier<out DomElement>,
-        fields: Array<TSGraphField> = emptyArray(),
+        fields: MutableList<TSGraphField> = mutableListOf(),
         transitiveNode: Boolean = false
-    ) = TSGraphNodeClassifier(name!!, meta, fields, transitiveNode)
+    ) = name?.let { TSGraphNodeClassifier(name, meta, fields, transitiveNode) }
 
 }

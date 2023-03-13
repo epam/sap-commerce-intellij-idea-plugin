@@ -35,12 +35,23 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     private val edges: MutableCollection<TSDiagramEdge> = mutableSetOf()
     private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
     val removedNodes: MutableSet<String> = mutableSetOf()
+    val collapsedNodes: MutableSet<String> = mutableSetOf()
 
     @Contract(pure = true)
-    override fun getModificationTracker() = this
+    override fun getModificationTracker() = createModificationTracker()
     override fun isDependencyDiagramSupported() = true
     override fun getNodes() = nodesMap.values
     override fun getEdges() = edges
+    override fun collapseNode(node: DiagramNode<TSGraphNode>) {
+        collapsedNodes.add(node.identifyingElement.name)
+        node.identifyingElement.collapsed = false
+    }
+
+    override fun expandNode(node: DiagramNode<TSGraphNode>) {
+        collapsedNodes.remove(node.identifyingElement.name)
+        node.identifyingElement.collapsed = true
+    }
+
     override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
 
     override fun addElement(node: TSGraphNode?): DiagramNode<TSGraphNode>? {
@@ -58,12 +69,23 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
 
     override fun refreshDataModel() = DumbService.getInstance(myProject).runWhenSmart {
         TSDiagramRefresher.refresh(this, nodesMap, edges)
+        this.incModificationCount()
+    }
+
+    fun collapseAllNodes() {
+        collapsedNodes.clear()
+        nodes.forEach { collapseNode(it) }
+    }
+
+    fun expandAllNodes() {
+        nodes.forEach { expandNode(it) }
     }
 
     override fun dispose() {
         edges.clear()
         nodesMap.clear()
         removedNodes.clear()
+        collapsedNodes.clear()
     }
 
     companion object {

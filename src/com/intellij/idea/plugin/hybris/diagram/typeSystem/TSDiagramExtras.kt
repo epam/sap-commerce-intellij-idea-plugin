@@ -38,4 +38,5 @@ class TSDiagramExtras : DiagramExtras<TSGraphNode>() {
 
     override fun getAdditionalDiagramSettings() = diagramConfigGroups
     override fun getToolbarActionsProvider() = TSDiagramToolbarActionsProvider.instance
+    override fun isExpandCollapseActionsImplemented() = true
 }

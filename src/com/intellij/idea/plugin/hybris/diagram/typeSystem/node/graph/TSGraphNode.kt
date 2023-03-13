@@ -20,5 +20,6 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
 interface TSGraphNode {
     val name: String
-    val fields: Array<TSGraphField>
+    val fields: MutableList<TSGraphField>
+    var collapsed: Boolean
 }

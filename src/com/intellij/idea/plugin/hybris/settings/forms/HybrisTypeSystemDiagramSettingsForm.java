@@ -45,6 +45,7 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
     private JPanel myExcludedTypeNamesPane;
     private JPanel mySettingsPane;
     private JBCheckBox myShowOOTBMapNode;
+    private JBCheckBox myNodesCollapsedByDefault;
     private JPanel mainPanel;
     private AbstractTable<TSDiagramSettings, TSTypeNameHolder> myExcludedTypeNamesTable;
 
@@ -62,6 +63,7 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
 
         myExcludedTypeNamesTable.updateModel(typeSystemDiagramSettings);
         myShowOOTBMapNode.setSelected(typeSystemDiagramSettings.getShowOOTBMapNode());
+        myNodesCollapsedByDefault.setSelected(typeSystemDiagramSettings.getNodesCollapsedByDefault());
 
         return this;
     }
@@ -71,6 +73,7 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
         final var typeSystemDiagramSettings = developerSettingsComponent.getState().getTypeSystemDiagramSettings();
 
         typeSystemDiagramSettings.setShowOOTBMapNode(myShowOOTBMapNode.isSelected());
+        typeSystemDiagramSettings.setNodesCollapsedByDefault(myNodesCollapsedByDefault.isSelected());
         typeSystemDiagramSettings.setExcludedTypeNames(getCurrentExcludedTypeNames());
     }
 
@@ -86,6 +89,7 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
         final var developerSettingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
         final var typeSystemDiagramSettings = developerSettingsComponent.getState().getTypeSystemDiagramSettings();
         return myShowOOTBMapNode.isSelected() != typeSystemDiagramSettings.getShowOOTBMapNode()
+            || myNodesCollapsedByDefault.isSelected() != typeSystemDiagramSettings.getNodesCollapsedByDefault()
             || !CollectionUtils.isEqualCollection(getCurrentExcludedTypeNames(), typeSystemDiagramSettings.getExcludedTypeNames());
     }
 

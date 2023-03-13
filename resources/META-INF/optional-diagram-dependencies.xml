@@ -63,10 +63,15 @@
         </action>
 
         <group id="Diagram.Hybris.TypeSystem.Actions">
-            <action id="Diagram.Hybris.TypeSystem.Actions.ResetExclusions"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction"/>
             <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
                     class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
+            <separator/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.ResetExclusions"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExpandAllDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
         </group>
     </actions>
 

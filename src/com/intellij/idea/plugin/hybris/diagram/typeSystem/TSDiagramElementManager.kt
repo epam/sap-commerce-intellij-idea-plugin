@@ -37,8 +37,22 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
     override fun isAcceptableAsNode(item: Any?) = item is TSGraphNode
     override fun getElementTitle(node: TSGraphNode?) = node?.name
     override fun getNodeTooltip(node: TSGraphNode?) = node?.name
-    override fun getNodeItems(node: TSGraphNode?) = node?.fields
+    override fun getNodeItems(node: TSGraphNode?) = node?.fields?.toTypedArray()
         ?: emptyArray()
+
+    override fun getPresentableElementTitle(element: TSGraphNode?, builder: DiagramBuilder) = element
+        ?.let {
+            with(SimpleColoredText()) {
+                if (it.collapsed) {
+                    this.append("collapsed", SimpleTextAttributes.EXCLUDED_ATTRIBUTES)
+                    this.append("  ", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+                }
+                this.append(element.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+
+                this
+            }
+        }
+        ?: super.getPresentableElementTitle(element, builder)
 
     override fun getItemName(nodeElement: TSGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = when (nodeItem) {
         is TSGraphField -> SimpleColoredText(nodeItem.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
@@ -65,8 +79,10 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
         is TSGraphFieldCustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY
         is TSGraphFieldRelationEnd -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
         else HybrisIcons.TS_RELATION_TARGET
+
         is TSGraphFieldRelationElement -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
         else HybrisIcons.TS_RELATION_TARGET
+
         is TSGraphFieldIndex -> {
             if (nodeItem.meta.isRemove) HybrisIcons.TS_INDEX_REMOVE
             else if (nodeItem.meta.isReplace) HybrisIcons.TS_INDEX_REPLACE

@@ -22,7 +22,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 
 data class TSGraphNodeRoot(
     override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.name"),
-    override val fields: Array<TSGraphField> = emptyArray()
+    override val fields: MutableList<TSGraphField> = mutableListOf(),
+    override var collapsed: Boolean = false
 ) : TSGraphNode {
 
     override fun equals(other: Any?): Boolean {
@@ -30,12 +31,12 @@ data class TSGraphNodeRoot(
         if (other !is TSGraphNodeRoot) return false
 
         if (name != other.name) return false
-        return fields.contentEquals(other.fields)
+        return fields.toTypedArray().contentEquals(other.fields.toTypedArray())
     }
 
     override fun hashCode(): Int {
         var result = name.hashCode()
-        result = 31 * result + fields.contentHashCode()
+        result = 31 * result + fields.toTypedArray().contentHashCode()
         return result
     }
 }

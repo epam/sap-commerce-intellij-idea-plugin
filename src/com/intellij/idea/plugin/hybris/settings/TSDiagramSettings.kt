@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 
 data class TSDiagramSettings(
     var showOOTBMapNode: Boolean = true,
+    var nodesCollapsedByDefault: Boolean = true,
     var excludedTypeNames: Set<String> = setOf(
         HybrisConstants.TS_TYPE_ITEM,
         HybrisConstants.TS_TYPE_GENERIC_ITEM,

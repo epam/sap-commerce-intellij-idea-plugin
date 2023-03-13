@@ -33,18 +33,21 @@ import java.awt.Shape
 object TSDiagramRefresher {
 
     fun refresh(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
-        refreshNodes(model, nodesMap)
-        refreshEdges(model, nodesMap, edges)
+        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(model.project).state.typeSystemDiagramSettings
+
+        refreshNodes(model, nodesMap, settings)
+        refreshEdges(model, nodesMap, edges, settings)
     }
 
-    private fun refreshNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+    private fun refreshNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         nodesMap.clear()
-        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(model.project).state.typeSystemDiagramSettings
 
         collectNodesItems(model, nodesMap, settings)
         collectNodesRelations(model, nodesMap, settings)
         collectNodesDependencies(model, nodesMap, settings)
         collectNodesExtends(model, nodesMap, settings)
+
+        updatedCollapsedNodes(model, nodesMap, settings)
     }
 
     private fun collectNodesItems(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
@@ -53,7 +56,7 @@ object TSDiagramRefresher {
             .filter { it.name != null }
             .filterNot { model.removedNodes.contains(it.name) }
             .filterNot { settings.excludedTypeNames.contains(it.name) }
-            .map { TSGraphFactory.buildNode(it) }
+            .mapNotNull { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
             .toList()
@@ -69,7 +72,7 @@ object TSDiagramRefresher {
             .filterNot { model.removedNodes.contains(it.name) }
             .filterNot { settings.excludedTypeNames.contains(it.name) }
             .filter { it.deployment != null }
-            .map { TSGraphFactory.buildNode(it) }
+            .mapNotNull { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
             .toList()
@@ -141,7 +144,7 @@ object TSDiagramRefresher {
                             .filterNot { extendsMeta -> settings.excludedTypeNames.contains(extendsMeta.name) }
                             .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
                             .filterNot { extendsMeta -> model.removedNodes.contains(extendsMeta.name) }
-                            .map { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }
+                            .mapNotNull { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }
                             .filter { extendsGraphNode -> model.scopeManager?.contains(extendsGraphNode) ?: true }
                             .toList()
                     }
@@ -153,7 +156,20 @@ object TSDiagramRefresher {
             .forEach { nodesMap[it.graphNode.name] = it }
     }
 
-    private fun refreshEdges(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
+    private fun updatedCollapsedNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
+        if (model.modificationCount == 0L && settings.nodesCollapsedByDefault) {
+            model.collapseAllNodes()
+        }
+        nodesMap.values
+            .map { it.graphNode }
+            .filter { model.collapsedNodes.contains(it.name) }
+            .forEach {
+                it.fields.clear()
+                it.collapsed = true
+            }
+    }
+
+    private fun refreshEdges(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>, settings: TSDiagramSettings) {
         edges.clear()
 
         collectEdgesExtends(nodesMap, edges)
