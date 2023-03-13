@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -35,13 +35,14 @@ class BSMetaAnnotationsTable private constructor(myProject: Project) :
 
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_SCOPE)
-    override fun select(meta: BSMetaAnnotations) = selectRowWithValue(meta.value, COLUMN_VALUE)
-    override fun getItems(meta: BSGlobalMetaBean) = meta.annotations.sortedWith(
+    override fun select(item: BSMetaAnnotations) = selectRowWithValue(item.value, COLUMN_VALUE)
+    override fun getItems(owner: BSGlobalMetaBean) = owner.annotations.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.value })
     )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<BSMetaAnnotations> = with(ListTableModel<BSMetaAnnotations>()) {
         columnInfos = arrayOf(

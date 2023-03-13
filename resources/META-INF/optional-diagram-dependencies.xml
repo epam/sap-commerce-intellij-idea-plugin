@@ -44,6 +44,8 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"
                             serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramToolbarActionsProviderImpl"/>
 
+        <projectConfigurable id="hybris.project.diagram.ts.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectDiagramTSSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
@@ -62,8 +64,9 @@
 
         <group id="Diagram.Hybris.TypeSystem.Actions">
             <action id="Diagram.Hybris.TypeSystem.Actions.ResetExclusions"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction">
-            </action>
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ResetExclusionsDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
         </group>
     </actions>
 

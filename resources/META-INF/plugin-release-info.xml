@@ -31,7 +31,7 @@
                 <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
-                <li>Visualization of business process graph (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
+                <li>Visualization of Business Process, Type System and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
                 <li>Enhanced project view tree.</li>
@@ -101,6 +101,7 @@
                     <li><i>Feature:</i> Added Transitive Dependencies support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/273" target="_blank" rel="nofollow">#273</a>)</li>
                     <li><i>Feature:</i> Added PartOf edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/274" target="_blank" rel="nofollow">#274</a>)</li>
                     <li><i>Feature:</i> Added Dependencies edges support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/276" target="_blank" rel="nofollow">#276</a>)</li>
+                    <li><i>Feature:</i> Improved Diagram settings and added Stop Type names (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/277" target="_blank" rel="nofollow">#277</a>)</li>
                     <li><i>Feature:</i> Different header background color for Custom Type Nodes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/275" target="_blank" rel="nofollow">#275</a>)</li>
                 </ul>
                 </li>

@@ -23,12 +23,13 @@ import com.intellij.openapi.project.Project
 
 class TSMetaRelationElementCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>(myProject) {
 
-    override fun getItems(meta: TSMetaRelationElement) = meta.customProperties.values
+    override fun getItems(owner: TSMetaRelationElement) = owner.customProperties.values
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
         )
+        .toMutableList()
 
     companion object {
         private const val serialVersionUID: Long = -7138215848626018593L

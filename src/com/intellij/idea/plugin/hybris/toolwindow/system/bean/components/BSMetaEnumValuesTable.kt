@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -34,13 +34,14 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
 
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
-    override fun select(meta: BSMetaEnum.BSMetaEnumValue) = selectRowWithValue(meta.name, COLUMN_VALUE)
-    override fun getItems(meta: BSGlobalMetaEnum) = meta.values.values.sortedWith(
+    override fun select(item: BSMetaEnum.BSMetaEnumValue) = selectRowWithValue(item.name, COLUMN_VALUE)
+    override fun getItems(owner: BSGlobalMetaEnum) = owner.values.values.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
     )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<BSMetaEnum.BSMetaEnumValue> = with(ListTableModel<BSMetaEnum.BSMetaEnumValue>()) {
         columnInfos = arrayOf(

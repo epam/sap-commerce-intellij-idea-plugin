@@ -21,30 +21,30 @@ package com.intellij.idea.plugin.hybris.settings
 import java.util.*
 
 data class HybrisProjectSettings(
-        var customDirectory: String? = null,
-        var hybrisDirectory: String? = null,
-        var configDirectory: String? = null,
-        var importedByVersion: String? = null,
-        var hybrisVersion: String? = null,
-        var javadocUrl: String? = null,
-        var sourceCodeFile: String? = null,
-        var externalExtensionsDirectory: String? = null,
-        var externalConfigDirectory: String? = null,
-        var externalDbDriversDirectory: String? = null,
-        var ideModulesFilesDirectory: String? = null,
-        var hybrisProject: Boolean = false,
-        var importOotbModulesInReadOnlyMode: Boolean = false,
-        var followSymlink: Boolean = false,
-        var scanThroughExternalModule: Boolean = false,
-        var excludeTestSources: Boolean = false,
-        var createBackwardCyclicDependenciesForAddOns: Boolean = false,
-        var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf(),
-        var unusedExtensions: Set<String> = mutableSetOf(),
-        var modulesOnBlackList: Set<String> = mutableSetOf(),
-        var availableExtensions: MutableMap<String, ExtensionDescriptor> = TreeMap<String, ExtensionDescriptor> { a, b ->
-            a.compareTo(b, true)
-        },
-        var moduleSettings: MutableMap<String, ModuleSettings> = TreeMap<String, ModuleSettings> { a, b ->
-            a.compareTo(b, true)
-        }
+    var customDirectory: String? = null,
+    var hybrisDirectory: String? = null,
+    var configDirectory: String? = null,
+    var importedByVersion: String? = null,
+    var hybrisVersion: String? = null,
+    var javadocUrl: String? = null,
+    var sourceCodeFile: String? = null,
+    var externalExtensionsDirectory: String? = null,
+    var externalConfigDirectory: String? = null,
+    var externalDbDriversDirectory: String? = null,
+    var ideModulesFilesDirectory: String? = null,
+    var hybrisProject: Boolean = false,
+    var importOotbModulesInReadOnlyMode: Boolean = false,
+    var followSymlink: Boolean = false,
+    var scanThroughExternalModule: Boolean = false,
+    var excludeTestSources: Boolean = false,
+    var createBackwardCyclicDependenciesForAddOns: Boolean = false,
+    var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf(),
+    var unusedExtensions: Set<String> = mutableSetOf(),
+    var modulesOnBlackList: Set<String> = mutableSetOf(),
+    var availableExtensions: MutableMap<String, ExtensionDescriptor> = TreeMap<String, ExtensionDescriptor> { a, b ->
+        a.compareTo(b, true)
+    },
+    var moduleSettings: MutableMap<String, ModuleSettings> = TreeMap<String, ModuleSettings> { a, b ->
+        a.compareTo(b, true)
+    }
 )

@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -40,13 +40,14 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_REDECLARE, COLUMN_AUTO_CREATE, COLUMN_GENERATE)
-    override fun select(meta: TSMetaItemAttribute) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSGlobalMetaItem) = meta.allAttributes
+    override fun select(item: TSMetaItemAttribute) = selectRowWithValue(item.name, COLUMN_QUALIFIER)
+    override fun getItems(owner: TSGlobalMetaItem): MutableList<TSMetaItemAttribute> = owner.allAttributes
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
         )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<TSMetaItemAttribute> = with(ListTableModel<TSMetaItemAttribute>()) {
         columnInfos = arrayOf(

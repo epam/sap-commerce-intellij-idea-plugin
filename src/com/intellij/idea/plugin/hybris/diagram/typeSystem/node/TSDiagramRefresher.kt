@@ -23,7 +23,8 @@ import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.TSDiagramSettings
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
@@ -38,18 +39,20 @@ object TSDiagramRefresher {
 
     private fun refreshNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
         nodesMap.clear()
+        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(model.project).state.typeSystemDiagramSettings
 
-        collectNodesItems(model, nodesMap)
-        collectNodesRelations(model, nodesMap)
-        collectNodesDependencies(model, nodesMap)
-        collectNodesExtends(model, nodesMap)
+        collectNodesItems(model, nodesMap, settings)
+        collectNodesRelations(model, nodesMap, settings)
+        collectNodesDependencies(model, nodesMap, settings)
+        collectNodesExtends(model, nodesMap, settings)
     }
 
-    private fun collectNodesItems(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+    private fun collectNodesItems(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             .asSequence()
             .filter { it.name != null }
             .filterNot { model.removedNodes.contains(it.name) }
+            .filterNot { settings.excludedTypeNames.contains(it.name) }
             .map { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
@@ -59,11 +62,12 @@ object TSDiagramRefresher {
             }
     }
 
-    private fun collectNodesRelations(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+    private fun collectNodesRelations(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
             .asSequence()
             .filter { it.name != null }
             .filterNot { model.removedNodes.contains(it.name) }
+            .filterNot { settings.excludedTypeNames.contains(it.name) }
             .filter { it.deployment != null }
             .map { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
@@ -80,9 +84,8 @@ object TSDiagramRefresher {
      * Nested dependencies will not be created as we're not interested at this stage in complete picture.
      * If All possible dependencies will be needed, another Type Specific filter can be introduced with Scope = "All"
      */
-    private fun collectNodesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
+    private fun collectNodesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         if (!model.isShowDependencies) return
-        val stopTypes = HybrisApplicationSettingsComponent.getInstance().state.tsdStopTypeList
 
         nodesMap.values
             .flatMap { sourceNode ->
@@ -92,20 +95,22 @@ object TSDiagramRefresher {
                     return@flatMap DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
                         .filterIsInstance<TSGraphField>()
                         .mapNotNull { graphField ->
-                            when (graphField) {
+                            val dependencyType = when (graphField) {
                                 is TSGraphFieldRelationEnd -> graphField.meta.type
                                 is TSGraphFieldRelationElement -> graphField.meta.type
                                 is TSGraphFieldAttribute -> graphField.meta.type
                                 is TSGraphFieldTyped -> graphField.value
                                 else -> null
                             }
-                        }
-                        .mapNotNull { dependencyType ->
+                                ?: return@mapNotNull null
+
                             if (model.removedNodes.contains(dependencyType)) return@mapNotNull null
-                            if (stopTypes.contains(dependencyType)) return@mapNotNull null
+                            if (settings.excludedTypeNames.contains(dependencyType)) return@mapNotNull null
                             if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
 
-                            return@mapNotNull TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
+                            val transitiveNode = TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
+                            if (!settings.showOOTBMapNode && transitiveNode?.meta is TSGlobalMetaMap) return@mapNotNull null
+                            return@mapNotNull transitiveNode
                         }
                 }
 
@@ -122,8 +127,7 @@ object TSDiagramRefresher {
      *
      * Also, it is possible to specify STOP Types for extends names to limit down amount of created "shared" Edges
      */
-    private fun collectNodesExtends(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>) {
-        val stopTypes = HybrisApplicationSettingsComponent.getInstance().state.tsdStopTypeList
+    private fun collectNodesExtends(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         nodesMap.values
             .flatMap { sourceNode ->
                 val graphNode = sourceNode.graphNode
@@ -134,7 +138,7 @@ object TSDiagramRefresher {
                         return@flatMap meta.allExtends
                             .asSequence()
                             .filter { extendsMeta -> extendsMeta.name != null }
-                            .filterNot { extendsMeta -> stopTypes.contains(extendsMeta.name) }
+                            .filterNot { extendsMeta -> settings.excludedTypeNames.contains(extendsMeta.name) }
                             .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
                             .filterNot { extendsMeta -> model.removedNodes.contains(extendsMeta.name) }
                             .map { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }

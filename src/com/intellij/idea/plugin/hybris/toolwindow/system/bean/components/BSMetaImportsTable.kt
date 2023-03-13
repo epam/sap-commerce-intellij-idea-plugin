@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaImport
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -35,13 +35,14 @@ class BSMetaImportsTable private constructor(myProject: Project) :
 
     override fun getSearchableColumnNames() = listOf(COLUMN_TYPE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_STATIC)
-    override fun select(meta: BSMetaImport) = selectRowWithValue(meta.type, COLUMN_TYPE)
-    override fun getItems(meta: BSGlobalMetaBean) = meta.imports.sortedWith(
+    override fun select(item: BSMetaImport) = selectRowWithValue(item.type, COLUMN_TYPE)
+    override fun getItems(owner: BSGlobalMetaBean) = owner.imports.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.type })
     )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<BSMetaImport> = with(ListTableModel<BSMetaImport>()) {
         columnInfos = arrayOf(

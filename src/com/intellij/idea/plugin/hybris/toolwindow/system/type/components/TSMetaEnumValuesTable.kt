@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -34,11 +34,13 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
 
     override fun getSearchableColumnNames() = listOf(COLUMN_VALUE, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
-    override fun select(meta: TSMetaEnum.TSMetaEnumValue) = selectRowWithValue(meta.name, COLUMN_VALUE)
-    override fun getItems(meta: TSGlobalMetaEnum) = meta.values.values.sortedWith(compareBy(
+    override fun select(item: TSMetaEnum.TSMetaEnumValue) = selectRowWithValue(item.name, COLUMN_VALUE)
+    override fun getItems(owner: TSGlobalMetaEnum) = owner.values.values.sortedWith(compareBy(
         { !it.isCustom },
         { it.module.name },
-        { it.name }))
+        { it.name })
+    )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<TSMetaEnum.TSMetaEnumValue> = with(ListTableModel<TSMetaEnum.TSMetaEnumValue>()) {
         columnInfos = arrayOf(

@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -41,13 +41,14 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
 
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED, COLUMN_DEPRECATED)
-    override fun select(meta: TSMetaRelation.TSMetaRelationElement) = selectRowWithValue(meta.name, COLUMN_QUALIFIER)
-    override fun getItems(meta: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getRelationEnds(meta, true)
+    override fun select(item: TSMetaRelation.TSMetaRelationElement) = selectRowWithValue(item.name, COLUMN_QUALIFIER)
+    override fun getItems(owner: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getRelationEnds(owner, true)
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
         )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<TSMetaRelation.TSMetaRelationElement> = with(ListTableModel<TSMetaRelation.TSMetaRelationElement>()) {
         columnInfos = arrayOf(

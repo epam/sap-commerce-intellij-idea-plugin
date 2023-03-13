@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -37,13 +37,14 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_EQUALS)
-    override fun select(meta: BSMetaProperty) = selectRowWithValue(meta.name, COLUMN_NAME)
-    override fun getItems(meta: BSGlobalMetaBean) = meta.properties.values.sortedWith(
+    override fun select(item: BSMetaProperty) = selectRowWithValue(item.name, COLUMN_NAME)
+    override fun getItems(owner: BSGlobalMetaBean) = owner.properties.values.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
     )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<BSMetaProperty> = with(ListTableModel<BSMetaProperty>()) {
         columnInfos = arrayOf(

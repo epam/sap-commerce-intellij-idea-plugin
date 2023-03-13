@@ -59,8 +59,25 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
         }
     }
 
-    abstract fun select(meta: Item)
-    protected abstract fun getItems(meta: Owner): List<Item>
+    @Suppress("UNCHECKED_CAST")
+    fun getItems(): List<Item> {
+        if (model is ListTableModel<*>) {
+            return (model as ListTableModel<Item>).items
+        }
+        return emptyList()
+    }
+
+
+    @Suppress("UNCHECKED_CAST")
+    fun getCastedModel(): ListTableModel<Item>? {
+        if (model is ListTableModel<*>) {
+            return (model as ListTableModel<Item>)
+        }
+        return null
+    }
+
+    abstract fun select(item: Item)
+    protected abstract fun getItems(owner: Owner): MutableList<Item>
     protected abstract fun createModel(): ListTableModel<Item>
     protected open fun getSearchableColumnNames(): List<String> = emptyList()
     protected open fun getFixedWidthColumnNames(): List<String> = emptyList()
@@ -82,16 +99,20 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
         name: String,
         valueProvider: (Item) -> Any?,
         columnClass: Class<*> = String::class.java,
-        tooltip: String? = null
+        tooltip: String? = null,
+        isCellEditable: Boolean = false,
+        valueSetter: ((Item, Any?) -> Unit)? = null,
     ) = object : ColumnInfo<Item, Any>(name) {
         override fun valueOf(item: Item) = valueProvider.invoke(item)
-        override fun isCellEditable(item: Item) = false
+        override fun isCellEditable(item: Item) = isCellEditable
         override fun getColumnClass(): Class<*> = columnClass
         override fun getTooltipText(): String? = tooltip
-//            override fun setValue(item: TSMetaAttribute, value: String) = property.set(item, value)
+        override fun setValue(item: Item, value: Any?) {
+            valueSetter?.invoke(item, value)
+        }
     }
 
-    private fun setFixedColumnWidth(column: TableColumn, table : JTable, text: String) = with(column) {
+    private fun setFixedColumnWidth(column: TableColumn, table: JTable, text: String) = with(column) {
         val width = table
             .getFontMetrics(table.font)
             .stringWidth(" $text ") + JBUIScale.scale(4)

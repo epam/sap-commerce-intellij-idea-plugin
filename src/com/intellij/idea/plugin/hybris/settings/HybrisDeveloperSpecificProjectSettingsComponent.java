@@ -12,14 +12,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS;
@@ -39,7 +33,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         return project.getService(HybrisDeveloperSpecificProjectSettingsComponent.class);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public HybrisDeveloperSpecificProjectSettings getState() {
         return state;

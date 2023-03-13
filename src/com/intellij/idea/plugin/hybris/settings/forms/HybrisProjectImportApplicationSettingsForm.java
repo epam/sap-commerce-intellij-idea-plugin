@@ -49,18 +49,15 @@ public class HybrisProjectImportApplicationSettingsForm {
     private JTextField groupHybrisTextField;
     private JTextField groupHybrisUnusedTextField;
     private JTextField groupPlatformTextField;
-    private JPanel typeSystemDiagramStopWords;
     private JPanel extensionsResourcesToExclude;
     private JPanel excludedFromIndexPanel;
 
     private MyListPanel junkListPanel;
-    private MyListPanel tsdListPanel;
     private MyListPanel extensionsResourcesToExcludeListPanel;
     private MyListPanel excludedFromIndexListPanel;
 
     public void setData(final HybrisApplicationSettings data) {
         junkListPanel.setMyList(data.getJunkDirectoryList());
-        tsdListPanel.setMyList(data.getTsdStopTypeList());
         extensionsResourcesToExcludeListPanel.setMyList(data.getExtensionsResourcesToExcludeList());
         groupModulesCheckBox.setSelected(data.isGroupModules());
         groupCustomTextField.setText(data.getGroupCustom());
@@ -74,7 +71,6 @@ public class HybrisProjectImportApplicationSettingsForm {
 
     public void getData(final HybrisApplicationSettings data) {
         data.setJunkDirectoryList(junkListPanel.getMyList());
-        data.setTsdStopTypeList(tsdListPanel.getMyList());
         data.setExtensionsResourcesToExcludeList(extensionsResourcesToExcludeListPanel.getMyList());
         data.setGroupModules(groupModulesCheckBox.isSelected());
         data.setGroupCustom(groupCustomTextField.getText());
@@ -89,7 +85,6 @@ public class HybrisProjectImportApplicationSettingsForm {
     public boolean isModified(final HybrisApplicationSettings data) {
         return groupModulesCheckBox.isSelected() != data.isGroupModules()
             || !excludedFromIndexListPanel.getMyList().equals(data.getExcludedFromIndexList())
-            || !tsdListPanel.getMyList().equals(data.getTsdStopTypeList())
             || !extensionsResourcesToExcludeListPanel.getMyList().equals(data.getExtensionsResourcesToExcludeList())
             || !junkListPanel.getMyList().equals(data.getJunkDirectoryList())
             || !StringUtil.equals(groupCustomTextField.getText(), data.getGroupCustom())
@@ -107,8 +102,6 @@ public class HybrisProjectImportApplicationSettingsForm {
     private void createUIComponents() {
         junkListPanel = new MyListPanel("hybris.import.settings.junk.directory.name", "hybris.import.settings.junk.directory.popup.add.title", "hybris.import.settings.junk.directory.popup.add.text", "hybris.import.settings.junk.directory.popup.edit.title", "hybris.import.settings.junk.directory.popup.edit.text", new ArrayList<String>());
         junkDirectoriesPanel = junkListPanel;
-        tsdListPanel = new MyListPanel("hybris.import.settings.tsv.diagram.name", "hybris.import.settings.tsv.diagram.popup.add.title", "hybris.import.settings.tsv.diagram.popup.add.text", "hybris.import.settings.tsv.diagram.popup.edit.title", "hybris.import.settings.tsv.diagram.popup.edit.text", new ArrayList<String>());
-        typeSystemDiagramStopWords = tsdListPanel;
         extensionsResourcesToExcludeListPanel = new MyListPanel("hybris.import.settings.exclude.resources.name", "hybris.import.settings.exclude.resources.popup.add.title", "hybris.import.settings.exclude.resources.popup.add.text", "hybris.import.settings.exclude.resources.popup.edit.title", "hybris.import.settings.exclude.resources.popup.edit.text", new ArrayList<String>());
         extensionsResourcesToExclude = extensionsResourcesToExcludeListPanel;
         excludedFromIndexListPanel = new MyListPanel("hybris.import.settings.excludedFromIndex.directory.name", "hybris.import.settings.excludedFromIndex.directory.popup.add.title", "hybris.import.settings.excludedFromIndex.directory.popup.add.text", "hybris.import.settings.excludedFromIndex.directory.popup.edit.title", "hybris.import.settings.excludedFromIndex.directory.popup.edit.text", new ArrayList<String>());

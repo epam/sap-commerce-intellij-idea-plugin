@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -49,14 +48,6 @@ public class HybrisApplicationSettings {
         "testclasses"
     );
 
-    public static final List<String> DEFAULT_TSD_STOP_TYPE_NAMES = Lists.newArrayList(
-        HybrisConstants.TS_TYPE_GENERIC_ITEM,
-        HybrisConstants.TS_TYPE_ITEM,
-        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
-        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM,
-        HybrisConstants.TS_TYPE_CRON_JOB
-    );
-
     public static final List<String> DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = Lists.newArrayList(
         "solrserver",
         "npmancillary"
@@ -80,9 +71,6 @@ public class HybrisApplicationSettings {
 
     @PropertyName("junkDirectoryList")
     private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
-
-    @PropertyName("typeSystemDiagramStopTypes")
-    private List<String> tsdStopTypeList = DEFAULT_TSD_STOP_TYPE_NAMES;
 
     @PropertyName("extensionsResourcesToExclude")
     private List<String> extensionsResourcesToExcludeList = DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE;
@@ -360,14 +348,6 @@ public class HybrisApplicationSettings {
         this.developmentMode = developmentMode;
     }
 
-    public List<String> getTsdStopTypeList() {
-        return tsdStopTypeList;
-    }
-
-    public void setTsdStopTypeList(final List<String> tsdStopTypeList) {
-        this.tsdStopTypeList = tsdStopTypeList;
-    }
-
     public boolean isScanThroughExternalModule() {
         return scanThroughExternalModule;
     }
@@ -399,7 +379,6 @@ public class HybrisApplicationSettings {
             .append(useSmartFolding)
             .append(groupModules)
             .append(junkDirectoryList)
-            .append(tsdStopTypeList)
             .append(groupHybris)
             .append(groupOtherHybris)
             .append(groupCustom)
@@ -444,7 +423,6 @@ public class HybrisApplicationSettings {
             .append(useSmartFolding, other.useSmartFolding)
             .append(groupModules, other.groupModules)
             .append(junkDirectoryList, other.junkDirectoryList)
-            .append(tsdStopTypeList, other.tsdStopTypeList)
             .append(groupHybris, other.groupHybris)
             .append(groupOtherHybris, other.groupOtherHybris)
             .append(groupCustom, other.groupCustom)
@@ -479,7 +457,6 @@ public class HybrisApplicationSettings {
         sb.append(", useSmartFolding=").append(useSmartFolding);
         sb.append(", groupModules=").append(groupModules);
         sb.append(", junkDirectoryList=").append(junkDirectoryList);
-        sb.append(", tsdStopTypeList=").append(tsdStopTypeList);
         sb.append(", extensionsResourcesToExcludeList=").append(extensionsResourcesToExcludeList);
         sb.append(", groupHybris='").append(groupHybris).append('\'');
         sb.append(", groupOtherHybris='").append(groupOtherHybris).append('\'');

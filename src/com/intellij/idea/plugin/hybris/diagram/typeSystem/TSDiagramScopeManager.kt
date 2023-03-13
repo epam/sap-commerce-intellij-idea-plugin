@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
 import com.intellij.diagram.DiagramScopeManager
-import com.intellij.diagram.settings.DiagramConfiguration
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
@@ -48,10 +47,15 @@ class TSDiagramScopeManager(project: Project) : DiagramScopeManager<TSGraphNode>
     }
 
     companion object {
-        private val scopeCustom = NamedScope("Custom", { message("hybris.diagram.ts.provider.scope.custom.only_custom") }, HybrisIcons.EXTENSION_CUSTOM, null)
-        private val scopeCustomExtends = NamedScope("CustomWithExtends", { message("hybris.diagram.ts.provider.scope.custom.custom_with_extends") }, HybrisIcons.EXTENSION_CUSTOM, null)
-        private val scopeOOTB = NamedScope("OOTB", { message("hybris.diagram.ts.provider.scope.custom.ootb") }, HybrisIcons.EXTENSION_OOTB, null)
-        private val scopeAll = NamedScope(DiagramConfiguration.getInstance().defaultScope, HybrisIcons.TYPE_SYSTEM, null)
+        const val SCOPE_ID_CUSTOM = "Custom"
+        const val SCOPE_ID_CUSTOM_WITH_EXTENDS = "CustomWithExtends"
+        const val SCOPE_ID_OOTB = "OOTB"
+        const val SCOPE_ID_ALL = "All"
+
+        private val scopeCustom = NamedScope(SCOPE_ID_CUSTOM, { message("hybris.diagram.ts.provider.scope.custom.only_custom") }, HybrisIcons.EXTENSION_CUSTOM, null)
+        private val scopeCustomExtends = NamedScope(SCOPE_ID_CUSTOM_WITH_EXTENDS, { message("hybris.diagram.ts.provider.scope.custom.custom_with_extends") }, HybrisIcons.EXTENSION_CUSTOM, null)
+        private val scopeOOTB = NamedScope(SCOPE_ID_OOTB, { message("hybris.diagram.ts.provider.scope.custom.ootb") }, HybrisIcons.EXTENSION_OOTB, null)
+        private val scopeAll = NamedScope(SCOPE_ID_ALL, HybrisIcons.TYPE_SYSTEM, null)
 
         private val allowedScopes = arrayOf(
             scopeCustom,

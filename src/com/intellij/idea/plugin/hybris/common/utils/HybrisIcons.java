@@ -120,7 +120,8 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property;
     public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
 
-    public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/resetView.svg");
+    public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg");
+    public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

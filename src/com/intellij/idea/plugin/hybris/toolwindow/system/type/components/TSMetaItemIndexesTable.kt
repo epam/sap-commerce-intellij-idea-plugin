@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemIndex
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -38,7 +38,7 @@ private const val COLUMN_MODULE = "Module"
 class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaItemIndex>(myProject) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_KEYS, COLUMN_INCLUDES)
-    override fun select(meta: TSMetaItemIndex) = selectRowWithValue(meta.name, COLUMN_NAME)
+    override fun select(item: TSMetaItemIndex) = selectRowWithValue(item.name, COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(
         COLUMN_CUSTOM,
         COLUMN_REMOVE,
@@ -47,12 +47,13 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
         COLUMN_CREATION_MODE
     )
 
-    override fun getItems(meta: TSGlobalMetaItem): List<TSMetaItemIndex> = meta.allIndexes
+    override fun getItems(owner: TSGlobalMetaItem): MutableList<TSMetaItemIndex> = owner.allIndexes
         .sortedWith(compareBy(
             { !it.isCustom },
             { it.module.name },
             { it.name })
         )
+        .toMutableList()
 
     override fun createModel(): ListTableModel<TSMetaItemIndex> = with(ListTableModel<TSMetaItemIndex>()) {
         columnInfos = arrayOf(

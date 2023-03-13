@@ -26,17 +26,17 @@ import com.intellij.util.ArrayUtil
 class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
 
     init {
-        currentVisibilityLevel = ONLY_CUSTOM_FIELDS
+        currentVisibilityLevel = LEVEL_ONLY_CUSTOM_FIELDS
     }
 
     override fun getVisibilityLevels() = LEVELS.clone()
     override fun getVisibilityLevel(o: Any?) = when (o) {
-        is TSGraphFieldEnumValue -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
-        is TSGraphFieldIndex -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
-        is TSGraphFieldAttribute -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
-        is TSGraphFieldRelationEnd -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
-        is TSGraphFieldRelationElement -> if (o.meta.isCustom || o.meta.owner.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
-        is TSGraphFieldCustomProperty -> if (o.meta.isCustom) ONLY_CUSTOM_FIELDS else ALL_FIELDS
+        is TSGraphFieldEnumValue -> if (o.meta.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
+        is TSGraphFieldIndex -> if (o.meta.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
+        is TSGraphFieldAttribute -> if (o.meta.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
+        is TSGraphFieldRelationEnd -> if (o.meta.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
+        is TSGraphFieldRelationElement -> if (o.meta.isCustom || o.meta.owner.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
+        is TSGraphFieldCustomProperty -> if (o.meta.isCustom) LEVEL_ONLY_CUSTOM_FIELDS else LEVEL_ALL_FIELDS
         else -> null
     }
 
@@ -44,9 +44,12 @@ class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
     override fun isRelayoutNeeded() = true
 
     companion object {
-        val ONLY_CUSTOM_FIELDS = VisibilityLevel(message("hybris.diagram.ts.provider.visibility.only_custom_fields"))
-        val ALL_FIELDS = VisibilityLevel(message("hybris.diagram.ts.provider.visibility.all_fields"))
-        private val LEVELS = arrayOf(ONLY_CUSTOM_FIELDS, ALL_FIELDS)
+        const val ONLY_CUSTOM_FIELDS = "ONLY_CUSTOM_FIELDS"
+        const val ALL_FIELDS = "ALL_FIELDS"
+
+        private val LEVEL_ONLY_CUSTOM_FIELDS = VisibilityLevel(ONLY_CUSTOM_FIELDS, message("hybris.diagram.ts.provider.visibility.only_custom_fields"))
+        private val LEVEL_ALL_FIELDS = VisibilityLevel(ALL_FIELDS, message("hybris.diagram.ts.provider.visibility.all_fields"))
+        private val LEVELS = arrayOf(LEVEL_ONLY_CUSTOM_FIELDS, LEVEL_ALL_FIELDS)
         private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel? -> ArrayUtil.indexOf(LEVELS, level) }
     }
 }

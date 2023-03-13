@@ -24,7 +24,9 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.*
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
@@ -171,23 +173,21 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun fixRemoteConnectionSettings(project: Project) {
         val settingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
         val state = settingsComponent.state
-        if (state != null) {
-            val connectionList = state.remoteConnectionSettingsList
-            connectionList.forEach(Consumer {
-                prepareSslRemoteConnectionSettings(it)
-            })
+        val connectionList = state.remoteConnectionSettingsList
+        connectionList.forEach(Consumer {
+            prepareSslRemoteConnectionSettings(it)
+        })
 
-            if (settingsComponent.hacRemoteConnectionSettings.isEmpty()) {
-                val newSettings = settingsComponent.getDefaultHacRemoteConnectionSettings(project)
-                connectionList.add(newSettings)
-                state.activeRemoteConnectionID = newSettings.uuid
-            }
+        if (settingsComponent.hacRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settingsComponent.getDefaultHacRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeRemoteConnectionID = newSettings.uuid
+        }
 
-            if (settingsComponent.solrRemoteConnectionSettings.isEmpty()) {
-                val newSettings = settingsComponent.getDefaultSolrRemoteConnectionSettings(project)
-                connectionList.add(newSettings)
-                state.activeSolrConnectionID = newSettings.uuid
-            }
+        if (settingsComponent.solrRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settingsComponent.getDefaultSolrRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeSolrConnectionID = newSettings.uuid
         }
     }
 
