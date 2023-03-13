@@ -9,6 +9,10 @@
 
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
+## Documentation
+
+* [Type System Diagram Legend](docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md)
+
 ## Contribution guidelines ##
 
 * Please read [Contributor License Agreement](http://developercertificate.org)

@@ -15,12 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     idea
-    kotlin("jvm")
+    id("java")
+    id("org.jetbrains.kotlin.jvm") version "1.8.10"
     id("org.jetbrains.intellij") version "1.13.2"
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+intellij {
+    type.set(properties("intellij.type"))
+    version.set(properties("intellij.version"))
+    pluginName.set(properties("intellij.plugin.name"))
+    downloadSources.set(properties("intellij.download.sources").get().toBoolean())
+    updateSinceUntilBuild.set(properties("intellij.update.since.until.build").get().toBoolean())
+
+    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
+    plugins.addAll(*properties("intellij.plugins").get().split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
 }
 
 sourceSets.main {
@@ -31,56 +57,33 @@ sourceSets.main {
     resources.srcDir(file("resources"))
 }
 
-allprojects {
-    apply {
-        plugin("java")
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-}
-
-intellij {
-    type.set(platformType)
-    version.set(platformVersion)
-    pluginName.set(pluginName_)
-    downloadSources.set(platformDownloadSources)
-    updateSinceUntilBuild.set(intellijUpdateSinceUntilBuild)
-
-    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    plugins.addAll(*platformPlugins.split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
-}
-
 tasks {
 
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = sourceVersion
-            apiVersion = kotlinApiVersion
-            languageVersion = kotlinApiVersion
+    setupDependencies {
+        doLast {
+            // Fixes IDEA-298989.
+            fileTree("$buildDir/instrumented/instrumentCode") { include("**/*Form.class") }.files.forEach { delete(it) }
         }
     }
 
+    // TODO: remove before final commit
+    buildSearchableOptions {
+        enabled = false
+    }
+
     runIde {
-        jvmArgs = listOf(intellijJvmArgs)
+        jvmArgs = listOf(properties("intellij.jvm.args").get())
         maxHeapSize = "3g"
     }
 
     patchPluginXml {
-        version.set(pluginVersion)
-        sinceBuild.set(pluginSinceBuild)
-        untilBuild.set(pluginUntilBuild)
+        version.set(properties("intellij.plugin.version"))
+        sinceBuild.set(properties("intellij.plugin.since.build"))
+        untilBuild.set(properties("intellij.plugin.until.build"))
     }
 
     runPluginVerifier {
-        ideVersions.addAll(pluginVerifierIdeVersions)
+        ideVersions.add(properties("plugin.verifier.ide.versions"))
     }
 
     clean {
@@ -93,19 +96,19 @@ tasks {
 dependencies {
 
     implementation(kotlin("stdlib"))
-    implementation("org.jsoup:jsoup:$jsoupVersion")
-    implementation("com.wutka:dtdparser:$dtdparserVersion")
-    implementation("commons-io:commons-io:$commonsIOVersion")
-    implementation("com.google.code.findbugs:jsr305:$findbugsVersion")
-    implementation("org.apache.maven:maven-model:$mavenModelVersion")
-    implementation("commons-codec:commons-codec:$commonsCodecVersion")
-    implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
-    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
-    implementation("org.apache.commons:commons-collections4:$commonsCollections4Version")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:$jakartaXmlBindApiVersion")
-    implementation("com.sun.xml.bind:jaxb-impl:$jaxbImplVersion")
+    implementation("org.jsoup:jsoup:1.15.3")
+    implementation("com.wutka:dtdparser:1.21")
+    implementation("commons-io:commons-io:2.11.0")
+    implementation("com.google.code.findbugs:jsr305:3.0.2")
+    implementation("org.apache.maven:maven-model:3.8.7")
+    implementation("commons-codec:commons-codec:1.15")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
+    implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
 
-    implementation("org.apache.solr:solr-solrj:$solrjVersion") {
+    implementation("org.apache.solr:solr-solrj:8.8.2") {
         exclude("org.slf4j", "slf4j-api")
         exclude("org.apache.httpcomponents", "httpclient")
         exclude("org.apache.httpcomponents", "httpcore")

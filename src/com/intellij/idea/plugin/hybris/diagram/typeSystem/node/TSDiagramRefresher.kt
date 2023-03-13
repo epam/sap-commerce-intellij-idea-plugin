@@ -36,7 +36,7 @@ object TSDiagramRefresher {
         val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(model.project).state.typeSystemDiagramSettings
 
         refreshNodes(model, nodesMap, settings)
-        refreshEdges(model, nodesMap, edges, settings)
+        refreshEdges(model, nodesMap, edges)
     }
 
     private fun refreshNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
@@ -169,7 +169,7 @@ object TSDiagramRefresher {
             }
     }
 
-    private fun refreshEdges(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>, settings: TSDiagramSettings) {
+    private fun refreshEdges(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
         edges.clear()
 
         collectEdgesExtends(nodesMap, edges)

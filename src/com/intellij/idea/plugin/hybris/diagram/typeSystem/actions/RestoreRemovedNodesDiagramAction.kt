@@ -24,9 +24,9 @@ import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataMode
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ResetExclusionsDiagramAction : DiagramAction(
-    message("hybris.diagram.ts.provider.actions.reset_exclusions"),
-    message("hybris.diagram.ts.provider.actions.reset_exclusions.description"),
+class RestoreRemovedNodesDiagramAction : DiagramAction(
+    message("hybris.diagram.ts.provider.actions.restore_removed_nodes"),
+    message("hybris.diagram.ts.provider.actions.restore_removed_nodes.description"),
     HybrisIcons.TS_DIAGRAM_RESET_VIEW
 ) {
 
@@ -41,5 +41,5 @@ class ResetExclusionsDiagramAction : DiagramAction(
             }
     }
 
-    override fun getActionName() = message("hybris.diagram.ts.provider.actions.reset_exclusions")
+    override fun getActionName() = message("hybris.diagram.ts.provider.actions.restore_removed_nodes")
 }

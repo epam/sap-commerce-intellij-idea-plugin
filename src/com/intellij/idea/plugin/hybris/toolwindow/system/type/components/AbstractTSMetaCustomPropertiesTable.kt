@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProperty
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 
@@ -33,7 +33,7 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME, COLUMN_VALUE)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
-    override fun select(meta: TSMetaCustomProperty) = selectRowWithValue(meta.name, COLUMN_NAME)
+    override fun select(item: TSMetaCustomProperty) = selectRowWithValue(item.name, COLUMN_NAME)
 
     override fun createModel(): ListTableModel<TSMetaCustomProperty> = with(ListTableModel<TSMetaCustomProperty>()) {
         columnInfos = arrayOf(

@@ -18,9 +18,9 @@
 
 rootProject.name = "SAP-Commerce-Developers-Toolset"
 
-pluginManagement {
-    repositories {
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        gradlePluginPortal()
-    }
-}
+//pluginManagement {
+//    repositories {
+//        maven("https://oss.sonatype.org/content/repositories/snapshots/")
+//        gradlePluginPortal()
+//    }
+//}
