@@ -1,5 +1,24 @@
 # Legend of the Type System Diagram
 
+## Diagram Settings Pane
+
+Type System Diagram settings are project specific and stored in the `.idea/hybrisDeveloperSpecificProjectSettings.xml`
+configuration file.
+
+They can be accessed via Intellij IDEA Settings menu (`[y] SAP Commerce`>`Project Settings`>`Type System Diagram`) or
+Diagram Toolbar settings action button.
+
+| Setting                        | Initially                                                                                         | Description                                                                                                       |
+|--------------------------------|:--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `Nodes collapsed by default`   | **checked**                                                                                       | Influence Nodes `collapse` state during initial display of the Diagram.                                           |
+| `Show OOTB Map Nodes`          | **unchecked**                                                                                     | Affects visibility of the **OOTB** _Map_ types as a separate Node.                                                |
+| `Show Custom Atomic Nodes`     | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Atomic_ types as a separate Node.                            |
+| `Show Custom Collection Nodes` | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Collection_ types as a separate Node.                        |
+| `Show Custom Enum Nodes`       | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Enum_ types as a separate Node.                              |
+| `Show Custom Map Nodes`        | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Map_ types as a separate Node.                               |
+| `Show Custom Relation Nodes`   | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Relation_ types without deployment table as a separate Node. |
+| `Excluded Type Names`          | - GenericItem<br>- Item<br>- LocalizableItem<br>- ExtensibleItem<br>- CronJob<br>- CatalogVersion | Represents set of case-sensitive Type Names will be excluded from the Diagram.                                    |
+
 ## Diagram Toolbar
 
 ![diagram_ts_toolbar.png](images%2Fdiagram_ts_toolbar.png)
@@ -20,6 +39,7 @@
 | ![dependencies.svg](https://intellij-icons.jetbrains.design/icons/AllIcons/toolwindows/toolWindowModuleDependencies.svg) | If enabled shows 1st level of transitive dependencies according to visible Node fields                                                                                                                                          |
 | ![visibility.svg](https://intellij-icons.jetbrains.design/icons/AllIcons/actions/toggleVisibility.svg)                   | Provides two fields visibility levels: `Only Custom Fields` and `All`                                                                                                                                                           |
 | ![scope.svg](https://intellij-icons.jetbrains.design/icons/AllIcons/general/filter.svg)                                  | Provides four Node related scope levels: `All`, `Custom with Extends`, `Only Custom` and `Only OOTB`.<br/>Default is `Custom with Extends`.<br/>Caution: ensure to limit down shown nodes before changing scope level to `All`. |
+| ![refresh.svg](https://intellij-icons.jetbrains.design/icons/AllIcons/actions/refresh.svg)                               | Triggers re-build of the Diagram in accordance with latest `items.xml` content.                                                                                                                                                 |
 
 ## Diagram Edge Elements
 
@@ -30,7 +50,7 @@
 | ![diagram_ts_edge_non_navigable.png](images%2Fdiagram_ts_edge_non_navigable.png)     | The grayed-out arrow corresponds to the `navigable="false"` Relation End.    |
 | ![diagram_ts_edge_1_to_m.png](images%2Fdiagram_ts_edge_1_to_m.png)                   | The blue arrow corresponds to the `one`-`to`-`many` Relation.                |
 | ![diagram_ts_edge_optional_1_to_m.png](images%2Fdiagram_ts_edge_optional_1_to_m.png) | The blue arrow corresponds to the **optional** `one`-`to`-`many` Relation.   |
-| ![diagram_ts_edge_1_to_1.png](images%2Fdiagram_ts_edge_1_to_1.png)                   | The blue arrow corresponds to the `one`-`to`-`many` Relation.                |
+| ![diagram_ts_edge_1_to_1.png](images%2Fdiagram_ts_edge_1_to_1.png)                   | The blue arrow corresponds to the `one`-`to`-`one` Relation.                 |
 | ![diagram_ts_edge_optional_1_to_1.png](images%2Fdiagram_ts_edge_optional_1_to_1.png) | The blue arrow corresponds to the **optional** `one`-`to`-`one` Relation.    |
 
 ## Diagram Node Elements
@@ -41,8 +61,8 @@ Type System Diagram supports multiple Node Actions, available under Node context
 
 Take a note that each action triggers Diagram Layout & Data refresh
 
-| Action Name    | Description                                                                                     |
-|----------------|-------------------------------------------------------------------------------------------------|
+| Action Name      | Description                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------------|
 | `Delete`         | Hides corresponding Node.                                                                       |
 | `Collapse Nodes` | Hides all Node fields, such as Attributes, Properties, Indexes, etc.                            |
 | `Expand Nodes`   | Shows all Node fields, which are allowed to be shown according to Category Visibility settings. |

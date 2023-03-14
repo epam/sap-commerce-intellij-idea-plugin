@@ -41,12 +41,16 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
 
     private final Project myProject;
 
-    private JScrollPane myScrollablePane;
     private JPanel myExcludedTypeNamesPane;
     private JPanel mySettingsPane;
-    private JBCheckBox myShowOOTBMapNode;
-    private JBCheckBox myNodesCollapsedByDefault;
     private JPanel mainPanel;
+    private JBCheckBox myNodesCollapsedByDefault;
+    private JBCheckBox myShowOOTBMapNodes;
+    private JBCheckBox myShowCustomAtomicNodes;
+    private JBCheckBox myShowCustomCollectionNodes;
+    private JBCheckBox myShowCustomEnumNodes;
+    private JBCheckBox myShowCustomMapNodes;
+    private JBCheckBox myShowCustomRelationNodes;
     private AbstractTable<TSDiagramSettings, TSTypeNameHolder> myExcludedTypeNamesTable;
 
     public HybrisTypeSystemDiagramSettingsForm(final Project myProject) {
@@ -62,8 +66,13 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
         final var typeSystemDiagramSettings = developerSettingsComponent.getState().getTypeSystemDiagramSettings();
 
         myExcludedTypeNamesTable.updateModel(typeSystemDiagramSettings);
-        myShowOOTBMapNode.setSelected(typeSystemDiagramSettings.getShowOOTBMapNode());
         myNodesCollapsedByDefault.setSelected(typeSystemDiagramSettings.getNodesCollapsedByDefault());
+        myShowOOTBMapNodes.setSelected(typeSystemDiagramSettings.getShowOOTBMapNodes());
+        myShowCustomAtomicNodes.setSelected(typeSystemDiagramSettings.getShowCustomAtomicNodes());
+        myShowCustomCollectionNodes.setSelected(typeSystemDiagramSettings.getShowCustomCollectionNodes());
+        myShowCustomEnumNodes.setSelected(typeSystemDiagramSettings.getShowCustomEnumNodes());
+        myShowCustomMapNodes.setSelected(typeSystemDiagramSettings.getShowCustomMapNodes());
+        myShowCustomRelationNodes.setSelected(typeSystemDiagramSettings.getShowCustomRelationNodes());
 
         return this;
     }
@@ -72,24 +81,33 @@ public class HybrisTypeSystemDiagramSettingsForm implements Disposable {
         final var developerSettingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
         final var typeSystemDiagramSettings = developerSettingsComponent.getState().getTypeSystemDiagramSettings();
 
-        typeSystemDiagramSettings.setShowOOTBMapNode(myShowOOTBMapNode.isSelected());
         typeSystemDiagramSettings.setNodesCollapsedByDefault(myNodesCollapsedByDefault.isSelected());
+        typeSystemDiagramSettings.setShowOOTBMapNodes(myShowOOTBMapNodes.isSelected());
+        typeSystemDiagramSettings.setShowCustomAtomicNodes(myShowCustomAtomicNodes.isSelected());
+        typeSystemDiagramSettings.setShowCustomCollectionNodes(myShowCustomCollectionNodes.isSelected());
+        typeSystemDiagramSettings.setShowCustomEnumNodes(myShowCustomEnumNodes.isSelected());
+        typeSystemDiagramSettings.setShowCustomMapNodes(myShowCustomMapNodes.isSelected());
+        typeSystemDiagramSettings.setShowCustomRelationNodes(myShowCustomRelationNodes.isSelected());
         typeSystemDiagramSettings.setExcludedTypeNames(getCurrentExcludedTypeNames());
     }
 
     @NotNull
     private Set<String> getCurrentExcludedTypeNames() {
-        final var excludedTypeNames = myExcludedTypeNamesTable.getItems().stream()
+        return myExcludedTypeNamesTable.getItems().stream()
             .map(TSTypeNameHolder::getTypeName)
             .collect(Collectors.toSet());
-        return excludedTypeNames;
     }
 
     public boolean isModified(final Project project) {
         final var developerSettingsComponent = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project);
         final var typeSystemDiagramSettings = developerSettingsComponent.getState().getTypeSystemDiagramSettings();
-        return myShowOOTBMapNode.isSelected() != typeSystemDiagramSettings.getShowOOTBMapNode()
-            || myNodesCollapsedByDefault.isSelected() != typeSystemDiagramSettings.getNodesCollapsedByDefault()
+        return myNodesCollapsedByDefault.isSelected() != typeSystemDiagramSettings.getNodesCollapsedByDefault()
+            || myShowOOTBMapNodes.isSelected() != typeSystemDiagramSettings.getShowOOTBMapNodes()
+            || myShowCustomAtomicNodes.isSelected() != typeSystemDiagramSettings.getShowOOTBMapNodes()
+            || myShowCustomCollectionNodes.isSelected() != typeSystemDiagramSettings.getShowCustomAtomicNodes()
+            || myShowCustomEnumNodes.isSelected() != typeSystemDiagramSettings.getShowCustomCollectionNodes()
+            || myShowCustomMapNodes.isSelected() != typeSystemDiagramSettings.getShowCustomEnumNodes()
+            || myShowCustomRelationNodes.isSelected() != typeSystemDiagramSettings.getShowCustomMapNodes()
             || !CollectionUtils.isEqualCollection(getCurrentExcludedTypeNames(), typeSystemDiagramSettings.getExcludedTypeNames());
     }
 

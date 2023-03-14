@@ -43,7 +43,6 @@ object TSDiagramRefresher {
         nodesMap.clear()
 
         collectNodesItems(model, nodesMap, settings)
-        collectNodesRelations(model, nodesMap, settings)
         collectNodesDependencies(model, nodesMap, settings)
         collectNodesExtends(model, nodesMap, settings)
 
@@ -51,27 +50,22 @@ object TSDiagramRefresher {
     }
 
     private fun collectNodesItems(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
-        TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+        TSMetaModelAccess.getInstance(model.project).getAll()
             .asSequence()
             .filter { it.name != null }
             .filterNot { model.removedNodes.contains(it.name) }
             .filterNot { settings.excludedTypeNames.contains(it.name) }
-            .mapNotNull { TSGraphFactory.buildNode(it) }
-            .filter { model.scopeManager?.contains(it) ?: true }
-            .map { TSDiagramNode(it, model.provider) }
-            .toList()
-            .forEach {
-                nodesMap[it.graphNode.name] = it
+            .filter {
+                when (it) {
+                    is TSGlobalMetaItem -> true
+                    is TSGlobalMetaAtomic -> settings.showCustomAtomicNodes
+                    is TSGlobalMetaCollection -> settings.showCustomCollectionNodes
+                    is TSGlobalMetaEnum -> settings.showCustomEnumNodes
+                    is TSGlobalMetaMap -> settings.showCustomMapNodes
+                    is TSGlobalMetaRelation -> settings.showCustomRelationNodes || it.deployment != null
+                    else -> false
+                }
             }
-    }
-
-    private fun collectNodesRelations(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
-        TSMetaModelAccess.getInstance(model.project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
-            .asSequence()
-            .filter { it.name != null }
-            .filterNot { model.removedNodes.contains(it.name) }
-            .filterNot { settings.excludedTypeNames.contains(it.name) }
-            .filter { it.deployment != null }
             .mapNotNull { TSGraphFactory.buildNode(it) }
             .filter { model.scopeManager?.contains(it) ?: true }
             .map { TSDiagramNode(it, model.provider) }
@@ -112,7 +106,7 @@ object TSDiagramRefresher {
                             if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
 
                             val transitiveNode = TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
-                            if (!settings.showOOTBMapNode && transitiveNode?.meta is TSGlobalMetaMap) return@mapNotNull null
+                            if (!settings.showOOTBMapNodes && transitiveNode?.meta is TSGlobalMetaMap) return@mapNotNull null
                             return@mapNotNull transitiveNode
                         }
                 }

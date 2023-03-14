@@ -21,8 +21,13 @@ package com.intellij.idea.plugin.hybris.settings
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 
 data class TSDiagramSettings(
-    var showOOTBMapNode: Boolean = true,
     var nodesCollapsedByDefault: Boolean = true,
+    var showOOTBMapNodes: Boolean = false,
+    var showCustomAtomicNodes: Boolean = false,
+    var showCustomCollectionNodes: Boolean = false,
+    var showCustomEnumNodes: Boolean = false,
+    var showCustomMapNodes: Boolean = false,
+    var showCustomRelationNodes: Boolean = false,
     var excludedTypeNames: Set<String> = setOf(
         HybrisConstants.TS_TYPE_ITEM,
         HybrisConstants.TS_TYPE_GENERIC_ITEM,
