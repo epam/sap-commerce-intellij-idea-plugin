@@ -31,7 +31,7 @@ internal class TSMetaDeploymentImpl(
 ) : TSMetaDeployment {
 
     override val domAnchor: DomAnchor<Deployment> = DomService.getInstance().createAnchor(dom)
-    override val propertyTable = dom.propertyTable.stringValue
+    override val propertyTable = dom.propertyTable.stringValue ?: "props"
     override val typeCode = dom.typeCode.stringValue
     override val table = dom.table.stringValue
 

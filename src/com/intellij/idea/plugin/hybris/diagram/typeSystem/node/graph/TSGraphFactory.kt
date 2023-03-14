@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaDetailsGenerator
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
@@ -124,8 +125,7 @@ object TSGraphFactory {
             arrayOf<TSGraphField>(
                 TSGraphFieldDeployment(Deployment.TYPE_CODE, it.typeCode ?: "?"),
                 TSGraphFieldDeployment(Deployment.TABLE, it.table ?: "?"),
-                TSGraphFieldDeployment(Deployment.PROPERTY_TABLE, it.propertyTable
-                    ?: "props"),
+                TSGraphFieldDeployment(Deployment.PROPERTY_TABLE, it.propertyTable),
             )
         } ?: emptyArray()
         return deploymentProperties
@@ -135,7 +135,14 @@ object TSGraphFactory {
         name: String?,
         meta: TSGlobalMetaClassifier<out DomElement>,
         fields: MutableList<TSGraphField> = mutableListOf(),
-        transitiveNode: Boolean = false
-    ) = name?.let { TSGraphNodeClassifier(name, meta, fields, transitiveNode) }
+        transitiveNode: Boolean = false,
+    ) = name?.let {
+        TSGraphNodeClassifier(
+            name = name,
+            meta = meta,
+            fields = fields,
+            transitiveNode = transitiveNode,
+            tooltip = TSMetaDetailsGenerator.generateTooltip(meta))
+    }
 
 }

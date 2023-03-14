@@ -23,7 +23,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 data class TSGraphNodeRoot(
     override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.name"),
     override val fields: MutableList<TSGraphField> = mutableListOf(),
-    override var collapsed: Boolean = false
+    override var collapsed: Boolean = false,
+    override val tooltip: String? = null
 ) : TSGraphNode {
 
     override fun equals(other: Any?): Boolean {

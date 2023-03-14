@@ -30,7 +30,8 @@ data class TSGraphNodeClassifier(
     val meta: TSGlobalMetaClassifier<*>,
     override val fields: MutableList<TSGraphField> = mutableListOf(),
     val transitiveNode: Boolean = false,
-    override var collapsed: Boolean = false
+    override var collapsed: Boolean = false,
+    override val tooltip: String?
 ) : TSGraphNode {
 
     override fun equals(other: Any?): Boolean {

@@ -36,7 +36,7 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
 
     override fun isAcceptableAsNode(item: Any?) = item is TSGraphNode
     override fun getElementTitle(node: TSGraphNode?) = node?.name
-    override fun getNodeTooltip(node: TSGraphNode?) = node?.name
+    override fun getNodeTooltip(node: TSGraphNode?) = node?.tooltip
     override fun getNodeItems(node: TSGraphNode?) = node?.fields?.toTypedArray()
         ?: emptyArray()
 

@@ -22,4 +22,5 @@ interface TSGraphNode {
     val name: String
     val fields: MutableList<TSGraphField>
     var collapsed: Boolean
+    val tooltip: String?
 }

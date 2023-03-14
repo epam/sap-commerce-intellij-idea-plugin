@@ -28,6 +28,7 @@ private const val COLUMN_NAME = "Name"
 
 class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Project) : AbstractTable<TSDiagramSettings, TSTypeNameHolder>(project) {
 
+    override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun select(item: TSTypeNameHolder) {
 
     }
@@ -41,7 +42,7 @@ class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Projec
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_NAME,
-                valueProvider = { it -> it.typeName },
+                valueProvider = { it.typeName },
                 isCellEditable = true,
                 valueSetter = { originalValue, newValue ->
                     if (newValue == null || newValue == "") {
@@ -81,4 +82,8 @@ class MyListTableModel : ListTableModel<TSTypeNameHolder>() {
     }
 }
 
-data class TSTypeNameHolder(var typeName: String)
+data class TSTypeNameHolder(
+    var typeName: String,
+    var valid: Boolean = false,
+    var custom: Boolean = false
+)

@@ -69,6 +69,8 @@ Take a note that each action triggers Diagram Layout & Data refresh
 
 ### Diagram Node Header
 
+Node tooltip with additional details will be shown on hover over Node Header title.
+
 | State                                                                                                        | Description                                                                                  |
 |--------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | ![diagram_ts_node_collapsed.png](images%2Fdiagram_ts_node_collapsed.png)                                     | Special grayed-out text `collapsed` will be displayed when Node is Collapsed.                | 

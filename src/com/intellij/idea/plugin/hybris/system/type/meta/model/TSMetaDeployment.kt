@@ -21,6 +21,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 
 interface TSMetaDeployment : TSMetaClassifier<Deployment> {
     val table: String?
-    val propertyTable: String?
+    val propertyTable: String
     val typeCode: String?
 }
