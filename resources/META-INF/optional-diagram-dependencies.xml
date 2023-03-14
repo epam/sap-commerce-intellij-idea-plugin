@@ -73,6 +73,13 @@
             <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
                     class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
         </group>
+
+        <group id="Diagram.Hybris.TypeSystem.Node.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExcludeTypeNameDiagramAction">
+                <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
+            </action>
+        </group>
     </actions>
 
 </idea-plugin>

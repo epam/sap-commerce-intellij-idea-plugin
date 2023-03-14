@@ -59,13 +59,14 @@ Diagram Toolbar settings action button.
 
 Type System Diagram supports multiple Node Actions, available under Node context menu.
 
-Take a note that each action triggers Diagram Layout & Data refresh
+Take a note that each action triggers Diagram Layout & Data refresh.
 
-| Action Name      | Description                                                                                     |
-|------------------|-------------------------------------------------------------------------------------------------|
-| `Delete`         | Hides corresponding Node.                                                                       |
-| `Collapse Nodes` | Hides all Node fields, such as Attributes, Properties, Indexes, etc.                            |
-| `Expand Nodes`   | Shows all Node fields, which are allowed to be shown according to Category Visibility settings. |
+| Action Name         | Shortcut    | Description                                                                                            |
+|---------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| `Delete`            | D           | Hides corresponding Node.                                                                              |
+| `Exclude Type Name` | Ctrl+Meta+E | Adds Type Name associated with corresponding Node to the project specific list of Excluded Type Names. |
+| `Collapse Nodes`    | C           | Hides all Node fields, such as Attributes, Properties, Indexes, etc.                                   |
+| `Expand Nodes`      | E           | Shows all Node fields, which are allowed to be shown according to Category Visibility settings.        |
 
 ### Diagram Node Header
 

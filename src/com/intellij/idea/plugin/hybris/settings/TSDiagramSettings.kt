@@ -28,7 +28,7 @@ data class TSDiagramSettings(
     var showCustomEnumNodes: Boolean = false,
     var showCustomMapNodes: Boolean = false,
     var showCustomRelationNodes: Boolean = false,
-    var excludedTypeNames: Set<String> = setOf(
+    var excludedTypeNames: MutableSet<String> = mutableSetOf(
         HybrisConstants.TS_TYPE_ITEM,
         HybrisConstants.TS_TYPE_GENERIC_ITEM,
         HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,

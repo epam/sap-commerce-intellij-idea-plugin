@@ -22,6 +22,7 @@ import com.intellij.diagram.extras.DiagramExtras
 import com.intellij.diagram.settings.DiagramConfigElement
 import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import com.intellij.openapi.actionSystem.ActionManager
 
 class TSDiagramExtras : DiagramExtras<TSGraphNode>() {
 
@@ -35,6 +36,10 @@ class TSDiagramExtras : DiagramExtras<TSGraphNode>() {
         }
         arrayOf(categories)
     }
+
+    override fun getExtraActions() = ActionManager.getInstance().getAction("Diagram.Hybris.TypeSystem.Node.Actions")
+        ?.let { mutableListOf(it) }
+        ?: mutableListOf()
 
     override fun getAdditionalDiagramSettings() = diagramConfigGroups
     override fun getToolbarActionsProvider() = TSDiagramToolbarActionsProvider.instance
