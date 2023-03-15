@@ -35,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface AtomicType extends DomElement {
 
+    String CLASS = "class";
+
     /**
      * Returns the value of the class child.
      * <pre>
@@ -45,7 +47,7 @@ public interface AtomicType extends DomElement {
      * @return the value of the class child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("class")
+    @com.intellij.util.xml.Attribute(CLASS)
     @Required
     GenericAttributeValue<String> getClazz();
 

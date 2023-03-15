@@ -21,13 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.NameValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface EnumType extends DomElement {
 
+    String CODE = "code";
+
     /**
      * Returns the value of the code child.
      * <pre>
@@ -49,7 +45,7 @@ public interface EnumType extends DomElement {
      * @return the value of the code child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("code")
+    @com.intellij.util.xml.Attribute(CODE)
     @Required
     @NameValue
     GenericAttributeValue<String> getCode();

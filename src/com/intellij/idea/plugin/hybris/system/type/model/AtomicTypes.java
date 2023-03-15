@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface AtomicTypes extends DomElement {
 
+    String ATOMICTYPE = "atomictype";
+
     /**
      * Returns the list of atomicType children.
      * <pre>
@@ -44,7 +46,7 @@ public interface AtomicTypes extends DomElement {
      * @return the list of atomicType children.
      */
     @NotNull
-    @SubTagList("atomictype")
+    @SubTagList(ATOMICTYPE)
     java.util.List<AtomicType> getAtomicTypes();
 
     /**

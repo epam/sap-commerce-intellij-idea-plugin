@@ -38,6 +38,8 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface ItemTypes extends DomElement {
 
+    String ITEMTYPE = "itemtype";
+
     /**
      * Returns the list of itemtype children.
      * <pre>
@@ -48,7 +50,7 @@ public interface ItemTypes extends DomElement {
      * @return the list of itemtype children.
      */
     @NotNull
-    @SubTagList("itemtype")
+    @SubTagList(ITEMTYPE)
     java.util.List<ItemType> getItemTypes();
 
     /**

@@ -39,6 +39,7 @@ public interface MapType extends DomElement {
 
     String ARGUMENTTYPE = "argumenttype";
     String RETURNTYPE = "returntype";
+    String CODE = "code";
 
     /**
      * Returns the value of the code child.
@@ -50,7 +51,7 @@ public interface MapType extends DomElement {
      * @return the value of the code child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("code")
+    @com.intellij.util.xml.Attribute(CODE)
     @Required
     GenericAttributeValue<String> getCode();
 

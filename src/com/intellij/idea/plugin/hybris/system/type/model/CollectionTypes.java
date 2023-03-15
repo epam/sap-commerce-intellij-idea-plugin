@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CollectionTypes extends DomElement {
 
+    String COLLECTIONTYPE = "collectiontype";
+
     /**
      * Returns the list of collectiontype children.
      * <pre>
@@ -44,7 +46,7 @@ public interface CollectionTypes extends DomElement {
      * @return the list of collectiontype children.
      */
     @NotNull
-    @SubTagList("collectiontype")
+    @SubTagList(COLLECTIONTYPE)
     java.util.List<CollectionType> getCollectionTypes();
 
     /**

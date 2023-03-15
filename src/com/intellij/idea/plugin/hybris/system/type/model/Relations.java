@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Relations extends DomElement {
 
+    String RELATION = "relation";
+
     /**
      * Returns the list of relation children.
      * <pre>
@@ -44,7 +46,7 @@ public interface Relations extends DomElement {
      * @return the list of relation children.
      */
     @NotNull
-    @SubTagList("relation")
+    @SubTagList(RELATION)
     java.util.List<Relation> getRelations();
 
     /**

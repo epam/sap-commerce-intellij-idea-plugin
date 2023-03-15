@@ -36,6 +36,7 @@ public interface CollectionType extends DomElement {
 
     String ELEMENTTYPE = "elementtype";
     String TYPE = "type";
+    String CODE = "code";
 
     /**
      * Returns the value of the code child.
@@ -47,7 +48,7 @@ public interface CollectionType extends DomElement {
      * @return the value of the code child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("code")
+    @com.intellij.util.xml.Attribute(CODE)
     @Required
     @NameValue
     GenericAttributeValue<String> getCode();

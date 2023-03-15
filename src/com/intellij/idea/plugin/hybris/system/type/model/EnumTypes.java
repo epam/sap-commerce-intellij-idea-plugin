@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface EnumTypes extends DomElement {
 
+    String ENUMTYPE = "enumtype";
+
     /**
      * Returns the list of enumtype children.
      * <pre>
@@ -44,7 +46,7 @@ public interface EnumTypes extends DomElement {
      * @return the list of enumtype children.
      */
     @NotNull
-    @SubTagList("enumtype")
+    @SubTagList(ENUMTYPE)
     java.util.List<EnumType> getEnumTypes();
 
     /**

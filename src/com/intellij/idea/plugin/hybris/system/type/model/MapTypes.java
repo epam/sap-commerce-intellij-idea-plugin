@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface MapTypes extends DomElement {
 
+    String MAPTYPE = "maptype";
+
     /**
      * Returns the list of maptype children.
      * <pre>
@@ -44,7 +46,7 @@ public interface MapTypes extends DomElement {
      * @return the list of maptype children.
      */
     @NotNull
-    @SubTagList("maptype")
+    @SubTagList(MAPTYPE)
     java.util.List<MapType> getMapTypes();
 
     /**
