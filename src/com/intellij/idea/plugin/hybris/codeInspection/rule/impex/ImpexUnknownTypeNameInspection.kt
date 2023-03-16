@@ -32,10 +32,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel {
-        return HighlightDisplayLevel.ERROR
-    }
-
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderTypeVisitor(holder)
 }
 
@@ -44,10 +41,7 @@ private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder)
     override fun visitHeaderTypeName(parameter: ImpexHeaderTypeName) {
         if (isDocumentId(parameter.firstChild)) return
 
-        val references = parameter.references
-        if (references.isEmpty()) return
-
-        val firstReference = references.firstOrNull() ?: return
+        val firstReference = parameter.references.firstOrNull() ?: return
         if (firstReference !is TSReferenceBase<*>) return
 
         val result = firstReference.multiResolve(false)

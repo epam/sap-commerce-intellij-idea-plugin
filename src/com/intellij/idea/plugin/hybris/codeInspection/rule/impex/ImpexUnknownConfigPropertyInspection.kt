@@ -23,6 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
@@ -36,9 +37,7 @@ import com.intellij.psi.util.PsiTreeUtil
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
 class ImpexUnknownConfigPropertyInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel {
-        return HighlightDisplayLevel.ERROR
-    }
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = UnknownConfigPropertyVisitor(holder)
 }
 
@@ -54,12 +53,20 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
             val isDeclarationExists = cachedProperties[propertyName]
             if (isDeclarationExists == true) return
             if (isDeclarationExists != null && isDeclarationExists == false) {
-                problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)
+                problemsHolder.registerProblem(
+                    usage,
+                    message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                    ProblemHighlightType.ERROR
+                )
             } else {
                 val property = ProjectPropertiesUtils.findMacroProperty(usage.project, propertyName)
                 if (property == null) {
                     cachedProperties[propertyName] = false
-                    problemsHolder.registerProblem(usage, "Unknown config property $propertyName", ProblemHighlightType.ERROR)
+                    problemsHolder.registerProblem(
+                        usage,
+                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                        ProblemHighlightType.ERROR
+                    )
                 } else {
                     cachedProperties[propertyName] = true
                 }
@@ -75,7 +82,11 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                 val key = macroValue.text
                 val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)
                 if (properties.isEmpty()) {
-                    problemsHolder.registerProblem(macroValue, "Unknown config property", ProblemHighlightType.ERROR)
+                    problemsHolder.registerProblem(
+                        macroValue,
+                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key"),
+                        ProblemHighlightType.ERROR
+                    )
                 }
             }
         }

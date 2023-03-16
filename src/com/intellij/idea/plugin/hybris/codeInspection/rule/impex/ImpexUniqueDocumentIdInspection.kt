@@ -22,6 +22,7 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
@@ -30,7 +31,6 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getColumnForHea
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import java.util.HashSet
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
@@ -44,14 +44,18 @@ class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
 
 private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
     override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-        if (isDocumentId(parameter.firstChild)) {
-            val set = HashSet<String>()
-            val column = getColumnForHeader(parameter.parent as ImpexFullHeaderParameter)
-            column.forEach { value ->
-                if (!set.add(value.text)) {
-                    problemsHolder.registerProblem(value, "Qualifier '${parameter.text}' already used",
-                            ProblemHighlightType.ERROR)
-                }
+        if (!isDocumentId(parameter.firstChild)) return
+
+        val set = HashSet<String>()
+        val column = getColumnForHeader(parameter.parent as ImpexFullHeaderParameter)
+        column.forEach { value ->
+            if (!set.add(value.text)) {
+
+
+                problemsHolder.registerProblem(
+                    value,
+                    message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", parameter.text),
+                    ProblemHighlightType.ERROR)
             }
         }
     }
