@@ -15,22 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.psi.provider
+package com.intellij.idea.plugin.hybris.system.type.psi.contributor
 
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.EnumLiteralItemReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceProvider
-import com.intellij.util.ProcessingContext
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPatterns
+import com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider
+import com.intellij.psi.PsiReferenceContributor
+import com.intellij.psi.PsiReferenceRegistrar
 
-class TSEnumLiteralItemReferenceProvider : PsiReferenceProvider() {
-
-    override fun getReferencesByElement(
-        element: PsiElement,
-        context: ProcessingContext
-    ) = arrayOf(EnumLiteralItemReference(element, true))
-
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(TSEnumLiteralItemReferenceProvider::class.java)
+class ItemsXmlReferenceContributor : PsiReferenceContributor() {
+    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
+        registrar.registerReferenceProvider(
+            TSPatterns.INDEX_KEY_ATTRIBUTE,
+            TSItemAttributeReferenceProvider.instance
+        )
     }
 }

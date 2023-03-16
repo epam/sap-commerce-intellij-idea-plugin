@@ -31,7 +31,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
+import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
@@ -62,10 +62,10 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         if (DumbService.isDumb(project)) return false
         if (element !is XmlToken) return true
         if (element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN) return true
-        val type = element.parentOfType<XmlTag>()?.name ?: return true
+        val parent = element.parentOfType<XmlTag>() ?: return true
         val attribute = element.parentOfType<XmlAttribute>()?.name ?: return true
 
-        retrievePresentation(type, attribute, project, element)
+        retrievePresentation(parent, attribute, project, element)
             ?.let {
                 sink.addInlineElement(element.startOffset, true, it, false)
             }
@@ -73,20 +73,31 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         return true
     }
 
-    private fun retrievePresentation(type: String, attribute: String, project: Project, element: XmlToken): InlayPresentation? {
-        if (type == EnumTypes.ENUMTYPE && attribute == EnumType.CODE) {
-            return finEnumClass(project, element)
+    private fun retrievePresentation(parent: XmlTag, attribute: String, project: Project, element: XmlToken): InlayPresentation? {
+        if (parent.name == EnumTypes.ENUMTYPE && attribute == EnumType.CODE) {
+            return finEnumClass(project, element.text)
                 ?.let { inlayPresentation(it, HybrisIcons.TS_ENUM) }
                 ?: unknown
-        } else if (type == ItemTypes.ITEMTYPE && attribute == ItemType.CODE) {
-            return findItemClass(project, element)
+        } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE) {
+            return findItemClass(project, element.text)
                 ?.let { inlayPresentation(it, HybrisIcons.TS_ITEM) }
+                ?: unknown
+        } else if (parent.name == "value") {
+            val enumName = parent.parentOfType<XmlTag>()
+                ?.takeIf { it.name == EnumTypes.ENUMTYPE }
+                ?.getAttributeValue(EnumType.CODE)
+                ?: return null
+
+            return finEnumClass(project, enumName)
+                ?.allFields
+                ?.find { it.name.equals(element.text, true) }
+                ?.let { inlayPresentation(it, HybrisIcons.TS_ENUM_VALUE) }
                 ?: unknown
         }
         return null
     }
 
-    private fun inlayPresentation(it: PsiClass, i: Icon): InlayPresentation {
+    private fun inlayPresentation(it: Navigatable, i: Icon): InlayPresentation {
         val icon = factory.icon(i)
         val inset = factory.inset(icon, right = 5, top = 3)
         val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
@@ -94,15 +105,15 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(it) }
     }
 
-    private fun findItemClass(project: Project, element: XmlToken) =
+    private fun findItemClass(project: Project, element: String) =
         PsiShortNamesCache.getInstance(project).getClassesByName(
-            element.text + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
+            element + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
         )
             .firstOrNull()
 
-    private fun finEnumClass(project: Project, element: XmlToken) =
+    private fun finEnumClass(project: Project, element: String) =
         PsiShortNamesCache.getInstance(project).getClassesByName(
-            element.text, GlobalSearchScope.allScope(project)
+            element, GlobalSearchScope.allScope(project)
         )
             .firstOrNull { psiClass ->
                 psiClass.implementsListTypes
