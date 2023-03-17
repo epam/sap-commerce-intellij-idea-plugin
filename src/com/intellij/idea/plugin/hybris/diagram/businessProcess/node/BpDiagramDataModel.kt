@@ -23,6 +23,7 @@ import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeNavigable
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeRoot
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -61,11 +62,16 @@ class BpDiagramDataModel(
 
         nodesMap[rootBpGraphNode.name] = BpDiagramNode(rootBpGraphNode, provider)
 
+        nodesMap["Context Parameters"]
+            ?.let { BpGraphFactory.buildEdge("parameters", nodesMap[rootBpGraphNode.name]!!, it) }
+            ?.let { edges.add(it) }
+
         nodesMap.values
+            .filter { it.identifyingElement is BpGraphNodeNavigable }
             .forEach { targetBpDiagramFileNode ->
                 val sourceBpGraphNode = targetBpDiagramFileNode.identifyingElement
 
-                sourceBpGraphNode.transitions
+                (sourceBpGraphNode as BpGraphNodeNavigable).transitions
                     .forEach { (transitionName, targetBpGraphNode) ->
                         nodesMap[targetBpGraphNode.name]
                             ?.let { sourceBpDiagramFileNode -> BpGraphFactory.buildEdge(transitionName, sourceBpDiagramFileNode, targetBpDiagramFileNode) }

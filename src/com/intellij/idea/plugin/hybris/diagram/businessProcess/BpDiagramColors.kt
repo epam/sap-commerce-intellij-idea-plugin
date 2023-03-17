@@ -31,4 +31,5 @@ object BpDiagramColors {
     val EDGE_CYCLE = createColorKeyWithFallback("BP_DIAGRAM_EDGE_CYCLE", DiagramColors.DEFAULT_EDGE)
     val EDGE_CANCEL = createColorKeyWithFallback("BP_DIAGRAM_EDGE_CANCEL", DiagramColors.DEFAULT_EDGE)
     val EDGE_DEFAULT = createColorKeyWithFallback("BP_DIAGRAM_EDGE_DEFAULT", DiagramColors.DEFAULT_EDGE)
+    val EDGE_PARAMETERS = createColorKeyWithFallback("BP_DIAGRAM_EDGE_PARAMETERS", DiagramColors.DEFAULT_EDGE)
 }

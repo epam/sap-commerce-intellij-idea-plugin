@@ -67,7 +67,7 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
         }
     }
 
-    override fun refreshDataModel() = DumbService.getInstance(myProject).runWhenSmart {
+    override fun refreshDataModel() = DumbService.getInstance(myProject).runReadActionInSmartMode {
         TSDiagramRefresher.refresh(this, nodesMap, edges)
         this.incModificationCount()
     }

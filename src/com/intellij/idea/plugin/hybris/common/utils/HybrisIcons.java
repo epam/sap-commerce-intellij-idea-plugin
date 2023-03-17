@@ -63,14 +63,6 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_EXT = getIcon("/icons/extension/ext.svg");
     public static final Icon EXTENSION_OOTB = HYBRIS;
 
-    public static final Icon BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg");
-    public static final Icon BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg");
-    public static final Icon BP_DIAGRAM_NOTIFY = getIcon("/icons/businessProcess/diagram/notify.svg");
-    public static final Icon BP_DIAGRAM_ACTION = getIcon("/icons/businessProcess/diagram/action.svg");
-    public static final Icon BP_DIAGRAM_SPLIT = getIcon("/icons/businessProcess/diagram/split.svg");
-    public static final Icon BP_DIAGRAM_JOIN = getIcon("/icons/businessProcess/diagram/join.svg");
-    public static final Icon BP_DIAGRAM_SCRIPT = getIcon("/icons/businessProcess/diagram/script.svg");
-
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
@@ -112,14 +104,24 @@ public final class HybrisIcons {
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");
 
-    public static final Icon BS_DIAGRAM_PROPERTY = BS_PROPERTY;
-    public static final Icon BS_DIAGRAM_SPRING_BEAN = SPRING_BEAN;
-    public static final Icon BS_DIAGRAM_NODE = AllIcons.Nodes.FieldPK;
-    public static final Icon BS_DIAGRAM_FIELD = AllIcons.Nodes.Field;
+    public static final Icon BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg");
+    public static final Icon BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg");
+    public static final Icon BP_DIAGRAM_NOTIFY = getIcon("/icons/businessProcess/diagram/notify.svg");
+    public static final Icon BP_DIAGRAM_ACTION = getIcon("/icons/businessProcess/diagram/action.svg");
+    public static final Icon BP_DIAGRAM_SPLIT = getIcon("/icons/businessProcess/diagram/split.svg");
+    public static final Icon BP_DIAGRAM_JOIN = getIcon("/icons/businessProcess/diagram/join.svg");
+    public static final Icon BP_DIAGRAM_SCRIPT = getIcon("/icons/businessProcess/diagram/script.svg");
+    public static final Icon BP_DIAGRAM_PARAMETERS = AllIcons.Nodes.NewParameter;
+    public static final Icon BP_DIAGRAM_PROPERTY = BS_PROPERTY;
+    public static final Icon BP_DIAGRAM_SPRING_BEAN = SPRING_BEAN;
+    public static final Icon BP_DIAGRAM_NODE = AllIcons.Nodes.FieldPK;
+    public static final Icon BP_DIAGRAM_FIELD = AllIcons.Nodes.Field;
+    public static final Icon BP_DIAGRAM_CLASS = AllIcons.Nodes.Class;
+    public static final Icon BP_DIAGRAM_PARAMETER_REQUIRED = AllIcons.Nodes.Plugin;
+    public static final Icon BP_DIAGRAM_PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete;
 
     public static final Icon TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property;
     public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
-
     public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg");
     public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
 

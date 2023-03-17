@@ -28,9 +28,9 @@ open class BpGraphNodeDefault(
     override val navigableElement: DomElement,
     override val virtualFile: VirtualFile,
     override val process: Process,
-    override val properties: Array<BpGraphFieldParameter> = emptyArray()
-) : BpGraphNode {
-    override val transitions: MutableMap<String, BpGraphNode> = HashMap()
+    override val properties: Array<BpGraphField> = emptyArray()
+) : BpGraphNodeNavigable {
+    override val transitions: MutableMap<String, BpGraphNodeNavigable> = HashMap()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -50,6 +50,6 @@ open class BpGraphNodeDefault(
         .append(name)
         .toHashCode()
 
-    override fun toString() = "DefaultBpGraphNode{genericAction=$name}"
+    override fun toString() = "BpGraphNodeDefault{genericAction=$name}"
 
 }

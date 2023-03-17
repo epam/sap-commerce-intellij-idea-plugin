@@ -22,12 +22,15 @@ import com.intellij.diagram.presentation.DiagramLineType
 import java.awt.Shape
 
 class BpDiagramRelationship(
-    label: String?,
+    name: String? = null,
+    upperCenterLabel: String? = null,
+    bottomCenterLabel: String? = null,
+    upperSourceLabel: String? = null,
+    bottomSourceLabel: String? = null,
+    upperTargetLabel: String? = null,
+    bottomTargetLabel: String? = null,
     lineType: DiagramLineType = DiagramLineType.SOLID,
-    fromLabel: String = "",
-    toLabel: String = "",
-    width: Int = 1
-) : DiagramRelationshipInfoAdapter(label, lineType, label, fromLabel, toLabel, width) {
-
-    override fun getStartArrow(): Shape = STANDARD
-}
+    width: Int = 1,
+    sourceArrow: Shape? = null,
+    targetArrow: Shape? = null,
+) : DiagramRelationshipInfoAdapter(name, lineType, width, sourceArrow, targetArrow, upperCenterLabel, bottomCenterLabel, upperSourceLabel, bottomSourceLabel, upperTargetLabel, bottomTargetLabel)

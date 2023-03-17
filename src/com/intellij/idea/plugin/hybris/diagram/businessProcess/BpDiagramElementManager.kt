@@ -21,10 +21,10 @@ import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFieldParameter
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Action
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.ParameterUse
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
@@ -43,26 +43,33 @@ class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
 
     override fun isAcceptableAsNode(o: Any?) = o is BpGraphNode
     override fun getElementTitle(t: BpGraphNode) = t.name
-    override fun getNodeTooltip(t: BpGraphNode) = t.name
+    override fun getNodeTooltip(t: BpGraphNode) = null
     override fun getNodeItems(parent: BpGraphNode?): Array<out Any> = parent?.properties ?: emptyArray()
 
     override fun getItemName(nodeElement: BpGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = when (nodeItem) {
-        is BpGraphFieldParameter -> SimpleColoredText(nodeItem.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is BpGraphField -> SimpleColoredText(nodeItem.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         else -> null
     }
 
     override fun getItemType(element: Any?) = when (element) {
+        is BpGraphFieldContextParameter -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         is BpGraphFieldParameter -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         else -> null
     }
 
     override fun getItemIcon(nodeElement: BpGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
-        is BpGraphFieldParameter -> when (nodeItem.name) {
-            Action.BEAN -> HybrisIcons.BS_DIAGRAM_SPRING_BEAN
-            Action.NODE -> HybrisIcons.BS_DIAGRAM_NODE
-            Action.NODE_GROUP -> HybrisIcons.BS_DIAGRAM_NODE
-            Action.CAN_JOIN_PREVIOUS_NODE -> HybrisIcons.BS_DIAGRAM_FIELD
-            else -> HybrisIcons.BS_DIAGRAM_PROPERTY
+        is BpGraphFieldContextParameter -> when (nodeItem.use) {
+            ParameterUse.REQUIRED -> HybrisIcons.BP_DIAGRAM_PARAMETER_REQUIRED
+            else -> HybrisIcons.BP_DIAGRAM_PARAMETER_OPTIONAL
+        }
+        is BpGraphField -> when (nodeItem.name) {
+            Action.BEAN -> HybrisIcons.BP_DIAGRAM_SPRING_BEAN
+            Action.NODE -> HybrisIcons.BP_DIAGRAM_NODE
+            Action.NODE_GROUP -> HybrisIcons.BP_DIAGRAM_NODE
+            Action.CAN_JOIN_PREVIOUS_NODE -> HybrisIcons.BP_DIAGRAM_FIELD
+            Process.DEFAULT_NODE_GROUP -> HybrisIcons.BP_DIAGRAM_NODE
+            Process.PROCESS_CLASS -> HybrisIcons.BP_DIAGRAM_CLASS
+            else -> HybrisIcons.BP_DIAGRAM_PROPERTY
         }
 
         else -> null

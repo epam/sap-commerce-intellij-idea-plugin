@@ -23,7 +23,6 @@ package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.util.xml.BpNavigableElementConverter;
 import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,6 +31,9 @@ import org.jetbrains.annotations.NotNull;
 @Stubbed
 @StubbedOccurrence
 public interface Process extends DomElement {
+
+	String DEFAULT_NODE_GROUP = "defaultNodeGroup";
+	String PROCESS_CLASS = "processClass";
 
 	/**
 	 * Returns the value of the name child.
@@ -69,7 +71,7 @@ public interface Process extends DomElement {
 	 * @return the value of the processClass child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("processClass")
+	@com.intellij.util.xml.Attribute (PROCESS_CLASS)
 	GenericAttributeValue<String> getProcessClass();
 
 
@@ -78,7 +80,7 @@ public interface Process extends DomElement {
 	 * @return the value of the defaultNodeGroup child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("defaultNodeGroup")
+	@com.intellij.util.xml.Attribute (DEFAULT_NODE_GROUP)
 	GenericAttributeValue<String> getDefaultNodeGroup();
 
 

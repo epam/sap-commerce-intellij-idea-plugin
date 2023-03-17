@@ -19,9 +19,7 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphFactory
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeRoot
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import org.apache.commons.collections4.CollectionUtils
 
@@ -50,11 +48,25 @@ class BpGraphServiceImpl : BpGraphService {
             ?.let { nodesMap[it] }
             ?.let { rootGraphNode.transitions["On Error"] = it }
 
-        return nodesMap
+        val contextParametersNode = rootGraphNode.process.contextParameters
+            .filter { it.name.stringValue != null && it.type.stringValue != null }
+            .map {
+                BpGraphFieldContextParameter(it.name.stringValue!!, it.type.stringValue!!, it.use.value ?: ParameterUse.OPTIONAL)
+            }
+            .takeIf { it.isNotEmpty() }
+            ?.let { BpGraphFactory.buildNode("Context Parameters", rootGraphNode, it.toTypedArray()) }
+
+        return if (contextParametersNode == null) nodesMap
+        else {
+            val mutableNodes: MutableMap<String, BpGraphNode> = nodesMap.toMutableMap()
+            mutableNodes["Context Parameters"] = contextParametersNode
+
+            mutableNodes
+        }
     }
 
     private fun populateNodesTransitions(
-        nodesMap: Map<String, BpGraphNode>,
+        nodesMap: Map<String, BpGraphNodeNavigable>,
         nodes: List<NavigableElement>
     ) {
         nodes.forEach {
@@ -75,14 +87,14 @@ class BpGraphServiceImpl : BpGraphService {
 
         is Notify -> mapOf("" to navigableElement.then.stringValue)
 
+        is ScriptAction -> navigableElement.transitions
+            .associate { (it.name.stringValue ?: "") to it.to.stringValue }
+
         is Action -> navigableElement.transitions
             .associate { (it.name.stringValue ?: "") to it.to.stringValue }
 
         is Split -> navigableElement.targetNodes
             .associate { (it.name.stringValue ?: "") to it.name.stringValue }
-
-        is ScriptAction -> navigableElement.transitions
-            .associate { (it.name.stringValue ?: "") to it.to.stringValue }
 
         is Wait -> {
             val transitions = mutableMapOf(

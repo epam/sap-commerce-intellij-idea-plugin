@@ -19,13 +19,10 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.xml.DomElement
 
 interface BpGraphNode {
     val name: String
-    val navigableElement: DomElement
-    val transitions: MutableMap<String, BpGraphNode>
     val virtualFile: VirtualFile
     val process: Process
-    val properties: Array<BpGraphFieldParameter>
+    val properties: Array<BpGraphField>
 }

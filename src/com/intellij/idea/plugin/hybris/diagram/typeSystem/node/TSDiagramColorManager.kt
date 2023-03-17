@@ -18,11 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 
-import com.intellij.diagram.DiagramBuilder
-import com.intellij.diagram.DiagramColorManagerBase
-import com.intellij.diagram.DiagramEdge
-import com.intellij.diagram.DiagramNode
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors
+import com.intellij.diagram.*
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramColors
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNodeClassifier
 import java.awt.Color
@@ -35,10 +31,10 @@ class TSDiagramColorManager : DiagramColorManagerBase() {
             TSDiagramEdgeType.PART_OF -> TSDiagramColors.EDGE_PART_OF
             TSDiagramEdgeType.DEPENDENCY -> TSDiagramColors.EDGE_DEPENDENCY
             TSDiagramEdgeType.DEPENDENCY_NAVIGABLE -> TSDiagramColors.EDGE_DEPENDENCY_NAVIGABLE
-            else -> BpDiagramColors.EDGE_DEFAULT
+            else -> DiagramColors.DEFAULT_EDGE
         }
 
-        else -> BpDiagramColors.EDGE_DEFAULT
+        else -> DiagramColors.DEFAULT_EDGE
     }
 
     override fun getNodeHeaderBackground(builder: DiagramBuilder, node: DiagramNode<*>, graphNode: Any?): Color = when (graphNode) {

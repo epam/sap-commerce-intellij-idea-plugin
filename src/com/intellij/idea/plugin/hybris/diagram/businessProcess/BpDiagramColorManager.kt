@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.E
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_DEFAULT
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_NOK
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_OK
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_PARAMETERS
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_PARTIAL
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_START
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramColors.EDGE_TIMEOUT
@@ -45,6 +46,7 @@ class BpDiagramColorManager : DiagramColorManagerBase() {
             BpDiagramEdgeType.PARTIAL -> EDGE_PARTIAL
             BpDiagramEdgeType.CYCLE -> EDGE_CYCLE
             BpDiagramEdgeType.TIMEOUT -> EDGE_TIMEOUT
+            BpDiagramEdgeType.PARAMETERS -> EDGE_PARAMETERS
             else -> EDGE_DEFAULT
         }
 

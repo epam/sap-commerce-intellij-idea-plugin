@@ -15,17 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.vfs.VirtualFile
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 
-class BpGraphNodeRoot(
-    override var name: String,
-    override val navigableElement: Process,
+open class BpGraphNodeContextParameters(
+    override val name: String,
     override val virtualFile: VirtualFile,
     override val process: Process,
-    override val transitions: MutableMap<String, BpGraphNodeNavigable> = HashMap(),
     override val properties: Array<BpGraphField> = emptyArray()
-) : BpGraphNodeNavigable
+) : BpGraphNode {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other == null || javaClass != other.javaClass) {
+            return false
+        }
+        val otherNode = other as BpGraphNodeContextParameters
+
+        return EqualsBuilder()
+            .append(name, otherNode.name)
+            .isEquals
+    }
+
+    override fun hashCode(): Int = HashCodeBuilder(17, 37)
+        .append(name)
+        .toHashCode()
+
+    override fun toString() = "BpGraphNodeContextParameters{genericAction=$name}"
+
+}

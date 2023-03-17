@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
+import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdge
@@ -46,13 +47,26 @@ object BpGraphFactory {
 
         val process = fileElement.rootElement
 
+        val properties: Array<BpGraphField> = listOfNotNull(
+            process.processClass.stringValue?.let { BpGraphFieldParameter(Process.PROCESS_CLASS, it.substringAfterLast(".")) },
+            process.defaultNodeGroup.stringValue?.let { BpGraphFieldParameter(Process.DEFAULT_NODE_GROUP, it) }
+        )
+            .toTypedArray()
         return BpGraphNodeRoot(
-            process.name.stringValue ?: virtualFile.nameWithoutExtension,
+            "[y] " + (process.name.stringValue ?: virtualFile.nameWithoutExtension),
             process,
             virtualFile,
-            process
+            process,
+            properties = properties
         )
     }
+
+    fun buildNode(nodeName: String, rootGraphNode: BpGraphNodeRoot, parameters: Array<BpGraphField>) = BpGraphNodeContextParameters(
+        nodeName,
+        rootGraphNode.virtualFile,
+        rootGraphNode.process,
+        parameters
+    )
 
     fun buildNode(nodeName: String, element: NavigableElement, rootGraphNode: BpGraphNodeRoot) = when (element) {
         is ScriptAction -> build(nodeName, element, rootGraphNode)
@@ -63,7 +77,15 @@ object BpGraphFactory {
         else -> build(nodeName, element, rootGraphNode)
     }
 
-    fun buildEdge(transitionName: String, source: BpDiagramNode, target: BpDiagramNode) = if (source == target) {
+    fun buildEdge(transitionName: String, source: BpDiagramNode, target: BpDiagramNode): BpDiagramEdge = if (source.graphNode is Process || target.graphNode is BpGraphNodeContextParameters) {
+        BpDiagramEdge(source, target, BpDiagramRelationship(
+            upperCenterLabel = transitionName,
+            lineType = DiagramLineType.DOTTED,
+            width = 2,
+            sourceArrow = DiagramRelationshipInfo.CROWS_FOOT_ONE,
+            targetArrow = DiagramRelationshipInfo.CROWS_FOOT_MANY_OPTIONAL
+        ), type = BpDiagramEdgeType.PARAMETERS)
+    } else if (source == target) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CYCLE)
     } else if ("Start".equals(transitionName, true)) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.START)
@@ -82,8 +104,10 @@ object BpGraphFactory {
     }
 
     private fun buildRelationship(transitionName: String, source: BpDiagramNode, target: BpDiagramNode): BpDiagramRelationship {
-        val sourceNodeImportant = source.graphNode.navigableElement is End || source.graphNode.navigableElement is Process
-        val targetNodeImportant = target.graphNode.navigableElement is End || target.graphNode.navigableElement is Process
+        val sourceGraphNode = source.graphNode as BpGraphNodeNavigable
+        val targetGraphNode = target.graphNode as BpGraphNodeNavigable
+        val sourceNodeImportant = sourceGraphNode.navigableElement is End || sourceGraphNode.navigableElement is Process
+        val targetNodeImportant = targetGraphNode.navigableElement is End || targetGraphNode.navigableElement is Process
         var width = 1
 
         if (sourceNodeImportant) width++
@@ -93,13 +117,14 @@ object BpGraphFactory {
         else DiagramLineType.SOLID
 
         return BpDiagramRelationship(
-            label = transitionName,
+            upperCenterLabel = transitionName,
             lineType = lineType,
-            width = width
+            width = width,
+            sourceArrow = DiagramRelationshipInfo.STANDARD
         )
     }
 
-    private fun build(nodeName: String, element: Action, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
+    private fun build(nodeName: String, element: Action, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties = mutableListOf(
             BpGraphFieldParameter(Action.CAN_JOIN_PREVIOUS_NODE, (element.canJoinPreviousNode.stringValue
                 ?: "false"))
@@ -118,14 +143,14 @@ object BpGraphFactory {
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
     }
 
-    private fun build(nodeName: String, element: End, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
-        val properties = (element.state.stringValue
+    private fun build(nodeName: String, element: End, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
+        val properties: Array<BpGraphField> = (element.state.stringValue
             ?.let { arrayOf(BpGraphFieldParameter(End.STATE, it)) }
             ?: emptyArray())
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
+    private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties = mutableListOf(
             BpGraphFieldParameter(Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue
                 ?: "true"))
@@ -133,16 +158,16 @@ object BpGraphFactory {
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
     }
 
-    private fun build(nodeName: String, element: Notify, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
-        val properties = element.userGroups
+    private fun build(nodeName: String, element: Notify, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
+        val properties: Array<BpGraphField> = element.userGroups
             .filter { it.name.stringValue?.isNotEmpty() ?: false }
             .map { BpGraphFieldParameter(it.name.stringValue!!, "") }
             .toTypedArray()
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: ScriptAction, rootGraphNode: BpGraphNodeRoot): BpGraphNode {
-        val properties = element.script.type.stringValue
+    private fun build(nodeName: String, element: ScriptAction, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
+        val properties: Array<BpGraphField> = element.script.type.stringValue
             ?.let { arrayOf(BpGraphFieldParameter(ScriptAction.SCRIPT, it)) }
             ?: emptyArray()
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)

@@ -21,6 +21,8 @@ import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeContextParameters
+import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeNavigable
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import java.io.Serial
 
@@ -29,15 +31,20 @@ class BpDiagramNode(val graphNode: BpGraphNode, provider: DiagramProvider<BpGrap
     override fun getIdentifyingElement() = graphNode
     override fun getTooltip() = graphNode.name
 
-    override fun getIcon() = when (graphNode.navigableElement) {
-        is Process -> HybrisIcons.BUSINESS_PROCESS
-        is ScriptAction -> HybrisIcons.BP_DIAGRAM_SCRIPT
-        is Action -> HybrisIcons.BP_DIAGRAM_ACTION
-        is Split -> HybrisIcons.BP_DIAGRAM_SPLIT
-        is Wait -> HybrisIcons.BP_DIAGRAM_WAIT
-        is Join -> HybrisIcons.BP_DIAGRAM_JOIN
-        is End -> HybrisIcons.BP_DIAGRAM_END
-        is Notify -> HybrisIcons.BP_DIAGRAM_NOTIFY
+    override fun getIcon() = when (graphNode) {
+        is BpGraphNodeContextParameters -> HybrisIcons.BP_DIAGRAM_PARAMETERS
+        is BpGraphNodeNavigable -> when (graphNode.navigableElement) {
+            is Process -> HybrisIcons.BUSINESS_PROCESS
+            is ScriptAction -> HybrisIcons.BP_DIAGRAM_SCRIPT
+            is Action -> HybrisIcons.BP_DIAGRAM_ACTION
+            is Split -> HybrisIcons.BP_DIAGRAM_SPLIT
+            is Wait -> HybrisIcons.BP_DIAGRAM_WAIT
+            is Join -> HybrisIcons.BP_DIAGRAM_JOIN
+            is End -> HybrisIcons.BP_DIAGRAM_END
+            is Notify -> HybrisIcons.BP_DIAGRAM_NOTIFY
+            else -> null
+        }
+
         else -> null
     }
 

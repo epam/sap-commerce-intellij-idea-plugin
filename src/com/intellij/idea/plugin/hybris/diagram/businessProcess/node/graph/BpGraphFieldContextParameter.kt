@@ -16,16 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
+package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
-enum class BpDiagramEdgeType {
-    OK,
-    NOK,
-    START,
-    CANCEL,
-    PARTIAL,
-    CYCLE,
-    TIMEOUT,
-    PARAMETERS,
-    DEFAULT
-}
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.ParameterUse
+
+data class BpGraphFieldContextParameter(
+    override val name: String,
+    val type: String,
+    val use: ParameterUse,
+) : BpGraphField

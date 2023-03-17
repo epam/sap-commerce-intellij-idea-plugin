@@ -110,11 +110,16 @@
                     <li><i>Feature:</i> Added Legend MD file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/279" target="_blank" rel="nofollow">#279</a>)</li>
                 </ul>
                 </li>
+                <li>Business Process Diagrams Improvements
+                    <ul>
+                        <li><i>Feature:</i> Added node properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267" target="_blank" rel="nofollow">#267</a>)</li>
+                        <li><i>Feature:</i> Added edge coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
+                        <li><i>Feature:</i> Added cycle edges coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>
+                        <li><i>Feature:</i> Added Context Parameters node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283" target="_blank" rel="nofollow">#283</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added navigation to generated Item and Enum classes from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284" target="_blank" rel="nofollow">#284</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Enum Values fields from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285" target="_blank" rel="nofollow">#285</a>)</li>
-                <li><i>Feature:</i> Added node properties for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/267" target="_blank" rel="nofollow">#267</a>)</li>
-                <li><i>Feature:</i> Added edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
-                <li><i>Feature:</i> Added cycle edges coloring for Business Process Diagrams (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>
                 <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>

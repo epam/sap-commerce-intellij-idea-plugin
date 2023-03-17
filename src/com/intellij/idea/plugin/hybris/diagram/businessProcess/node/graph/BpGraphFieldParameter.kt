@@ -19,6 +19,6 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 data class BpGraphFieldParameter(
-    val name: String,
+    override val name: String,
     val value: String,
-)
+) : BpGraphField
