@@ -151,8 +151,18 @@ object TSDiagramRefresher {
     }
 
     private fun updatedCollapsedNodes(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
-        if (model.modificationCount == 0L && settings.nodesCollapsedByDefault) {
-            model.collapseAllNodes()
+        if (settings.nodesCollapsedByDefault) {
+            if (model.modificationCount == 0L) {
+                model.collapseAllNodes()
+                model.everShownNodes.addAll(nodesMap.keys)
+            } else {
+                nodesMap
+                    .filterNot { (key, _) -> model.everShownNodes.contains(key) }
+                    .forEach { (key, value) ->
+                        model.collapseNode(value)
+                        model.everShownNodes.add(key)
+                    }
+            }
         }
         nodesMap.values
             .map { it.graphNode }

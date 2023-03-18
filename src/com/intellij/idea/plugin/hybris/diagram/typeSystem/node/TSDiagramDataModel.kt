@@ -34,6 +34,7 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
 
     private val edges: MutableCollection<TSDiagramEdge> = mutableSetOf()
     private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
+    val everShownNodes: MutableSet<String> = mutableSetOf()
     val removedNodes: MutableSet<String> = mutableSetOf()
     val collapsedNodes: MutableSet<String> = mutableSetOf()
 
@@ -86,6 +87,7 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
         nodesMap.clear()
         removedNodes.clear()
         collapsedNodes.clear()
+        everShownNodes.clear()
     }
 
     companion object {
