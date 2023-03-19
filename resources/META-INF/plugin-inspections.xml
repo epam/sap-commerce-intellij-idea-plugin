@@ -291,6 +291,10 @@
                          shortName="DefaultValueForEnumTypeMustBeAssignable" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDefaultValueForEnumTypeMustBeAssignable"/>
 
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.N2MRelationCannotContainDeploymentAttribute.key"
+                         shortName="N2MRelationCannotContainDeploymentAttribute" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSN2MRelationCannotContainDeployment"/>
     </extensions>
 
 </idea-plugin>
