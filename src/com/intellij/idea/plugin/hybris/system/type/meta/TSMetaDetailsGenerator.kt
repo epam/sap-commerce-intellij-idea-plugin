@@ -47,10 +47,16 @@ object TSMetaDetailsGenerator {
         <hr>
         <table>
         <tr>
-        <td>${badge("abstract", meta.isAbstract)}</td>
-        <td>${badge("catalog aware", meta.isCatalogAware)}</td>
-        <td>${badge("autocreate", meta.isAutoCreate)}</td><td>${badge("generate", meta.isGenerate)}</td>
-        <td>${badge("jalo only", meta.isJaloOnly)}</td><td>${badge("singleton", meta.isSingleton)}</td>
+            <td>${badge("abstract", meta.isAbstract)}</td>
+            <td>${badge("catalog aware", meta.isCatalogAware)}</td>
+        </tr>
+        <tr>
+            <td>${badge("jalo only", meta.isJaloOnly)}</td>
+            <td>${badge("singleton", meta.isSingleton)}</td>
+        </tr>
+        <tr>
+            <td>${badge("autocreate", meta.isAutoCreate)}</td>
+            <td>${badge("generate", meta.isGenerate)}</td>
         </tr>
         </table>
         ${generate(meta.deployment)}

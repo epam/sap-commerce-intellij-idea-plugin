@@ -26,8 +26,7 @@ import com.intellij.openapi.vfs.VirtualFileManager
 class BpDiagramVfsResolver : DiagramVfsResolver<BpGraphNode?> {
 
     override fun getQualifiedName(t: BpGraphNode?) = t
-        ?.virtualFile
-        ?.url
+        ?.virtualFileUrl
 
     override fun resolveElementByFQN(fqn: String, project: Project) = fqn
         .takeIf { it != "null" }

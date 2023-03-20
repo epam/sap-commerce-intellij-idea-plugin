@@ -55,7 +55,8 @@ object BpGraphFactory {
         return BpGraphNodeRoot(
             "[y] " + (process.name.stringValue ?: virtualFile.nameWithoutExtension),
             process,
-            virtualFile,
+            virtualFile.url,
+            virtualFile.nameWithoutExtension,
             process,
             properties = properties
         )
@@ -63,7 +64,8 @@ object BpGraphFactory {
 
     fun buildNode(nodeName: String, rootGraphNode: BpGraphNodeRoot, parameters: Array<BpGraphField>) = BpGraphNodeContextParameters(
         nodeName,
-        rootGraphNode.virtualFile,
+        rootGraphNode.virtualFileUrl,
+        rootGraphNode.virtualFileName,
         rootGraphNode.process,
         parameters
     )
@@ -140,14 +142,14 @@ object BpGraphFactory {
                 properties.add(BpGraphFieldParameter(it.name.stringValue ?: "", it.value.stringValue ?: ""))
             }
 
-        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties.toTypedArray())
     }
 
     private fun build(nodeName: String, element: End, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties: Array<BpGraphField> = (element.state.stringValue
             ?.let { arrayOf(BpGraphFieldParameter(End.STATE, it)) }
             ?: emptyArray())
-        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties)
     }
 
     private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
@@ -155,7 +157,7 @@ object BpGraphFactory {
             BpGraphFieldParameter(Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue
                 ?: "true"))
         )
-        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties.toTypedArray())
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties.toTypedArray())
     }
 
     private fun build(nodeName: String, element: Notify, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
@@ -163,16 +165,16 @@ object BpGraphFactory {
             .filter { it.name.stringValue?.isNotEmpty() ?: false }
             .map { BpGraphFieldParameter(it.name.stringValue!!, "") }
             .toTypedArray()
-        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties)
     }
 
     private fun build(nodeName: String, element: ScriptAction, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties: Array<BpGraphField> = element.script.type.stringValue
             ?.let { arrayOf(BpGraphFieldParameter(ScriptAction.SCRIPT, it)) }
             ?: emptyArray()
-        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process, properties)
+        return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphNodeRoot) = BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFile, rootGraphNode.process)
+    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphNodeRoot) = BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process)
 
 }

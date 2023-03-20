@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.openapi.vfs.VirtualFile
 
 interface BpGraphNode {
     val name: String
-    val virtualFile: VirtualFile
+    val virtualFileUrl: String
+    val virtualFileName: String
     val process: Process
     val properties: Array<BpGraphField>
 }

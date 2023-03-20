@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.openapi.vfs.VirtualFile
 
 class BpGraphNodeRoot(
     override var name: String,
     override val navigableElement: Process,
-    override val virtualFile: VirtualFile,
+    override val virtualFileUrl: String,
+    override val virtualFileName: String,
     override val process: Process,
     override val transitions: MutableMap<String, BpGraphNodeNavigable> = HashMap(),
     override val properties: Array<BpGraphField> = emptyArray()

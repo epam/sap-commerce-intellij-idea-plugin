@@ -27,7 +27,7 @@ class BpGraphServiceImpl : BpGraphService {
 
     override fun buildNodes(rootGraphNode: BpGraphNodeRoot): Map<String, BpGraphNode> {
         rootGraphNode.name = rootGraphNode.process.name.stringValue
-            ?: rootGraphNode.virtualFile.nameWithoutExtension
+            ?: rootGraphNode.virtualFileName
         rootGraphNode.transitions.clear()
 
         val nodes = rootGraphNode.process.nodes

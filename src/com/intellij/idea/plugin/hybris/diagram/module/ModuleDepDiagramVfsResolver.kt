@@ -26,7 +26,7 @@ import com.intellij.openapi.project.Project
 
 class ModuleDepDiagramVfsResolver : DiagramVfsResolver<ModuleDepGraphNode> {
 
-    override fun getQualifiedName(element: ModuleDepGraphNode?) = element
+    override fun getQualifiedName(item: ModuleDepGraphNode?) = item
         ?.takeIf { it is ModuleDepGraphNodeModule }
         ?.name
 

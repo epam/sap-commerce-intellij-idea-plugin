@@ -18,13 +18,13 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
 open class BpGraphNodeContextParameters(
     override val name: String,
-    override val virtualFile: VirtualFile,
+    override val virtualFileUrl: String,
+    override val virtualFileName: String,
     override val process: Process,
     override val properties: Array<BpGraphField> = emptyArray()
 ) : BpGraphNode {

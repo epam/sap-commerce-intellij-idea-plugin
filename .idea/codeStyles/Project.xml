@@ -1,5 +1,10 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+      <option name="GENERATE_FINAL_LOCALS" value="true" />
+      <option name="GENERATE_FINAL_PARAMETERS" value="true" />
+      <option name="REPLACE_INSTANCEOF_AND_CAST" value="true" />
+    </JavaCodeStyleSettings>
     <codeStyleSettings language="JAVA">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
