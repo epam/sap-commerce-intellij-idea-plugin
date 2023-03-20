@@ -292,9 +292,9 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDefaultValueForEnumTypeMustBeAssignable"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.O2MRelationCannotContainDeploymentAttribute.key"
-                         shortName="O2MRelationCannotContainDeploymentAttribute" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSO2MRelationCannotContainDeployment"/>
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTagMustNotBeDeclaredForO2MRelation.key"
+                         shortName="DeploymentTagMustNotBeDeclaredForO2MRelation" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTagMustNotBeDeclaredForO2MRelation"/>
     </extensions>
 
 </idea-plugin>
