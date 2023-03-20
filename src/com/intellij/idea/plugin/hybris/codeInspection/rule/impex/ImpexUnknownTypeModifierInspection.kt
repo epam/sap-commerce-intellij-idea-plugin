@@ -23,36 +23,30 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.PsiTreeUtil
 
-class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
+class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderTypeVisitor(holder)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexTypeModifierVisitor(holder)
 
-    private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+    private class ImpexTypeModifierVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
-        override fun visitHeaderTypeName(parameter: ImpexHeaderTypeName) {
-            if (isDocumentId(parameter.firstChild)) return
+        override fun visitAnyAttributeName(attribute: ImpexAnyAttributeName) {
+            PsiTreeUtil.getParentOfType(attribute, ImpexFullHeaderType::class.java) ?: return
 
-            val firstReference = parameter.references.firstOrNull() ?: return
-            if (firstReference !is TSReferenceBase<*>) return
-
-            val result = firstReference.multiResolve(false)
-            if (result.isNotEmpty()) return
-
-            problemsHolder.registerProblem(
-                parameter,
-                HybrisI18NBundleUtils.message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
-                ProblemHighlightType.ERROR
-            )
+            if (TypeModifier.getByModifierName(attribute.text) == null) {
+                problemsHolder.registerProblem(
+                    attribute,
+                    HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeModifierInspection.key", attribute.text),
+                    ProblemHighlightType.ERROR
+                )
+            }
         }
 
-        private fun isDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType == ImpexTypes.DOCUMENT_ID
     }
 }

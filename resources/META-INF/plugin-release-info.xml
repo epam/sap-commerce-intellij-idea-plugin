@@ -131,7 +131,12 @@
                         <li>Attribute is not defined</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Added new inspection rule for <code>items.xml</code>
+                <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
+                    <ul>
+                        <li>Type modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/291" target="_blank" rel="nofollow">#291</a>)</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
                     <ul>
                         <li>Deployment tag must not be declared for one-to-many relation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289" target="_blank" rel="nofollow">#289</a>)</li>
                     </ul>

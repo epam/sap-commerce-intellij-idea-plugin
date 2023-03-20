@@ -84,6 +84,14 @@
                          groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
+                         groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>
+
+<!--        <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownAttributeModifierInspection" displayName="[y] Unknown attribute modifier"-->
+<!--                         groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"-->
+<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownAttributeModifierInspection"/>-->
+
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDefinition.key"

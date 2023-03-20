@@ -39,28 +39,28 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
-}
 
-private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
-    override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-        if (!isNotMacros(parameter) || !isNotDocumentId(parameter.firstChild)) return
+    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+        override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
+            if (!isNotMacros(parameter) || !isNotDocumentId(parameter.firstChild)) return
 
-        val firstReference = parameter.references.firstOrNull() ?: return
+            val firstReference = parameter.references.firstOrNull() ?: return
 
-        if (firstReference.canonicalText.contains(".")) return
-        if (firstReference !is TSReferenceBase<*>) return
-        if (firstReference.multiResolve(false).isNotEmpty()) return
+            if (firstReference.canonicalText.contains(".")) return
+            if (firstReference !is TSReferenceBase<*>) return
+            if (firstReference.multiResolve(false).isNotEmpty()) return
 
-        val typeName = findHeaderItemTypeName(parameter)
-            ?.text
-            ?: "?"
-        problemsHolder.registerProblem(
-            parameter,
-            message("hybris.inspections.UnknownTypeAttributeInspection.key", parameter.text, typeName),
-            ProblemHighlightType.ERROR)
+            val typeName = findHeaderItemTypeName(parameter)
+                ?.text
+                ?: "?"
+            problemsHolder.registerProblem(
+                parameter,
+                message("hybris.inspections.UnknownTypeAttributeInspection.key", parameter.text, typeName),
+                ProblemHighlightType.ERROR)
+        }
+
+        private fun isNotMacros(parameter: ImpexAnyHeaderParameterName) = parameter.firstChild !is ImpexMacroUsageDec
+
+        private fun isNotDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType != DOCUMENT_ID
     }
-
-    private fun isNotMacros(parameter: ImpexAnyHeaderParameterName) = parameter.firstChild !is ImpexMacroUsageDec
-
-    private fun isNotDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType != DOCUMENT_ID
 }
