@@ -23,30 +23,31 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 
-class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
+class ImpexUnknownAttributeModifierInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WARNING
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexTypeModifierVisitor(holder)
 
     private class ImpexTypeModifierVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
         override fun visitAnyAttributeName(attribute: ImpexAnyAttributeName) {
-            PsiTreeUtil.getParentOfType(attribute, ImpexFullHeaderType::class.java) ?: return
+            PsiTreeUtil.getParentOfType(attribute, ImpexFullHeaderParameter::class.java) ?: return
 
-            if (TypeModifier.getByModifierName(attribute.text) == null) {
+            if (AttributeModifier.getByModifierName(attribute.text) == null) {
                 problemsHolder.registerProblem(
                     attribute,
-                    HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeModifierInspection.key", attribute.text),
+                    HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownAttributeModifierInspection.key", attribute.text),
                     ProblemHighlightType.WARNING
                 )
             }
         }
 
     }
+
 }

@@ -53,7 +53,7 @@
 
         <!-- Impex -->
         <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
-                         groupName="[y] Impex" level="WARNING" language="Impex" enabledByDefault="true"
+                         groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownConfigPropertyInspection" displayName="[y] Unknown configuration property"
@@ -69,11 +69,11 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexConfigProcessorInspection" displayName="[y] Incorrect use of $config macros"
-                         groupName="[y] Impex" level="WARNING" language="Impex" enabledByDefault="true"
+                         groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueAttributeWithoutIndex" displayName="[y] Unique attribute without an index"
-                         groupName="[y] Impex" level="WARNING" language="Impex" enabledByDefault="true"
+                         groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueDocumentId" displayName="[y] Unique document Id in column"
@@ -85,12 +85,12 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
-                         groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"
+                         groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>
 
-<!--        <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownAttributeModifierInspection" displayName="[y] Unknown attribute modifier"-->
-<!--                         groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownAttributeModifierInspection"/>-->
+        <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownAttributeModifierInspection" displayName="[y] Unknown attribute modifier"
+                         groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownAttributeModifierInspection"/>
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"

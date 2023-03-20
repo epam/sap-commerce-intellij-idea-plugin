@@ -134,6 +134,7 @@
                 <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
                     <ul>
                         <li>Type modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/291" target="_blank" rel="nofollow">#291</a>)</li>
+                        <li>Attribute modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/292" target="_blank" rel="nofollow">#292</a>)</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
