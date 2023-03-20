@@ -27,7 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSN2MRelationCannotContainDeployment : AbstractTSInspection() {
+class TSO2MRelationCannotContainDeployment : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,
@@ -46,7 +46,7 @@ class TSN2MRelationCannotContainDeployment : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
     ) {
-        if (isManyToManyRelation(relation)) {
+        if (isOneToManyRelation(relation)) {
             holder.createProblem(
                 relation.deployment,
                 severity,
@@ -56,9 +56,9 @@ class TSN2MRelationCannotContainDeployment : AbstractTSInspection() {
         }
     }
 
-    private fun isManyToManyRelation(dom: Relation): Boolean {
-        val cardinalityMany = Cardinality.MANY.value
-        return dom.sourceElement.cardinality.stringValue.equals(cardinalityMany) &&
-            dom.targetElement.cardinality.stringValue.equals(cardinalityMany)
+    private fun isOneToManyRelation(relation: Relation): Boolean {
+        val cardinalityOne = Cardinality.ONE.value
+        return relation.sourceElement.cardinality.stringValue.equals(cardinalityOne) ||
+            relation.targetElement.cardinality.stringValue.equals(cardinalityOne)
     }
 }

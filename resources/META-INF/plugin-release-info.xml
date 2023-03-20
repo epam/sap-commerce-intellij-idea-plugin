@@ -130,9 +130,9 @@
                         <li>Attribute is not defined</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Added new inspection rule (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/298" target="_blank" rel="nofollow">#289</a>)
+                <li><i>Feature:</i> Added new inspection rule (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289" target="_blank" rel="nofollow">#289</a>)
                     <ul>
-                        <li>Many-to-many relation can not contain 'deployment' attribute</li>
+                        <li>One-to-many relation can not contain 'deployment' attribute</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
