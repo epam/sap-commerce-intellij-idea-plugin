@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.impex.utils
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.OPTIONAL_CONFIG_DIR_KEY
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
@@ -19,10 +19,11 @@ import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
+/*
+Improve order of the properties - https://help.sap.com/docs/SAP_COMMERCE/b490bb4e85bc42a7aa09d513d0bcb18e/8b8e13c9866910149d40b151a9196543.html?locale=en-US
+ */
 object ProjectPropertiesUtils {
     private const val NESTED_PROPERTY_PREFIX = "\${"
     private const val NESTED_PROPERTY_SUFFIX = "}"
@@ -55,7 +56,7 @@ object ProjectPropertiesUtils {
         addPropertyFile(result, advancedPropsFile)
         addPropertyFile(result, localPropsFile)
 
-        val optDir = result[OPTIONAL_CONFIG_DIR_KEY]
+        val optDir = result[PROPERTY_OPTIONAL_CONFIG_DIR]
         addOptionalConfiguration(project, result, optDir)
 
         return ArrayList(result.values)
@@ -115,7 +116,7 @@ object ProjectPropertiesUtils {
         return sb.toString()
     }
 
-    private fun addOptionalConfiguration(project: Project, result: java.util.LinkedHashMap<String, IProperty>, optDir: IProperty?) {
+    private fun addOptionalConfiguration(project: Project, result: LinkedHashMap<String, IProperty>, optDir: IProperty?) {
         if (optDir == null) {
             return
         }
@@ -140,7 +141,7 @@ object ProjectPropertiesUtils {
         }
     }
 
-    private fun addPropertyFile(result: java.util.LinkedHashMap<String, IProperty>, propertiesFile: PropertiesFile?) {
+    private fun addPropertyFile(result: LinkedHashMap<String, IProperty>, propertiesFile: PropertiesFile?) {
         if (propertiesFile == null) {
             return
         }

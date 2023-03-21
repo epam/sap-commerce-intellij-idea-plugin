@@ -70,6 +70,6 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
         propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES));
         propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES));
 
-        return cache.findPropertyInFiles(propertyFiles, HybrisConstants.BUILD_COMPILER_KEY);
+        return cache.findPropertyInFiles(propertyFiles, HybrisConstants.PROPERTY_BUILD_COMPILER);
     }
 }

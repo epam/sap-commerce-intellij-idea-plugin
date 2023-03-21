@@ -116,7 +116,6 @@ object HybrisConstants {
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
-    const val HAC_WEBROOT_KEY = "hac.webroot"
 
     const val WEB_MODULE_DIRECTORY = "web"
     const val ADDON_SRC_DIRECTORY = "addonsrc"
@@ -160,11 +159,17 @@ object HybrisConstants {
 
     const val DEBUG_PORT = "8000"
 
-    const val TOMCAT_SSL_PORT_KEY = "tomcat.ssl.port"
-    const val TOMCAT_HTTP_PORT_KEY = "tomcat.http.port"
-    const val SOLR_DEFAULT_PORT_KEY = "solrserver.instances.default.port"
-    const val SOLR_DEFAULT_USER_KEY = "solrserver.instances.default.user"
-    const val SOLR_DEFAULT_PASSWORD_KEY = "solrserver.instances.default.password"
+    const val PROPERTY_HAC_WEBROOT = "hac.webroot"
+    const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
+    const val PROPERTY_TOMCAT_HTTP_PORT = "tomcat.http.port"
+    const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
+    const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
+    const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
+    const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
+    const val PROPERTY_BUILD_COMPILER = "build.compiler"
+    const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
+
+    const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
     const val DEFAULT_HOST_URL = "localhost"
     const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
@@ -231,7 +236,6 @@ object HybrisConstants {
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
-    const val BUILD_COMPILER_KEY = "build.compiler"
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
@@ -244,7 +248,6 @@ object HybrisConstants {
     const val CODE_ATTRIBUTE_NAME = "code"
     const val NAME_ATTRIBUTE_NAME = "name"
     const val DICTIONARY_NAME = "hybris_integration"
-    const val OPTIONAL_CONFIG_DIR_KEY = "hybris.optional.config.dir"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
 

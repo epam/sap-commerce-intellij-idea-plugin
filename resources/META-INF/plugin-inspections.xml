@@ -301,8 +301,13 @@
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTagMustNotBeDeclaredForO2MRelation.key"
-                         shortName="DeploymentTagMustNotBeDeclaredForO2MRelation" level="ERROR"
+                         shortName="TSDeploymentTagMustNotBeDeclaredForO2MRelation" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTagMustNotBeDeclaredForO2MRelation"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTableNameLengthShouldBeValid.key"
+                         shortName="TSDeploymentTableNameLengthShouldBeValid" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableNameLengthShouldBeValid"/>
     </extensions>
 
 </idea-plugin>
