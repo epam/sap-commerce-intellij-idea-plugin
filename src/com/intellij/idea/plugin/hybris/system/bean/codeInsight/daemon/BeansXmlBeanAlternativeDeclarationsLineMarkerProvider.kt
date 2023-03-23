@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -55,27 +54,23 @@ class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLi
 
         if (psi != dom.clazz.xmlAttributeValue) return emptyList()
 
-        val alternativeDoms = findAlternativeDoms(dom, project)
-
-        if (alternativeDoms.isNotEmpty()) {
-            val marker = NavigationGutterIconBuilder
-                .create(icon) { _: Any? -> alternativeDoms }
-                .setTargets(dom)
-                .setPopupTitle(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.popup.title"))
-                .setTooltipText(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.tooltip.text"))
-                .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                .createLineMarkerInfo(leaf)
-
-            return listOf(marker)
-        }
-        return emptyList()
+        return BSMetaModelAccess.getInstance(project).findMetasForDom(dom)
+            .flatMap { it.retrieveAllDoms() }
+            .filter { it != dom }
+            .map { it.clazz }
+            .sortedBy { it.module?.name }
+            .mapNotNull { it.xmlAttributeValue }
+            .takeIf { it.isNotEmpty() }
+            ?.let {
+                NavigationGutterIconBuilder
+                    .create(icon)
+                    .setTargets(it)
+                    .setPopupTitle(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.popup.title"))
+                    .setTooltipText(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.tooltip.text"))
+                    .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+                    .createLineMarkerInfo(leaf)
+            }
+            ?.let { listOf(it) }
+            ?: emptyList()
     }
-
-    private fun findAlternativeDoms(sourceDom: Bean, project: Project) = BSMetaModelAccess.getInstance(project).findMetasForDom(sourceDom)
-        .flatMap { it.retrieveAllDoms() }
-        .filter { dom -> dom != sourceDom }
-        .map { it.clazz }
-        .sortedBy { it.module?.name }
-        .mapNotNull { it.xmlAttributeValue }
-
 }

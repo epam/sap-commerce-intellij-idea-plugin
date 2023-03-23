@@ -37,7 +37,7 @@ import javax.swing.Icon
 
 class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.items.item.name")
+    override fun getName() = message("hybris.editor.gutter.ts.items.item.siblings.name")
     override fun getIcon(): Icon = AllIcons.Gutter.OverridenMethod
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
         ?.takeIf {
@@ -64,8 +64,8 @@ class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvide
                 NavigationGutterIconBuilder
                     .create(icon)
                     .setTargets(targets)
-                    .setPopupTitle(message("hybris.editor.gutter.ts.items.item.popup.title"))
-                    .setTooltipText(message("hybris.editor.gutter.ts.items.item.tooltip.text"))
+                    .setPopupTitle(message("hybris.editor.gutter.ts.items.item.siblings.popup.title"))
+                    .setTooltipText(message("hybris.editor.gutter.ts.items.item.siblings.tooltip.text"))
                     .setAlignment(GutterIconRenderer.Alignment.CENTER)
                     .createLineMarkerInfo(leaf)
             }
