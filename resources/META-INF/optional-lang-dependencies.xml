@@ -165,6 +165,7 @@
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
 
