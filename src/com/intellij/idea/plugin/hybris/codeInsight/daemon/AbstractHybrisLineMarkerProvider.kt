@@ -48,25 +48,4 @@ abstract class AbstractHybrisLineMarkerProvider<T : PsiElement> : LineMarkerProv
         if (!CommonIdeaService.getInstance().isHybrisProject(psiFile.project)) return false
         return canProcess(psiFile)
     }
-
-//    override fun collectNavigationMarkers(
-//        psi: PsiElement,
-//        result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
-//    ) {
-//        if (!CommonIdeaService.getInstance().isHybrisProject(psi.project)) return
-//        if (!findAndMap(psi)) return
-//
-//        val time = measureTimeMillis { result.addAll(collectDeclarations(psi as T)) }
-//
-//        println("${javaClass.name} - ${time}")
-//
-//
-//        CachedValuesManager.getCachedValue(psi) {
-//            CachedValueProvider.Result.create(
-//                collectDeclarations(psi as T),
-//                TSMetaModelAccess.getInstance(psi.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
-//            )
-//        }
-//            ?.let { result.addAll(it) }
-//    }
 }
