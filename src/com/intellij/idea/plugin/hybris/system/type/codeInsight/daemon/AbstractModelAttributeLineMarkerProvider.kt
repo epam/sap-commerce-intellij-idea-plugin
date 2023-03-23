@@ -16,38 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInsight.daemon
+package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.system.type.utils.ModelsUtils
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.xml.XmlElement
 import javax.swing.Icon
 
-abstract class AbstractTSAttributeLineMarkerProvider<T : PsiElement> : AbstractTSItemLineMarkerProvider<T>() {
+abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : AbstractHybrisClassLineMarkerProvider<T>() {
 
-    override fun getTooltipText() = message("hybris.editor.gutter.item.attribute.tooltip.navigate.declaration")
-    override fun getPopupTitle() = message("hybris.editor.gutter.bean.attribute.navigate.choose.class.title")
-    override fun getEmptyPopupText() = message("hybris.editor.gutter.navigate.no.matching.attributes")
+    override fun getIcon(): Icon = HybrisIcons.TYPE_SYSTEM
+    override fun canProcess(psi: PsiClass) = ModelsUtils.isItemModelFile(psi)
 
-    override fun collectDeclarations(psi: T): RelatedItemLineMarkerInfo<PsiElement>? {
-        val psiClass = psi.parent
-        if (psiClass !is PsiClass || !ModelsUtils.isModelFile(psiClass)) return null
+    override fun collectDeclarations(psi: T) = TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(ModelsUtils.cleanSearchName((psi.parent as PsiClass).name))
+        ?.let { collect(it, psi) }
+        ?: emptyList()
 
-        return TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(cleanSearchName(psiClass.name))
-            ?.let { collect(it, psi) }
-    }
+    protected abstract fun collect(meta: TSGlobalMetaItem, psi: T): Collection<RelatedItemLineMarkerInfo<PsiElement>>
 
-    protected abstract fun collect(meta: TSGlobalMetaItem, psi: T): RelatedItemLineMarkerInfo<PsiElement>?
-
-    protected open fun getPsiElementRelatedItemLineMarkerInfo(
+    protected open fun getPsiElementItemLineMarkerInfo(
         meta: TSGlobalMetaItem, name: String, nameIdentifier: PsiIdentifier
     ) = with(getAttributeElements(meta, name)) {
         if (this.isEmpty()) {
@@ -55,7 +53,13 @@ abstract class AbstractTSAttributeLineMarkerProvider<T : PsiElement> : AbstractT
             return@with getRelationMarkers(groupedRelElements, RelationEnd.SOURCE, HybrisIcons.TS_RELATION_SOURCE, nameIdentifier)
                 ?: getRelationMarkers(groupedRelElements, RelationEnd.TARGET, HybrisIcons.TS_RELATION_TARGET, nameIdentifier)
         } else {
-            return@with createTargetsWithGutterIcon(nameIdentifier, this, HybrisIcons.TS_ATTRIBUTE)
+            return@with createTargetsWithGutterIcon(
+                nameIdentifier,
+                this,
+                HybrisIcons.TS_ATTRIBUTE,
+                message("hybris.editor.gutter.ts.model.item.attribute.popup.title"),
+                message("hybris.editor.gutter.ts.model.item.attribute.tooltip.text")
+            )
         }
     }
 
@@ -64,20 +68,43 @@ abstract class AbstractTSAttributeLineMarkerProvider<T : PsiElement> : AbstractT
         .flatMap { it.declarations }
         .map { it.domAnchor }
         .mapNotNull { it.retrieveDomElement() }
-        .mapNotNull { it.xmlElement }
+        .map { it.qualifier }
+        .mapNotNull { it.xmlAttributeValue }
 
     open fun getRelations(meta: TSGlobalMetaItem, name: String) = meta.allRelationEnds
         .filter { it.qualifier == name }
         .filter { it.isNavigable }
-        .filter { it.domAnchor.retrieveDomElement()?.xmlElement != null }
-        .groupBy({ it.end }, { it.domAnchor.retrieveDomElement()!!.xmlElement!! })
+        .filter { it.domAnchor.retrieveDomElement()?.qualifier?.xmlAttributeValue != null }
+        .groupBy({ it.end }, { it.domAnchor.retrieveDomElement()!!.qualifier.xmlAttributeValue!! })
 
     open fun getRelationMarkers(
-        groupedRelElements: Map<RelationEnd, List<XmlElement?>>,
+        groupedRelElements: Map<RelationEnd, List<XmlElement>>,
         target: RelationEnd,
         icon: Icon,
         nameIdentifier: PsiIdentifier
     ) = groupedRelElements[target]
-        ?.let { createTargetsWithGutterIcon(nameIdentifier, it, icon) }
+        ?.let {
+            createTargetsWithGutterIcon(
+                nameIdentifier,
+                it,
+                icon,
+                message("hybris.editor.gutter.ts.model.item.relationEnd.popup.title"),
+                message("hybris.editor.gutter.ts.model.item.relationEnd.tooltip.text"),
+            )
+        }
+
+    private fun createTargetsWithGutterIcon(
+        nameIdentifier: PsiIdentifier,
+        targets: List<XmlElement>,
+        icon: Icon,
+        popupTitle: String,
+        tooltipText: String,
+    ) = NavigationGutterIconBuilder
+        .create(icon)
+        .setTargets(targets)
+        .setPopupTitle(popupTitle)
+        .setTooltipText(tooltipText)
+        .setAlignment(GutterIconRenderer.Alignment.LEFT)
+        .createLineMarkerInfo(nameIdentifier)
 
 }

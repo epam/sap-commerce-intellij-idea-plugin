@@ -77,14 +77,18 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultPostImportConfigurator"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSAttributeMethodLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSAttributeFieldLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.TSEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.BSEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.BSPropertyLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.BSTypeLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.PopulatorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemAttributeFieldLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.ClassPopulatorLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
+
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
 
         <codeInsight.declarativeInlayProvider language="JAVA"
@@ -96,7 +100,7 @@
                                               nameKey="hybris.editor.java.inlay_provider.dynamic_attribute.name"
                                               descriptionKey="hybris.editor.java.inlay_provider.dynamic_attribute.description"/>
         <codeInsight.inlayProvider language="XML"
-                                   implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
+                                   implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
     </extensions>
 
 </idea-plugin>

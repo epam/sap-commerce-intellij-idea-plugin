@@ -107,7 +107,7 @@ class BpGraphServiceImpl : BpGraphService {
                     .forEach { transitions[it.getId().stringValue!!] = it.then.stringValue }
             }
             if (navigableElement.timeout.isValid) {
-                transitions["${message("hybris.business.process.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
+                transitions["${message("hybris.diagram.bp.provider.edge.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
             }
             transitions
         }

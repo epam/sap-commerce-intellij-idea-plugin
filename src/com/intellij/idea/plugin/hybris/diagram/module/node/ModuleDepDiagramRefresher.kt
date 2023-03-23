@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.ModuleRootManager
@@ -46,25 +46,29 @@ object ModuleDepDiagramRefresher {
     private fun modulesToShow(model: ModuleDepDiagramDataModel): Collection<Module> {
         val visibilityLevel = model.visibilityManager.currentVisibilityLevel
         val allModules = ModuleManager.getInstance(model.project).modules
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(model.project)
 
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
-                .filter { isCustomExtension(HybrisModuleDescriptor.getDescriptorType(it)) || isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
+                .filter {
+                    val descriptor = projectSettings.getModuleSettings(it).descriptorType
+                    isCustomExtension(descriptor) || isOotbOrPlatformExtension(descriptor)
+                }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
+            .filter { isCustomExtension(projectSettings.getModuleSettings(it).descriptorType) }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(HybrisModuleDescriptor.getDescriptorType(module)) }
+                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).descriptorType) }
             }
-            .filter { isOotbOrPlatformExtension(HybrisModuleDescriptor.getDescriptorType(it)) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
         return customExtModules + dependencies + backwardDependencies
     }
 

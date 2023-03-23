@@ -25,9 +25,10 @@ import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
 import com.intellij.idea.plugin.hybris.system.type.model.Items;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
@@ -35,10 +36,6 @@ import com.intellij.util.xml.GenericAttributeValue;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-
-import static com.intellij.openapi.util.io.FileUtil.normalize;
 
 /**
  * Created 6:46 PM 18 September 2016.
@@ -116,12 +113,15 @@ public final class TSUtils {
     }
 
     public static boolean isCustomExtensionFile(@NotNull final PsiFile file) {
-        if (!isTsFile(file)) {
-            return false;
-        }
+        return CachedValuesManager.getCachedValue(file, () -> {
+            if (!isTsFile(file)) {
+                return CachedValueProvider.Result.create(false, file);
+            }
 
-        final VirtualFile vFile = file.getVirtualFile();
-        return vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.getProject());
+
+            final VirtualFile vFile = file.getVirtualFile();
+            return CachedValueProvider.Result.create(vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.getProject()), file);
+        });
     }
 
     @Nullable
@@ -131,25 +131,6 @@ public final class TSUtils {
         }
 
         return PsiUtils.getModule(file);
-    }
-
-    /*
-     * This method disqualifies known hybris extensions
-     */
-    private static boolean estimateIsCustomExtension(@NotNull final VirtualFile file) {
-        final File itemsFile = VfsUtilCore.virtualToIoFile(file);
-        final String itemsFilePath = normalize(itemsFile.getAbsolutePath());
-
-        if (itemsFilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))) {
-            return false;
-        }
-        if (itemsFilePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019))) {
-            return false;
-        }
-        if (itemsFilePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX))) {
-            return false;
-        }
-        return true;
     }
 
 }

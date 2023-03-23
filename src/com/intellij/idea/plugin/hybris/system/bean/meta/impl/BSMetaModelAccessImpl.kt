@@ -111,7 +111,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         return findMetaBeansByName(name)
     }
 
-    override fun findMetaBeansByName(name: String): List<BSGlobalMetaBean> {
+    override fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean> {
         return listOfNotNull(
             findMetaByName(BSMetaType.META_BEAN, name),
             findMetaByName(BSMetaType.META_WS_BEAN, name),

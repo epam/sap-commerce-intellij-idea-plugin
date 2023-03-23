@@ -127,10 +127,9 @@
         <dom.fileMetaData rootTagName="items" stubVersion="22"
                           implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
 
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSItemTypeGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.TSEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.BSEnumGutterAnnotator"/>
-        <annotator language="XML" implementationClass="com.intellij.idea.plugin.hybris.lang.annotation.BSBeanGutterAnnotator"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionContributor"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
@@ -165,6 +164,9 @@
 
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>

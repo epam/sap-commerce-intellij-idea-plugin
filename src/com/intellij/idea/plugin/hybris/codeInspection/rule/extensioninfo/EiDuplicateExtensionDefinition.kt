@@ -53,7 +53,7 @@ class EiDuplicateExtensionDefinition : AbstractEiInspection() {
     ) = holder.createProblem(
         dom.name,
         severity,
-        message("hybris.inspections.fix.ei.EiDuplicateExtensionDefinition.message", dom.name.stringValue!!),
+        message("hybris.inspections.fix.ei.EiDuplicateExtensionDeclaration.message", dom.name.stringValue!!),
         XmlDeleteTagQuickFix()
     )
 }

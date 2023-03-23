@@ -58,7 +58,7 @@ class LeUnknownExtensionDefinition : AbstractLeInspection() {
             holder.createProblem(
                 dom.name,
                 severity,
-                message("hybris.inspections.fix.le.LeUnknownExtensionDefinition.message", extensionName),
+                message("hybris.inspections.fix.le.LeUnknownExtensionDeclaration.message", extensionName),
                 XmlDeleteTagQuickFix()
             )
         }

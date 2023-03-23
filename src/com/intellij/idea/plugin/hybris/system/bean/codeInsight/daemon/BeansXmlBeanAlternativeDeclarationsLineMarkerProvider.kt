@@ -15,58 +15,61 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.lang.annotation
+package com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon
 
+import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.system.bean.BSUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlToken
+import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
+import javax.swing.Icon
 
-class BSBeanGutterAnnotator : Annotator {
+class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun annotate(psiElement: PsiElement, annotationHolder: AnnotationHolder) {
-        if (!canProcess(psiElement)) return
+    override fun getName() = message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.name")
+    override fun getIcon(): Icon = AllIcons.Actions.Forward
+    override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
 
-        val parentTag = PsiTreeUtil.getParentOfType(psiElement, XmlTag::class.java)
-            ?: return
+    override fun collectDeclarations(psi: XmlAttributeValue): Collection<RelatedItemLineMarkerInfo<PsiElement>> {
+        val leaf = psi.childrenOfType<XmlToken>()
+            .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
+            ?: return emptyList()
+
+        val parentTag = PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)
+            ?: return emptyList()
 
         val project = parentTag.project
         val dom = DomManager.getDomManager(project).getDomElement(parentTag) as? Bean
-            ?: return
+            ?: return emptyList()
 
-        if (psiElement != dom.clazz.xmlAttributeValue) return
+        if (psi != dom.clazz.xmlAttributeValue) return emptyList()
 
         val alternativeDoms = findAlternativeDoms(dom, project)
 
         if (alternativeDoms.isNotEmpty()) {
-            NavigationGutterIconBuilder
-                .create(AllIcons.Actions.Forward) { _: Any? -> alternativeDoms }
-                .setTarget(dom)
-                .setTooltipText(
-                    if (alternativeDoms.size > 1)
-                        HybrisI18NBundleUtils.message("hybris.editor.gutter.alternativeDefinitions")
-                    else HybrisI18NBundleUtils.message(
-                        "hybris.editor.gutter.alternativeDefinition"
-                    )
-                )
+            val marker = NavigationGutterIconBuilder
+                .create(icon) { _: Any? -> alternativeDoms }
+                .setTargets(dom)
+                .setPopupTitle(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.popup.title"))
+                .setTooltipText(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-                .createGutterIcon(annotationHolder, psiElement)
-        }
-    }
+                .createLineMarkerInfo(leaf)
 
-    private fun canProcess(psiElement: PsiElement) = psiElement is XmlAttributeValue
-            && BSUtils.isBeansXmlFile(psiElement.getContainingFile())
+            return listOf(marker)
+        }
+        return emptyList()
+    }
 
     private fun findAlternativeDoms(sourceDom: Bean, project: Project) = BSMetaModelAccess.getInstance(project).findMetasForDom(sourceDom)
         .flatMap { it.retrieveAllDoms() }

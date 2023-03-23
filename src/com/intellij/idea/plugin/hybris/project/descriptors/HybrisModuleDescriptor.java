@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,18 +82,6 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     @NotNull
     HybrisModuleDescriptorType getDescriptorType();
-
-    static HybrisModuleDescriptorType getDescriptorType(@NotNull final Module module) {
-        final var settingsComponent = HybrisProjectSettingsComponent.getInstance(module.getProject());
-        final var descriptorTypeName = settingsComponent.getModuleSettings(module).getDescriptorType();
-        try {
-            return descriptorTypeName == null
-                ? HybrisModuleDescriptorType.NONE
-                : HybrisModuleDescriptorType.valueOf(descriptorTypeName);
-        } catch (IllegalArgumentException e) {
-            return HybrisModuleDescriptorType.NONE;
-        }
-    }
 
     void setImportStatus(IMPORT_STATUS importStatus);
 

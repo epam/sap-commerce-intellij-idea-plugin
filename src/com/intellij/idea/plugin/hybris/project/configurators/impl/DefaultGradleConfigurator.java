@@ -86,7 +86,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
 
         final ModuleSettings moduleSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                             .getModuleSettings(gradleModule);
-        moduleSettings.setDescriptorType(HybrisModuleDescriptorType.GRADLE.name());
+        moduleSettings.setDescriptorType(HybrisModuleDescriptorType.GRADLE);
 
         ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }

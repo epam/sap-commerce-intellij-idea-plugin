@@ -241,7 +241,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                     .filter(ModuleEx.class::isInstance)
                     .map(ModuleEx.class::cast)
                     .map(settingsComponent::getModuleSettings)
-                    .forEach(descriptor -> descriptor.setDescriptorType(HybrisModuleDescriptorType.MAVEN.name()));
+                    .forEach(descriptor -> descriptor.setDescriptorType(HybrisModuleDescriptorType.MAVEN));
         return model;
     }
 

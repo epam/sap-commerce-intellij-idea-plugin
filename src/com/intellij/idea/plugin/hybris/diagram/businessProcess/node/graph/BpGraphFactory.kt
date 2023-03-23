@@ -97,7 +97,7 @@ object BpGraphFactory {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.PARTIAL)
     } else if (transitionName.isBlank() || "OK".equals(transitionName, ignoreCase = true)) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.OK)
-    } else if (StringUtils.startsWith(transitionName, HybrisI18NBundleUtils.message("hybris.business.process.timeout"))) {
+    } else if (StringUtils.startsWith(transitionName, HybrisI18NBundleUtils.message("hybris.diagram.bp.provider.edge.timeout"))) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.TIMEOUT)
     } else if (badEdges.contains(transitionName.uppercase())) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.NOK)

@@ -57,7 +57,7 @@ class EiUnknownExtensionDefinition : AbstractEiInspection() {
             holder.createProblem(
                 dom.name,
                 severity,
-                message("hybris.inspections.fix.ei.EiUnknownExtensionDefinition.message", extensionName),
+                message("hybris.inspections.fix.ei.EiUnknownExtensionDeclaration.message", extensionName),
                 XmlDeleteTagQuickFix()
             )
         }

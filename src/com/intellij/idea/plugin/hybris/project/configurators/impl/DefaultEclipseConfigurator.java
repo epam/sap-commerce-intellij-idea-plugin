@@ -79,7 +79,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
         eclipseModules.forEach(module -> {
-            settingsComponent.getModuleSettings(module).setDescriptorType(HybrisModuleDescriptorType.ECLIPSE.name());
+            settingsComponent.getModuleSettings(module).setDescriptorType(HybrisModuleDescriptorType.ECLIPSE);
             try {
                 final String[] groups = eclipseGroupMapping.get(module.getName());
 

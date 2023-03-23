@@ -99,7 +99,7 @@ public final class HybrisIcons {
     public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg");
     public static final Icon BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg");
     public static final Icon BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg");
-    public static final Icon BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
+    public static final Icon BS_BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");

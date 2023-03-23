@@ -241,6 +241,8 @@ object HybrisConstants {
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val CLASS_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val CLASS_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
+    const val CLASS_CONVERTER = "de.hybris.platform.servicelayer.dto.converter.Converter"
+    const val CLASS_POPULATOR = "de.hybris.platform.converters.Populator"
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val SOURCE_ATTRIBUTE_NAME = "source"

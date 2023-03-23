@@ -21,7 +21,6 @@ import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
 import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomElementNavigationProvider
@@ -66,7 +65,7 @@ class BSStructureTreeElement(
 
     override fun getIcon(open: Boolean) = when (element) {
         is Enum -> HybrisIcons.BS_ENUM
-        is Bean -> HybrisIcons.BEAN
+        is Bean -> HybrisIcons.BS_BEAN
         is Annotations -> HybrisIcons.TS_ANNOTATION
         is Import -> HybrisIcons.TS_IMPORT
         is EnumValue -> HybrisIcons.BS_ENUM_VALUE

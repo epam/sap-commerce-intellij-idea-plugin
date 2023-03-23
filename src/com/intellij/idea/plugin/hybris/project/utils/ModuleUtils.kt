@@ -16,16 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module.node.graph
+package com.intellij.idea.plugin.hybris.project.utils
 
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtilCore
+import com.intellij.psi.PsiElement
 
-object ModuleDepGraphFactory {
+object ModuleUtils {
 
-    fun buildNode(module: Module) = ModuleDepGraphNodeModule(
-        module,
-        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType,
-        module.name
-    )
+    fun isHybrisModule(psi: PsiElement): Boolean {
+        val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
+        val descriptorType = HybrisProjectSettingsComponent.getInstance(psi.project)
+            .getModuleSettings(module).descriptorType
+        return descriptorType == HybrisModuleDescriptorType.PLATFORM
+            || descriptorType == HybrisModuleDescriptorType.EXT
+    }
 }

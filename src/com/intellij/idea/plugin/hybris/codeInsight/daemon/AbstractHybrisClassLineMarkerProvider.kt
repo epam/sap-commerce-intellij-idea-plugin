@@ -18,20 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiMember
 
-class TSAttributeMethodLineMarkerProvider : AbstractTSAttributeLineMarkerProvider<PsiMethod>() {
+abstract class AbstractHybrisClassLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
 
-    override fun canProcess(psi: PsiElement) = psi is PsiMethod
+    final override fun canProcess(psi: PsiFile) = ModuleUtils.isHybrisModule(psi)
+    protected abstract fun canProcess(psi: PsiClass): Boolean
 
-    override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod) = psi.getAnnotation(HybrisConstants.CLASS_ANNOTATION_ACCESSOR)
-        ?.parameterList
-        ?.attributes
-        ?.filter { it.literalValue != null && it.nameIdentifier != null }
-        ?.firstOrNull { it.name == Attribute.QUALIFIER }
-        ?.let { getPsiElementRelatedItemLineMarkerInfo(meta, it.literalValue!!, it.nameIdentifier!!) }
+    override fun canProcess(elements: MutableList<out PsiElement>): Boolean {
+        if (!super.canProcess(elements)) return false
+
+        val psiClass = elements
+            .firstNotNullOfOrNull { it as? PsiMember }
+            ?.containingClass
+            ?: return false
+
+        return canProcess(psiClass)
+    }
+
+
 }

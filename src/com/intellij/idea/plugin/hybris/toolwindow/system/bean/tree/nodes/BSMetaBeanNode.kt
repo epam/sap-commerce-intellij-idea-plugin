@@ -33,7 +33,7 @@ class BSMetaBeanNode(val parent: BSNode, val meta: BSGlobalMetaBean) : BSNode(pa
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.BEAN)
+        presentation.setIcon(HybrisIcons.BS_BEAN)
         if (meta.isDeprecated) {
             presentation.locationString = "deprecated"
         }

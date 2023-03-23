@@ -125,6 +125,7 @@
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
                 <li><i>Feature:</i> Added collapse/expand all actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
                 <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
+                <li><i>Feature:</i> Added Line Marker Provider settings and unified API usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294" target="_blank" rel="nofollow">#294</a>)</li>
                 <li><i>Feature:</i> Added new <strong>Flexible Search</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
                     <ul>
                         <li>Item Type is not defined</li>

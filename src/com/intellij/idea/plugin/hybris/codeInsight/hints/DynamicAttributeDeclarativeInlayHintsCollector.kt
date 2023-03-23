@@ -24,7 +24,7 @@ import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.*
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
@@ -46,7 +46,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
         if (method !is PsiMethod) return
         if (method.containingClass == null) return
-        if (!ModelsUtils.isModelFile(method.containingClass)) return
+        if (!ModelsUtils.isItemModelFile(method.containingClass)) return
 
         val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return
         val annotation = method.getAnnotation("de.hybris.bootstrap.annotations.Accessor") ?: return

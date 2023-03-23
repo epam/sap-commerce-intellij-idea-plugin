@@ -16,12 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInsight.daemon
+package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
+import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiIdentifier
@@ -29,27 +32,38 @@ import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.util.childrenOfType
 
-class TSAttributeFieldLineMarkerProvider : AbstractTSAttributeLineMarkerProvider<PsiField>() {
+class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMarkerProvider<PsiField>() {
 
-    override fun canProcess(psi: PsiElement) = psi is PsiField
-        && psi.name != HybrisConstants.TYPECODE_FIELD_NAME
-        && psi.type is PsiClassReferenceType
-        && (psi.type as PsiClassReferenceType).name == String::class.java.simpleName
+    override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.field.name")
+    override fun tryCast(psi: PsiElement) = (psi as? PsiField)
+        ?.takeIf { it.name != HybrisConstants.TYPECODE_FIELD_NAME }
+        ?.takeIf { (it.type as? PsiClassReferenceType)?.name == String::class.java.simpleName }
 
     override fun collect(meta: TSGlobalMetaItem, psi: PsiField) = psi.childrenOfType<PsiLiteralExpression>()
         .firstNotNullOfOrNull {
             val name = it.value.toString()
             val nameIdentifier = psi.nameIdentifier
 
-            getPsiElementRelatedItemLineMarkerInfo(meta, name, nameIdentifier)
-                ?: getPsiElementRelatedRelationLineMarkerInfo(name, nameIdentifier)
+            getPsiElementItemLineMarkerInfo(meta, name, nameIdentifier)
+                ?: getPsiElementRelationLineMarkerInfo(name, nameIdentifier)
         }
+        ?.let { listOf(it) }
+        ?: emptyList()
 
-    private fun getPsiElementRelatedRelationLineMarkerInfo(
+    private fun getPsiElementRelationLineMarkerInfo(
         name: String,
         nameIdentifier: PsiIdentifier
     ) = TSMetaModelAccess.getInstance(nameIdentifier.project).findMetaRelationByName(name)
         ?.retrieveDom()
-        ?.xmlElement
-        ?.let { createTargetsWithGutterIcon(nameIdentifier, listOf(it), HybrisIcons.TS_RELATION) }
+        ?.code
+        ?.xmlAttributeValue
+        ?.let {
+            NavigationGutterIconBuilder
+                .create(HybrisIcons.TS_RELATION)
+                .setTargets(it)
+                .setTooltipText(message("hybris.editor.gutter.ts.model.item.attribute.field.relation.tooltip.text"))
+                .setAlignment(GutterIconRenderer.Alignment.LEFT)
+                .createLineMarkerInfo(nameIdentifier)
+        }
+
 }

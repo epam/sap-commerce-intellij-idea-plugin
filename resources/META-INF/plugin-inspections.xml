@@ -94,35 +94,35 @@
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDeclaration.key"
                          shortName="EiUnknownExtensionDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiUnknownExtensionDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDeclaration.key"
                          shortName="EiDuplicateExtensionDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiDuplicateExtensionDefinition"/>
 
         <!-- Local Extensions  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Local Extensions"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.le.LeUnknownExtensionDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.le.LeUnknownExtensionDeclaration.key"
                          shortName="LeUnknownExtensionDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions.LeUnknownExtensionDefinition"/>
 
         <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDeclaration.key"
                          shortName="DuplicateBeanDefinition" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumDeclaration.key"
                          shortName="DuplicateEnumDefinition" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDeclaration.key"
                          shortName="DuplicateBeanPropertyDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanPropertyDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDefinition.key"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
                          shortName="DuplicateEnumValueDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumValueDefinition"/>
 

@@ -24,8 +24,8 @@ import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.roots.ProjectRootManager
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
@@ -41,9 +41,9 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val vf = node.virtualFile ?: return
         if (node.parent !is ProjectViewModuleGroupNode || node.parent == null) return
         val module = ProjectRootManager.getInstance(node.project).fileIndex.getModuleForFile(vf) ?: return
-        val type = HybrisModuleDescriptor.getDescriptorType(module) ?: return
+        val descriptorType = HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType
 
-        when (type) {
+        when (descriptorType) {
             HybrisModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
             HybrisModuleDescriptorType.CONFIG -> data.setIcon(AllIcons.Nodes.ConfigFolder)
             else -> {}

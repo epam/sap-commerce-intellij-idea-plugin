@@ -16,16 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.diagram.module.node.graph
+package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisLineMarkerProvider
+import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 
-object ModuleDepGraphFactory {
+abstract class AbstractItemsXmlLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
 
-    fun buildNode(module: Module) = ModuleDepGraphNodeModule(
-        module,
-        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType,
-        module.name
-    )
+    final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemXmlFile(psi)
+
 }

@@ -31,7 +31,6 @@ import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -131,6 +130,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
             }
         }
+        final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         children.stream()
                 .filter(PsiDirectoryNode.class::isInstance)
                 .filter(child -> child.getParent() == null)
@@ -144,7 +144,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                     if (module == null) {
                         return;
                     }
-                    final HybrisModuleDescriptorType type = HybrisModuleDescriptor.getDescriptorType(module);
+                    final HybrisModuleDescriptorType type = settingsComponent.getModuleSettings(module).getDescriptorType();
                     if (type == null) {
                         return;
                     }

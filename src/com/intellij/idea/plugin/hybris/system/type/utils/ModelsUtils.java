@@ -22,13 +22,24 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
+import org.jetbrains.annotations.Nullable;
 
 public final class ModelsUtils {
 
     private ModelsUtils() {
     }
 
-    public static boolean isModelFile(final PsiClass psiClass) {
+    public static @Nullable String cleanSearchName(@Nullable final String searchName) {
+        if (searchName == null) return null;
+
+        final var idx = searchName.lastIndexOf(HybrisConstants.MODEL_SUFFIX);
+
+        return idx == -1
+            ? searchName
+            : searchName.substring(0, idx);
+    }
+
+    public static boolean isItemModelFile(final PsiClass psiClass) {
         final var psiFile = psiClass.getContainingFile();
 
         if (psiFile.getText().contains("Generated model class for type")) {
