@@ -6,7 +6,7 @@
     <version>2023.1.2</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="231.6890.12" until-build="231.*"/>
+    <idea-version since-build="231.8109.90" until-build="231.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -24,11 +24,11 @@
 
             <h2>Features:</h2>
             <ul>
-                <li>Import of Hybris extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
+                <li>Import of SAP Commerce extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
                 <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
-                <li>Import your custom Eclipse, Maven and Gradle extensions together with Hybris platform.</li>
-                <li>Custom editor for Flexible Search queries with an ability to execute them on a remote Hybris instance right from your IDE by a single click of a button.</li>
-                <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote Hybris instance right from your IDE by a single click of a button.</li>
+                <li>Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.</li>
+                <li>Custom editor for Flexible Search queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
                 <li>Visualization of Business Process, Type System and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
@@ -147,6 +147,7 @@
                 </li>
                 <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
                 <li><i>Bug Fix:</i> Fixed Ant targets registration after Project Refresh</li>
+                <li><i>Bug Fix:</i> Fixed Type System Item extends identification</li>
                 <li><i>Other:</i> Improved cleanup on Project dispose</li>
                 <li><i>Other:</i> Added registration of the latest Ant targets</li>
                 <li><i>Other:</i> Added custom module icons</li>

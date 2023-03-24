@@ -32,26 +32,25 @@ interface HybrisConsolePreProcessor {
 
 class HybrisConsolePreProcessorCatalogVersion : HybrisConsolePreProcessor {
     private val catalogVersionRegexp = """version\s*[\[]\s*default\s*=\s*['"]?\s*(\w*)\s*['"]?\s*[]]""".toRegex()
-    
+
     override fun process(console: HybrisConsole): String {
         var text = console.editorDocument.text
 
-        if (console is HybrisImpexConsole) {
-            val selectedItem = console.catalogVersionComboBox.selectedItem
-            if (selectedItem is CatalogVersionOption) {
-                when (selectedItem.value) {
-                    HybrisConstants.IMPEX_CATALOG_VERSION_STAGED -> {
-                        text = catalogVersionRegexp.replace(text, "version[default=Staged]")
-                        text = text.replace(":Online", ":Staged")
-                    }
-                    HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE -> {
-                        text = catalogVersionRegexp.replace(text, "version[default=Online]")
-                        text = text.replace(":Staged", ":Online")
-                    }
-                }
+        val impexConsole = console as? HybrisImpexConsole ?: return text
+        val selectedItem = impexConsole.catalogVersionComboBox.selectedItem as? CatalogVersionOption ?: return text
+
+        when (selectedItem.value) {
+            HybrisConstants.IMPEX_CATALOG_VERSION_STAGED -> {
+                text = catalogVersionRegexp.replace(text, "version[default=Staged]")
+                text = text.replace(":Online", ":Staged")
+            }
+
+            HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE -> {
+                text = catalogVersionRegexp.replace(text, "version[default=Online]")
+                text = text.replace(":Staged", ":Online")
             }
         }
-        
+
         return text
     }
 }

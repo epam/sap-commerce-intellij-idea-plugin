@@ -99,8 +99,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         if (port != null) {
             return port;
         }
-        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(
-            hybrisProjectDescriptor);
+        final PlatformHybrisModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
             port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES, cache);

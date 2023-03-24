@@ -26,8 +26,6 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 /**
@@ -39,25 +37,25 @@ class ImpexXmlLanguageInjector : LanguageInjector {
     private val QUOTE_SYMBOL_LENGTH = 1
 
     override fun getLanguagesToInject(
-            host: PsiLanguageInjectionHost,
-            injectionPlacesRegistrar: InjectedLanguagePlaces
+        host: PsiLanguageInjectionHost,
+        injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        if (host is ImpexStringImpl) {
-            val hostString = StringUtil.unquoteString(host.getText()).lowercase()
-            if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
-                val language = XMLLanguage.INSTANCE
-                try {
-                    injectionPlacesRegistrar.addPlace(
-                            language,
-                            TextRange.from(QUOTE_SYMBOL_LENGTH, host.getTextLength() - 2), null, null
-                    )
-                } catch (e: ProcessCanceledException) {
-                    // ignore
-                } catch (e: Throwable) {
-                    LOG.error(e)
-                }
+        if (host !is ImpexStringImpl) return
 
+        val hostString = StringUtil.unquoteString(host.getText()).lowercase()
+        if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
+            val language = XMLLanguage.INSTANCE
+            try {
+                injectionPlacesRegistrar.addPlace(
+                    language,
+                    TextRange.from(QUOTE_SYMBOL_LENGTH, host.getTextLength() - 2), null, null
+                )
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            } catch (e: Throwable) {
+                LOG.error(e)
             }
+
         }
     }
 
@@ -74,7 +72,7 @@ class ImpexXmlLanguageInjector : LanguageInjector {
      * @return true of the string is XML, false otherwise
      */
     val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
-    
+
     fun String.isXmlLike(): Boolean {
         if (this.trim { it <= ' ' }.isNotEmpty()) {
             if (this.trim { it <= ' ' }.startsWith("<")) {

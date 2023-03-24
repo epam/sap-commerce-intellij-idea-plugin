@@ -33,6 +33,7 @@ import java.awt.Rectangle
 import javax.swing.JTable
 import javax.swing.table.TableColumn
 
+@Suppress("UNCHECKED_CAST")
 abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
 
     fun init() {
@@ -52,29 +53,15 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
             .forEach { setFixedColumnWidth(getColumn(it), this, it) }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun updateModel(owner: Owner) {
-        if (model is ListTableModel<*>) {
-            (model as ListTableModel<Item>).items = getItems(owner)
-        }
+        val listTableModel = model as? ListTableModel<Item> ?: return
+        listTableModel.items = getItems(owner)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun getItems(): List<Item> {
-        if (model is ListTableModel<*>) {
-            return (model as ListTableModel<Item>).items
-        }
-        return emptyList()
-    }
+    fun getItems(): List<Item> = (model as? ListTableModel<Item>)?.items
+        ?: emptyList()
 
-
-    @Suppress("UNCHECKED_CAST")
-    fun getCastedModel(): ListTableModel<Item>? {
-        if (model is ListTableModel<*>) {
-            return (model as ListTableModel<Item>)
-        }
-        return null
-    }
+    fun getCastedModel() = model as? ListTableModel<Item>
 
     abstract fun select(item: Item)
     protected abstract fun getItems(owner: Owner): MutableList<Item>

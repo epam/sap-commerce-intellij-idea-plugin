@@ -32,7 +32,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch
 import org.apache.commons.lang3.StringUtils
 import javax.swing.Icon
 
-class ClassPopulatorLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiClass>() {
+class PopulatorsLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiClass>() {
 
     override fun getName() = "Java - Populators"
     override fun getIcon(): Icon = HybrisIcons.GUTTER_POPULATOR
@@ -77,9 +77,8 @@ class ClassPopulatorLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiCla
     private fun retrieveConverterFields(psiClass: PsiClass): List<PsiField> {
         return psiClass.fields
             .filterNot { it.modifierList?.hasModifierProperty("static") ?: false }
-            .filter { it.type is PsiClassReferenceType }
             .filter {
-                (it.type as PsiClassReferenceType).reference.qualifiedName == HybrisConstants.CLASS_CONVERTER
+                (it.type as? PsiClassReferenceType)?.reference?.qualifiedName == HybrisConstants.CLASS_CONVERTER
             }
     }
 

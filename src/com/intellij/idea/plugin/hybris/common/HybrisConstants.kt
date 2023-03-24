@@ -195,8 +195,8 @@ object HybrisConstants {
     const val ANT_STACK_SIZE_MB = 128
 
     const val TS_TYPE_OBJECT = "java.lang.Object"
-    const val TS_TYPE_ITEM = "GenericItem"
-    const val TS_TYPE_GENERIC_ITEM = "Item"
+    const val TS_TYPE_ITEM = "Item"
+    const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
     const val TS_TYPE_EXTENSIBLE_ITEM = "ExtensibleItem"
     const val TS_TYPE_CRON_JOB = "CronJob"

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdge
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdgeType
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramNode
@@ -97,7 +97,7 @@ object BpGraphFactory {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.PARTIAL)
     } else if (transitionName.isBlank() || "OK".equals(transitionName, ignoreCase = true)) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.OK)
-    } else if (StringUtils.startsWith(transitionName, HybrisI18NBundleUtils.message("hybris.diagram.bp.provider.edge.timeout"))) {
+    } else if (StringUtils.startsWith(transitionName, message("hybris.diagram.bp.provider.edge.timeout"))) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.TIMEOUT)
     } else if (badEdges.contains(transitionName.uppercase())) {
         BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.NOK)

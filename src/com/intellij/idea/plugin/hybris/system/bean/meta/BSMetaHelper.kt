@@ -27,16 +27,10 @@ class BSMetaHelper {
 
     companion object {
         fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
-        fun isDeprecated(it: BSGlobalMetaClassifier<DomElement>): Boolean {
-            if (it is BSMetaEnum) {
-                return it.isDeprecated
-            }
-
-            if (it is BSMetaBean) {
-                return it.isDeprecated
-            }
-
-            return false
+        fun isDeprecated(it: BSGlobalMetaClassifier<DomElement>) = when (it) {
+            is BSMetaEnum -> it.isDeprecated
+            is BSMetaBean -> it.isDeprecated
+            else -> false
         }
     }
 }

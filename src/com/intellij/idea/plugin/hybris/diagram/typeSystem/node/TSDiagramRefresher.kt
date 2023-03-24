@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node
 import com.intellij.diagram.DiagramElementManager
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -86,32 +87,28 @@ object TSDiagramRefresher {
 
         nodesMap.values
             .flatMap { sourceNode ->
-                val graphNode = sourceNode.graphNode
+                val graphNode = sourceNode.graphNode as? TSGraphNodeClassifier ?: return@flatMap emptyList()
 
-                if (graphNode is TSGraphNodeClassifier) {
-                    return@flatMap DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
-                        .filterIsInstance<TSGraphField>()
-                        .mapNotNull { graphField ->
-                            val dependencyType = when (graphField) {
-                                is TSGraphFieldRelationEnd -> graphField.meta.type
-                                is TSGraphFieldRelationElement -> graphField.meta.type
-                                is TSGraphFieldAttribute -> graphField.meta.type
-                                is TSGraphFieldTyped -> graphField.value
-                                else -> null
-                            }
-                                ?: return@mapNotNull null
-
-                            if (model.removedNodes.contains(dependencyType)) return@mapNotNull null
-                            if (settings.excludedTypeNames.contains(dependencyType)) return@mapNotNull null
-                            if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
-
-                            val transitiveNode = TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
-                            if (!settings.showOOTBMapNodes && transitiveNode?.meta is TSGlobalMetaMap) return@mapNotNull null
-                            return@mapNotNull transitiveNode
+                return@flatMap DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
+                    .filterIsInstance<TSGraphField>()
+                    .mapNotNull { graphField ->
+                        val dependencyType = when (graphField) {
+                            is TSGraphFieldRelationEnd -> graphField.meta.type
+                            is TSGraphFieldRelationElement -> graphField.meta.type
+                            is TSGraphFieldAttribute -> graphField.meta.type
+                            is TSGraphFieldTyped -> graphField.value
+                            else -> null
                         }
-                }
+                            ?: return@mapNotNull null
 
-                return@flatMap emptyList()
+                        if (model.removedNodes.contains(dependencyType)) return@mapNotNull null
+                        if (settings.excludedTypeNames.contains(dependencyType)) return@mapNotNull null
+                        if (nodesMap.containsKey(dependencyType)) return@mapNotNull null
+
+                        val transitiveNode = TSGraphFactory.buildTransitiveNode(model.project, dependencyType)
+                        if (!settings.showOOTBMapNodes && transitiveNode?.meta is TSGlobalMetaMap) return@mapNotNull null
+                        return@mapNotNull transitiveNode
+                    }
             }
             .map { TSDiagramNode(it, model.provider) }
             .forEach { nodesMap[it.graphNode.name] = it }
@@ -127,24 +124,18 @@ object TSDiagramRefresher {
     private fun collectNodesExtends(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         nodesMap.values
             .flatMap { sourceNode ->
-                val graphNode = sourceNode.graphNode
+                val graphNode = sourceNode.graphNode as? TSGraphNodeClassifier ?: return@flatMap emptyList()
+                val meta = graphNode.meta as? TSGlobalMetaItem ?: return@flatMap emptyList()
 
-                if (graphNode is TSGraphNodeClassifier) {
-                    val meta = graphNode.meta
-                    if (meta is TSGlobalMetaItem) {
-                        return@flatMap meta.allExtends
-                            .asSequence()
-                            .filter { extendsMeta -> extendsMeta.name != null }
-                            .filterNot { extendsMeta -> settings.excludedTypeNames.contains(extendsMeta.name) }
-                            .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
-                            .filterNot { extendsMeta -> model.removedNodes.contains(extendsMeta.name) }
-                            .mapNotNull { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }
-                            .filter { extendsGraphNode -> model.scopeManager?.contains(extendsGraphNode) ?: true }
-                            .toList()
-                    }
-                }
-
-                return@flatMap emptyList()
+                return@flatMap meta.allExtends
+                    .asSequence()
+                    .filter { extendsMeta -> extendsMeta.name != null }
+                    .filterNot { extendsMeta -> settings.excludedTypeNames.contains(extendsMeta.name) }
+                    .filter { extendsMeta -> nodesMap[extendsMeta.name] == null }
+                    .filterNot { extendsMeta -> model.removedNodes.contains(extendsMeta.name) }
+                    .mapNotNull { extendsMeta -> TSGraphFactory.buildTransitiveNode(extendsMeta) }
+                    .filter { extendsGraphNode -> model.scopeManager?.contains(extendsGraphNode) ?: true }
+                    .toList()
             }
             .map { TSDiagramNode(it, model.provider) }
             .forEach { nodesMap[it.graphNode.name] = it }
@@ -183,39 +174,37 @@ object TSDiagramRefresher {
 
     private fun collectEdgesPartOf(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
         nodesMap.values.forEach { sourceNode ->
-            val graphNode = sourceNode.graphNode
+            val graphNode = sourceNode.graphNode as? TSGraphNodeClassifier ?: return@forEach
 
-            if (graphNode is TSGraphNodeClassifier) {
-                DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
-                    .filterIsInstance<TSGraphField>()
-                    .mapNotNull { graphField ->
-                        var name: String? = null
-                        var type: String? = null
+            DiagramElementManager.getNodeItemsAccordingToCurrentContentSettings(graphNode, model.builder)
+                .filterIsInstance<TSGraphField>()
+                .mapNotNull { graphField ->
+                    var name: String? = null
+                    var type: String? = null
 
-                        when (graphField) {
-                            is TSGraphFieldRelationElement -> if (graphField.meta.modifiers.isPartOf) {
-                                name = graphField.name
-                                type = graphField.meta.type
-                            }
-
-                            is TSGraphFieldAttribute -> if (graphField.meta.modifiers.isPartOf) {
-                                name = graphField.name
-                                type = graphField.meta.type
-                            }
+                    when (graphField) {
+                        is TSGraphFieldRelationElement -> if (graphField.meta.modifiers.isPartOf) {
+                            name = graphField.name
+                            type = graphField.meta.type
                         }
-                        if (name == null || type == null) return@mapNotNull null
 
-                        val targetNode = nodesMap[type] ?: return@mapNotNull null
-                        val relationship = TSDiagramRelationship(
-                            upperCenterLabel = message("hybris.diagram.ts.provider.edge.part_of", name),
-                            lineType = DiagramLineType.DOTTED,
-                            targetArrow = DiagramRelationshipInfo.CONVEX,
-                            sourceArrow = DiagramRelationshipInfo.CONCAVE
-                        )
-                        TSDiagramEdge(sourceNode, targetNode, relationship, TSDiagramEdgeType.PART_OF)
+                        is TSGraphFieldAttribute -> if (graphField.meta.modifiers.isPartOf) {
+                            name = graphField.name
+                            type = graphField.meta.type
+                        }
                     }
-                    .forEach { edges.add(it) }
-            }
+                    if (name == null || type == null) return@mapNotNull null
+
+                    val targetNode = nodesMap[type] ?: return@mapNotNull null
+                    val relationship = TSDiagramRelationship(
+                        upperCenterLabel = message("hybris.diagram.ts.provider.edge.part_of", name),
+                        lineType = DiagramLineType.DOTTED,
+                        targetArrow = DiagramRelationshipInfo.CONVEX,
+                        sourceArrow = DiagramRelationshipInfo.CONCAVE
+                    )
+                    TSDiagramEdge(sourceNode, targetNode, relationship, TSDiagramEdgeType.PART_OF)
+                }
+                .forEach { edges.add(it) }
         }
     }
 
@@ -298,21 +287,17 @@ object TSDiagramRefresher {
     private fun collectEdgesExtends(nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
         val label: String by lazy { message("hybris.diagram.ts.provider.edge.extends") }
         nodesMap.values.forEach { sourceNode ->
-            val graphNode = sourceNode.graphNode
+            val graphNode = sourceNode.graphNode as? TSGraphNodeClassifier ?: return@forEach
+            val meta = graphNode.meta as? TSGlobalMetaItem ?: return@forEach
 
-            if (graphNode is TSGraphNodeClassifier) {
-                val meta = graphNode.meta
-                if (meta is TSGlobalMetaItem) {
-                    nodesMap[meta.extendedMetaItemName]
-                        ?.let { targetNode ->
-                            TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship(
-                                upperCenterLabel = label,
-                                targetArrow = DiagramRelationshipInfo.DELTA
-                            ), TSDiagramEdgeType.EXTENDS)
-                        }
-                        ?.let { edge -> edges.add(edge) }
+            nodesMap[(meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM)]
+                ?.let { targetNode ->
+                    TSDiagramEdge(sourceNode, targetNode, TSDiagramRelationship(
+                        upperCenterLabel = label,
+                        targetArrow = DiagramRelationshipInfo.DELTA
+                    ), TSDiagramEdgeType.EXTENDS)
                 }
-            }
+                ?.let { edge -> edges.add(edge) }
         }
     }
 }

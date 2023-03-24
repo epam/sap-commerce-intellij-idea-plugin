@@ -48,8 +48,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
         // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
-            .filter { it is TSGlobalMetaItemSelfMerge<*, *> }
-            .forEach { (it as TSGlobalMetaItemSelfMerge<*, *>).postMerge(this) }
+            .forEach { (it as? TSGlobalMetaItemSelfMerge<*, *>)?.postMerge(this) }
 
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
             .flatMap { it.allAttributes }

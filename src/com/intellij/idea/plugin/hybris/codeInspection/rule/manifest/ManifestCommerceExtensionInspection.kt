@@ -45,16 +45,28 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
             val parent = o.parent
             if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
-                        o,
-                        HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)
+                    o,
+                    HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)
                 )
             }
         }
 
-        private fun isApplicable(parent: PsiElement?, o: JsonStringLiteral) =
-                ((parent is JsonArray && o.parentOfType<JsonProperty>()?.name == "extensions")
-                        || (parent is JsonProperty && JsonPsiUtil.isPropertyValue(o) && (parent.name == "addon" || parent.name == "storefront") && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons")
-                        || (parent is JsonProperty && JsonPsiUtil.isPropertyValue(o) && (parent.name == "name") && parent.parentOfType<JsonProperty>()?.name == "webapps"))
+        private fun isApplicable(parent: PsiElement?, o: JsonStringLiteral) = isExtensionsProperty(parent, o)
+            || isStorefrontProperty(parent, o)
+            || isWebappsProperty(parent, o)
+
+        private fun isWebappsProperty(parent: PsiElement?, o: JsonStringLiteral) = parent is JsonProperty
+            && JsonPsiUtil.isPropertyValue(o)
+            && parent.name == "name"
+            && parent.parentOfType<JsonProperty>()?.name == "webapps"
+
+        private fun isStorefrontProperty(parent: PsiElement?, o: JsonStringLiteral) = parent is JsonProperty
+            && JsonPsiUtil.isPropertyValue(o)
+            && (parent.name == "addon" || parent.name == "storefront")
+            && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons"
+
+        private fun isExtensionsProperty(parent: PsiElement?, o: JsonStringLiteral) = parent is JsonArray
+            && o.parentOfType<JsonProperty>()?.name == "extensions"
 
     }
 }

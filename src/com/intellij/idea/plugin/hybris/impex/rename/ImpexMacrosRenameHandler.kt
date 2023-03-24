@@ -39,11 +39,7 @@ class ImpexMacrosRenameHandler : RenameHandler {
 
     override fun isAvailableOnDataContext(dataContext: DataContext): Boolean {
         val element = getElement(dataContext)
-        if (element is ImpexMacroNameDec || element is ImpexMacroUsageDec) {
-            return true
-        }
-
-        return false
+        return element is ImpexMacroNameDec || element is ImpexMacroUsageDec
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?, dataContext: DataContext) = psiRenameHandler.invoke(project, editor, file, dataContext)

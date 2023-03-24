@@ -144,17 +144,13 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     @Suppress("UNCHECKED_CAST")
     private fun mergeAttributes(localMeta: TSMetaItem) = localMeta.attributes.values.forEach {
         val globalAttribute = this.attributes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemAttributeImpl(it)}
-        if (globalAttribute is TSMetaSelfMerge<*, *>) {
-            (globalAttribute as TSMetaSelfMerge<Attribute, TSMetaItemAttribute>).merge(it)
-        }
+        (globalAttribute as? TSMetaSelfMerge<Attribute, TSMetaItemAttribute>)?.merge(it)
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun mergeIndexes(localMeta: TSMetaItem) = localMeta.indexes.values.forEach {
         val globalIndex = this.indexes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemIndexImpl(it) }
-        if (globalIndex is TSMetaSelfMerge<*, *>) {
-            (globalIndex as TSMetaSelfMerge<Index, TSMetaItemIndex>).merge(it)
-        }
+        (globalIndex as? TSMetaSelfMerge<Index, TSMetaItemIndex>)?.merge(it)
     }
 
     private fun mergeCustomProperties(localMeta: TSMetaItem) = customProperties.putAll(localMeta.customProperties)

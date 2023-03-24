@@ -37,25 +37,25 @@ class ImpexGroovyLanguageInjector : LanguageInjector {
     private val QUOTE_SYMBOL_LENGTH = 1
 
     override fun getLanguagesToInject(
-            host: PsiLanguageInjectionHost,
-            injectionPlacesRegistrar: InjectedLanguagePlaces
+        host: PsiLanguageInjectionHost,
+        injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        if (host is ImpexStringImpl) {
-            val hostString = StringUtil.unquoteString(host.getText()).lowercase()
-            if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
-                val language = GroovyLanguage
-                try {
-                    injectionPlacesRegistrar.addPlace(
-                            language,
-                            TextRange.from(OFFSET, host.getTextLength() - OFFSET - QUOTE_SYMBOL_LENGTH), null, null
-                    )
-                } catch (e: ProcessCanceledException) {
-                    // ignore
-                } catch (e: Throwable) {
-                    LOG.error(e)
-                }
+        if (host !is ImpexStringImpl) return
 
+        val hostString = StringUtil.unquoteString(host.getText()).lowercase()
+        if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
+            val language = GroovyLanguage
+            try {
+                injectionPlacesRegistrar.addPlace(
+                    language,
+                    TextRange.from(OFFSET, host.getTextLength() - OFFSET - QUOTE_SYMBOL_LENGTH), null, null
+                )
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            } catch (e: Throwable) {
+                LOG.error(e)
             }
+
         }
     }
 
