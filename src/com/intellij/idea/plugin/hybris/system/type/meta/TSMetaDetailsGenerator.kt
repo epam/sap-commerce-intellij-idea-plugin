@@ -150,7 +150,7 @@ object TSMetaDetailsGenerator {
         <br>
         <div><strong>Declared in the following modules</strong></div>
         <ul>
-        ${declarations.map { it.module.name }.joinToString("") { "<li>$it</li>" }}
+        ${declarations.map { it.module.name }.distinct().joinToString("") { "<li>$it</li>" }}
         </ul>
     """.trimIndent()
 

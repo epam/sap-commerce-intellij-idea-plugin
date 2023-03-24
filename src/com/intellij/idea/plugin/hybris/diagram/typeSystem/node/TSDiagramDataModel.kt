@@ -45,12 +45,12 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     override fun getEdges() = edges
     override fun collapseNode(node: DiagramNode<TSGraphNode>) {
         collapsedNodes.add(node.identifyingElement.name)
-        node.identifyingElement.collapsed = false
+        node.identifyingElement.collapsed = true
     }
 
     override fun expandNode(node: DiagramNode<TSGraphNode>) {
         collapsedNodes.remove(node.identifyingElement.name)
-        node.identifyingElement.collapsed = true
+        node.identifyingElement.collapsed = false
     }
 
     override fun getNodeName(diagramNode: DiagramNode<TSGraphNode>) = diagramNode.identifyingElement.name
