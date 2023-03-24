@@ -118,12 +118,13 @@
                         <li><i>Feature:</i> Added Context Parameters node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283" target="_blank" rel="nofollow">#283</a>)</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> Added node type specific icons for Business Process code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296" target="_blank" rel="nofollow">#296</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Item and Enum classes from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284" target="_blank" rel="nofollow">#284</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Enum Values fields from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285" target="_blank" rel="nofollow">#285</a>)</li>
                 <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
-                <li><i>Feature:</i> Added collapse/expand all actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
+                <li><i>Feature:</i> Added "collapse all"/"expand all" actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
                 <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
                 <li><i>Feature:</i> Added Line Marker Provider settings and unified API usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294" target="_blank" rel="nofollow">#294</a>)</li>
                 <li><i>Feature:</i> Added navigation to Bean siblings in the <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/295" target="_blank" rel="nofollow">#295</a>)</li>

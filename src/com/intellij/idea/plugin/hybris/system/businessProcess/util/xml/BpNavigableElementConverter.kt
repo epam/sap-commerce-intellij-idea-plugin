@@ -18,8 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.util.xml
 
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.NavigableElement
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
@@ -51,6 +54,46 @@ class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
     }
 
     override fun getPsiElement(dom: NavigableElement?) = dom?.getId()?.xmlAttributeValue
+
+    override fun createLookupElement(dom: NavigableElement?): LookupElement? {
+        val id = dom?.getId()?.stringValue ?: return null
+
+        return when (dom) {
+            is Process -> LookupElementBuilder.create(id)
+                .withTypeText("Process", true)
+                .withIcon(HybrisIcons.BUSINESS_PROCESS)
+
+            is ScriptAction -> LookupElementBuilder.create(id)
+                .withTypeText("Script Action", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_SCRIPT)
+
+            is Action -> LookupElementBuilder.create(id)
+                .withTypeText("Action", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_ACTION)
+
+            is Split -> LookupElementBuilder.create(id)
+                .withTypeText("Split", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_SPLIT)
+
+            is Wait -> LookupElementBuilder.create(id)
+                .withTypeText("Wait", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_WAIT)
+
+            is Join -> LookupElementBuilder.create(id)
+                .withTypeText("Join", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_JOIN)
+
+            is End -> LookupElementBuilder.create(id)
+                .withTypeText("End", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_END)
+
+            is Notify -> LookupElementBuilder.create(id)
+                .withTypeText("Notify", true)
+                .withIcon(HybrisIcons.BP_DIAGRAM_NOTIFY)
+
+            else -> null
+        }
+    }
 
     companion object {
         private val filter: (PsiElement) -> Boolean = { el ->
