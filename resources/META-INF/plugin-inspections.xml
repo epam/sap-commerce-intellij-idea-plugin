@@ -308,6 +308,12 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTableNameLengthShouldBeValid.key"
                          shortName="TSDeploymentTableNameLengthShouldBeValid" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableNameLengthShouldBeValid"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse.key"
+                         shortName="TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse"/>
+
     </extensions>
 
 </idea-plugin>
