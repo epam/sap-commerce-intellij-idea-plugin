@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuic
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
