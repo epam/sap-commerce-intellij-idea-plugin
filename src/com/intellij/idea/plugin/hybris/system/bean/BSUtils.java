@@ -20,12 +20,14 @@ package com.intellij.idea.plugin.hybris.system.bean;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
+import com.intellij.idea.plugin.hybris.system.bean.model.Beans;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,15 +46,13 @@ public final class BSUtils {
 
 
     public static boolean isBeansXmlFile(@NotNull final PsiFile file) {
-        return isBeansXmlFile(file.getName());
-    }
-
-    private static boolean isBeansXmlFile(@NotNull final String name) {
-        return name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING);
+        return file instanceof XmlFile
+            && isBeansXmlFile((XmlFile) file);
     }
 
     public static boolean isBeansXmlFile(@NotNull final XmlFile file) {
-        return isBeansXmlFile(file.getName());
+        return file.getName().endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
+            && DomManager.getDomManager(file.getProject()).getFileElement(file, Beans.class) != null;
     }
 
     public static boolean isCustomExtensionFile(@NotNull final PsiFile file) {

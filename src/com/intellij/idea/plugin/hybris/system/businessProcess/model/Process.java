@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Stubbed
 @StubbedOccurrence
+@Namespace("http://www.hybris.de/xsd/processdefinition")
 public interface Process extends DomElement {
 
 	String DEFAULT_NODE_GROUP = "defaultNodeGroup";

@@ -19,10 +19,12 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
@@ -32,6 +34,8 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_WIDGETS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name.endsWith(HybrisConstants.COCKPIT_NG_WIDGETS_XML, true)
+        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
+        && file.name.endsWith(HybrisConstants.COCKPIT_NG_WIDGETS_XML, true)
+        && CommonIdeaService.getInstance().isHybrisProject(file.project)
 
 }

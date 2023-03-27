@@ -20,15 +20,12 @@ package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
+import com.intellij.idea.plugin.hybris.system.type.model.*;
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation;
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
-import com.intellij.idea.plugin.hybris.system.type.model.Items;
-import com.intellij.idea.plugin.hybris.system.type.model.Relation;
-import com.intellij.idea.plugin.hybris.system.type.model.TypeGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.IndexNotReadyException;
@@ -46,15 +43,11 @@ import com.intellij.util.xml.DomManager;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASS_ITEM_ROOT;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getString;
 
@@ -77,7 +70,7 @@ public class DefaultItemsFileValidation implements ItemsFileValidation {
 
     @Override
     public boolean isFileOutOfDate(@NotNull final VirtualFile file) {
-        if (file.getName().endsWith(HYBRIS_ITEMS_XML_FILE_ENDING)) {
+        if (file.getName().endsWith(HYBRIS_ITEMS_XML_FILE_ENDING) && ModuleUtil.projectContainsFile(project, file, false)) {
             return this.isFileOutOfDateWithGeneratedClasses(file);
         }
 

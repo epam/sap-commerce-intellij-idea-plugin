@@ -3,10 +3,10 @@
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
-    <version>2023.1.2</version>
+    <version>2023.2.0</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
-    <idea-version since-build="231.8109.90" until-build="231.*"/>
+    <idea-version since-build="231.8109.144" until-build="231.*"/>
 
     <vendor email="hybrisideaplugin@epam.com"
             url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
@@ -15,7 +15,7 @@
 
     <description>
         <![CDATA[
-            <p>This plugin is a plugin for SAP Commerce integration.</p>
+            <p>This plugin is a plugin for SAP Commerce<sup>(Hybris)</sup> integration.</p>
 
             <i>If you have any questions you can send an email to:</i>
             <ul>
@@ -31,7 +31,7 @@
                 <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
-                <li>Visualization of Business Process, Type System and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
+                <li>Visualization of Business Process, <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md" target="_blank" rel="nofollow">Type System</a> and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
                 <li>Enhanced project view tree.</li>
@@ -91,9 +91,13 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.2.0</h3>
+            <ul>
+                <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
+            </ul>
             <h3>2023.1.2</h3>
             <ul>
-                <li>Introduced Type System Diagram
+                <li>Introduced <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md" target="_blank" rel="nofollow">Type System Diagram</a>
                 <ul>
                     <li><i>Feature:</i> Initial version (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270" target="_blank" rel="nofollow">#270</a>)</li>
                     <li><i>Feature:</i> Added nodes removal &amp; Reset Exclusions Action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/271" target="_blank" rel="nofollow">#271</a>)</li>

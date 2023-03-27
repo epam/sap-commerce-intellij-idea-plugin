@@ -26,5 +26,5 @@ import com.intellij.psi.xml.XmlFile
 
 abstract class AbstractTSInspection : AbstractInspection<Items>(Items::class.java) {
 
-    override fun canProcess(project: Project, file: XmlFile) = TSUtils.isTsFile(file)
+    override fun canProcess(project: Project, file: XmlFile) = TSUtils.isTypeSystemFile(file)
 }

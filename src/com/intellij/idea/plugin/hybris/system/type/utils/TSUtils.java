@@ -44,8 +44,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class TSUtils {
 
-    public static boolean isTypeSystemXmlFile(@Nullable final PsiFile psiFile) {
-        return psiFile instanceof XmlFile && psiFile.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING);
+    private TSUtils() {
     }
 
     public static boolean isAttributeGenerationDisabled(@NotNull final Attribute attribute) {
@@ -105,16 +104,15 @@ public final class TSUtils {
         }
     }
 
-    public static boolean isTsFile(@NotNull final PsiFile file) {
-        return file instanceof XmlFile && DomManager.getDomManager(file.getProject()).getFileElement(
-            (XmlFile) file,
-            Items.class
-        ) != null;
+    public static boolean isTypeSystemFile(@NotNull final PsiFile file) {
+        return file instanceof XmlFile
+            && file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
+            && DomManager.getDomManager(file.getProject()).getFileElement((XmlFile) file, Items.class) != null;
     }
 
     public static boolean isCustomExtensionFile(@NotNull final PsiFile file) {
         return CachedValuesManager.getCachedValue(file, () -> {
-            if (!isTsFile(file)) {
+            if (!isTypeSystemFile(file)) {
                 return CachedValueProvider.Result.create(false, file);
             }
 
@@ -126,7 +124,7 @@ public final class TSUtils {
 
     @Nullable
     public static Module getModuleForFile(@NotNull final PsiFile file) {
-        if (!isTsFile(file)) {
+        if (!isTypeSystemFile(file)) {
             return null;
         }
 

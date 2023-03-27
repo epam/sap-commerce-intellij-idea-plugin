@@ -18,9 +18,11 @@
 package com.intellij.idea.plugin.hybris.system.businessProcess
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
@@ -30,6 +32,8 @@ class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, Hy
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BUSINESS_PROCESS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.rootTag?.namespace.equals("http://www.hybris.de/xsd/processdefinition")
+        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
+        && super.isMyFile(file, module)
+        && CommonIdeaService.getInstance().isHybrisProject(file.project)
 
 }

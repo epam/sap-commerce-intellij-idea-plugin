@@ -25,6 +25,6 @@ import com.intellij.psi.PsiFile
 
 abstract class AbstractItemsXmlLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
 
-    final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemXmlFile(psi)
+    final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemFile(psi)
 
 }

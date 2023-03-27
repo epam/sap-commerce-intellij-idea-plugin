@@ -31,7 +31,7 @@ import com.intellij.util.xml.DomService
 class TSXmlStructureViewBuilderProvider : XmlStructureViewBuilderProvider {
 
     override fun createStructureViewBuilder(xmlFile: XmlFile): StructureViewBuilder? {
-        if (!TSUtils.isTypeSystemXmlFile(xmlFile)) return null
+        if (!TSUtils.isTypeSystemFile(xmlFile)) return null
 
         return TSStructureViewBuilder(xmlFile, descriptor)
     }

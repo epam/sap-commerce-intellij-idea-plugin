@@ -18,15 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.util
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomManager
 
 object CngUtils {
 
-    fun isConfigFile(file: XmlFile) = file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
+    fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
     fun getValidMergeByValues(project: Project) = CngMetaModelAccess.getInstance(project).getMetaModel()
         .contextAttributes

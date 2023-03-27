@@ -15,25 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.intellij.idea.plugin.hybris.system.cockpitng
+package com.intellij.idea.plugin.hybris.system.type.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
+import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class CngActionDefinitionDomFileDescription : DomFileDescription<ActionDefinition>(ActionDefinition::class.java, "action-definition") {
+class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, "items") {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_ACTION_DEFINITION
-
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+    override fun isMyFile(
+        file: XmlFile, module: Module?
+    ) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && file.name == HybrisConstants.COCKPIT_NG_DEFINITION_XML
         && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
+        && file.rootTag
+        ?.attributes
+        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "items.xsd" }
+        ?: false
+
+    override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TYPE_SYSTEM
 }
