@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener
-import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexPsiTreeChangeListener
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
@@ -35,13 +35,11 @@ class ImpexHeaderHighlighterStartupActivity : ProjectActivity, Disposable {
             return
         }
 
-        val disposable = this;
-
         val eventFactory = EditorFactory.getInstance()
 
-        PsiManager.getInstance(project).addPsiTreeChangeListener(ImpexPsiTreeChangeListener(), disposable)
-        eventFactory.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener(), disposable)
-        eventFactory.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener(), disposable)
+        PsiManager.getInstance(project).addPsiTreeChangeListener(ImpexPsiTreeChangeListener(), this)
+        eventFactory.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener(), this)
+        eventFactory.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener(), this)
     }
 
     override fun dispose() {

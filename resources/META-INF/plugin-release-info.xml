@@ -96,6 +96,7 @@
                 <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
                 <li><i>Feature:</i> Enable selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
                 <li><i>Other:</i> Added Project icon for Plugin repository (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302" target="_blank" rel="nofollow">#302</a>)</li>
+                <li><i>Other:</i> Replaced Caffeine cache with IDEA user data (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304" target="_blank" rel="nofollow">#304</a>)</li>
             </ul>
             <h3>2023.1.2</h3>
             <ul>

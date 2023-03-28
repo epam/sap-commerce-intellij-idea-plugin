@@ -103,7 +103,6 @@ dependencies {
     implementation("org.apache.maven:maven-model:3.8.7")
     implementation("commons-codec:commons-codec:1.15")
     implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
     implementation("com.sun.xml.bind:jaxb-impl:4.0.1")

@@ -21,17 +21,12 @@ package com.intellij.idea.plugin.hybris.impex.assistance;
 import com.intellij.codeInsight.folding.impl.FoldingUtil;
 import com.intellij.codeInsight.highlighting.HighlightManager;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
-import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilBase;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -46,34 +41,16 @@ public class DefaultImpexHeaderNameHighlighterService
     extends AbstractImpexHighlighterService
     implements ImpexHeaderNameHighlighterService {
 
-    protected final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<Editor, PsiElement>();
+    protected final Map<Editor, PsiElement> highlightedBlocks = new ConcurrentHashMap<>();
 
     @Override
-    @Contract(pure = false)
+    @Contract
     public void highlight(@NotNull final Editor editor) {
-        Validate.notNull(editor);
-
-        final Project project = editor.getProject();
-
-        if (null == project) {
-            return;
-        }
-
-        if (project.isDisposed()) {
-            return;
-        }
-
-        final Language languageInEditor = PsiUtilBase.getLanguageInEditor(editor, project);
-
-        if (languageInEditor instanceof ImpexLanguage) {
-            this.highlightHeaderOfValueUnderCaret(editor);
-        }
+        highlightHeaderOfValueUnderCaret(editor);
     }
 
-    @Contract(pure = false)
+    @Contract
     protected void highlightHeaderOfValueUnderCaret(@NotNull final Editor editor) {
-        Validate.notNull(editor);
-
         final PsiElement header = ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor);
 
         if (null == header) {
@@ -83,48 +60,37 @@ public class DefaultImpexHeaderNameHighlighterService
         }
     }
 
-    @Contract(pure = false)
+    @Contract
     protected void highlightArea(
         @NotNull final Editor editor,
         @NotNull final PsiElement impexFullHeaderParameter
     ) {
-        Validate.notNull(editor);
         Validate.notNull(impexFullHeaderParameter);
 
         if (isAlreadyHighlighted(editor, impexFullHeaderParameter)) {
             return;
         }
 
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                final PsiElement currentHighlightedElement = highlightedBlocks.remove(editor);
-                if (null != currentHighlightedElement) {
-                    modifyHighlightedArea(editor, currentHighlightedElement, true);
-                }
-
-                highlightedBlocks.put(editor, impexFullHeaderParameter);
-                modifyHighlightedArea(editor, impexFullHeaderParameter, false);
+        ApplicationManager.getApplication().invokeLater(() -> {
+            final PsiElement currentHighlightedElement = highlightedBlocks.remove(editor);
+            if (null != currentHighlightedElement) {
+                modifyHighlightedArea(editor, currentHighlightedElement, true);
             }
+
+            highlightedBlocks.put(editor, impexFullHeaderParameter);
+            modifyHighlightedArea(editor, impexFullHeaderParameter, false);
         });
     }
 
-    @Contract(pure = false)
+    @Contract
     protected void clearHighlightedArea(@NotNull final Editor editor) {
-        Validate.notNull(editor);
-
         if (!highlightedBlocks.isEmpty()) {
             final PsiElement impexFullHeaderParameter = highlightedBlocks.remove(editor);
 
             if (null != impexFullHeaderParameter) {
-                ApplicationManager.getApplication().invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        modifyHighlightedArea(editor, impexFullHeaderParameter, true);
-                    }
-                });
+                ApplicationManager.getApplication().invokeLater(() ->
+                    modifyHighlightedArea(editor, impexFullHeaderParameter, true)
+                );
             }
         }
     }
@@ -139,7 +105,7 @@ public class DefaultImpexHeaderNameHighlighterService
         return this.highlightedBlocks.get(editor) == impexFullHeaderParameter;
     }
 
-    @Contract(pure = false)
+    @Contract
     protected void modifyHighlightedArea(
         @NotNull final Editor editor,
         @NotNull final PsiElement impexFullHeaderParameter,
@@ -175,7 +141,7 @@ public class DefaultImpexHeaderNameHighlighterService
     }
 
     @Override
-    @Contract(pure = false)
+    @Contract
     public void releaseEditorData(@NotNull final Editor editor) {
         Validate.notNull(editor);
 

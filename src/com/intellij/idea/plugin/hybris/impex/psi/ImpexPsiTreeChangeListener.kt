@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.assistance.event
+package com.intellij.idea.plugin.hybris.impex.psi
 
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService
 import com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService
 import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.util.PsiEditorUtil
+import com.intellij.psi.util.PsiUtilBase
 
 class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
 
@@ -31,9 +33,13 @@ class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
     private fun highlightHeader(psiTreeChangeEvent: PsiTreeChangeEvent) {
         val file = psiTreeChangeEvent.file ?: return
         val editor = PsiEditorUtil.findEditor(file) ?: return
+        val project = editor.project ?: return
+        if (project.isDisposed) return
 
-        impexHeaderNameHighlighterService.highlight(editor)
-        impexColumnHighlighterService.highlight(editor)
+        if (PsiUtilBase.getLanguageInEditor(editor, project) is ImpexLanguage) {
+            impexHeaderNameHighlighterService.highlight(editor)
+            impexColumnHighlighterService.highlight(editor)
+        }
     }
 
     override fun beforeChildAddition(psiTreeChangeEvent: PsiTreeChangeEvent) {

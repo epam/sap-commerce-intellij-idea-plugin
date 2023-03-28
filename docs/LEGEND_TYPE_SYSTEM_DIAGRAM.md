@@ -8,16 +8,16 @@ configuration file.
 They can be accessed via Intellij IDEA Settings menu (`[y] SAP Commerce`>`Project Settings`>`Type System Diagram`) or
 Diagram Toolbar settings action button.
 
-| Setting                        | Initially                                                                                         | Description                                                                                                       |
-|--------------------------------|:--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| `Nodes collapsed by default`   | **checked**                                                                                       | Influence Nodes `collapse` state during initial display of the Diagram.                                           |
-| `Show OOTB Map Nodes`          | **unchecked**                                                                                     | Affects visibility of the **OOTB** _Map_ types as a separate Node.                                                |
-| `Show Custom Atomic Nodes`     | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Atomic_ types as a separate Node.                            |
-| `Show Custom Collection Nodes` | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Collection_ types as a separate Node.                        |
-| `Show Custom Enum Nodes`       | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Enum_ types as a separate Node.                              |
-| `Show Custom Map Nodes`        | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Map_ types as a separate Node.                               |
-| `Show Custom Relation Nodes`   | **unchecked**                                                                                     | Affects visibility of the **Custom** non-transitive _Relation_ types without deployment table as a separate Node. |
-| `Excluded Type Names`          | - GenericItem<br>- Item<br>- LocalizableItem<br>- ExtensibleItem<br>- CronJob<br>- CatalogVersion | Represents set of case-sensitive Type Names will be excluded from the Diagram.                                    |
+| Setting                                     | Initially                                                                                                                       | Description                                                                                                       |
+|---------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| Nodes&nbsp;collapsed&nbsp;by&nbsp;default   | **checked**                                                                                                                     | Influence Nodes `collapse` state during initial display of the Diagram.                                           |
+| Show&nbsp;OOTB&nbsp;Map&nbsp;Nodes          | **unchecked**                                                                                                                   | Affects visibility of the **OOTB** _Map_ types as a separate Node.                                                |
+| Show&nbsp;Custom&nbsp;Atomic&nbsp;Nodes     | **unchecked**                                                                                                                   | Affects visibility of the **Custom** non-transitive _Atomic_ types as a separate Node.                            |
+| Show&nbsp;Custom&nbsp;Collection&nbsp;Nodes | **unchecked**                                                                                                                   | Affects visibility of the **Custom** non-transitive _Collection_ types as a separate Node.                        |
+| Show&nbsp;Custom&nbsp;Enum&nbsp;Nodes       | **unchecked**                                                                                                                   | Affects visibility of the **Custom** non-transitive _Enum_ types as a separate Node.                              |
+| Show&nbsp;Custom&nbsp;Map&nbsp;Nodes        | **unchecked**                                                                                                                   | Affects visibility of the **Custom** non-transitive _Map_ types as a separate Node.                               |
+| Show&nbsp;Custom&nbsp;Relation&nbsp;Nodes   | **unchecked**                                                                                                                   | Affects visibility of the **Custom** non-transitive _Relation_ types without deployment table as a separate Node. |
+| Excluded&nbsp;Type&nbsp;Names               | -&nbsp;GenericItem<br>-&nbsp;Item<br>-&nbsp;LocalizableItem<br>-&nbsp;ExtensibleItem<br>-&nbsp;CronJob<br>-&nbsp;CatalogVersion | Represents set of case-sensitive Type Names will be excluded from the Diagram.                                    |
 
 ## Diagram Toolbar
 
@@ -61,12 +61,12 @@ Type System Diagram supports multiple Node Actions, available under Node context
 
 Take a note that each action triggers Diagram Layout & Data refresh.
 
-| Action Name         | Shortcut    | Description                                                                                            |
-|---------------------|-------------|--------------------------------------------------------------------------------------------------------|
-| `Delete`            | D           | Hides corresponding Node.                                                                              |
-| `Exclude Type Name` | Ctrl+Meta+E | Adds Type Name associated with corresponding Node to the project specific list of Excluded Type Names. |
-| `Collapse Nodes`    | C           | Hides all Node fields, such as Attributes, Properties, Indexes, etc.                                   |
-| `Expand Nodes`      | E           | Shows all Node fields, which are allowed to be shown according to Category Visibility settings.        |
+| Action Name                 | Shortcut    | Description                                                                                            |
+|-----------------------------|-------------|--------------------------------------------------------------------------------------------------------|
+| Delete                      | D           | Hides corresponding Node.                                                                              |
+| Exclude&nbsp;Type&nbsp;Name | Ctrl+Meta+E | Adds Type Name associated with corresponding Node to the project specific list of Excluded Type Names. |
+| Collapse&nbsp;Nodes         | C           | Hides all Node fields, such as Attributes, Properties, Indexes, etc.                                   |
+| Expand&nbsp;Nodes           | E           | Shows all Node fields, which are allowed to be shown according to Category Visibility settings.        |
 
 ### Diagram Node Header
 
