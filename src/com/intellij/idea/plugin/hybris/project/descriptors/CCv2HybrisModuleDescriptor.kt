@@ -23,7 +23,7 @@ class CCv2HybrisModuleDescriptor(
         moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,
         name: String
-) : AbstractHybrisModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     private var preselected = true
 
