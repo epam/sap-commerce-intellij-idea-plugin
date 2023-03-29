@@ -127,6 +127,11 @@
                         <li><i>Feature:</i> Added Context Parameters node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283" target="_blank" rel="nofollow">#283</a>)</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
+                    <ul>
+                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/299" target="_blank" rel="nofollow">#299</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added node type specific icons for Business Process code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296" target="_blank" rel="nofollow">#296</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Item and Enum classes from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284" target="_blank" rel="nofollow">#284</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Enum Values fields from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285" target="_blank" rel="nofollow">#285</a>)</li>
@@ -153,7 +158,6 @@
                     <ul>
                         <li>Deployment tag must not be declared for one-to-many relation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289" target="_blank" rel="nofollow">#289</a>)</li>
                         <li>Deployment table name must not exceed max length <code>deployment.tablename.maxlength</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/293" target="_blank" rel="nofollow">#293</a>)</li>
-                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/299" target="_blank" rel="nofollow">#299</a>)</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> Console is not releasing Document on Project dispose (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260" target="_blank" rel="nofollow">#260</a>)</li>
