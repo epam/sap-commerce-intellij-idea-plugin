@@ -129,7 +129,7 @@
                 </li>
                 <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
                     <ul>
-                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/299" target="_blank" rel="nofollow">#299</a>)</li>
+                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added node type specific icons for Business Process code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296" target="_blank" rel="nofollow">#296</a>)</li>
