@@ -43,10 +43,9 @@ class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val cardinality = relation.cardinality.value ?: Cardinality.MANY
         val collectionType = relation.collectionType.value ?: Type.COLLECTION
         val xmlElement = relation.collectionType.xmlElement
-        if (xmlElement != null && cardinality == Cardinality.MANY && collectionType == Type.LIST) {
+        if (xmlElement != null && relation.cardinality == Cardinality.MANY && collectionType == Type.LIST) {
             holder.createProblem(
                 relation.collectionType,
                 severity,

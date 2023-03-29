@@ -21,10 +21,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
-import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
-import com.intellij.idea.plugin.hybris.system.type.model.Relation
-import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
-import com.intellij.idea.plugin.hybris.system.type.model.Type
+import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
@@ -68,11 +65,11 @@ internal class TSMetaRelationImpl(
         override val type = dom.type.stringValue ?: ""
         override val qualifier = dom.qualifier.stringValue
         override val name = qualifier
-        override val isNavigable = dom.navigable.value ?: true
+        override val isNavigable = dom.navigable
         override val isOrdered = java.lang.Boolean.TRUE == dom.ordered.value
         override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
         override val collectionType = dom.collectionType.value ?: Type.COLLECTION
-        override val cardinality = dom.cardinality.value ?: Cardinality.MANY
+        override val cardinality = dom.cardinality
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
         // type will be flattened after merge, we need to know exact type to expand it

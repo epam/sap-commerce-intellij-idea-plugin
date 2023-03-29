@@ -48,10 +48,10 @@ val Relations.elements: List<RelationElement>
 
 val RelationElement.cardinality: Cardinality
     get() {
-        return cardinality.value ?: Cardinality.MANY
+        return cardinalityNoFallback.value ?: Cardinality.MANY
     }
 
 val RelationElement.navigable: Boolean
     get() {
-        return navigable.value ?: true
+        return navigableNoFallback.value ?: true
     }

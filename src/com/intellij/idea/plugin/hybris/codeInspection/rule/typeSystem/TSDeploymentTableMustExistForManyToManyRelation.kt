@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
+import com.intellij.idea.plugin.hybris.system.type.model.cardinality
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -42,8 +43,8 @@ class TSDeploymentTableMustExistForManyToManyRelation : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val sourceCardinality = dom.sourceElement.cardinality.value ?: Cardinality.MANY
-        val targetCardinality = dom.targetElement.cardinality.value ?: Cardinality.MANY
+        val sourceCardinality = dom.sourceElement.cardinality
+        val targetCardinality = dom.targetElement.cardinality
 
         if (sourceCardinality == Cardinality.MANY && targetCardinality == Cardinality.MANY && dom.deployment.typeCode.stringValue == null) {
             holder.createProblem(dom.deployment.typeCode, severity, displayName)

@@ -120,7 +120,7 @@ class TSStructureTreeElement(
     private fun resolveLocationString(dom: RelationElement) = listOfNotNull(
         dom.type.stringValue,
         dom.collectionType.stringValue ?: "collection",
-        dom.cardinality.stringValue,
+        dom.cardinality,
         dom.ordered.stringValue?.let { "ordered($it)" }
     ).joinToString()
 

@@ -66,7 +66,7 @@ public class DefaultRelationValidation implements ItemsXmlValidator<Relation> {
         @NotNull final Relation relation,
         @NotNull final Map<String, PsiClass> filteredClasses
     ) {
-        final Boolean sourceNavigable = getBoolean(relation.getSourceElement().getNavigable());
+        final Boolean sourceNavigable = getBoolean(relation.getSourceElement().getNavigableNoFallback());
 
         if (Boolean.TRUE.equals(sourceNavigable)) {
             final Boolean isGenerate = getBoolean(relation.getSourceElement().getModel().getGenerate());
@@ -81,7 +81,7 @@ public class DefaultRelationValidation implements ItemsXmlValidator<Relation> {
             }
         }
 
-        final Boolean targetNavigable = getBoolean(relation.getTargetElement().getNavigable());
+        final Boolean targetNavigable = getBoolean(relation.getTargetElement().getNavigableNoFallback());
 
         if (Boolean.TRUE.equals(targetNavigable)) {
             final Boolean isGenerate = getBoolean(relation.getTargetElement().getModel().getGenerate());

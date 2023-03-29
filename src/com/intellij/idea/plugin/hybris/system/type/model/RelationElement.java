@@ -102,7 +102,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(CARDINALITY)
-    GenericAttributeValue<Cardinality> getCardinality();
+    GenericAttributeValue<Cardinality> getCardinalityNoFallback();
 
 
     /**
@@ -116,7 +116,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(NAVIGABLE)
-    GenericAttributeValue<Boolean> getNavigable();
+    GenericAttributeValue<Boolean> getNavigableNoFallback();
 
 
     /**
