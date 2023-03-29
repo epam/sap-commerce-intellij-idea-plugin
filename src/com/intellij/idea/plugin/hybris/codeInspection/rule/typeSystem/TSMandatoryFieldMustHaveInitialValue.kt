@@ -45,8 +45,8 @@ class TSMandatoryFieldMustHaveInitialValue : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val optional = dom.modifiers.optional.value ?: true
-        val initial = dom.modifiers.initial.value ?: false
+        val optional = dom.modifiers.optional.value
+        val initial = dom.modifiers.initial.value
         val defaultValue = dom.defaultValue.stringValue
 
         if (!optional && (!initial && defaultValue == null)) {

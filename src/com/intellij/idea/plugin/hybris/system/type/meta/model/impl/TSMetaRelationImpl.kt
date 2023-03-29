@@ -21,7 +21,8 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Relation
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
@@ -38,8 +39,8 @@ internal class TSMetaRelationImpl(
 
     override val domAnchor: DomAnchor<Relation> = DomService.getInstance().createAnchor(dom)
     override val isLocalized = java.lang.Boolean.TRUE == dom.localized.value
-    override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-    override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
+    override val isAutoCreate = dom.autoCreate.value
+    override val isGenerate = dom.generate.value
     override val description = dom.description.stringValue
 
     init {
@@ -65,11 +66,11 @@ internal class TSMetaRelationImpl(
         override val type = dom.type.stringValue ?: ""
         override val qualifier = dom.qualifier.stringValue
         override val name = qualifier
-        override val isNavigable = dom.navigable
-        override val isOrdered = java.lang.Boolean.TRUE == dom.ordered.value
+        override val isNavigable = dom.navigable.value
+        override val isOrdered = dom.ordered.value
         override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
-        override val collectionType = dom.collectionType.value ?: Type.COLLECTION
-        override val cardinality = dom.cardinality
+        override val collectionType = dom.collectionType.value
+        override val cardinality = dom.cardinality.value
         override val description = dom.description.stringValue
         override val metaType = dom.metaType.stringValue
         // type will be flattened after merge, we need to know exact type to expand it

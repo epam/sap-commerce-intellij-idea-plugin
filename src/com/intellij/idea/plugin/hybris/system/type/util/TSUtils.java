@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.utils;
+package com.intellij.idea.plugin.hybris.system.type.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
@@ -48,28 +48,28 @@ public final class TSUtils {
     }
 
     public static boolean isAttributeGenerationDisabled(@NotNull final Attribute attribute) {
-        Boolean isGenerate = TSUtils.getBoolean(attribute.getGenerate());
+        Boolean isGenerate = attribute.getGenerate().getValue();
         if (Boolean.FALSE.equals(isGenerate)) {
             return true;
         }
 
-        isGenerate = TSUtils.getBoolean(attribute.getModel().getGenerate());
+        isGenerate = attribute.getModel().getGenerate().getValue();
 
         return Boolean.FALSE.equals(isGenerate);
     }
 
     public static boolean isClassGenerationDisabled(@NotNull final ItemType itemType) {
-        Boolean isGenerate = TSUtils.getBoolean(itemType.getGenerate());
+        Boolean isGenerate = itemType.getGenerate().getValue();
         if (Boolean.FALSE.equals(isGenerate)) {
             return true;
         }
 
-        isGenerate = TSUtils.getBoolean(itemType.getModel().getGenerate());
+        isGenerate = itemType.getModel().getGenerate().getValue();
         return Boolean.FALSE.equals(isGenerate);
     }
 
     public static boolean isEnumGenerationDisabled(@NotNull final EnumType enumType) {
-        final Boolean isGenerate = TSUtils.getBoolean(enumType.getGenerate());
+        final Boolean isGenerate = enumType.getGenerate().getValue();
 
         return Boolean.FALSE.equals(isGenerate);
     }
@@ -85,21 +85,6 @@ public final class TSUtils {
             } else {
                 final String value = xmlAttributeValue.getValue();
                 return StringUtils.isBlank(value) ? null : value;
-            }
-        }
-    }
-
-    @Nullable
-    public static Boolean getBoolean(@Nullable GenericAttributeValue genericAttributeValue) {
-        if (null == genericAttributeValue) {
-            return null;
-        } else {
-            final XmlAttributeValue xmlAttributeValue = genericAttributeValue.getXmlAttributeValue();
-            if (null == xmlAttributeValue) {
-                return null;
-            } else {
-                final String value = xmlAttributeValue.getValue();
-                return StringUtils.isBlank(value) ? null : Boolean.valueOf(value);
             }
         }
     }

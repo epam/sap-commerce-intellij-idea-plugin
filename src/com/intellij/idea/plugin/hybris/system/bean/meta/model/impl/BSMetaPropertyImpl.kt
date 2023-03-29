@@ -38,8 +38,8 @@ internal class BSMetaPropertyImpl(
     override val domAnchor: DomAnchor<Property> = DomService.getInstance().createAnchor(dom)
     override val type = dom.type.stringValue
     override val description = dom.description.stringValue
-    override val isEquals = java.lang.Boolean.TRUE == dom.equals.value
-    override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
+    override val isEquals = dom.equals.value
+    override val isDeprecated = dom.deprecated.value
 
     override fun toString() = "Property(module=$module, name=$name, isCustom=$isCustom)"
 }

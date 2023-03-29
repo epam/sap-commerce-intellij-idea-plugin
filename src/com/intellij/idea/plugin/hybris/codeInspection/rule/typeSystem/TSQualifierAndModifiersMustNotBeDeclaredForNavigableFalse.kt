@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
-import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
+import com.intellij.idea.plugin.hybris.system.type.model.Items
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -35,8 +37,8 @@ class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInsp
         severity: HighlightSeverity
     ) {
         dom.relations.relations
-            .filter { it.sourceElement.cardinality === Cardinality.MANY && it.targetElement.cardinality === Cardinality.MANY }
-            .filter { !it.sourceElement.navigable || !it.targetElement.navigable }
+            .filter { it.sourceElement.cardinality.value === Cardinality.MANY && it.targetElement.cardinality.value === Cardinality.MANY }
+            .filter { !it.sourceElement.navigable.value || !it.targetElement.navigable.value }
             .forEach {
                 checkNonNavigable(it.sourceElement, holder, severity)
                 checkNonNavigable(it.targetElement, holder, severity)
@@ -48,7 +50,7 @@ class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInsp
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
     ) {
-        if (relationElement.navigable) {
+        if (relationElement.navigable.value) {
             return
         }
 

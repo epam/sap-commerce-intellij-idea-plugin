@@ -21,13 +21,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.file.ItemTypeConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeConverter;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -102,7 +99,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(CARDINALITY)
-    GenericAttributeValue<Cardinality> getCardinalityNoFallback();
+    RelationCardinalityValue getCardinality();
 
 
     /**
@@ -116,21 +113,23 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(NAVIGABLE)
-    GenericAttributeValue<Boolean> getNavigableNoFallback();
+    TrueAttributeValue getNavigable();
 
 
     /**
      * Returns the value of the collectiontype child.
      * <pre>
      * <h3>Attribute null:collectiontype documentation</h3>
-     * Configures the type of this collection if element has cardinality 'many'. Related attribute getter / setter will use corresponding java collection interfaces. Default is 'Collection'.
+     * Configures the type of this collection if element has cardinality 'many'.
+     * Related attribute getter / setter will use corresponding java collection interfaces.
+     * Default is 'Collection'.
      * </pre>
      *
      * @return the value of the collectiontype child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(COLLECTION_TYPE)
-    GenericAttributeValue<Type> getCollectionType();
+    CollectionTypeValue getCollectionType();
 
 
     /**
@@ -144,7 +143,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(ORDERED)
-    GenericAttributeValue<Boolean> getOrdered();
+    FalseAttributeValue getOrdered();
 
 
     /**

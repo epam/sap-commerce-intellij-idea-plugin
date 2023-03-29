@@ -47,7 +47,7 @@ class TSBooleanFieldCannotBeOptional : AbstractTSInspection() {
         severity: HighlightSeverity,
         project: Project
     ) {
-        val optional = dom.modifiers.optional.value ?: true
+        val optional = dom.modifiers.optional.value
         val defaultValue = dom.defaultValue.stringValue
         val type = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaAtomic(dom.type.stringValue)
             ?: return

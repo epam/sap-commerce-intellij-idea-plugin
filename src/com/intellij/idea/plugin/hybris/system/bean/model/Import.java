@@ -3,6 +3,7 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -29,7 +30,7 @@ public interface Import extends DomElement {
      * @return the value of the static child.
      */
     @NotNull
-    GenericAttributeValue<Boolean> getStatic();
+    FalseAttributeValue getStatic();
 
 
 }

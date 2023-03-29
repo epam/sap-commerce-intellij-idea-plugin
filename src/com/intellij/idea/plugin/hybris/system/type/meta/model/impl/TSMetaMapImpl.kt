@@ -36,9 +36,9 @@ internal class TSMetaMapImpl(
     override val domAnchor: DomAnchor<MapType> = DomService.getInstance().createAnchor(dom)
     override val argumentType = dom.argumentType.stringValue
     override val returnType = dom.returnType.stringValue
-    override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-    override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-    override val isRedeclare = java.lang.Boolean.TRUE == dom.redeclare.value
+    override val isAutoCreate = dom.autoCreate.value
+    override val isGenerate = dom.generate.value
+    override val isRedeclare = dom.redeclare.value
 
     override fun toString() = "Map(module=$module, name=$name, isCustom=$isCustom)"
 }

@@ -30,7 +30,7 @@ public enum Cardinality implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    Cardinality(String value) {
+    Cardinality(final String value) {
         this.value = value;
     }
 
@@ -39,4 +39,8 @@ public enum Cardinality implements com.intellij.util.xml.NamedEnum {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }

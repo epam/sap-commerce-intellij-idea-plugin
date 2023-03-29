@@ -45,7 +45,7 @@ class TSUseOfUnoptimizedAttributesIsNotRecommended : AbstractTSInspection() {
         severity: HighlightSeverity
     ) {
         val doNotOptimizeXmlElement = dom.doNotOptimize.xmlElement
-        val doNotOptimize = dom.doNotOptimize.value ?: false
+        val doNotOptimize = dom.doNotOptimize.value
 
         if (doNotOptimizeXmlElement != null && doNotOptimize) {
             holder.createProblem(

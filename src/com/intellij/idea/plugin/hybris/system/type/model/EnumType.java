@@ -21,6 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +64,7 @@ public interface EnumType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
@@ -76,7 +78,7 @@ public interface EnumType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("generate")
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**
@@ -97,14 +99,17 @@ public interface EnumType extends DomElement {
      * Returns the value of the dynamic child.
      * <pre>
      * <h3>Attribute null:dynamic documentation</h3>
-     * Whether it is possible to add new values by runtime. Also results in different types of enums: 'true' results in 'classic' hybris enums, 'false' results in Java enums. Default is false. Both kinds of enums are API compatible, and switching between enum types is possible by running a system update.
+     * Whether it is possible to add new values by runtime.
+     * Also results in different types of enums: 'true' results in 'classic' hybris enums, 'false' results in Java enums.
+     * Default is false.
+     * Both kinds of enums are API compatible, and switching between enum types is possible by running a system update.
      * </pre>
      *
      * @return the value of the dynamic child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute("dynamic")
-    GenericAttributeValue<Boolean> getDynamic();
+    FalseAttributeValue getDynamic();
 
 
     /**

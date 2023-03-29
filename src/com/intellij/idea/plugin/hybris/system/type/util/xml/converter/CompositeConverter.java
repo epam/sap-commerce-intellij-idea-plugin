@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.file;
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiDocCommentOwner;
@@ -28,29 +28,25 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class CompositeConverter<DOM extends DomElement> extends ResolvingConverter<DOM> {
 
-    private final TSConverterBase<? extends DOM>[] myDelegates;
-    private final Map<Class<? extends DOM>, TSConverterBase<? extends DOM>> converters;
+    private final AbstractTSConverterBase<? extends DOM>[] myDelegates;
+    private final Map<Class<? extends DOM>, AbstractTSConverterBase<? extends DOM>> converters;
 
-    public CompositeConverter(final TSConverterBase<? extends DOM>... converters) {
+    public CompositeConverter(final AbstractTSConverterBase<? extends DOM>... converters) {
         myDelegates = converters;
         this.converters = Arrays.stream(converters)
-                                .collect(Collectors.toMap(TSConverterBase::getResolvesToClass, it -> it));
+                                .collect(Collectors.toMap(AbstractTSConverterBase::getResolvesToClass, it -> it));
     }
 
     @NotNull
     @Override
     public Collection<? extends DOM> getVariants(final ConvertContext context) {
         final List<DOM> result = new LinkedList<>();
-        for (TSConverterBase<? extends DOM> next : myDelegates) {
+        for (AbstractTSConverterBase<? extends DOM> next : myDelegates) {
             result.addAll(next.getVariants(context));
         }
         return result;
@@ -59,7 +55,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
     @Nullable
     @Override
     public PsiElement getPsiElement(@Nullable final DOM dom) {
-        final TSConverterBase<DOM> converter = getConverter(dom);
+        final AbstractTSConverterBase<DOM> converter = getConverter(dom);
         if (converter == null) return null;
         return converter.tryGetPsiElement(dom);
     }
@@ -71,7 +67,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
 
     @Override
     public @Nullable LookupElement createLookupElement(final DOM dom) {
-        final TSConverterBase<DOM> converter = getConverter(dom);
+        final AbstractTSConverterBase<DOM> converter = getConverter(dom);
         if (converter == null) return null;
         return converter.createLookupElement(dom);
     }
@@ -81,7 +77,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
     public DOM fromString(
         @Nullable @NonNls final String s, final ConvertContext context
     ) {
-        for (TSConverterBase<? extends DOM> next : myDelegates) {
+        for (AbstractTSConverterBase<? extends DOM> next : myDelegates) {
             final DOM nextResult = next.fromString(s, context);
             if (nextResult != null) {
                 return nextResult;
@@ -93,17 +89,17 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
     @Nullable
     @Override
     public String toString(@Nullable final DOM dom, final ConvertContext context) {
-        final TSConverterBase<DOM> converter = getConverter(dom);
+        final AbstractTSConverterBase<DOM> converter = getConverter(dom);
         if (converter == null) return null;
         return converter.tryToString(dom, context);
     }
 
     @Nullable
     @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
-    private TSConverterBase<DOM> getConverter(@Nullable final DOM dom) {
+    private AbstractTSConverterBase<DOM> getConverter(@Nullable final DOM dom) {
         if (dom == null) return null;
 
-        return (TSConverterBase<DOM>) converters.get(dom.getDomElementType());
+        return (AbstractTSConverterBase<DOM>) converters.get(dom.getDomElementType());
     }
 
     public static class TypeOrEnumOrAtomic extends CompositeConverter<DomElement> {

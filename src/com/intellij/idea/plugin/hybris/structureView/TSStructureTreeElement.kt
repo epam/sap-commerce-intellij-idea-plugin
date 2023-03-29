@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.structureView
 
 import com.intellij.icons.AllIcons
-import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -36,9 +35,8 @@ class TSStructureTreeElement(
     private val myDescriptor: Function<DomElement, DomService.StructureViewMode>,
     private val myNavigationProvider: DomElementNavigationProvider
 ) : DomStructureTreeElement(stableCopy, myDescriptor, myNavigationProvider) {
-    override fun createChildElement(element: DomElement): StructureViewTreeElement {
-        return TSStructureTreeElement(element, myDescriptor, myNavigationProvider)
-    }
+
+    override fun createChildElement(element: DomElement) = TSStructureTreeElement(element, myDescriptor, myNavigationProvider)
 
     override fun getPresentableText() = when (val dom = element) {
         is AtomicTypes -> "Atomic types"
@@ -81,7 +79,7 @@ class TSStructureTreeElement(
         is ModelMethod -> resolveLocationString(dom)
         is Deployment -> resolveLocationString(dom)
         is Persistence -> dom.type.stringValue + (dom.attributeHandler.stringValue?.let { " ($it)" } ?: "")
-        is EnumType -> dom.dynamic.value?.let { "dynamic" }
+        is EnumType -> if (dom.dynamic.value) "dynamic" else null
         is Relation -> dom.localized.value?.let { "localized" }
         is AtomicType -> dom.extends.stringValue
         is CustomProperty -> dom.value.stringValue
@@ -94,8 +92,7 @@ class TSStructureTreeElement(
 
     private fun resolveLocationString(dom: MapType) = (dom.argumentType.stringValue ?: "?") + " : " + (dom.returnType.stringValue ?: "?")
 
-    private fun resolveLocationString(dom: CollectionType) =
-        (dom.type.stringValue ?: "collection") + (dom.elementType.stringValue?.let { " of $it" } ?: "")
+    private fun resolveLocationString(dom: CollectionType) = dom.type.value.toString() + (dom.elementType.stringValue?.let { " of $it" } ?: "")
 
     private fun resolveLocationString(dom: Description): String? {
         val xmlElement = dom.xmlElement
@@ -112,40 +109,41 @@ class TSStructureTreeElement(
 
     private fun resolveLocationString(dom: ModelMethod) = listOfNotNull(
         dom.name.stringValue,
-        dom.default.value?.let { "default($it)" },
-        dom.deprecated.value?.let { "deprecated($it)" },
+        if (dom.default.value) "default" else null,
+        if (dom.deprecated.value) "deprecated" else null,
         dom.deprecatedSince.stringValue?.let { "since $it" }
     ).joinToString()
 
     private fun resolveLocationString(dom: RelationElement) = listOfNotNull(
         dom.type.stringValue,
-        dom.collectionType.stringValue ?: "collection",
-        dom.cardinality,
-        dom.ordered.stringValue?.let { "ordered($it)" }
+        dom.collectionType.value,
+        dom.cardinality.value,
+        if (dom.ordered.value) "ordered" else null,
     ).joinToString()
 
     private fun resolveLocationString(dom: Index) = listOfNotNull(
         dom.creationMode.value?.let { "mode(${it.name})" },
-        dom.remove.value?.let { "${Index.REMOVE}($it)" },
-        dom.replace.value?.let { "${Index.REPLACE}($it)" },
-        dom.unique.value?.let { "${Index.UNIQUE}($it)" }
+        if (dom.remove.value) Index.REMOVE else null,
+        if (dom.replace.value) Index.REPLACE else null,
+        if (dom.unique.value) Index.UNIQUE else null,
     ).joinToString()
 
     private fun resolveLocationString(dom: Modifiers) = listOfNotNull(
-        dom.doNotOptimize.value?.let { "${Modifiers.DONT_OPTIMIZE}($it)" },
-        dom.encrypted.value?.let { "${Modifiers.ENCRYPTED}($it)" },
-        dom.initial.value?.let { "${Modifiers.INITIAL}($it)" },
-        dom.optional.value?.let { "${Modifiers.OPTIONAL}($it)" },
-        dom.partOf.value?.let { "${Modifiers.PART_OF}($it)" },
-        dom.private.value?.let { "${Modifiers.PRIVATE}($it)" },
-        dom.read.value?.let { "${Modifiers.READ}($it)" },
-        dom.removable.value?.let { "${Modifiers.REMOVABLE}($it)" },
-        dom.search.value?.let { "${Modifiers.SEARCH}($it)" },
-        dom.unique.value?.let { "${Modifiers.UNIQUE}($it)" },
-        dom.write.value?.let { "${Modifiers.WRITE}($it)" }
+        if (dom.doNotOptimize.value) Modifiers.DONT_OPTIMIZE else null,
+        if (dom.encrypted.value) Modifiers.ENCRYPTED else null,
+        if (dom.initial.value) Modifiers.INITIAL else null,
+        if (dom.optional.value) Modifiers.OPTIONAL else null,
+        if (dom.partOf.value) Modifiers.PART_OF else null,
+        if (dom.private.value) Modifiers.PRIVATE else null,
+        if (dom.read.value) Modifiers.READ else null,
+        if (dom.removable.value) Modifiers.REMOVABLE else null,
+        if (dom.search.value) Modifiers.SEARCH else null,
+        if (dom.unique.value) Modifiers.UNIQUE else null,
+        if (dom.write.value) Modifiers.WRITE else null,
     ).joinToString()
 
-    private fun resolveLocationString(dom: ItemType) = resolveValue(dom.extends)?.let { ": $it" } ?: ": ${HybrisConstants.TS_TYPE_GENERIC_ITEM}"
+    private fun resolveLocationString(dom: ItemType) = resolveValue(dom.extends)?.let { ": $it" }
+        ?: ": ${HybrisConstants.TS_TYPE_GENERIC_ITEM}"
 
     private fun resolveLocationString(dom: Attribute): String? {
         var value = resolveValue(dom.type) ?: return null

@@ -21,8 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,14 +39,15 @@ public interface AttributeModel extends DomElement {
      * Returns the value of the generate child.
      * <pre>
      * <h3>Attribute null:generate documentation</h3>
-     * Whether getter and setter methods for the model representation of the attribute will be generated. Default is 'true'.
+     * Whether getter and setter methods for the model representation of the attribute will be generated.
+     * Default is 'true'.
      * </pre>
      *
      * @return the value of the generate child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute("generate")
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**

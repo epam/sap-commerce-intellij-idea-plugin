@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta.impl
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile

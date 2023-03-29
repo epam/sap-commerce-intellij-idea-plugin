@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.file
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.MapType
 import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
 
-class MapTypeConverter : TSConverterBase<MapType>(MapType::class.java) {
+class MapTypeConverter : AbstractTSConverterBase<MapType>(MapType::class.java) {
 
     override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaMapByName(name)
         ?.retrieveDom()

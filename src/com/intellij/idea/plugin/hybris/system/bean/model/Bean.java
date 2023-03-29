@@ -3,11 +3,8 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.model;
 
-import com.intellij.util.xml.Attribute;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -49,7 +46,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the deprecated child.
      */
     @NotNull
-    GenericAttributeValue<Boolean> getDeprecated();
+    FalseAttributeValue getDeprecated();
 
     @NotNull
     @Attribute("deprecatedSince")
@@ -62,7 +59,7 @@ public interface Bean extends DomElement, AbstractPojo {
      * @return the value of the abstract child.
      */
     @NotNull
-    GenericAttributeValue<Boolean> getAbstract();
+    FalseAttributeValue getAbstract();
 
 
     /**
@@ -72,7 +69,7 @@ public interface Bean extends DomElement, AbstractPojo {
      */
     @NotNull
     @Attribute("superEquals")
-    GenericAttributeValue<Boolean> getSuperEquals();
+    FalseAttributeValue getSuperEquals();
 
     @NotNull
     @SubTag("hints")

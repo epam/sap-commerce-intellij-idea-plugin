@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
 import com.intellij.idea.plugin.hybris.system.type.model.Relation;
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlValidator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,15 +29,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getBoolean;
-import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getString;
+import static com.intellij.idea.plugin.hybris.system.type.util.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>
@@ -66,10 +61,10 @@ public class DefaultRelationValidation implements ItemsXmlValidator<Relation> {
         @NotNull final Relation relation,
         @NotNull final Map<String, PsiClass> filteredClasses
     ) {
-        final Boolean sourceNavigable = getBoolean(relation.getSourceElement().getNavigableNoFallback());
+        final Boolean sourceNavigable = relation.getSourceElement().getNavigable().getValue();
 
         if (Boolean.TRUE.equals(sourceNavigable)) {
-            final Boolean isGenerate = getBoolean(relation.getSourceElement().getModel().getGenerate());
+            final Boolean isGenerate = relation.getSourceElement().getModel().getGenerate().getValue();
 
             if (Boolean.TRUE.equals(isGenerate)) {
                 final String fieldNameInTarget = getString(relation.getSourceElement().getQualifier());
@@ -81,10 +76,10 @@ public class DefaultRelationValidation implements ItemsXmlValidator<Relation> {
             }
         }
 
-        final Boolean targetNavigable = getBoolean(relation.getTargetElement().getNavigableNoFallback());
+        final Boolean targetNavigable = relation.getTargetElement().getNavigable().getValue();
 
         if (Boolean.TRUE.equals(targetNavigable)) {
-            final Boolean isGenerate = getBoolean(relation.getTargetElement().getModel().getGenerate());
+            final Boolean isGenerate = relation.getTargetElement().getModel().getGenerate().getValue();
 
             if (Boolean.TRUE.equals(isGenerate)) {
                 final String fieldNameInSource = getString(relation.getTargetElement().getQualifier());

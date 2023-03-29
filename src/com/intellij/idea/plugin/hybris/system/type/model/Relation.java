@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,7 +115,7 @@ public interface Relation extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(AUTO_CREATE)
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
@@ -128,7 +129,7 @@ public interface Relation extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(GENERATE)
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**

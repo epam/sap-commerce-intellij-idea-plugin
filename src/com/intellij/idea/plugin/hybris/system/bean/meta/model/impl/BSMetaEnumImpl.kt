@@ -41,7 +41,7 @@ internal class BSMetaEnumImpl(
     override val template = dom.template.stringValue
     override val deprecatedSince = dom.deprecatedSince.stringValue
     override val shortName = BSMetaHelper.getShortName(name)
-    override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
+    override val isDeprecated = dom.deprecated.value
 
     override fun toString() = "Enum(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 

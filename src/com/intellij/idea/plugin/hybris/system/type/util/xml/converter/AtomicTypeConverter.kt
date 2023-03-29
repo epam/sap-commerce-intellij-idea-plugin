@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.file
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.xml.ConvertContext
 
-class AtomicTypeConverter : TSConverterBase<AtomicType>(AtomicType::class.java) {
+class AtomicTypeConverter : AbstractTSConverterBase<AtomicType>(AtomicType::class.java) {
 
     override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaAtomicByName(name)
         ?.retrieveDom()

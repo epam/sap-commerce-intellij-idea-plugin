@@ -21,18 +21,12 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.converter.AttributeReferenceConverter;
-import com.intellij.idea.plugin.hybris.system.type.file.CompositeConverter;
-import com.intellij.idea.plugin.hybris.system.type.file.ItemMetaTypeConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Referencing;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.Stubbed;
-import com.intellij.util.xml.StubbedOccurrence;
-import com.intellij.util.xml.SubTag;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.AttributeReferenceConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.CompositeConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemMetaTypeConverter;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -59,14 +53,16 @@ public interface Attribute extends DomElement {
      * Returns the value of the redeclare child.
      * <pre>
      * <h3>Attribute null:redeclare documentation</h3>
-     * Lets you re-define the attribute definition from an inherited type. In essence, you can use a different type of attribute as well as different modifier combinations than on the supertype. Default is 'false'.
+     * Lets you re-define the attribute definition from an inherited type.
+     * In essence, you can use a different type of attribute as well as different modifier combinations than on the supertype.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the redeclare child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(REDECLARE)
-    GenericAttributeValue<Boolean> getRedeclare();
+    FalseAttributeValue getRedeclare();
 
 
     /**
@@ -120,35 +116,39 @@ public interface Attribute extends DomElement {
      * Returns the value of the autocreate child.
      * <pre>
      * <h3>Attribute null:autocreate documentation</h3>
-     * If 'true', the attribute descriptor will be created during initialization. Default is 'true'.
+     * If 'true', the attribute descriptor will be created during initialization.
+     * Default is 'true'.
      * </pre>
      *
      * @return the value of the autocreate child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(AUTO_CREATE)
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
      * Returns the value of the generate child.
      * <pre>
      * <h3>Attribute null:generate documentation</h3>
-     * If 'true', getter and setter methods for this	attribute will be generated during a hybris Suite build. Default is 'true'.
+     * If 'true', getter and setter methods for this	attribute will be generated during a hybris Suite build.
+     * Default is 'true'.
      * </pre>
      *
      * @return the value of the generate child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(GENERATE)
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**
      * Returns the value of the isSelectionOf child.
      * <pre>
      * <h3>Attribute null:isSelectionOf documentation</h3>
-     * References an attribute of the same type. Only values of the referenced attribute can be selected	as values for this attribute. Typical example: the default delivery address of a customer must be one of the addresses set for the customer. Default is 'false'.
+     * References an attribute of the same type. Only values of the referenced attribute can be selected	as values for this attribute.
+     * Typical example: the default delivery address of a customer must be one of the addresses set for the customer.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the isSelectionOf child.

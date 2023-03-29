@@ -32,7 +32,7 @@ public enum PersistenceType implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    PersistenceType(String value) {
+    PersistenceType(final String value) {
         this.value = value;
     }
 
@@ -41,4 +41,8 @@ public enum PersistenceType implements com.intellij.util.xml.NamedEnum {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }

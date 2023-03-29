@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -55,15 +56,15 @@ public interface ModelMethod extends DomElement {
      * Returns the value of the deprecated child.
      * <pre>
      * <h3>Attribute null:deprecated documentation</h3>
-     * Will the method be marked deprecated? Default is
-     * 					false.
+     * Will the method be marked deprecated?
+     * Default is false.
      * </pre>
      *
      * @return the value of the deprecated child.
      */
     @NotNull
     @Attribute("deprecated")
-    GenericAttributeValue<Boolean> getDeprecated();
+    FalseAttributeValue getDeprecated();
 
     @NotNull
     @Attribute("deprecatedSince")
@@ -74,14 +75,15 @@ public interface ModelMethod extends DomElement {
      * Returns the value of the default child.
      * <pre>
      * <h3>Attribute null:default documentation</h3>
-     * Will this method be the default method and replace the original one instead of adding it additional? Default is false.
+     * Will this method be the default method and replace the original one instead of adding it additional?
+     * Default is false.
      * </pre>
      *
      * @return the value of the default child.
      */
     @NotNull
     @Attribute("default")
-    GenericAttributeValue<Boolean> getDefault();
+    FalseAttributeValue getDefault();
 
 
 }

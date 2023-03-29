@@ -31,7 +31,7 @@ public enum Type implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    Type(String value) {
+    Type(final String value) {
         this.value = value;
     }
 
@@ -40,4 +40,8 @@ public enum Type implements com.intellij.util.xml.NamedEnum {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }

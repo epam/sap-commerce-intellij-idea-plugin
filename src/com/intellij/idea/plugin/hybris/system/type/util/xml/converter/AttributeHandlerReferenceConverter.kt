@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.converter
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive

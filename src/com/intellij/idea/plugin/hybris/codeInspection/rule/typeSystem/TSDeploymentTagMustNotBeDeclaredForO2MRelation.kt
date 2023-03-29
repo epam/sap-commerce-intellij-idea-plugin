@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
-import com.intellij.idea.plugin.hybris.system.type.model.cardinality
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -47,8 +46,8 @@ class TSDeploymentTagMustNotBeDeclaredForO2MRelation : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
     ) {
-        if (relation.sourceElement.cardinality === Cardinality.ONE ||
-            relation.targetElement.cardinality === Cardinality.ONE) {
+        if (relation.sourceElement.cardinality.value === Cardinality.ONE ||
+            relation.targetElement.cardinality.value === Cardinality.ONE) {
             holder.createProblem(
                 relation.deployment,
                 severity,

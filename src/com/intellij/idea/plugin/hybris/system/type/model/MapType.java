@@ -21,7 +21,9 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.file.CompositeConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.CompositeConverter;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
@@ -99,7 +101,7 @@ public interface MapType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
@@ -113,7 +115,7 @@ public interface MapType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("generate")
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**
@@ -127,7 +129,7 @@ public interface MapType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("redeclare")
-    GenericAttributeValue<Boolean> getRedeclare();
+    FalseAttributeValue getRedeclare();
 
 
 }

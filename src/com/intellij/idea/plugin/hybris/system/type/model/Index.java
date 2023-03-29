@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -59,14 +60,15 @@ public interface Index extends DomElement {
      * Returns the value of the remove child.
      * <pre>
      * <h3>Attribute null:remove documentation</h3>
-     * If 'true' this index will be ommitted while in initialization process even if there were precendent declarations.This attribute has effect only if replace = true.
+     * If 'true' this index will be ommitted while in initialization process even if there were precendent declarations.
+     * This attribute has effect only if replace = true.
      * </pre>
      *
      * @return the value of the remove child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(REMOVE)
-    GenericAttributeValue<Boolean> getRemove();
+    FalseAttributeValue getRemove();
 
 
     /**
@@ -80,21 +82,23 @@ public interface Index extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(REPLACE)
-    GenericAttributeValue<Boolean> getReplace();
+    FalseAttributeValue getReplace();
 
 
     /**
      * Returns the value of the unique child.
      * <pre>
      * <h3>Attribute null:unique documentation</h3>
-     * If 'true', the value of this attribute has to be unique within all instances of this index. Attributes with persistence type set to 'jalo' can not be unique. Default is 'false'.
+     * If 'true', the value of this attribute has to be unique within all instances of this index.
+     * Attributes with persistence type set to 'jalo' can not be unique.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the unique child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(UNIQUE)
-    GenericAttributeValue<Boolean> getUnique();
+    FalseAttributeValue getUnique();
 
 
     /**

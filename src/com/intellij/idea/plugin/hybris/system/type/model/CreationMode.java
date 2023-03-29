@@ -36,7 +36,7 @@ public enum CreationMode implements com.intellij.util.xml.NamedEnum {
 
     private final String value;
 
-    CreationMode(String value) {
+    CreationMode(final String value) {
         this.value = value;
     }
 

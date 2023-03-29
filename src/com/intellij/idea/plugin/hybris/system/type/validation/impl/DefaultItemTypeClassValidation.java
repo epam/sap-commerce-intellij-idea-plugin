@@ -21,14 +21,14 @@ package com.intellij.idea.plugin.hybris.system.type.validation.impl;
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute;
 import com.intellij.idea.plugin.hybris.system.type.model.Attributes;
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils;
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.MODEL_SUFFIX;
-import static com.intellij.idea.plugin.hybris.system.type.utils.TSUtils.getString;
+import static com.intellij.idea.plugin.hybris.system.type.util.TSUtils.getString;
 
 /**
  * @author Vlad Bozhenok <vladbozhenok@gmail.com>

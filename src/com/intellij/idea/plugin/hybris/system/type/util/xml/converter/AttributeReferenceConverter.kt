@@ -16,10 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.converter
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.ModelAttributeReference
-import com.intellij.psi.*
+import com.intellij.psi.PsiDocCommentOwner
+import com.intellij.psi.PsiElement
+import com.intellij.psi.ResolvingHint
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue

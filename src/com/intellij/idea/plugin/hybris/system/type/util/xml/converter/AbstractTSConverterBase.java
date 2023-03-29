@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.file;
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter;
 
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess;
 import com.intellij.openapi.util.text.StringUtil;
@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
 
-public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
+public abstract class AbstractTSConverterBase<DOM> extends ResolvingConverter<DOM> {
 
     private final Class<DOM> myResolvesToClass;
 
@@ -44,7 +44,7 @@ public abstract class TSConverterBase<DOM> extends ResolvingConverter<DOM> {
 
     protected abstract Collection<DOM> searchAll(@NotNull ConvertContext context, TSMetaModelAccess meta);
 
-    public TSConverterBase(@NotNull final Class<DOM> resolvesToClass) {
+    public AbstractTSConverterBase(@NotNull final Class<DOM> resolvesToClass) {
         myResolvesToClass = resolvesToClass;
     }
 

@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollec
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaSelfMerge
 import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
-import com.intellij.idea.plugin.hybris.system.type.model.Type
 import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
@@ -35,10 +34,10 @@ internal class TSMetaCollectionImpl(
 ) : TSMetaCollection {
 
     override val domAnchor: DomAnchor<CollectionType> = DomService.getInstance().createAnchor(dom)
-    override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-    override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
+    override val isAutoCreate = dom.autoCreate.value
+    override val isGenerate = dom.generate.value
     override val elementType = dom.elementType.stringValue!!
-    override val type = dom.type.value ?: Type.COLLECTION
+    override val type = dom.type.value
 
     override fun toString() = "Collection(module=$module, name=$name, isCustom=$isCustom)"
 }

@@ -33,7 +33,7 @@ internal class BSMetaImportImpl(
 
     override val domAnchor: DomAnchor<Import> = DomService.getInstance().createAnchor(dom)
     override val type = dom.type.stringValue
-    override val isStatic = java.lang.Boolean.TRUE == dom.static.value
+    override val isStatic = dom.static.value
 
     override fun toString() = "Import(module=$module, name=$name, isCustom=$isCustom)"
 }

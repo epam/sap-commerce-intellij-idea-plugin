@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -61,7 +62,7 @@ public interface IndexKey extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("lower")
-    GenericAttributeValue<Boolean> getLower();
+    FalseAttributeValue getLower();
 
 
 }

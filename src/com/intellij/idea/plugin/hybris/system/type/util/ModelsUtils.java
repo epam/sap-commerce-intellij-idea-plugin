@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.utils;
+package com.intellij.idea.plugin.hybris.system.type.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.openapi.vfs.VirtualFile;

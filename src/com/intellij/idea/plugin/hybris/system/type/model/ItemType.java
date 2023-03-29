@@ -21,15 +21,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.file.ItemTypeConverter;
-import com.intellij.util.xml.Convert;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.NameValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.Stubbed;
-import com.intellij.util.xml.StubbedOccurrence;
-import com.intellij.util.xml.SubTag;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeConverter;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -136,28 +131,31 @@ public interface ItemType extends DomElement {
      * Returns the value of the singleton child.
      * <pre>
      * <h3>Attribute null:singleton documentation</h3>
-     * If 'true', type gets marked as singleton which will be evaluated by some modules like hmc or impex, with that allowing only one instance per system. Default is 'false'.
+     * If 'true', type gets marked as singleton which will be evaluated by some modules like hmc or impex, with that allowing only one instance per system.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the singleton child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(SINGLETON)
-    GenericAttributeValue<Boolean> getSingleton();
+    FalseAttributeValue getSingleton();
 
 
     /**
      * Returns the value of the jaloonly child.
      * <pre>
      * <h3>Attribute null:jaloonly documentation</h3>
-     * DEPRECATED. Use 'implements JaloOnlyItem' in your bean. If 'true', the item will only exists in the jalo layer and isn't backed by an entity bean. Default is 'false'.
+     * DEPRECATED. Use 'implements JaloOnlyItem' in your bean.
+     * If 'true', the item will only exists in the jalo layer and isn't backed by an entity bean.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the jaloonly child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(JALO_ONLY)
-    GenericAttributeValue<Boolean> getJaloOnly();
+    FalseAttributeValue getJaloOnly();
 
 
     /**
@@ -171,7 +169,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(AUTO_CREATE)
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
@@ -185,7 +183,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(GENERATE)
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**
@@ -199,7 +197,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(ABSTRACT)
-    GenericAttributeValue<Boolean> getAbstract();
+    FalseAttributeValue getAbstract();
 
 
     /**

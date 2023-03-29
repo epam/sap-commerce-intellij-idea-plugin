@@ -22,7 +22,7 @@ import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider
 import com.intellij.idea.plugin.hybris.system.type.model.Attributes
 import com.intellij.idea.plugin.hybris.system.type.model.CustomProperties
 import com.intellij.idea.plugin.hybris.system.type.model.Indexes
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.Function
 import com.intellij.util.xml.DomElement

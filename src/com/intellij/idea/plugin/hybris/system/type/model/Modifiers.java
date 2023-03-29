@@ -21,8 +21,9 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -50,42 +51,48 @@ public interface Modifiers extends DomElement {
      * Returns the value of the read child.
      * <pre>
      * <h3>Attribute null:read documentation</h3>
-     * Defines if this attribute is readable (that is, if a getter method will be generated). Default is 'true'.	The visibility of the getter depends on the value of the private attribute.
+     * Defines if this attribute is readable (that is, if a getter method will be generated).
+     * Default is 'true'.
+     * The visibility of the getter depends on the value of the private attribute.
      * </pre>
      *
      * @return the value of the read child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(READ)
-    GenericAttributeValue<Boolean> getRead();
+    TrueAttributeValue getRead();
 
 
     /**
      * Returns the value of the write child.
      * <pre>
      * <h3>Attribute null:write documentation</h3>
-     * Defines if this attribute is writable (that is, if a setter method will be generated). Default is 'true'.	The visibility of the setter depends on the value of the private attribute.
+     * Defines if this attribute is writable (that is, if a setter method will be generated).
+     * Default is 'true'.
+     * The visibility of the setter depends on the value of the private attribute.
      * </pre>
      *
      * @return the value of the write child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(WRITE)
-    GenericAttributeValue<Boolean> getWrite();
+    TrueAttributeValue getWrite();
 
 
     /**
      * Returns the value of the search child.
      * <pre>
      * <h3>Attribute null:search documentation</h3>
-     * Defines if this attribute is searchable by a FlexibleSearch. Default is 'true'. Attributes with persistence type set to 'jalo' can not be searchable.
+     * Defines if this attribute is searchable by a FlexibleSearch.
+     * Default is 'true'.
+     * Attributes with persistence type set to 'jalo' can not be searchable.
      * </pre>
      *
      * @return the value of the search child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(SEARCH)
-    GenericAttributeValue<Boolean> getSearch();
+    TrueAttributeValue getSearch();
 
 
     /**
@@ -99,105 +106,117 @@ public interface Modifiers extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(OPTIONAL)
-    GenericAttributeValue<Boolean> getOptional();
+    TrueAttributeValue getOptional();
 
 
     /**
      * Returns the value of the private child.
      * <pre>
      * <h3>Attribute null:private documentation</h3>
-     * Defines the Java visibility of the generated getter and setter methods for this attribute. If 'true', the visibility modifier of generated methods is set to 'protected'; if 'false', the visibility modifier is 'public'. Default is 'false' for 'public' generated methods. Also, you will have no generated methods in the ServiceLayer if 'true'.
+     * Defines the Java visibility of the generated getter and setter methods for this attribute.
+     * If 'true', the visibility modifier of generated methods is set to 'protected'; if 'false', the visibility modifier is 'public'.
+     * Default is 'false' for 'public' generated methods.
+     * Also, you will have no generated methods in the ServiceLayer if 'true'.
      * </pre>
      *
      * @return the value of the private child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(PRIVATE)
-    GenericAttributeValue<Boolean> getPrivate();
+    FalseAttributeValue getPrivate();
 
 
     /**
      * Returns the value of the initial child.
      * <pre>
      * <h3>Attribute null:initial documentation</h3>
-     * If 'true', the attribute will only be writable during the item creation. Setting this to 'true' is only useful in combination with write='false'.	Default is 'false'.
+     * If 'true', the attribute will only be writable during the item creation.
+     * Setting this to 'true' is only useful in combination with write='false'.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the initial child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(INITIAL)
-    GenericAttributeValue<Boolean> getInitial();
+    FalseAttributeValue getInitial();
 
 
     /**
      * Returns the value of the removable child.
      * <pre>
      * <h3>Attribute null:removable documentation</h3>
-     * Defines if this attribute is removable. Default is 'true'.
+     * Defines if this attribute is removable.
+     * Default is 'true'.
      * </pre>
      *
      * @return the value of the removable child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(REMOVABLE)
-    GenericAttributeValue<Boolean> getRemovable();
+    TrueAttributeValue getRemovable();
 
 
     /**
      * Returns the value of the partof child.
      * <pre>
      * <h3>Attribute null:partof documentation</h3>
-     * Defines if the assigned attribute value only belongs to the current instance of this type. Default is 'false'.
+     * Defines if the assigned attribute value only belongs to the current instance of this type.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the partof child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(PART_OF)
-    GenericAttributeValue<Boolean> getPartOf();
+    FalseAttributeValue getPartOf();
 
 
     /**
      * Returns the value of the unique child.
      * <pre>
      * <h3>Attribute null:unique documentation</h3>
-     * If 'true', the value of this attribute has to be unique within all instances of this type. If there are multiple attributes marked as unique, then their combined values must be unique. Will not be evaluated at jalo layer, if you want to manage the attribute directly using jalo layer you have to ensure uniqueness manually. Default is 'false'.
+     * If 'true', the value of this attribute has to be unique within all instances of this type.
+     * If there are multiple attributes marked as unique, then their combined values must be unique.
+     * Will not be evaluated at jalo layer, if you want to manage the attribute directly using jalo layer you have to ensure uniqueness manually.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the unique child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(UNIQUE)
-    GenericAttributeValue<Boolean> getUnique();
+    FalseAttributeValue getUnique();
 
 
     /**
      * Returns the value of the dontOptimize child.
      * <pre>
      * <h3>Attribute null:dontOptimize documentation</h3>
-     * If 'true' the attribute value will be stored in the 'global' property table, otherwise a separate column (inside the table of the associated type)will be created for storing its values. Default is 'false'.
+     * If 'true' the attribute value will be stored in the 'global' property table, otherwise a separate column (inside the table of the associated type)will be created for storing its values.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the dontOptimize child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(DONT_OPTIMIZE)
-    GenericAttributeValue<Boolean> getDoNotOptimize();
+    FalseAttributeValue getDoNotOptimize();
 
 
     /**
      * Returns the value of the encrypted child.
      * <pre>
      * <h3>Attribute null:encrypted documentation</h3>
-     * If 'true', the attribute value will be stored in an encrypted way. Default is 'false'.
+     * If 'true', the attribute value will be stored in an encrypted way.
+     * Default is 'false'.
      * </pre>
      *
      * @return the value of the encrypted child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(ENCRYPTED)
-    GenericAttributeValue<Boolean> getEncrypted();
+    FalseAttributeValue getEncrypted();
 
 
 }

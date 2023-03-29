@@ -44,9 +44,9 @@ internal class BSMetaBeanImpl(
     override val type = dom.type.value ?: BeanType.BEAN
     override val shortName = BSMetaHelper.getShortName(name)
     override val deprecatedSince = dom.deprecatedSince.stringValue
-    override val isDeprecated = java.lang.Boolean.TRUE == dom.deprecated.value
-    override val isAbstract = java.lang.Boolean.TRUE == dom.abstract.value
-    override val isSuperEquals = java.lang.Boolean.TRUE == dom.superEquals.value
+    override val isDeprecated = dom.deprecated.value
+    override val isAbstract = dom.abstract.value
+    override val isSuperEquals = dom.superEquals.value
 
     override fun toString() = "Bean(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 

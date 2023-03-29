@@ -45,13 +45,3 @@ val Relations.elements: List<RelationElement>
     get() {
         return relations.flatMap { listOf(it.sourceElement, it.targetElement) }
     }
-
-val RelationElement.cardinality: Cardinality
-    get() {
-        return cardinalityNoFallback.value ?: Cardinality.MANY
-    }
-
-val RelationElement.navigable: Boolean
-    get() {
-        return navigableNoFallback.value ?: true
-    }

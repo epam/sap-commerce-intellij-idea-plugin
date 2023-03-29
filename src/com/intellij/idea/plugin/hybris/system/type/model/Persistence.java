@@ -21,12 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.converter.AttributeHandlerReferenceConverter;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Referencing;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.AttributeHandlerReferenceConverter;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -46,7 +42,8 @@ public interface Persistence extends DomElement {
      * Returns the value of the type child.
      * <pre>
      * <h3>Attribute null:type documentation</h3>
-     * Defines how the values of the attribute will be stored. Possible values: 'cmp' (deprecated), 'jalo' (not persistent, deprecated), 'property' (persistent), 'dynamic' (not persisted).
+     * Defines how the values of the attribute will be stored.
+     * Possible values: 'cmp' (deprecated), 'jalo' (not persistent, deprecated), 'property' (persistent), 'dynamic' (not persisted).
      * </pre>
      *
      * @return the value of the type child.

@@ -15,31 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.file
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.psi.PsiElement
 import com.intellij.util.xml.ConvertContext
 
-open class ItemTypeConverter : TSConverterBase<ItemType>(ItemType::class.java) {
+class EnumTypeConverter : AbstractTSConverterBase<EnumType>(EnumType::class.java) {
 
-    override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaItemByName(name)
+    override fun searchForName(name: String, context: ConvertContext, meta: TSMetaModelAccess) = meta.findMetaEnumByName(name)
         ?.retrieveDom()
 
-    override fun searchAll(context: ConvertContext, meta: TSMetaModelAccess) = meta.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+    override fun searchAll(context: ConvertContext, meta: TSMetaModelAccess) = meta.getAll<TSGlobalMetaEnum>(TSMetaType.META_ENUM)
         .mapNotNull { it.retrieveDom() }
 
-    override fun toString(dom: ItemType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
-    override fun getPsiElement(resolvedValue: ItemType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
+    override fun toString(dom: EnumType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
+    override fun getPsiElement(resolvedValue: EnumType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
 
-    override fun createLookupElement(dom: ItemType?) = dom?.code?.stringValue
+    override fun createLookupElement(dom: EnumType?) = dom?.code?.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TS_ITEM)
+                .withIcon(HybrisIcons.TS_ENUM)
         }
 }

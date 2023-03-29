@@ -38,9 +38,9 @@ internal class TSMetaEnumImpl(
 ) : TSMetaEnum {
 
     override val domAnchor: DomAnchor<EnumType> = DomService.getInstance().createAnchor(dom)
-    override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-    override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-    override val isDynamic = java.lang.Boolean.TRUE == dom.dynamic.value
+    override val isAutoCreate = dom.autoCreate.value
+    override val isGenerate = dom.generate.value
+    override val isDynamic = dom.dynamic.value
     override val description = dom.description.stringValue
     override val jaloClass = dom.jaloClass.stringValue
 

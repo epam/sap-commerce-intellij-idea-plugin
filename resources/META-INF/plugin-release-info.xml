@@ -104,6 +104,7 @@
                 <li><i>Other:</i> Added Project icon for Plugin repository (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302" target="_blank" rel="nofollow">#302</a>)</li>
                 <li><i>Other:</i> Replaced Caffeine cache with IDEA user data (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304" target="_blank" rel="nofollow">#304</a>)</li>
                 <li><i>Other:</i> Updated to Gradle plugin to 1.13.3</li>
+                <li><i>Other:</i> Improved default XML values handling</li>
             </ul>
             <h3>2023.1.2</h3>
             <ul>

@@ -44,7 +44,7 @@ class TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTSInspect
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        if (dom.jaloClass.value != null && dom.generate.value == false && dom.autoCreate.value == false) {
+        if (dom.jaloClass.value != null && !dom.generate.value && !dom.autoCreate.value) {
             holder.createProblem(
                 dom,
                 severity,

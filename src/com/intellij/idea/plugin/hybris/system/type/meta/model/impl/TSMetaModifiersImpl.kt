@@ -30,17 +30,17 @@ internal class TSMetaModifiersImpl(
 ) : TSMetaModifiers {
 
     override val domAnchor: DomAnchor<Modifiers> = DomService.getInstance().createAnchor(dom)
-    override val isRead = (dom.read.value ?: true) == java.lang.Boolean.TRUE
-    override val isWrite = (dom.write.value ?: true) == java.lang.Boolean.TRUE
-    override val isSearch = (dom.search.value ?: true) == java.lang.Boolean.TRUE
-    override val isOptional = (dom.optional.value ?: true) == java.lang.Boolean.TRUE
-    override val isPrivate = java.lang.Boolean.TRUE == dom.partOf.value
-    override val isInitial = java.lang.Boolean.TRUE == dom.partOf.value
-    override val isRemovable = (dom.removable.value ?: true) == java.lang.Boolean.TRUE
-    override val isPartOf = java.lang.Boolean.TRUE == dom.partOf.value
-    override val isUnique = java.lang.Boolean.TRUE == dom.unique.value
-    override val isDoNotOptimize = java.lang.Boolean.TRUE == dom.doNotOptimize.value
-    override val isEncrypted = java.lang.Boolean.TRUE == dom.encrypted.value
+    override val isRead = dom.read.value
+    override val isWrite = dom.write.value
+    override val isSearch = dom.search.value
+    override val isOptional = dom.optional.value
+    override val isPrivate = dom.partOf.value
+    override val isInitial = dom.partOf.value
+    override val isRemovable = dom.removable.value
+    override val isPartOf = dom.partOf.value
+    override val isUnique = dom.unique.value
+    override val isDoNotOptimize = dom.doNotOptimize.value
+    override val isEncrypted = dom.encrypted.value
 
     override fun toString() = "Modifiers(module=$module, isCustom=$isCustom)"
 }

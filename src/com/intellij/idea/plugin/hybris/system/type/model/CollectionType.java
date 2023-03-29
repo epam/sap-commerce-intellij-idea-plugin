@@ -21,7 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
-import com.intellij.idea.plugin.hybris.system.type.file.CompositeConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.CompositeConverter;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,35 +82,38 @@ public interface CollectionType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("autocreate")
-    GenericAttributeValue<Boolean> getAutoCreate();
+    TrueAttributeValue getAutoCreate();
 
 
     /**
      * Returns the value of the generate child.
      * <pre>
      * <h3>Attribute null:generate documentation</h3>
-     * Deprecated. Has no effect for collection types. Default is 'true'.
+     * Deprecated. Has no effect for collection types.
+     * Default is 'true'.
      * </pre>
      *
      * @return the value of the generate child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute("generate")
-    GenericAttributeValue<Boolean> getGenerate();
+    TrueAttributeValue getGenerate();
 
 
     /**
      * Returns the value of the type child.
      * <pre>
      * <h3>Attribute null:type documentation</h3>
-     * Configures the type of this collection: 'set', 'list', 'collection'. The getter / setter methods will use corresponding Java collection interfaces. Default is 'collection'.
+     * Configures the type of this collection: 'set', 'list', 'collection'.
+     * The getter / setter methods will use corresponding Java collection interfaces.
+     * Default is 'collection'.
      * </pre>
      *
      * @return the value of the type child.
      */
     @NotNull
     @com.intellij.util.xml.Attribute(TYPE)
-    GenericAttributeValue<Type> getType();
+    CollectionTypeValue getType();
 
 
 }

@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng
 import com.intellij.idea.plugin.hybris.codeInspection.rule.AbstractInspection
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 

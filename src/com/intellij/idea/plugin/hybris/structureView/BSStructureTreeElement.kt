@@ -21,6 +21,7 @@ import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue
 import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomElementNavigationProvider
@@ -73,8 +74,8 @@ class BSStructureTreeElement(
         else -> null
     }
 
-    private fun resolveLocationString(deprecated: GenericAttributeValue<Boolean>, deprecatedSince: GenericAttributeValue<String>) =
-        if (java.lang.Boolean.TRUE == deprecated.value) "(deprecated${deprecatedSince.stringValue?.let { " since $it" } ?: ""})"
+    private fun resolveLocationString(deprecated: FalseAttributeValue, deprecatedSince: GenericAttributeValue<String>) =
+        if (deprecated.value) "(deprecated${deprecatedSince.stringValue?.let { " since $it" } ?: ""})"
         else null
 
     private fun resolveText(attributeValue: GenericAttributeValue<String>?) = attributeValue?.stringValue

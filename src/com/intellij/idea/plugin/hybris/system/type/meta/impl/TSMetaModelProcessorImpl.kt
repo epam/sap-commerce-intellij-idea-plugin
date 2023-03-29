@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.TypeGroup
-import com.intellij.idea.plugin.hybris.system.type.utils.TSUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile

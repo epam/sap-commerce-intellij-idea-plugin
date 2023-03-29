@@ -46,8 +46,8 @@ class TSImmutableFieldMustHaveInitialValue : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val write = it.modifiers.write.value ?: true
-        val initial = it.modifiers.initial.value ?: false
+        val write = it.modifiers.write.value
+        val initial = it.modifiers.initial.value
         val persistenceType = it.persistence.type.value ?: return
         val defaultValue = it.defaultValue.stringValue
 

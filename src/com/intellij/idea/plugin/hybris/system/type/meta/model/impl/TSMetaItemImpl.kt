@@ -44,11 +44,11 @@ internal class TSMetaItemImpl(
 ) : TSMetaItem {
 
     override val domAnchor: DomAnchor<ItemType> = DomService.getInstance().createAnchor(dom)
-    override val isAbstract = java.lang.Boolean.TRUE == dom.abstract.value
-    override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-    override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-    override val isSingleton = java.lang.Boolean.TRUE == dom.singleton.value
-    override val isJaloOnly = java.lang.Boolean.TRUE == dom.jaloOnly.value
+    override val isAbstract = dom.abstract.value
+    override val isAutoCreate = dom.autoCreate.value
+    override val isGenerate = dom.generate.value
+    override val isSingleton = dom.singleton.value
+    override val isJaloOnly = dom.jaloOnly.value
     override val isCatalogAware = TSMetaHelper.isCatalogAware(dom.customProperties)
     override val jaloClass = dom.jaloClass.stringValue
     override val description = dom.description.xmlTag?.value?.text
@@ -64,9 +64,9 @@ internal class TSMetaItemImpl(
     ) : TSMetaItemIndex {
 
         override val domAnchor: DomAnchor<Index> = DomService.getInstance().createAnchor(dom)
-        override val isRemove = java.lang.Boolean.TRUE == dom.remove.value
-        override val isReplace = java.lang.Boolean.TRUE == dom.replace.value
-        override val isUnique = java.lang.Boolean.TRUE == dom.unique.value
+        override val isRemove = dom.remove.value
+        override val isReplace = dom.replace.value
+        override val isUnique = dom.unique.value
         override val creationMode = dom.creationMode.value ?: CreationMode.ALL
         override val keys = dom.keys
             .mapNotNull { it.attribute.stringValue }
@@ -94,9 +94,9 @@ internal class TSMetaItemImpl(
         override val defaultValue = dom.defaultValue.stringValue
         override val type = dom.type.stringValue
         override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
-        override val isAutoCreate = java.lang.Boolean.TRUE == dom.autoCreate.value
-        override val isGenerate = java.lang.Boolean.TRUE == dom.generate.value
-        override val isRedeclare = java.lang.Boolean.TRUE == dom.redeclare.value
+        override val isAutoCreate = dom.autoCreate.value
+        override val isGenerate = dom.generate.value
+        override val isRedeclare = dom.redeclare.value
         override val isSelectionOf = dom.isSelectionOf.stringValue
         override val isLocalized = TSMetaHelper.isLocalized(type)
         override val isDynamic = TSMetaHelper.isDynamic(persistence)
