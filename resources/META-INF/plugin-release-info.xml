@@ -96,6 +96,11 @@
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
                 <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
                 <li><i>Feature:</i> Enable selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
+                     <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
+                    <ul>
+                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Other:</i> Added Project icon for Plugin repository (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302" target="_blank" rel="nofollow">#302</a>)</li>
                 <li><i>Other:</i> Replaced Caffeine cache with IDEA user data (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304" target="_blank" rel="nofollow">#304</a>)</li>
                 <li><i>Other:</i> Updated to Gradle plugin to 1.13.3</li>
@@ -125,11 +130,6 @@
                         <li><i>Feature:</i> Added edge coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265" target="_blank" rel="nofollow">#265</a>)</li>
                         <li><i>Feature:</i> Added cycle edges coloring (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266" target="_blank" rel="nofollow">#266</a>)</li>
                         <li><i>Feature:</i> Added Context Parameters node (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/283" target="_blank" rel="nofollow">#283</a>)</li>
-                    </ul>
-                </li>
-                <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
-                    <ul>
-                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added node type specific icons for Business Process code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/296" target="_blank" rel="nofollow">#296</a>)</li>

@@ -37,11 +37,16 @@ class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInsp
         severity: HighlightSeverity
     ) {
         dom.relations.relations
-            .filter { (it.sourceElement.cardinality.value ?: Cardinality.MANY) === Cardinality.MANY
-                      && (it.targetElement.cardinality.value ?: Cardinality.MANY) === Cardinality.MANY }
-            .filter { (it.sourceElement.navigable.value ?: true) == false || (it.targetElement.navigable.value ?: true) == false }
-            .forEach { checkNonNavigable(it.sourceElement, holder, severity)
-                       checkNonNavigable(it.targetElement, holder, severity)
+            .filter {
+                it.sourceElement.cardinality.value === Cardinality.MANY &&
+                it.targetElement.cardinality.value === Cardinality.MANY
+            }
+            .filter {
+                it.sourceElement.navigable.value == false || it.targetElement.navigable.value == false
+            }
+            .forEach {
+                checkNonNavigable(it.sourceElement, holder, severity)
+                checkNonNavigable(it.targetElement, holder, severity)
             }
     }
 
