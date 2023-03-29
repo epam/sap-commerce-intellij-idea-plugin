@@ -17,15 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.project
 
+import com.intellij.ide.actions.ImportModuleAction
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
-import com.intellij.idea.plugin.hybris.project.wizard.OpenSupport
-import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectImportBuilder
-import com.intellij.projectImport.ProjectImportProvider
 import com.intellij.projectImport.ProjectOpenProcessorBase
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
@@ -34,28 +31,20 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
         if (file.isDirectory) {
             wizardContext.setProjectFileDirectory(file.path)
         }
-        wizardContext.projectName = file.name
-        wizardContext.projectBuilder = builder
 
-        builder.refresh = false
-        builder.fileToImport = file.path
+        val providers = ImportModuleAction.getProviders(null)
+        ImportModuleAction.doImport(null) {
+            ImportModuleAction.createImportWizard(null, null, file, *providers.toTypedArray())
+        }
 
-        val temporarySettings = HybrisProjectSettings()
-        hybrisProjectImportProvider()
-            ?.createSteps(wizardContext)
-            ?.filterIsInstance<OpenSupport>()
-            ?.forEach { it.open(temporarySettings) }
-
-        // it has to be set as last property
-        builder.isOpenProjectSettingsAfter = true
-
-        return true
+        return false
     }
 
     override fun canOpenProject(file: VirtualFile): Boolean {
         val canOpenSimpleVerification = super.canOpenProject(file)
-        return if (canOpenSimpleVerification) { true }
-        else HybrisUtil.isPotentialHybrisProject(file)
+        return if (canOpenSimpleVerification) {
+            true
+        } else HybrisUtil.isPotentialHybrisProject(file)
     }
 
     override val supportedExtensions = arrayOf(
@@ -65,8 +54,5 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
     )
 
     override fun doGetBuilder() = ProjectImportBuilder.EXTENSIONS_POINT_NAME.findExtensionOrFail(OpenHybrisProjectImportBuilder::class.java)
-
-    private fun hybrisProjectImportProvider() = ProjectImportProvider.PROJECT_IMPORT_PROVIDER.extensions
-        .find { it is HybrisProjectImportProvider }
 
 }

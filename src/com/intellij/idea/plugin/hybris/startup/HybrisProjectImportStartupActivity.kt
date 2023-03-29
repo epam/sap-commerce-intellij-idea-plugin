@@ -24,15 +24,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ui.configuration.IdeaProjectSettingsService
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
 
-private const val OPEN_SETTINGS_DIALOG = "hybrisProjectImportOpenSettingsDialog"
 private const val SYNC_PROJECT_SETTINGS = "hybrisProjectImportSyncProjectSettings"
 private const val FINALIZE_PROJECT_IMPORT = "hybrisProjectImportFinalize"
 
@@ -44,11 +40,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
             HybrisToolWindowService.getInstance(project).activateToolWindow()
 
-            project.getUserData(openSettingsKey)
-                ?.let {
-                    project.removeUserData(openSettingsKey)
-                    openSettingsForProject(project)
-                }
             project.getUserData(syncProjectSettingsKey)
                 ?.let {
                     project.removeUserData(syncProjectSettingsKey)
@@ -68,11 +59,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
     }
 
-    // ensure the dialog is shown after all startup activities are done
-    private fun openSettingsForProject(project: Project) = ApplicationManager.getApplication().invokeLater({
-        IdeaProjectSettingsService.getInstance(project).openProjectSettings()
-    }, ModalityState.NON_MODAL, project.disposed)
-
     private fun syncProjectSettingsForProject(project: Project) {
         with (project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
             hacConnectionSettingsChanged()
@@ -82,7 +68,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
 
     companion object {
-        val openSettingsKey: Key<Boolean> = Key.create(OPEN_SETTINGS_DIALOG);
         val syncProjectSettingsKey: Key<Boolean> = Key.create(SYNC_PROJECT_SETTINGS);
         val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<HybrisModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
     }

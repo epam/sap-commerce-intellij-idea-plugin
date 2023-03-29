@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.project
 
-import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -32,9 +31,6 @@ class OpenHybrisProjectImportBuilder : DefaultHybrisProjectImportBuilder() {
         modulesProvider: ModulesProvider?,
         artifactModel: ModifiableArtifactModel?
     ): MutableList<Module>? {
-        if (isOpenProjectSettingsAfter) {
-            project.putUserData(HybrisProjectImportStartupActivity.openSettingsKey, true)
-        }
         getHybrisProjectDescriptor().setHybrisProject(project)
 
         return super.commit(project, model, modulesProvider, artifactModel)
