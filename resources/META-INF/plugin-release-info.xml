@@ -91,6 +91,10 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.3</h3>
+            <ul>
+                <li><i>Bug Fix:</i> Cannot refresh CCv2 Project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/305" target="_blank" rel="nofollow">#305</a>)</li>
+            </ul>
             <h3>2023.1.2</h3>
             <ul>
                 <li>Introduced Type System Diagram
