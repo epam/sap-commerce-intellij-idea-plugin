@@ -75,9 +75,8 @@ public final class ModelsUtils {
 
         final VirtualFile virtualFile = psiFile.getVirtualFile();
 
-        if (virtualFile.getExtension() == null) {
-            return false;
-        }
+        if (virtualFile == null) return false;
+        if (virtualFile.getExtension() == null) return false;
 
         return virtualFile.getExtension().equals("class")
                && virtualFile.getPath().contains("models.jar")
