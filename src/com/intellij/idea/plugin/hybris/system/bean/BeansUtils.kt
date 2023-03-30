@@ -33,7 +33,7 @@ object BeansUtils {
 
         if (virtualFile.extension == null) return false
 
-        return (virtualFile.extension == "class" && virtualFile.path.contains("models.jar"))
+        return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
                 || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
     }
 }

@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.system.type.validation
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiClass
+import com.intellij.util.xml.DomElement
 
-/**
- * @author Vlad Bozhenok <vladbozhenok></vladbozhenok>@gmail.com>
- */
-interface ItemsFileValidation {
+interface ItemsXmlDomValidator<T : DomElement> {
 
-    fun isFileOutOfDate(file: VirtualFile): Boolean
-    fun showNotification()
+    fun validate(dom: List<T>, psi: Map<String, PsiClass>): Boolean
 
-    companion object {
-        fun getInstance(project: Project): ItemsFileValidation = project.getService(ItemsFileValidation::class.java)
-    }
 }

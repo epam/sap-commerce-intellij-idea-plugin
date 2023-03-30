@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.startup.event
 
-import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
@@ -27,7 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile
 class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-        val itemsFileValidation = ItemsFileValidation.getInstance(project)
+        val itemsFileValidation = ItemsXmlFileValidation.getInstance(project)
         if (itemsFileValidation.isFileOutOfDate(file)) {
             itemsFileValidation.showNotification()
         }

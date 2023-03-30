@@ -18,10 +18,10 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.*
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisItemsXmlFileType
-import com.intellij.idea.plugin.hybris.system.type.validation.ItemsFileValidation
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -37,14 +37,13 @@ import com.intellij.psi.search.GlobalSearchScope
 class ItemsXmlFileOpenStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
-            return
-        }
+        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) return
+        if (!HybrisApplicationSettingsComponent.getInstance().state.isWarnIfGeneratedItemsAreOutOfDate) return
 
         val task = object : Task.Backgroundable(project, message("hybris.startupActivity.itemsXmlValidation.progress.title")) {
             override fun run(indicator: ProgressIndicator) {
                 ApplicationManager.getApplication().runReadAction {
-                    val validation = ItemsFileValidation.getInstance(project)
+                    val validation = ItemsXmlFileValidation.getInstance(project)
                     val isOutdated = FileTypeIndex.getFiles(
                         HybrisItemsXmlFileType.INSTANCE,
                         GlobalSearchScope.projectScope(project)

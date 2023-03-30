@@ -52,7 +52,7 @@
             </ul>
 
             <h3>Contributors and Developers</h3>
-            <p>This project exists thanks to all the people who contribute.</p>
+            <p>This project exists thanks to all the people who <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors" target="_blank">contribute</a>!</p>
 
             <ul>
                 <li>Alexander Bartash</li>
@@ -96,6 +96,7 @@
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
                 <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
                 <li><i>Feature:</i> Enable selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
+                <li><i>Feature:</i> Enabled possibility to disable validation of the generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/313" target="_blank" rel="nofollow">#313</a>)</li>
                 <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
                     <ul>
                         <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>

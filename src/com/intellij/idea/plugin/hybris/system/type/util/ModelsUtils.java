@@ -55,7 +55,7 @@ public final class ModelsUtils {
         }
 
         return virtualFile.getExtension().equals("class")
-               && virtualFile.getPath().contains("models.jar")
+               && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)
                && shouldProcessItemType(psiClass);
     }
 
@@ -79,7 +79,7 @@ public final class ModelsUtils {
         if (virtualFile.getExtension() == null) return false;
 
         return virtualFile.getExtension().equals("class")
-               && virtualFile.getPath().contains("models.jar")
+               && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)
                && shouldProcessEnum(psiClass);
     }
 
@@ -87,7 +87,7 @@ public final class ModelsUtils {
         final PsiClassType[] implementsListTypes = psiClass.getImplementsListTypes();
 
         for (final PsiClassType implementsListType : implementsListTypes) {
-            if ("HybrisEnumValue".equals(implementsListType.getClassName())) {
+            if (HybrisConstants.CLASS_ENUM_NAME.equals(implementsListType.getClassName())) {
                 return true;
             }
         }

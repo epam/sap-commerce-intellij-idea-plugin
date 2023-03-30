@@ -20,20 +20,14 @@ package com.intellij.idea.plugin.hybris.system.type.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
-import com.intellij.idea.plugin.hybris.system.type.model.Attribute;
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
 import com.intellij.idea.plugin.hybris.system.type.model.Items;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomManager;
-import com.intellij.util.xml.GenericAttributeValue;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,48 +41,6 @@ public final class TSUtils {
     private TSUtils() {
     }
 
-    public static boolean isAttributeGenerationDisabled(@NotNull final Attribute attribute) {
-        Boolean isGenerate = attribute.getGenerate().getValue();
-        if (Boolean.FALSE.equals(isGenerate)) {
-            return true;
-        }
-
-        isGenerate = attribute.getModel().getGenerate().getValue();
-
-        return Boolean.FALSE.equals(isGenerate);
-    }
-
-    public static boolean isClassGenerationDisabled(@NotNull final ItemType itemType) {
-        Boolean isGenerate = itemType.getGenerate().getValue();
-        if (Boolean.FALSE.equals(isGenerate)) {
-            return true;
-        }
-
-        isGenerate = itemType.getModel().getGenerate().getValue();
-        return Boolean.FALSE.equals(isGenerate);
-    }
-
-    public static boolean isEnumGenerationDisabled(@NotNull final EnumType enumType) {
-        final Boolean isGenerate = enumType.getGenerate().getValue();
-
-        return Boolean.FALSE.equals(isGenerate);
-    }
-
-    @Nullable
-    public static String getString(@Nullable GenericAttributeValue genericAttributeValue) {
-        if (null == genericAttributeValue) {
-            return null;
-        } else {
-            final XmlAttributeValue xmlAttributeValue = genericAttributeValue.getXmlAttributeValue();
-            if (null == xmlAttributeValue) {
-                return null;
-            } else {
-                final String value = xmlAttributeValue.getValue();
-                return StringUtils.isBlank(value) ? null : value;
-            }
-        }
-    }
-
     public static boolean isTypeSystemFile(@NotNull final PsiFile file) {
         return file instanceof XmlFile
             && file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
@@ -100,7 +52,6 @@ public final class TSUtils {
             if (!isTypeSystemFile(file)) {
                 return CachedValueProvider.Result.create(false, file);
             }
-
 
             final VirtualFile vFile = file.getVirtualFile();
             return CachedValueProvider.Result.create(vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.getProject()), file);

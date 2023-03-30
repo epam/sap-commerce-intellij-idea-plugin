@@ -32,7 +32,7 @@ public class OotbClassesSearchScope extends GlobalSearchScope {
         while (
             f != null &&
             !(f.isDirectory() &&
-              (f.getName().equals(HybrisConstants.CLASSES_DIRECTORY) || f.getName().equals("models.jar"))
+              (f.getName().equals(HybrisConstants.CLASSES_DIRECTORY) || f.getName().equals(HybrisConstants.JAR_MODELS))
             )
         ) {
             f = f.getParent();
