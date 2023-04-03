@@ -314,6 +314,11 @@
                          shortName="TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse"/>
 
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSOnlyOneSideN2mRelationMustBeNotNavigable.key"
+                         shortName="TSOnlyOneSideN2mRelationMustBeNotNavigable" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSOnlyOneSideN2mRelationMustBeNotNavigable"/>
+
     </extensions>
 
 </idea-plugin>
