@@ -104,6 +104,7 @@
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> VirtualFile is null for ModelsUtils (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/312" target="_blank" rel="nofollow">#312</a>)</li>
+                <li><i>Bug Fix:</i> Do not configure spring context for CCv2 modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/316" target="_blank" rel="nofollow">#316</a>)</li>
                 <li><i>Other:</i> Added Project icon for Plugin repository (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302" target="_blank" rel="nofollow">#302</a>)</li>
                 <li><i>Other:</i> Replaced Caffeine cache with IDEA user data (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304" target="_blank" rel="nofollow">#304</a>)</li>
                 <li><i>Other:</i> Updated to Gradle plugin to 1.13.3</li>

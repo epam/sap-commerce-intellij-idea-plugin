@@ -43,8 +43,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 ### Contributors and Developers
 
-This project exists thanks to all the people who contribute.
-
+This project exists thanks to all the people who <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/graphs/contributors" target="_blank">contribute</a>!
 
 <img src="https://img.shields.io/badge/-Alexander%20Bartash-grey"/> <img src="https://img.shields.io/badge/-Vlad%20Bozhenok-grey"/> 
 <img src="https://img.shields.io/badge/-Martin%20Zdarsky--Jones-grey"/> <img src="https://img.shields.io/badge/-Alexander%20Nosov-grey"/>
