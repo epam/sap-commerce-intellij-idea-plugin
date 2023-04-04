@@ -59,7 +59,7 @@ class TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse : AbstractTSInsp
                 relationElement.qualifier,
                 severity,
                 displayName,
-                XmlDeleteAttributeQuickFix(relationElement.qualifier.xmlElementName)
+                XmlDeleteAttributeQuickFix(RelationElement.QUALIFIER)
             )
         }
         if (relationElement.modifiers.exists()) {

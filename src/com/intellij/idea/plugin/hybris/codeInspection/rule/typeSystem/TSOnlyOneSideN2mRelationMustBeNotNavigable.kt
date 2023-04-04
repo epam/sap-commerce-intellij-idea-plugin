@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -42,13 +43,13 @@ class TSOnlyOneSideN2mRelationMustBeNotNavigable: AbstractTSInspection() {
                     it.sourceElement.navigable,
                     severity,
                     displayName,
-                    XmlDeleteAttributeQuickFix(it.sourceElement.navigable.xmlElementName)
+                    XmlDeleteAttributeQuickFix(RelationElement.NAVIGABLE)
                 )
                 holder.createProblem(
                     it.targetElement.navigable,
                     severity,
                     displayName,
-                    XmlDeleteAttributeQuickFix(it.targetElement.navigable.xmlElementName)
+                    XmlDeleteAttributeQuickFix(RelationElement.NAVIGABLE)
                 )
             }
     }
