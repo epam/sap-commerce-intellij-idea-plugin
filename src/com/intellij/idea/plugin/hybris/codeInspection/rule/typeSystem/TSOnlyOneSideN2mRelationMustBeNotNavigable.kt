@@ -42,13 +42,13 @@ class TSOnlyOneSideN2mRelationMustBeNotNavigable: AbstractTSInspection() {
                     it.sourceElement.navigable,
                     severity,
                     displayName,
-                    XmlDeleteAttributeQuickFix(it.sourceElement.navigable.stringValue)
+                    XmlDeleteAttributeQuickFix(it.sourceElement.navigable.xmlElementName)
                 )
                 holder.createProblem(
                     it.targetElement.navigable,
                     severity,
                     displayName,
-                    XmlDeleteAttributeQuickFix(it.targetElement.navigable.stringValue)
+                    XmlDeleteAttributeQuickFix(it.targetElement.navigable.xmlElementName)
                 )
             }
     }
