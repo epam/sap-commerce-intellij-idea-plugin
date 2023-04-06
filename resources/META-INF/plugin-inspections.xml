@@ -319,6 +319,11 @@
                          shortName="TSOnlyOneSideN2mRelationMustBeNotNavigable" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSOnlyOneSideN2mRelationMustBeNotNavigable"/>
 
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierMustExistForNavigablePartInN2MRelation.key"
+                         shortName="TSQualifierMustExistForNavigablePartInN2MRelation" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierMustExistForNavigablePartInN2MRelation"/>
+
     </extensions>
 
 </idea-plugin>
