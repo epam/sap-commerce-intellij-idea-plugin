@@ -21,8 +21,10 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  * </pre>
  */
 public interface Extensions extends DomElement {
+
+	String EXTENSION = "extension";
 
 	/**
 	 * Returns the value of the autoload child.
@@ -77,13 +81,13 @@ public interface Extensions extends DomElement {
 	 * @return the list of extension children.
 	 */
 	@NotNull
-	@SubTagList ("extension")
+	@SubTagList (EXTENSION)
 	java.util.List<Extension> getExtensions();
 	/**
 	 * Adds new child to the list of extension children.
 	 * @return created child
 	 */
-	@SubTagList ("extension")
+	@SubTagList (EXTENSION)
 	Extension addExtension();
 
 

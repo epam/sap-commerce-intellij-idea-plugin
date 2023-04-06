@@ -54,8 +54,8 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
     }
 
     open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
-            .state
-            .availableExtensions.values
+            .getAvailableExtensions()
+            .values
 
     private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
         val tail = listOfNotNull(

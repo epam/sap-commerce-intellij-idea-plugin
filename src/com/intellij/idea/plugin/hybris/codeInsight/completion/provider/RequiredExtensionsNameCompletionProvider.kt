@@ -44,8 +44,8 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 ?.map { it.lowercase() } ?: emptyList()
 
         return HybrisProjectSettingsComponent.getInstance(project)
-                .state
-                .availableExtensions.entries
+                .getAvailableExtensions()
+                .entries
                 .filterNot { currentNames.contains(it.key) }
                 .map { it.value }
     }

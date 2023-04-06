@@ -81,6 +81,8 @@
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
 
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
+
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->

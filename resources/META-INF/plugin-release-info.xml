@@ -94,6 +94,7 @@
             <h3>2023.2.0</h3>
             <ul>
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
+                <li><i>Feature:</i> Added navigation to Extension declaration via Gutter icons for <code>localextensions.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/319" target="_blank" rel="nofollow">#319</a>)</li>
                 <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
                 <li><i>Feature:</i> Enabled selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
                 <li><i>Feature:</i> Enabled possibility to disable validation of the generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/313" target="_blank" rel="nofollow">#313</a>)</li>
@@ -148,7 +149,7 @@
                 <li><i>Feature:</i> Added navigation to generated Item and Enum classes from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/284" target="_blank" rel="nofollow">#284</a>)</li>
                 <li><i>Feature:</i> Added navigation to generated Enum Values fields from the <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/285" target="_blank" rel="nofollow">#285</a>)</li>
                 <li><i>Feature:</i> Improved PSI cache usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/258" target="_blank" rel="nofollow">#258</a>)</li>
-                <li><i>Feature:</i> Improved performance of the Global Meta Model and TS LineMarker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
+                <li><i>Feature:</i> Improved performance of the Global Meta Model and TS Line Marker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
                 <li><i>Feature:</i> Added "collapse all"/"expand all" actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
                 <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>

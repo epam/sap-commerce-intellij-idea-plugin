@@ -23,30 +23,29 @@ import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ExtensionType;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ObjectFactory;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ScanType;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.idea.plugin.hybris.system.localextensions.model.Extension;
-import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.PropertiesUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.util.xml.DomFileElement;
-import com.intellij.util.xml.DomManager;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -276,13 +275,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     private static void processHybrisConfigExtensions(final Hybrisconfig hybrisconfig, final TreeSet<String> explicitlyDefinedModules) {
-        for (final Extension extensionType : hybrisconfig.getExtensions().getExtensions()) {
-            final String name = extensionType.getName().getStringValue();
+        for (final ExtensionType extensionType : hybrisconfig.getExtensions().getExtension()) {
+            final String name = extensionType.getName();
             if (name != null) {
                 explicitlyDefinedModules.add(name);
                 continue;
             }
-            final String dir = extensionType.getDir().getStringValue();
+            final String dir = extensionType.getDir();
 
             if (dir == null) continue;
 
@@ -302,12 +301,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         final var autoloadPaths = new HashMap<String, Integer>();
 
-        hybrisconfig.getExtensions().getPaths().stream()
-            .filter(it -> it.getAutoload().getValue())
-            .filter(it -> it.getDir().getStringValue() != null)
+        hybrisconfig.getExtensions().getPath().stream()
+            .filter(ScanType::isAutoload)
+            .filter(it -> it.getDir() != null)
             .forEach(it -> {
-                final var depth = it.getDepth().getValue();
-                final var dir = it.getDir().getStringValue();
+                final var depth = it.getDepth();
+                final var dir = it.getDir();
 
                 if (depth == null) {
                     autoloadPaths.put(dir, HybrisConstants.DEFAULT_EXTENSIONS_PATH_DEPTH);
@@ -360,18 +359,20 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final HybrisModuleDescriptor configHybrisModuleDescriptor) {
-        // Project can be null in case of the Project creation from Welcome Screen
-        final var myProject = project == null
-            ? ProjectManager.getInstance().getDefaultProject()
-            : project;
-        final var path = Path.of(configHybrisModuleDescriptor.getRootDirectory().getPath(), HybrisConstants.LOCAL_EXTENSIONS_XML);
-        return Optional.ofNullable(VfsUtil.findFile(path, true))
-            .map(it -> PsiManager.getInstance(myProject).findFile(it))
-            .filter(XmlFile.class::isInstance)
-            .map(XmlFile.class::cast)
-            .map(it -> DomManager.getDomManager(myProject).getFileElement(it, Hybrisconfig.class))
-            .map(DomFileElement::getRootElement)
-            .orElse(null);
+        final File file = new File(configHybrisModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
+        if (!file.exists()) return null;
+
+        try {
+            return (Hybrisconfig) JAXBContext.newInstance(
+                    "com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions",
+                    ObjectFactory.class.getClassLoader())
+                .createUnmarshaller()
+                .unmarshal(file);
+        } catch (final JAXBException e) {
+            LOG.error("Can not unmarshal " + file.getAbsolutePath(), e);
+        }
+
+        return null;
     }
 
     @Override
