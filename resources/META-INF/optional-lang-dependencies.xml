@@ -73,6 +73,8 @@
 
         <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion.ExtensionInfoCompletionContributor"/>
 
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
+
         <!-- ####################################################################################################### -->
         <!--                                            LocalExtensions                                              -->
         <!-- ####################################################################################################### -->

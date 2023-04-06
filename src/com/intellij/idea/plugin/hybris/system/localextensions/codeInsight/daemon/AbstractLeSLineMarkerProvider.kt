@@ -18,14 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon
 
-import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisLineMarkerProvider
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractExtensionLineMarkerProvider
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 
-abstract class AbstractLeSLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
+abstract class AbstractLeSLineMarkerProvider : AbstractExtensionLineMarkerProvider() {
 
     final override fun canProcess(psi: PsiFile) = (psi as? XmlFile)
         ?.let { DomManager.getDomManager(psi.project).getFileElement(it, Hybrisconfig::class.java) != null }

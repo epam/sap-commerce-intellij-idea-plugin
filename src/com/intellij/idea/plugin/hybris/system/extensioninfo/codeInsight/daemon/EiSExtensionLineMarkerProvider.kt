@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon
+package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.system.localextensions.model.Extensions
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
 
-class LeSExtensionLineMarkerProvider : AbstractLeSLineMarkerProvider() {
+class EiSExtensionLineMarkerProvider : AbstractEiSLineMarkerProvider() {
 
-    override fun getParentTagName() = Extensions.EXTENSION
-    override fun getName() = message("hybris.editor.gutter.les.extension.name")
-    override fun getTooltipText() = message("hybris.editor.gutter.les.extension.tooltip.text")
-    override fun getPopupTitle() = message("hybris.editor.gutter.les.extension.popup.title")
+    override fun getParentTagName() = Extension.REQUIRES_EXTENSION
+    override fun getName() = message("hybris.editor.gutter.eis.extension.name")
+    override fun getTooltipText() = message("hybris.editor.gutter.eis.extension.tooltip.text")
+    override fun getPopupTitle() = message("hybris.editor.gutter.eis.extension.popup.title")
 
 }

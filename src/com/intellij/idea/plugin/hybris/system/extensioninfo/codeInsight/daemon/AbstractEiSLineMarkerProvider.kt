@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.system.localextensions.model.Extensions
+package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon
 
-class LeSExtensionLineMarkerProvider : AbstractLeSLineMarkerProvider() {
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractExtensionLineMarkerProvider
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
+import com.intellij.psi.PsiFile
+import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomManager
 
-    override fun getParentTagName() = Extensions.EXTENSION
-    override fun getName() = message("hybris.editor.gutter.les.extension.name")
-    override fun getTooltipText() = message("hybris.editor.gutter.les.extension.tooltip.text")
-    override fun getPopupTitle() = message("hybris.editor.gutter.les.extension.popup.title")
+abstract class AbstractEiSLineMarkerProvider : AbstractExtensionLineMarkerProvider() {
+
+    final override fun canProcess(psi: PsiFile) = (psi as? XmlFile)
+        ?.let { DomManager.getDomManager(psi.project).getFileElement(it, ExtensionInfo::class.java) != null }
+        ?: false
 
 }

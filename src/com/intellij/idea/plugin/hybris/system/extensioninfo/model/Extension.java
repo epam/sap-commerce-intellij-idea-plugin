@@ -21,12 +21,7 @@
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
 import com.intellij.spellchecker.xml.NoSpellchecking;
-import com.intellij.util.xml.Attribute;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
  * </pre>
  */
 public interface Extension extends DomElement {
+
+	String REQUIRES_EXTENSION = "requires-extension";
 
 	/**
 	 * Returns the value of the name child.
@@ -195,13 +192,13 @@ public interface Extension extends DomElement {
 	 * @return the list of requires-extension children.
 	 */
 	@NotNull
-	@SubTagList ("requires-extension")
+	@SubTagList (REQUIRES_EXTENSION)
 	java.util.List<RequiresExtension> getRequiresExtensions();
 	/**
 	 * Adds new child to the list of requires-extension children.
 	 * @return created child
 	 */
-	@SubTagList ("requires-extension")
+	@SubTagList (REQUIRES_EXTENSION)
 	RequiresExtension addRequiresExtension();
 
 
