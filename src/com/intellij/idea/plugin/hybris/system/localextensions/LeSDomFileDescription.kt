@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.localextensions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
@@ -31,6 +33,9 @@ class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::cla
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.LOCAL_EXTENSIONS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-            && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
+        && file.virtualFile != null
+        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
+        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
 
 }

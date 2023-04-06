@@ -58,14 +58,14 @@ public enum AttributeModifier implements ImpexModifier {
         @Override
         public @NotNull Set<LookupElement> getLookupElements(final Project project) {
             return ImpexImplementationClassCompletionContributor.Companion.getInstance(project)
-                                                                          .getImplementationsForClass(HybrisConstants.IMPEX_CLASS_CELL_DECORATOR);
+                                                                          .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_CELL_DECORATOR);
         }
     },
     TRANSLATOR("translator") {
         @Override
         public @NotNull Set<LookupElement> getLookupElements(final Project project) {
             return ImpexImplementationClassCompletionContributor.Companion.getInstance(project)
-                                                                          .getImplementationsForClass(HybrisConstants.IMPEX_CLASS_TRANSLATOR);
+                                                                          .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_TRANSLATOR);
         }
     };
 

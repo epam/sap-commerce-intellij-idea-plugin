@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
@@ -282,7 +283,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         moduleList = this.getHybrisProjectDescriptor()
                          .getFoundModules()
                          .stream()
-                         .filter(e -> !(e instanceof RootModuleDescriptor))
+                         .filter(Predicate.not(RootModuleDescriptor.class::isInstance))
                          .collect(Collectors.toList());
     }
 
@@ -291,7 +292,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         moduleList = this.getHybrisProjectDescriptor()
                          .getFoundModules()
                          .stream()
-                         .filter(e -> e instanceof RootModuleDescriptor)
+                         .filter(RootModuleDescriptor.class::isInstance)
                          .collect(Collectors.toList());
     }
 

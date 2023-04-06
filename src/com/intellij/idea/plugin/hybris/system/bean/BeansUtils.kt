@@ -31,7 +31,7 @@ object BeansUtils {
     fun isGeneratedFile(psiClass: PsiClass): Boolean {
         val virtualFile = psiClass.containingFile.virtualFile
 
-        if (virtualFile == null || virtualFile.extension == null) return false
+        if (virtualFile?.extension == null) return false
 
         return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
                 || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))

@@ -20,13 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -37,20 +31,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GLOBAL_GROUP_OVERRIDE_COMMENTS;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROUP_OVERRIDE_KEY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_GROUP_OVERRIDE_COMMENTS;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
@@ -147,8 +134,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private void createCommentedProperties(final File groupFile, final String key, final String comments) {
-        try (OutputStream out = new FileOutputStream(groupFile)) {
-            Properties properties = new Properties();
+        try (final OutputStream out = new FileOutputStream(groupFile)) {
+            final Properties properties = new Properties();
             if (key != null) {
                 properties.setProperty(key, "");
             }
@@ -163,8 +150,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return null;
         }
         String rawGroupText = null;
-        Properties properties = new Properties();
-        try (InputStream in = new FileInputStream(groupFile)) {
+        final Properties properties = new Properties();
+        try (final InputStream in = new FileInputStream(groupFile)) {
             properties.load(in);
         } catch (IOException e) {
             LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + " for module " + moduleName);
@@ -172,7 +159,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
         rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
         if (rawGroupText == null) {
-            rawGroupText = properties.getProperty(moduleName + "." + GROUP_OVERRIDE_KEY);
+            rawGroupText = properties.getProperty(moduleName + '.' + GROUP_OVERRIDE_KEY);
         }
         return toIdeaGroup(rawGroupText);
     }

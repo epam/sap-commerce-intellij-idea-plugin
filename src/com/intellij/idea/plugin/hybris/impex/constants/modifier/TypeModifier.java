@@ -48,7 +48,7 @@ public enum TypeModifier implements ImpexModifier {
         @Override
         public @NotNull Set<LookupElement> getLookupElements(final Project project) {
             return ImpexImplementationClassCompletionContributor.Companion.getInstance(project)
-                                                                          .getImplementationsForClass(HybrisConstants.IMPEX_CLASS_PROCESSOR);
+                                                                          .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_PROCESSOR);
         }
     };
 

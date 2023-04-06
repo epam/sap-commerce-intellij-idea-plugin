@@ -32,14 +32,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
@@ -113,6 +107,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         return true;
     }
 
+    @Override
     public void onStepLeaving() {
         super.onStepLeaving();
         final List<HybrisModuleDescriptor> markedElements = new ArrayList<>(this.fileChooser.getMarkedElements());

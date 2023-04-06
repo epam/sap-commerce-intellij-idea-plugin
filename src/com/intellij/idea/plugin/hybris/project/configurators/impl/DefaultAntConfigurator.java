@@ -277,10 +277,10 @@ public class DefaultAntConfigurator implements AntConfigurator {
         if (configDescriptor != null) {
             final File propertiesFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
             if (propertiesFile.exists()) {
-                Properties properties = new Properties();
-                try (InputStream in = new FileInputStream(propertiesFile)) {
+                final Properties properties = new Properties();
+                try (final InputStream in = new FileInputStream(propertiesFile)) {
                     properties.load(in);
-                    String antOptsText = properties.getProperty(ANT_OPTS);
+                    final String antOptsText = properties.getProperty(ANT_OPTS);
                     if (antOptsText != null && !antOptsText.trim().isEmpty()) {
                         return antOptsText.trim();
                     }

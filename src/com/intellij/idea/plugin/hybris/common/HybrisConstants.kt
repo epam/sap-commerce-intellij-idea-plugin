@@ -237,6 +237,7 @@ object HybrisConstants {
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
+
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_ENUM_NAME = "HybrisEnumValue"
@@ -245,6 +246,10 @@ object HybrisConstants {
     const val CLASS_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
     const val CLASS_CONVERTER = "de.hybris.platform.servicelayer.dto.converter.Converter"
     const val CLASS_POPULATOR = "de.hybris.platform.converters.Populator"
+    const val CLASS_IMPEX_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
+    const val CLASS_IMPEX_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
+    const val CLASS_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val SOURCE_ATTRIBUTE_NAME = "source"
@@ -270,6 +275,8 @@ object HybrisConstants {
     const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s"
 
     const val QUOTE_LENGTH = 2
+    // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
+    const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10
 
     const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
@@ -284,9 +291,6 @@ object HybrisConstants {
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
     @JvmField
     val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
-    const val IMPEX_CLASS_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
-    const val IMPEX_CLASS_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
-    const val IMPEX_CLASS_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
 
     @JvmField
     val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")

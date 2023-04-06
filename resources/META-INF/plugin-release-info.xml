@@ -95,8 +95,9 @@
             <ul>
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
                 <li><i>Feature:</i> Improved support of the custom DOM files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/301" target="_blank" rel="nofollow">#301</a>)</li>
-                <li><i>Feature:</i> Enable selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
+                <li><i>Feature:</i> Enabled selection of the CCv2 modules during Project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/303" target="_blank" rel="nofollow">#303</a>)</li>
                 <li><i>Feature:</i> Enabled possibility to disable validation of the generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/313" target="_blank" rel="nofollow">#313</a>)</li>
+                <li><i>Feature:</i> Project import will respect extensions registered via <code>path</code> with <code>autoload=true</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/319" target="_blank" rel="nofollow">#319</a>)</li>
                 <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
                     <ul>
                         <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
@@ -104,6 +105,7 @@
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> VirtualFile is null for ModelsUtils (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/312" target="_blank" rel="nofollow">#312</a>)</li>
+                <li><i>Bug Fix:</i> VirtualFile is null for BeansUtils (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/317" target="_blank" rel="nofollow">#317</a>)</li>
                 <li><i>Bug Fix:</i> Do not configure spring context for CCv2 modules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/316" target="_blank" rel="nofollow">#316</a>)</li>
                 <li><i>Other:</i> Added Project icon for Plugin repository (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302" target="_blank" rel="nofollow">#302</a>)</li>
                 <li><i>Other:</i> Replaced Caffeine cache with IDEA user data (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304" target="_blank" rel="nofollow">#304</a>)</li>

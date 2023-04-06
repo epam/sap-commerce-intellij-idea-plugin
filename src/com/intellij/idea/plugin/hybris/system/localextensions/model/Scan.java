@@ -21,8 +21,11 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -58,7 +61,7 @@ public interface Scan extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("autoload")
-	GenericAttributeValue<Boolean> getAutoload();
+	FalseAttributeValue getAutoload();
 
 
 	/**
