@@ -31,24 +31,10 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
-import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.configurators.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity;
@@ -76,7 +62,6 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
 import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
-import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -94,23 +79,22 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_NAME;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.DICTIONARY_WORDS;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IDEA_EDITION_ULTIMATE;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SHOW_UNLINKED_GRADLE_POPUP;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive;
+import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.*;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -208,6 +192,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.search.scope"));
         configuratorFactory.getSearchScopeConfigurator().configure(project, rootProjectModifiableModel);
 
+        configureProjectIcon();
+
         indicator.setText(message("hybris.project.import.saving.project"));
 
         ApplicationManager.getApplication().invokeAndWait(
@@ -219,6 +205,32 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configureEclipseModules(indicator, groupModuleConfigurator);
         configureGradleModules(indicator, groupModuleConfigurator);
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
+    }
+
+    private void configureProjectIcon() {
+        final var rootDirectory = hybrisProjectDescriptor.getRootDirectory();
+        if (rootDirectory == null) return;
+
+        final var target = Paths.get(rootDirectory.getPath(), ".idea", "icon.svg");
+
+        // do not override existing Icon
+        if (Files.exists(target)) return;
+
+        if (hybrisProjectDescriptor.getProjectIconFile() == null) {
+            try (final var is = this.getClass().getResourceAsStream("/icons/hybrisIcon.svg")) {
+                if (is != null) {
+                    Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException e) {
+                // NOP
+            }
+        } else {
+            try (final var is = new FileInputStream(hybrisProjectDescriptor.getProjectIconFile())) {
+                Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                // NOP
+            }
+        }
     }
 
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {

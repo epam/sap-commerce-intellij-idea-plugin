@@ -94,6 +94,7 @@
             <h3>2023.2.0</h3>
             <ul>
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
+                <li><i>Feature:</i> Added possibility to specify custom Project Icon, if not selected default one will be used (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/323" target="_blank" rel="nofollow">#323</a>)</li>
                 <li><i>Feature:</i> Added navigation to the Extension declaration via Gutter icons for <code>localextensions.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/320" target="_blank" rel="nofollow">#320</a>)</li>
                 <li><i>Feature:</i> Added navigation to the Extension declaration via Gutter icons for <code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/321" target="_blank" rel="nofollow">#321</a>)</li>
                 <li><i>Feature:</i> Added Project Refresh Action for not yet imported extensions declared as dependencies via <code>extensioninfo.xml</code> and <code>localextensions.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/322" target="_blank" rel="nofollow">#322</a>)</li>

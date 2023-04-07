@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow;
+import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -31,7 +32,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -57,7 +57,6 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 import static java.lang.Character.getNumericValue;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
@@ -109,6 +108,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel withMavenSourcesLabel;
     private JCheckBox withStandardProvidedSources;
     private JLabel withStandardProvidedSourcesLabel;
+    private JCheckBox customProjectIconCheckBox;
+    private JLabel customProjectIconLabel;
+    private TextFieldWithBrowseButton customProjectIconChooser;
     private String hybrisVersion;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
@@ -153,6 +155,22 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             @Override
             public void mouseClicked(final MouseEvent e) {
                 sourceCodeCheckBox.doClick();
+            }
+        });
+
+
+        customProjectIconChooser.setVisible(false);
+        customProjectIconChooser.addActionListener(new MyChooserActionListener(
+            FileChooserDescriptorFactory.createSingleFileDescriptor("svg"),
+            customProjectIconChooser,
+            message("hybris.import.label.select.hybris.project.icon.file"))
+        );
+        customProjectIconCheckBox.addActionListener(e -> customProjectIconChooser.setVisible(((JCheckBox) e.getSource()).isSelected()));
+        customProjectIconLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(final MouseEvent e) {
+                customProjectIconCheckBox.doClick();
             }
         });
 
@@ -218,8 +236,11 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             }
         });
 
-        sourceCodeFilesInChooser.addActionListener(new MySourceCodeChooserActionListener(
-            FileChooserDescriptorFactory.createSingleLocalFileDescriptor()));
+        sourceCodeFilesInChooser.addActionListener(new MyChooserActionListener(
+            FileChooserDescriptorFactory.createSingleLocalFileDescriptor(),
+            sourceCodeFilesInChooser,
+            message("hybris.import.label.select.hybris.src.file"))
+        );
 
         this.hybrisDistributionDirectoryFilesInChooser.addBrowseFolderListener(
             message("hybris.import.label.select.hybris.distribution.directory"),
@@ -260,83 +281,56 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.getContext().cleanup();
 
+        final var projectDescriptor = this.getContext().getHybrisProjectDescriptor();
         if (this.storeModuleFilesInCheckBox.isSelected()) {
-            this.getContext().getHybrisProjectDescriptor().setModulesFilesDirectory(
-                toFile(this.storeModuleFilesInChooser.getText())
+            projectDescriptor.setModulesFilesDirectory(
+                FileUtils.toFile(this.storeModuleFilesInChooser.getText())
             );
         }
 
-        this.getContext().getHybrisProjectDescriptor().setImportOotbModulesInReadOnlyMode(
-            this.importOotbModulesInReadOnlyModeCheckBox.isSelected()
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setFollowSymlink(
-            this.followSimplinkCheckbox.isSelected()
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setExcludeTestSources(
-            this.excludeTestSourcesCheckBox.isSelected()
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setScanThroughExternalModule(
-            this.scanThroughExternalModuleCheckbox.isSelected()
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setSourceCodeFile(
-            getValidSourceCode()
-        );
-
         this.getWizardContext().setProjectName(this.projectNameTextField.getText());
-
-        this.getContext().getHybrisProjectDescriptor().setHybrisDistributionDirectory(
-            toFile(this.hybrisDistributionDirectoryFilesInChooser.getText())
-        );
 
         final String externalExtensionsDirPath = directoryOverrideCheckBox.isSelected()
             ? externalExtensionsDirectoryFilesInChooser.getText()
             : "";
-        this.getContext().getHybrisProjectDescriptor().setExternalExtensionsDirectory(
-            externalExtensionsDirPath.isEmpty() ? null : toFile(externalExtensionsDirPath)
+        projectDescriptor.setExternalExtensionsDirectory(externalExtensionsDirPath.isEmpty()
+            ? null
+            : FileUtils.toFile(externalExtensionsDirPath)
         );
 
-        this.getContext().getHybrisProjectDescriptor().setExternalConfigDirectory(
-            configOverrideCheckBox.isSelected()
-                ? toFile(this.configOverrideFilesInChooser.getText())
-                : null
+        projectDescriptor.setExternalConfigDirectory(configOverrideCheckBox.isSelected()
+            ? FileUtils.toFile(this.configOverrideFilesInChooser.getText())
+            : null
         );
 
-        this.getContext().getHybrisProjectDescriptor().setExternalDbDriversDirectory(
-            dbDriversDirOverrideCheckBox.isSelected()
-                ? toFile(this.dbDriversDirOverrideFileChooser.getText())
-                : null
+        projectDescriptor.setExternalDbDriversDirectory(dbDriversDirOverrideCheckBox.isSelected()
+            ? FileUtils.toFile(this.dbDriversDirOverrideFileChooser.getText())
+            : null
         );
+        projectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(this.circularDependencyCheckBox.isSelected());
+        projectDescriptor.setWithMavenSources(withMavenSources.isSelected());
+        projectDescriptor.setWithMavenJavadocs(withMavenJavadocs.isSelected());
+        projectDescriptor.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
+        projectDescriptor.setJavadocUrl(this.javadocUrlTextField.getText());
+        projectDescriptor.setHybrisVersion(hybrisVersion);
+        projectDescriptor.setHybrisDistributionDirectory(FileUtils.toFile(this.hybrisDistributionDirectoryFilesInChooser.getText()));
+        projectDescriptor.setImportOotbModulesInReadOnlyMode(this.importOotbModulesInReadOnlyModeCheckBox.isSelected());
+        projectDescriptor.setFollowSymlink(this.followSimplinkCheckbox.isSelected());
+        projectDescriptor.setExcludeTestSources(this.excludeTestSourcesCheckBox.isSelected());
+        projectDescriptor.setScanThroughExternalModule(this.scanThroughExternalModuleCheckbox.isSelected());
+        projectDescriptor.setSourceCodeFile(getValidSourceCode());
+        projectDescriptor.setProjectIconFile(getProjectIcon());
 
-        this.getContext().getHybrisProjectDescriptor().setCreateBackwardCyclicDependenciesForAddOns(
-            this.circularDependencyCheckBox.isSelected()
-        );
-        this.getContext().getHybrisProjectDescriptor().setWithMavenSources(withMavenSources.isSelected());
-        this.getContext().getHybrisProjectDescriptor().setWithMavenJavadocs(withMavenJavadocs.isSelected());
-        this.getContext().getHybrisProjectDescriptor()
-            .setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
+        LOG.info("importing a project with the following settings: " + projectDescriptor);
 
-        this.getContext().getHybrisProjectDescriptor().setJavadocUrl(
-            this.javadocUrlTextField.getText()
-        );
-
-        this.getContext().getHybrisProjectDescriptor().setHybrisVersion(hybrisVersion);
-
-        LOG.info("importing a project with the following settings: " + this.getContext()
-                                                                           .getHybrisProjectDescriptor()
-                                                                           .toString());
-
-        this.getContext().setRootProjectDirectory(toFile(this.getContext().getFileToImport()));
+        this.getContext().setRootProjectDirectory(FileUtils.toFile(this.getContext().getFileToImport()));
     }
 
     private File getValidSourceCode() {
         if (!sourceCodeCheckBox.isSelected()) {
             return null;
         }
-        File sourceCodeFile = new File(this.sourceCodeFilesInChooser.getText());
+        final File sourceCodeFile = new File(this.sourceCodeFilesInChooser.getText());
         if (!sourceCodeFile.exists()) {
             return null;
         }
@@ -347,6 +341,15 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             }
         }
         return sourceCodeFile;
+    }
+
+    private File getProjectIcon() {
+        if (!customProjectIconCheckBox.isSelected()) {
+            return null;
+        }
+        final var projectIconFile = new File(customProjectIconChooser.getText());
+        if (!projectIconFile.exists() || projectIconFile.isDirectory()) return null;
+        return projectIconFile;
     }
 
     @Override
@@ -607,10 +610,10 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
 
-        hybrisProjectDescriptor.setSourceCodeFile(toFile(settings.getSourceCodeFile(), true));
-        hybrisProjectDescriptor.setExternalExtensionsDirectory(toFile(settings.getExternalExtensionsDirectory(), true));
-        hybrisProjectDescriptor.setExternalConfigDirectory(toFile(settings.getExternalConfigDirectory(), true));
-        hybrisProjectDescriptor.setExternalDbDriversDirectory(toFile(settings.getExternalDbDriversDirectory(), true));
+        hybrisProjectDescriptor.setSourceCodeFile(FileUtils.toFile(settings.getSourceCodeFile(), true));
+        hybrisProjectDescriptor.setExternalExtensionsDirectory(FileUtils.toFile(settings.getExternalExtensionsDirectory(), true));
+        hybrisProjectDescriptor.setExternalConfigDirectory(FileUtils.toFile(settings.getExternalConfigDirectory(), true));
+        hybrisProjectDescriptor.setExternalDbDriversDirectory(FileUtils.toFile(settings.getExternalDbDriversDirectory(), true));
         hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.getCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.getFollowSymlink());
@@ -639,7 +642,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final String hybrisDirectory = settings.getHybrisDirectory();
         if (hybrisDirectory != null) {
             hybrisProjectDescriptor.setHybrisDistributionDirectory(
-                toFile(
+                FileUtils.toFile(
                     this.getBuilder().getFileToImport(),
                     settings.getHybrisDirectory()
                 )
@@ -649,12 +652,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setJavadocUrl(settings.getJavadocUrl());
         hybrisProjectDescriptor.setHybrisVersion(settings.getHybrisVersion());
 
-        this.getContext().setRootProjectDirectory(toFile(this.getBuilder().getFileToImport()));
+        this.getContext().setRootProjectDirectory(FileUtils.toFile(this.getBuilder().getFileToImport()));
 
         if (hybrisDirectory == null) {
             // refreshing a project which was never imported by this plugin
             ProgressManager.getInstance().run(new SearchHybrisDistributionDirectoryTaskModalWindow(
-                toFile(this.getBuilder().getFileToImport()), parameter -> hybrisProjectDescriptor.setHybrisDistributionDirectory(toFile(parameter))
+                FileUtils.toFile(this.getBuilder().getFileToImport()), parameter -> hybrisProjectDescriptor.setHybrisDistributionDirectory(FileUtils.toFile(parameter))
             ));
         }
 
@@ -665,15 +668,15 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         // TODO: place custom component creation code here
     }
 
-    private class MySourceCodeChooserActionListener
+    private static class MyChooserActionListener
         extends ComponentWithBrowseButton.BrowseFolderActionListener<JTextField> {
 
-        MySourceCodeChooserActionListener(final FileChooserDescriptor fileChooserDescriptor) {
+        MyChooserActionListener(final FileChooserDescriptor fileChooserDescriptor, final TextFieldWithBrowseButton chooser, final @NotNull String title) {
             super(
-                message("hybris.import.label.select.hybris.src.file"),
+                title,
                 "",
-                HybrisWorkspaceRootStep.this.sourceCodeFilesInChooser,
-                (Project) null,
+                chooser,
+                null,
                 fileChooserDescriptor,
                 TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT
             );

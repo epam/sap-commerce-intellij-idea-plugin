@@ -96,6 +96,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected File modulesFilesDirectory;
     @Nullable
     protected File sourceCodeFile;
+    @Nullable
+    protected File projectIconFile;
     protected boolean openProjectSettingsAfterImport;
     protected boolean importOotbModulesInReadOnlyMode;
     @Nullable
@@ -854,6 +856,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setSourceCodeFile(@Nullable final File sourceCodeFile) {
         this.sourceCodeFile = sourceCodeFile;
+    }
+
+    @Override
+    public @Nullable File getProjectIconFile() {
+        return projectIconFile;
+    }
+
+    @Override
+    public void setProjectIconFile(final File projectIconFile) {
+        this.projectIconFile = projectIconFile;
     }
 
     @Override

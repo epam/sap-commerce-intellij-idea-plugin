@@ -75,6 +75,11 @@ public interface HybrisProjectDescriptor {
 
     void setSourceCodeFile(@Nullable File sourceCodeFile);
 
+    @Nullable
+    File getProjectIconFile();
+
+    void setProjectIconFile(File projectIconFile);
+
     void setRootDirectoryAndScanForModules(
         @NotNull File rootDirectory,
         @Nullable TaskProgressProcessor<File> progressListenerProcessor,
