@@ -37,6 +37,12 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!-- ####################################################################################################### -->
+        <!--                                        Run Contributors                                                 -->
+        <!-- ####################################################################################################### -->
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->

@@ -34,8 +34,8 @@ class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::cla
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.virtualFile != null
+        && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && CommonIdeaService.getInstance().isHybrisProject(file.project)
-        && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
 
 }

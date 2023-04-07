@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -31,7 +30,7 @@ abstract class AbstractHybrisLineMarkerProvider<T : PsiElement> : LineMarkerProv
 
     protected abstract fun canProcess(psi: PsiFile): Boolean
     protected abstract fun tryCast(psi: PsiElement): T?
-    protected abstract fun collectDeclarations(psi: T): Collection<RelatedItemLineMarkerInfo<PsiElement>>
+    protected abstract fun collectDeclarations(psi: T): Collection<LineMarkerInfo<PsiElement>>
 
     override fun collectSlowLineMarkers(elements: MutableList<out PsiElement>, result: MutableCollection<in LineMarkerInfo<*>>) {
         if (!canProcess(elements)) return

@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -41,7 +41,7 @@ class ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider : AbstractItemsXmlLi
                 && DomManager.getDomManager(psi.project).getDomElement(attribute.parent) is EnumType
         }
 
-    override fun collectDeclarations(psi: XmlAttributeValue): Collection<RelatedItemLineMarkerInfo<PsiElement>> {
+    override fun collectDeclarations(psi: XmlAttributeValue): Collection<LineMarkerInfo<PsiElement>> {
         val leaf = psi.childrenOfType<XmlToken>()
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN } ?: return emptyList()
 

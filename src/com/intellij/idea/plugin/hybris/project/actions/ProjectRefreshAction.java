@@ -35,13 +35,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntConfigurationBase;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -93,7 +87,7 @@ public class ProjectRefreshAction extends AnAction {
     }
 
     @Override
-    public void actionPerformed(final AnActionEvent anActionEvent) {
+    public void actionPerformed(final @NotNull AnActionEvent anActionEvent) {
         final Project project = getEventProject(anActionEvent);
 
         if (project == null) {

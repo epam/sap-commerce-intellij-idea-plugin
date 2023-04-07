@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -39,7 +39,7 @@ class PopulatorsLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiClass>(
     override fun canProcess(psi: PsiFile) = true
     override fun tryCast(psi: PsiElement) = psi as? PsiClass
 
-    override fun collectDeclarations(psi: PsiClass): Collection<RelatedItemLineMarkerInfo<PsiElement>> {
+    override fun collectDeclarations(psi: PsiClass): Collection<LineMarkerInfo<PsiElement>> {
         val populatorClass = findPopulatorClass(psi.project) ?: return emptyList()
         val element = populatorClass.element ?: return emptyList()
         val converterFields = retrieveConverterFields(psi)

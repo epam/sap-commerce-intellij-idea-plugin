@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -43,7 +43,7 @@ abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : Abstra
         ?.let { collect(it, psi) }
         ?: emptyList()
 
-    protected abstract fun collect(meta: TSGlobalMetaItem, psi: T): Collection<RelatedItemLineMarkerInfo<PsiElement>>
+    protected abstract fun collect(meta: TSGlobalMetaItem, psi: T): Collection<LineMarkerInfo<PsiElement>>
 
     protected open fun getPsiElementItemLineMarkerInfo(
         meta: TSGlobalMetaItem, name: String, nameIdentifier: PsiIdentifier

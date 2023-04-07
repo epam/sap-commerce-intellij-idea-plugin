@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -38,7 +38,7 @@ class DtoBeanPropertyLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<
     override fun canProcess(psi: PsiClass) = !BeansUtils.isEnumFile(psi)
     override fun tryCast(psi: PsiElement) = psi as? PsiField
 
-    override fun collectDeclarations(psi: PsiField): Collection<RelatedItemLineMarkerInfo<PsiElement>> {
+    override fun collectDeclarations(psi: PsiField): Collection<LineMarkerInfo<PsiElement>> {
         val metas = BSMetaModelAccess.getInstance(psi.project).findMetaBeansByName(psi.containingClass?.qualifiedName)
 
         if (metas.isEmpty() || metas.size > 1) return emptyList()

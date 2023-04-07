@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
+import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -45,7 +45,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
     abstract fun getTooltipText(): String
     abstract fun getPopupTitle(): String
 
-    override fun collectDeclarations(psi: XmlAttributeValue): Collection<RelatedItemLineMarkerInfo<PsiElement>> {
+    override fun collectDeclarations(psi: XmlAttributeValue): Collection<LineMarkerInfo<PsiElement>> {
         val leaf = psi.childrenOfType<XmlToken>()
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?: return emptyList()
