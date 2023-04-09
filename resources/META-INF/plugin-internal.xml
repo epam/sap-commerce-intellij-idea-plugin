@@ -84,7 +84,6 @@
     <actions>
         <group id="HybrisToolsActions"
                text="[y] SAP Commerce"
-               icon="/icons/hybrisIcon.png"
                popup="true"
                class="com.intellij.idea.plugin.hybris.actions.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>

@@ -69,7 +69,7 @@ public final class HybrisIcons {
 
     public static final Icon MACROS = getIcon("/icons/macros.png");
 
-    public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.png");
+    public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.svg");
 
     public static final Icon TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg");
     public static final Icon TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg");
