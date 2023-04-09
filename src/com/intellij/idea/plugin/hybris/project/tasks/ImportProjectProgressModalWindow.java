@@ -212,6 +212,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (rootDirectory == null) return;
 
         final var target = Paths.get(rootDirectory.getPath(), ".idea", "icon.svg");
+        final var targetDark = Paths.get(rootDirectory.getPath(), ".idea", "icon_dark.svg");
 
         // do not override existing Icon
         if (Files.exists(target)) return;
@@ -220,6 +221,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             try (final var is = this.getClass().getResourceAsStream("/icons/hybrisIcon.svg")) {
                 if (is != null) {
                     Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException e) {
+                // NOP
+            }
+            // as for now, Dark icon supported only for Plugin's icons
+            try (final var is = this.getClass().getResourceAsStream("/icons/hybrisIcon_dark.svg")) {
+                if (is != null) {
+                    Files.copy(is, targetDark, StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (IOException e) {
                 // NOP
