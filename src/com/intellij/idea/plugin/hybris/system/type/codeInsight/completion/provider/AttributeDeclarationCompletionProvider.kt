@@ -20,10 +20,8 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provi
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
@@ -42,28 +40,13 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
         val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
         meta
             ?.allAttributes
-            ?.map {
-                LookupElementBuilder.create(it.name)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType, true)
-                    .withIcon(HybrisIcons.TS_ATTRIBUTE)
-            }
+            ?.map { TSLookupElementFactory.build(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
 
         meta
             ?.allRelationEnds
             ?.filter { it.qualifier != null }
-            ?.map {
-                LookupElementBuilder.create(it.qualifier!!)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType)
-                    .withIcon(
-                        when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
-                        }
-                    )
-            }
+            ?.mapNotNull { TSLookupElementFactory.build(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }
 

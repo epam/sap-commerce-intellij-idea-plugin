@@ -21,11 +21,9 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup.EiSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.ProcessingContext
@@ -35,42 +33,15 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val project = parameters.originalFile.project
         getExtensionDescriptors(parameters, project)
-                .map {
-                    LookupElementBuilder.create(it.name)
-                            .withTailText(tail(it), true)
-                            .withTypeText(it.type.name, true)
-                            .withIcon(
-                                    when (it.type) {
-                                        HybrisModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
-                                        HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                                        HybrisModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                                        HybrisModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                                        HybrisModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
-                                        else -> null
-                                    }
-                            )
-                }
-                .forEach { result.addElement(it) }
+            .map { EiSLookupElementFactory.build(it) }
+            .forEach { result.addElement(it) }
     }
 
     open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
-            .getAvailableExtensions()
-            .values
-
-    private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
-        val tail = listOfNotNull(
-                if (extensionDescriptor.deprecated) "deprecated" else null,
-                if (extensionDescriptor.extGenTemplateExtension) "template" else null,
-                if (extensionDescriptor.addon) "addon" else null,
-                if (extensionDescriptor.hacModule) "hac" else null,
-                if (extensionDescriptor.backofficeModule) "backoffice" else null,
-        ).joinToString(", ")
-        return if (tail.isBlank()) null
-        else " ($tail)"
-    }
+        .getAvailableExtensions()
+        .values
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-                ApplicationManager.getApplication().getService(ExtensionNameCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ExtensionNameCompletionProvider::class.java)
     }
 }

@@ -17,8 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -37,9 +36,6 @@ class EnumTypeConverter : AbstractTSConverterBase<EnumType>(EnumType::class.java
     override fun toString(dom: EnumType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
     override fun getPsiElement(resolvedValue: EnumType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
 
-    override fun createLookupElement(dom: EnumType?) = dom?.code?.stringValue
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TS_ENUM)
-        }
+    override fun createLookupElement(dom: EnumType?) = dom
+        ?.let { TSLookupElementFactory.build(it) }
 }

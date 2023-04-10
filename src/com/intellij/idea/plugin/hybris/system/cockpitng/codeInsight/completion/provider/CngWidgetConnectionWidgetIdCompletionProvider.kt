@@ -20,9 +20,8 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
@@ -41,29 +40,17 @@ open class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<Co
         with(CngMetaModelAccess.getInstance(project).getMetaModel()) {
             widgets
                 .values
-                .map {
-                    LookupElementBuilder.create(it.id)
-                        .withTailText(it.name?.let { name -> " $name" }, true)
-                        .withIcon(HybrisIcons.COCKPIT_NG_WIDGET)
-                }
+                .map { CngLookupElementFactory.build(it) }
                 .forEach { resultCaseInsensitive.addElement(it) }
 
             editorDefinitions
                 .values
-                .map {
-                    LookupElementBuilder.create(HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id)
-                        .withTailText(it.name?.let { name -> " $name" }, true)
-                        .withIcon(HybrisIcons.COCKPIT_NG_EDITOR_DEFINITION)
-                }
+                .map { CngLookupElementFactory.build(it, HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
                 .forEach { resultCaseInsensitive.addElement(it) }
 
             widgetDefinitions
                 .values
-                .map {
-                    LookupElementBuilder.create(HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id)
-                        .withTailText(it.name?.let { name -> " $name" }, true)
-                        .withIcon(HybrisIcons.COCKPIT_NG_WIDGET_DEFINITION)
-                }
+                .map { CngLookupElementFactory.build(it, HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB + it.id) }
                 .forEach { resultCaseInsensitive.addElement(it) }
         }
     }

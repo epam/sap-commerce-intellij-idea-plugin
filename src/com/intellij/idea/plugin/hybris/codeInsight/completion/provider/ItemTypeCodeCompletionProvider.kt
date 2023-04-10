@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -39,12 +37,7 @@ open class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParamet
         val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
         TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .filter { it.name != null }
-            .map {
-                LookupElementBuilder.create(it.name!!)
-                    .withTailText(if (it.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
-                    .withIcon(HybrisIcons.TS_ITEM)
-            }
+            .mapNotNull { TSLookupElementFactory.build(it) }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 

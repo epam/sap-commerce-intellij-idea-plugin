@@ -166,6 +166,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider" order="first"/>
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider" order="first"/>

@@ -21,6 +21,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.util.parentsOfType
@@ -54,11 +55,7 @@ open class CngWidgetSettingCompletionProvider : CompletionProvider<CompletionPar
             .widgetDefinitions[widgetDefinitionId]
             ?.settings
             ?.values
-            ?.map {
-                LookupElementBuilder.create(it.id)
-                    .withTypeText(it.defaultValue?.let { defaultValue -> " $defaultValue" }, true)
-                    .withTypeText(it.type)
-            }
+            ?.map { CngLookupElementFactory.build(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }
 

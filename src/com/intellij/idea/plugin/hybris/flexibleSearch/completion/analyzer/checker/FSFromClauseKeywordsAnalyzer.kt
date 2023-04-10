@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.check
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.psi.PsiElement
@@ -42,10 +42,7 @@ object FSFromClauseKeywordsAnalyzer {
             addToResult(hashSetOf("AS"), completionResultSet.withPrefixMatcher(""), AllIcons.Nodes.Function)
         }
         if (isIdentifier(parameters) && context.parentIsFromClause() && PsiTreeUtil.getPrevSiblingOfType(parameters.position, FlexibleSearchTableReferenceList::class.java) == null) {
-            completionResultSet.addElement(LookupElementBuilder.create("{}").withPresentableText("{...}").withInsertHandler { ctx, _ ->
-                val cursorOffset = ctx.editor.caretModel.offset
-                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
-            }.withCaseSensitivity(false))
+            completionResultSet.addElement(FSLookupElementFactory.buildReference())
         }
         
         if (isIdentifier(parameters) && parameters.position.parent is PsiErrorElement) {

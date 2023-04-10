@@ -23,14 +23,12 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAM
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem.TSGlobalMetaItemAttribute
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang.StringUtils
 import java.util.*
@@ -50,29 +48,15 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
     }
 
     private fun getCompletions() = listOf(
-        LookupElementBuilder.create(CODE_ATTRIBUTE_NAME)
-            .withIcon(HybrisIcons.TS_ATTRIBUTE)
-            .withTypeText("String", true),
-        LookupElementBuilder.create(NAME_ATTRIBUTE_NAME)
-            .withIcon(HybrisIcons.TS_ATTRIBUTE)
-            .withTypeText("String", true)
+        TSLookupElementFactory.buildAttribute(CODE_ATTRIBUTE_NAME),
+        TSLookupElementFactory.buildAttribute(NAME_ATTRIBUTE_NAME)
     )
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
         val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()
         val completions = LinkedList(getCompletions(linkMetaItem, setOf(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)))
-        completions.add(
-            LookupElementBuilder.create(SOURCE_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.TS_RELATION_SOURCE)
-                .withStrikeoutness(metaRelation.source.isDeprecated)
-                .withTypeText(metaRelation.source.flattenType, true)
-        )
-        completions.add(
-            LookupElementBuilder.create(TARGET_ATTRIBUTE_NAME)
-                .withIcon(HybrisIcons.TS_RELATION_TARGET)
-                .withStrikeoutness(metaRelation.target.isDeprecated)
-                .withTypeText(metaRelation.target.flattenType, true)
-        )
+        completions.add(TSLookupElementFactory.build(metaRelation.source, SOURCE_ATTRIBUTE_NAME))
+        completions.add(TSLookupElementFactory.build(metaRelation.target, TARGET_ATTRIBUTE_NAME))
         return completions
     }
 
@@ -82,17 +66,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         val attributes = metaItem.allAttributes
             .mapNotNull { mapAttributeToLookup(excludeNames, it) }
         val relationEnds = metaItem.allRelationEnds
-            .filter { it.qualifier != null }
-            .map {
-                LookupElementBuilder.create(it.qualifier!!)
-                    .withIcon(
-                        when (it.end) {
-                            RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
-                            RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
-                        }
-                    )
-                    .withTypeText(it.flattenType, true)
-            }
+            .mapNotNull { TSLookupElementFactory.build(it) }
         return attributes + relationEnds
     }
 
@@ -103,11 +77,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         val name = attribute.name
         return if (StringUtils.isBlank(name) || excludeNames.contains(name.trim { it <= ' ' })) {
             null
-        } else LookupElementBuilder.create(name.trim { it <= ' ' })
-            .withIcon(HybrisIcons.TS_ATTRIBUTE)
-            .withTailText(if (attribute.isDynamic) " (" + HybrisI18NBundleUtils.message("hybris.ts.type.dynamic") + ')' else "", true)
-            .withStrikeoutness(attribute.isDeprecated)
-            .withTypeText(attribute.flattenType, true)
+        } else TSLookupElementFactory.build(attribute, name)
     }
 
 }

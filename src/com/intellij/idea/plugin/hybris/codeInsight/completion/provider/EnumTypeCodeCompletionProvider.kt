@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -40,11 +38,7 @@ class EnumTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>(
         val resultCaseInsensitive = result.caseInsensitive()
         TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaEnum>(TSMetaType.META_ENUM)
             .filter { it.name != null }
-            .map {
-                LookupElementBuilder.create(it.name!!)
-                    .withTailText(if (it.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                    .withIcon(HybrisIcons.TS_ENUM)
-            }
+            .mapNotNull { TSLookupElementFactory.build(it, it.name) }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 

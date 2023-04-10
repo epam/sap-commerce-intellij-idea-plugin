@@ -17,8 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -37,9 +36,6 @@ open class ItemTypeConverter : AbstractTSConverterBase<ItemType>(ItemType::class
     override fun toString(dom: ItemType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
     override fun getPsiElement(resolvedValue: ItemType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
 
-    override fun createLookupElement(dom: ItemType?) = dom?.code?.stringValue
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TS_ITEM)
-        }
+    override fun createLookupElement(dom: ItemType?) = dom
+        ?.let { TSLookupElementFactory.build(it) }
 }

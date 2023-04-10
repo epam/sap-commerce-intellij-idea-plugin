@@ -17,8 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaAtomic
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -37,9 +36,6 @@ class AtomicTypeConverter : AbstractTSConverterBase<AtomicType>(AtomicType::clas
     override fun toString(dom: AtomicType?, context: ConvertContext): String? = useAttributeValue(dom) { it.clazz }
     override fun getPsiElement(resolvedValue: AtomicType?): XmlAttributeValue? = navigateToValue(resolvedValue) { it.clazz }
 
-    override fun createLookupElement(dom: AtomicType?) = dom?.clazz?.stringValue
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TS_ATOMIC)
-        }
+    override fun createLookupElement(dom: AtomicType?) = dom
+        ?.let { TSLookupElementFactory.build(it) }
 }

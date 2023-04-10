@@ -21,14 +21,12 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
@@ -68,27 +66,11 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         resultSet: CompletionResultSet
     ) {
         metaItem.allAttributes
-            .map {
-                LookupElementBuilder.create(it.name)
-                    .withIcon(HybrisIcons.TS_ATTRIBUTE)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType, true)
-            }
+            .map { TSLookupElementFactory.build(it) }
             .forEach { resultSet.addElement(it) }
 
         metaItem.allRelationEnds
-            .filter { it.qualifier != null }
-            .map {
-                LookupElementBuilder.create(it.qualifier!!)
-                    .withStrikeoutness(it.isDeprecated)
-                    .withTypeText(it.flattenType, true)
-                    .withIcon(
-                        when (it.end) {
-                            TSMetaRelation.RelationEnd.SOURCE -> HybrisIcons.TS_RELATION_SOURCE
-                            TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
-                        }
-                    )
-            }
+            .mapNotNull { TSLookupElementFactory.build(it) }
             .forEach { resultSet.addElement(it) }
     }
 
@@ -98,13 +80,8 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         resultSet: CompletionResultSet
     ) {
         metaService.findMetaEnumByName(typeName)
-            ?.let {
-                resultSet.addElement(
-                    LookupElementBuilder.create("code")
-                        .withTailText(if (it.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                        .withIcon(HybrisIcons.TS_ENUM)
-                )
-            }
+            ?.let { TSLookupElementFactory.build(it, EnumType.CODE) }
+            ?.let { resultSet.addElement(it) }
     }
 
     private fun findItemTypeReference(element: PsiElement): String? {

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider
 import com.intellij.idea.plugin.hybris.system.type.psi.TSPatterns
 import com.intellij.patterns.PlatformPatterns
@@ -31,6 +32,11 @@ class TSCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(TSPatterns.INDEX_KEY_ATTRIBUTE),
             TSAttributeDeclarationCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(TSPatterns.SPRING_INTERCEPTOR_TYPE_CODE),
+            ItemTypeCodeCompletionProvider.instance
         )
     }
 }

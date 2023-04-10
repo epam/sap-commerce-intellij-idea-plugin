@@ -22,10 +22,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
@@ -45,10 +44,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val query = getQuery(position)
             ProjectPropertiesUtils.findAutoCompleteProperties(position.project, query)
                 .mapNotNull { it.key }
-                .map {
-                    LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
-                }
+                .map { TSLookupElementFactory.buildCustomProperty(it) }
                 .forEach { result.addElement(it) }
         }
 
@@ -61,10 +57,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             ProjectPropertiesUtils.findAutoCompleteProperties(position.project, query)
                 .mapNotNull { it.key }
                 .map { prefix + it }
-                .map {
-                    LookupElementBuilder.create(it)
-                        .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
-                }
+                .map { TSLookupElementFactory.buildCustomProperty(it) }
                 .forEach { result.addElement(it) }
         }
     }

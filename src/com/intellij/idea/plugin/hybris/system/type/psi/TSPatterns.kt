@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.insideTagPattern
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
+import com.intellij.patterns.XmlAttributeValuePattern
+import com.intellij.patterns.XmlPatterns
 
 object TSPatterns {
 
@@ -35,4 +37,20 @@ object TSPatterns {
                 .inside(insideTagPattern("itemtype"))
         )
         .inFile(itemsXmlFile)
+
+    val SPRING_INTERCEPTOR_TYPE_CODE: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
+        .withSuperParent(2,
+            XmlPatterns.xmlTag()
+                .withLocalName("property")
+                .withParent(
+                    XmlPatterns.xmlTag()
+                        .withLocalName("bean")
+                        .withAttributeValue("class", HybrisConstants.CLASS_INTERCEPTOR_MAPPING)
+                )
+        )
+        .inside(
+            XmlPatterns.xmlTag()
+                .withLocalName("beans")
+                .withNamespace("http://www.springframework.org/schema/beans")
+        )
 }

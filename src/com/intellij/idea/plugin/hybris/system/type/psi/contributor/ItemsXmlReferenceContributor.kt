@@ -19,14 +19,21 @@ package com.intellij.idea.plugin.hybris.system.type.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.type.psi.TSPatterns
 import com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider
+import com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 
 class ItemsXmlReferenceContributor : PsiReferenceContributor() {
+
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
             TSPatterns.INDEX_KEY_ATTRIBUTE,
             TSItemAttributeReferenceProvider.instance
+        )
+
+        registrar.registerReferenceProvider(
+            TSPatterns.SPRING_INTERCEPTOR_TYPE_CODE,
+            TSItemReferenceProvider.instance
         )
     }
 }

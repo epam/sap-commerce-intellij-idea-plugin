@@ -67,7 +67,7 @@ public final class HybrisIcons {
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");
     public static final Icon LOCALIZED = getIcon("/icons/localized.svg");
 
-    public static final Icon MACROS = getIcon("/icons/macros.png");
+    public static final Icon MACROS = getIcon("/icons/macros.svg");
 
     public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.svg");
 

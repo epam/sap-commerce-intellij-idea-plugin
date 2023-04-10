@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.check
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinType
@@ -56,10 +56,7 @@ object FSWhereClauseKeywordsAnalyzer {
             }
         }
         if (isColumnReferenceIdentifier(parameters) && context.parentIsWhereClause()) {
-            completionResultSet.addElement(LookupElementBuilder.create("{}").withPresentableText("{...}").withInsertHandler { ctx, _ ->
-                val cursorOffset = ctx.editor.caretModel.offset
-                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
-            }.withCaseSensitivity(false))
+            completionResultSet.addElement(FSLookupElementFactory.buildReference())
         }
         if (isJoinCondition(parameters)) {
             addSymbolToResult(hashSetOf("=", ">", "<>", "<", "<=", ">="), completionResultSet.withPrefixMatcher(""), AllIcons.Nodes.Function)

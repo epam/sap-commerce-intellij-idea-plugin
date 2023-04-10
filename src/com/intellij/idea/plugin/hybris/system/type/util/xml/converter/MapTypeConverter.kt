@@ -17,9 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -38,19 +36,9 @@ class MapTypeConverter : AbstractTSConverterBase<MapType>(MapType::class.java) {
     override fun toString(dom: MapType?, context: ConvertContext): String? = useAttributeValue(dom) { it.code }
     override fun getPsiElement(resolvedValue: MapType?): PsiElement? = navigateToValue(resolvedValue) { it.code }
 
-    override fun createLookupElement(dom: MapType?): LookupElement? {
-        val meta = dom
-            ?.module
-            ?.project
-            ?.let { TSMetaModelAccess.getInstance(it).findMetaMapByName(dom.code.stringValue) }
-            ?: return null
-
-        if (meta.name == null) return null
-
-        return dom.let {
-            LookupElementBuilder.create(meta.name!!)
-                .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.TS_MAP)
-        }
-    }
+    override fun createLookupElement(dom: MapType?) = dom
+        ?.module
+        ?.project
+        ?.let { TSMetaModelAccess.getInstance(it).findMetaMapByName(dom.code.stringValue) }
+        ?.let { TSLookupElementFactory.build(it) }
 }

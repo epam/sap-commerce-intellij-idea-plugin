@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -40,12 +39,7 @@ class RelationTypeCodeCompletionProvider : CompletionProvider<CompletionParamete
         val project = getProject(parameters) ?: return
         val resultCaseInsensitive = result.caseInsensitive()
         TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
-            .filter { it.name != null }
-            .map {
-                LookupElementBuilder.create(it.name!!)
-                    .withIcon(HybrisIcons.TS_RELATION)
-                    .withTypeText(it.flattenType)
-            }
+            .mapNotNull { TSLookupElementFactory.build(it) }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 

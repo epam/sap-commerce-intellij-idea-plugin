@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
@@ -40,11 +39,7 @@ open class CngEditorDefinitionCodeCompletionProvider : CompletionProvider<Comple
         CngMetaModelAccess.getInstance(project).getMetaModel()
             .editorDefinitions
             .values
-            .map {
-                LookupElementBuilder.create(it.id)
-                    .withTailText(it.name?.let { name -> " $name" }, true)
-                    .withIcon(HybrisIcons.COCKPIT_NG_EDITOR_DEFINITION)
-            }
+            .map { CngLookupElementFactory.build(it, it.id) }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 

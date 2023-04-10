@@ -45,7 +45,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
 
     private val saveButton = JButton(getIcon("/icons/menu-saveall.svg"))
     private val loadButton = JButton(getIcon("/icons/upload.svg"))
-    private val removeButton = JButton(getIcon("/icons/delete.png"))
+    private val removeButton = JButton(getIcon("/icons/delete.svg"))
 
     private val regionEntityService = RegionEntityService.getInstance(project)
     private val regionService = RegionService.getInstance(project)
