@@ -20,8 +20,11 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -95,7 +98,7 @@ public interface CoreModule extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("generated")
-	GenericAttributeValue<Boolean> getGenerated();
+	FalseAttributeValue getGenerated();
 
 
 	/**
@@ -121,7 +124,7 @@ public interface CoreModule extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("generatePartOf")
-	GenericAttributeValue<Boolean> getGeneratePartOf();
+	TrueAttributeValue getGeneratePartOf();
 
 
 }

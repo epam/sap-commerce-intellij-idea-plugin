@@ -37,7 +37,9 @@ abstract class TypeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), 
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FxsTSItemReference(this)
         }
-        return arrayOf(myReference!!)
+        return myReference
+            ?.let { arrayOf(it) }
+            ?: emptyArray()
     }
 
     override fun clone(): Any {
