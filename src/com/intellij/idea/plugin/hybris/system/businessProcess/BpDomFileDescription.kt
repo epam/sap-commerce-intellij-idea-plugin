@@ -27,13 +27,12 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.BUSINESS_PROCESS_ROOT_TAG) {
+class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BUSINESS_PROCESS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && super.isMyFile(file, module)
         && CommonIdeaService.getInstance().isHybrisProject(file.project)
 
 }

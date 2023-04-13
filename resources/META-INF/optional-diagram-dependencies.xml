@@ -46,13 +46,21 @@
 
         <projectConfigurable id="hybris.project.diagram.ts.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectDiagramTSSettingsConfigurableProvider"/>
+
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
     </extensions>
 
     <actions>
+        <action id="ShowBusinessProcessDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.businessProcess.actions.ShowBusinessProcessDiagramAction"
+                text="Show Business Process Diagram"
+                icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.BUSINESS_PROCESS">
+        </action>
         <action id="ShowTypeSystemDiagram"
                 class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
                 text="Show Type System Diagram"
-                icon="AllIcons.FileTypes.Diagram">
+                icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.TYPE_SYSTEM">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
         <action id="ShowModuleDependencyDiagram"
