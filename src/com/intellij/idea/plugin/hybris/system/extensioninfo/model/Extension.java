@@ -20,6 +20,7 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +102,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("isoldstyleextension")
-	GenericAttributeValue<Boolean> getIsOldStyleExtension();
+	FalseAttributeValue getIsOldStyleExtension();
 
 
 	/**
@@ -114,7 +115,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("requiredbyall")
-	GenericAttributeValue<Boolean> getRequiredByAll();
+	FalseAttributeValue getRequiredByAll();
 
 
 	/**
@@ -167,7 +168,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("usemaven")
-	GenericAttributeValue<Boolean> getUseMaven();
+	FalseAttributeValue getUseMaven();
 
 
 	/**
@@ -180,7 +181,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("jaloLogicFree")
-	GenericAttributeValue<Boolean> getJaloLogicFree();
+	FalseAttributeValue getJaloLogicFree();
 
 
 	/**

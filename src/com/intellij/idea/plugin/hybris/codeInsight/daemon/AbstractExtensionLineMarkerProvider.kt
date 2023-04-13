@@ -20,21 +20,19 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
+import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.modules
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.xml.*
-import com.intellij.util.xml.DomManager
+import com.intellij.psi.xml.XmlAttributeValue
+import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlToken
+import com.intellij.psi.xml.XmlTokenType
 import javax.swing.Icon
 
 abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerProvider<XmlAttributeValue>() {
@@ -52,16 +50,9 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         if (PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)?.localName != getParentTagName()) return emptyList()
         val descriptor = HybrisProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
             ?: return emptyList()
-        val module = psi.project.modules
+        val extensionInfoName = psi.project.modules
             .find { it.name == psi.value }
-            ?: return emptyList()
-        val extensionInfoName = ModuleRootManager.getInstance(module).contentRoots
-            .firstNotNullOfOrNull { it.findFile(HybrisConstants.EXTENSION_INFO_XML) }
-            ?.let { PsiManager.getInstance(psi.project).findFile(it) }
-            ?.let { it as? XmlFile }
-            ?.let { DomManager.getDomManager(psi.project).getFileElement(it, ExtensionInfo::class.java) }
-            ?.rootElement
-            ?.extension
+            ?.let { EiSModelAccess.getExtensionInfo(it) }
             ?.name
             ?.xmlAttributeValue
             ?: return emptyList()
