@@ -20,8 +20,11 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -70,7 +73,7 @@ public interface WebModule extends DomElement {
 	 */
 	@NotNull
 	@Attribute ("jspcompile")
-	GenericAttributeValue<Boolean> getJspCompile();
+	TrueAttributeValue getJspCompile();
 
 
 	/**
