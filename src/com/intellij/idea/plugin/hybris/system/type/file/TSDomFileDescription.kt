@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, "items") {
+class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, HybrisConstants.ROOT_TAG_ITEMS_XML) {
 
     override fun isMyFile(
         file: XmlFile, module: Module?

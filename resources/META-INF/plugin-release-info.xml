@@ -91,6 +91,10 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.5</h3>
+            <ul>
+                <li><i>Feature:</i> Added generate Diagram run line marker for Business Process and <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/327" target="_blank" rel="nofollow">#327</a>)</li>
+            </ul>
             <h3>2023.1.4</h3>
             <ul>
                 <li><i>Feature:</i> Enabled Wizard-based Project Import from the Welcome Screen (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/306" target="_blank" rel="nofollow">#306</a>)</li>
