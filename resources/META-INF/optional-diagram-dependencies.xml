@@ -49,6 +49,7 @@
 
         <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
         <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
     </extensions>
 
     <actions>

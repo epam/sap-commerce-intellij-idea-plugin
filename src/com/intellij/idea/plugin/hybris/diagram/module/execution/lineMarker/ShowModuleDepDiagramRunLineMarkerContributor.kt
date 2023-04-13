@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker
+package com.intellij.idea.plugin.hybris.diagram.module.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
@@ -29,7 +29,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
 
-class ShowBPDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
+class ShowModuleDepDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
         val xmlFile = element.containingFile as? XmlFile ?: return null
@@ -38,10 +38,10 @@ class ShowBPDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
         val prevSibling = element.prevSibling as? XmlToken ?: return null
         if (prevSibling.tokenType != XmlTokenType.XML_START_TAG_START) return null
 
-        if (element.text != HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) return null
-        if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Process::class.java) == null) return null
+        if (element.text != HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) return null
+        if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, ExtensionInfo::class.java) == null) return null
 
-        val action = ActionManager.getInstance().getAction("ShowBusinessProcessDiagram") ?: return null
+        val action = ActionManager.getInstance().getAction("ShowModuleDependencyDiagram") ?: return null
         return Info(AllIcons.FileTypes.Diagram, arrayOf(action)) { action.templateText }
     }
 }

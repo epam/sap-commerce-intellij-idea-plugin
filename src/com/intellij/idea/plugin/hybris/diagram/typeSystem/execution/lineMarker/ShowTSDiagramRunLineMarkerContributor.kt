@@ -26,14 +26,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
+import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
 
 class ShowTSDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
+        val xmlFile = element.containingFile as? XmlFile ?: return null
         if (element !is XmlToken) return null
         if (element.parent !is XmlTag) return null
-        val xmlFile = element.containingFile as? XmlFile ?: return null
+        val prevSibling = element.prevSibling as? XmlToken ?: return null
+        if (prevSibling.tokenType != XmlTokenType.XML_START_TAG_START) return null
 
         if (element.text != HybrisConstants.ROOT_TAG_ITEMS_XML) return null
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Items::class.java) == null) return null

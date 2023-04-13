@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
-class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, "extensioninfo") {
+class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) {
 
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTENSION_INFO
 

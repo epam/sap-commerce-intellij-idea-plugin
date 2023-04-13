@@ -93,7 +93,13 @@
         <![CDATA[
             <h3>2023.1.5</h3>
             <ul>
-                <li><i>Feature:</i> Added generate Diagram run line marker for Business Process and <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/327" target="_blank" rel="nofollow">#327</a>)</li>
+                <li><i>Feature:</i> Added generate Diagram run line marker for
+                    <ul>
+                        <li>Business Process (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/331" target="_blank" rel="nofollow">#331</a>)</li>
+                        <li><code>items.xml</code></li>
+                        <li><code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/332" target="_blank" rel="nofollow">#332</a>)</li>
+                    </ul>
+                </li>
             </ul>
             <h3>2023.1.4</h3>
             <ul>
@@ -109,9 +115,9 @@
                 <li><i>Feature:</i> Project import will respect extensions registered via <code>path</code> with <code>autoload=true</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/319" target="_blank" rel="nofollow">#319</a>)</li>
                 <li><i>Feature:</i> Added new inspection rules for <code>items.xml</code>
                     <ul>
-                        <li>Relation qualifier and modifiers must not be declared for part with <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
-                        <li>Only one side of many-to-many relation must be <code>navigable='false'</code>(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/315" target="_blank" rel="nofollow">#315</a>)</li>
-                        <li>Qualifier must exist for <code>navigable='true'</code> part in many-to-many relation(<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/318" target="_blank" rel="nofollow">#318</a>)</li>
+                        <li>Relation qualifier and modifiers must not be declared for <code>navigable='false'</code> end (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307" target="_blank" rel="nofollow">#307</a>)</li>
+                        <li>Only one side of many-to-many relation must be <code>navigable='false'</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/315" target="_blank" rel="nofollow">#315</a>)</li>
+                        <li>Qualifier must exist for <code>navigable='true'</code> part in many-to-many relation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/318" target="_blank" rel="nofollow">#318</a>)</li>
                     </ul>
                 </li>
                 <li><i>Bug Fix:</i> VirtualFile is null for ModelsUtils (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/312" target="_blank" rel="nofollow">#312</a>)</li>
