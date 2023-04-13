@@ -69,6 +69,7 @@ object HybrisConstants {
 
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
     const val ROOT_TAG_ITEMS_XML = "items"
+    const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
 
     const val DOT_PROJECT = ".project"
     const val SETTINGS_GRADLE = "settings.gradle"
