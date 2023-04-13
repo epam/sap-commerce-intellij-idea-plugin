@@ -31,7 +31,7 @@ class HybrisSpringProcessReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
-            tagAttributeValuePattern(HybrisConstants.BUSINESS_PROCESS_ROOT_TAG, "action", "bean"),
+            tagAttributeValuePattern(HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML, "action", "bean"),
             HybrisSpringProcessReferenceProvider.instance
         )
 

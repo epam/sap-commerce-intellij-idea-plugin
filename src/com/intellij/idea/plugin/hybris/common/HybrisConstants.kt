@@ -67,7 +67,8 @@ object HybrisConstants {
     const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
     const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
 
-    const val BUSINESS_PROCESS_ROOT_TAG = "process"
+    const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
+    const val ROOT_TAG_ITEMS_XML = "items"
 
     const val DOT_PROJECT = ".project"
     const val SETTINGS_GRADLE = "settings.gradle"
