@@ -40,9 +40,9 @@ kotlin {
 }
 
 intellij {
-    type = properties("intellij.type")
-    version = properties("intellij.version")
-    pluginName = properties("intellij.plugin.name")
+    type = properties("platformType")
+    version = properties("platformVersion")
+    pluginName = properties("pluginName")
     downloadSources = properties("intellij.download.sources").get().toBoolean()
     updateSinceUntilBuild = properties("intellij.update.since.until.build").get().toBoolean()
 
@@ -77,9 +77,9 @@ tasks {
     }
 
     patchPluginXml {
-        version = properties("intellij.plugin.version")
-        sinceBuild = properties("intellij.plugin.since.build")
-        untilBuild = properties("intellij.plugin.until.build")
+        version = properties("pluginVersion")
+        sinceBuild = properties("pluginSinceBuild")
+        untilBuild = properties("pluginUntilBuild")
     }
 
     runPluginVerifier {
