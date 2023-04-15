@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
-import org.apache.commons.collections4.CollectionUtils
 
 class BpGraphServiceImpl : BpGraphService {
 
@@ -101,7 +100,7 @@ class BpGraphServiceImpl : BpGraphService {
                 "" to navigableElement.then.stringValue
             )
 
-            if (navigableElement.case.isValid && CollectionUtils.isNotEmpty(navigableElement.case.choices)) {
+            if (navigableElement.case.isValid && navigableElement.case.choices.isNotEmpty()) {
                 navigableElement.case.choices
                     .filter { it.getId().stringValue != null }
                     .forEach { transitions[it.getId().stringValue!!] = it.then.stringValue }

@@ -17,12 +17,13 @@
  */
 
 fun properties(key: String) = providers.gradleProperty(key)
+fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    idea
-    id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.20"
-    id("org.jetbrains.intellij") version "1.13.3"
+    id("java") // Java support
+    alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
+    alias(libs.plugins.qodana) // Gradle Qodana Plugin
 }
 
 repositories {
@@ -39,14 +40,22 @@ kotlin {
 }
 
 intellij {
-    type.set(properties("intellij.type"))
-    version.set(properties("intellij.version"))
-    pluginName.set(properties("intellij.plugin.name"))
-    downloadSources.set(properties("intellij.download.sources").get().toBoolean())
-    updateSinceUntilBuild.set(properties("intellij.update.since.until.build").get().toBoolean())
+    type = properties("intellij.type")
+    version = properties("intellij.version")
+    pluginName = properties("intellij.plugin.name")
+    downloadSources = properties("intellij.download.sources").get().toBoolean()
+    updateSinceUntilBuild = properties("intellij.update.since.until.build").get().toBoolean()
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    plugins.addAll(*properties("intellij.plugins").get().split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
+    plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
+}
+
+// Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin
+qodana {
+    cachePath = provider { file(".qodana").canonicalPath }
+    reportPath = provider { file("build/reports/inspections").canonicalPath }
+    saveReport = true
+    showReport = environment("QODANA_SHOW_REPORT").map { it.toBoolean() }.getOrElse(false)
 }
 
 sourceSets.main {
@@ -58,6 +67,9 @@ sourceSets.main {
 }
 
 tasks {
+    wrapper {
+        gradleVersion = properties("gradleVersion").get()
+    }
 
 //    setupDependencies {
 //        doLast {
@@ -77,9 +89,9 @@ tasks {
     }
 
     patchPluginXml {
-        version.set(properties("intellij.plugin.version"))
-        sinceBuild.set(properties("intellij.plugin.since.build"))
-        untilBuild.set(properties("intellij.plugin.until.build"))
+        version = properties("intellij.plugin.version")
+        sinceBuild = properties("intellij.plugin.since.build")
+        untilBuild = properties("intellij.plugin.until.build")
     }
 
     runPluginVerifier {
@@ -91,27 +103,31 @@ tasks {
             delete("out")
         }
     }
+
+//    runInspections {
+////        env("QODANA_REPO_URL", "https://github.com/epam/sap-commerce-intellij-idea-plugin")
+//        mount("~/.m2", "/root/.m2")
+//    }
 }
 
+// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
 
-    implementation(kotlin("stdlib"))
-    implementation("org.jsoup:jsoup:1.15.3")
-    implementation("com.wutka:dtdparser:1.21")
-    implementation("commons-io:commons-io:2.11.0")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("org.apache.maven:maven-model:3.8.7")
-    implementation("commons-codec:commons-codec:1.15")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.commons:commons-collections4:4.4")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
-    implementation("com.sun.xml.bind:jaxb-impl:4.0.1")
-
-    implementation("org.apache.solr:solr-solrj:8.8.2") {
+    implementation(libs.commons.collections4)
+    implementation(libs.commons.io)
+    implementation(libs.commons.codec)
+    implementation(libs.jaxb.impl)
+    implementation(libs.jakarta.xml.bind.api)
+    implementation(libs.jsr305)
+    implementation(libs.jsoup)
+    implementation(libs.dtdparser)
+    implementation(libs.maven.model)
+    implementation(libs.solr.solrj) {
         exclude("org.slf4j", "slf4j-api")
         exclude("org.apache.httpcomponents", "httpclient")
         exclude("org.apache.httpcomponents", "httpcore")
         exclude("org.apache.httpcomponents", "httpmime")
     }
+
 }
 
