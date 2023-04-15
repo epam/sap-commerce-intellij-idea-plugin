@@ -12,7 +12,8 @@
 .idea/kotlinScripting.xml
 .idea/dataSources.local.xml
 
-.qodana
+.qodana/**
+!/.qodana/baseline.sarif.json
 
 /out/
 /build/
