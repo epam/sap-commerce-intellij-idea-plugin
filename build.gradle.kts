@@ -92,10 +92,10 @@ tasks {
         }
     }
 
-//    runInspections {
-////        env("QODANA_REPO_URL", "https://github.com/epam/sap-commerce-intellij-idea-plugin")
-//        mount("~/.m2", "/root/.m2")
-//    }
+    runInspections {
+//        env("QODANA_REPO_URL", "https://github.com/epam/sap-commerce-intellij-idea-plugin")
+        mount("~/.m2", "/root/.m2")
+    }
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
