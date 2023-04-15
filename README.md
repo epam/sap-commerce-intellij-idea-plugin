@@ -3,6 +3,9 @@
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
 [![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)](https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset)
 
+[![CodeQL](https://github.com/epam/sap-commerce-intellij-idea-plugin/actions/workflows/codeql.yml/badge.svg)](https://github.com/epam/sap-commerce-intellij-idea-plugin/actions/workflows/codeql.yml)
+[![Qodana](https://github.com/epam/sap-commerce-intellij-idea-plugin/actions/workflows/qodana_scan.yml/badge.svg)](https://github.com/epam/sap-commerce-intellij-idea-plugin/actions/workflows/qodana_scan.yml)
+
 [![JetBrains IntelliJ Platform SDK Docs](https://jb.gg/badges/docs.svg)](https://plugins.jetbrains.com/docs/intellij)
 [![JetBrains IntelliJ Platform SDK Samples](https://img.shields.io/badge/JB-SDK%20samples-lightgreen)](https://github.com/JetBrains/intellij-sdk-code-samples)
 [![JetBrains IntelliJ Platform UI Guidelines](https://img.shields.io/badge/JB-UI%20Guidelines-lightgreen)](https://jetbrains.github.io/ui/)
