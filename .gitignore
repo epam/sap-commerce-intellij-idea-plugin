@@ -12,6 +12,8 @@
 .idea/kotlinScripting.xml
 .idea/dataSources.local.xml
 
+.qodana
+
 /out/
 /build/
 /buildsrc/build
