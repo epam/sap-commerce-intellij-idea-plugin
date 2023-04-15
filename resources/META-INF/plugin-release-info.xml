@@ -93,6 +93,11 @@
         <![CDATA[
             <h3>2023.1.5</h3>
             <ul>
+                <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
+                    <ul>
+                        <li>Type attribute validation for complex header (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/338" target="_blank" rel="nofollow">#338</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added generate Diagram run line marker for
                     <ul>
                         <li>Business Process (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/331" target="_blank" rel="nofollow">#331</a>)</li>
