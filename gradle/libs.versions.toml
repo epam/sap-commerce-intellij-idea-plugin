@@ -1,0 +1,38 @@
+[versions]
+# libraries
+jsoup = "1.15.4"
+dtdparser = "1.21"
+commonsIO = "2.11.0"
+jsr305 = "3.0.2"
+mavenModel = "3.8.7"
+commonsCodec = "1.15"
+commonsLang3 = "3.12.0"
+commonsCollections4 = "4.4"
+jakartaXmlBindApi = "4.0.0"
+jaxbImpl = "4.0.1"
+solrSolrj = "8.8.2"
+
+# plugins
+kotlin = "1.8.20"
+gradleIntelliJPlugin = "1.13.3"
+
+[libraries]
+commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
+commons-codec = { group = "commons-codec", name = "commons-codec", version.ref = "commonsCodec" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3" }
+commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version.ref = "commonsCollections4" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+dtdparser = { group = "com.wutka", name = "dtdparser", version.ref = "dtdparser" }
+jsr305 = { group = "com.google.code.findbugs", name = "jsr305", version.ref = "jsr305" }
+maven-model = { group = "org.apache.maven", name = "maven-model", version.ref = "mavenModel" }
+jakarta-xml-bind-api = { group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version.ref = "jakartaXmlBindApi" }
+jaxb-impl = { group = "com.sun.xml.bind", name = "jaxb-impl", version.ref = "jaxbImpl" }
+solr-solrj = { group = "org.apache.solr", name = "solr-solrj", version.ref = "solrSolrj" }
+
+[bundles]
+commons = ["commons-io", "commons-codec", "commons-lang3", "commons-collections4"]
+jaxb = ["jaxb-impl", "jakarta-xml-bind-api"]
+
+[plugins]
+gradleIntelliJPlugin = { id = "org.jetbrains.intellij", version.ref = "gradleIntelliJPlugin" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
