@@ -17,10 +17,6 @@ on:
       - main
       - 'releases/*'
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches:
-      - main
-      - 'releases/*'
   schedule:
     - cron: '33 17 * * 1'
 
