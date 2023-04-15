@@ -21,14 +21,15 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -48,7 +49,9 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         Validate.notNull(result)
 
         val project = parameters.position.project
-        val psiElementUnderCaret = parameters.position
+        val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
+            parameters.position.parent
+        else parameters.position
         val typeName = findItemTypeReference(psiElementUnderCaret) ?: return
 
         val metaService = TSMetaModelAccess.getInstance(project)
@@ -84,14 +87,15 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
             ?.let { resultSet.addElement(it) }
     }
 
-    private fun findItemTypeReference(element: PsiElement): String? {
-        val parent = PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
-        val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java) ?: return null
-
-        return parameterName.references
-            .mapNotNull { it.resolve() }
-            .firstNotNullOfOrNull { obtainTypeName(it) }
-    }
+    private fun findItemTypeReference(element: PsiElement) = (
+        PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
+            ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
+                ?.anyHeaderParameterName
+        )
+        ?.references
+        ?.firstOrNull()
+        ?.resolve()
+        ?.let { obtainTypeName(it) }
 
     private fun obtainTypeName(reference: PsiElement): String? {
         val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }

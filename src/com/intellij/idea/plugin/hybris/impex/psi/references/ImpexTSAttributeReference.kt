@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
@@ -37,6 +36,7 @@ import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
 internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
+
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
@@ -52,18 +52,14 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexTSAttributeReference> { ref ->
             val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
-            val metaItemService = TSMetaItemService.getInstance(ref.project)
             val featureName = ref.value
-            var result = tryResolveForItemType(ref.element, metaModelAccess, metaItemService, featureName)
-            if (result == null) {
-                result = tryResolveForRelationType(ref.element, metaModelAccess, metaItemService, featureName)
-            }
-            if (result == null) {
-                result = tryResolveForEnumType(ref.element, metaModelAccess, featureName)
-            }
-            if (result == null) {
-                result = ResolveResult.EMPTY_ARRAY
-            }
+            val result = (
+                tryResolveForItemType(ref.element, metaModelAccess, featureName)
+                    ?: tryResolveForRelationType(ref.element, metaModelAccess, featureName)
+                    ?: tryResolveForEnumType(ref.element, metaModelAccess, featureName)
+                )
+                ?.let { arrayOf(it) }
+                ?: ResolveResult.EMPTY_ARRAY
 
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
@@ -76,53 +72,50 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
             featureName: String
-        ): Array<ResolveResult>? = if (HybrisConstants.CODE_ATTRIBUTE_NAME == featureName || HybrisConstants.NAME_ATTRIBUTE_NAME == featureName)
+        ): ResolveResult? = if (HybrisConstants.CODE_ATTRIBUTE_NAME == featureName || HybrisConstants.NAME_ATTRIBUTE_NAME == featureName)
             ImpexPsiUtils.findHeaderItemTypeName(element)
                 ?.text
                 ?.let { metaService.findMetaEnumByName(it) }
-                ?.let { arrayOf(EnumResolveResult(it)) }
+                ?.let { EnumResolveResult(it) }
         else null
 
         private fun tryResolveForItemType(
             element: ImpexAnyHeaderParameterName,
             metaModelService: TSMetaModelAccess,
-            metaItemService: TSMetaItemService,
             featureName: String
-        ): Array<ResolveResult>? = ImpexPsiUtils.findHeaderItemTypeName(element)
+        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
             ?.text
             ?.let { metaModelService.findMetaItemByName(it) }
             ?.let {
-                val attributes = resolveMetaItemAttributes(metaItemService, featureName, it)
-                val relationEnds = metaItemService.findRelationEndsByQualifier(it, featureName, true)
-                    .map { relation -> RelationEndResolveResult(relation) }
-                (attributes + relationEnds)
+                resolveMetaItemAttribute(featureName, it)
+                    ?: it.allRelationEnds
+                        .find { relationEnd -> relationEnd.name == featureName }
+                        ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
             }
 
         private fun tryResolveForRelationType(
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
-            metaItemService: TSMetaItemService,
             featureName: String
-        ): Array<ResolveResult>? = ImpexPsiUtils.findHeaderItemTypeName(element)
+        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
             ?.text
             ?.let { metaService.findMetaRelationByName(it) }
             ?.let {
                 if (HybrisConstants.SOURCE_ATTRIBUTE_NAME.equals(featureName, ignoreCase = true)) {
-                    return@let arrayOf(RelationEndResolveResult(it.source))
+                    return@let RelationEndResolveResult(it.source)
                 } else if (HybrisConstants.TARGET_ATTRIBUTE_NAME.equals(featureName, ignoreCase = true)) {
-                    return@let arrayOf(RelationEndResolveResult(it.target))
+                    return@let RelationEndResolveResult(it.target)
                 }
 
                 return@let metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                    ?.let { metaLink -> resolveMetaItemAttributes(metaItemService, featureName, metaLink) }
+                    ?.let { metaLink -> resolveMetaItemAttribute(featureName, metaLink) }
             }
 
-        private fun resolveMetaItemAttributes(
-            metaItemService: TSMetaItemService,
+        private fun resolveMetaItemAttribute(
             featureName: String,
             metaItem: TSGlobalMetaItem
-        ): Array<ResolveResult> = metaItemService.findAttributesByName(metaItem, featureName, true)
-            .map { AttributeResolveResult(it) }
-            .toTypedArray()
+        ): ResolveResult? = metaItem.allAttributes
+            .find { it.name == featureName }
+            ?.let { AttributeResolveResult(it) }
     }
 }

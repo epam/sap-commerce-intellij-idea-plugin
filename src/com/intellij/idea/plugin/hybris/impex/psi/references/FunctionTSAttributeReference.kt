@@ -18,23 +18,32 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
+import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlTag
 
 class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
+
+    override fun calculateDefaultRangeInElement(): TextRange {
+        val alias = element.text
+            .substringBefore("(")
+            .substringBefore("[")
+            .trim()
+        return TextRange.from(element.text.indexOf(alias), alias.length)
+    }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
@@ -51,25 +60,28 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FunctionTSAttributeReference> { ref ->
             val metaService = TSMetaModelAccess.getInstance(ref.project)
-            val featureName = ref.element.text.trim()
+            val featureName = ref.element.text
+                .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
+                .substringBefore("(")
+                .substringBefore("[")
+                .trim()
             val typeName = findItemTypeReference(ref.element)
-            val metaItem = metaService.findMetaItemByName(typeName)
-            val result: Array<ResolveResult> = if (metaItem == null) {
+
+            val result: Array<ResolveResult> = (
                 metaService.findMetaEnumByName(typeName)
-                    ?.let { arrayOf(EnumResolveResult(it)) }
-                    ?: ResolveResult.EMPTY_ARRAY
-            } else {
-                val itemService = TSMetaItemService.getInstance(ref.project)
-                val attributes = itemService
-                    .findAttributesByName(metaItem, featureName, true)
-                    .map { AttributeResolveResult(it) }
-
-                val relations = itemService
-                    .findRelationEndsByQualifier(metaItem, featureName, true)
-                    .map { RelationEndResolveResult(it) }
-
-                (attributes + relations).toTypedArray()
-            }
+                    ?.let { EnumResolveResult(it) }
+                    ?: metaService.findMetaItemByName(typeName)
+                        ?.let {
+                            it.allAttributes
+                                .find { attr -> attr.name == featureName }
+                                ?.let { attr -> AttributeResolveResult(attr) }
+                                ?: it.allRelationEnds
+                                    .find { relationEnd -> relationEnd.name == featureName }
+                                    ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
+                        }
+                )
+                ?.let { arrayOf(it) }
+                ?: ResolveResult.EMPTY_ARRAY
 
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
@@ -78,18 +90,15 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
             )
         }
 
-        private fun findItemTypeReference(element: PsiElement): String {
-            val parent = element.parent.parent
-            val parameterName = PsiTreeUtil.findChildOfType(parent, ImpexAnyHeaderParameterName::class.java)
-            if (parameterName != null) {
-                val references = parameterName.references
-                if (references.isNotEmpty()) {
-                    val reference = references.first().resolve()
-                    return obtainTypeName(reference)
-                }
-            }
-            return ""
-        }
+        private fun findItemTypeReference(element: PsiElement) = (
+            PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
+                ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
+                    ?.anyHeaderParameterName
+            )
+            ?.references
+            ?.firstOrNull()
+            ?.resolve()
+            ?.let { obtainTypeName(it) }
 
         private fun obtainTypeName(reference: PsiElement?): String {
             val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
