@@ -54,7 +54,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: zulu
+          distribution: 'corretto'
           java-version: 17
 
       # Set environment variables
@@ -65,10 +65,11 @@ jobs:
           PROPERTIES="$(./gradlew properties --console=plain -q)"
           VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
           NAME="$(echo "$PROPERTIES" | grep "^pluginName:" | cut -f2- -d ' ')"
+
           echo "name=$NAME" >> $GITHUB_OUTPUT
           echo "pluginVerifierHomeDir=~/.pluginVerifier" >> $GITHUB_OUTPUT
+          echo "response=$response" >> $GITHUB_OUTPUT
 
-          echo "EOF" >> $GITHUB_OUTPUT
           ./gradlew listProductsReleases # prepare list of IDEs for Plugin Verifier
       # Run tests
       - name: Run Tests
