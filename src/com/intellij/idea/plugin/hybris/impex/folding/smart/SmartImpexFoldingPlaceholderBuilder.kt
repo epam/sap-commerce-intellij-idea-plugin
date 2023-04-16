@@ -18,6 +18,8 @@
 package com.intellij.idea.plugin.hybris.impex.folding.smart
 
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
@@ -63,7 +65,8 @@ class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
                 ?: impexAttribute.text
         } else if (quoteAwareStringEquals(text,
                 AttributeModifier.TRANSLATOR,
-                AttributeModifier.CELL_DECORATOR)) {
+                AttributeModifier.CELL_DECORATOR,
+                TypeModifier.PROCESSOR)) {
 
             val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
             val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
@@ -78,7 +81,12 @@ class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
                 AttributeModifier.ALLOW_NULL,
                 AttributeModifier.FORCE_WRITE,
                 AttributeModifier.IGNORE_NULL,
-                AttributeModifier.IGNORE_KEY_CASE
+                AttributeModifier.IGNORE_KEY_CASE,
+                TypeModifier.BATCH_MODE,
+                TypeModifier.SLD_ENABLED,
+                TypeModifier.IMPEX_LEGACY_MODE,
+                TypeModifier.BATCH_MODE,
+                TypeModifier.CACHE_UNIQUE
             )
                 ?: return StringUtils.EMPTY
         }
@@ -86,7 +94,7 @@ class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
 
     private fun isBooleanAttributeModifier(
         impexAttribute: ImpexAttribute,
-        vararg modifiers: AttributeModifier
+        vararg modifiers: ImpexModifier
     ): String? {
         val value = impexAttribute.anyAttributeValue
             ?.text
@@ -105,7 +113,7 @@ class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
             && (null == quotedString || quotedString == value || "'$quotedString'" == value || "\"$quotedString\"" == value))
     }
 
-    private fun quoteAwareStringEquals(value: String?, vararg modifiers: AttributeModifier) = modifiers
+    private fun quoteAwareStringEquals(value: String?, vararg modifiers: ImpexModifier) = modifiers
         .any { quoteAwareStringEquals(value, it.modifierName) }
 
     companion object {
