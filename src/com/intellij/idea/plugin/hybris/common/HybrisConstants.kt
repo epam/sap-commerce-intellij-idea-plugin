@@ -284,6 +284,38 @@ object HybrisConstants {
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
     const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
 
+    val DEFAULT_JUNK_FILE_NAMES = listOf(
+        ".classpath",
+        ".directory",
+        ".externalToolBuilders",
+        ".idea",
+        ".pmd",
+        ".project",
+        ".ruleset",
+        ".settings",
+        ".springBeans",
+        "beans.xsd",
+        "classes",
+        "eclipsebin",
+        "extensioninfo.xsd",
+        "items.xsd",
+        "platformhome.properties",
+        "ruleset.xml",
+        "testclasses"
+    )
+
+    val DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = listOf(
+        "solrserver",
+        "npmancillary"
+    )
+
+    val DEFAULT_EXCLUDED_FROM_INDEX = listOf(
+        "smartedit-custom-build",
+        "smartedit-build",
+        "apps/**/node_modules",
+        "common/temp/node_modules"
+    );
+
     private const val SRC_DIRECTORY = "src"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"

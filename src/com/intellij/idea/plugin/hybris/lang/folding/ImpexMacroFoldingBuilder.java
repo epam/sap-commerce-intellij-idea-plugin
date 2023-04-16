@@ -21,14 +21,7 @@ package com.intellij.idea.plugin.hybris.lang.folding;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor;
 import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexString;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor;
+import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
@@ -289,7 +282,20 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
         final ImpexMacroDescriptor descriptor = cache.get(node.getText());
         if (descriptor != null) {
-            return descriptor.resolvedValue();
+            final var resolvedValue = descriptor.resolvedValue();
+
+            if (resolvedValue.startsWith("jar:")) {
+                final var blocks = resolvedValue.split("&");
+                if (blocks.length == 2) {
+                    final var loaderClass = blocks[0];
+                    return "jar:"
+                        + loaderClass.substring(loaderClass.lastIndexOf('.') + 1)
+                        + '&'
+                        + blocks[1];
+                }
+            }
+
+            return resolvedValue;
         }
         return node.getText();
     }

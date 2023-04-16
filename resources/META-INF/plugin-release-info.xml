@@ -99,6 +99,7 @@
                         <li>Improved support of the nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/340" target="_blank" rel="nofollow">#340</a>)</li>
                         <li>Added folding of the boolean <code>false</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/341" target="_blank" rel="nofollow">#341</a>)</li>
                         <li>Added folding of the Type modifiers (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/342" target="_blank" rel="nofollow">#342</a>)</li>
+                        <li>Omit package name of the Class in case of the <code>jar:</code> property prefix (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/343" target="_blank" rel="nofollow">#343</a>)</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules

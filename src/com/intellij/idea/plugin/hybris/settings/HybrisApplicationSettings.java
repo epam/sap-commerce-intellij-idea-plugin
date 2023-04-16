@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.settings;
 
-import com.google.common.collect.Lists;
 import com.intellij.ide.util.PropertyName;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -27,38 +27,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.List;
 
 public class HybrisApplicationSettings {
-
-    public static final List<String> DEFAULT_JUNK_FILE_NAMES = Lists.newArrayList(
-        ".classpath",
-        ".directory",
-        ".externalToolBuilders",
-        ".idea",
-        ".pmd",
-        ".project",
-        ".ruleset",
-        ".settings",
-        ".springBeans",
-        "beans.xsd",
-        "classes",
-        "eclipsebin",
-        "extensioninfo.xsd",
-        "items.xsd",
-        "platformhome.properties",
-        "ruleset.xml",
-        "testclasses"
-    );
-
-    public static final List<String> DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE = Lists.newArrayList(
-        "solrserver",
-        "npmancillary"
-    );
-
-    public static final List<String> DEFAULT_EXCLUDED_FROM_INDEX = Lists.newArrayList(
-        "smartedit-custom-build",
-        "smartedit-build",
-        "apps/**/node_modules",
-        "common/temp/node_modules"
-    );
 
     @PropertyName("foldingEnabled")
     private boolean foldingEnabled = true;
@@ -70,10 +38,10 @@ public class HybrisApplicationSettings {
     private boolean groupModules = true;
 
     @PropertyName("junkDirectoryList")
-    private List<String> junkDirectoryList = DEFAULT_JUNK_FILE_NAMES;
+    private List<String> junkDirectoryList = HybrisConstants.INSTANCE.getDEFAULT_JUNK_FILE_NAMES();
 
     @PropertyName("extensionsResourcesToExclude")
-    private List<String> extensionsResourcesToExcludeList = DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE;
+    private List<String> extensionsResourcesToExcludeList = HybrisConstants.INSTANCE.getDEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE();
 
     @PropertyName("groupHybris")
     private String groupHybris = "Hybris";
@@ -142,7 +110,7 @@ public class HybrisApplicationSettings {
     private boolean warnIfGeneratedItemsAreOutOfDate = true;
 
     @PropertyName("excludedFromIndexList")
-    private List<String> excludedFromIndexList = DEFAULT_EXCLUDED_FROM_INDEX;
+    private List<String> excludedFromIndexList = HybrisConstants.INSTANCE.getDEFAULT_EXCLUDED_FROM_INDEX();
 
 
     public HybrisApplicationSettings() {
