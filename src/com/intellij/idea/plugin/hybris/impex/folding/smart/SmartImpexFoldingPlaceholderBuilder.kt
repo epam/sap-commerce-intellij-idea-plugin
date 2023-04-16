@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
 import com.intellij.psi.PsiElement
 import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.Contract
 import java.util.regex.Pattern
 
 class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
@@ -55,58 +54,55 @@ class SmartImpexFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     private fun getPlaceholder(impexAttribute: ImpexAttribute): String {
         val text = impexAttribute.anyAttributeName.text
         if (quoteAwareStringEquals(text,
-                AttributeModifier.DEFAULT,
                 AttributeModifier.LANG,
                 AttributeModifier.DATE_FORMAT,
                 AttributeModifier.MODE,
                 AttributeModifier.NUMBER_FORMAT)) {
-            return getValueText(impexAttribute)
+            return impexAttribute.anyAttributeValue
+                ?.text
+                ?: impexAttribute.text
         } else if (quoteAwareStringEquals(text,
                 AttributeModifier.TRANSLATOR,
                 AttributeModifier.CELL_DECORATOR)) {
-            return getClassNameFromValue(impexAttribute)
-        } else if (isNameEqualsAndValueIsTrue(impexAttribute,
+
+            val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
+            val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
+
+            return clearedString.substringAfterLast(".")
+                .ifBlank { value }
+        } else {
+            return isBooleanAttributeModifier(impexAttribute,
                 AttributeModifier.UNIQUE,
+                AttributeModifier.DEFAULT,
                 AttributeModifier.VIRTUAL,
                 AttributeModifier.ALLOW_NULL,
                 AttributeModifier.FORCE_WRITE,
                 AttributeModifier.IGNORE_NULL,
                 AttributeModifier.IGNORE_KEY_CASE
-            )) {
-            return text
+            )
+                ?: return StringUtils.EMPTY
         }
-        return StringUtils.EMPTY
     }
 
-    @Contract(pure = true)
-    private fun getClassNameFromValue(impexAttribute: ImpexAttribute): String {
-        val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
-        val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
-
-        return clearedString.substringAfterLast(".")
-            .ifBlank { value }
-    }
-
-    private fun getValueText(impexAttribute: ImpexAttribute) = impexAttribute.anyAttributeValue?.text
-        ?: impexAttribute.text
-
-    private fun isNameEqualsAndValueIsTrue(
+    private fun isBooleanAttributeModifier(
         impexAttribute: ImpexAttribute,
         vararg modifiers: AttributeModifier
-    ): Boolean {
-        val value = impexAttribute.anyAttributeValue?.text ?: return false
+    ): String? {
+        val value = impexAttribute.anyAttributeValue
+            ?.text
+            ?.takeIf { it.contains("false", true) || it.contains("true", true) }
+            ?: return null
         val text = impexAttribute.anyAttributeName.text
 
         return modifiers
-            .any {
-                quoteAwareStringEquals(text, it)
-                    && quoteAwareStringEquals("true", value.trim())
-            }
+            .find { quoteAwareStringEquals(text, it) }
+            ?.modifierName
+            ?.let { if (value.contains("false")) "!$it" else it }
     }
 
     private fun quoteAwareStringEquals(quotedString: String?, value: String?): Boolean {
         return (null == quotedString == (null == value)
-            && (null == quotedString || quotedString == value || "'$quotedString'" == value || '"'.toString() + quotedString + '"' == value))
+            && (null == quotedString || quotedString == value || "'$quotedString'" == value || "\"$quotedString\"" == value))
     }
 
     private fun quoteAwareStringEquals(value: String?, vararg modifiers: AttributeModifier) = modifiers
