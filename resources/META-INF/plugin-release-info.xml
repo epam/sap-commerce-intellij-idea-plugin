@@ -94,6 +94,7 @@
             <h3>2023.1.5</h3>
             <ul>
                 <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
+                <li><i>Feature:</i> Improved folding of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/340" target="_blank" rel="nofollow">#340</a>)</li>
                 <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
                     <ul>
                         <li>Type attribute validation for complex header (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/338" target="_blank" rel="nofollow">#338</a>)</li>

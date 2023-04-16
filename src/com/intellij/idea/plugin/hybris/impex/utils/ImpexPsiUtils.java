@@ -57,21 +57,6 @@ public final class ImpexPsiUtils {
     }
 
     @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexParameters(@Nullable final PsiElement psiElement) {
-        return psiElement instanceof ImpexParameters;
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexAttribute(@Nullable final PsiElement psiElement) {
-        return psiElement instanceof ImpexAttribute;
-    }
-
-    @Contract(value = "null -> false", pure = true)
-    public static boolean isImpexValueGroup(@Nullable final PsiElement psiElement) {
-        return psiElement instanceof ImpexValueGroup;
-    }
-
-    @Contract(value = "null -> false", pure = true)
     public static boolean isImpexValueLine(@Nullable final PsiElement psiElement) {
         return psiElement instanceof ImpexValueLine;
     }
@@ -460,10 +445,8 @@ public final class ImpexPsiUtils {
             return null;
         }
 
-        if (isImpexValueGroup(psiElementUnderCaret)) {
-
+        if (psiElementUnderCaret instanceof ImpexValueGroup) {
             return (ImpexValueGroup) psiElementUnderCaret;
-
         } else if (isFieldValueSeparator(psiElementUnderCaret)) {
 
             final ImpexValueGroup valueGroup = PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexValueGroup.class);
