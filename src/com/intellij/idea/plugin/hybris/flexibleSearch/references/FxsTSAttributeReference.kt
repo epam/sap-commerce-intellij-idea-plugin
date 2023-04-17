@@ -1,8 +1,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.references
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -100,7 +98,7 @@ internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : T
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
             val meta = metaService.findMetaEnumByName(type) ?: return null
 
-            return if (CODE_ATTRIBUTE_NAME == refName || NAME_ATTRIBUTE_NAME == refName) {
+            return if (HybrisConstants.ENUM_ATTRIBUTES.contains(refName)) {
                 arrayOf(EnumResolveResult(meta))
             } else return null
         }

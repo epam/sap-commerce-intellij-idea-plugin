@@ -72,7 +72,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
             featureName: String
-        ): ResolveResult? = if (HybrisConstants.CODE_ATTRIBUTE_NAME == featureName || HybrisConstants.NAME_ATTRIBUTE_NAME == featureName)
+        ): ResolveResult? = if (HybrisConstants.ENUM_ATTRIBUTES.contains(featureName))
             ImpexPsiUtils.findHeaderItemTypeName(element)
                 ?.text
                 ?.let { metaService.findMetaEnumByName(it) }

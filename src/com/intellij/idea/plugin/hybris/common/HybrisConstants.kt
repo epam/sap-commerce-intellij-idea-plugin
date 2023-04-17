@@ -258,9 +258,12 @@ object HybrisConstants {
     const val TARGET_ATTRIBUTE_NAME = "target"
     const val CODE_ATTRIBUTE_NAME = "code"
     const val NAME_ATTRIBUTE_NAME = "name"
+    const val PK_ATTRIBUTE_NAME = "pk"
     const val DICTIONARY_NAME = "hybris_integration"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
+
+    val ENUM_ATTRIBUTES = listOf(PK_ATTRIBUTE_NAME, CODE_ATTRIBUTE_NAME, NAME_ATTRIBUTE_NAME)
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"

@@ -107,6 +107,7 @@ object TSGraphFactory {
 
     private fun buildNode(meta: TSGlobalMetaEnum, transitiveNode: Boolean): TSGraphNodeClassifier? {
         val properties = listOf(
+            TSGraphFieldProperty(HybrisConstants.PK_ATTRIBUTE_NAME, "PK"),
             TSGraphFieldProperty(HybrisConstants.CODE_ATTRIBUTE_NAME, "String"),
             TSGraphFieldProperty(HybrisConstants.NAME_ATTRIBUTE_NAME, "String"),
         )

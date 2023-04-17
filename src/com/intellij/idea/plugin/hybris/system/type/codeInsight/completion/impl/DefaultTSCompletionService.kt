@@ -19,8 +19,6 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -47,10 +45,8 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             ?: emptyList())
     }
 
-    private fun getCompletions() = listOf(
-        TSLookupElementFactory.buildAttribute(CODE_ATTRIBUTE_NAME),
-        TSLookupElementFactory.buildAttribute(NAME_ATTRIBUTE_NAME)
-    )
+    private fun getCompletions() = HybrisConstants.ENUM_ATTRIBUTES
+        .map { TSLookupElementFactory.buildAttribute(it) }
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
         val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()
