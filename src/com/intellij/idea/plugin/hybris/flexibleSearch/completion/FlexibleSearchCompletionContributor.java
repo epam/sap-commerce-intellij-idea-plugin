@@ -3,8 +3,8 @@
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -28,8 +28,7 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
 
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COLUMN_REFERENCE_IDENTIFIER;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_NAME_IDENTIFIER;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class FlexibleSearchCompletionContributor extends CompletionContributor {
@@ -38,8 +37,8 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
         // keywords
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement(PsiElement.class)
-                            .withLanguage(FlexibleSearchLanguage.getInstance())
+            psiElement(PsiElement.class)
+                .withLanguage(FlexibleSearchLanguage.getInstance())
 //                            .andNot(psiElement().withParents(
 //                                FlexibleSearchTableName.class,
 //                                FlexibleSearchFromClause.class,
@@ -47,7 +46,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //                            ))
 //                            .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE)))
 //                            .andNot(psiElement().inside(psiElement(TABLE_NAME_IDENTIFIER)))
-                /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
+            /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
             FSKeywordCompletionProvider.Companion.getInstance()
         );
 
@@ -55,13 +54,21 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             CompletionType.BASIC,
             psiElement()
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
+                .inside(
+                    psiElement()
+                        .withElementType(TokenSet.create(TABLE_NAME))
+                )
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             ItemCodeCompletionProvider.Companion.getInstance()
         );
 
         extend(
             CompletionType.BASIC,
-            psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER))
+            psiElement()
+                .inside(PlatformPatterns.or(
+                    psiElement(COLUMN_REFERENCE_IDENTIFIER),
+                    psiElement(COLUMN_REFERENCE))
+                )
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             FSFieldsCompletionProvider.Companion.getInstance()
         );

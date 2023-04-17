@@ -23,12 +23,10 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isColumnReferenceIdentifier
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.isTableNameIdentifier
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -46,7 +44,7 @@ class FSFieldsCompletionProvider : CompletionProvider<CompletionParameters>() {
         val project = parameters.editor.project ?: return
         val psiElementUnderCaret = parameters.originalPosition ?: parameters.position
 
-        if (!isColumnReferenceIdentifier(parameters)) return
+        if (!isColumnReferenceIdentifier(parameters) && !isTableNameIdentifier(parameters)) return
 
         val tableNameId = findSiblingBackward(parameters.position, FlexibleSearchTypes.TABLE_NAME_IDENTIFIER, null)
 
