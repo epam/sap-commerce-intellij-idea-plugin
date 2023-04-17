@@ -20,25 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordMacroCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordModeCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider;
-import com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosConfigCompletionProvider;
+import com.intellij.idea.plugin.hybris.impex.completion.provider.*;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
@@ -46,8 +34,6 @@ import com.intellij.psi.tree.TokenSet;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class ImpexCompletionContributor extends CompletionContributor {
-
-    private static final Logger LOG = Logger.getInstance(ImpexCompletionContributor.class);
 
     public ImpexCompletionContributor() {
         // case: header type modifier -> attribute_name
@@ -95,30 +81,14 @@ public class ImpexCompletionContributor extends CompletionContributor {
         );
 
         // case: itemtype-code
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
-                .withElementType(ImpexTypes.HEADER_TYPE),
-            ItemTypeCodeCompletionProvider.Companion.getInstance()
-        );
-
         // case: enumtype-code
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
-                .withElementType(ImpexTypes.HEADER_TYPE),
-            EnumTypeCodeCompletionProvider.Companion.getInstance()
-        );
-
         // case: relationtype-code
         extend(
             CompletionType.BASIC,
             psiElement()
                 .withLanguage(ImpexLanguage.getInstance())
                 .withElementType(ImpexTypes.HEADER_TYPE),
-            RelationTypeCodeCompletionProvider.Companion.getInstance()
+            ItemCodeCompletionProvider.Companion.getInstance()
         );
 
         // case: item's attribute

@@ -22,34 +22,36 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
 import com.intellij.util.ProcessingContext
-import org.apache.commons.lang3.Validate
 
-class RelationTypeCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        val project = getProject(parameters) ?: return
+        val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
-        TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
+        val itemTypes = TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             .mapNotNull { TSLookupElementFactory.build(it) }
-            .forEach { resultCaseInsensitive.addElement(it) }
-    }
+        val enumTypes = TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaEnum>(TSMetaType.META_ENUM)
+            .filter { it.name != null }
+            .mapNotNull { TSLookupElementFactory.build(it, it.name) }
+        val relationTypes = TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaRelation>(TSMetaType.META_RELATION)
+            .mapNotNull { TSLookupElementFactory.build(it) }
 
-    private fun getProject(parameters: CompletionParameters): Project? {
-        Validate.notNull(parameters)
-        return parameters.editor.project
+        (itemTypes + enumTypes + relationTypes)
+            .forEach { resultCaseInsensitive.addElement(it) }
     }
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(RelationTypeCodeCompletionProvider::class.java)
+            ApplicationManager.getApplication().getService(ItemCodeCompletionProvider::class.java)
     }
 }

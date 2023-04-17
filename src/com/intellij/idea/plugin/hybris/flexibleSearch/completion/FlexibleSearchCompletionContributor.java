@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.EnumTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RelationTypeCodeCompletionProvider;
+import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
@@ -58,23 +56,7 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
             psiElement()
                 .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            ItemTypeCodeCompletionProvider.Companion.getInstance()
-        );
-
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            EnumTypeCodeCompletionProvider.Companion.getInstance()
-        );
-
-        extend(
-            CompletionType.BASIC,
-            psiElement()
-                .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            RelationTypeCodeCompletionProvider.Companion.getInstance()
+            ItemCodeCompletionProvider.Companion.getInstance()
         );
 
         extend(
