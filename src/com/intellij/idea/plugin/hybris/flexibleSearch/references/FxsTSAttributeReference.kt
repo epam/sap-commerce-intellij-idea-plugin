@@ -89,10 +89,7 @@ internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : T
                 return arrayOf(RelationEndResolveResult(meta.target))
             }
 
-            return metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                ?.attributes
-                ?.get(refName)
-                ?.let { arrayOf(AttributeResolveResult(it)) }
+            return tryResolveByItemType(HybrisConstants.TS_TYPE_LINK, refName, metaService)
         }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {

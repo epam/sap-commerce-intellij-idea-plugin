@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
@@ -54,7 +53,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
             val featureName = ref.value
             val result = (
-                tryResolveForItemType(ref.element, metaModelAccess, featureName)
+                tryResolveForItemType(metaModelAccess, featureName, ImpexPsiUtils.findHeaderItemTypeName(ref.element)?.text)
                     ?: tryResolveForRelationType(ref.element, metaModelAccess, featureName)
                     ?: tryResolveForEnumType(ref.element, metaModelAccess, featureName)
                 )
@@ -80,17 +79,18 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
         else null
 
         private fun tryResolveForItemType(
-            element: ImpexAnyHeaderParameterName,
             metaModelService: TSMetaModelAccess,
-            featureName: String
-        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
-            ?.text
+            featureName: String,
+            itemTypeCode: String?
+        ): ResolveResult? = itemTypeCode
             ?.let { metaModelService.findMetaItemByName(it) }
-            ?.let {
-                resolveMetaItemAttribute(featureName, it)
-                    ?: it.allRelationEnds
-                        .find { relationEnd -> relationEnd.name == featureName }
-                        ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
+            ?.let { meta ->
+                meta.allAttributes
+                    .find { it.name == featureName }
+                    ?.let { AttributeResolveResult(it) }
+                    ?: meta.allRelationEnds
+                        .find { it.name == featureName }
+                        ?.let { RelationEndResolveResult(it) }
             }
 
         private fun tryResolveForRelationType(
@@ -107,15 +107,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
                     return@let RelationEndResolveResult(it.target)
                 }
 
-                return@let metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                    ?.let { metaLink -> resolveMetaItemAttribute(featureName, metaLink) }
+                return@let tryResolveForItemType(metaService, featureName, HybrisConstants.TS_TYPE_LINK)
             }
-
-        private fun resolveMetaItemAttribute(
-            featureName: String,
-            metaItem: TSGlobalMetaItem
-        ): ResolveResult? = metaItem.allAttributes
-            .find { it.name == featureName }
-            ?.let { AttributeResolveResult(it) }
     }
 }
