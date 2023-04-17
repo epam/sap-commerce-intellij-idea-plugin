@@ -19,69 +19,72 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class FlexibleSearchPredicateImpl extends ASTWrapperPsiElement implements FlexibleSearchPredicate {
 
-  public FlexibleSearchPredicateImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchPredicateImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitPredicate(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitPredicate(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchBetweenPredicate getBetweenPredicate() {
-    return findChildByClass(FlexibleSearchBetweenPredicate.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchBetweenPredicate getBetweenPredicate() {
+        return findChildByClass(FlexibleSearchBetweenPredicate.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchCompOp getCompOp() {
-    return findChildByClass(FlexibleSearchCompOp.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchCompOp getCompOp() {
+        return findChildByClass(FlexibleSearchCompOp.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchExistsPredicate getExistsPredicate() {
-    return findChildByClass(FlexibleSearchExistsPredicate.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchExistsPredicate getExistsPredicate() {
+        return findChildByClass(FlexibleSearchExistsPredicate.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchInPredicate getInPredicate() {
-    return findChildByClass(FlexibleSearchInPredicate.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchInPredicate getInPredicate() {
+        return findChildByClass(FlexibleSearchInPredicate.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchLikePredicate getLikePredicate() {
-    return findChildByClass(FlexibleSearchLikePredicate.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchLikePredicate getLikePredicate() {
+        return findChildByClass(FlexibleSearchLikePredicate.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchNullPredicate getNullPredicate() {
-    return findChildByClass(FlexibleSearchNullPredicate.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchNullPredicate getNullPredicate() {
+        return findChildByClass(FlexibleSearchNullPredicate.class);
+    }
 
-  @Override
-  @NotNull
-  public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
-  }
+    @Override
+    @NotNull
+    public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
+    }
 
 }

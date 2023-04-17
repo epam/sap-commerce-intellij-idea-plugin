@@ -19,64 +19,66 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
 public class FlexibleSearchValueExpressionImpl extends ASTWrapperPsiElement implements FlexibleSearchValueExpression {
 
-  public FlexibleSearchValueExpressionImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchValueExpressionImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitValueExpression(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitValueExpression(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchColumnLocalization getColumnLocalization() {
-    return findChildByClass(FlexibleSearchColumnLocalization.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchColumnLocalization getColumnLocalization() {
+        return findChildByClass(FlexibleSearchColumnLocalization.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchColumnReference getColumnReference() {
-    return findChildByClass(FlexibleSearchColumnReference.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchColumnReference getColumnReference() {
+        return findChildByClass(FlexibleSearchColumnReference.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchParameterReference getParameterReference() {
-    return findChildByClass(FlexibleSearchParameterReference.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchParameterReference getParameterReference() {
+        return findChildByClass(FlexibleSearchParameterReference.class);
+    }
 
-  @Override
-  @Nullable
-  public PsiElement getLeftBrace() {
-    return findChildByType(LEFT_BRACE);
-  }
+    @Override
+    @Nullable
+    public PsiElement getLeftBrace() {
+        return findChildByType(LEFT_BRACE);
+    }
 
-  @Override
-  @Nullable
-  public PsiElement getNumber() {
-    return findChildByType(NUMBER);
-  }
+    @Override
+    @Nullable
+    public PsiElement getNumber() {
+        return findChildByType(NUMBER);
+    }
 
-  @Override
-  @Nullable
-  public PsiElement getRightBrace() {
-    return findChildByType(RIGHT_BRACE);
-  }
+    @Override
+    @Nullable
+    public PsiElement getRightBrace() {
+        return findChildByType(RIGHT_BRACE);
+    }
 
 }

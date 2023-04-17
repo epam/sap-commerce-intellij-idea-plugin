@@ -19,49 +19,51 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchGeneralSetFunctionImpl extends ASTWrapperPsiElement implements FlexibleSearchGeneralSetFunction {
 
-  public FlexibleSearchGeneralSetFunctionImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchGeneralSetFunctionImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitGeneralSetFunction(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitGeneralSetFunction(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchCorrelationName getCorrelationName() {
-    return findChildByClass(FlexibleSearchCorrelationName.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchCorrelationName getCorrelationName() {
+        return findChildByClass(FlexibleSearchCorrelationName.class);
+    }
 
-  @Override
-  @NotNull
-  public FlexibleSearchSetFunctionType getSetFunctionType() {
-    return findNotNullChildByClass(FlexibleSearchSetFunctionType.class);
-  }
+    @Override
+    @NotNull
+    public FlexibleSearchSetFunctionType getSetFunctionType() {
+        return findNotNullChildByClass(FlexibleSearchSetFunctionType.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchSetQuantifier getSetQuantifier() {
-    return findChildByClass(FlexibleSearchSetQuantifier.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchSetQuantifier getSetQuantifier() {
+        return findChildByClass(FlexibleSearchSetQuantifier.class);
+    }
 
-  @Override
-  @NotNull
-  public FlexibleSearchValueExpression getValueExpression() {
-    return findNotNullChildByClass(FlexibleSearchValueExpression.class);
-  }
+    @Override
+    @NotNull
+    public FlexibleSearchValueExpression getValueExpression() {
+        return findNotNullChildByClass(FlexibleSearchValueExpression.class);
+    }
 
 }

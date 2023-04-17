@@ -19,15 +19,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
 public interface FlexibleSearchBooleanPredicand extends PsiElement {
 
-  @Nullable
-  FlexibleSearchBooleanValueExpression getBooleanValueExpression();
+    @Nullable
+    FlexibleSearchBooleanValueExpression getBooleanValueExpression();
 
-  @Nullable
-  FlexibleSearchColumnReference getColumnReference();
+    @Nullable
+    FlexibleSearchColumnReference getColumnReference();
 
 }

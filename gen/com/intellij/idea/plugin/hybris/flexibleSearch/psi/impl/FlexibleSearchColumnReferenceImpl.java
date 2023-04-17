@@ -31,23 +31,24 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 
 public class FlexibleSearchColumnReferenceImpl extends ColumnReferenceMixin implements FlexibleSearchColumnReference {
 
-  public FlexibleSearchColumnReferenceImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchColumnReferenceImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitColumnReference(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitColumnReference(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public PsiElement getTableNameIdentifier() {
-    return findChildByType(TABLE_NAME_IDENTIFIER);
-  }
+    @Override
+    @Nullable
+    public PsiElement getTableNameIdentifier() {
+        return findChildByType(TABLE_NAME_IDENTIFIER);
+    }
 
 }

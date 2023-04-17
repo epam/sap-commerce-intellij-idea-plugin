@@ -30,23 +30,24 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 
 public class FlexibleSearchTableNameImpl extends TypeNameMixin implements FlexibleSearchTableName {
 
-  public FlexibleSearchTableNameImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchTableNameImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitTableName(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitTableName(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @NotNull
-  public PsiElement getTableNameIdentifier() {
-    return findNotNullChildByType(TABLE_NAME_IDENTIFIER);
-  }
+    @Override
+    @NotNull
+    public PsiElement getTableNameIdentifier() {
+        return findNotNullChildByType(TABLE_NAME_IDENTIFIER);
+    }
 
 }

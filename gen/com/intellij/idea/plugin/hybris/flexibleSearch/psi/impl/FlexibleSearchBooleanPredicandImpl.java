@@ -19,37 +19,42 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBooleanPredicand;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBooleanValueExpression;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnReference;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchBooleanPredicandImpl extends ASTWrapperPsiElement implements FlexibleSearchBooleanPredicand {
 
-  public FlexibleSearchBooleanPredicandImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchBooleanPredicandImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitBooleanPredicand(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitBooleanPredicand(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchBooleanValueExpression getBooleanValueExpression() {
-    return findChildByClass(FlexibleSearchBooleanValueExpression.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchBooleanValueExpression getBooleanValueExpression() {
+        return findChildByClass(FlexibleSearchBooleanValueExpression.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchColumnReference getColumnReference() {
-    return findChildByClass(FlexibleSearchColumnReference.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchColumnReference getColumnReference() {
+        return findChildByClass(FlexibleSearchColumnReference.class);
+    }
 
 }

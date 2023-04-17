@@ -19,43 +19,45 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchJoinedTableImpl extends ASTWrapperPsiElement implements FlexibleSearchJoinedTable {
 
-  public FlexibleSearchJoinedTableImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchJoinedTableImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitJoinedTable(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitJoinedTable(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchJoinSpecification getJoinSpecification() {
-    return findChildByClass(FlexibleSearchJoinSpecification.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchJoinSpecification getJoinSpecification() {
+        return findChildByClass(FlexibleSearchJoinSpecification.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchJoinType getJoinType() {
-    return findChildByClass(FlexibleSearchJoinType.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchJoinType getJoinType() {
+        return findChildByClass(FlexibleSearchJoinType.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchTableReference getTableReference() {
-    return findChildByClass(FlexibleSearchTableReference.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchTableReference getTableReference() {
+        return findChildByClass(FlexibleSearchTableReference.class);
+    }
 
 }

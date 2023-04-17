@@ -19,39 +19,45 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchInPredicate;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchRowValuePredicand;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableSubquery;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class FlexibleSearchInPredicateImpl extends ASTWrapperPsiElement implements FlexibleSearchInPredicate {
 
-  public FlexibleSearchInPredicateImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchInPredicateImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitInPredicate(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitInPredicate(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @NotNull
-  public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
-  }
+    @Override
+    @NotNull
+    public List<FlexibleSearchRowValuePredicand> getRowValuePredicandList() {
+        return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchRowValuePredicand.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchTableSubquery getTableSubquery() {
-    return findChildByClass(FlexibleSearchTableSubquery.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchTableSubquery getTableSubquery() {
+        return findChildByClass(FlexibleSearchTableSubquery.class);
+    }
 
 }

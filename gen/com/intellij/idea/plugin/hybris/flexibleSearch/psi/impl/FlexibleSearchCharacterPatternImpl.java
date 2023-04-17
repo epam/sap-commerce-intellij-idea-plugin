@@ -33,29 +33,30 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 
 public class FlexibleSearchCharacterPatternImpl extends ASTWrapperPsiElement implements FlexibleSearchCharacterPattern {
 
-  public FlexibleSearchCharacterPatternImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchCharacterPatternImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitCharacterPattern(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitCharacterPattern(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchStringValueFunction getStringValueFunction() {
-    return findChildByClass(FlexibleSearchStringValueFunction.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchStringValueFunction getStringValueFunction() {
+        return findChildByClass(FlexibleSearchStringValueFunction.class);
+    }
 
-  @Override
-  @Nullable
-  public PsiElement getString() {
-    return findChildByType(STRING);
-  }
+    @Override
+    @Nullable
+    public PsiElement getString() {
+        return findChildByType(STRING);
+    }
 
 }

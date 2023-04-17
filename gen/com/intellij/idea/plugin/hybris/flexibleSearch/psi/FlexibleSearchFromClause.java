@@ -19,21 +19,21 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
 public interface FlexibleSearchFromClause extends PsiElement {
 
-  @Nullable
-  FlexibleSearchSubquery getSubquery();
+    @Nullable
+    FlexibleSearchSubquery getSubquery();
 
-  @Nullable
-  FlexibleSearchTableReferenceList getTableReferenceList();
+    @Nullable
+    FlexibleSearchTableReferenceList getTableReferenceList();
 
-  @Nullable
-  PsiElement getLeftBrace();
+    @Nullable
+    PsiElement getLeftBrace();
 
-  @Nullable
-  PsiElement getRightBrace();
+    @Nullable
+    PsiElement getRightBrace();
 
 }

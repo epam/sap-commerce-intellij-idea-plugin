@@ -1,14 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
+import com.intellij.lang.PsiParser;
+import com.intellij.psi.tree.IElementType;
+
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.utils.FlexibleSearchParserUtils.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.PsiParser;
-import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class FlexibleSearchParser implements PsiParser, LightPsiParser {
@@ -22,202 +23,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, null);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == AGGREGATE_FUNCTION) {
-      r = aggregate_function(b, 0);
-    }
-    else if (t == BETWEEN_PREDICATE) {
-      r = between_predicate(b, 0);
-    }
-    else if (t == BOOLEAN_FACTOR) {
-      r = boolean_factor(b, 0);
-    }
-    else if (t == BOOLEAN_PREDICAND) {
-      r = boolean_predicand(b, 0);
-    }
-    else if (t == BOOLEAN_PRIMARY) {
-      r = boolean_primary(b, 0);
-    }
-    else if (t == BOOLEAN_TERM) {
-      r = boolean_term(b, 0);
-    }
-    else if (t == BOOLEAN_TEST) {
-      r = boolean_test(b, 0);
-    }
-    else if (t == BOOLEAN_VALUE_EXPRESSION) {
-      r = boolean_value_expression(b, 0);
-    }
-    else if (t == CHARACTER_LIKE_PREDICATE) {
-      r = character_like_predicate(b, 0);
-    }
-    else if (t == CHARACTER_PATTERN) {
-      r = character_pattern(b, 0);
-    }
-    else if (t == CHARACTER_STRING_LITERAL) {
-      r = character_string_literal(b, 0);
-    }
-    else if (t == CHARACTER_SUBSTRING_FUNCTION) {
-      r = character_substring_function(b, 0);
-    }
-    else if (t == CHARACTER_VALUE_FUNCTION) {
-      r = character_value_function(b, 0);
-    }
-    else if (t == COLUMN_LOCALIZATION) {
-      r = column_localization(b, 0);
-    }
-    else if (t == COLUMN_REFERENCE) {
-      r = column_reference(b, 0);
-    }
-    else if (t == COMMON_VALUE_EXPRESSION) {
-      r = common_value_expression(b, 0);
-    }
-    else if (t == COMP_OP) {
-      r = comp_op(b, 0);
-    }
-    else if (t == CORRELATION_NAME) {
-      r = correlation_name(b, 0);
-    }
-    else if (t == DERIVED_COLUMN) {
-      r = derived_column(b, 0);
-    }
-    else if (t == EXISTS_PREDICATE) {
-      r = exists_predicate(b, 0);
-    }
-    else if (t == FROM_CLAUSE) {
-      r = from_clause(b, 0);
-    }
-    else if (t == GENERAL_LITERAL) {
-      r = general_literal(b, 0);
-    }
-    else if (t == GENERAL_SET_FUNCTION) {
-      r = general_set_function(b, 0);
-    }
-    else if (t == GROUP_BY_CLAUSE) {
-      r = group_by_clause(b, 0);
-    }
-    else if (t == GROUPING_COLUMN_REFERENCE) {
-      r = grouping_column_reference(b, 0);
-    }
-    else if (t == GROUPING_COLUMN_REFERENCE_LIST) {
-      r = grouping_column_reference_list(b, 0);
-    }
-    else if (t == GROUPING_ELEMENT) {
-      r = grouping_element(b, 0);
-    }
-    else if (t == GROUPING_ELEMENT_LIST) {
-      r = grouping_element_list(b, 0);
-    }
-    else if (t == IN_PREDICATE) {
-      r = in_predicate(b, 0);
-    }
-    else if (t == JOIN_CONDITION) {
-      r = join_condition(b, 0);
-    }
-    else if (t == JOIN_SPECIFICATION) {
-      r = join_specification(b, 0);
-    }
-    else if (t == JOIN_TYPE) {
-      r = join_type(b, 0);
-    }
-    else if (t == JOINED_TABLE) {
-      r = joined_table(b, 0);
-    }
-    else if (t == LIKE_PREDICATE) {
-      r = like_predicate(b, 0);
-    }
-    else if (t == NULL_ORDERING) {
-      r = null_ordering(b, 0);
-    }
-    else if (t == NULL_PREDICATE) {
-      r = null_predicate(b, 0);
-    }
-    else if (t == ORDER_BY_CLAUSE) {
-      r = order_by_clause(b, 0);
-    }
-    else if (t == ORDERING_SPECIFICATION) {
-      r = ordering_specification(b, 0);
-    }
-    else if (t == ORDINARY_GROUPING_SET) {
-      r = ordinary_grouping_set(b, 0);
-    }
-    else if (t == PARAMETER_REFERENCE) {
-      r = parameter_reference(b, 0);
-    }
-    else if (t == PREDICATE) {
-      r = predicate(b, 0);
-    }
-    else if (t == QUERY_SPECIFICATION) {
-      r = query_specification(b, 0);
-    }
-    else if (t == ROW_VALUE_PREDICAND) {
-      r = row_value_predicand(b, 0);
-    }
-    else if (t == SEARCH_CONDITION) {
-      r = search_condition(b, 0);
-    }
-    else if (t == SELECT_LIST) {
-      r = select_list(b, 0);
-    }
-    else if (t == SELECT_SUBLIST) {
-      r = select_sublist(b, 0);
-    }
-    else if (t == SET_FUNCTION_TYPE) {
-      r = set_function_type(b, 0);
-    }
-    else if (t == SET_QUANTIFIER) {
-      r = set_quantifier(b, 0);
-    }
-    else if (t == SORT_KEY) {
-      r = sort_key(b, 0);
-    }
-    else if (t == SORT_SPECIFICATION) {
-      r = sort_specification(b, 0);
-    }
-    else if (t == SORT_SPECIFICATION_LIST) {
-      r = sort_specification_list(b, 0);
-    }
-    else if (t == STRING_VALUE_EXPRESSION) {
-      r = string_value_expression(b, 0);
-    }
-    else if (t == STRING_VALUE_FUNCTION) {
-      r = string_value_function(b, 0);
-    }
-    else if (t == SUBQUERY) {
-      r = subquery(b, 0);
-    }
-    else if (t == TABLE_EXPRESSION) {
-      r = table_expression(b, 0);
-    }
-    else if (t == TABLE_NAME) {
-      r = table_name(b, 0);
-    }
-    else if (t == TABLE_PRIMARY) {
-      r = table_primary(b, 0);
-    }
-    else if (t == TABLE_REFERENCE) {
-      r = table_reference(b, 0);
-    }
-    else if (t == TABLE_REFERENCE_LIST) {
-      r = table_reference_list(b, 0);
-    }
-    else if (t == TABLE_SUBQUERY) {
-      r = table_subquery(b, 0);
-    }
-    else if (t == TRUTH_VALUE) {
-      r = truth_value(b, 0);
-    }
-    else if (t == VALUE_EXPRESSION) {
-      r = value_expression(b, 0);
-    }
-    else if (t == WHERE_CLAUSE) {
-      r = where_clause(b, 0);
-    }
-    else {
-      r = parse_root_(t, b, 0);
-    }
+    r = parse_root_(t, b);
     exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
   }
 
-  protected boolean parse_root_(IElementType t, PsiBuilder b, int l) {
+  protected boolean parse_root_(IElementType t, PsiBuilder b) {
+    return parse_root_(t, b, 0);
+  }
+
+  static boolean parse_root_(IElementType t, PsiBuilder b, int l) {
     return flexibleSearchFile(b, l + 1);
   }
 
@@ -529,7 +343,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COLUMN_REFERENCE, "<column reference>");
     r = identifier_chain(b, l + 1);
-    exit_section_(b, l, m, r, false, column_reference_recover_parser_);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::column_reference_recover);
     return r;
   }
 
@@ -847,7 +661,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = r && report_error_(b, from_clause_1(b, l + 1));
     r = p && report_error_(b, from_clause_2(b, l + 1)) && r;
     r = p && from_clause_3(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, from_clause_recover_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::from_clause_recover);
     return r || p;
   }
 
@@ -1223,7 +1037,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, ON);
     p = r; // pin = 1
     r = r && search_condition(b, l + 1);
-    exit_section_(b, l, m, r, p, join_condition_recover_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::join_condition_recover);
     return r || p;
   }
 
@@ -1378,7 +1192,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 1, ORDER, BY);
     p = r; // pin = 1
     r = r && sort_specification_list(b, l + 1);
-    exit_section_(b, l, m, r, p, orderByClauseRecoverWhile_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::orderByClauseRecoverWhile);
     return r || p;
   }
 
@@ -1503,7 +1317,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, select_list(b, l + 1)) && r;
     r = p && report_error_(b, table_expression(b, l + 1)) && r;
     r = p && query_specification_4(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, querySpecificationRecoverWhile_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::querySpecificationRecoverWhile);
     return r || p;
   }
 
@@ -1596,7 +1410,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, SELECT_LIST, "<select list>");
     r = consumeToken(b, ASTERISK);
     if (!r) r = select_list_1(b, l + 1);
-    exit_section_(b, l, m, r, false, select_list_recover_parser_);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::select_list_recover);
     return r;
   }
 
@@ -1815,7 +1629,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = statement_0(b, l + 1);
     r = r && statement_1(b, l + 1);
     r = r && statement_2(b, l + 1);
-    exit_section_(b, l, m, r, false, expressionRecoverWhile_parser_);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::expressionRecoverWhile);
     return r;
   }
 
@@ -2032,7 +1846,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, TABLE_NAME_IDENTIFIER);
     p = r; // pin = 1
     r = r && table_name_1(b, l + 1);
-    exit_section_(b, l, m, r, p, table_name_recover_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::table_name_recover);
     return r || p;
   }
 
@@ -2058,14 +1872,12 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   private static boolean table_name_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "table_name_recover_0")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = consumeToken(b, RIGHT_BRACE);
     if (!r) r = consumeToken(b, AS);
     if (!r) r = consumeToken(b, JOIN);
     if (!r) r = consumeToken(b, ON);
     if (!r) r = consumeToken(b, SPACE);
     if (!r) r = consumeToken(b, " ");
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -2250,7 +2062,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, WHERE);
     p = r; // pin = 1
     r = r && search_condition(b, l + 1);
-    exit_section_(b, l, m, r, p, where_clause_recover_parser_);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::where_clause_recover);
     return r || p;
   }
 
@@ -2281,49 +2093,4 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  final static Parser column_reference_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return column_reference_recover(b, l + 1);
-    }
-  };
-  final static Parser expressionRecoverWhile_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return expressionRecoverWhile(b, l + 1);
-    }
-  };
-  final static Parser from_clause_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return from_clause_recover(b, l + 1);
-    }
-  };
-  final static Parser join_condition_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return join_condition_recover(b, l + 1);
-    }
-  };
-  final static Parser orderByClauseRecoverWhile_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return orderByClauseRecoverWhile(b, l + 1);
-    }
-  };
-  final static Parser querySpecificationRecoverWhile_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return querySpecificationRecoverWhile(b, l + 1);
-    }
-  };
-  final static Parser select_list_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return select_list_recover(b, l + 1);
-    }
-  };
-  final static Parser table_name_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return table_name_recover(b, l + 1);
-    }
-  };
-  final static Parser where_clause_recover_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return where_clause_recover(b, l + 1);
-    }
-  };
 }

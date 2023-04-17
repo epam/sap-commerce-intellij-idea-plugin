@@ -19,43 +19,45 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchQuerySpecificationImpl extends ASTWrapperPsiElement implements FlexibleSearchQuerySpecification {
 
-  public FlexibleSearchQuerySpecificationImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchQuerySpecificationImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitQuerySpecification(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitQuerySpecification(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchSelectList getSelectList() {
-    return findChildByClass(FlexibleSearchSelectList.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchSelectList getSelectList() {
+        return findChildByClass(FlexibleSearchSelectList.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchSetQuantifier getSetQuantifier() {
-    return findChildByClass(FlexibleSearchSetQuantifier.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchSetQuantifier getSetQuantifier() {
+        return findChildByClass(FlexibleSearchSetQuantifier.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchTableExpression getTableExpression() {
-    return findChildByClass(FlexibleSearchTableExpression.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchTableExpression getTableExpression() {
+        return findChildByClass(FlexibleSearchTableExpression.class);
+    }
 
 }

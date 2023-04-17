@@ -19,49 +19,51 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchTableExpressionImpl extends ASTWrapperPsiElement implements FlexibleSearchTableExpression {
 
-  public FlexibleSearchTableExpressionImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    public FlexibleSearchTableExpressionImpl(@NotNull final ASTNode node) {
+        super(node);
+    }
 
-  public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitTableExpression(this);
-  }
+    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
+        visitor.visitTableExpression(this);
+    }
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
-    else super.accept(visitor);
-  }
+    @Override
+    public void accept(@NotNull final PsiElementVisitor visitor) {
+        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
+        else super.accept(visitor);
+    }
 
-  @Override
-  @NotNull
-  public FlexibleSearchFromClause getFromClause() {
-    return findNotNullChildByClass(FlexibleSearchFromClause.class);
-  }
+    @Override
+    @NotNull
+    public FlexibleSearchFromClause getFromClause() {
+        return findNotNullChildByClass(FlexibleSearchFromClause.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchGroupByClause getGroupByClause() {
-    return findChildByClass(FlexibleSearchGroupByClause.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchGroupByClause getGroupByClause() {
+        return findChildByClass(FlexibleSearchGroupByClause.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchOrderByClause getOrderByClause() {
-    return findChildByClass(FlexibleSearchOrderByClause.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchOrderByClause getOrderByClause() {
+        return findChildByClass(FlexibleSearchOrderByClause.class);
+    }
 
-  @Override
-  @Nullable
-  public FlexibleSearchWhereClause getWhereClause() {
-    return findChildByClass(FlexibleSearchWhereClause.class);
-  }
+    @Override
+    @Nullable
+    public FlexibleSearchWhereClause getWhereClause() {
+        return findChildByClass(FlexibleSearchWhereClause.class);
+    }
 
 }

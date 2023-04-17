@@ -19,15 +19,15 @@
 // This is a generated file. Not intended for manual editing.
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
 public interface FlexibleSearchCommonValueExpression extends PsiElement {
 
-  @Nullable
-  FlexibleSearchStringValueExpression getStringValueExpression();
+    @Nullable
+    FlexibleSearchStringValueExpression getStringValueExpression();
 
-  @Nullable
-  PsiElement getNumber();
+    @Nullable
+    PsiElement getNumber();
 
 }
