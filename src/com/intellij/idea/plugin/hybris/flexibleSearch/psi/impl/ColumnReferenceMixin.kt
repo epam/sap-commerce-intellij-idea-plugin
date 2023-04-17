@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasReference
 import com.intellij.idea.plugin.hybris.flexibleSearch.references.FxsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
@@ -28,8 +28,7 @@ import com.intellij.psi.PsiReference
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node),
-    FlexibleSearchColumnReference {
+abstract class ColumnReferenceMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnAliasReference {
 
     private var reference: FxsTSAttributeReference? = null
 

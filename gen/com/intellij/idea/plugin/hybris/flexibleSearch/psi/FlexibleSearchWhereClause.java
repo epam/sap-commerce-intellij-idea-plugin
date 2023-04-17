@@ -20,11 +20,11 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public interface FlexibleSearchWhereClause extends PsiElement {
 
-    @Nullable
-    FlexibleSearchSearchCondition getSearchCondition();
+  @NotNull
+  FlexibleSearchExpression getExpression();
 
 }

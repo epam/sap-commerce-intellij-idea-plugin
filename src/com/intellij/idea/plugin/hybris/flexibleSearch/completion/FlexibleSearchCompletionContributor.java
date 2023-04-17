@@ -22,23 +22,19 @@ import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsTableAliasReferenceCompletionProvider;
 
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_NAME_IDENTIFIER;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
     public FlexibleSearchCompletionContributor() {
         // keywords
-        extend(
-            CompletionType.BASIC,
-            psiElement(PsiElement.class)
-                .withLanguage(FlexibleSearchLanguage.getInstance())
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement(PsiElement.class)
+//                .withLanguage(FlexibleSearchLanguage.getInstance())
 //                            .andNot(psiElement().withParents(
 //                                FlexibleSearchTableName.class,
 //                                FlexibleSearchFromClause.class,
@@ -46,31 +42,32 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //                            ))
 //                            .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE)))
 //                            .andNot(psiElement().inside(psiElement(TABLE_NAME_IDENTIFIER)))
-            /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
-            FSKeywordCompletionProvider.Companion.getInstance()
-        );
+//            /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
+//            FxsKeywordCompletionProvider.Companion.getInstance()
+//        );
 
         extend(
             CompletionType.BASIC,
-            psiElement()
-                .withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER))
-                .inside(
-                    psiElement()
-                        .withElementType(TokenSet.create(TABLE_NAME))
-                )
+            psiElement(TABLE_NAME_IDENTIFIER)
+                .inside(psiElement(TABLE_NAME))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
             ItemCodeCompletionProvider.Companion.getInstance()
         );
 
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement(COLUMN_REFERENCE_IDENTIFIER)
+//                .inside(psiElement(COLUMN_ALIAS_REFERENCE))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()),
+//            FxsColumnReferenceCompletionProvider.Companion.getInstance()
+//        );
+
         extend(
             CompletionType.BASIC,
-            psiElement()
-                .inside(PlatformPatterns.or(
-                    psiElement(COLUMN_REFERENCE_IDENTIFIER),
-                    psiElement(COLUMN_REFERENCE))
-                )
+            psiElement(TABLE_NAME_IDENTIFIER)
+                .inside(psiElement(TABLE_ALIAS_REFERENCE))
                 .withLanguage(FlexibleSearchLanguage.getInstance()),
-            FSFieldsCompletionProvider.Companion.getInstance()
+            FxsTableAliasReferenceCompletionProvider.Companion.getInstance()
         );
 
 //        extend(

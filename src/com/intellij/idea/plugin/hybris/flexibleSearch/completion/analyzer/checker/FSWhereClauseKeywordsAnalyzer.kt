@@ -24,7 +24,7 @@ import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.analyzer.*
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsColumnReferenceCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinType
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinedTable
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableReferenceList
@@ -43,7 +43,7 @@ object FSWhereClauseKeywordsAnalyzer {
         val context = parameters.originalPosition ?: parameters.position
 
         if (isColumnReferenceIdentifier(parameters)) {
-            FSFieldsCompletionProvider.instance.addCompletionVariants(parameters, ProcessingContext(), completionResultSet)
+            FxsColumnReferenceCompletionProvider.instance.addCompletionVariants(parameters, ProcessingContext(), completionResultSet)
         }
 
         if (context.parent != null && PsiTreeUtil.getParentOfType(parameters.position.parent, FlexibleSearchWhereClause::class.java) != null) {

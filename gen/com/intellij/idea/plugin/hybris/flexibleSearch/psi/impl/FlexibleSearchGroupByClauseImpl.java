@@ -20,41 +20,36 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupingElementList;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSetQuantifier;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class FlexibleSearchGroupByClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchGroupByClause {
 
-    public FlexibleSearchGroupByClauseImpl(@NotNull final ASTNode node) {
-        super(node);
-    }
+  public FlexibleSearchGroupByClauseImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
-        visitor.visitGroupByClause(this);
-    }
+  public void accept(@NotNull FlexibleSearchVisitor visitor) {
+    visitor.visitGroupByClause(this);
+  }
 
-    @Override
-    public void accept(@NotNull final PsiElementVisitor visitor) {
-        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
-        else super.accept(visitor);
-    }
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @NotNull
-    public FlexibleSearchGroupingElementList getGroupingElementList() {
-        return findNotNullChildByClass(FlexibleSearchGroupingElementList.class);
-    }
-
-    @Override
-    @Nullable
-    public FlexibleSearchSetQuantifier getSetQuantifier() {
-        return findChildByClass(FlexibleSearchSetQuantifier.class);
-    }
+  @Override
+  @NotNull
+  public List<FlexibleSearchExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
+  }
 
 }

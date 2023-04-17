@@ -20,20 +20,19 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public interface FlexibleSearchFromClause extends PsiElement {
 
-    @Nullable
-    FlexibleSearchSubquery getSubquery();
+  @NotNull
+  List<FlexibleSearchJoinConstraint> getJoinConstraintList();
 
-    @Nullable
-    FlexibleSearchTableReferenceList getTableReferenceList();
+  @NotNull
+  List<FlexibleSearchJoinOperator> getJoinOperatorList();
 
-    @Nullable
-    PsiElement getLeftBrace();
-
-    @Nullable
-    PsiElement getRightBrace();
+  @NotNull
+  List<FlexibleSearchTableOrSubquery> getTableOrSubqueryList();
 
 }

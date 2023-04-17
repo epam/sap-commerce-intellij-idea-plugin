@@ -14,36 +14,22 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.*
 
-internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : TSReferenceBase<FlexibleSearchColumnReference>(owner) {
+internal class FxsTSAttributeReference(owner: FlexibleSearchColumnAliasReference) : TSReferenceBase<FlexibleSearchColumnAliasReference>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    fun getType(): String? {
-        val itemType = if (hasPrefix(element)) {
-            deepSearchOfTypeReference(element, element.firstChild.text)
-        } else {
-            findItemTypeReference(element)
-        }
-        return itemType
-            ?.text
-            ?.replace("!", "")
-    }
+    fun getType() = Companion.getType(element)
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxsTSAttributeReference> { ref ->
-            val featureName = ref.element.text.replace("!", "")
-            val result: Array<ResolveResult> = if (hasPrefix(ref.element)) {
-                findReference(ref.project, deepSearchOfTypeReference(ref.element, ref.element.firstChild.text), ref.element.lastChild.text)
-            } else {
-                findReference(ref.project, findItemTypeReference(ref.element), featureName)
-            }
+            val tableAlias = getType(ref.element)
+            val result = findReference(ref.project, tableAlias, ref.element.text)
 
             CachedValueProvider.Result.create(
                 result,
@@ -51,15 +37,26 @@ internal class FxsTSAttributeReference(owner: FlexibleSearchColumnReference) : T
             )
         }
 
-        private fun hasPrefix(element: FlexibleSearchColumnReference) =
-            ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.TABLE_NAME_IDENTIFIER)
-
-        private fun findReference(project: Project, itemType: FlexibleSearchTableName?, refName: String): Array<ResolveResult> {
-            val metaService = TSMetaModelAccess.getInstance(project)
-            val type = itemType
+        fun getType(element: FlexibleSearchColumnAliasReference): String? {
+            val tableAlias = getTableAlias(element)
+            val itemType = if (tableAlias != null) {
+                deepSearchOfTypeReference(element, tableAlias.text)
+            } else {
+                findItemTypeReference(element)
+            }
+            return itemType
                 ?.text
                 ?.replace("!", "")
+        }
+
+        private fun getTableAlias(element: FlexibleSearchColumnAliasReference) = (element.parent as? FlexibleSearchColumnReference)
+            ?.childrenOfType<FlexibleSearchTableAliasReference>()
+            ?.firstOrNull()
+
+        private fun findReference(project: Project, itemType: String?, refName: String): Array<ResolveResult> {
+            val type = itemType
                 ?: return ResolveResult.EMPTY_ARRAY
+            val metaService = TSMetaModelAccess.getInstance(project)
             return tryResolveByItemType(type, refName, metaService)
                 ?: tryResolveByRelationType(type, refName, metaService)
                 ?: tryResolveByEnumType(type, refName, metaService)

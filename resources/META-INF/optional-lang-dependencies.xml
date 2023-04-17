@@ -221,8 +221,9 @@
         <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSFieldsCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FSKeywordCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsColumnReferenceCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsTableAliasReferenceCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsKeywordCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->

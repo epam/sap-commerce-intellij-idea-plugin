@@ -64,7 +64,6 @@
         LESS_THAN_OPERATOR              = "<"
         LESS_THAN_OR_EQUALS_OPERATOR    = "regexp:(<=)"
 
-
         SPACE                           = 'regexp:\s+'
         IDENTIFIER                      = 'regexp:\p{Alpha}\w*'
         PARAMETER_IDENTIFIER            = 'regexp:([:jletter:] [:jletterdigit:]*)'
@@ -72,235 +71,136 @@
         TABLE_NAME_IDENTIFIER           = 'regexp:([:jletter:] [:jletterdigit:]*)'
         STRING                          = "regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\\"|\\\'|\\)*\")"
         NUMBER                          = 'regexp:[:jdigit:]*'
+
+        LINE_COMMENT                    = 'regexp:--[^r\n]*'
   ]
+
+  generateTokenAccessors(".*_name")=false
+  extends(".*_expression")=expression
 }
 
-flexibleSearchFile ::= ( statement )? ( ';' ( statement )? )*
+root ::= statement ';'?
 
-private statement ::= !<<eof>> (query_specification empty_statement?)* empty_statement?
-{recoverWhile = expressionRecoverWhile }
- 
-private expressionRecoverWhile ::= !(SEMICOLON | <<eof>> )
+private statement ::= (select_statement) { name="statement" }
 
-private empty_statement ::= (SEMICOLON | <<eof>>)
-
-// Specify a table derived from the result of a <table expression>.
-
-query_specification ::= SELECT [ set_quantifier ] select_list table_expression (SEMICOLON | <<eof>>)?
-{pin = 1 recoverWhile= querySpecificationRecoverWhile}
-private querySpecificationRecoverWhile ::= !( SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE)
-
-select_list ::= ASTERISK | select_sublist [ ( COMMA select_sublist )* ]
-{pin=2 recoverWhile=select_list_recover}
-private select_list_recover ::= !(FROM)
-
-select_sublist ::= derived_column | (aggregate_function [COMMA aggregate_function*])
-
-derived_column ::= value_expression [ AS  correlation_name ]
-
-set_quantifier ::= (DISTINCT | ALL)
-
-aggregate_function ::=
-		COUNT LEFT_PAREN ASTERISK RIGHT_PAREN 
-	|	general_set_function 
-
-general_set_function ::= set_function_type LEFT_PAREN [ set_quantifier ] value_expression RIGHT_PAREN [ [ AS ] correlation_name ]
-
-set_function_type ::= computational_operation
-
-private computational_operation ::=
-		AVG | MAX | MIN | SUM
-	|	EVERY | ANY | SOME
-	|	COUNT
-
-table_expression ::= from_clause 
-		 where_clause? 
-		 order_by_clause? 
-		 group_by_clause?
-
-order_by_clause ::= ORDER BY sort_specification_list
-{pin = 1 recoverWhile = orderByClauseRecoverWhile}
-
-private orderByClauseRecoverWhile ::= !( SEMICOLON | query_specification | RIGHT_DOUBLE_BRACE)
-
-sort_specification_list ::= sort_specification [ { COMMA sort_specification }* ]
-
-sort_specification ::= sort_key [ ordering_specification ] [ null_ordering ]
-
-sort_key ::= value_expression
-
-ordering_specification ::= ASC | DESC
-
-null_ordering ::= NULLS FIRST | NULLS LAST
-
-
-//Specify a table derived from one or more tables. <from clause>
-
-//<from clause> ::= FROM <table reference list>
-from_clause ::= FROM LEFT_PAREN? (LEFT_BRACE table_reference_list RIGHT_BRACE | subquery ) RIGHT_PAREN?
-{pin = 1 recoverWhile=from_clause_recover}
-private from_clause_recover ::= !(WHERE | SELECT | FROM | SEMICOLON )
-
-table_reference_list ::=  table_reference [ ( COMMA? table_reference )* ] 
-{pin=1}
-
-table_reference ::= table_primary [joined_table*]
-{pin=1}
-
-table_primary ::= table_name [ [ AS ] correlation_name ]
-{pin=1 /*recoverWhile=table_primary_recover*/}
-private table_primary_recover ::= !(JOIN)
-
-table_name ::= TABLE_NAME_IDENTIFIER [ EXCLAMATION_MARK ]
-{
-    pin=1 
-    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.TypeNameMixin"
-    recoverWhile = table_name_recover
+// Variant of with_clause_select_statement that is inside parens and consumes all input until the matching paren.
+private subquery_greedy ::= select_statement {
+  recoverWhile=subquery_recover
 }
-private table_name_recover ::= !(RIGHT_BRACE | AS | JOIN | ON | SPACE | " ")
 
-correlation_name ::= IDENTIFIER
+private subquery_recover ::= !')'
 
-// 7.7 <joined table> (p312)
-// Specify a table derived from a Cartesian product, inner or outer join, or union join.
+selected_table_name ::= name
+defined_table_name ::= name (EXCLAMATION_MARK|ASTERISK)?
+column_name ::= name
 
-joined_table ::=  [ join_type ] JOIN table_reference join_specification 
-{pin = 2}
+type_name ::= name ( '(' signed_number ')' | '(' signed_number ',' signed_number ')' )?
 
-join_specification ::= join_condition 
-{pin = 1}
+signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
 
-join_condition ::= ON search_condition
-{pin = 1 recoverWhile = join_condition_recover}
-private join_condition_recover ::= !( RIGHT_BRACE | LEFT | JOIN )
+expression ::= LEFT_BRACE
+  (or_expression
+  | and_expression
+  | case_expression
+  | exists_expression
+  | in_expression
+  | isnull_expression
+  | like_expression
+  | cast_expression
+  | equivalence_group
+  | comparison_expression
+  | bit_expression
+  | mul_expression
+  | concat_expression
+  | unary_expression
+  | literal_expression
+  | column_ref_expression
+  | paren_expression) RIGHT_BRACE
 
-join_type ::= LEFT |
+// "The precedence of the BETWEEN operator is the same as the precedence as operators == and != and LIKE and groups left to right."
+private equivalence_group ::= equivalence_expression | between_expression
 
+and_expression ::= expression AND expression
+or_expression ::= expression OR expression
+equivalence_expression ::= expression ( '==' | '=' | '!=' | '<>' | IS NOT?) expression
+comparison_expression ::= expression ( '<' | '<=' | '>' | '>=' ) expression
+bit_expression ::= expression ( '<<' | '>>' | '&' | '|' ) expression
+mul_expression ::= expression ( '*' | '/' | '%' ) expression
+concat_expression ::= expression '||' expression
+unary_expression ::= ('-' | '+' | '~' | NOT) expression
+literal_expression ::= literal_value | bind_parameter
+paren_expression ::= '(' expression ')'
+between_expression ::= expression NOT? BETWEEN expression AND expression
+cast_expression ::= CAST '(' expression AS type_name ')'
+case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
+like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
+isnull_expression ::= expression ( ISNULL | NOTNULL | NOT NULL )
+in_expression ::=  expression ( NOT )? IN ( '(' LEFT_DOUBLE_BRACE ( expression_subquery | expression ( ',' expression )* )? ')' RIGHT_DOUBLE_BRACE | defined_table_name )
+exists_expression ::= ( ( NOT )? EXISTS )? '(' expression_subquery ')'
 
-table_subquery ::= subquery
+private expression_subquery ::= &(SELECT) subquery_greedy {pin=1}
 
-subquery ::= 
-LEFT_PAREN? LEFT_DOUBLE_BRACE query_specification RIGHT_DOUBLE_BRACE [(UNION ALL? subquery)*]  RIGHT_PAREN? [ [ AS ] correlation_name ]
-{pin=2}
+column_ref_expression ::= LEFT_BRACE (selected_table_name '.' column_name | column_name) RIGHT_BRACE
 
-where_clause ::= WHERE search_condition
-{pin=1 recoverWhile=where_clause_recover}
-private where_clause_recover ::= !('{{' | <<eof>> | SELECT | ORDER | LEFT_PAREN | SEMICOLON | RIGHT_DOUBLE_BRACE )
+bind_parameter ::= NUMBERED_PARAMETER | NAMED_PARAMETER
 
-search_condition ::= boolean_value_expression
+private literal_value ::=
+  NUMERIC_LITERAL
+  | string_literal // X marks a blob literal
+  | NULL
+  | CURRENT_TIME
+  | CURRENT_DATE
+  | CURRENT_TIMESTAMP
 
-// boolean_value_expression 
-boolean_value_expression ::= boolean_term
+select_statement ::= select_core (compound_operator select_core)* order_clause? limit_clause?
 
-boolean_term ::= boolean_factor [([AND|OR] boolean_term)*]
-{pin = 1/* recoverWhile= boolean_term_recover*/}
-private boolean_term_recover ::= !(JOIN)
+limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )?
 
-boolean_factor ::= [ NOT ] boolean_test
+order_clause ::= ORDER BY ordering_term ( ',' ordering_term )*
 
-boolean_test ::= boolean_primary  [ IS [ NOT ] truth_value ]
+select_core ::= select_core_select
 
-truth_value ::= TRUE | FALSE 
+select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause? where_clause? group_by_clause?
 
-boolean_primary ::= boolean_predicand | predicate 
+group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression )?
 
-/*
-boolean_predicand ::= parenthesized_boolean_value_expression
+where_clause ::= WHERE expression
 
-parenthesized_boolean_value_expression ::= LEFT_PAREN boolean_value_expression LEFT_PAREN
+from_clause ::= FROM table_or_subquery ( join_operator table_or_subquery join_constraint? )*
 
-nonparenthesized_value_expression_primary ::= id
-*/
-
-boolean_predicand ::= parenthesized_boolean_value_expression | nonparenthesized_value_expression_primary
-
-private parenthesized_boolean_value_expression ::= LEFT_PAREN boolean_value_expression RIGHT_PAREN
-{pin = 1 }
-
-private nonparenthesized_value_expression_primary ::= column_reference
-//Predicates
-//Specify a condition that can be evaluated to give a boolean value.
-
-predicate ::= comparison_predicate
-	|	between_predicate
-	|	like_predicate
-	|	null_predicate
-	|	exists_predicate
-	|   in_predicate
-
-null_predicate ::= row_value_predicand IS [ NOT ] NULL
-
-exists_predicate ::= EXISTS table_subquery
-
-in_predicate ::= row_value_predicand IN (table_subquery | LEFT_PAREN? row_value_predicand RIGHT_PAREN?) 
-
-//Specify a comparison of two row values. <comparison predicate>
-private comparison_predicate ::= row_value_predicand? comp_op row_value_predicand
-{pin=2}
-comp_op ::=
-		EQUALS_OPERATOR
-	|	GREATER_THAN_OPERATOR
-	|	NOT_EQUALS_OPERATOR
-	|	LESS_THAN_OPERATOR
-	|	LESS_THAN_OR_EQUALS_OPERATOR
-	|	GREATER_THAN_OR_EQUALS_OPERATOR
-
-
-// Specify a range comparison. <between predicate>
-between_predicate ::= row_value_predicand [ NOT ] BETWEEN row_value_predicand AND row_value_predicand
-
-row_value_predicand ::= value_expression | common_value_expression (','common_value_expression)* 
-
-common_value_expression ::= string_value_expression | NUMBER
-
-like_predicate ::= character_like_predicate
-
-character_like_predicate ::= row_value_predicand [ NOT ] LIKE (character_pattern | value_expression)
-
-character_pattern ::=  STRING | string_value_function
-
-string_value_expression ::=  general_literal
-
-general_literal ::= character_string_literal
-
-character_string_literal ::= STRING 
-
-string_value_function ::= character_value_function 
-
-character_value_function ::= character_substring_function
-
-character_substring_function ::=
-        CONCAT LEFT_PAREN string_value_expression COMMA  (character_substring_function | string_value_expression) RIGHT_PAREN
-
-value_expression ::=  NUMBER 
-                    | parameter_reference
-                    | column_reference_value
-
-private column_reference_value ::= LEFT_BRACE? column_reference column_localization? RIGHT_BRACE?
-{pin = 2 /*recoverWhile=column_reference_value_recover*/}
-
-column_localization ::= LEFT_BRACKET IDENTIFIER RIGHT_BRACKET
-
-private identifier_chain ::= (IDENTIFIER | TABLE_NAME_IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) [ ( (DOT|COLON) (IDENTIFIER | COLUMN_REFERENCE_IDENTIFIER) )* ]
-
-parameter_reference ::= QUESTION_MARK PARAMETER_IDENTIFIER 
-{pin = 1}
-column_reference ::= identifier_chain
-{
-    pin = 1 
-    mixin = "com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.ColumnReferenceMixin"
-    recoverWhile = column_reference_recover
+result_columns ::= result_column ( ',' result_column )* {
 }
-private column_reference_recover ::= !(<<eof>> | IDENTIFIER | LINE_TERMINATOR | RIGHT_BRACE | FROM | LEFT_BRACKET | SEMICOLON | WHITE_SPACE | AND | ORDER | IS | OR | COMMA | RIGHT_PAREN | IN | RIGHT_DOUBLE_BRACE | comp_op)
 
-group_by_clause ::= GROUP BY [ set_quantifier ] grouping_element_list
+table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 
-grouping_element_list ::= grouping_element [ { COMMA grouping_element }* ]
+from_table ::= defined_table_name ( ( AS )? table_alias_name )?
 
-grouping_element ::= ordinary_grouping_set
+select_subquery ::= '(' &(SELECT) subquery_greedy ')' ( ( AS )? table_alias_name )? {
+  pin=2
+}
 
-ordinary_grouping_set ::= grouping_column_reference | LEFT_PAREN grouping_column_reference_list RIGHT_PAREN
+table_alias_name ::= name {
+  implements="com.intellij.psi.PsiNamedElement"
+  methods=[getName setName]
+}
 
-grouping_column_reference ::= value_expression
+result_column ::=
+  '*'
+  | selected_table_name '.' '*'
+  | expression ( ( AS )? column_alias_name )?
 
-grouping_column_reference_list ::= grouping_column_reference [ { COMMA grouping_column_reference }* ]
+column_alias_name ::= name {
+  implements="com.intellij.psi.PsiNamedElement"
+  methods=[getName setName]
+}
+
+join_operator ::= ',' | ( LEFT ( OUTER )? | INNER | CROSS )? JOIN
+
+join_constraint ::= ON expression | USING '(' column_name ( ',' column_name )* ')'
+
+ordering_term ::= expression ( ASC | DESC )?
+
+compound_operator ::= UNION ALL?
+
+private name ::= IDENTIFIER | BRACKET_LITERAL | BACKTICK_LITERAL | string_literal
+private string_literal ::= SINGLE_QUOTE_STRING_LITERAL | DOUBLE_QUOTE_STRING_LITERAL

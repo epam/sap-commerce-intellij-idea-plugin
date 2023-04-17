@@ -20,34 +20,33 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSearchCondition;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchVisitor;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchWhereClause;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class FlexibleSearchWhereClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchWhereClause {
 
-    public FlexibleSearchWhereClauseImpl(@NotNull final ASTNode node) {
-        super(node);
-    }
+  public FlexibleSearchWhereClauseImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull final FlexibleSearchVisitor visitor) {
-        visitor.visitWhereClause(this);
-    }
+  public void accept(@NotNull FlexibleSearchVisitor visitor) {
+    visitor.visitWhereClause(this);
+  }
 
-    @Override
-    public void accept(@NotNull final PsiElementVisitor visitor) {
-        if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor) visitor);
-        else super.accept(visitor);
-    }
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @Nullable
-    public FlexibleSearchSearchCondition getSearchCondition() {
-        return findChildByClass(FlexibleSearchSearchCondition.class);
-    }
+  @Override
+  @NotNull
+  public FlexibleSearchExpression getExpression() {
+    return findNotNullChildByClass(FlexibleSearchExpression.class);
+  }
 
 }
