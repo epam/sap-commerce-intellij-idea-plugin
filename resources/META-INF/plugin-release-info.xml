@@ -94,8 +94,9 @@
             <h3>2023.1.5</h3>
             <ul>
                 <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
-                <li><i>Feature:</i> Improved FlexibleSearch and Impex code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch value parameters code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345" target="_blank" rel="nofollow">#345</a>)</li>
+                <li><i>Feature:</i> Improved FlexibleSearch & Impex code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
+                <li><i>Feature:</i> Improved FlexibleSearch & Impex Enum code completion and validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/346" target="_blank" rel="nofollow">#346</a>)</li>
                 <li><i>Feature:</i> Impex folding
                     <ul>
                         <li>Improved support of the nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/340" target="_blank" rel="nofollow">#340</a>)</li>
