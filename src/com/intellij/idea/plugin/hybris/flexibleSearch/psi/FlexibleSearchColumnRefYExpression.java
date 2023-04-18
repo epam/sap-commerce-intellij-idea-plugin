@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchFunctionCallExpression extends FlexibleSearchExpression {
+public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpression {
 
   @NotNull
-  List<FlexibleSearchExpression> getExpressionList();
+  FlexibleSearchColumnName getColumnName();
 
-  @NotNull
-  FlexibleSearchFunctionName getFunctionName();
+  @Nullable
+  FlexibleSearchSelectedTableName getSelectedTableName();
 
 }

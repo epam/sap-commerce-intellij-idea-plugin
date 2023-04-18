@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClause {
+public class FlexibleSearchFromClauseSimpleImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClauseSimple {
 
-  public FlexibleSearchFromClauseImpl(@NotNull ASTNode node) {
+  public FlexibleSearchFromClauseSimpleImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClause(this);
+    visitor.visitFromClauseSimple(this);
   }
 
   @Override
@@ -28,15 +28,21 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchFromClauseCombined getFromClauseCombined() {
-    return findChildByClass(FlexibleSearchFromClauseCombined.class);
+  @NotNull
+  public List<FlexibleSearchJoinConstraint> getJoinConstraintList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchJoinConstraint.class);
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchFromClauseSimple getFromClauseSimple() {
-    return findChildByClass(FlexibleSearchFromClauseSimple.class);
+  @NotNull
+  public List<FlexibleSearchJoinOperator> getJoinOperatorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchJoinOperator.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FlexibleSearchTableOrSubquery> getTableOrSubqueryList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchTableOrSubquery.class);
   }
 
 }

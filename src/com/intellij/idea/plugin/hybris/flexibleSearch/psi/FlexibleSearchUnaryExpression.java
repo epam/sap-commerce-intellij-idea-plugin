@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchUnaryExpression extends FlexibleSearchExpression {
 
-  @Nullable
-  FlexibleSearchExpression getExpression();
+  @NotNull
+  List<FlexibleSearchExpression> getExpressionList();
 
 }

@@ -18,13 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch;
 
-import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
 
 public class FlexibleSearchParserUtils extends GeneratedParserUtilBase {
 
-    public static boolean parseFunctionName(final PsiBuilder builder, final int level) {
-        if (!recursion_guard_(builder, level, "function_name")) return false;
-        return FlexibleSearchParser.name(builder, level + 1);
-    }
 }

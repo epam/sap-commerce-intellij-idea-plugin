@@ -43,6 +43,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitColumnRefYExpression(@NotNull FlexibleSearchColumnRefYExpression o) {
+    visitExpression(o);
+  }
+
   public void visitComparisonExpression(@NotNull FlexibleSearchComparisonExpression o) {
     visitExpression(o);
   }
@@ -75,12 +79,24 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFromClauseCombined(@NotNull FlexibleSearchFromClauseCombined o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFromClauseSimple(@NotNull FlexibleSearchFromClauseSimple o) {
+    visitPsiElement(o);
+  }
+
   public void visitFromTable(@NotNull FlexibleSearchFromTable o) {
     visitPsiElement(o);
   }
 
   public void visitFunctionCallExpression(@NotNull FlexibleSearchFunctionCallExpression o) {
     visitExpression(o);
+  }
+
+  public void visitFunctionName(@NotNull FlexibleSearchFunctionName o) {
+    visitPsiElement(o);
   }
 
   public void visitGroupByClause(@NotNull FlexibleSearchGroupByClause o) {
@@ -152,6 +168,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitSelectSubquery(@NotNull FlexibleSearchSelectSubquery o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSelectSubqueryCombined(@NotNull FlexibleSearchSelectSubqueryCombined o) {
     visitPsiElement(o);
   }
 

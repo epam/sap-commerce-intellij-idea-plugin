@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchFunctionCallExpression extends FlexibleSearchExpression {
+public interface FlexibleSearchSelectSubqueryCombined extends PsiElement {
 
-  @NotNull
-  List<FlexibleSearchExpression> getExpressionList();
-
-  @NotNull
-  FlexibleSearchFunctionName getFunctionName();
+  @Nullable
+  FlexibleSearchSelectStatement getSelectStatement();
 
 }

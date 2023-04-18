@@ -19,6 +19,7 @@ public interface FlexibleSearchTypes {
   IElementType COLUMN_ALIAS_NAME = new FlexibleSearchElementType("COLUMN_ALIAS_NAME");
   IElementType COLUMN_NAME = new FlexibleSearchElementType("COLUMN_NAME");
   IElementType COLUMN_REF_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_EXPRESSION");
+  IElementType COLUMN_REF_Y_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_Y_EXPRESSION");
   IElementType COMPARISON_EXPRESSION = new FlexibleSearchElementType("COMPARISON_EXPRESSION");
   IElementType COMPOUND_OPERATOR = new FlexibleSearchElementType("COMPOUND_OPERATOR");
   IElementType CONCAT_EXPRESSION = new FlexibleSearchElementType("CONCAT_EXPRESSION");
@@ -27,8 +28,11 @@ public interface FlexibleSearchTypes {
   IElementType EXISTS_EXPRESSION = new FlexibleSearchElementType("EXISTS_EXPRESSION");
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
+  IElementType FROM_CLAUSE_COMBINED = new FlexibleSearchElementType("FROM_CLAUSE_COMBINED");
+  IElementType FROM_CLAUSE_SIMPLE = new FlexibleSearchElementType("FROM_CLAUSE_SIMPLE");
   IElementType FROM_TABLE = new FlexibleSearchElementType("FROM_TABLE");
   IElementType FUNCTION_CALL_EXPRESSION = new FlexibleSearchElementType("FUNCTION_CALL_EXPRESSION");
+  IElementType FUNCTION_NAME = new FlexibleSearchElementType("FUNCTION_NAME");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
   IElementType IN_EXPRESSION = new FlexibleSearchElementType("IN_EXPRESSION");
   IElementType ISNULL_EXPRESSION = new FlexibleSearchElementType("ISNULL_EXPRESSION");
@@ -48,6 +52,7 @@ public interface FlexibleSearchTypes {
   IElementType SELECT_CORE_SELECT = new FlexibleSearchElementType("SELECT_CORE_SELECT");
   IElementType SELECT_STATEMENT = new FlexibleSearchElementType("SELECT_STATEMENT");
   IElementType SELECT_SUBQUERY = new FlexibleSearchElementType("SELECT_SUBQUERY");
+  IElementType SELECT_SUBQUERY_COMBINED = new FlexibleSearchElementType("SELECT_SUBQUERY_COMBINED");
   IElementType SIGNED_NUMBER = new FlexibleSearchElementType("SIGNED_NUMBER");
   IElementType TABLE_ALIAS_NAME = new FlexibleSearchElementType("TABLE_ALIAS_NAME");
   IElementType TABLE_OR_SUBQUERY = new FlexibleSearchElementType("TABLE_OR_SUBQUERY");
@@ -176,6 +181,9 @@ public interface FlexibleSearchTypes {
       else if (type == COLUMN_REF_EXPRESSION) {
         return new FlexibleSearchColumnRefExpressionImpl(node);
       }
+      else if (type == COLUMN_REF_Y_EXPRESSION) {
+        return new FlexibleSearchColumnRefYExpressionImpl(node);
+      }
       else if (type == COMPARISON_EXPRESSION) {
         return new FlexibleSearchComparisonExpressionImpl(node);
       }
@@ -197,11 +205,20 @@ public interface FlexibleSearchTypes {
       else if (type == FROM_CLAUSE) {
         return new FlexibleSearchFromClauseImpl(node);
       }
+      else if (type == FROM_CLAUSE_COMBINED) {
+        return new FlexibleSearchFromClauseCombinedImpl(node);
+      }
+      else if (type == FROM_CLAUSE_SIMPLE) {
+        return new FlexibleSearchFromClauseSimpleImpl(node);
+      }
       else if (type == FROM_TABLE) {
         return new FlexibleSearchFromTableImpl(node);
       }
       else if (type == FUNCTION_CALL_EXPRESSION) {
         return new FlexibleSearchFunctionCallExpressionImpl(node);
+      }
+      else if (type == FUNCTION_NAME) {
+        return new FlexibleSearchFunctionNameImpl(node);
       }
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);
@@ -259,6 +276,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == SELECT_SUBQUERY) {
         return new FlexibleSearchSelectSubqueryImpl(node);
+      }
+      else if (type == SELECT_SUBQUERY_COMBINED) {
+        return new FlexibleSearchSelectSubqueryCombinedImpl(node);
       }
       else if (type == SIGNED_NUMBER) {
         return new FlexibleSearchSignedNumberImpl(node);

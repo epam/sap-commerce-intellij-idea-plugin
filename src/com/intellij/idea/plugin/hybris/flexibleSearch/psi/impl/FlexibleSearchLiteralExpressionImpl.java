@@ -35,14 +35,14 @@ public class FlexibleSearchLiteralExpressionImpl extends FlexibleSearchExpressio
 
   @Override
   @Nullable
-  public PsiElement getDoubleQuoteStringLiteral() {
-    return findChildByType(DOUBLE_QUOTE_STRING_LITERAL);
+  public FlexibleSearchSignedNumber getSignedNumber() {
+    return findChildByClass(FlexibleSearchSignedNumber.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getNumericLiteral() {
-    return findChildByType(NUMERIC_LITERAL);
+  public PsiElement getDoubleQuoteStringLiteral() {
+    return findChildByType(DOUBLE_QUOTE_STRING_LITERAL);
   }
 
   @Override

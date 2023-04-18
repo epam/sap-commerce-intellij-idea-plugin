@@ -33,4 +33,10 @@ public class FlexibleSearchFunctionCallExpressionImpl extends FlexibleSearchExpr
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
   }
 
+  @Override
+  @NotNull
+  public FlexibleSearchFunctionName getFunctionName() {
+    return findNotNullChildByClass(FlexibleSearchFunctionName.class);
+  }
+
 }

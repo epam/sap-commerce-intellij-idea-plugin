@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClause {
+public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpressionImpl implements FlexibleSearchColumnRefYExpression {
 
-  public FlexibleSearchFromClauseImpl(@NotNull ASTNode node) {
+  public FlexibleSearchColumnRefYExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClause(this);
+    visitor.visitColumnRefYExpression(this);
   }
 
   @Override
@@ -28,15 +28,15 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchFromClauseCombined getFromClauseCombined() {
-    return findChildByClass(FlexibleSearchFromClauseCombined.class);
+  @NotNull
+  public FlexibleSearchColumnName getColumnName() {
+    return findNotNullChildByClass(FlexibleSearchColumnName.class);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchFromClauseSimple getFromClauseSimple() {
-    return findChildByClass(FlexibleSearchFromClauseSimple.class);
+  public FlexibleSearchSelectedTableName getSelectedTableName() {
+    return findChildByClass(FlexibleSearchSelectedTableName.class);
   }
 
 }

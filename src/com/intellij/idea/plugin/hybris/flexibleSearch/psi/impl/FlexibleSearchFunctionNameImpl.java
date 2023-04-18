@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClause {
+public class FlexibleSearchFunctionNameImpl extends ASTWrapperPsiElement implements FlexibleSearchFunctionName {
 
-  public FlexibleSearchFromClauseImpl(@NotNull ASTNode node) {
+  public FlexibleSearchFunctionNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClause(this);
+    visitor.visitFunctionName(this);
   }
 
   @Override
@@ -29,14 +29,32 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public FlexibleSearchFromClauseCombined getFromClauseCombined() {
-    return findChildByClass(FlexibleSearchFromClauseCombined.class);
+  public PsiElement getBacktickLiteral() {
+    return findChildByType(BACKTICK_LITERAL);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchFromClauseSimple getFromClauseSimple() {
-    return findChildByClass(FlexibleSearchFromClauseSimple.class);
+  public PsiElement getBracketLiteral() {
+    return findChildByType(BRACKET_LITERAL);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoubleQuoteStringLiteral() {
+    return findChildByType(DOUBLE_QUOTE_STRING_LITERAL);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSingleQuoteStringLiteral() {
+    return findChildByType(SINGLE_QUOTE_STRING_LITERAL);
   }
 
 }

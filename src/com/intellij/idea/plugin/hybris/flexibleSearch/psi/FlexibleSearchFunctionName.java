@@ -5,16 +5,19 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchLiteralExpression extends FlexibleSearchExpression {
+public interface FlexibleSearchFunctionName extends PsiElement {
 
   @Nullable
-  FlexibleSearchBindParameter getBindParameter();
+  PsiElement getBacktickLiteral();
 
   @Nullable
-  FlexibleSearchSignedNumber getSignedNumber();
+  PsiElement getBracketLiteral();
 
   @Nullable
   PsiElement getDoubleQuoteStringLiteral();
+
+  @Nullable
+  PsiElement getIdentifier();
 
   @Nullable
   PsiElement getSingleQuoteStringLiteral();

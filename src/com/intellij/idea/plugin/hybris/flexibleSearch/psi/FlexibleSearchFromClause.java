@@ -7,13 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchFromClause extends PsiElement {
 
-  @NotNull
-  List<FlexibleSearchJoinConstraint> getJoinConstraintList();
+  @Nullable
+  FlexibleSearchFromClauseCombined getFromClauseCombined();
 
-  @NotNull
-  List<FlexibleSearchJoinOperator> getJoinOperatorList();
-
-  @NotNull
-  List<FlexibleSearchTableOrSubquery> getTableOrSubqueryList();
+  @Nullable
+  FlexibleSearchFromClauseSimple getFromClauseSimple();
 
 }

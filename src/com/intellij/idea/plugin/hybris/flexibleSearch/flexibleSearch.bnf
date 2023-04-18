@@ -109,11 +109,9 @@ private subquery_greedy ::= select_statement {
   recoverWhile=subquery_recover
 }
 
-private subquery_recover ::= !')'
+private subquery_recover ::= !"}}"
 
 type_name ::= name ( '(' signed_number ')' | '(' signed_number ',' signed_number ')' )?
-
-signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
 
 expression ::=
   or_expression
@@ -124,6 +122,7 @@ expression ::=
   | isnull_expression
   | like_expression
   | cast_expression
+  | function_call_expression
   | equivalence_group
   | comparison_expression
   | bit_expression
@@ -131,9 +130,9 @@ expression ::=
   | concat_expression
   | unary_expression
   | literal_expression
+  | column_ref_y_expression
   | column_ref_expression
   | paren_expression
-  | function_call_expression
 
 // "The precedence of the BETWEEN operator is the same as the precedence as operators == and != and LIKE and groups left to right."
 private equivalence_group ::= equivalence_expression | between_expression
@@ -145,7 +144,7 @@ comparison_expression ::= expression ( '<' | '<=' | '>' | '>=' ) expression
 bit_expression ::= expression ( '<<' | '>>' | '&' | '|' ) expression
 mul_expression ::= expression ( '*' | '/' | '%' ) expression
 concat_expression ::= expression '||' expression
-unary_expression ::= ('-' | '+' | '~' | NOT) expression
+unary_expression ::= expression ('-' | '+' | '~' | NOT !IN) expression
 literal_expression ::= literal_value | bind_parameter
 paren_expression ::= '(' (expression)* ')'
 between_expression ::= expression NOT? BETWEEN expression AND expression
@@ -157,23 +156,33 @@ in_expression ::=  expression NOT? IN '(' ( NAMED_PARAMETER | expression_in_subq
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
 
+column_ref_y_expression ::=
+ '{' selected_table_name separator column_name '}'
+ | '{' column_name '}'
+
+// We may not have { } in case of Combined SELECT with table alias
+/*
+SELECT x.PK FROM (
+    {{
+        SELECT {PK} as PK FROM {Page}
+        WHERE {Page.PUBLICATION} LIKE 6587084167216798848
+    }}
+) x
+ */
 column_ref_expression ::=
- '{'? selected_table_name separator column_name '}'?
- | '{'? column_name '}'?
+ selected_table_name separator column_name
+ | column_name
 
 private expression_in_subquery ::= "{{" ( expression_subquery | expression ( ',' expression )* )? "}}"
 
-private expression_subquery ::= &(SELECT) subquery_greedy{
+private expression_subquery ::= &(SELECT) subquery_greedy {
     pin=1
 }
-
-// Some tokens are allowed as function names and remapped to identifiers in code
-external function_name ::= parseFunctionName
 
 bind_parameter ::= NUMBERED_PARAMETER | NAMED_PARAMETER
 
 private literal_value ::=
-  NUMERIC_LITERAL
+  signed_number
   | string_literal // X marks a blob literal
   | NULL
   | CURRENT_TIME
@@ -192,16 +201,22 @@ group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression 
 
 where_clause ::= WHERE expression
 
-from_clause ::= FROM '{' table_or_subquery ( join_operator table_or_subquery join_constraint? )* '}'
+from_clause ::= FROM from_clause_simple | from_clause_combined
+
+from_clause_simple ::= '{' table_or_subquery ( join_operator table_or_subquery join_constraint? )* '}'
+from_clause_combined ::= '(' (  select_subquery_combined compound_operator? )* ')' ( ( AS )? table_alias_name)?
 
 result_columns ::= result_column ( ',' result_column )*
 
 table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 
-from_table ::= defined_table_name ( AS? table_alias_name )?
+from_table ::= defined_table_name ( ( AS )? table_alias_name )?
 
-select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' (AS? table_alias_name)? {
+select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' ( ( AS )? table_alias_name)? {
   pin=3
+}
+select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
+  pin=2
 }
 
 result_column ::=
@@ -222,7 +237,9 @@ table_alias_name ::= name
 selected_table_name ::= name
 defined_table_name ::= name (EXCLAMATION_MARK | ASTERISK)?
 column_name ::= name
+function_name ::= name
 
+signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
 private separator ::= DOT | COLON
 private name ::= IDENTIFIER | BRACKET_LITERAL | BACKTICK_LITERAL | string_literal
 private string_literal ::= SINGLE_QUOTE_STRING_LITERAL | DOUBLE_QUOTE_STRING_LITERAL
