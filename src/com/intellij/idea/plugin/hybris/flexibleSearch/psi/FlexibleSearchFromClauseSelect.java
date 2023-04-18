@@ -5,13 +5,16 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchFromClauseCombined extends PsiElement {
+public interface FlexibleSearchFromClauseSelect extends PsiElement {
 
-  @NotNull
-  List<FlexibleSearchCompoundOperator> getCompoundOperatorList();
+  @Nullable
+  FlexibleSearchFromClauseSelectQuery getFromClauseSelectQuery();
 
-  @NotNull
-  List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList();
+  @Nullable
+  FlexibleSearchFromClauseSubqueries getFromClauseSubqueries();
+
+  @Nullable
+  FlexibleSearchJoinConstraint getJoinConstraint();
 
   @Nullable
   FlexibleSearchTableAliasName getTableAliasName();

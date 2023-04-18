@@ -28,8 +28,11 @@ public interface FlexibleSearchTypes {
   IElementType EXISTS_EXPRESSION = new FlexibleSearchElementType("EXISTS_EXPRESSION");
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
-  IElementType FROM_CLAUSE_COMBINED = new FlexibleSearchElementType("FROM_CLAUSE_COMBINED");
+  IElementType FROM_CLAUSE_EXPRESSION = new FlexibleSearchElementType("FROM_CLAUSE_EXPRESSION");
+  IElementType FROM_CLAUSE_SELECT = new FlexibleSearchElementType("FROM_CLAUSE_SELECT");
+  IElementType FROM_CLAUSE_SELECT_QUERY = new FlexibleSearchElementType("FROM_CLAUSE_SELECT_QUERY");
   IElementType FROM_CLAUSE_SIMPLE = new FlexibleSearchElementType("FROM_CLAUSE_SIMPLE");
+  IElementType FROM_CLAUSE_SUBQUERIES = new FlexibleSearchElementType("FROM_CLAUSE_SUBQUERIES");
   IElementType FROM_TABLE = new FlexibleSearchElementType("FROM_TABLE");
   IElementType FUNCTION_CALL_EXPRESSION = new FlexibleSearchElementType("FUNCTION_CALL_EXPRESSION");
   IElementType FUNCTION_NAME = new FlexibleSearchElementType("FUNCTION_NAME");
@@ -59,6 +62,7 @@ public interface FlexibleSearchTypes {
   IElementType TYPE_NAME = new FlexibleSearchElementType("TYPE_NAME");
   IElementType UNARY_EXPRESSION = new FlexibleSearchElementType("UNARY_EXPRESSION");
   IElementType WHERE_CLAUSE = new FlexibleSearchElementType("WHERE_CLAUSE");
+  IElementType Y_FROM_CLAUSE = new FlexibleSearchElementType("Y_FROM_CLAUSE");
 
   IElementType ALL = new FlexibleSearchTokenType("ALL");
   IElementType AMP = new FlexibleSearchTokenType("&");
@@ -205,11 +209,20 @@ public interface FlexibleSearchTypes {
       else if (type == FROM_CLAUSE) {
         return new FlexibleSearchFromClauseImpl(node);
       }
-      else if (type == FROM_CLAUSE_COMBINED) {
-        return new FlexibleSearchFromClauseCombinedImpl(node);
+      else if (type == FROM_CLAUSE_EXPRESSION) {
+        return new FlexibleSearchFromClauseExpressionImpl(node);
+      }
+      else if (type == FROM_CLAUSE_SELECT) {
+        return new FlexibleSearchFromClauseSelectImpl(node);
+      }
+      else if (type == FROM_CLAUSE_SELECT_QUERY) {
+        return new FlexibleSearchFromClauseSelectQueryImpl(node);
       }
       else if (type == FROM_CLAUSE_SIMPLE) {
         return new FlexibleSearchFromClauseSimpleImpl(node);
+      }
+      else if (type == FROM_CLAUSE_SUBQUERIES) {
+        return new FlexibleSearchFromClauseSubqueriesImpl(node);
       }
       else if (type == FROM_TABLE) {
         return new FlexibleSearchFromTableImpl(node);
@@ -297,6 +310,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == WHERE_CLAUSE) {
         return new FlexibleSearchWhereClauseImpl(node);
+      }
+      else if (type == Y_FROM_CLAUSE) {
+        return new FlexibleSearchYFromClauseImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

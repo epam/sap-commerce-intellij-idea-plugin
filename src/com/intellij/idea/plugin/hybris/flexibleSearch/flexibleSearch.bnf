@@ -201,10 +201,27 @@ group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression 
 
 where_clause ::= WHERE expression
 
-from_clause ::= FROM from_clause_simple | from_clause_combined
+//from_clause ::= FROM table_or_subquery ( join_operator table_or_subquery join_constraint? )*
 
-from_clause_simple ::= '{' table_or_subquery ( join_operator table_or_subquery join_constraint? )* '}'
-from_clause_combined ::= '(' (  select_subquery_combined compound_operator? )* ')' ( ( AS )? table_alias_name)?
+from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )*
+
+from_clause_expression ::=
+  y_from_clause
+  | from_clause_select
+
+y_from_clause ::= '{' from_clause_simple '}'
+from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint?
+
+from_clause_select_query ::= '(' &(SELECT) from_query_greedy ')' {pin=2}
+
+private from_query_greedy ::= select_statement {
+  recoverWhile=from_query_recover
+}
+
+private from_query_recover ::= !')'
+
+from_clause_simple ::= table_or_subquery ( join_operator table_or_subquery join_constraint? )*
+from_clause_subqueries ::= '(' (  select_subquery_combined compound_operator? )* ')' ( ( AS )? table_alias_name)?
 
 result_columns ::= result_column ( ',' result_column )*
 

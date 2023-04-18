@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseCombinedImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClauseCombined {
+public class FlexibleSearchFromClauseSubqueriesImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClauseSubqueries {
 
-  public FlexibleSearchFromClauseCombinedImpl(@NotNull ASTNode node) {
+  public FlexibleSearchFromClauseSubqueriesImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClauseCombined(this);
+    visitor.visitFromClauseSubqueries(this);
   }
 
   @Override

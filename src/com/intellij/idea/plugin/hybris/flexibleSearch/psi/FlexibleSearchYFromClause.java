@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchFromClause extends PsiElement {
+public interface FlexibleSearchYFromClause extends PsiElement {
 
   @NotNull
-  List<FlexibleSearchFromClauseExpression> getFromClauseExpressionList();
-
-  @NotNull
-  List<FlexibleSearchJoinOperator> getJoinOperatorList();
+  FlexibleSearchFromClauseSimple getFromClauseSimple();
 
 }
