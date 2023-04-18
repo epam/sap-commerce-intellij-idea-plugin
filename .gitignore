@@ -31,3 +31,5 @@
 /.idea/php.xml
 /.idea/.gitignore
 /.idea/hybrisProjectSettings.xml
+
+jflex-*.jar
