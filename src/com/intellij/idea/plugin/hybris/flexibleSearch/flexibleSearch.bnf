@@ -46,9 +46,11 @@
 
         // Some approximation of what's actually allowed. This doesn't seem to be defined anywhere.
         IDENTIFIER      = 'regexp:([:letter:]|_)([:letter:]|[:digit:]|_)*'
+        LINE_COMMENT    = 'regexp:--[^r\n]*'
         NAMED_PARAMETER = 'regexp:\?\w+' // Simple regexp for Live Preview, this is tweaked in the flex file.
         COMMENT         = 'regexp:/\*.*\*/' // Simple regexp for Live Preview, this is tweaked in the flex file.
-        LINE_COMMENT    = 'regexp:--[^r\n]*'
+//        NAMED_PARAMETER=[?][:jletterdigit:]+
+//        COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 
         QUESTION_MARK       = '?'
         EXCLAMATION_MARK    = "!"
@@ -145,7 +147,7 @@ mul_expression ::= expression ( '*' | '/' | '%' ) expression
 concat_expression ::= expression '||' expression
 unary_expression ::= ('-' | '+' | '~' | NOT) expression
 literal_expression ::= literal_value | bind_parameter
-paren_expression ::= '(' expression ')'
+paren_expression ::= '(' (expression)* ')'
 between_expression ::= expression NOT? BETWEEN expression AND expression
 cast_expression ::= CAST '(' expression AS type_name ')'
 case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END

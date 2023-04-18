@@ -1116,7 +1116,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // 13: PREFIX(unary_expression)
   // 14: ATOM(literal_expression)
   // 15: ATOM(column_ref_expression)
-  // 16: PREFIX(paren_expression)
+  // 16: ATOM(paren_expression)
   // 17: ATOM(function_call_expression)
   public static boolean expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expression")) return false;
@@ -1614,17 +1614,38 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
+  // '(' (expression)* ')'
   public static boolean paren_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paren_expression")) return false;
     if (!nextTokenIsSmart(b, LPAREN)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
+    boolean r;
+    Marker m = enter_section_(b);
     r = consumeTokenSmart(b, LPAREN);
-    p = r;
-    r = p && expression(b, l, 16);
-    r = p && report_error_(b, consumeToken(b, RPAREN)) && r;
-    exit_section_(b, l, m, PAREN_EXPRESSION, r, p, null);
-    return r || p;
+    r = r && paren_expression_1(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, PAREN_EXPRESSION, r);
+    return r;
+  }
+
+  // (expression)*
+  private static boolean paren_expression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "paren_expression_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!paren_expression_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "paren_expression_1", c)) break;
+    }
+    return true;
+  }
+
+  // (expression)
+  private static boolean paren_expression_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "paren_expression_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = expression(b, l + 1, -1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'

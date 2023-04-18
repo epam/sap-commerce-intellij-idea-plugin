@@ -28,9 +28,9 @@ public class FlexibleSearchParenExpressionImpl extends FlexibleSearchExpressionI
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchExpression getExpression() {
-    return findChildByClass(FlexibleSearchExpression.class);
+  @NotNull
+  public List<FlexibleSearchExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
   }
 
 }

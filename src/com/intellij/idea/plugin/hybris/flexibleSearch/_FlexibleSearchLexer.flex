@@ -129,9 +129,9 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   {BRACKET_LITERAL}                   { return BRACKET_LITERAL; }
   {BACKTICK_LITERAL}                  { return BACKTICK_LITERAL; }
   {IDENTIFIER}                        { return IDENTIFIER; }
+  {LINE_COMMENT}                      { return LINE_COMMENT; }
   {NAMED_PARAMETER}                   { return NAMED_PARAMETER; }
   {COMMENT}                           { return COMMENT; }
-  {LINE_COMMENT}                      { return LINE_COMMENT; }
   {WHITE_SPACE_FOR_LIVE_PREVIEW}      { return WHITE_SPACE_FOR_LIVE_PREVIEW; }
 
 }
