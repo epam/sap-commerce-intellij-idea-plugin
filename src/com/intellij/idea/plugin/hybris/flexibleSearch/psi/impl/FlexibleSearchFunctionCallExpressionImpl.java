@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchInExpressionImpl extends FlexibleSearchExpressionImpl implements FlexibleSearchInExpression {
+public class FlexibleSearchFunctionCallExpressionImpl extends FlexibleSearchExpressionImpl implements FlexibleSearchFunctionCallExpression {
 
-  public FlexibleSearchInExpressionImpl(@NotNull ASTNode node) {
+  public FlexibleSearchFunctionCallExpressionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitInExpression(this);
+    visitor.visitFunctionCallExpression(this);
   }
 
   @Override
@@ -31,18 +31,6 @@ public class FlexibleSearchInExpressionImpl extends FlexibleSearchExpressionImpl
   @NotNull
   public List<FlexibleSearchExpression> getExpressionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSelectStatement getSelectStatement() {
-    return findChildByClass(FlexibleSearchSelectStatement.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNamedParameter() {
-    return findChildByType(NAMED_PARAMETER);
   }
 
 }

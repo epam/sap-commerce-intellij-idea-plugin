@@ -21,7 +21,7 @@
 //
 {
   parserClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParser"
-  parserUtilClass="com.intellij.idea.plugin.hybris.flexibleSearch.utils.FlexibleSearchParserUtils"
+  parserUtilClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserUtils"
   
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -52,10 +52,14 @@
 
         QUESTION_MARK       = '?'
         EXCLAMATION_MARK    = "!"
+        LBRACKET            = "["
+        RBRACKET            = "]"
         LBRACE              = "{"
         RBRACE              = "}"
         LDBRACE             = "{{"
         RDBRACE             = "}}"
+        LPAREN              = '('
+        RPAREN              = ')'
         AMP                 = '&'
         BAR                 = '|'
         COMMA               = ','
@@ -66,14 +70,12 @@
         EQEQ                = '=='
         GT                  = '>'
         GTE                 = '>='
-        LPAREN              = '('
         LT                  = '<'
         LTE                 = '<='
         MINUS               = '-'
         MOD                 = '%'
         NOT_EQ              = '!='
         PLUS                = '+'
-        RPAREN              = ')'
         SEMICOLON           = ';'
         COLON               = ":"
         SHL                 = '<<'
@@ -90,11 +92,6 @@
         // Grammar-Kit's live preview emulates PsiBuilder's behavior of ignoring whitespace, by
         // looking for a token type that matches a space and is not used otherwise. Here's one:
         WHITE_SPACE_FOR_LIVE_PREVIEW    = 'regexp:\s+'
-
-        // DB specific keywords
-        DATE_FORMAT = 'DATE_FORMAT'
-        SUM         = 'SUM'
-        COUNT       = 'COUNT'
   ]
 
 //  generateTokenAccessors(".*_name")=false
@@ -134,6 +131,7 @@ expression ::=
   | literal_expression
   | column_ref_expression
   | paren_expression
+  | function_call_expression
 
 // "The precedence of the BETWEEN operator is the same as the precedence as operators == and != and LIKE and groups left to right."
 private equivalence_group ::= equivalence_expression | between_expression
@@ -153,16 +151,22 @@ cast_expression ::= CAST '(' expression AS type_name ')'
 case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
 like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
 isnull_expression ::= expression IS NOT? NULL
-in_expression ::=  expression NOT? IN ( '(' "{{" ( expression_subquery | expression ( ',' expression )* )? "}}" ')' | defined_table_name )
+in_expression ::=  expression NOT? IN '(' ( NAMED_PARAMETER | expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
+function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
+
+column_ref_expression ::=
+ '{'? selected_table_name separator column_name '}'?
+ | '{'? column_name '}'?
+
+private expression_in_subquery ::= "{{" ( expression_subquery | expression ( ',' expression )* )? "}}"
 
 private expression_subquery ::= &(SELECT) subquery_greedy{
     pin=1
 }
 
-column_ref_expression ::=
- selected_table_name separator column_name
- | column_name
+// Some tokens are allowed as function names and remapped to identifiers in code
+external function_name ::= parseFunctionName
 
 bind_parameter ::= NUMBERED_PARAMETER | NAMED_PARAMETER
 
@@ -200,8 +204,8 @@ select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' (AS? table_alias
 
 result_column ::=
   '*'
-  | '{' selected_table_name separator '*' '}'
-  | '{' expression '}' ( AS? column_alias_name )?
+  | '{'? selected_table_name separator '*' '}'?
+  | expression ( ( AS )? column_alias_name )?
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS )? JOIN
 

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,9 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.utils;
+package com.intellij.idea.plugin.hybris.flexibleSearch;
 
+import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
 
 public class FlexibleSearchParserUtils extends GeneratedParserUtilBase {
+
+    public static boolean parseFunctionName(final PsiBuilder builder, final int level) {
+        if (!recursion_guard_(builder, level, "function_name")) return false;
+        return FlexibleSearchParser.name(builder, level + 1);
+    }
 }

@@ -28,6 +28,7 @@ public interface FlexibleSearchTypes {
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
   IElementType FROM_TABLE = new FlexibleSearchElementType("FROM_TABLE");
+  IElementType FUNCTION_CALL_EXPRESSION = new FlexibleSearchElementType("FUNCTION_CALL_EXPRESSION");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
   IElementType IN_EXPRESSION = new FlexibleSearchElementType("IN_EXPRESSION");
   IElementType ISNULL_EXPRESSION = new FlexibleSearchElementType("ISNULL_EXPRESSION");
@@ -100,6 +101,7 @@ public interface FlexibleSearchTypes {
   IElementType IS = new FlexibleSearchTokenType("IS");
   IElementType JOIN = new FlexibleSearchTokenType("JOIN");
   IElementType LBRACE = new FlexibleSearchTokenType("{");
+  IElementType LBRACKET = new FlexibleSearchTokenType("[");
   IElementType LDBRACE = new FlexibleSearchTokenType("{{");
   IElementType LEFT = new FlexibleSearchTokenType("LEFT");
   IElementType LIKE = new FlexibleSearchTokenType("LIKE");
@@ -125,6 +127,7 @@ public interface FlexibleSearchTypes {
   IElementType PLUS = new FlexibleSearchTokenType("+");
   IElementType QUESTION_MARK = new FlexibleSearchTokenType("?");
   IElementType RBRACE = new FlexibleSearchTokenType("}");
+  IElementType RBRACKET = new FlexibleSearchTokenType("]");
   IElementType RDBRACE = new FlexibleSearchTokenType("}}");
   IElementType REGEXP = new FlexibleSearchTokenType("REGEXP");
   IElementType RIGHT = new FlexibleSearchTokenType("RIGHT");
@@ -196,6 +199,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == FROM_TABLE) {
         return new FlexibleSearchFromTableImpl(node);
+      }
+      else if (type == FUNCTION_CALL_EXPRESSION) {
+        return new FlexibleSearchFunctionCallExpressionImpl(node);
       }
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);

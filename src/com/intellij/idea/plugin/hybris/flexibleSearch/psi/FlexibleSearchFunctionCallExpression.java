@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchInExpression extends FlexibleSearchExpression {
+public interface FlexibleSearchFunctionCallExpression extends FlexibleSearchExpression {
 
   @NotNull
   List<FlexibleSearchExpression> getExpressionList();
-
-  @Nullable
-  FlexibleSearchSelectStatement getSelectStatement();
-
-  @Nullable
-  PsiElement getNamedParameter();
 
 }

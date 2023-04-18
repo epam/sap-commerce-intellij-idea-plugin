@@ -43,10 +43,14 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
 
   "?"                                 { return QUESTION_MARK; }
   "!"                                 { return EXCLAMATION_MARK; }
+  "["                                 { return LBRACKET; }
+  "]"                                 { return RBRACKET; }
   "{"                                 { return LBRACE; }
   "}"                                 { return RBRACE; }
   "{{"                                { return LDBRACE; }
   "}}"                                { return RDBRACE; }
+  "("                                 { return LPAREN; }
+  ")"                                 { return RPAREN; }
   "&"                                 { return AMP; }
   "|"                                 { return BAR; }
   ","                                 { return COMMA; }
@@ -57,14 +61,12 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "=="                                { return EQEQ; }
   ">"                                 { return GT; }
   ">="                                { return GTE; }
-  "("                                 { return LPAREN; }
   "<"                                 { return LT; }
   "<="                                { return LTE; }
   "-"                                 { return MINUS; }
   "%"                                 { return MOD; }
   "!="                                { return NOT_EQ; }
   "+"                                 { return PLUS; }
-  ")"                                 { return RPAREN; }
   ";"                                 { return SEMICOLON; }
   ":"                                 { return COLON; }
   "<<"                                { return SHL; }
@@ -94,6 +96,7 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "NULL"                              { return NULL; }
   "IN"                                { return IN; }
   "EXISTS"                            { return EXISTS; }
+  "DISTINCT"                          { return DISTINCT; }
   "SELECT"                            { return SELECT; }
   "NUMBERED_PARAMETER"                { return NUMBERED_PARAMETER; }
   "CURRENT_TIME"                      { return CURRENT_TIME; }
@@ -103,7 +106,6 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "OFFSET"                            { return OFFSET; }
   "ORDER"                             { return ORDER; }
   "BY"                                { return BY; }
-  "DISTINCT"                          { return DISTINCT; }
   "ALL"                               { return ALL; }
   "GROUP"                             { return GROUP; }
   "HAVING"                            { return HAVING; }

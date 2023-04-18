@@ -79,6 +79,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFunctionCallExpression(@NotNull FlexibleSearchFunctionCallExpression o) {
+    visitExpression(o);
+  }
+
   public void visitGroupByClause(@NotNull FlexibleSearchGroupByClause o) {
     visitPsiElement(o);
   }
