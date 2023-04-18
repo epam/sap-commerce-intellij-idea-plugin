@@ -30,7 +30,7 @@ public class FSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettin
     @NotNull
     @Override
     public Language getLanguage() {
-        return FlexibleSearchLanguage.getInstance();
+        return FlexibleSearchLanguage.Companion.getINSTANCE();
     }
 
     @Override

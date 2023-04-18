@@ -19,13 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion;
 
 import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider;
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsTableAliasReferenceCompletionProvider;
-
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_NAME_IDENTIFIER;
-import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class FlexibleSearchCompletionContributor extends CompletionContributor {
 
@@ -46,13 +39,13 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //            FxsKeywordCompletionProvider.Companion.getInstance()
 //        );
 
-        extend(
-            CompletionType.BASIC,
-            psiElement(TABLE_NAME_IDENTIFIER)
-                .inside(psiElement(TABLE_NAME))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            ItemCodeCompletionProvider.Companion.getInstance()
-        );
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement(TABLE_NAME_IDENTIFIER)
+//                .inside(psiElement(TABLE_NAME))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()),
+//            ItemCodeCompletionProvider.Companion.getInstance()
+//        );
 
 //        extend(
 //            CompletionType.BASIC,
@@ -62,13 +55,13 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //            FxsColumnReferenceCompletionProvider.Companion.getInstance()
 //        );
 
-        extend(
-            CompletionType.BASIC,
-            psiElement(TABLE_NAME_IDENTIFIER)
-                .inside(psiElement(TABLE_ALIAS_REFERENCE))
-                .withLanguage(FlexibleSearchLanguage.getInstance()),
-            FxsTableAliasReferenceCompletionProvider.Companion.getInstance()
-        );
+//        extend(
+//            CompletionType.BASIC,
+//            psiElement(TABLE_NAME_IDENTIFIER)
+//                .inside(psiElement(TABLE_ALIAS_REFERENCE))
+//                .withLanguage(FlexibleSearchLanguage.getInstance()),
+//            FxsTableAliasReferenceCompletionProvider.Companion.getInstance()
+//        );
 
 //        extend(
 //            CompletionType.BASIC,

@@ -72,6 +72,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         return FlexibleSearchQueryLineMarkerInfo(parent.nameIdentifier!!, icon, tooltipProvider, CopyToClipboard(formattedExpression))
     }
 
+    // TODO: Refactor after migration to new FlexibleSearch parser
     private fun formatExpression(expression: String): String {
         return expression
             .replace(regexFrom, "\n FROM ")

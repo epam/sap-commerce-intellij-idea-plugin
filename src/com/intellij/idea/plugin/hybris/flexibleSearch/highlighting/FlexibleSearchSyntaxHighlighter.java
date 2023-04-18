@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting;
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLexerAdapter;
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLexer;
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes;
 import com.intellij.lexer.Lexer;
@@ -44,38 +44,20 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.Flexib
 
 public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
 
-    private static final TokenSet BRACES_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.LEFT_BRACE,
-        FlexibleSearchTypes.LEFT_DOUBLE_BRACE,
-        FlexibleSearchTypes.RIGHT_BRACE,
-        FlexibleSearchTypes.RIGHT_DOUBLE_BRACE
-    );
-    private static final TokenSet BRACKETS_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.LEFT_BRACKET,
-        FlexibleSearchTypes.RIGHT_BRACKET
-    );
-    private static final TokenSet PARENTHESES_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.LEFT_PAREN,
-        FlexibleSearchTypes.RIGHT_PAREN
-    );
-
+//    private static final TokenSet BRACES_TOKEN_SET = TokenSet.create(
+//        FlexibleSearchTypes.LEFT_BRACE,
+//        FlexibleSearchTypes.LEFT_DOUBLE_BRACE,
+//        FlexibleSearchTypes.RIGHT_BRACE,
+//        FlexibleSearchTypes.RIGHT_DOUBLE_BRACE
+//    );
     private static final TokenSet SYMBOL_TOKEN_SET = TokenSet.create(
         FlexibleSearchTypes.DOT,
-        FlexibleSearchTypes.COLON,
         FlexibleSearchTypes.COMMA
-    );
-
-    private static final TokenSet COLUMN_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.COLUMN_REFERENCE_IDENTIFIER
-    );
-
-    private static final TokenSet TABLE_NAME_TOKEN_SET = TokenSet.create(
-        FlexibleSearchTypes.TABLE_NAME_IDENTIFIER
     );
 
     private static final TokenSet PARAMETER_REFERENCE_TOKEN_SET = TokenSet.create(
         FlexibleSearchTypes.QUESTION_MARK,
-        FlexibleSearchTypes.PARAMETER_IDENTIFIER
+        FlexibleSearchTypes.NAMED_PARAMETER
     );
 
     private static final TokenSet KEYWORD_TOKEN_SET = TokenSet.create(
@@ -126,7 +108,7 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new FlexibleSearchLexerAdapter();
+        return new FlexibleSearchLexer();
     }
 
     @NotNull
@@ -134,25 +116,13 @@ public class FlexibleSearchSyntaxHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         if (KEYWORD_TOKEN_SET.contains(tokenType)) {
             return KEYWORD_KEYS;
-        } else if (tokenType.equals(FlexibleSearchTypes.STRING)) {
-            return STRING_KEYS;
         } else if (SYMBOL_TOKEN_SET.contains(tokenType)) {
             return SYMBOL_KEYS;
-        } else if (COLUMN_TOKEN_SET.contains(tokenType)) {
-            return COLUMN_KEYS;
-        } else if (TABLE_NAME_TOKEN_SET.contains(tokenType)) {
-            return TABLE_KEYS;
         } else if (PARAMETER_REFERENCE_TOKEN_SET.contains(tokenType)) {
             return pack(FS_PARAMETER);
-        } else if (BRACES_TOKEN_SET.contains(tokenType)) {
-            return BRACES_KEYS;
-        } else if (BRACKETS_TOKEN_SET.contains(tokenType)) {
-            return BRACKETS_KEYS;
-        } else if (PARENTHESES_TOKEN_SET.contains(tokenType)) {
-            return PARENTHESES_KEYS;
-        } else if (tokenType.equals(FlexibleSearchTypes.NUMBER)) {
-            return NUMBER_KEYS;
-        } else if (tokenType.equals(FlexibleSearchParserDefinition.COMMENT)) {
+//        } else if (BRACES_TOKEN_SET.contains(tokenType)) {
+//            return BRACES_KEYS;
+        } else if (tokenType.equals(FlexibleSearchTypes.LINE_COMMENT) || tokenType.equals(FlexibleSearchTypes.COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return STRING_KEYS;

@@ -97,13 +97,10 @@ class FSBlock internal constructor(
         val parentType = this.node.elementType
         val type = node.elementType
 
-        if (parentType === QUERY_SPECIFICATION && type === SUBQUERY) {
-            return Indent.getNoneIndent()
-        }
-        if (type === LEFT_DOUBLE_BRACE || type === RIGHT_DOUBLE_BRACE) {
-            return Indent.getNormalIndent()
-        }
-        if (parentType === SUBQUERY && type === QUERY_SPECIFICATION) {
+//        if (type === LEFT_DOUBLE_BRACE || type === RIGHT_DOUBLE_BRACE) {
+//            return Indent.getNormalIndent()
+//        }
+        if (parentType === SELECT_SUBQUERY) {
             return Indent.getContinuationWithoutFirstIndent()
         }
         if (type === FROM_CLAUSE) {
@@ -112,7 +109,7 @@ class FSBlock internal constructor(
         if (type !== FROM && parentType === FROM_CLAUSE) {
             return Indent.getNormalIndent()
         }
-        if (type === ON || type === BOOLEAN_PREDICAND) {
+        if (type === ON) {
             return Indent.getNormalIndent()
         }
         if (isReturnBodyKeywords(node)) {

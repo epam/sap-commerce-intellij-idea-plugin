@@ -65,7 +65,7 @@ public class FSCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     private static class SimpleCodeStyleMainPanel extends TabbedLanguageCodeStylePanel {
 
         public SimpleCodeStyleMainPanel(final CodeStyleSettings currentSettings, final CodeStyleSettings settings) {
-            super(FlexibleSearchLanguage.getInstance(), currentSettings, settings);
+            super(FlexibleSearchLanguage.Companion.getINSTANCE(), currentSettings, settings);
         }
     }
 }

@@ -35,7 +35,7 @@ public class FlexibleSearchFileType extends LanguageFileType {
     }
 
     protected FlexibleSearchFileType() {
-        super(FlexibleSearchLanguage.getInstance());
+        super(FlexibleSearchLanguage.Companion.getINSTANCE());
     }
 
     @NotNull

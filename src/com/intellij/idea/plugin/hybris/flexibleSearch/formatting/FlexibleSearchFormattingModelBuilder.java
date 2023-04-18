@@ -30,16 +30,13 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COMP_OP;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.FROM_CLAUSE;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_BRACE;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_DOUBLE_BRACE;
+//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_BRACE;
+//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_DOUBLE_BRACE;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.ON;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.QUERY_SPECIFICATION;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_BRACE;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_DOUBLE_BRACE;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.SELECT_LIST;
+//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_BRACE;
+//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_DOUBLE_BRACE;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.WHERE;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.WHERE_CLAUSE;
 
@@ -67,26 +64,22 @@ public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuil
     }
 
     private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
-        return new SpacingBuilder(settings, FlexibleSearchLanguage.getInstance())
-            .around(TokenSet.create(WHERE, FROM, SELECT_LIST, ON))
+        return new SpacingBuilder(settings, FlexibleSearchLanguage.Companion.getINSTANCE())
+            .around(TokenSet.create(WHERE, FROM, ON))
             .spaces(1)
             .between(FROM_CLAUSE, WHERE_CLAUSE)
             .spaces(1)
+            ;
 
-            .around(COMP_OP)
-            .spaceIf(FSCodeStyleSettings.SPACE_AROUND_OP)
-
-            .before(RIGHT_BRACE)
-            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_BRACES)
-            .after(LEFT_BRACE)
-            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_BRACES)
-
-            .before(RIGHT_DOUBLE_BRACE)
-            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
-            .between(QUERY_SPECIFICATION, RIGHT_DOUBLE_BRACE)
-            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
-            .after(LEFT_DOUBLE_BRACE)
-            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES);
+//            .before(RIGHT_BRACE)
+//            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_BRACES)
+//            .after(LEFT_BRACE)
+//            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_BRACES)
+//
+//            .before(RIGHT_DOUBLE_BRACE)
+//            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
+//            .after(LEFT_DOUBLE_BRACE)
+//            .spaceIf(FSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES);
     }
 
     @Nullable

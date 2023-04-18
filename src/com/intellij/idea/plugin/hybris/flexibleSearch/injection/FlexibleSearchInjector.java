@@ -75,20 +75,18 @@ public class FlexibleSearchInjector implements LanguageInjector {
         @NotNull final InjectedLanguagePlaces injectionPlacesRegistrar,
         @NotNull final PsiElement host
     ) {
-        final Language language = FlexibleSearchLanguage.getInstance();
-        if (language != null) {
-            try {
-                injectionPlacesRegistrar.addPlace(
-                    language,
-                    TextRange.from(1, host.getTextLength() - 2),
-                    null,
-                    null
-                );
-            } catch (ProcessCanceledException e) {
-                // ignore
-            } catch (Throwable e) {
-                LOG.error(e);
-            }
+        final Language language = FlexibleSearchLanguage.Companion.getINSTANCE();
+        try {
+            injectionPlacesRegistrar.addPlace(
+                language,
+                TextRange.from(1, host.getTextLength() - 2),
+                null,
+                null
+            );
+        } catch (ProcessCanceledException e) {
+            // ignore
+        } catch (Throwable e) {
+            LOG.error(e);
         }
     }
 }
