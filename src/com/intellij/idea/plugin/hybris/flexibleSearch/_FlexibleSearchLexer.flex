@@ -80,6 +80,7 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "OR"                                { return OR; }
   "IS"                                { return IS; }
   "NOT"                               { return NOT; }
+  "IN"                                { return IN; }
   "BETWEEN"                           { return BETWEEN; }
   "CAST"                              { return CAST; }
   "AS"                                { return AS; }
@@ -94,7 +95,6 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "MATCH"                             { return MATCH; }
   "ESCAPE"                            { return ESCAPE; }
   "NULL"                              { return NULL; }
-  "IN"                                { return IN; }
   "EXISTS"                            { return EXISTS; }
   "DISTINCT"                          { return DISTINCT; }
   "SELECT"                            { return SELECT; }

@@ -54,8 +54,8 @@
 
         QUESTION_MARK       = '?'
         EXCLAMATION_MARK    = "!"
-        LBRACKET            = "["
-        RBRACKET            = "]"
+        LBRACKET            = '['
+        RBRACKET            = ']'
         LBRACE              = "{"
         RBRACE              = "}"
         LDBRACE             = "{{"
@@ -155,10 +155,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
-
-column_ref_y_expression ::=
- '{' selected_table_name separator column_name '}'
- | '{' column_name '}'
+column_ref_y_expression ::= '{' (selected_table_name separator)? column_name column_localized?'}'
 
 // We may not have { } in case of Combined SELECT with table alias
 /*
@@ -249,6 +246,7 @@ ordering_term ::= expression ( ASC | DESC )?
 
 compound_operator ::= UNION ALL?
 
+column_localized ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
 selected_table_name ::= name
@@ -257,7 +255,7 @@ column_name ::= name
 function_name ::= name
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
-private separator ::= DOT | COLON
+separator ::= DOT | COLON
 private name ::= IDENTIFIER | BRACKET_LITERAL | BACKTICK_LITERAL | string_literal
 private string_literal ::= SINGLE_QUOTE_STRING_LITERAL | DOUBLE_QUOTE_STRING_LITERAL
 

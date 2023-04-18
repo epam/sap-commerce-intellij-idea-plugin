@@ -17,6 +17,7 @@ public interface FlexibleSearchTypes {
   IElementType CASE_EXPRESSION = new FlexibleSearchElementType("CASE_EXPRESSION");
   IElementType CAST_EXPRESSION = new FlexibleSearchElementType("CAST_EXPRESSION");
   IElementType COLUMN_ALIAS_NAME = new FlexibleSearchElementType("COLUMN_ALIAS_NAME");
+  IElementType COLUMN_LOCALIZED = new FlexibleSearchElementType("COLUMN_LOCALIZED");
   IElementType COLUMN_NAME = new FlexibleSearchElementType("COLUMN_NAME");
   IElementType COLUMN_REF_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_EXPRESSION");
   IElementType COLUMN_REF_Y_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_Y_EXPRESSION");
@@ -56,6 +57,7 @@ public interface FlexibleSearchTypes {
   IElementType SELECT_STATEMENT = new FlexibleSearchElementType("SELECT_STATEMENT");
   IElementType SELECT_SUBQUERY = new FlexibleSearchElementType("SELECT_SUBQUERY");
   IElementType SELECT_SUBQUERY_COMBINED = new FlexibleSearchElementType("SELECT_SUBQUERY_COMBINED");
+  IElementType SEPARATOR = new FlexibleSearchElementType("SEPARATOR");
   IElementType SIGNED_NUMBER = new FlexibleSearchElementType("SIGNED_NUMBER");
   IElementType TABLE_ALIAS_NAME = new FlexibleSearchElementType("TABLE_ALIAS_NAME");
   IElementType TABLE_OR_SUBQUERY = new FlexibleSearchElementType("TABLE_OR_SUBQUERY");
@@ -179,6 +181,9 @@ public interface FlexibleSearchTypes {
       else if (type == COLUMN_ALIAS_NAME) {
         return new FlexibleSearchColumnAliasNameImpl(node);
       }
+      else if (type == COLUMN_LOCALIZED) {
+        return new FlexibleSearchColumnLocalizedImpl(node);
+      }
       else if (type == COLUMN_NAME) {
         return new FlexibleSearchColumnNameImpl(node);
       }
@@ -292,6 +297,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == SELECT_SUBQUERY_COMBINED) {
         return new FlexibleSearchSelectSubqueryCombinedImpl(node);
+      }
+      else if (type == SEPARATOR) {
+        return new FlexibleSearchSeparatorImpl(node);
       }
       else if (type == SIGNED_NUMBER) {
         return new FlexibleSearchSignedNumberImpl(node);

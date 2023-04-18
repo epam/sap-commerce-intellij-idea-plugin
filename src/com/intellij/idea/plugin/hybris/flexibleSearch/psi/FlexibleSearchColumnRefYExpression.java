@@ -7,10 +7,16 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpression {
 
+  @Nullable
+  FlexibleSearchColumnLocalized getColumnLocalized();
+
   @NotNull
   FlexibleSearchColumnName getColumnName();
 
   @Nullable
   FlexibleSearchSelectedTableName getSelectedTableName();
+
+  @Nullable
+  FlexibleSearchSeparator getSeparator();
 
 }

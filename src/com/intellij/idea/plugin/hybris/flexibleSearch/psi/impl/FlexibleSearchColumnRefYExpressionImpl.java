@@ -28,6 +28,12 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
   }
 
   @Override
+  @Nullable
+  public FlexibleSearchColumnLocalized getColumnLocalized() {
+    return findChildByClass(FlexibleSearchColumnLocalized.class);
+  }
+
+  @Override
   @NotNull
   public FlexibleSearchColumnName getColumnName() {
     return findNotNullChildByClass(FlexibleSearchColumnName.class);
@@ -37,6 +43,12 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
   @Nullable
   public FlexibleSearchSelectedTableName getSelectedTableName() {
     return findChildByClass(FlexibleSearchSelectedTableName.class);
+  }
+
+  @Override
+  @Nullable
+  public FlexibleSearchSeparator getSeparator() {
+    return findChildByClass(FlexibleSearchSeparator.class);
   }
 
 }

@@ -13,4 +13,7 @@ public interface FlexibleSearchColumnRefExpression extends FlexibleSearchExpress
   @Nullable
   FlexibleSearchSelectedTableName getSelectedTableName();
 
+  @Nullable
+  FlexibleSearchSeparator getSeparator();
+
 }

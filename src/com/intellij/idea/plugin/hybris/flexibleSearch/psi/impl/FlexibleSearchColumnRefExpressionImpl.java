@@ -39,4 +39,10 @@ public class FlexibleSearchColumnRefExpressionImpl extends FlexibleSearchExpress
     return findChildByClass(FlexibleSearchSelectedTableName.class);
   }
 
+  @Override
+  @Nullable
+  public FlexibleSearchSeparator getSeparator() {
+    return findChildByClass(FlexibleSearchSeparator.class);
+  }
+
 }

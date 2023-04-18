@@ -35,6 +35,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitColumnLocalized(@NotNull FlexibleSearchColumnLocalized o) {
+    visitPsiElement(o);
+  }
+
   public void visitColumnName(@NotNull FlexibleSearchColumnName o) {
     visitPsiElement(o);
   }
@@ -188,6 +192,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitSelectedTableName(@NotNull FlexibleSearchSelectedTableName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSeparator(@NotNull FlexibleSearchSeparator o) {
     visitPsiElement(o);
   }
 

@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement implements FlexibleSearchResultColumn {
+public class FlexibleSearchColumnLocalizedImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalized {
 
-  public FlexibleSearchResultColumnImpl(@NotNull ASTNode node) {
+  public FlexibleSearchColumnLocalizedImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitResultColumn(this);
+    visitor.visitColumnLocalized(this);
   }
 
   @Override
@@ -28,27 +28,9 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchColumnAliasName getColumnAliasName() {
-    return findChildByClass(FlexibleSearchColumnAliasName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchExpression getExpression() {
-    return findChildByClass(FlexibleSearchExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSelectedTableName getSelectedTableName() {
-    return findChildByClass(FlexibleSearchSelectedTableName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSeparator getSeparator() {
-    return findChildByClass(FlexibleSearchSeparator.class);
+  @NotNull
+  public PsiElement getBracketLiteral() {
+    return findNotNullChildByType(BRACKET_LITERAL);
   }
 
 }

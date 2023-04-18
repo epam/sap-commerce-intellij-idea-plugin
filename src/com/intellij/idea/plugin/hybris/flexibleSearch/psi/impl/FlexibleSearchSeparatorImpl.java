@@ -11,44 +11,20 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement implements FlexibleSearchResultColumn {
+public class FlexibleSearchSeparatorImpl extends ASTWrapperPsiElement implements FlexibleSearchSeparator {
 
-  public FlexibleSearchResultColumnImpl(@NotNull ASTNode node) {
+  public FlexibleSearchSeparatorImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitResultColumn(this);
+    visitor.visitSeparator(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchColumnAliasName getColumnAliasName() {
-    return findChildByClass(FlexibleSearchColumnAliasName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchExpression getExpression() {
-    return findChildByClass(FlexibleSearchExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSelectedTableName getSelectedTableName() {
-    return findChildByClass(FlexibleSearchSelectedTableName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSeparator getSeparator() {
-    return findChildByClass(FlexibleSearchSeparator.class);
   }
 
 }
