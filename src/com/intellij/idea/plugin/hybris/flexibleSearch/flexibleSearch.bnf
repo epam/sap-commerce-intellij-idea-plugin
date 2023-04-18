@@ -152,7 +152,7 @@ cast_expression ::= CAST '(' expression AS type_name ')'
 case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
 like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
 isnull_expression ::= expression IS NOT? NULL
-in_expression ::=  expression NOT? IN '(' ( NAMED_PARAMETER | expression_in_subquery ) ')'
+in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
 
@@ -173,7 +173,7 @@ column_ref_expression ::=
  selected_table_name separator column_name
  | column_name
 
-private expression_in_subquery ::= "{{" ( expression_subquery | expression ( ',' expression )* )? "}}"
+private expression_in_subquery ::= ( NAMED_PARAMETER | "{{" expression_subquery "}}" | expression ( ',' expression )* )?
 
 private expression_subquery ::= &(SELECT) subquery_greedy {
     pin=1

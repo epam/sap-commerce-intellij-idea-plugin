@@ -128,62 +128,62 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "{{" ( expression_subquery | expression ( ',' expression )* )? "}}"
+  // ( NAMED_PARAMETER | "{{" expression_subquery "}}" | expression ( ',' expression )* )?
   static boolean expression_in_subquery(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression_in_subquery")) return false;
-    if (!nextTokenIs(b, LDBRACE)) return false;
+    expression_in_subquery_0(b, l + 1);
+    return true;
+  }
+
+  // NAMED_PARAMETER | "{{" expression_subquery "}}" | expression ( ',' expression )*
+  private static boolean expression_in_subquery_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_in_subquery_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NAMED_PARAMETER);
+    if (!r) r = expression_in_subquery_0_1(b, l + 1);
+    if (!r) r = expression_in_subquery_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "{{" expression_subquery "}}"
+  private static boolean expression_in_subquery_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_in_subquery_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LDBRACE);
-    r = r && expression_in_subquery_1(b, l + 1);
+    r = r && expression_subquery(b, l + 1);
     r = r && consumeToken(b, RDBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ( expression_subquery | expression ( ',' expression )* )?
-  private static boolean expression_in_subquery_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_in_subquery_1")) return false;
-    expression_in_subquery_1_0(b, l + 1);
-    return true;
-  }
-
-  // expression_subquery | expression ( ',' expression )*
-  private static boolean expression_in_subquery_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_in_subquery_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = expression_subquery(b, l + 1);
-    if (!r) r = expression_in_subquery_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
   // expression ( ',' expression )*
-  private static boolean expression_in_subquery_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_in_subquery_1_0_1")) return false;
+  private static boolean expression_in_subquery_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_in_subquery_0_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = expression(b, l + 1, -1);
-    r = r && expression_in_subquery_1_0_1_1(b, l + 1);
+    r = r && expression_in_subquery_0_2_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // ( ',' expression )*
-  private static boolean expression_in_subquery_1_0_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_in_subquery_1_0_1_1")) return false;
+  private static boolean expression_in_subquery_0_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_in_subquery_0_2_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!expression_in_subquery_1_0_1_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "expression_in_subquery_1_0_1_1", c)) break;
+      if (!expression_in_subquery_0_2_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "expression_in_subquery_0_2_1", c)) break;
     }
     return true;
   }
 
   // ',' expression
-  private static boolean expression_in_subquery_1_0_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_in_subquery_1_0_1_1_0")) return false;
+  private static boolean expression_in_subquery_0_2_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expression_in_subquery_0_2_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -1438,7 +1438,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // NOT? IN '(' ( NAMED_PARAMETER | expression_in_subquery ) ')'
+  // NOT? IN '(' ( expression_in_subquery ) ')'
   private static boolean in_expression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "in_expression_0")) return false;
     boolean r;
@@ -1458,12 +1458,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // NAMED_PARAMETER | expression_in_subquery
+  // ( expression_in_subquery )
   private static boolean in_expression_0_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "in_expression_0_3")) return false;
     boolean r;
-    r = consumeTokenSmart(b, NAMED_PARAMETER);
-    if (!r) r = expression_in_subquery(b, l + 1);
+    Marker m = enter_section_(b);
+    r = expression_in_subquery(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
