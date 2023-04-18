@@ -21,6 +21,7 @@ fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
     id("java") // Java support
+    id("idea") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
 }
@@ -55,6 +56,12 @@ sourceSets.main {
         file("gen")
     )
     resources.srcDir(file("resources"))
+}
+
+idea {
+    module {
+        generatedSourceDirs.plusAssign(file("gen"))
+    }
 }
 
 tasks {
