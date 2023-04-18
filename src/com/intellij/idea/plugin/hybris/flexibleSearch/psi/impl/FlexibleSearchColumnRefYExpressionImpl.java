@@ -41,14 +41,20 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
 
   @Override
   @Nullable
-  public FlexibleSearchSelectedTableName getSelectedTableName() {
-    return findChildByClass(FlexibleSearchSelectedTableName.class);
+  public FlexibleSearchColumnOuterJoin getColumnOuterJoin() {
+    return findChildByClass(FlexibleSearchColumnOuterJoin.class);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchSeparator getSeparator() {
-    return findChildByClass(FlexibleSearchSeparator.class);
+  public FlexibleSearchColumnSeparator getColumnSeparator() {
+    return findChildByClass(FlexibleSearchColumnSeparator.class);
+  }
+
+  @Override
+  @Nullable
+  public FlexibleSearchSelectedTableName getSelectedTableName() {
+    return findChildByClass(FlexibleSearchSelectedTableName.class);
   }
 
 }

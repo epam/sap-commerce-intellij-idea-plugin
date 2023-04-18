@@ -74,6 +74,7 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "*"                                 { return STAR; }
   "~"                                 { return TILDE; }
   "<>"                                { return UNEQ; }
+  ":o"                                { return OUTER_JOIN; }
   "FULL"                              { return FULL; }
   "RIGHT"                             { return RIGHT; }
   "AND"                               { return AND; }

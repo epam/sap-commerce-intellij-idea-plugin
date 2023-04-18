@@ -85,6 +85,7 @@
         STAR                = '*'
         TILDE               = '~'
         UNEQ                = '<>'
+        OUTER_JOIN          = ':o'
 
         // More keywords from https://sqlite.org/lang_keywords.html that don't appear in the grammar below, but we want to treat them as
         // keywords (so that the IDE escapes them just in case).
@@ -155,7 +156,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
-column_ref_y_expression ::= '{' (selected_table_name separator)? column_name column_localized?'}'
+column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized? column_outer_join? '}'
 
 // We may not have { } in case of Combined SELECT with table alias
 /*
@@ -167,7 +168,7 @@ SELECT x.PK FROM (
 ) x
  */
 column_ref_expression ::=
- selected_table_name separator column_name
+ selected_table_name column_separator column_name
  | column_name
 
 private expression_in_subquery ::= ( NAMED_PARAMETER | "{{" expression_subquery "}}" | expression ( ',' expression )* )?
@@ -235,7 +236,7 @@ select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
 
 result_column ::=
   '*'
-  | '{'? selected_table_name separator '*' '}'?
+  | '{'? selected_table_name column_separator '*' '}'?
   | expression ( ( AS )? column_alias_name )?
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS )? JOIN
@@ -246,6 +247,7 @@ ordering_term ::= expression ( ASC | DESC )?
 
 compound_operator ::= UNION ALL?
 
+column_outer_join ::= OUTER_JOIN
 column_localized ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
@@ -255,7 +257,7 @@ column_name ::= name
 function_name ::= name
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
-separator ::= DOT | COLON
+column_separator ::= DOT | COLON
 private name ::= IDENTIFIER | BRACKET_LITERAL | BACKTICK_LITERAL | string_literal
 private string_literal ::= SINGLE_QUOTE_STRING_LITERAL | DOUBLE_QUOTE_STRING_LITERAL
 

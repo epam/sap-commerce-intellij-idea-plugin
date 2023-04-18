@@ -43,12 +43,20 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitColumnOuterJoin(@NotNull FlexibleSearchColumnOuterJoin o) {
+    visitPsiElement(o);
+  }
+
   public void visitColumnRefExpression(@NotNull FlexibleSearchColumnRefExpression o) {
     visitExpression(o);
   }
 
   public void visitColumnRefYExpression(@NotNull FlexibleSearchColumnRefYExpression o) {
     visitExpression(o);
+  }
+
+  public void visitColumnSeparator(@NotNull FlexibleSearchColumnSeparator o) {
+    visitPsiElement(o);
   }
 
   public void visitComparisonExpression(@NotNull FlexibleSearchComparisonExpression o) {
@@ -192,10 +200,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitSelectedTableName(@NotNull FlexibleSearchSelectedTableName o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSeparator(@NotNull FlexibleSearchSeparator o) {
     visitPsiElement(o);
   }
 

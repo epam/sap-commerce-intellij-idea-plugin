@@ -11,12 +11,12 @@ public interface FlexibleSearchResultColumn extends PsiElement {
   FlexibleSearchColumnAliasName getColumnAliasName();
 
   @Nullable
+  FlexibleSearchColumnSeparator getColumnSeparator();
+
+  @Nullable
   FlexibleSearchExpression getExpression();
 
   @Nullable
   FlexibleSearchSelectedTableName getSelectedTableName();
-
-  @Nullable
-  FlexibleSearchSeparator getSeparator();
 
 }

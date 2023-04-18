@@ -35,6 +35,12 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @Nullable
+  public FlexibleSearchColumnSeparator getColumnSeparator() {
+    return findChildByClass(FlexibleSearchColumnSeparator.class);
+  }
+
+  @Override
+  @Nullable
   public FlexibleSearchExpression getExpression() {
     return findChildByClass(FlexibleSearchExpression.class);
   }
@@ -43,12 +49,6 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
   @Nullable
   public FlexibleSearchSelectedTableName getSelectedTableName() {
     return findChildByClass(FlexibleSearchSelectedTableName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSeparator getSeparator() {
-    return findChildByClass(FlexibleSearchSeparator.class);
   }
 
 }

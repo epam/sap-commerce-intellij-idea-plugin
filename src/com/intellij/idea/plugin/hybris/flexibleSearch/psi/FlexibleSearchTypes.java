@@ -19,8 +19,10 @@ public interface FlexibleSearchTypes {
   IElementType COLUMN_ALIAS_NAME = new FlexibleSearchElementType("COLUMN_ALIAS_NAME");
   IElementType COLUMN_LOCALIZED = new FlexibleSearchElementType("COLUMN_LOCALIZED");
   IElementType COLUMN_NAME = new FlexibleSearchElementType("COLUMN_NAME");
+  IElementType COLUMN_OUTER_JOIN = new FlexibleSearchElementType("COLUMN_OUTER_JOIN");
   IElementType COLUMN_REF_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_EXPRESSION");
   IElementType COLUMN_REF_Y_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_Y_EXPRESSION");
+  IElementType COLUMN_SEPARATOR = new FlexibleSearchElementType("COLUMN_SEPARATOR");
   IElementType COMPARISON_EXPRESSION = new FlexibleSearchElementType("COMPARISON_EXPRESSION");
   IElementType COMPOUND_OPERATOR = new FlexibleSearchElementType("COMPOUND_OPERATOR");
   IElementType CONCAT_EXPRESSION = new FlexibleSearchElementType("CONCAT_EXPRESSION");
@@ -57,7 +59,6 @@ public interface FlexibleSearchTypes {
   IElementType SELECT_STATEMENT = new FlexibleSearchElementType("SELECT_STATEMENT");
   IElementType SELECT_SUBQUERY = new FlexibleSearchElementType("SELECT_SUBQUERY");
   IElementType SELECT_SUBQUERY_COMBINED = new FlexibleSearchElementType("SELECT_SUBQUERY_COMBINED");
-  IElementType SEPARATOR = new FlexibleSearchElementType("SEPARATOR");
   IElementType SIGNED_NUMBER = new FlexibleSearchElementType("SIGNED_NUMBER");
   IElementType TABLE_ALIAS_NAME = new FlexibleSearchElementType("TABLE_ALIAS_NAME");
   IElementType TABLE_OR_SUBQUERY = new FlexibleSearchElementType("TABLE_OR_SUBQUERY");
@@ -135,6 +136,7 @@ public interface FlexibleSearchTypes {
   IElementType OR = new FlexibleSearchTokenType("OR");
   IElementType ORDER = new FlexibleSearchTokenType("ORDER");
   IElementType OUTER = new FlexibleSearchTokenType("OUTER");
+  IElementType OUTER_JOIN = new FlexibleSearchTokenType(":o");
   IElementType PLUS = new FlexibleSearchTokenType("+");
   IElementType QUESTION_MARK = new FlexibleSearchTokenType("?");
   IElementType RBRACE = new FlexibleSearchTokenType("}");
@@ -187,11 +189,17 @@ public interface FlexibleSearchTypes {
       else if (type == COLUMN_NAME) {
         return new FlexibleSearchColumnNameImpl(node);
       }
+      else if (type == COLUMN_OUTER_JOIN) {
+        return new FlexibleSearchColumnOuterJoinImpl(node);
+      }
       else if (type == COLUMN_REF_EXPRESSION) {
         return new FlexibleSearchColumnRefExpressionImpl(node);
       }
       else if (type == COLUMN_REF_Y_EXPRESSION) {
         return new FlexibleSearchColumnRefYExpressionImpl(node);
+      }
+      else if (type == COLUMN_SEPARATOR) {
+        return new FlexibleSearchColumnSeparatorImpl(node);
       }
       else if (type == COMPARISON_EXPRESSION) {
         return new FlexibleSearchComparisonExpressionImpl(node);
@@ -297,9 +305,6 @@ public interface FlexibleSearchTypes {
       }
       else if (type == SELECT_SUBQUERY_COMBINED) {
         return new FlexibleSearchSelectSubqueryCombinedImpl(node);
-      }
-      else if (type == SEPARATOR) {
-        return new FlexibleSearchSeparatorImpl(node);
       }
       else if (type == SIGNED_NUMBER) {
         return new FlexibleSearchSignedNumberImpl(node);

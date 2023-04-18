@@ -14,9 +14,12 @@ public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpres
   FlexibleSearchColumnName getColumnName();
 
   @Nullable
-  FlexibleSearchSelectedTableName getSelectedTableName();
+  FlexibleSearchColumnOuterJoin getColumnOuterJoin();
 
   @Nullable
-  FlexibleSearchSeparator getSeparator();
+  FlexibleSearchColumnSeparator getColumnSeparator();
+
+  @Nullable
+  FlexibleSearchSelectedTableName getSelectedTableName();
 
 }
