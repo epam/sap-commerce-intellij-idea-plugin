@@ -99,6 +99,8 @@ public interface FlexibleSearchTypes {
   IElementType INNER = new FlexibleSearchTokenType("INNER");
   IElementType IS = new FlexibleSearchTokenType("IS");
   IElementType JOIN = new FlexibleSearchTokenType("JOIN");
+  IElementType LBRACE = new FlexibleSearchTokenType("{");
+  IElementType LDBRACE = new FlexibleSearchTokenType("{{");
   IElementType LEFT = new FlexibleSearchTokenType("LEFT");
   IElementType LIKE = new FlexibleSearchTokenType("LIKE");
   IElementType LIMIT = new FlexibleSearchTokenType("LIMIT");
@@ -122,6 +124,8 @@ public interface FlexibleSearchTypes {
   IElementType OUTER = new FlexibleSearchTokenType("OUTER");
   IElementType PLUS = new FlexibleSearchTokenType("+");
   IElementType QUESTION_MARK = new FlexibleSearchTokenType("?");
+  IElementType RBRACE = new FlexibleSearchTokenType("}");
+  IElementType RDBRACE = new FlexibleSearchTokenType("}}");
   IElementType REGEXP = new FlexibleSearchTokenType("REGEXP");
   IElementType RIGHT = new FlexibleSearchTokenType("RIGHT");
   IElementType RPAREN = new FlexibleSearchTokenType(")");

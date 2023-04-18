@@ -23,7 +23,7 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 %unicode
 %caseless
 
-//EOL=\R
+EOL=\R
 WHITE_SPACE=\s+
 
 NUMERIC_LITERAL=(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)
@@ -41,9 +41,12 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
 <YYINITIAL> {
   {WHITE_SPACE}                       { return WHITE_SPACE; }
 
-  "*"                                 { return ASTERISK; }
   "?"                                 { return QUESTION_MARK; }
   "!"                                 { return EXCLAMATION_MARK; }
+  "{"                                 { return LBRACE; }
+  "}"                                 { return RBRACE; }
+  "{{"                                { return LDBRACE; }
+  "}}"                                { return RDBRACE; }
   "&"                                 { return AMP; }
   "|"                                 { return BAR; }
   ","                                 { return COMMA; }
@@ -116,6 +119,7 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   "ASC"                               { return ASC; }
   "DESC"                              { return DESC; }
   "UNION"                             { return UNION; }
+  "ASTERISK"                          { return ASTERISK; }
 
   {NUMERIC_LITERAL}                   { return NUMERIC_LITERAL; }
   {SINGLE_QUOTE_STRING_LITERAL}       { return SINGLE_QUOTE_STRING_LITERAL; }

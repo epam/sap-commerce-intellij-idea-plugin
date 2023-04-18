@@ -35,63 +35,66 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchTokenType"
 
   tokens = [
-        ASTERISK                        = "*"
-        QUESTION_MARK                   = '?'
-        EXCLAMATION_MARK                = "!"
 
-        LEFT_BRACE                      = "\{"
-        RIGHT_BRACE                     = "}"
-//        LEFT_DOUBLE_BRACE               = "\{\{"
-//        RIGHT_DOUBLE_BRACE              = "}}"
-
-        NUMERIC_LITERAL='regexp:(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)'
+        NUMERIC_LITERAL             = 'regexp:(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)'
 
         // Manually tweaked in the flex file to handle literals without the closing character.
-        SINGLE_QUOTE_STRING_LITERAL="regexp:X?'(''|[^'])*'"
-        DOUBLE_QUOTE_STRING_LITERAL="regexp:X?\"(\"\"|[^\"])*\""
-        BRACKET_LITERAL="regexp:\[[^\]]*\]"
-        BACKTICK_LITERAL="regexp:`(``|[^`])*`"
+        SINGLE_QUOTE_STRING_LITERAL = "regexp:X?'(''|[^'])*'"
+        DOUBLE_QUOTE_STRING_LITERAL = "regexp:X?\"(\"\"|[^\"])*\""
+        BRACKET_LITERAL             = "regexp:\[[^\]]*\]"
+        BACKTICK_LITERAL            = "regexp:`(``|[^`])*`"
 
         // Some approximation of what's actually allowed. This doesn't seem to be defined anywhere.
-        IDENTIFIER='regexp:([:letter:]|_)([:letter:]|[:digit:]|_)*'
-        NAMED_PARAMETER='regexp:\?\w+' // Simple regexp for Live Preview, this is tweaked in the flex file.
-        COMMENT='regexp:/\*.*\*/' // Simple regexp for Live Preview, this is tweaked in the flex file.
-        LINE_COMMENT='regexp:--[^r\n]*'
+        IDENTIFIER      = 'regexp:([:letter:]|_)([:letter:]|[:digit:]|_)*'
+        NAMED_PARAMETER = 'regexp:\?\w+' // Simple regexp for Live Preview, this is tweaked in the flex file.
+        COMMENT         = 'regexp:/\*.*\*/' // Simple regexp for Live Preview, this is tweaked in the flex file.
+        LINE_COMMENT    = 'regexp:--[^r\n]*'
 
-        AMP='&'
-        BAR='|'
-        COMMA=','
-        CONCAT='||'
-        DIV='/'
-        DOT='.'
-        EQ='='
-        EQEQ='=='
-        GT='>'
-        GTE='>='
-        LPAREN='('
-        LT='<'
-        LTE='<='
-        MINUS='-'
-        MOD='%'
-        NOT_EQ='!='
-        PLUS='+'
-        RPAREN=')'
-        SEMICOLON=';'
-        COLON=":"
-        SHL='<<'
-        SHR='>>'
-        STAR='*'
-        TILDE='~'
-        UNEQ='<>'
+        QUESTION_MARK       = '?'
+        EXCLAMATION_MARK    = "!"
+        LBRACE              = "{"
+        RBRACE              = "}"
+        LDBRACE             = "{{"
+        RDBRACE             = "}}"
+        AMP                 = '&'
+        BAR                 = '|'
+        COMMA               = ','
+        CONCAT              = '||'
+        DIV                 = '/'
+        DOT                 = '.'
+        EQ                  = '='
+        EQEQ                = '=='
+        GT                  = '>'
+        GTE                 = '>='
+        LPAREN              = '('
+        LT                  = '<'
+        LTE                 = '<='
+        MINUS               = '-'
+        MOD                 = '%'
+        NOT_EQ              = '!='
+        PLUS                = '+'
+        RPAREN              = ')'
+        SEMICOLON           = ';'
+        COLON               = ":"
+        SHL                 = '<<'
+        SHR                 = '>>'
+        STAR                = '*'
+        TILDE               = '~'
+        UNEQ                = '<>'
 
         // More keywords from https://sqlite.org/lang_keywords.html that don't appear in the grammar below, but we want to treat them as
         // keywords (so that the IDE escapes them just in case).
-        FULL='FULL'
-        RIGHT='RIGHT'
+        FULL        = 'FULL'
+        RIGHT       = 'RIGHT'
 
         // Grammar-Kit's live preview emulates PsiBuilder's behavior of ignoring whitespace, by
         // looking for a token type that matches a space and is not used otherwise. Here's one:
-        WHITE_SPACE_FOR_LIVE_PREVIEW='regexp:\s+'
+        WHITE_SPACE_FOR_LIVE_PREVIEW    = 'regexp:\s+'
+
+        // DB specific keywords
+        DATE_FORMAT = 'DATE_FORMAT'
+        SUM         = 'SUM'
+        COUNT       = 'COUNT'
   ]
 
 //  generateTokenAccessors(".*_name")=false
@@ -150,8 +153,8 @@ cast_expression ::= CAST '(' expression AS type_name ')'
 case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
 like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
 isnull_expression ::= expression IS NOT? NULL
-in_expression ::=  expression NOT? IN ( '(' ( expression_subquery | expression ( ',' expression )* )? ')' | defined_table_name )
-exists_expression ::= ( NOT? EXISTS )? '(' expression_subquery ')'
+in_expression ::=  expression NOT? IN ( '(' "{{" ( expression_subquery | expression ( ',' expression )* )? "}}" ')' | defined_table_name )
+exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 
 private expression_subquery ::= &(SELECT) subquery_greedy{
     pin=1
@@ -183,7 +186,7 @@ group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression 
 
 where_clause ::= WHERE expression
 
-from_clause ::= FROM table_or_subquery ( join_operator table_or_subquery join_constraint? )*
+from_clause ::= FROM '{' table_or_subquery ( join_operator table_or_subquery join_constraint? )* '}'
 
 result_columns ::= result_column ( ',' result_column )*
 
@@ -191,14 +194,14 @@ table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 
 from_table ::= defined_table_name ( AS? table_alias_name )?
 
-select_subquery ::= '(' &(SELECT) subquery_greedy ')' (AS? table_alias_name)? {
-  pin=2
+select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' (AS? table_alias_name)? {
+  pin=3
 }
 
 result_column ::=
   '*'
-  | selected_table_name separator '*'
-  | expression ( AS? column_alias_name )?
+  | '{' selected_table_name separator '*' '}'
+  | '{' expression '}' ( AS? column_alias_name )?
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS )? JOIN
 
