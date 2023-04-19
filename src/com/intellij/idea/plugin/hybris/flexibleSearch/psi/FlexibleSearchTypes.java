@@ -12,6 +12,7 @@ public interface FlexibleSearchTypes {
 
   IElementType AND_EXPRESSION = new FlexibleSearchElementType("AND_EXPRESSION");
   IElementType BETWEEN_EXPRESSION = new FlexibleSearchElementType("BETWEEN_EXPRESSION");
+  IElementType BIND_COMBINED_PARAMETER = new FlexibleSearchElementType("BIND_COMBINED_PARAMETER");
   IElementType BIND_PARAMETER = new FlexibleSearchElementType("BIND_PARAMETER");
   IElementType BIT_EXPRESSION = new FlexibleSearchElementType("BIT_EXPRESSION");
   IElementType CASE_EXPRESSION = new FlexibleSearchElementType("CASE_EXPRESSION");
@@ -169,6 +170,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == BETWEEN_EXPRESSION) {
         return new FlexibleSearchBetweenExpressionImpl(node);
+      }
+      else if (type == BIND_COMBINED_PARAMETER) {
+        return new FlexibleSearchBindCombinedParameterImpl(node);
       }
       else if (type == BIND_PARAMETER) {
         return new FlexibleSearchBindParameterImpl(node);

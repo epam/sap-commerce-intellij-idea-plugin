@@ -177,7 +177,9 @@ private expression_subquery ::= &(SELECT) subquery_greedy {
     pin=1
 }
 
-bind_parameter ::= NUMBERED_PARAMETER | NAMED_PARAMETER
+bind_parameter ::= NUMBERED_PARAMETER | bind_combined_parameter | NAMED_PARAMETER
+// ?session.user.currentDate
+bind_combined_parameter ::= NAMED_PARAMETER ( '.' IDENTIFIER)*
 
 private literal_value ::=
   signed_number

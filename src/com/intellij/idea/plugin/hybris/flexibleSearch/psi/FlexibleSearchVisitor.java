@@ -15,6 +15,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitBindCombinedParameter(@NotNull FlexibleSearchBindCombinedParameter o) {
+    visitPsiElement(o);
+  }
+
   public void visitBindParameter(@NotNull FlexibleSearchBindParameter o) {
     visitPsiElement(o);
   }

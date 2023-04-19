@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchBindParameterImpl extends ASTWrapperPsiElement implements FlexibleSearchBindParameter {
+public class FlexibleSearchBindCombinedParameterImpl extends ASTWrapperPsiElement implements FlexibleSearchBindCombinedParameter {
 
-  public FlexibleSearchBindParameterImpl(@NotNull ASTNode node) {
+  public FlexibleSearchBindCombinedParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitBindParameter(this);
+    visitor.visitBindCombinedParameter(this);
   }
 
   @Override
@@ -28,15 +28,9 @@ public class FlexibleSearchBindParameterImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchBindCombinedParameter getBindCombinedParameter() {
-    return findChildByClass(FlexibleSearchBindCombinedParameter.class);
-  }
-
-  @Override
-  @Nullable
+  @NotNull
   public PsiElement getNamedParameter() {
-    return findChildByType(NAMED_PARAMETER);
+    return findNotNullChildByType(NAMED_PARAMETER);
   }
 
 }

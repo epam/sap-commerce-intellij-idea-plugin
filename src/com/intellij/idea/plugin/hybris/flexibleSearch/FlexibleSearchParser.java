@@ -45,13 +45,48 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // NUMBERED_PARAMETER | NAMED_PARAMETER
+  // NAMED_PARAMETER ( '.' IDENTIFIER)*
+  public static boolean bind_combined_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_combined_parameter")) return false;
+    if (!nextTokenIs(b, NAMED_PARAMETER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NAMED_PARAMETER);
+    r = r && bind_combined_parameter_1(b, l + 1);
+    exit_section_(b, m, BIND_COMBINED_PARAMETER, r);
+    return r;
+  }
+
+  // ( '.' IDENTIFIER)*
+  private static boolean bind_combined_parameter_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_combined_parameter_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!bind_combined_parameter_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "bind_combined_parameter_1", c)) break;
+    }
+    return true;
+  }
+
+  // '.' IDENTIFIER
+  private static boolean bind_combined_parameter_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_combined_parameter_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DOT, IDENTIFIER);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // NUMBERED_PARAMETER | bind_combined_parameter | NAMED_PARAMETER
   public static boolean bind_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "bind_parameter")) return false;
     if (!nextTokenIs(b, "<bind parameter>", NAMED_PARAMETER, NUMBERED_PARAMETER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BIND_PARAMETER, "<bind parameter>");
     r = consumeToken(b, NUMBERED_PARAMETER);
+    if (!r) r = bind_combined_parameter(b, l + 1);
     if (!r) r = consumeToken(b, NAMED_PARAMETER);
     exit_section_(b, l, m, r, false, null);
     return r;
