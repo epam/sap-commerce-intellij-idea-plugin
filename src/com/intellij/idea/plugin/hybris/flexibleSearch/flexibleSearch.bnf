@@ -34,6 +34,7 @@
   classHeader="license.txt"
   generateTokenAccessors(".*_name")=false
   extends(".*_expression")=expression
+  generate=[java='17']
 
   tokens = [
 

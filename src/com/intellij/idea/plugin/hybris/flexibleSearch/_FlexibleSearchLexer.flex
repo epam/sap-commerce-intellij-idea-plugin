@@ -3,16 +3,16 @@ package com.intellij.idea.plugin.hybris.flexibleSearch;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 
 %%
 
 %{
-  public _FlexibleSearchLexer() {
-    this((java.io.Reader)null);
-  }
+    public _FlexibleSearchLexer() {
+        this((java.io.Reader)null);
+    }
 %}
 
 %public

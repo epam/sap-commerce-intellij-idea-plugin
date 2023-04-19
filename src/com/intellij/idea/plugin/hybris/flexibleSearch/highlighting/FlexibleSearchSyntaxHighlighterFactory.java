@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
@@ -28,7 +29,7 @@ public class FlexibleSearchSyntaxHighlighterFactory extends SyntaxHighlighterFac
 
     @NotNull
     @Override
-    public SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
-        return new FlexibleSearchSyntaxHighlighter();
+    public SyntaxHighlighter getSyntaxHighlighter(final Project project, final VirtualFile virtualFile) {
+        return ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter.class);
     }
 }
