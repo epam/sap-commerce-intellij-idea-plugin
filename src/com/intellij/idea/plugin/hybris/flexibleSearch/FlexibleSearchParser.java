@@ -40,8 +40,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
       CAST_EXPRESSION, COLUMN_REF_EXPRESSION, COLUMN_REF_Y_EXPRESSION, COMPARISON_EXPRESSION,
       CONCAT_EXPRESSION, EQUIVALENCE_EXPRESSION, EXISTS_EXPRESSION, EXPRESSION,
       FROM_CLAUSE_EXPRESSION, FUNCTION_CALL_EXPRESSION, IN_EXPRESSION, ISNULL_EXPRESSION,
-      LIKE_EXPRESSION, LITERAL_EXPRESSION, MUL_EXPRESSION, OR_EXPRESSION,
-      PAREN_EXPRESSION, UNARY_EXPRESSION),
+      LIKE_EXPRESSION, LITERAL_EXPRESSION, MUL_EXPRESSION, MYSQL_FUNCTION_EXPRESSION,
+      OR_EXPRESSION, PAREN_EXPRESSION, UNARY_EXPRESSION),
   };
 
   /* ********************************************************** */
@@ -692,7 +692,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ',' | ( LEFT OUTER? | INNER | CROSS )? JOIN
+  // ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
   public static boolean join_operator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator")) return false;
     boolean r;
@@ -703,7 +703,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( LEFT OUTER? | INNER | CROSS )? JOIN
+  // ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
   private static boolean join_operator_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1")) return false;
     boolean r;
@@ -714,14 +714,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( LEFT OUTER? | INNER | CROSS )?
+  // ( LEFT OUTER? | INNER | CROSS | RIGHT )?
   private static boolean join_operator_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1_0")) return false;
     join_operator_1_0_0(b, l + 1);
     return true;
   }
 
-  // LEFT OUTER? | INNER | CROSS
+  // LEFT OUTER? | INNER | CROSS | RIGHT
   private static boolean join_operator_1_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1_0_0")) return false;
     boolean r;
@@ -729,6 +729,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = join_operator_1_0_0_0(b, l + 1);
     if (!r) r = consumeToken(b, INNER);
     if (!r) r = consumeToken(b, CROSS);
+    if (!r) r = consumeToken(b, RIGHT);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1409,31 +1410,33 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // Expression root: expression
   // Operator priority table:
-  // 0: BINARY(or_expression)
-  // 1: BINARY(and_expression)
-  // 2: ATOM(case_expression)
-  // 3: ATOM(exists_expression)
-  // 4: POSTFIX(in_expression)
-  // 5: POSTFIX(isnull_expression)
-  // 6: BINARY(like_expression)
-  // 7: PREFIX(cast_expression)
-  // 8: ATOM(function_call_expression)
-  // 9: BINARY(equivalence_expression) BINARY(between_expression)
-  // 10: BINARY(comparison_expression)
-  // 11: BINARY(bit_expression)
-  // 12: BINARY(mul_expression)
-  // 13: BINARY(concat_expression)
-  // 14: BINARY(unary_expression)
-  // 15: ATOM(literal_expression)
-  // 16: ATOM(column_ref_y_expression)
-  // 17: ATOM(column_ref_expression)
-  // 18: ATOM(paren_expression)
+  // 0: PREFIX(mysql_function_expression)
+  // 1: BINARY(or_expression)
+  // 2: BINARY(and_expression)
+  // 3: ATOM(case_expression)
+  // 4: ATOM(exists_expression)
+  // 5: POSTFIX(in_expression)
+  // 6: POSTFIX(isnull_expression)
+  // 7: BINARY(like_expression)
+  // 8: PREFIX(cast_expression)
+  // 9: ATOM(function_call_expression)
+  // 10: BINARY(equivalence_expression) BINARY(between_expression)
+  // 11: BINARY(comparison_expression)
+  // 12: BINARY(bit_expression)
+  // 13: BINARY(mul_expression)
+  // 14: BINARY(concat_expression)
+  // 15: BINARY(unary_expression)
+  // 16: ATOM(literal_expression)
+  // 17: ATOM(column_ref_y_expression)
+  // 18: ATOM(column_ref_expression)
+  // 19: ATOM(paren_expression)
   public static boolean expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expression")) return false;
     addVariant(b, "<expression>");
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<expression>");
-    r = case_expression(b, l + 1);
+    r = mysql_function_expression(b, l + 1);
+    if (!r) r = case_expression(b, l + 1);
     if (!r) r = exists_expression(b, l + 1);
     if (!r) r = cast_expression(b, l + 1);
     if (!r) r = function_call_expression(b, l + 1);
@@ -1452,54 +1455,54 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r = true;
     while (true) {
       Marker m = enter_section_(b, l, _LEFT_, null);
-      if (g < 0 && consumeTokenSmart(b, OR)) {
-        r = expression(b, l, 0);
+      if (g < 1 && consumeTokenSmart(b, OR)) {
+        r = expression(b, l, 1);
         exit_section_(b, l, m, OR_EXPRESSION, r, true, null);
       }
-      else if (g < 1 && consumeTokenSmart(b, AND)) {
-        r = expression(b, l, 1);
+      else if (g < 2 && consumeTokenSmart(b, AND)) {
+        r = expression(b, l, 2);
         exit_section_(b, l, m, AND_EXPRESSION, r, true, null);
       }
-      else if (g < 4 && in_expression_0(b, l + 1)) {
+      else if (g < 5 && in_expression_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, IN_EXPRESSION, r, true, null);
       }
-      else if (g < 5 && isnull_expression_0(b, l + 1)) {
+      else if (g < 6 && isnull_expression_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, ISNULL_EXPRESSION, r, true, null);
       }
-      else if (g < 6 && like_expression_0(b, l + 1)) {
-        r = report_error_(b, expression(b, l, 6));
+      else if (g < 7 && like_expression_0(b, l + 1)) {
+        r = report_error_(b, expression(b, l, 7));
         r = like_expression_1(b, l + 1) && r;
         exit_section_(b, l, m, LIKE_EXPRESSION, r, true, null);
       }
-      else if (g < 9 && equivalence_expression_0(b, l + 1)) {
-        r = expression(b, l, 9);
+      else if (g < 10 && equivalence_expression_0(b, l + 1)) {
+        r = expression(b, l, 10);
         exit_section_(b, l, m, EQUIVALENCE_EXPRESSION, r, true, null);
       }
-      else if (g < 9 && between_expression_0(b, l + 1)) {
-        r = report_error_(b, expression(b, l, 9));
+      else if (g < 10 && between_expression_0(b, l + 1)) {
+        r = report_error_(b, expression(b, l, 10));
         r = between_expression_1(b, l + 1) && r;
         exit_section_(b, l, m, BETWEEN_EXPRESSION, r, true, null);
       }
-      else if (g < 10 && comparison_expression_0(b, l + 1)) {
-        r = expression(b, l, 10);
+      else if (g < 11 && comparison_expression_0(b, l + 1)) {
+        r = expression(b, l, 11);
         exit_section_(b, l, m, COMPARISON_EXPRESSION, r, true, null);
       }
-      else if (g < 11 && bit_expression_0(b, l + 1)) {
-        r = expression(b, l, 11);
+      else if (g < 12 && bit_expression_0(b, l + 1)) {
+        r = expression(b, l, 12);
         exit_section_(b, l, m, BIT_EXPRESSION, r, true, null);
       }
-      else if (g < 12 && mul_expression_0(b, l + 1)) {
-        r = expression(b, l, 12);
+      else if (g < 13 && mul_expression_0(b, l + 1)) {
+        r = expression(b, l, 13);
         exit_section_(b, l, m, MUL_EXPRESSION, r, true, null);
       }
-      else if (g < 13 && consumeTokenSmart(b, CONCAT)) {
-        r = expression(b, l, 13);
+      else if (g < 14 && consumeTokenSmart(b, CONCAT)) {
+        r = expression(b, l, 14);
         exit_section_(b, l, m, CONCAT_EXPRESSION, r, true, null);
       }
-      else if (g < 14 && unary_expression_0(b, l + 1)) {
-        r = expression(b, l, 14);
+      else if (g < 15 && unary_expression_0(b, l + 1)) {
+        r = expression(b, l, 15);
         exit_section_(b, l, m, UNARY_EXPRESSION, r, true, null);
       }
       else {
@@ -1508,6 +1511,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
       }
     }
     return r;
+  }
+
+  public static boolean mysql_function_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "mysql_function_expression")) return false;
+    if (!nextTokenIsSmart(b, INTERVAL)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeTokenSmart(b, INTERVAL);
+    p = r;
+    r = p && expression(b, l, 0);
+    r = p && report_error_(b, consumeToken(b, IDENTIFIER)) && r;
+    exit_section_(b, l, m, MYSQL_FUNCTION_EXPRESSION, r, p, null);
+    return r || p;
   }
 
   // CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
@@ -1719,7 +1735,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = parseTokensSmart(b, 0, CAST, LPAREN);
     p = r;
-    r = p && expression(b, l, 7);
+    r = p && expression(b, l, 8);
     r = p && report_error_(b, cast_expression_1(b, l + 1)) && r;
     exit_section_(b, l, m, CAST_EXPRESSION, r, p, null);
     return r || p;

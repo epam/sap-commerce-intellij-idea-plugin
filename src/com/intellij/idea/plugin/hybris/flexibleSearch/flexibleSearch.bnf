@@ -87,10 +87,7 @@
         UNEQ                = '<>'
         OUTER_JOIN          = ':o'
 
-        // More keywords from https://sqlite.org/lang_keywords.html that don't appear in the grammar below, but we want to treat them as
-        // keywords (so that the IDE escapes them just in case).
         FULL        = 'FULL'
-        RIGHT       = 'RIGHT'
 
         // Grammar-Kit's live preview emulates PsiBuilder's behavior of ignoring whitespace, by
         // looking for a token type that matches a space and is not used otherwise. Here's one:
@@ -115,7 +112,8 @@ private subquery_recover ::= !"}}"
 type_name ::= name ( '(' signed_number ')' | '(' signed_number ',' signed_number ')' )?
 
 expression ::=
-  or_expression
+  mysql_function_expression
+  | or_expression
   | and_expression
   | case_expression
   | exists_expression
@@ -134,6 +132,8 @@ expression ::=
   | column_ref_y_expression
   | column_ref_expression
   | paren_expression
+
+mysql_function_expression ::= INTERVAL expression IDENTIFIER
 
 // "The precedence of the BETWEEN operator is the same as the precedence as operators == and != and LIKE and groups left to right."
 private equivalence_group ::= equivalence_expression | between_expression
@@ -239,7 +239,7 @@ result_column ::=
   | '{'? selected_table_name column_separator '*' '}'?
   | expression ( ( AS )? column_alias_name )?
 
-join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS )? JOIN
+join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
 
 join_constraint ::= ON expression | USING '(' column_name ( ',' column_name )* ')'
 

@@ -48,6 +48,7 @@ public interface FlexibleSearchTypes {
   IElementType LIMIT_CLAUSE = new FlexibleSearchElementType("LIMIT_CLAUSE");
   IElementType LITERAL_EXPRESSION = new FlexibleSearchElementType("LITERAL_EXPRESSION");
   IElementType MUL_EXPRESSION = new FlexibleSearchElementType("MUL_EXPRESSION");
+  IElementType MYSQL_FUNCTION_EXPRESSION = new FlexibleSearchElementType("MYSQL_FUNCTION_EXPRESSION");
   IElementType ORDERING_TERM = new FlexibleSearchElementType("ORDERING_TERM");
   IElementType ORDER_CLAUSE = new FlexibleSearchElementType("ORDER_CLAUSE");
   IElementType OR_EXPRESSION = new FlexibleSearchElementType("OR_EXPRESSION");
@@ -110,6 +111,7 @@ public interface FlexibleSearchTypes {
   IElementType IDENTIFIER = new FlexibleSearchTokenType("IDENTIFIER");
   IElementType IN = new FlexibleSearchTokenType("IN");
   IElementType INNER = new FlexibleSearchTokenType("INNER");
+  IElementType INTERVAL = new FlexibleSearchTokenType("INTERVAL");
   IElementType IS = new FlexibleSearchTokenType("IS");
   IElementType JOIN = new FlexibleSearchTokenType("JOIN");
   IElementType LBRACE = new FlexibleSearchTokenType("{");
@@ -272,6 +274,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == MUL_EXPRESSION) {
         return new FlexibleSearchMulExpressionImpl(node);
+      }
+      else if (type == MYSQL_FUNCTION_EXPRESSION) {
+        return new FlexibleSearchMysqlFunctionExpressionImpl(node);
       }
       else if (type == ORDERING_TERM) {
         return new FlexibleSearchOrderingTermImpl(node);

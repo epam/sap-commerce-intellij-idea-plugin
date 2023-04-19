@@ -159,6 +159,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitMysqlFunctionExpression(@NotNull FlexibleSearchMysqlFunctionExpression o) {
+    visitExpression(o);
+  }
+
   public void visitOrExpression(@NotNull FlexibleSearchOrExpression o) {
     visitExpression(o);
   }

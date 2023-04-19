@@ -77,6 +77,7 @@ WHITE_SPACE_FOR_LIVE_PREVIEW=[ \t\n\x0B\f\r]+
   ":o"                                { return OUTER_JOIN; }
   "FULL"                              { return FULL; }
   "RIGHT"                             { return RIGHT; }
+  "INTERVAL"                          { return INTERVAL; }
   "AND"                               { return AND; }
   "OR"                                { return OR; }
   "IS"                                { return IS; }
