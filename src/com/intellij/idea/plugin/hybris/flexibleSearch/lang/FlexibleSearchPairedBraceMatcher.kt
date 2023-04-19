@@ -27,6 +27,7 @@ class FlexibleSearchPairedBraceMatcher : PairedBraceMatcher {
 
     private val _pairs = arrayOf(
         BracePair(FlexibleSearchTypes.LPAREN, FlexibleSearchTypes.RPAREN, true),
+        BracePair(FlexibleSearchTypes.LBRACE, FlexibleSearchTypes.RBRACE, true),
         BracePair(FlexibleSearchTypes.LDBRACE, FlexibleSearchTypes.RDBRACE, true),
         BracePair(FlexibleSearchTypes.LBRACKET, FlexibleSearchTypes.RBRACKET, true)
     )
