@@ -23,14 +23,12 @@ import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 
-//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_BRACE;
-//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.LEFT_DOUBLE_BRACE;
-//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_BRACE;
-//import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.RIGHT_DOUBLE_BRACE;
 class FlexibleSearchPairedBraceMatcher : PairedBraceMatcher {
 
     private val _pairs = arrayOf(
-        BracePair(FlexibleSearchTypes.LPAREN, FlexibleSearchTypes.RPAREN, true)
+        BracePair(FlexibleSearchTypes.LPAREN, FlexibleSearchTypes.RPAREN, true),
+        BracePair(FlexibleSearchTypes.LDBRACE, FlexibleSearchTypes.RDBRACE, true),
+        BracePair(FlexibleSearchTypes.LBRACKET, FlexibleSearchTypes.RBRACKET, true)
     )
 
     override fun getPairs(): Array<BracePair> = _pairs
