@@ -23,6 +23,11 @@
             <option name="FOREGROUND" value="0097C5"/>
         </value>
     </option>
+    <option name="FS_OUTER_JOIN">
+        <value>
+            <option name="FOREGROUND" value="0097C5"/>
+        </value>
+    </option>
     <option name="COLUMN">
         <value>
             <option name="FOREGROUND" value="FFF9F1"/>

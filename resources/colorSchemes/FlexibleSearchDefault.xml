@@ -23,4 +23,9 @@
             <option name="FOREGROUND" value="0D9DD9"/>
         </value>
     </option>
+    <option name="FS_OUTER_JOIN">
+        <value>
+            <option name="FOREGROUND" value="0D9DD9"/>
+        </value>
+    </option>
 </list>

@@ -46,10 +46,20 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val COLUMN_KEYS = pack(FlexibleSearchHighlighterColors.FS_COLUMN)
         private val TABLE_KEYS = pack(FlexibleSearchHighlighterColors.FS_TABLE)
         private val COMMENT_KEYS = pack(FlexibleSearchHighlighterColors.FS_COMMENT)
+        private val OUTER_JOIN_KEYS = pack(FlexibleSearchHighlighterColors.FS_OUTER_JOIN)
+        private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FS_FUNCTION_CALL)
+        private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FS_LOCALIZED)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
             TokenType.BAD_CHARACTER to BAD_CHARACTER_KEYS,
+
+            FlexibleSearchTypes.COLUMN_OUTER_JOIN_NAME to OUTER_JOIN_KEYS,
+            FlexibleSearchTypes.OUTER_JOIN to OUTER_JOIN_KEYS,
+
+            FlexibleSearchTypes.FUNCTION_NAME to FUNCTION_CALL_KEYS,
+
+            FlexibleSearchTypes.COLUMN_LOCALIZED_NAME to LOCALIZED_KEYS,
 
             FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL to STRING_KEYS,
             FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL to STRING_KEYS,

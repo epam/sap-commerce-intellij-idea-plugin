@@ -34,6 +34,9 @@ object FlexibleSearchHighlighterColors {
     val FS_COLUMN = key("COLUMN", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
     val FS_TABLE = key("TABLE NAME", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
     val FS_COMMENT = key("COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+    val FS_FUNCTION_CALL = key("FS_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL)
+    val FS_OUTER_JOIN = key("FS_OUTER_JOIN", DefaultLanguageHighlighterColors.INLINE_PARAMETER_HINT_HIGHLIGHTED)
+    val FS_LOCALIZED = key("FS_LOCALIZED", DefaultLanguageHighlighterColors.INLINE_PARAMETER_HINT)
     val FS_PARAMETER = key("FS_PARAMETER", DefaultLanguageHighlighterColors.PARAMETER)
 
     private fun key(
