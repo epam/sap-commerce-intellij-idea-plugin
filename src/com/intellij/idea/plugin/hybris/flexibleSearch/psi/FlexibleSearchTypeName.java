@@ -10,19 +10,4 @@ public interface FlexibleSearchTypeName extends PsiElement {
   @NotNull
   List<FlexibleSearchSignedNumber> getSignedNumberList();
 
-  @Nullable
-  PsiElement getBacktickLiteral();
-
-  @Nullable
-  PsiElement getBracketLiteral();
-
-  @Nullable
-  PsiElement getDoubleQuoteStringLiteral();
-
-  @Nullable
-  PsiElement getIdentifier();
-
-  @Nullable
-  PsiElement getSingleQuoteStringLiteral();
-
 }

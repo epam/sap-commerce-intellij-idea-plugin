@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchBindParameter extends PsiElement {
 
-  @Nullable
-  FlexibleSearchBindCombinedParameter getBindCombinedParameter();
+  @NotNull
+  List<FlexibleSearchExtParameterName> getExtParameterNameList();
 
   @Nullable
   PsiElement getNamedParameter();

@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchBindCombinedParameter extends PsiElement {
-
-  @NotNull
-  PsiElement getNamedParameter();
+public interface FlexibleSearchColumnOuterJoinName extends PsiElement {
 
 }

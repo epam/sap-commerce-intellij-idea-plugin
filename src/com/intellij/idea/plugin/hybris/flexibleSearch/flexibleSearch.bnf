@@ -88,13 +88,9 @@
         OUTER_JOIN          = ':o'
 
         FULL        = 'FULL'
-
-        // Grammar-Kit's live preview emulates PsiBuilder's behavior of ignoring whitespace, by
-        // looking for a token type that matches a space and is not used otherwise. Here's one:
-        WHITE_SPACE_FOR_LIVE_PREVIEW    = 'regexp:\s+'
   ]
 
-//  generateTokenAccessors(".*_name")=false
+  generateTokenAccessors(".*_name")=false
   extends(".*_expression")=expression
 }
 
@@ -156,7 +152,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized? column_outer_join? '}'
+column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
 
 // We may not have { } in case of Combined SELECT with table alias
 /*
@@ -177,9 +173,7 @@ private expression_subquery ::= &(SELECT) subquery_greedy {
     pin=1
 }
 
-bind_parameter ::= NUMBERED_PARAMETER | bind_combined_parameter | NAMED_PARAMETER
-// ?session.user.currentDate
-bind_combined_parameter ::= NAMED_PARAMETER ( '.' IDENTIFIER)*
+bind_parameter ::= NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*)
 
 private literal_value ::=
   signed_number
@@ -249,14 +243,15 @@ ordering_term ::= expression ( ASC | DESC )?
 
 compound_operator ::= UNION ALL?
 
-column_outer_join ::= OUTER_JOIN
-column_localized ::= BRACKET_LITERAL
+ext_parameter_name ::= IDENTIFIER
+column_outer_join_name ::= OUTER_JOIN
+column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
 selected_table_name ::= name
 defined_table_name ::= name (EXCLAMATION_MARK | ASTERISK)?
 column_name ::= name
-function_name ::= name
+function_name ::= IDENTIFIER
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL
 column_separator ::= DOT | COLON

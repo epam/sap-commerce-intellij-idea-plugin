@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpression {
 
   @Nullable
-  FlexibleSearchColumnLocalized getColumnLocalized();
+  FlexibleSearchColumnLocalizedName getColumnLocalizedName();
 
   @NotNull
   FlexibleSearchColumnName getColumnName();
 
   @Nullable
-  FlexibleSearchColumnOuterJoin getColumnOuterJoin();
+  FlexibleSearchColumnOuterJoinName getColumnOuterJoinName();
 
   @Nullable
   FlexibleSearchColumnSeparator getColumnSeparator();

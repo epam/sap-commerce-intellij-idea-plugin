@@ -15,10 +15,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
-  public void visitBindCombinedParameter(@NotNull FlexibleSearchBindCombinedParameter o) {
-    visitPsiElement(o);
-  }
-
   public void visitBindParameter(@NotNull FlexibleSearchBindParameter o) {
     visitPsiElement(o);
   }
@@ -39,7 +35,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitColumnLocalized(@NotNull FlexibleSearchColumnLocalized o) {
+  public void visitColumnLocalizedName(@NotNull FlexibleSearchColumnLocalizedName o) {
     visitPsiElement(o);
   }
 
@@ -47,7 +43,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitColumnOuterJoin(@NotNull FlexibleSearchColumnOuterJoin o) {
+  public void visitColumnOuterJoinName(@NotNull FlexibleSearchColumnOuterJoinName o) {
     visitPsiElement(o);
   }
 
@@ -88,6 +84,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitExpression(@NotNull FlexibleSearchExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExtParameterName(@NotNull FlexibleSearchExtParameterName o) {
     visitPsiElement(o);
   }
 

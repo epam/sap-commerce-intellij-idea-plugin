@@ -29,8 +29,8 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
 
   @Override
   @Nullable
-  public FlexibleSearchColumnLocalized getColumnLocalized() {
-    return findChildByClass(FlexibleSearchColumnLocalized.class);
+  public FlexibleSearchColumnLocalizedName getColumnLocalizedName() {
+    return findChildByClass(FlexibleSearchColumnLocalizedName.class);
   }
 
   @Override
@@ -41,8 +41,8 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
 
   @Override
   @Nullable
-  public FlexibleSearchColumnOuterJoin getColumnOuterJoin() {
-    return findChildByClass(FlexibleSearchColumnOuterJoin.class);
+  public FlexibleSearchColumnOuterJoinName getColumnOuterJoinName() {
+    return findChildByClass(FlexibleSearchColumnOuterJoinName.class);
   }
 
   @Override

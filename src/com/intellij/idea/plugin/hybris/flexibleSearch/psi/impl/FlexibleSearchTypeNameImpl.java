@@ -33,34 +33,4 @@ public class FlexibleSearchTypeNameImpl extends ASTWrapperPsiElement implements 
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSignedNumber.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getBacktickLiteral() {
-    return findChildByType(BACKTICK_LITERAL);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getBracketLiteral() {
-    return findChildByType(BRACKET_LITERAL);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDoubleQuoteStringLiteral() {
-    return findChildByType(DOUBLE_QUOTE_STRING_LITERAL);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSingleQuoteStringLiteral() {
-    return findChildByType(SINGLE_QUOTE_STRING_LITERAL);
-  }
-
 }

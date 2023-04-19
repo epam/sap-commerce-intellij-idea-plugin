@@ -7,19 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchColumnAliasName extends PsiElement {
 
-  @Nullable
-  PsiElement getBacktickLiteral();
-
-  @Nullable
-  PsiElement getBracketLiteral();
-
-  @Nullable
-  PsiElement getDoubleQuoteStringLiteral();
-
-  @Nullable
-  PsiElement getIdentifier();
-
-  @Nullable
-  PsiElement getSingleQuoteStringLiteral();
-
 }

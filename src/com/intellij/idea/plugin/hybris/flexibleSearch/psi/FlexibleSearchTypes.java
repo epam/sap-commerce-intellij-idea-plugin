@@ -12,15 +12,14 @@ public interface FlexibleSearchTypes {
 
   IElementType AND_EXPRESSION = new FlexibleSearchElementType("AND_EXPRESSION");
   IElementType BETWEEN_EXPRESSION = new FlexibleSearchElementType("BETWEEN_EXPRESSION");
-  IElementType BIND_COMBINED_PARAMETER = new FlexibleSearchElementType("BIND_COMBINED_PARAMETER");
   IElementType BIND_PARAMETER = new FlexibleSearchElementType("BIND_PARAMETER");
   IElementType BIT_EXPRESSION = new FlexibleSearchElementType("BIT_EXPRESSION");
   IElementType CASE_EXPRESSION = new FlexibleSearchElementType("CASE_EXPRESSION");
   IElementType CAST_EXPRESSION = new FlexibleSearchElementType("CAST_EXPRESSION");
   IElementType COLUMN_ALIAS_NAME = new FlexibleSearchElementType("COLUMN_ALIAS_NAME");
-  IElementType COLUMN_LOCALIZED = new FlexibleSearchElementType("COLUMN_LOCALIZED");
+  IElementType COLUMN_LOCALIZED_NAME = new FlexibleSearchElementType("COLUMN_LOCALIZED_NAME");
   IElementType COLUMN_NAME = new FlexibleSearchElementType("COLUMN_NAME");
-  IElementType COLUMN_OUTER_JOIN = new FlexibleSearchElementType("COLUMN_OUTER_JOIN");
+  IElementType COLUMN_OUTER_JOIN_NAME = new FlexibleSearchElementType("COLUMN_OUTER_JOIN_NAME");
   IElementType COLUMN_REF_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_EXPRESSION");
   IElementType COLUMN_REF_Y_EXPRESSION = new FlexibleSearchElementType("COLUMN_REF_Y_EXPRESSION");
   IElementType COLUMN_SEPARATOR = new FlexibleSearchElementType("COLUMN_SEPARATOR");
@@ -31,6 +30,7 @@ public interface FlexibleSearchTypes {
   IElementType EQUIVALENCE_EXPRESSION = new FlexibleSearchElementType("EQUIVALENCE_EXPRESSION");
   IElementType EXISTS_EXPRESSION = new FlexibleSearchElementType("EXISTS_EXPRESSION");
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
+  IElementType EXT_PARAMETER_NAME = new FlexibleSearchElementType("EXT_PARAMETER_NAME");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
   IElementType FROM_CLAUSE_EXPRESSION = new FlexibleSearchElementType("FROM_CLAUSE_EXPRESSION");
   IElementType FROM_CLAUSE_SELECT = new FlexibleSearchElementType("FROM_CLAUSE_SELECT");
@@ -171,9 +171,6 @@ public interface FlexibleSearchTypes {
       else if (type == BETWEEN_EXPRESSION) {
         return new FlexibleSearchBetweenExpressionImpl(node);
       }
-      else if (type == BIND_COMBINED_PARAMETER) {
-        return new FlexibleSearchBindCombinedParameterImpl(node);
-      }
       else if (type == BIND_PARAMETER) {
         return new FlexibleSearchBindParameterImpl(node);
       }
@@ -189,14 +186,14 @@ public interface FlexibleSearchTypes {
       else if (type == COLUMN_ALIAS_NAME) {
         return new FlexibleSearchColumnAliasNameImpl(node);
       }
-      else if (type == COLUMN_LOCALIZED) {
-        return new FlexibleSearchColumnLocalizedImpl(node);
+      else if (type == COLUMN_LOCALIZED_NAME) {
+        return new FlexibleSearchColumnLocalizedNameImpl(node);
       }
       else if (type == COLUMN_NAME) {
         return new FlexibleSearchColumnNameImpl(node);
       }
-      else if (type == COLUMN_OUTER_JOIN) {
-        return new FlexibleSearchColumnOuterJoinImpl(node);
+      else if (type == COLUMN_OUTER_JOIN_NAME) {
+        return new FlexibleSearchColumnOuterJoinNameImpl(node);
       }
       else if (type == COLUMN_REF_EXPRESSION) {
         return new FlexibleSearchColumnRefExpressionImpl(node);
@@ -224,6 +221,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == EXISTS_EXPRESSION) {
         return new FlexibleSearchExistsExpressionImpl(node);
+      }
+      else if (type == EXT_PARAMETER_NAME) {
+        return new FlexibleSearchExtParameterNameImpl(node);
       }
       else if (type == FROM_CLAUSE) {
         return new FlexibleSearchFromClauseImpl(node);

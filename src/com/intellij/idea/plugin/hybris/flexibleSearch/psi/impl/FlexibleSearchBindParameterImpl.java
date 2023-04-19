@@ -28,9 +28,9 @@ public class FlexibleSearchBindParameterImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchBindCombinedParameter getBindCombinedParameter() {
-    return findChildByClass(FlexibleSearchBindCombinedParameter.class);
+  @NotNull
+  public List<FlexibleSearchExtParameterName> getExtParameterNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExtParameterName.class);
   }
 
   @Override

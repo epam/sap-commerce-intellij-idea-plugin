@@ -11,14 +11,14 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnOuterJoinImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnOuterJoin {
+public class FlexibleSearchColumnOuterJoinNameImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnOuterJoinName {
 
-  public FlexibleSearchColumnOuterJoinImpl(@NotNull ASTNode node) {
+  public FlexibleSearchColumnOuterJoinNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitColumnOuterJoin(this);
+    visitor.visitColumnOuterJoinName(this);
   }
 
   @Override

@@ -11,26 +11,20 @@ import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchT
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnLocalizedImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalized {
+public class FlexibleSearchColumnLocalizedNameImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalizedName {
 
-  public FlexibleSearchColumnLocalizedImpl(@NotNull ASTNode node) {
+  public FlexibleSearchColumnLocalizedNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitColumnLocalized(this);
+    visitor.visitColumnLocalizedName(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getBracketLiteral() {
-    return findNotNullChildByType(BRACKET_LITERAL);
   }
 
 }

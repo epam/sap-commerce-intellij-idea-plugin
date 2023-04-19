@@ -45,50 +45,48 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // NAMED_PARAMETER ( '.' IDENTIFIER)*
-  public static boolean bind_combined_parameter(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bind_combined_parameter")) return false;
-    if (!nextTokenIs(b, NAMED_PARAMETER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, NAMED_PARAMETER);
-    r = r && bind_combined_parameter_1(b, l + 1);
-    exit_section_(b, m, BIND_COMBINED_PARAMETER, r);
-    return r;
-  }
-
-  // ( '.' IDENTIFIER)*
-  private static boolean bind_combined_parameter_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bind_combined_parameter_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!bind_combined_parameter_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "bind_combined_parameter_1", c)) break;
-    }
-    return true;
-  }
-
-  // '.' IDENTIFIER
-  private static boolean bind_combined_parameter_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "bind_combined_parameter_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, DOT, IDENTIFIER);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // NUMBERED_PARAMETER | bind_combined_parameter | NAMED_PARAMETER
+  // NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*)
   public static boolean bind_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "bind_parameter")) return false;
     if (!nextTokenIs(b, "<bind parameter>", NAMED_PARAMETER, NUMBERED_PARAMETER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BIND_PARAMETER, "<bind parameter>");
     r = consumeToken(b, NUMBERED_PARAMETER);
-    if (!r) r = bind_combined_parameter(b, l + 1);
-    if (!r) r = consumeToken(b, NAMED_PARAMETER);
+    if (!r) r = bind_parameter_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // NAMED_PARAMETER ( '.' ext_parameter_name)*
+  private static boolean bind_parameter_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NAMED_PARAMETER);
+    r = r && bind_parameter_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ( '.' ext_parameter_name)*
+  private static boolean bind_parameter_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter_1_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!bind_parameter_1_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "bind_parameter_1_1", c)) break;
+    }
+    return true;
+  }
+
+  // '.' ext_parameter_name
+  private static boolean bind_parameter_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && ext_parameter_name(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -105,13 +103,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // BRACKET_LITERAL
-  public static boolean column_localized(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_localized")) return false;
+  public static boolean column_localized_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_localized_name")) return false;
     if (!nextTokenIs(b, BRACKET_LITERAL)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, BRACKET_LITERAL);
-    exit_section_(b, m, COLUMN_LOCALIZED, r);
+    exit_section_(b, m, COLUMN_LOCALIZED_NAME, r);
     return r;
   }
 
@@ -128,13 +126,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // OUTER_JOIN
-  public static boolean column_outer_join(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_outer_join")) return false;
+  public static boolean column_outer_join_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_outer_join_name")) return false;
     if (!nextTokenIs(b, OUTER_JOIN)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, OUTER_JOIN);
-    exit_section_(b, m, COLUMN_OUTER_JOIN, r);
+    exit_section_(b, m, COLUMN_OUTER_JOIN_NAME, r);
     return r;
   }
 
@@ -285,6 +283,18 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _AND_);
     r = consumeToken(b, SELECT);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean ext_parameter_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ext_parameter_name")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, EXT_PARAMETER_NAME, r);
     return r;
   }
 
@@ -602,13 +612,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // name
+  // IDENTIFIER
   public static boolean function_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "function_name")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FUNCTION_NAME, "<function name>");
-    r = name(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, FUNCTION_NAME, r);
     return r;
   }
 
@@ -1791,13 +1802,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
   public static boolean function_call_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "function_call_expression")) return false;
+    if (!nextTokenIsSmart(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FUNCTION_CALL_EXPRESSION, "<function call expression>");
+    Marker m = enter_section_(b);
     r = function_name(b, l + 1);
     r = r && consumeToken(b, LPAREN);
     r = r && function_call_expression_2(b, l + 1);
     r = r && consumeToken(b, RPAREN);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, FUNCTION_CALL_EXPRESSION, r);
     return r;
   }
 
@@ -1998,7 +2010,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{' (selected_table_name column_separator)? column_name column_localized? column_outer_join? '}'
+  // '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
   public static boolean column_ref_y_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression")) return false;
     if (!nextTokenIsSmart(b, LBRACE)) return false;
@@ -2032,17 +2044,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // column_localized?
+  // column_localized_name?
   private static boolean column_ref_y_expression_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression_3")) return false;
-    column_localized(b, l + 1);
+    column_localized_name(b, l + 1);
     return true;
   }
 
-  // column_outer_join?
+  // column_outer_join_name?
   private static boolean column_ref_y_expression_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression_4")) return false;
-    column_outer_join(b, l + 1);
+    column_outer_join_name(b, l + 1);
     return true;
   }
 
