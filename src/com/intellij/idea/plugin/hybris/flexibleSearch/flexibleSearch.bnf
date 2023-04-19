@@ -16,9 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//
-// FlexibleSearch BNF Grammar
-//
 {
   parserClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParser"
   parserUtilClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserUtils"
@@ -33,6 +30,10 @@
   elementTypeHolderClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes"
   elementTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchElementType"
   tokenTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchTokenType"
+
+  classHeader="license.txt"
+  generateTokenAccessors(".*_name")=false
+  extends(".*_expression")=expression
 
   tokens = [
 
@@ -89,9 +90,6 @@
 
         FULL        = 'FULL'
   ]
-
-  generateTokenAccessors(".*_name")=false
-  extends(".*_expression")=expression
 }
 
 root ::= statement SEMICOLON?
