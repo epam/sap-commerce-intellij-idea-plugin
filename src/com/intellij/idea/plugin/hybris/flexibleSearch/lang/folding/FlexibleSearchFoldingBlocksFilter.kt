@@ -19,9 +19,11 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiElementFilter
 
 class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
 
-    override fun isAccepted(element: PsiElement) = element is FoldablePsiElement
+    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
+        && element is FoldablePsiElement
 }

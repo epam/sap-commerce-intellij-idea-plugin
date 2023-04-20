@@ -264,30 +264,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // &(SELECT) subquery_greedy
-  static boolean expression_subquery(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_subquery")) return false;
-    if (!nextTokenIs(b, SELECT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = expression_subquery_0(b, l + 1);
-    p = r; // pin = 1
-    r = r && subquery_greedy(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // &(SELECT)
-  private static boolean expression_subquery_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_subquery_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _AND_);
-    r = consumeToken(b, SELECT);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // IDENTIFIER
   public static boolean ext_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ext_parameter_name")) return false;
@@ -1680,14 +1656,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // NOT? IN ( expression_in_subquery ) ')'
+  // NOT? IN '(' ( expression_in_subquery ) ')'
   private static boolean in_expression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "in_expression_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = in_expression_0_0(b, l + 1);
-    r = r && consumeToken(b, IN);
-    r = r && in_expression_0_2(b, l + 1);
+    r = r && consumeTokensSmart(b, 0, IN, LPAREN);
+    r = r && in_expression_0_3(b, l + 1);
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, null, r);
     return r;
@@ -1701,8 +1677,8 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   // ( expression_in_subquery )
-  private static boolean in_expression_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "in_expression_0_2")) return false;
+  private static boolean in_expression_0_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "in_expression_0_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = expression_in_subquery(b, l + 1);
