@@ -158,7 +158,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= ( NOT? EXISTS )? '(' from_clause_subqueries_statement ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
+column_ref_y_expression ::= '{' (table_alias_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
 
 // We may not have { } in case of Combined SELECT with table alias
 /*
@@ -170,7 +170,7 @@ SELECT x.PK FROM (
 ) x
  */
 column_ref_expression ::=
- selected_table_name column_separator column_name
+ table_alias_name column_separator column_name
  | column_name
 
 private expression_in_subquery ::= NAMED_PARAMETER | expression ( ',' expression )* | from_clause_subqueries_statement
@@ -234,7 +234,7 @@ select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
 
 result_column ::=
   '*'
-  | '{'? selected_table_name column_separator '*' '}'?
+  | '{'? table_alias_name column_separator '*' '}'?
   | expression ( ( AS )? column_alias_name )?
   {
     methods=[getPresentationText]
@@ -253,9 +253,14 @@ column_outer_join_name ::= OUTER_JOIN
 column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
-selected_table_name ::= name
 defined_table_name ::= name (EXCLAMATION_MARK | STAR)?
+{
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
+}
 column_name ::= name
+{
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
+}
 function_name ::= IDENTIFIER
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL

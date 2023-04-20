@@ -230,10 +230,6 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitSelectedTableName(@NotNull FlexibleSearchSelectedTableName o) {
-    visitPsiElement(o);
-  }
-
   public void visitSignedNumber(@NotNull FlexibleSearchSignedNumber o) {
     visitPsiElement(o);
   }

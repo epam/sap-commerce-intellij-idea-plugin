@@ -37,7 +37,7 @@ public interface FlexibleSearchResultColumn extends PsiElement {
   FlexibleSearchExpression getExpression();
 
   @Nullable
-  FlexibleSearchSelectedTableName getSelectedTableName();
+  FlexibleSearchTableAliasName getTableAliasName();
 
   @Nullable
   String getPresentationText();

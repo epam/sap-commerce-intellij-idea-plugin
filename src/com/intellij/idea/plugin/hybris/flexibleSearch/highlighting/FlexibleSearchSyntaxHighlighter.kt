@@ -65,7 +65,6 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL to STRING_KEYS,
 
             FlexibleSearchTypes.DEFINED_TABLE_NAME to TABLE_KEYS,
-            FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_KEYS,
 
             FlexibleSearchTypes.COLUMN_NAME to COLUMN_KEYS,
 

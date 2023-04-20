@@ -67,8 +67,8 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
 
   @Override
   @Nullable
-  public FlexibleSearchSelectedTableName getSelectedTableName() {
-    return findChildByClass(FlexibleSearchSelectedTableName.class);
+  public FlexibleSearchTableAliasName getTableAliasName() {
+    return findChildByClass(FlexibleSearchTableAliasName.class);
   }
 
   @Override

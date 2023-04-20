@@ -42,7 +42,6 @@ class FlexibleSearchAnnotator : Annotator {
             BACKTICK_LITERAL -> when (element.parent.elementType) {
                 COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
                 FUNCTION_NAME -> highlight(FUNCTION_NAME, holder, element)
-                SELECTED_TABLE_NAME -> highlight(SELECTED_TABLE_NAME, holder, element)
                 DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
             }
