@@ -15,41 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.flexibleSearch.commenter
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.commenter;
+import com.intellij.lang.Commenter
 
-import com.intellij.lang.Commenter;
-import org.jetbrains.annotations.Nullable;
+class FlexibleSearchCommenter : Commenter {
 
-public class FlexibleSearchCommenter implements Commenter {
-
-    @Nullable
-    @Override
-    public String getLineCommentPrefix() {
-        return "-- ";
-    }
-
-    @Nullable
-    @Override
-    public String getBlockCommentPrefix() {
-        return "";
-    }
-
-    @Nullable
-    @Override
-    public String getBlockCommentSuffix() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public String getCommentedBlockCommentPrefix() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public String getCommentedBlockCommentSuffix() {
-        return null;
-    }
+    override fun getLineCommentPrefix() = "-- "
+    override fun getBlockCommentPrefix() = "/*"
+    override fun getBlockCommentSuffix() = "*/"
+    override fun getCommentedBlockCommentPrefix() = null
+    override fun getCommentedBlockCommentSuffix() = null
 }

@@ -29,6 +29,7 @@ import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.roots.ProjectRootModificationTracker
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
@@ -42,7 +43,10 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
             val filter = ApplicationManager.getApplication().getService(FlexibleSearchFoldingBlocksFilter::class.java)
             val results = SyntaxTraverser.psiTraverser(root)
                 .filter { filter.isAccepted(it) }
-                .map { FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME)) }
+                .mapNotNull {
+                    if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
+                    FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
+                }
                 .toDistinctTypedArray()
 
             CachedValueProvider.Result.create(

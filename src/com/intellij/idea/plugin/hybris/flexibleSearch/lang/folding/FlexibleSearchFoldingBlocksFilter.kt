@@ -26,4 +26,5 @@ class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
 
     override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
         && element is FoldablePsiElement
+        && !element.textRange.isEmpty
 }
