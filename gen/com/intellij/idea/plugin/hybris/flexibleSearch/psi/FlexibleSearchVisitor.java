@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -20,6 +24,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
 public class FlexibleSearchVisitor extends PsiElementVisitor {
 
@@ -65,10 +70,12 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
 
   public void visitColumnRefExpression(@NotNull FlexibleSearchColumnRefExpression o) {
     visitExpression(o);
+    // visitFoldablePsiElement(o);
   }
 
   public void visitColumnRefYExpression(@NotNull FlexibleSearchColumnRefYExpression o) {
     visitExpression(o);
+    // visitFoldablePsiElement(o);
   }
 
   public void visitColumnSeparator(@NotNull FlexibleSearchColumnSeparator o) {
@@ -132,7 +139,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitFromTable(@NotNull FlexibleSearchFromTable o) {
-    visitPsiElement(o);
+    visitFoldablePsiElement(o);
   }
 
   public void visitFunctionCallExpression(@NotNull FlexibleSearchFunctionCallExpression o) {
@@ -253,6 +260,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
 
   public void visitYFromClause(@NotNull FlexibleSearchYFromClause o) {
     visitPsiElement(o);
+  }
+
+  public void visitFoldablePsiElement(@NotNull FoldablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

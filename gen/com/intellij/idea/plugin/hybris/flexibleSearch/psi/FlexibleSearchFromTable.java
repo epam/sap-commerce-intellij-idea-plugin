@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -20,8 +24,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
-public interface FlexibleSearchFromTable extends PsiElement {
+public interface FlexibleSearchFromTable extends FoldablePsiElement {
 
   @NotNull
   FlexibleSearchDefinedTableName getDefinedTableName();

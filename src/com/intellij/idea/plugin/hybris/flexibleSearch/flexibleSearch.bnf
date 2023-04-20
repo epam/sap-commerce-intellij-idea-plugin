@@ -34,6 +34,11 @@
   classHeader="generatedFilesHeader.txt"
   generateTokenAccessors(".*_name")=false
   extends(".*_expression")=expression
+
+  implements("column_ref_y_expression")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+  implements("column_ref_expression")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+  implements("from_table")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+
   generate=[java='17']
 
   tokens = [
