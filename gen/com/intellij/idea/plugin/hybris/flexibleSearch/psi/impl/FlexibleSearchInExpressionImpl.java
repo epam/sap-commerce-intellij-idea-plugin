@@ -49,14 +49,20 @@ public class FlexibleSearchInExpressionImpl extends FlexibleSearchExpressionImpl
 
   @Override
   @NotNull
+  public List<FlexibleSearchCompoundOperator> getCompoundOperatorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchCompoundOperator.class);
+  }
+
+  @Override
+  @NotNull
   public List<FlexibleSearchExpression> getExpressionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchSelectStatement getSelectStatement() {
-    return findChildByClass(FlexibleSearchSelectStatement.class);
+  @NotNull
+  public List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSelectSubqueryCombined.class);
   }
 
   @Override

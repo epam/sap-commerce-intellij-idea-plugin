@@ -27,7 +27,10 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchExistsExpression extends FlexibleSearchExpression {
 
-  @Nullable
-  FlexibleSearchSelectStatement getSelectStatement();
+  @NotNull
+  List<FlexibleSearchCompoundOperator> getCompoundOperatorList();
+
+  @NotNull
+  List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList();
 
 }

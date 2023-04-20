@@ -153,8 +153,8 @@ cast_expression ::= CAST '(' expression AS type_name ')'
 case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
 like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
 isnull_expression ::= expression IS NOT? NULL
-in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
-exists_expression ::= ( NOT? EXISTS )? '(' "{{" expression_subquery "}}" ')'
+in_expression ::=  expression NOT? IN  ( expression_in_subquery ) ')'
+exists_expression ::= ( NOT? EXISTS )? '(' from_clause_subqueries_statement ')'
 function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
 column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
 
@@ -171,7 +171,7 @@ column_ref_expression ::=
  selected_table_name column_separator column_name
  | column_name
 
-private expression_in_subquery ::= ( NAMED_PARAMETER | "{{" expression_subquery "}}" | expression ( ',' expression )* )?
+private expression_in_subquery ::= NAMED_PARAMETER | expression ( ',' expression )* | from_clause_subqueries_statement
 
 private expression_subquery ::= &(SELECT) subquery_greedy {
     pin=1
@@ -199,8 +199,6 @@ group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression 
 
 where_clause ::= WHERE expression
 
-//from_clause ::= FROM table_or_subquery ( join_operator table_or_subquery join_constraint? )*
-
 from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )*
 
 from_clause_expression ::=
@@ -219,7 +217,9 @@ private from_query_greedy ::= select_statement {
 private from_query_recover ::= !')'
 
 from_clause_simple ::= table_or_subquery ( join_operator table_or_subquery join_constraint? )*
-from_clause_subqueries ::= '(' (  select_subquery_combined compound_operator? )* ')' ( ( AS )? table_alias_name)?
+from_clause_subqueries ::= '(' from_clause_subqueries_statement ')' ( ( AS )? table_alias_name)?
+
+private from_clause_subqueries_statement ::= ( select_subquery_combined compound_operator? )*
 
 result_columns ::= result_column ( ',' result_column )*
 

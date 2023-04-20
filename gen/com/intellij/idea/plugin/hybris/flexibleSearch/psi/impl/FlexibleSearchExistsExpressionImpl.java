@@ -48,9 +48,15 @@ public class FlexibleSearchExistsExpressionImpl extends FlexibleSearchExpression
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchSelectStatement getSelectStatement() {
-    return findChildByClass(FlexibleSearchSelectStatement.class);
+  @NotNull
+  public List<FlexibleSearchCompoundOperator> getCompoundOperatorList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchCompoundOperator.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSelectSubqueryCombined.class);
   }
 
 }

@@ -28,10 +28,13 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchInExpression extends FlexibleSearchExpression {
 
   @NotNull
+  List<FlexibleSearchCompoundOperator> getCompoundOperatorList();
+
+  @NotNull
   List<FlexibleSearchExpression> getExpressionList();
 
-  @Nullable
-  FlexibleSearchSelectStatement getSelectStatement();
+  @NotNull
+  List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList();
 
   @Nullable
   PsiElement getNamedParameter();
