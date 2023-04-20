@@ -64,20 +64,7 @@ public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferen
         return getElement().getProject();
     }
 
-    @NotNull
-    protected final TSMetaModelAccess getMetaModelAccess() {
-        return TSMetaModelAccess.Companion.getInstance(getProject());
-    }
-
-    @NotNull
-    protected final TSMetaItemService getMetaItemService() {
-        return TSMetaItemService.getInstance(getProject());
-    }
-
     public interface TSResolveResult extends ResolveResult {
-
-        @Nullable
-        DomElement getSemanticDomElement();
 
     }
 }

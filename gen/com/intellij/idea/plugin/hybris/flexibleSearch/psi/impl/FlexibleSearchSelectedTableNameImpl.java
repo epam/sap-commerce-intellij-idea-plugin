@@ -19,22 +19,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public interface FlexibleSearchColumnRefExpression extends FlexibleSearchExpression, FoldablePsiElement {
+public class FlexibleSearchSelectedTableNameImpl extends FlexibleSearchSelectedTableNameMixin implements FlexibleSearchSelectedTableName {
 
-  @NotNull
-  FlexibleSearchColumnName getColumnName();
+  public FlexibleSearchSelectedTableNameImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-  @Nullable
-  FlexibleSearchColumnSeparator getColumnSeparator();
+  public void accept(@NotNull FlexibleSearchVisitor visitor) {
+    visitor.visitSelectedTableName(this);
+  }
 
-  @Nullable
-  FlexibleSearchSelectedTableName getSelectedTableName();
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
+    else super.accept(visitor);
+  }
 
 }

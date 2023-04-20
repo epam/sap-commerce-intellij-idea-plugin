@@ -76,6 +76,7 @@ public interface FlexibleSearchTypes {
   IElementType PAREN_EXPRESSION = new FlexibleSearchElementType("PAREN_EXPRESSION");
   IElementType RESULT_COLUMN = new FlexibleSearchElementType("RESULT_COLUMN");
   IElementType RESULT_COLUMNS = new FlexibleSearchElementType("RESULT_COLUMNS");
+  IElementType SELECTED_TABLE_NAME = new FlexibleSearchElementType("SELECTED_TABLE_NAME");
   IElementType SELECT_CORE_SELECT = new FlexibleSearchElementType("SELECT_CORE_SELECT");
   IElementType SELECT_STATEMENT = new FlexibleSearchElementType("SELECT_STATEMENT");
   IElementType SELECT_SUBQUERY = new FlexibleSearchElementType("SELECT_SUBQUERY");
@@ -317,6 +318,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == RESULT_COLUMNS) {
         return new FlexibleSearchResultColumnsImpl(node);
+      }
+      else if (type == SELECTED_TABLE_NAME) {
+        return new FlexibleSearchSelectedTableNameImpl(node);
       }
       else if (type == SELECT_CORE_SELECT) {
         return new FlexibleSearchSelectCoreSelectImpl(node);

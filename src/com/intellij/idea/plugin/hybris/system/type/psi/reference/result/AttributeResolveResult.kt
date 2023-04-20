@@ -26,7 +26,6 @@ class AttributeResolveResult(
     myMeta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
 ) : TSReferenceBase.TSResolveResult {
     private val myDom: Attribute? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom?.qualifier?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

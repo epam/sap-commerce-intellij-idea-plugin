@@ -20,15 +20,12 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 
 class EnumResolveResult(
     myMeta: TSMetaEnum
 ) : TSReferenceBase.TSResolveResult {
     private val myDom: EnumType? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom?.code?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

@@ -26,7 +26,6 @@ class RelationEndResolveResult(
     myMeta: TSMetaRelation.TSMetaRelationElement
 ) : TSReferenceBase.TSResolveResult {
     private val myDom: RelationElement? = myMeta.retrieveDom()
-    override fun getSemanticDomElement() = myDom
     override fun getElement() = myDom?.qualifier?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

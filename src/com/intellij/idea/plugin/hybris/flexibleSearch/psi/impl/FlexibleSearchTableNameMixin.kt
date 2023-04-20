@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.references.FxsTSItemReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTSItemReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -47,6 +47,7 @@ abstract class FlexibleSearchTableNameMixin(node: ASTNode) : ASTWrapperPsiElemen
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 2928916769782122646L
+        private const val serialVersionUID: Long = 5649315985393910247L
     }
+
 }

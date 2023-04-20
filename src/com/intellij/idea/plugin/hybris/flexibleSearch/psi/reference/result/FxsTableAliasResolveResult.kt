@@ -16,16 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.psi.ResolveResult
 
-class ItemResolveResult(
-    myMeta: TSMetaItem
-) : TSReferenceBase.TSResolveResult {
-    private val myDom: ItemType? = myMeta.retrieveDom()
-    override fun getElement() = myDom?.code?.xmlAttributeValue
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
+class FxsTableAliasResolveResult(private val ref: FlexibleSearchTableAliasName?) : ResolveResult {
+    override fun getElement() = ref?.navigationElement
+    override fun isValidResult() = (ref?.isValid ?: false) && ref != null
 }

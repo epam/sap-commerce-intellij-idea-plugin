@@ -19,34 +19,36 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTSAttributeReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTableAliasReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class FlexibleSearchColumnNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnName {
+abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchSelectedTableName {
 
-    private var reference: FxsTSAttributeReference? = null
+    private var myReference: FxsTableAliasReference? = null
 
     override fun getReferences(): Array<PsiReference> {
-        if (PsiUtils.shouldCreateNewReference(reference, text)) {
-            reference = FxsTSAttributeReference(this)
+        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
+            myReference = FxsTableAliasReference(this)
         }
-        return reference
+        return myReference
             ?.let { arrayOf(it) }
             ?: emptyArray()
     }
 
     override fun clone(): Any {
-        val result = super.clone() as FlexibleSearchColumnNameMixin
-        result.reference = null
+        val result = super.clone() as FlexibleSearchSelectedTableNameMixin
+        result.myReference = null
         return result
     }
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 2928916769782122646L
+        private const val serialVersionUID: Long = 1434574712765232146L
     }
+
 }

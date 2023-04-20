@@ -914,7 +914,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // '*'
-  //   | '{'? table_alias_name column_separator '*' '}'?
+  //   | '{'? selected_table_name column_separator '*' '}'?
   //   | expression ( ( AS )? column_alias_name )?
   public static boolean result_column(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_column")) return false;
@@ -927,13 +927,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{'? table_alias_name column_separator '*' '}'?
+  // '{'? selected_table_name column_separator '*' '}'?
   private static boolean result_column_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_column_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = result_column_1_0(b, l + 1);
-    r = r && table_alias_name(b, l + 1);
+    r = r && selected_table_name(b, l + 1);
     r = r && column_separator(b, l + 1);
     r = r && consumeToken(b, STAR);
     r = r && result_column_1_4(b, l + 1);
@@ -1224,6 +1224,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _AND_);
     r = consumeToken(b, SELECT);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // name
+  public static boolean selected_table_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "selected_table_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, SELECTED_TABLE_NAME, "<selected table name>");
+    r = name(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1977,7 +1988,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{' (table_alias_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
+  // '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
   public static boolean column_ref_y_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression")) return false;
     if (!nextTokenIsSmart(b, LBRACE)) return false;
@@ -1993,19 +2004,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (table_alias_name column_separator)?
+  // (selected_table_name column_separator)?
   private static boolean column_ref_y_expression_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression_1")) return false;
     column_ref_y_expression_1_0(b, l + 1);
     return true;
   }
 
-  // table_alias_name column_separator
+  // selected_table_name column_separator
   private static boolean column_ref_y_expression_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = table_alias_name(b, l + 1);
+    r = selected_table_name(b, l + 1);
     r = r && column_separator(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -2025,7 +2036,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // table_alias_name column_separator column_name
+  // selected_table_name column_separator column_name
   //  | column_name
   public static boolean column_ref_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_expression")) return false;
@@ -2037,12 +2048,12 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // table_alias_name column_separator column_name
+  // selected_table_name column_separator column_name
   private static boolean column_ref_expression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_expression_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = table_alias_name(b, l + 1);
+    r = selected_table_name(b, l + 1);
     r = r && column_separator(b, l + 1);
     r = r && column_name(b, l + 1);
     exit_section_(b, m, null, r);

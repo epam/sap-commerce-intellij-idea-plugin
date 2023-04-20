@@ -73,8 +73,8 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
 
   @Override
   @Nullable
-  public FlexibleSearchTableAliasName getTableAliasName() {
-    return findChildByClass(FlexibleSearchTableAliasName.class);
+  public FlexibleSearchSelectedTableName getSelectedTableName() {
+    return findChildByClass(FlexibleSearchSelectedTableName.class);
   }
 
 }

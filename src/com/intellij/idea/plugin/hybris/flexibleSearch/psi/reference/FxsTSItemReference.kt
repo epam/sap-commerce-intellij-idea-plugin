@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.references
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
