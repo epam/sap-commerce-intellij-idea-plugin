@@ -20,14 +20,29 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
+import com.intellij.idea.plugin.hybris.flexibleSearch.references.FxsTSAttributeReference
+import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import java.io.Serial
 
 abstract class FlexibleSearchColumnNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnName {
 
+    private var reference: FxsTSAttributeReference? = null
+
     override fun getReferences(): Array<PsiReference> {
-        return super.getReferences()
+        if (PsiUtils.shouldCreateNewReference(reference, text)) {
+            reference = FxsTSAttributeReference(this)
+        }
+        return reference
+            ?.let { arrayOf(it) }
+            ?: emptyArray()
+    }
+
+    override fun clone(): Any {
+        val result = super.clone() as FlexibleSearchColumnNameMixin
+        result.reference = null
+        return result
     }
 
     companion object {
