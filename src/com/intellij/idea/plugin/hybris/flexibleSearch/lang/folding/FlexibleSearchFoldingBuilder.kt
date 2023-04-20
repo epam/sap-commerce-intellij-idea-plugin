@@ -19,7 +19,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -34,7 +36,6 @@ import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
@@ -67,37 +68,30 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
             ?.trim()
 
         FlexibleSearchTypes.SELECT_CORE_SELECT -> {
-            val columns = node.psi.childrenOfType<FlexibleSearchResultColumns>()
-                .firstOrNull()
+            val coreSelect = node.psi as? FlexibleSearchSelectCoreSelect
+            val columns = coreSelect
+                ?.resultColumns
                 ?.resultColumnList
                 ?.joinToString { it.presentationText ?: "?" }
                 ?.takeIf { it.isNotBlank() }
                 ?.trim()
                 ?: "?"
 
-            val tables = node.psi.childrenOfType<FlexibleSearchFromClause>()
-                .firstOrNull()
-                ?.childrenOfType<FlexibleSearchFromClauseExpression>()
+            val tables = coreSelect
+                ?.fromClause
+                ?.fromClauseExpressionList
                 ?.map {
-                    val fromClauseSelect = it.childrenOfType<FlexibleSearchFromClauseSelect>()
-                        .firstOrNull()
+                    val fromClauseSelect = it.fromClauseSelect
                     fromClauseSelect
-                        ?.childrenOfType<FlexibleSearchTableAliasName>()
-                        ?.firstOrNull()
+                        ?.tableAliasName
                         ?.text
                         ?: fromClauseSelect
-                            ?.childrenOfType<FlexibleSearchFromClauseSubqueries>()
-                            ?.firstOrNull()
-                            ?.childrenOfType<FlexibleSearchTableAliasName>()
-                            ?.firstOrNull()
+                            ?.fromClauseSubqueries
+                            ?.tableAliasName
                             ?.text
-                        ?: it.childrenOfType<FlexibleSearchYFromClause>()
-                            .firstOrNull()
+                        ?: it.yFromClause
                             ?.let { that ->
-                                PsiTreeUtil.findChildOfType(
-                                    that,
-                                    FlexibleSearchDefinedTableName::class.java
-                                )
+                                PsiTreeUtil.findChildOfType(that, FlexibleSearchDefinedTableName::class.java)
                             }
                             ?.text
                 }
