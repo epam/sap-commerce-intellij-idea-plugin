@@ -121,7 +121,6 @@ LINE_COMMENT=--[^\r\n]*
   "ASC"                              { return ASC; }
   "DESC"                             { return DESC; }
   "UNION"                            { return UNION; }
-  "ASTERISK"                         { return ASTERISK; }
 
   {NUMERIC_LITERAL}                  { return NUMERIC_LITERAL; }
   {SINGLE_QUOTE_STRING_LITERAL}      { return SINGLE_QUOTE_STRING_LITERAL; }

@@ -253,7 +253,7 @@ column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
 selected_table_name ::= name
-defined_table_name ::= name (EXCLAMATION_MARK | ASTERISK)?
+defined_table_name ::= name (EXCLAMATION_MARK | STAR)?
 column_name ::= name
 function_name ::= IDENTIFIER
 

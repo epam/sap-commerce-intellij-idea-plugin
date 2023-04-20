@@ -94,7 +94,6 @@ public interface FlexibleSearchTypes {
   IElementType AND = new FlexibleSearchTokenType("AND");
   IElementType AS = new FlexibleSearchTokenType("AS");
   IElementType ASC = new FlexibleSearchTokenType("ASC");
-  IElementType ASTERISK = new FlexibleSearchTokenType("ASTERISK");
   IElementType BACKTICK_LITERAL = new FlexibleSearchTokenType("BACKTICK_LITERAL");
   IElementType BAR = new FlexibleSearchTokenType("|");
   IElementType BETWEEN = new FlexibleSearchTokenType("BETWEEN");
