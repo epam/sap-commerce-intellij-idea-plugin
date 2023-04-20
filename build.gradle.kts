@@ -50,17 +50,19 @@ intellij {
     plugins = properties("intellij.plugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
 }
 
-sourceSets.main {
-    java.srcDirs(
-        file("src"),
-        file("gen")
-    )
-    resources.srcDir(file("resources"))
+sourceSets {
+    main {
+        java.srcDirs("src", "gen")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
 }
 
 idea {
     module {
-        generatedSourceDirs.plusAssign(file("gen"))
+        generatedSourceDirs.add(file("gen"))
     }
 }
 

@@ -31,7 +31,7 @@
   elementTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchElementType"
   tokenTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchTokenType"
 
-  classHeader="license.txt"
+  classHeader="generatedFilesHeader.txt"
   generateTokenAccessors(".*_name")=false
   extends(".*_expression")=expression
   generate=[java='17']
