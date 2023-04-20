@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.impex.psi.gotoHandler;
 
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationHandlerBase;
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor;
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroUtils;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;

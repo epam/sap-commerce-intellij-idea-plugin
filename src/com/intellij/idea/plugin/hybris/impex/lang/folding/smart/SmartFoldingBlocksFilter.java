@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding.smart;
+package com.intellij.idea.plugin.hybris.impex.lang.folding.smart;
 
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilderFactory;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilderFactory;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.psi.PsiElement;

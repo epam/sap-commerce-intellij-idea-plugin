@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,18 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding;
+package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 23:16 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface ImpexFoldingPlaceholderBuilder {
+public record ImpexMacroDescriptor(String macroName, String resolvedValue, PsiElement psiElement) {
 
-    @NotNull
-    String getPlaceholder(@NotNull final PsiElement psiElement);
+    public ImpexMacroDescriptor(final String macroName, final String resolvedValue, final PsiElement psiElement) {
+        this.psiElement = psiElement;
+        this.macroName = macroName;
+        this.resolvedValue = resolvedValue == null || resolvedValue.isEmpty()
+            ? "<blank>"
+            : resolvedValue;
+    }
 }

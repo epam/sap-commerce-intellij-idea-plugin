@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,29 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding;
+package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
-import com.intellij.idea.plugin.hybris.impex.folding.simple.DefaultFoldingBlocksFilter;
-import com.intellij.idea.plugin.hybris.impex.folding.smart.SmartFoldingBlocksFilter;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.psi.util.PsiElementFilter;
 
 /**
- * Created 22:32 29 March 2015
+ * Created 22:45 29 March 2015
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public final class PsiElementFilterFactory {
+public final class ImpexFoldingPlaceholderBuilderFactory {
 
-    private PsiElementFilterFactory() throws IllegalAccessException {
+    private ImpexFoldingPlaceholderBuilderFactory() throws IllegalAccessException {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    public static PsiElementFilter getPsiElementFilter() {
+    public static ImpexFoldingPlaceholderBuilder getPlaceholderBuilder() {
         return isUseSmartFolding()
-            ? ApplicationManager.getApplication().getService(SmartFoldingBlocksFilter.class)
-            : ApplicationManager.getApplication().getService(DefaultFoldingBlocksFilter.class);
+            ? ApplicationManager.getApplication().getService(SmartImpexFoldingPlaceholderBuilder.class)
+            : ApplicationManager.getApplication().getService(DefaultImpexFoldingPlaceholderBuilder.class);
     }
 
     private static boolean isUseSmartFolding() {

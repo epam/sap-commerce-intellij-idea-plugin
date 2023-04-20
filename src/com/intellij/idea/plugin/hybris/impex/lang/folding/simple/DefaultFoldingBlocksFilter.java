@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding.simple;
+package com.intellij.idea.plugin.hybris.impex.lang.folding.simple;
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;

@@ -16,11 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.lang.folding;
+package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor;
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
 import com.intellij.lang.ASTNode;

@@ -25,8 +25,8 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroDescriptor
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexMacroUtils
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroUtils
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiElementVisitor

@@ -16,11 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.lang.folding;
+package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingDescriptor;
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilderFactory;
-import com.intellij.idea.plugin.hybris.impex.folding.smart.ImpexFoldingLinesFilter;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.ImpexFoldingLinesFilter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.lang.ASTNode;

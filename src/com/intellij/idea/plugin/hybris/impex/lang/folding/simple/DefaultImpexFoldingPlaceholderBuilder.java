@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.folding.simple;
+package com.intellij.idea.plugin.hybris.impex.lang.folding.simple;
 
-import com.intellij.idea.plugin.hybris.impex.folding.ImpexFoldingPlaceholderBuilder;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder;
 import com.intellij.psi.PsiElement;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
