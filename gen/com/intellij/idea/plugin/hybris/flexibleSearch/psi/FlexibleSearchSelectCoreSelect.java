@@ -24,8 +24,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
-public interface FlexibleSearchSelectCoreSelect extends PsiElement {
+public interface FlexibleSearchSelectCoreSelect extends FoldablePsiElement {
 
   @Nullable
   FlexibleSearchFromClause getFromClause();

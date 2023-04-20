@@ -215,7 +215,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitSelectCoreSelect(@NotNull FlexibleSearchSelectCoreSelect o) {
-    visitPsiElement(o);
+    visitFoldablePsiElement(o);
   }
 
   public void visitSelectStatement(@NotNull FlexibleSearchSelectStatement o) {

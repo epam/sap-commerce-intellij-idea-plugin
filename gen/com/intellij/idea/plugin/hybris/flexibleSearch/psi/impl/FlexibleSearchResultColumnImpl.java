@@ -71,4 +71,10 @@ public class FlexibleSearchResultColumnImpl extends ASTWrapperPsiElement impleme
     return findChildByClass(FlexibleSearchSelectedTableName.class);
   }
 
+  @Override
+  @Nullable
+  public String getPresentationText() {
+    return FlexibleSearchPsiUtil.getPresentationText(this);
+  }
+
 }

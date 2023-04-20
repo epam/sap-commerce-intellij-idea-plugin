@@ -18,7 +18,8 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -26,19 +27,30 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.roots.ProjectRootModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val filter = ApplicationManager.getApplication().getService(FlexibleSearchFoldingBlocksFilter::class.java)
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> =
+        CachedValuesManager.getCachedValue(root) {
+            val filter = ApplicationManager.getApplication().getService(FlexibleSearchFoldingBlocksFilter::class.java)
+            val results = SyntaxTraverser.psiTraverser(root)
+                .filter { filter.isAccepted(it) }
+                .map { FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME)) }
+                .toDistinctTypedArray()
 
-        return SyntaxTraverser.psiTraverser(root)
-            .filter { filter.isAccepted(it) }
-            .map { FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME)) }
-            .toDistinctTypedArray()
-    }
+            CachedValueProvider.Result.create(
+                results,
+                root.containingFile,
+                ProjectRootModificationTracker.getInstance(root.project)
+            )
+        }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
         FlexibleSearchTypes.COLUMN_REF_Y_EXPRESSION,
@@ -50,11 +62,52 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
             ?.text
             ?.trim()
 
+        FlexibleSearchTypes.SELECT_CORE_SELECT -> {
+            val columns = node.psi.childrenOfType<FlexibleSearchResultColumns>()
+                .firstOrNull()
+                ?.resultColumnList
+                ?.joinToString { it.presentationText ?: "?" }
+                ?.takeIf { it.isNotBlank() }
+                ?.trim()
+                ?: "?"
+
+            val tables = node.psi.childrenOfType<FlexibleSearchFromClause>()
+                .firstOrNull()
+                ?.childrenOfType<FlexibleSearchFromClauseExpression>()
+                ?.map {
+                    val fromClauseSelect = it.childrenOfType<FlexibleSearchFromClauseSelect>()
+                        .firstOrNull()
+                    fromClauseSelect
+                        ?.childrenOfType<FlexibleSearchTableAliasName>()
+                        ?.firstOrNull()
+                        ?.text
+                        ?: fromClauseSelect
+                            ?.childrenOfType<FlexibleSearchFromClauseSubqueries>()
+                            ?.firstOrNull()
+                            ?.childrenOfType<FlexibleSearchTableAliasName>()
+                            ?.firstOrNull()
+                            ?.text
+                        ?: it.childrenOfType<FlexibleSearchYFromClause>()
+                            .firstOrNull()
+                            ?.let { that ->
+                                PsiTreeUtil.findChildOfType(
+                                    that,
+                                    FlexibleSearchDefinedTableName::class.java
+                                )
+                            }
+                            ?.text
+                }
+                ?.joinToString()
+                ?.let { if (it.contains(",")) "[$it]" else it }
+
+            "$tables($columns)"
+        }
+
         else -> FALLBACK_PLACEHOLDER
     }
         ?: FALLBACK_PLACEHOLDER
 
-    override fun isCollapsedByDefault(node: ASTNode) = true
+    override fun isCollapsedByDefault(node: ASTNode) = node.psi.parent.parent !is FlexibleSearchFile
 
     companion object {
         private const val GROUP_NAME = "FlexibleSearch"

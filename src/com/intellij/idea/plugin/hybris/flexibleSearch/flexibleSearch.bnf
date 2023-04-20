@@ -26,6 +26,7 @@
   psiImplClassSuffix="Impl"
   psiPackage="com.intellij.idea.plugin.hybris.flexibleSearch.psi"
   psiImplPackage="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl"
+  psiImplUtilClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiUtil"
 
   elementTypeHolderClass="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes"
   elementTypeClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchElementType"
@@ -38,6 +39,7 @@
   implements("column_ref_y_expression")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
   implements("column_ref_expression")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
   implements("from_table")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+  implements("select_core_select")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 
   generate=[java='17']
 
@@ -234,6 +236,9 @@ result_column ::=
   '*'
   | '{'? selected_table_name column_separator '*' '}'?
   | expression ( ( AS )? column_alias_name )?
+  {
+    methods=[getPresentationText]
+  }
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
 
