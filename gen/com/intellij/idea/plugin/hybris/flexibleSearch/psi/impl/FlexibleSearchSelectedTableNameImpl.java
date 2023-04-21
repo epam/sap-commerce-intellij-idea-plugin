@@ -46,4 +46,10 @@ public class FlexibleSearchSelectedTableNameImpl extends FlexibleSearchSelectedT
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
+    return FlexibleSearchPsiUtil.setName(this, newName);
+  }
+
 }

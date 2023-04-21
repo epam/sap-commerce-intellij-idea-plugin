@@ -58,6 +58,8 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
+        FlexibleSearchTypes.COMMENT -> "/*...*/"
+
         FlexibleSearchTypes.COLUMN_REF_Y_EXPRESSION,
         FlexibleSearchTypes.COLUMN_REF_EXPRESSION -> node.findChildByType(FlexibleSearchTypes.COLUMN_NAME)
             ?.text

@@ -20,6 +20,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 
@@ -43,3 +44,17 @@ fun getPresentationText(resultColumn: FlexibleSearchResultColumn) = (
             ?.text
     )
     ?.trim()
+
+fun setName(element: FlexibleSearchPsiNamedElement, newName: String): PsiElement {
+    val identifierNode = element.node.findChildByType(FlexibleSearchTypes.IDENTIFIER)
+        ?: element.node.findChildByType(FlexibleSearchTypes.BACKTICK_LITERAL)
+
+    if (identifierNode != null) {
+        FlexibleSearchElementFactory.createIdentifier(element.project, newName)
+            .firstChild
+            .node
+            .let { element.node.replaceChild(identifierNode, it) }
+    }
+
+    return element
+}

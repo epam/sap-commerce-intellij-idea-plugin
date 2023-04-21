@@ -15,11 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.flexibleSearch
 
-package com.intellij.idea.plugin.hybris.flexibleSearch;
+import com.intellij.lang.parser.GeneratedParserUtilBase
 
-import com.intellij.lang.parser.GeneratedParserUtilBase;
-
-public class FlexibleSearchParserUtils extends GeneratedParserUtilBase {
-
-}
+class FlexibleSearchParserUtils : GeneratedParserUtilBase()

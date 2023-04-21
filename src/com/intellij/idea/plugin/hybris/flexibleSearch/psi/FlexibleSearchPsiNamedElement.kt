@@ -15,18 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.util.elementType
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
-class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
+import com.intellij.psi.PsiNamedElement
 
-    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
-        && (element is FoldablePsiElement || element.elementType == FlexibleSearchTypes.COMMENT)
-        && !element.textRange.isEmpty
-}
+interface FlexibleSearchPsiNamedElement : PsiNamedElement

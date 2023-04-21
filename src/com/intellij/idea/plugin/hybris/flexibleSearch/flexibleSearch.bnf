@@ -253,9 +253,16 @@ column_outer_join_name ::= OUTER_JOIN
 column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
+{
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[setName]
+}
 selected_table_name ::= name
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[setName]
 }
 defined_table_name ::= name (EXCLAMATION_MARK | STAR)?
 {

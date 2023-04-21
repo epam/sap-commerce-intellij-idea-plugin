@@ -15,18 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
+package com.intellij.idea.plugin.hybris.flexibleSearch.psi
+
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.util.elementType
+import com.intellij.psi.PsiFileFactory
 
-class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
+object FlexibleSearchElementFactory {
 
-    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
-        && (element is FoldablePsiElement || element.elementType == FlexibleSearchTypes.COMMENT)
-        && !element.textRange.isEmpty
+    fun createIdentifier(project: Project, name: String): PsiElement = createFile(project, name).firstChild
+
+    private fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
+        .createFileFromText("dummy.fxs", FlexibleSearchFileType.getInstance(), text) as FlexibleSearchFile
 }

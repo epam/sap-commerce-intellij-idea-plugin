@@ -25,6 +25,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchTableAliasName extends PsiElement {
+public interface FlexibleSearchTableAliasName extends FlexibleSearchPsiNamedElement {
+
+  @NotNull
+  PsiElement setName(@NotNull String newName);
 
 }

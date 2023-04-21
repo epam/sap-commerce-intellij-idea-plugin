@@ -23,5 +23,5 @@ import com.intellij.psi.ResolveResult
 
 class FxsTableAliasResolveResult(private val ref: FlexibleSearchTableAliasName?) : ResolveResult {
     override fun getElement() = ref?.navigationElement
-    override fun isValidResult() = (ref?.isValid ?: false) && ref != null
+    override fun isValidResult() = (ref?.isValid ?: false)
 }

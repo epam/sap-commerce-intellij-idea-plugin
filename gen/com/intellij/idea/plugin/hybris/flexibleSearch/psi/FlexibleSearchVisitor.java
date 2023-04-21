@@ -231,7 +231,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitSelectedTableName(@NotNull FlexibleSearchSelectedTableName o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitSignedNumber(@NotNull FlexibleSearchSignedNumber o) {
@@ -239,7 +239,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitTableAliasName(@NotNull FlexibleSearchTableAliasName o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitTableOrSubquery(@NotNull FlexibleSearchTableOrSubquery o) {
@@ -259,6 +259,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitYFromClause(@NotNull FlexibleSearchYFromClause o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPsiNamedElement(@NotNull FlexibleSearchPsiNamedElement o) {
     visitPsiElement(o);
   }
 

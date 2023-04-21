@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTableAliasReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
@@ -27,7 +27,8 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchSelectedTableName {
+abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperPsiElement(node),
+    FlexibleSearchSelectedTableName, FlexibleSearchPsiNamedElement {
 
     private var myReference: FxsTableAliasReference? = null
 

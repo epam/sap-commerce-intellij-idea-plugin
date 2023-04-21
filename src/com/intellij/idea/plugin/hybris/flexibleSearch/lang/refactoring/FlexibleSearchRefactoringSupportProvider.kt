@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
+package com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring
+
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.util.elementType
 
-class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
+class FlexibleSearchRefactoringSupportProvider : RefactoringSupportProvider() {
 
-    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
-        && (element is FoldablePsiElement || element.elementType == FlexibleSearchTypes.COMMENT)
-        && !element.textRange.isEmpty
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) =
+        element is FlexibleSearchTableAliasName
+            || element is FlexibleSearchSelectedTableName
 }
