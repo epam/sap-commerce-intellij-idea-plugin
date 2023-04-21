@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLexer
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lexer.Lexer
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
@@ -33,6 +34,9 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
+
+        val instance: FlexibleSearchSyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
+
         private val CASE_KEYS = pack(FlexibleSearchHighlighterColors.FS_KEYWORD)
         private val PARAMETER_KEYS = pack(FlexibleSearchHighlighterColors.FS_PARAMETER)
         private val KEYWORD_KEYS = pack(FlexibleSearchHighlighterColors.FS_KEYWORD)
@@ -49,6 +53,8 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val OUTER_JOIN_KEYS = pack(FlexibleSearchHighlighterColors.FS_OUTER_JOIN)
         private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FS_FUNCTION_CALL)
         private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FS_LOCALIZED)
+        private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FS_COLUMN_SEPARATOR)
+        private val ALIAS = pack(FlexibleSearchHighlighterColors.FS_ALIAS)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
@@ -60,6 +66,11 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.FUNCTION_NAME to FUNCTION_CALL_KEYS,
 
             FlexibleSearchTypes.COLUMN_LOCALIZED_NAME to LOCALIZED_KEYS,
+
+            FlexibleSearchTypes.COLUMN_SEPARATOR to COLUMN_SEPARATOR,
+
+            FlexibleSearchTypes.TABLE_ALIAS_NAME to ALIAS,
+            FlexibleSearchTypes.COLUMN_ALIAS_NAME to ALIAS,
 
             FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL to STRING_KEYS,
             FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL to STRING_KEYS,

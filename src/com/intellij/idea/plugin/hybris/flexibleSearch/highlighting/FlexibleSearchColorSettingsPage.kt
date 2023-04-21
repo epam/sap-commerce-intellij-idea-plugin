@@ -18,9 +18,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
@@ -35,57 +32,66 @@ class FlexibleSearchColorSettingsPage : ColorSettingsPage {
     override fun getAttributeDescriptors() = DESCRIPTORS
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getHighlighter(): SyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
+    override fun getHighlighter(): SyntaxHighlighter = FlexibleSearchSyntaxHighlighter.instance
 
-    override fun getDemoText(): String {
-        return """SELECT {cat:pk} FROM {Category AS cat} WHERE NOT EXISTS (
+    override fun getDemoText() = """
+SELECT {cat:pk} FROM {Category AS cat} WHERE NOT EXISTS (
    {{ SELECT * FROM {CategoryCategoryRelation} WHERE {target}={cat:pk} }}
 )
 
-SELECT * FROM {Product} WHERE {code} LIKE '%al%'
+SELECT COUNT(*), COUNT({pk}) FROM {Product} WHERE {code} LIKE '%al%'
 
-
-SELECT * FROM {Product} WHERE {code} LIKE '%al%' AND {code} LIKE '%15%'
+SELECT COUNT(DISTINCT {code}) FROM {Product} WHERE {code} LIKE '%al%' AND {code} LIKE '%15%'
 
 SELECT * FROM {Product} WHERE {code} IS NULL
 
-SELECT * FROM {Product} WHERE {code} NOT LIKE '%al%' AND {code} NOT LIKE '%15%' OR {code} IS NULL
-
-SELECT * FROM {Product} WHERE {code} LIKE '%al%' AND {code} NOT LIKE '%15%'
-
-SELECT * FROM {Product} WHERE {code} IS NOT NULL
-
-SELECT {cat:pk} FROM {Category AS cat} WHERE NOT EXISTS (
+SELECT {cat:pk}, {cat.code} FROM {Category AS cat} WHERE NOT EXISTS (
    {{ SELECT * FROM {CategoryCategoryRelation} WHERE {target}={cat.spk} }}
 )
 
-SELECT {code},{pk} FROM  {Product} ORDER BY {code} DESC
-
-SELECT {pk} FROM {Product} WHERE {modifiedtime} >= ?startDate AND {modifiedtime} <= ?endDate
-
 SELECT {p:PK}
-   FROM {Product AS p}
-   WHERE {p:code} LIKE '%myProduct'
-      OR {p:name} LIKE '%myProduct'
-   ORDER BY {p:code} ASC
+FROM {Product AS p}
+WHERE {p:code} LIKE '%myProduct'
+  OR {p:name[en]} LIKE '%myProduct'
+  OR {p:name[de]:o} LIKE '%myProduct'
+  /*
+    OR {p:name[de]:o} LIKE '%myProduct'
+    OR {p:name[es]:o} LIKE '%myProduct'
+  */
+  OR ( {p.modifiedtime} >= ?startDate AND {p.modifiedtime} <= ?endDate )
+  AND (
+        {p.code} IS NOT NULL
+    AND {p:code} LIKE '%al%'
+--    AND {p:code} LIKE '%al%'
+    OR  {p.code} = 2
+    OR  {p.modifiedtime} = ?session.user.modifiedtime
+    AND {p.code} NOT LIKE '%15%'
+  )
+ORDER BY {p:code} ASC
 
 @@@@@
 """
-    }
 
     companion object {
         private val DESCRIPTORS = arrayOf(
-            AttributesDescriptor("Comment", FlexibleSearchHighlighterColors.FS_COMMENT),
+            AttributesDescriptor("Keyword", FlexibleSearchHighlighterColors.FS_KEYWORD),
+            AttributesDescriptor("Symbol", FlexibleSearchHighlighterColors.FS_SYMBOL),
+            AttributesDescriptor("Braces//Braces", FlexibleSearchHighlighterColors.FS_BRACES),
+            AttributesDescriptor("Braces//Bracket", FlexibleSearchHighlighterColors.FS_BRACKETS),
+            AttributesDescriptor("Braces//Parentheses", FlexibleSearchHighlighterColors.FS_PARENTHESES),
+            AttributesDescriptor("Braces//Paren", FlexibleSearchHighlighterColors.FS_PARENS),
+            AttributesDescriptor("Column//Localized `[]`", FlexibleSearchHighlighterColors.FS_LOCALIZED),
+            AttributesDescriptor("Column//Outer Join `:o`", FlexibleSearchHighlighterColors.FS_OUTER_JOIN),
+            AttributesDescriptor("Column//Separator `.` or `:`", FlexibleSearchHighlighterColors.FS_COLUMN_SEPARATOR),
             AttributesDescriptor("Parameter", FlexibleSearchHighlighterColors.FS_PARAMETER),
-            AttributesDescriptor("Keywords", FlexibleSearchHighlighterColors.FS_KEYWORD),
-            AttributesDescriptor("Column", FlexibleSearchHighlighterColors.FS_COLUMN),
-            AttributesDescriptor("Comma", FlexibleSearchHighlighterColors.FS_SYMBOL),
-            AttributesDescriptor("Number", FlexibleSearchHighlighterColors.FS_NUMBER),
-            AttributesDescriptor("Table", FlexibleSearchHighlighterColors.FS_TABLE),
-            AttributesDescriptor("Braces", FlexibleSearchHighlighterColors.FS_BRACES),
-            AttributesDescriptor("Brackets", FlexibleSearchHighlighterColors.FS_BRACKETS),
-            AttributesDescriptor("Parentheses", FlexibleSearchHighlighterColors.FS_PARENTHESES),
-            AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER)
+            AttributesDescriptor("Function", FlexibleSearchHighlighterColors.FS_FUNCTION_CALL),
+            AttributesDescriptor("Comment", FlexibleSearchHighlighterColors.FS_COMMENT),
+            AttributesDescriptor("Tokens//String", FlexibleSearchHighlighterColors.FS_STRING),
+            AttributesDescriptor("Tokens//Number", FlexibleSearchHighlighterColors.FS_NUMBER),
+            AttributesDescriptor("Not available in preview//Table", FlexibleSearchHighlighterColors.FS_TABLE),
+            AttributesDescriptor("Not available in preview//Column", FlexibleSearchHighlighterColors.FS_COLUMN),
+            AttributesDescriptor("Not available in preview//Alias", FlexibleSearchHighlighterColors.FS_ALIAS),
+            AttributesDescriptor("Not available in preview//Nested parameter `\$session.user`", FlexibleSearchHighlighterColors.FS_PARAMETER),
         )
     }
 }

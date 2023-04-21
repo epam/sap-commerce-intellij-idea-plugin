@@ -229,9 +229,6 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBlocksFilter"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-<!--        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsColumnReferenceCompletionProvider"/>-->
-<!--        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsTableAliasReferenceCompletionProvider"/>-->
-<!--        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxsKeywordCompletionProvider"/>-->
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->

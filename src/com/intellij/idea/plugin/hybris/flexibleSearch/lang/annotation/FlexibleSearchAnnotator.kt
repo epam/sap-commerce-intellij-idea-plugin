@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
@@ -33,7 +32,7 @@ import com.intellij.psi.util.elementType
 class FlexibleSearchAnnotator : Annotator {
 
     private val highlighter: FlexibleSearchSyntaxHighlighter by lazy {
-        ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
+        FlexibleSearchSyntaxHighlighter.instance
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -45,6 +44,7 @@ class FlexibleSearchAnnotator : Annotator {
                 SELECTED_TABLE_NAME -> highlight(SELECTED_TABLE_NAME, holder, element)
                 DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
+                TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
             }
 
             BRACKET_LITERAL -> if (element.parent.elementType == COLUMN_LOCALIZED_NAME) {
