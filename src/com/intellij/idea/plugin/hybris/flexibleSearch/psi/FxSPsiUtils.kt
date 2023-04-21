@@ -30,4 +30,8 @@ object FxSPsiUtils {
         .replace("`", "")
         .trim()
 
+    fun getTableAliasName(text: String) = text
+        .replace("`", "")
+        .trim()
+
 }
