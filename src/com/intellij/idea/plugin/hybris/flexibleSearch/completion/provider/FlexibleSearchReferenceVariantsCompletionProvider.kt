@@ -25,7 +25,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
-class FlexibleSearchTableAliasCompletionProvider : CompletionProvider<CompletionParameters>() {
+class FlexibleSearchReferenceVariantsCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         parameters.position.parent
@@ -38,6 +38,6 @@ class FlexibleSearchTableAliasCompletionProvider : CompletionProvider<Completion
     }
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(FlexibleSearchTableAliasCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(FlexibleSearchReferenceVariantsCompletionProvider::class.java)
     }
 }

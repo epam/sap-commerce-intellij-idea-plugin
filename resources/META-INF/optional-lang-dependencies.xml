@@ -235,7 +235,7 @@
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBlocksFilter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchReferenceVariantsCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                   Impex                                                 -->

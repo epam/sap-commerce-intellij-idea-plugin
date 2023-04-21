@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchReferenceVariantsCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns
@@ -44,15 +44,20 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
         extend(
             CompletionType.BASIC,
-            placePattern
-                .withElementType(
-                    PlatformPatterns.elementType().or(
-                        FlexibleSearchTypes.IDENTIFIER,
-                        FlexibleSearchTypes.BACKTICK_LITERAL
+            PlatformPatterns.or(
+                placePattern
+                    .withElementType(
+                        PlatformPatterns.elementType().or(
+                            FlexibleSearchTypes.IDENTIFIER,
+                            FlexibleSearchTypes.BACKTICK_LITERAL
+                        )
                     )
-                )
-                .inside(psiElement(FlexibleSearchTypes.SELECTED_TABLE_NAME)),
-            FlexibleSearchTableAliasCompletionProvider.instance
+                    .inside(psiElement(FlexibleSearchTypes.SELECTED_TABLE_NAME)),
+                placePattern
+                    .withElementType(FlexibleSearchTypes.IDENTIFIER)
+                    .inside(psiElement(FlexibleSearchTypes.COLUMN_NAME))
+            ),
+            FlexibleSearchReferenceVariantsCompletionProvider.instance
         )
 
         extend(

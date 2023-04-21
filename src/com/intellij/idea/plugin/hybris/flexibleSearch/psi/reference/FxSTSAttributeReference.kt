@@ -23,9 +23,12 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAM
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
@@ -47,6 +50,12 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
+
+    override fun getVariants() = getType()
+        ?.let {
+            TSCompletionService.getInstance(project).getCompletions(it)
+                .toTypedArray()
+        } ?: emptyArray()
 
     fun getType() = element.table
         ?.text
