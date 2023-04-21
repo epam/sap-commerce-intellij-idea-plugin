@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
+import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 
-interface FlexibleSearchPsiNamedElement : PsiNamedElement
+interface FlexibleSearchPsiNamedElement : PsiNamedElement, PsiNameIdentifierOwner

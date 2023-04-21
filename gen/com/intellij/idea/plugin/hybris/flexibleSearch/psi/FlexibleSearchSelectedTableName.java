@@ -27,7 +27,13 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchSelectedTableName extends FlexibleSearchPsiNamedElement {
 
+  @Nullable
+  String getName();
+
   @NotNull
   PsiElement setName(@NotNull String newName);
+
+  @Nullable
+  PsiElement getNameIdentifier();
 
 }

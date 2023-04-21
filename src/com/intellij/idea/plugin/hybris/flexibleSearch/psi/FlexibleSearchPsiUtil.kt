@@ -60,6 +60,9 @@ fun setName(element: FlexibleSearchPsiNamedElement, newName: String): PsiElement
     return element
 }
 
+fun getName(element: FlexibleSearchPsiNamedElement): String? = element.text
+fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement? = element
+
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
 

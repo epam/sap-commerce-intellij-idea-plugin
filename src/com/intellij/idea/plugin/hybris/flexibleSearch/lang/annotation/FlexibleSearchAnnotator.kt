@@ -51,7 +51,7 @@ class FlexibleSearchAnnotator : Annotator {
 
             // Special case, [y] allows reserved words for attributes & types
             ORDER -> when(element.parent.elementType) {
-                COLUMN_NAME -> highlight(IDENTIFIER, holder, element)
+                COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
                 DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
             }

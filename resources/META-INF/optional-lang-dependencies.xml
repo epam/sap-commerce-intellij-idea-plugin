@@ -217,10 +217,14 @@
         <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
         <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
         <lang.foldingBuilder language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
-        <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
+        <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
+
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
         <elementDescriptionProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
+
+        <renameHandler implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.FlexibleSearchRenameHandler"/>
+        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
 
         <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
 

@@ -18,14 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 
 class FlexibleSearchRefactoringSupportProvider : RefactoringSupportProvider() {
 
-    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) =
-        element is FlexibleSearchTableAliasName
-            || element is FlexibleSearchSelectedTableName
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is FlexibleSearchPsiNamedElement
 }

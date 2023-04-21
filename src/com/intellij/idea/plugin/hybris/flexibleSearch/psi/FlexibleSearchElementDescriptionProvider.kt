@@ -21,14 +21,18 @@ import com.intellij.psi.ElementDescriptionLocation
 import com.intellij.psi.ElementDescriptionProvider
 import com.intellij.psi.PsiElement
 import com.intellij.usageView.UsageViewLongNameLocation
+import com.intellij.usageView.UsageViewNodeTextLocation
+import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
 
 class FlexibleSearchElementDescriptionProvider : ElementDescriptionProvider {
 
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation) = when (element) {
         is FlexibleSearchTableAliasName -> when (location) {
-            is UsageViewTypeLocation -> "Table Alias:"
-            is UsageViewLongNameLocation -> element.text
+            is UsageViewTypeLocation -> "Table Alias"
+            is UsageViewLongNameLocation -> element.name
+            is UsageViewShortNameLocation -> element.name
+            is UsageViewNodeTextLocation -> element.name
             else -> ""
         }
         else -> null

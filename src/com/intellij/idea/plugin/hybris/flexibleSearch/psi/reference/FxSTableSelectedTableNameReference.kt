@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTa
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
@@ -37,6 +38,8 @@ class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
         val type = FxSPsiUtils.getTableAliasName(element.text)
         return TextRange.from(originalType.indexOf(type), type.length)
     }
+
+    override fun handleElementRename(newElementName: String) = element.setName(newElementName)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)

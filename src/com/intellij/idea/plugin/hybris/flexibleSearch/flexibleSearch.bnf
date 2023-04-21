@@ -255,13 +255,13 @@ column_alias_name ::= name
 table_alias_name ::= name
 {
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-    methods=[setName getTable]
+    methods=[getName setName getNameIdentifier getTable]
 }
 selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-    methods=[setName]
+    methods=[getName setName getNameIdentifier]
 }
 defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
 {
