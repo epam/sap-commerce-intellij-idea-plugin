@@ -52,7 +52,7 @@ public class FlexibleSearchFormattingModelBuilder implements FormattingModelBuil
         final PsiElement element, final CodeStyleSettings settings
     ) {
 
-        final FSBlock block = new FSBlock(
+        final FxSBlock block = new FxSBlock(
             element.getNode(),
             Alignment.createAlignment(),
             Indent.getNoneIndent(),

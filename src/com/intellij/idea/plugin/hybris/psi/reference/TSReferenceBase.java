@@ -34,8 +34,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferenceBase.Poly<PSI> {
 
-    protected static final Object[] NO_VARIANTS = new Object[0];
-
     public TSReferenceBase(@NotNull final PSI owner) {
         super(owner, false);
     }
@@ -55,8 +53,8 @@ public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferen
 
     @NotNull
     @Override
-    public final Object[] getVariants() {
-        return NO_VARIANTS;
+    public Object[] getVariants() {
+        return ResolveResult.EMPTY_ARRAY;
     }
 
     @NotNull

@@ -25,7 +25,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
-public class FSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
+public class FxSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
 
     @NotNull
     @Override
@@ -41,19 +41,19 @@ public class FSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettin
         if (SettingsType.SPACING_SETTINGS == settingsType) {
             final var styleOptions = CodeStyleSettingsCustomizableOptions.getInstance();
             consumer.showCustomOption(
-                FSCodeStyleSettings.class,
+                FxSCodeStyleSettings.class,
                 "SPACE_AROUND_OP",
                 "Around comparision operator",
                 styleOptions.SPACES_AROUND_OPERATORS
             );
             consumer.showCustomOption(
-                FSCodeStyleSettings.class,
+                FxSCodeStyleSettings.class,
                 "SPACES_INSIDE_BRACES",
                 "Inside braces",
                 styleOptions.SPACES_AROUND_OPERATORS
             );
             consumer.showCustomOption(
-                FSCodeStyleSettings.class,
+                FxSCodeStyleSettings.class,
                 "SPACES_INSIDE_DOUBLE_BRACES",
                 "Inside double braces",
                 styleOptions.SPACES_AROUND_OPERATORS

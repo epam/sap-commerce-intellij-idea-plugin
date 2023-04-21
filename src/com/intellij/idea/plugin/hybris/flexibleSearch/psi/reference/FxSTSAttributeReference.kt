@@ -33,9 +33,7 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.Relation
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.*
 
 internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSReferenceBase<FlexibleSearchColumnName>(owner) {
@@ -66,8 +64,6 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
                 TSMetaModelAccess.getInstance(ref.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
-
-        private fun hasPrefix(element: FlexibleSearchColumnName) = ((element.firstChild as LeafPsiElement).elementType == FlexibleSearchTypes.IDENTIFIER)
 
         private fun findReference(project: Project, itemType: FlexibleSearchDefinedTableName?, refName: String): Array<ResolveResult> {
             val metaService = TSMetaModelAccess.getInstance(project)
@@ -118,10 +114,6 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
             } else return null
         }
 
-        private fun findItemTypeReference(element: PsiElement) = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-            ?.let {
-                PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)
-            }
     }
 
 }

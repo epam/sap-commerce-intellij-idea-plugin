@@ -202,10 +202,10 @@
                   implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
 
         <!-- Core elements -->
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
 
         <langCodeStyleSettingsProvider
-            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FSLanguageCodeStyleSettingsProvider"/>
+            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
 
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
 

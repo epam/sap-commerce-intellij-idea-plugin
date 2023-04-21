@@ -30,11 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class FSCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
+public class FxSCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
 
     @Override
     public CustomCodeStyleSettings createCustomSettings(final CodeStyleSettings settings) {
-        return new FSCodeStyleSettings(settings);
+        return new FxSCodeStyleSettings(settings);
     }
 
     @Nullable

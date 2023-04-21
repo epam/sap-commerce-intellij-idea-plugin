@@ -17,15 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
-import com.intellij.psi.util.elementType
-import com.intellij.util.ProcessingContext
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
 
@@ -35,26 +34,38 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
         extend(
             CompletionType.BASIC,
-            placePattern.withElementType(
-                PlatformPatterns.elementType().or(
-                    FlexibleSearchTypes.IDENTIFIER,
-                    FlexibleSearchTypes.BACKTICK_LITERAL
+            placePattern
+                .withElementType(
+                    PlatformPatterns.elementType().or(
+                        FlexibleSearchTypes.IDENTIFIER,
+                        FlexibleSearchTypes.BACKTICK_LITERAL
+                    )
                 )
-            ),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    parameters.originalPosition
-                        ?.let {
-                            val provider = when (it.parent.elementType) {
-                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> FlexibleSearchTableAliasCompletionProvider.instance
-                                else -> null
-                            }
-                            provider
-                                ?.addCompletionVariants(parameters, context, result)
-                        }
-                }
-            }
+                .inside(psiElement(FlexibleSearchTypes.SELECTED_TABLE_NAME)),
+            FlexibleSearchTableAliasCompletionProvider.instance
         )
+//        extend(
+//            CompletionType.BASIC,
+//            placePattern.withElementType(
+//                PlatformPatterns.elementType().or(
+//                    FlexibleSearchTypes.IDENTIFIER,
+//                    FlexibleSearchTypes.BACKTICK_LITERAL
+//                )
+//            ),
+//            object : CompletionProvider<CompletionParameters>() {
+//                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+//                    parameters.originalPosition
+//                        ?.let {
+//                            val provider = when (it.parent.elementType) {
+//                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> FlexibleSearchTableAliasCompletionProvider.instance
+//                                else -> null
+//                            }
+//                            provider
+//                                ?.addCompletionVariants(parameters, context, result)
+//                        }
+//                }
+//            }
+//        )
 
         // keywords
 //        extend(

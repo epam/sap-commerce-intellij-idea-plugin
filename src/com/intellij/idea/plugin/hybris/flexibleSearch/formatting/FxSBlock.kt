@@ -40,7 +40,7 @@ import java.util.function.Predicate
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-class FSBlock internal constructor(
+class FxSBlock internal constructor(
         private val node: ASTNode,
         private val alignment: Alignment?,
         private val indent: Indent?,
@@ -86,11 +86,11 @@ class FSBlock internal constructor(
 
     }
 
-    private fun makeSubBlock(node: ASTNode, alignment: Alignment?): FSBlock {
+    private fun makeSubBlock(node: ASTNode, alignment: Alignment?): FxSBlock {
         val wrap = Wrap.createWrap(WrapType.NONE, false)
         val indent = calcIndent(node)
 
-        return FSBlock(node, alignment, indent, wrap, codeStyleSettings, spacingBuilder)
+        return FxSBlock(node, alignment, indent, wrap, codeStyleSettings, spacingBuilder)
     }
 
     private fun calcIndent(node: ASTNode): Indent {

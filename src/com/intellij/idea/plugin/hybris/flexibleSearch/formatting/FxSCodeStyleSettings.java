@@ -24,13 +24,13 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-public class FSCodeStyleSettings extends CustomCodeStyleSettings {
+public class FxSCodeStyleSettings extends CustomCodeStyleSettings {
 
     public static boolean SPACES_INSIDE_BRACES = true;
     public static boolean SPACES_INSIDE_DOUBLE_BRACES = true;
     public static boolean SPACE_AROUND_OP = true;
 
-    public FSCodeStyleSettings(final CodeStyleSettings settings) {
+    public FxSCodeStyleSettings(final CodeStyleSettings settings) {
         super("FSCodeStyleSettings", settings);
     }
 }
