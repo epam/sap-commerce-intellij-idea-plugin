@@ -33,4 +33,9 @@
             <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
+    <option name="FS_TABLE_TRAIL">
+        <value>
+            <option name="FONT_TYPE" value="3"/>
+        </value>
+    </option>
 </list>

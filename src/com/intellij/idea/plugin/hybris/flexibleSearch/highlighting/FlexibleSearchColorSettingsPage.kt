@@ -39,7 +39,7 @@ SELECT {cat:pk} FROM {Category AS cat} WHERE NOT EXISTS (
    {{ SELECT * FROM {CategoryCategoryRelation} WHERE {target}={cat:pk} }}
 )
 
-SELECT COUNT(*), COUNT({pk}) FROM {Product} WHERE {code} LIKE '%al%'
+SELECT COUNT(*), COUNT({pk}) FROM {Product!} WHERE {code} LIKE '%al%'
 
 SELECT COUNT(DISTINCT {code}) FROM {Product} WHERE {code} LIKE '%al%' AND {code} LIKE '%15%'
 
@@ -89,6 +89,7 @@ ORDER BY {p:code} ASC
             AttributesDescriptor("Tokens//String", FlexibleSearchHighlighterColors.FS_STRING),
             AttributesDescriptor("Tokens//Number", FlexibleSearchHighlighterColors.FS_NUMBER),
             AttributesDescriptor("Not available in preview//Table", FlexibleSearchHighlighterColors.FS_TABLE),
+            AttributesDescriptor("Not available in preview//Table Trail `!` or `*`", FlexibleSearchHighlighterColors.FS_TABLE_TRAIL),
             AttributesDescriptor("Not available in preview//Column", FlexibleSearchHighlighterColors.FS_COLUMN),
             AttributesDescriptor("Not available in preview//Alias", FlexibleSearchHighlighterColors.FS_ALIAS),
             AttributesDescriptor("Not available in preview//Nested parameter `\$session.user`", FlexibleSearchHighlighterColors.FS_PARAMETER),

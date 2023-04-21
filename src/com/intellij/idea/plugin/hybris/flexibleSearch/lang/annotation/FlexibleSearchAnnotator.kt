@@ -18,11 +18,13 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
@@ -47,13 +49,19 @@ class FlexibleSearchAnnotator : Annotator {
                 TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
             }
 
+            STAR,
+            EXCLAMATION_MARK -> when (element.parent.elementType) {
+                DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FS_TABLE_TRAIL, holder, element)
+            }
+
             BRACKET_LITERAL -> if (element.parent.elementType == COLUMN_LOCALIZED_NAME) {
                 val text = element.text
                     .let { it.substring(it.indexOf('[') + 1, it.indexOf(']')) }
                     .trim()
 
                 if (text.isEmpty()) {
-                    highlight(TokenType.BAD_CHARACTER, holder, element,
+                    highlight(
+                        TokenType.BAD_CHARACTER, holder, element,
                         highlightSeverity = HighlightSeverity.WARNING,
                         message = HybrisI18NBundleUtils.message("hybris.editor.annotator.fxs.missingLangLiteral")
                     )
@@ -75,13 +83,22 @@ class FlexibleSearchAnnotator : Annotator {
     ) = highlighter
         .getTokenHighlights(tokenType)
         .firstOrNull()
-        ?.let {
-            val annotation = message
-                ?.let { m -> holder.newAnnotation(highlightSeverity, m) }
-                ?: holder.newSilentAnnotation(highlightSeverity)
-            annotation
-                .range(range)
-                .textAttributes(it)
-                .create()
-        }
+        ?.let { highlight(it, holder, element, highlightSeverity, range, message) }
+
+    private fun highlight(
+        textAttributesKey: TextAttributesKey,
+        holder: AnnotationHolder,
+        element: PsiElement,
+        highlightSeverity: HighlightSeverity = HighlightSeverity.TEXT_ATTRIBUTES,
+        range: TextRange = element.textRange,
+        message: String? = null
+    ) {
+        val annotation = message
+            ?.let { m -> holder.newAnnotation(highlightSeverity, m) }
+            ?: holder.newSilentAnnotation(highlightSeverity)
+        annotation
+            .range(range)
+            .textAttributes(textAttributesKey)
+            .create()
+    }
 }
