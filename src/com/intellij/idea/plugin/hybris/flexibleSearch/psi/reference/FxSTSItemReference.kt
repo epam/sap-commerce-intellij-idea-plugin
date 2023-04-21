@@ -43,6 +43,10 @@ class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBas
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
+    override fun getVariants(): Array<Any> {
+        return super.getVariants()
+    }
+
     companion object {
         val CACHE_KEY =
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")

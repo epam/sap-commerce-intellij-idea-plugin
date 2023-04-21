@@ -21,6 +21,7 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
@@ -53,6 +54,14 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 .inside(psiElement(FlexibleSearchTypes.SELECTED_TABLE_NAME)),
             FlexibleSearchTableAliasCompletionProvider.instance
         )
+
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withElementType(FlexibleSearchTypes.IDENTIFIER)
+                .inside(psiElement(FlexibleSearchTypes.DEFINED_TABLE_NAME)),
+            ItemCodeCompletionProvider.instance
+        );
 //        extend(
 //            CompletionType.BASIC,
 //            placePattern.withElementType(
