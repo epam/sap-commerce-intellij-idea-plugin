@@ -49,6 +49,13 @@ class FlexibleSearchAnnotator : Annotator {
                 TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
             }
 
+            // Special case, [y] allows reserved words for attributes & types
+            ORDER -> when(element.parent.elementType) {
+                COLUMN_NAME -> highlight(IDENTIFIER, holder, element)
+                DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
+                EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
+            }
+
             STAR,
             EXCLAMATION_MARK -> when (element.parent.elementType) {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FS_TABLE_TRAIL, holder, element)

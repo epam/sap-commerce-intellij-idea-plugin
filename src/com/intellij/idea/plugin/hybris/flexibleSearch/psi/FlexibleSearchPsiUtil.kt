@@ -63,16 +63,18 @@ fun setName(element: FlexibleSearchPsiNamedElement, newName: String): PsiElement
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
 
-fun getTable(element: FlexibleSearchColumnName) = (element.backwardSiblings()
-    .firstOrNull { it is FlexibleSearchSelectedTableName }
-    ?.reference
-    ?.resolve() as? FlexibleSearchTableAliasName
-    )
-    ?.table
-    ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-        ?.let {
-            PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)
-        }
+fun getTable(element: FlexibleSearchColumnName): FlexibleSearchDefinedTableName? {
+    val tableAlias = element.backwardSiblings()
+        .firstOrNull { it is FlexibleSearchSelectedTableName }
+        ?.reference
+        ?.resolve() as? FlexibleSearchTableAliasName
+    return tableAlias
+        ?.table
+        ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+            ?.let {
+                PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)
+            }
+}
 
 fun getTable(element: FlexibleSearchDefinedTableName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName }

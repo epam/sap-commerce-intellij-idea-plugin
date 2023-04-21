@@ -134,12 +134,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // name
+  // ORDER | IDENTIFIER
   public static boolean column_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_name")) return false;
+    if (!nextTokenIs(b, "<column name>", IDENTIFIER, ORDER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COLUMN_NAME, "<column name>");
-    r = name(b, l + 1);
+    r = consumeToken(b, ORDER);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -190,14 +192,24 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // name (EXCLAMATION_MARK | STAR)?
+  // (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
   public static boolean defined_table_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name")) return false;
+    if (!nextTokenIs(b, "<defined table name>", IDENTIFIER, ORDER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DEFINED_TABLE_NAME, "<defined table name>");
-    r = name(b, l + 1);
+    r = defined_table_name_0(b, l + 1);
     r = r && defined_table_name_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ORDER | IDENTIFIER
+  private static boolean defined_table_name_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "defined_table_name_0")) return false;
+    boolean r;
+    r = consumeToken(b, ORDER);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
   }
 
@@ -264,14 +276,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER
+  // ORDER | IDENTIFIER
   public static boolean ext_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ext_parameter_name")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<ext parameter name>", IDENTIFIER, ORDER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, m, EXT_PARAMETER_NAME, r);
+    Marker m = enter_section_(b, l, _NONE_, EXT_PARAMETER_NAME, "<ext parameter name>");
+    r = consumeToken(b, ORDER);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -556,6 +569,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // defined_table_name ( ( AS )? table_alias_name )?
   public static boolean from_table(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_table")) return false;
+    if (!nextTokenIs(b, "<from table>", IDENTIFIER, ORDER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, FROM_TABLE, "<from table>");
     r = defined_table_name(b, l + 1);
@@ -1229,12 +1243,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // name
+  // IDENTIFIER | BACKTICK_LITERAL
   public static boolean selected_table_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "selected_table_name")) return false;
+    if (!nextTokenIs(b, "<selected table name>", BACKTICK_LITERAL, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, SELECTED_TABLE_NAME, "<selected table name>");
-    r = name(b, l + 1);
+    r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, BACKTICK_LITERAL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

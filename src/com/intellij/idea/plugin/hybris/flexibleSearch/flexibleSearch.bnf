@@ -248,7 +248,7 @@ ordering_term ::= expression ( ASC | DESC )?
 
 compound_operator ::= UNION ALL?
 
-ext_parameter_name ::= IDENTIFIER
+ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
 column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
@@ -257,17 +257,17 @@ table_alias_name ::= name
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[setName getTable]
 }
-selected_table_name ::= name
+selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[setName]
 }
-defined_table_name ::= name (EXCLAMATION_MARK | STAR)?
+defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
 }
-column_name ::= name
+column_name ::= ORDER | IDENTIFIER
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
     methods=[getTable]
