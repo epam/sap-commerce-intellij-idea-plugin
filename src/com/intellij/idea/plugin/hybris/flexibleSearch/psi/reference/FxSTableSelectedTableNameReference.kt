@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
-import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
@@ -61,7 +61,7 @@ class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableSelectedTableNameReference> { ref ->
             val lookingForName = ref.element.text
-                .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
+                .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER_TRIMMED, "")
                 .trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)

@@ -28,8 +28,7 @@ import com.intellij.util.ProcessingContext
 class FlexibleSearchTableAliasCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        parameters.originalPosition
-            ?.parent
+        parameters.position.parent
             ?.reference
             ?.variants
             ?.filterIsInstance<LookupElement>()

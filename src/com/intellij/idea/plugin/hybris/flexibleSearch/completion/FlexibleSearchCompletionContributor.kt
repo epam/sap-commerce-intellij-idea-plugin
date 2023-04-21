@@ -18,15 +18,24 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
+import com.intellij.codeInsight.completion.CompletionInitializationContext
 import com.intellij.codeInsight.completion.CompletionType
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
+
+    override fun beforeCompletion(context: CompletionInitializationContext) {
+        if (context.file !is FlexibleSearchFile) return
+
+        context.dummyIdentifier = DUMMY_IDENTIFIER_TRIMMED
+    }
 
     init {
         val placePattern = psiElement()
@@ -139,5 +148,9 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 //                                    .withCaseSensitivity(false)
 //                                    .withIcon(AllIcons.Nodes.Static))
 //        );
+    }
+
+    companion object {
+        const val DUMMY_IDENTIFIER_TRIMMED = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     }
 }
