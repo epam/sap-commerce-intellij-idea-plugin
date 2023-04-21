@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
+import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
@@ -26,7 +28,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTa
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
@@ -45,12 +46,23 @@ class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
+    override fun getVariants() = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+        ?.fromClause
+        ?.let {
+            PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
+                .mapNotNull { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
+                .toTypedArray()
+        }
+        ?: emptyArray()
+
     companion object {
         val CACHE_KEY =
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTableSelectedTableNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableSelectedTableNameReference> { ref ->
-            val lookingForName = ref.element.text.trim()
+            val lookingForName = ref.element.text
+                .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
+                .trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)
                 ?.fromClause

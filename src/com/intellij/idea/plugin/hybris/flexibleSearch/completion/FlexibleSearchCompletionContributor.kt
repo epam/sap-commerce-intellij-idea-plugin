@@ -15,14 +15,47 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.completion;
+import com.intellij.codeInsight.completion.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchTableAliasCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiComment
+import com.intellij.psi.util.elementType
+import com.intellij.util.ProcessingContext
 
-import com.intellij.codeInsight.completion.CompletionContributor;
+class FlexibleSearchCompletionContributor : CompletionContributor() {
 
-public class FlexibleSearchCompletionContributor extends CompletionContributor {
+    init {
+        val placePattern = psiElement()
+            .andNot(psiElement().inside(PsiComment::class.java))
+            .withLanguage(FlexibleSearchLanguage.INSTANCE)
+        extend(
+            CompletionType.BASIC,
+            placePattern.withElementType(
+                PlatformPatterns.elementType().or(
+                    FlexibleSearchTypes.IDENTIFIER,
+                    FlexibleSearchTypes.BACKTICK_LITERAL
+                )
+            ),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    parameters.originalPosition
+                        ?.let {
+                            val provider = when (it.parent.elementType) {
+                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> FlexibleSearchTableAliasCompletionProvider.instance
+                                else -> null
+                            }
+                            provider
+                                ?.addCompletionVariants(parameters, context, result)
+                        }
+                }
+            }
+        )
 
-    public FlexibleSearchCompletionContributor() {
         // keywords
 //        extend(
 //            CompletionType.BASIC,
@@ -39,6 +72,14 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //            FxsKeywordCompletionProvider.Companion.getInstance()
 //        );
 
+
+//        extend(
+//            CompletionType.BASIC,
+//            PlatformPatterns.psiElement(FlexibleSearchTypes.IDENTIFIER)
+//                .inside(psiElement(TABLE_NAME))
+//                .withLanguage(FlexibleSearchLanguage.IN),
+//            ItemCodeCompletionProvider.Companion.getInstance()
+//        );
 //        extend(
 //            CompletionType.BASIC,
 //            psiElement(TABLE_NAME_IDENTIFIER)
@@ -87,6 +128,5 @@ public class FlexibleSearchCompletionContributor extends CompletionContributor {
 //                                    .withCaseSensitivity(false)
 //                                    .withIcon(AllIcons.Nodes.Static))
 //        );
-
     }
 }

@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 
-object FSLookupElementFactory {
+object FxSLookupElementFactory {
 
     fun buildReference() = LookupElementBuilder.create("{}")
         .withPresentableText("{...}")
@@ -29,5 +31,12 @@ object FSLookupElementFactory {
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
         .withCaseSensitivity(false)
+
+    fun build(tableAlias: FlexibleSearchTableAliasName) = tableAlias.name
+        ?.let {
+            LookupElementBuilder.create(it)
+                .withTypeText(tableAlias.table?.text)
+                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        }
 
 }
