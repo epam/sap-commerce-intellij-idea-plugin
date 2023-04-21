@@ -53,4 +53,10 @@ public class FlexibleSearchTableAliasNameImpl extends ASTWrapperPsiElement imple
     return FlexibleSearchPsiUtil.setName(this, newName);
   }
 
+  @Override
+  @Nullable
+  public FlexibleSearchDefinedTableName getTable() {
+    return FlexibleSearchPsiUtil.getTable(this);
+  }
+
 }

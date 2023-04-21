@@ -50,29 +50,16 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    fun getType(): String? {
-        val itemType = if (hasPrefix(element)) {
-//            deepSearchOfTypeReference(element, element.firstChild.text)
-            findItemTypeReference(element)
-        } else {
-            findItemTypeReference(element)
-        }
-        return itemType
-            ?.text
-            ?.let { FxSPsiUtils.getTableName(it) }
-    }
+    fun getType() = element.table
+        ?.text
+        ?.let { FxSPsiUtils.getTableName(it) }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSAttributeReference> { ref ->
             val featureName = FxSPsiUtils.getColumnName(ref.element.text)
-            val result: Array<ResolveResult> = if (hasPrefix(ref.element)) {
-//                findReference(ref.project, deepSearchOfTypeReference(ref.element, ref.element.firstChild.text), ref.element.lastChild.text)
-                findReference(ref.project, findItemTypeReference(ref.element), featureName)
-            } else {
-                findReference(ref.project, findItemTypeReference(ref.element), featureName)
-            }
+            val result = findReference(ref.project, ref.element.table, featureName)
 
             CachedValueProvider.Result.create(
                 result,
@@ -136,25 +123,5 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
                 PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)
             }
     }
-
-//        private fun deepSearchOfTypeReference(elem: PsiElement, prefix: String): FlexibleSearchDefinedTableName? {
-//            val parent = PsiTreeUtil.getParentOfType(elem, FlexibleSearchQuerySpecification::class.java)
-//            val tables = PsiTreeUtil.findChildrenOfType(parent, FlexibleSearchTableReference::class.java).toList()
-//
-//            val tableReference = tables.find {
-//                val tableName = PsiTreeUtil.findChildOfAnyType(it, FlexibleSearchTableName::class.java)
-//                val corName = findCorName(tableName)
-//                prefix == corName
-//            }
-//            return if (tableReference == null && parent != null) {
-//                deepSearchOfTypeReference(parent, prefix)
-//            } else {
-//                PsiTreeUtil.findChildOfType(tableReference, FlexibleSearchTableName::class.java)
-//            }
-//        }
-//
-//        private fun findCorName(tableName: FlexibleSearchTableName?) = PsiTreeUtil.findSiblingForward(tableName!!.originalElement, FlexibleSearchTypes.CORRELATION_NAME, null)
-//            ?.text
-//            ?: tableName.text
 
 }

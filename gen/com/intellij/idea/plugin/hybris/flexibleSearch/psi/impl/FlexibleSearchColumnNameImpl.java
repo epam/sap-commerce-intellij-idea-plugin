@@ -46,4 +46,10 @@ public class FlexibleSearchColumnNameImpl extends FlexibleSearchColumnNameMixin 
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public FlexibleSearchDefinedTableName getTable() {
+    return FlexibleSearchPsiUtil.getTable(this);
+  }
+
 }

@@ -30,4 +30,7 @@ public interface FlexibleSearchTableAliasName extends FlexibleSearchPsiNamedElem
   @NotNull
   PsiElement setName(@NotNull String newName);
 
+  @Nullable
+  FlexibleSearchDefinedTableName getTable();
+
 }
