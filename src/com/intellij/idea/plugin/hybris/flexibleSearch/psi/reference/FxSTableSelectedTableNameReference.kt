@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxsTableAliasNameResolveResult
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -29,7 +29,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxsTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
+class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
@@ -39,9 +39,9 @@ class FxsTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTableSelectedTableNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTableSelectedTableNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxsTableSelectedTableNameReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableSelectedTableNameReference> { ref ->
             val lookingForName = ref.element.text.trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)
@@ -50,7 +50,7 @@ class FxsTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
                     PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
                         .firstOrNull { alias -> alias.text.trim() == lookingForName }
                 }
-                ?.let { arrayOf(FxsTableAliasNameResolveResult(it)) }
+                ?.let { arrayOf(FxSTableAliasNameResolveResult(it)) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(

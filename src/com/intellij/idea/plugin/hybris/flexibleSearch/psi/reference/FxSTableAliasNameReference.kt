@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxsSelectedTableNameResolveResult
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSSelectedTableNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -29,7 +29,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxsTableAliasNameReference(owner: FlexibleSearchTableAliasName) : PsiReferenceBase.Poly<FlexibleSearchTableAliasName>(owner) {
+class FxSTableAliasNameReference(owner: FlexibleSearchTableAliasName) : PsiReferenceBase.Poly<FlexibleSearchTableAliasName>(owner) {
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
@@ -39,16 +39,16 @@ class FxsTableAliasNameReference(owner: FlexibleSearchTableAliasName) : PsiRefer
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTableAliasNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTableAliasNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxsTableAliasNameReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableAliasNameReference> { ref ->
             val lookingForName = ref.element.text.trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)
                 ?.let {
                     PsiTreeUtil.findChildrenOfType(it, FlexibleSearchSelectedTableName::class.java)
                         .filter { alias -> alias.text.trim() == lookingForName }
-                        .map { FxsSelectedTableNameResolveResult(it) }
+                        .map { FxSSelectedTableNameResolveResult(it) }
                         .toTypedArray()
                 }
                 ?: ResolveResult.EMPTY_ARRAY

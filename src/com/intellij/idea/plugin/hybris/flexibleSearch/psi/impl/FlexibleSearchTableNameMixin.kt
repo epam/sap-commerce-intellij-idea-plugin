@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTSItemReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSTSItemReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -28,14 +28,14 @@ import java.io.Serial
 
 abstract class FlexibleSearchTableNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchDefinedTableName {
 
-    private var myReference: FxsTSItemReference? = null
+    private var myReference: FxSTSItemReference? = null
 
     override fun getReference() = references
         .firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = FxsTSItemReference(this)
+            myReference = FxSTSItemReference(this)
         }
         return myReference
             ?.let { arrayOf(it) }

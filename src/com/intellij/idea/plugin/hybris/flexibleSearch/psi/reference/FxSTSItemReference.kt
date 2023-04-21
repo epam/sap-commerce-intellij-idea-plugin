@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -26,10 +27,17 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumReso
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxsTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBase<FlexibleSearchDefinedTableName>(owner) {
+class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBase<FlexibleSearchDefinedTableName>(owner) {
+
+    override fun calculateDefaultRangeInElement(): TextRange {
+        val originalType = element.text
+        val type = FxSPsiUtils.getTableName(element.text)
+        return TextRange.from(originalType.indexOf(type), type.length)
+    }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
@@ -37,10 +45,10 @@ class FxsTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBas
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxsTSItemReference> { ref ->
-            val lookingForName = ref.element.text.replace("!", "")
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSItemReference> { ref ->
+            val lookingForName = FxSPsiUtils.getTableName(ref.element.text)
             val modelAccess = TSMetaModelAccess.getInstance(ref.project)
 
             val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)

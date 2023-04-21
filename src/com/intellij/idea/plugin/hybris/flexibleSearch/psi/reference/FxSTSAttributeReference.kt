@@ -23,10 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAM
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -35,12 +32,19 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumReso
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.*
 
-internal class FxsTSAttributeReference(owner: FlexibleSearchColumnName) : TSReferenceBase<FlexibleSearchColumnName>(owner) {
+internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSReferenceBase<FlexibleSearchColumnName>(owner) {
+
+    override fun calculateDefaultRangeInElement(): TextRange {
+        val originalType = element.text
+        val type = FxSPsiUtils.getColumnName(element.text)
+        return TextRange.from(originalType.indexOf(type), type.length)
+    }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
@@ -55,15 +59,14 @@ internal class FxsTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
         }
         return itemType
             ?.text
-            ?.replace(FlexibleSearchTypes.EXCLAMATION_MARK.toString(), "")
-            ?.replace(FlexibleSearchTypes.STAR.toString(), "")
+            ?.let { FxSPsiUtils.getTableName(it) }
     }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxsTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxsTSAttributeReference> { ref ->
-            val featureName = ref.element.text.trim()
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSAttributeReference> { ref ->
+            val featureName = FxSPsiUtils.getColumnName(ref.element.text)
             val result: Array<ResolveResult> = if (hasPrefix(ref.element)) {
 //                findReference(ref.project, deepSearchOfTypeReference(ref.element, ref.element.firstChild.text), ref.element.lastChild.text)
                 findReference(ref.project, findItemTypeReference(ref.element), featureName)
@@ -83,7 +86,7 @@ internal class FxsTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
             val metaService = TSMetaModelAccess.getInstance(project)
             val type = itemType
                 ?.text
-                ?.replace("!", "")
+                ?.let { FxSPsiUtils.getTableName(it) }
                 ?: return ResolveResult.EMPTY_ARRAY
             return tryResolveByItemType(type, refName, metaService)
                 ?: tryResolveByRelationType(type, refName, metaService)
