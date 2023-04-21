@@ -254,7 +254,7 @@ column_localized_name ::= BRACKET_LITERAL
 column_alias_name ::= name
 table_alias_name ::= name
 {
-    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
+//    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableAliasNameMixin"
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[setName]
 }

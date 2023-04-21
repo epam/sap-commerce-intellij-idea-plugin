@@ -20,21 +20,21 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTableSelectedTableNameReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxsTableAliasNameReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperPsiElement(node),
-    FlexibleSearchSelectedTableName, FlexibleSearchPsiNamedElement {
+abstract class FlexibleSearchTableAliasNameMixin(node: ASTNode) : ASTWrapperPsiElement(node),
+    FlexibleSearchTableAliasName, FlexibleSearchPsiNamedElement {
 
-    private var myReference: FxsTableSelectedTableNameReference? = null
+    private var myReference: FxsTableAliasNameReference? = null
 
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = FxsTableSelectedTableNameReference(this)
+            myReference = FxsTableAliasNameReference(this)
         }
         return myReference
             ?.let { arrayOf(it) }
@@ -42,14 +42,14 @@ abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperP
     }
 
     override fun clone(): Any {
-        val result = super.clone() as FlexibleSearchSelectedTableNameMixin
+        val result = super.clone() as FlexibleSearchTableAliasNameMixin
         result.myReference = null
         return result
     }
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 1434574712765232146L
+        private const val serialVersionUID: Long = -6565765038052628276L
     }
 
 }

@@ -28,9 +28,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchTableAliasNameImpl extends FlexibleSearchSelectedTableNameMixin implements FlexibleSearchTableAliasName {
+public class FlexibleSearchTableAliasNameImpl extends ASTWrapperPsiElement implements FlexibleSearchTableAliasName {
 
   public FlexibleSearchTableAliasNameImpl(@NotNull ASTNode node) {
     super(node);

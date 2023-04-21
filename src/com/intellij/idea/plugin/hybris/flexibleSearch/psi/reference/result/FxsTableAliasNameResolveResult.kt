@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.psi.ResolveResult
 
-class FxsTableAliasResolveResult(private val ref: FlexibleSearchTableAliasName?) : ResolveResult {
+class FxsTableAliasNameResolveResult(private val ref: FlexibleSearchTableAliasName?) : ResolveResult {
     override fun getElement() = ref?.navigationElement
     override fun isValidResult() = (ref?.isValid ?: false)
 }
