@@ -30,6 +30,9 @@ abstract class FlexibleSearchColumnNameMixin(node: ASTNode) : ASTWrapperPsiEleme
 
     private var reference: FxsTSAttributeReference? = null
 
+    override fun getReference() = references
+        .firstOrNull()
+
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(reference, text)) {
             reference = FxsTSAttributeReference(this)

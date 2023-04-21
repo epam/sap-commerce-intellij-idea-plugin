@@ -32,6 +32,9 @@ abstract class FlexibleSearchTableAliasNameMixin(node: ASTNode) : ASTWrapperPsiE
 
     private var myReference: FxsTableAliasNameReference? = null
 
+    override fun getReference() = references
+        .firstOrNull()
+
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FxsTableAliasNameReference(this)

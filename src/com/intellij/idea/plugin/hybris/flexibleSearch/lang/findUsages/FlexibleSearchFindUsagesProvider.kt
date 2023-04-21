@@ -24,9 +24,8 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
-
+import com.intellij.psi.util.elementType
 
 class FlexibleSearchFindUsagesProvider : FindUsagesProvider {
 
@@ -43,14 +42,12 @@ class FlexibleSearchFindUsagesProvider : FindUsagesProvider {
         TokenSet.EMPTY
     )
 
-    override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is FlexibleSearchTableAliasName
-
+    override fun canFindUsagesFor(psiElement: PsiElement) = psiElement.elementType == FlexibleSearchTypes.TABLE_ALIAS_NAME
     override fun getHelpId(psiElement: PsiElement) = null
+    override fun getNodeText(element: PsiElement, useFullName: Boolean): String = element.text
 
-    override fun getType(element: PsiElement) = "type - ${element.text}"
-
-    override fun getDescriptiveName(element: PsiElement) = "desc name - ${element.text}"
-
-    override fun getNodeText(element: PsiElement, useFullName: Boolean) = "node text - ${element.text}"
+    // In case of presentation customization need rely on ElementDescriptionProvider
+    override fun getType(element: PsiElement) = ""
+    override fun getDescriptiveName(element: PsiElement) = ""
 
 }

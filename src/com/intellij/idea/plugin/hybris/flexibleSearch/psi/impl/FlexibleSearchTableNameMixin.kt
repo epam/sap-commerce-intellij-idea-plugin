@@ -30,6 +30,9 @@ abstract class FlexibleSearchTableNameMixin(node: ASTNode) : ASTWrapperPsiElemen
 
     private var myReference: FxsTSItemReference? = null
 
+    override fun getReference() = references
+        .firstOrNull()
+
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FxsTSItemReference(this)

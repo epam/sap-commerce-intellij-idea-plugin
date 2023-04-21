@@ -32,6 +32,9 @@ abstract class FlexibleSearchSelectedTableNameMixin(node: ASTNode) : ASTWrapperP
 
     private var myReference: FxsTableSelectedTableNameReference? = null
 
+    override fun getReference() = references
+        .firstOrNull()
+
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(myReference, text)) {
             myReference = FxsTableSelectedTableNameReference(this)
