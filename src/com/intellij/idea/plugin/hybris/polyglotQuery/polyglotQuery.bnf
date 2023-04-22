@@ -1,0 +1,64 @@
+{
+    parserClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParser"
+    parserUtilClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserUtils"
+
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+    psiClassPrefix="PolyglotQuery"
+    psiImplClassSuffix="Impl"
+    psiPackage="com.intellij.idea.plugin.hybris.polyglotQuery.psi"
+    psiImplPackage="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl"
+
+    elementTypeHolderClass="com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes"
+    elementTypeClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryElementType"
+    tokenTypeClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryTokenType"
+
+    classHeader="generatedFilesHeader.txt"
+
+    generate=[java='17']
+
+    tokens = [
+        IDENTIFIER      = 'regexp:([:letter:])([:letter:]|[:digit:]|_)*'
+        LINE_COMMENT    = 'regexp:--[^r\n]*'
+        COMMENT         = 'regexp:/\*.*\*/' // Simple regexp for Live Preview, this is tweaked in the flex file.
+
+        QUESTION_MARK       = '?'
+        LBRACKET            = '['
+        RBRACKET            = ']'
+        LBRACE              = "{"
+        RBRACE              = "}"
+        AMP                 = '&'
+        EQ                  = '='
+        GT                  = '>'
+        GTE                 = '>='
+        LT                  = '<'
+        LTE                 = '<='
+        UNEQ                = '<>'
+        LPAREN              = '('
+        RPAREN              = ')'
+    ]
+}
+
+root ::= statement
+private statement ::= (query)
+//pin -> if GET is written in file -> psi element is pinned as MVP of a group(group == instance of java class)
+query ::= GET type_key expression? {pin=1}
+type_key ::= '{' IDENTIFIER '}' {pin=1}
+expression ::=
+    where_clause
+    | order_by?
+order_by ::= order_clause_literal order_key ( ',' order_key )* {pin=1}
+order_key ::= attribute_key (ASC | DESC)?
+private order_clause_literal ::= ORDER BY
+private where_clause ::= WHERE expr_or order_by?
+expr_or ::= expr_and ( OR expr_and )*
+expr_and ::= expr_atom ( AND expr_atom )*
+expr_atom ::=
+    attribute_key cmp_operator '?' IDENTIFIER
+    | attribute_key null_operator
+    | '(' expr_or ')'
+null_operator ::= IS (NOT)? NULL{pin=1}
+cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
+attribute_key ::= '{' IDENTIFIER ('[' IDENTIFIER ']')? '}'{pin=1}
+
+

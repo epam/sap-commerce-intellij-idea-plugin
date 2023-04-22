@@ -18,27 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.polyglotQuery
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTokenType
-import com.intellij.psi.tree.IElementType
-import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.NonNls
-import java.util.regex.Pattern
+import com.intellij.lang.parser.GeneratedParserUtilBase
 
-class PolyglotQueryTokenType(debugName: @NonNls String) : IElementType(debugName, PolyglotQueryLanguage.instance) {
-
-    override fun toString(): String {
-        val name = super.toString()
-
-        if (StringUtils.isBlank(name)) {
-            return name
-        }
-
-        val fixedName = PATTERN.matcher(StringUtils.lowerCase(name)).replaceAll(" ")
-
-        return StringBuilder("<").append(fixedName).append('>').toString()
-    }
-
-    companion object {
-        val PATTERN = Pattern.compile("[_]")
-    }
-}
+class PolyglotQueryParserUtils : GeneratedParserUtilBase()

@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -15,30 +19,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 
-package com.intellij.idea.plugin.hybris.polyglotQuery
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTokenType
-import com.intellij.psi.tree.IElementType
-import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.NonNls
-import java.util.regex.Pattern
+public interface PolyglotQueryOrderBy extends PsiElement {
 
-class PolyglotQueryTokenType(debugName: @NonNls String) : IElementType(debugName, PolyglotQueryLanguage.instance) {
+  @NotNull
+  List<PolyglotQueryOrderKey> getOrderKeyList();
 
-    override fun toString(): String {
-        val name = super.toString()
-
-        if (StringUtils.isBlank(name)) {
-            return name
-        }
-
-        val fixedName = PATTERN.matcher(StringUtils.lowerCase(name)).replaceAll(" ")
-
-        return StringBuilder("<").append(fixedName).append('>').toString()
-    }
-
-    companion object {
-        val PATTERN = Pattern.compile("[_]")
-    }
 }

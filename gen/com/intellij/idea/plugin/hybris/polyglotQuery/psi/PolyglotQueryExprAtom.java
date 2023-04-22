@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -15,30 +19,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 
-package com.intellij.idea.plugin.hybris.polyglotQuery
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTokenType
-import com.intellij.psi.tree.IElementType
-import org.apache.commons.lang3.StringUtils
-import org.jetbrains.annotations.NonNls
-import java.util.regex.Pattern
+public interface PolyglotQueryExprAtom extends PsiElement {
 
-class PolyglotQueryTokenType(debugName: @NonNls String) : IElementType(debugName, PolyglotQueryLanguage.instance) {
+  @Nullable
+  PolyglotQueryAttributeKey getAttributeKey();
 
-    override fun toString(): String {
-        val name = super.toString()
+  @Nullable
+  PolyglotQueryCmpOperator getCmpOperator();
 
-        if (StringUtils.isBlank(name)) {
-            return name
-        }
+  @Nullable
+  PolyglotQueryExprOr getExprOr();
 
-        val fixedName = PATTERN.matcher(StringUtils.lowerCase(name)).replaceAll(" ")
+  @Nullable
+  PolyglotQueryNullOperator getNullOperator();
 
-        return StringBuilder("<").append(fixedName).append('>').toString()
-    }
+  @Nullable
+  PsiElement getIdentifier();
 
-    companion object {
-        val PATTERN = Pattern.compile("[_]")
-    }
 }

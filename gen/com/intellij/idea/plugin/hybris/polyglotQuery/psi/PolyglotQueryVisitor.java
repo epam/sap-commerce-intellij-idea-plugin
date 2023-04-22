@@ -27,7 +27,47 @@ import com.intellij.psi.PsiElement;
 
 public class PolyglotQueryVisitor extends PsiElementVisitor {
 
-  public void visitProperty(@NotNull PolyglotQueryProperty o) {
+  public void visitAttributeKey(@NotNull PolyglotQueryAttributeKey o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCmpOperator(@NotNull PolyglotQueryCmpOperator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExprAnd(@NotNull PolyglotQueryExprAnd o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExprAtom(@NotNull PolyglotQueryExprAtom o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExprOr(@NotNull PolyglotQueryExprOr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExpression(@NotNull PolyglotQueryExpression o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNullOperator(@NotNull PolyglotQueryNullOperator o) {
+    visitPsiElement(o);
+  }
+
+  public void visitOrderBy(@NotNull PolyglotQueryOrderBy o) {
+    visitPsiElement(o);
+  }
+
+  public void visitOrderKey(@NotNull PolyglotQueryOrderKey o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQuery(@NotNull PolyglotQueryQuery o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTypeKey(@NotNull PolyglotQueryTypeKey o) {
     visitPsiElement(o);
   }
 

@@ -44,7 +44,10 @@ class PolyglotQueryParserDefinition : ParserDefinition {
     companion object {
         val FILE_NODE_TYPE = IFileElementType(PolyglotQueryLanguage.instance)
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create()
+        val COMMENTS = TokenSet.create(
+            PolyglotQueryTypes.COMMENT,
+            PolyglotQueryTypes.LINE_COMMENT
+        )
         val STRING_LITERALS = TokenSet.create()
     }
 }
