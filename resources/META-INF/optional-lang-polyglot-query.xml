@@ -21,5 +21,7 @@
         <fileType language="PolyglotQueryLanguage" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
 
+        <lang.parserDefinition language="PolyglotQueryLanguage"
+                               implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserDefinition"/>
     </extensions>
 </idea-plugin>
