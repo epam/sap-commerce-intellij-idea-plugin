@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLook
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.PlatformPatterns.not
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
 import com.intellij.util.ProcessingContext
@@ -55,7 +56,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             placePattern
                 .withElementType(FlexibleSearchTypes.IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
-                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME))
+                .withParent(not(psiElement(FlexibleSearchTypes.Y_COLUMN_NAME)))
                 .inside(PlatformPatterns.not(psiElement(FlexibleSearchTypes.SELECT_CORE_SELECT)))
             ,
             object : CompletionProvider<CompletionParameters>() {

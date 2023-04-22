@@ -79,6 +79,7 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_KEYS,
 
             FlexibleSearchTypes.COLUMN_NAME to COLUMN_KEYS,
+            FlexibleSearchTypes.Y_COLUMN_NAME to COLUMN_KEYS,
 
             FlexibleSearchTypes.SIGNED_NUMBER to NUMBER_KEYS,
 
