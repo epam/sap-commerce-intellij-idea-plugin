@@ -48,9 +48,9 @@ public class FlexibleSearchYFromClauseImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchFromClauseSimple getFromClauseSimple() {
-    return findNotNullChildByClass(FlexibleSearchFromClauseSimple.class);
+    return findChildByClass(FlexibleSearchFromClauseSimple.class);
   }
 
 }

@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchYFromClause extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchFromClauseSimple getFromClauseSimple();
 
 }

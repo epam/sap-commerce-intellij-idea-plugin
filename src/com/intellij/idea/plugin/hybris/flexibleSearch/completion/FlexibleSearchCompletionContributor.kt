@@ -17,56 +17,57 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
-import com.intellij.codeInsight.completion.CompletionContributor
-import com.intellij.codeInsight.completion.CompletionInitializationContext
-import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FlexibleSearchReferenceVariantsCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
+import com.intellij.util.ProcessingContext
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
         if (context.file !is FlexibleSearchFile) return
 
-        context.dummyIdentifier = DUMMY_IDENTIFIER_TRIMMED
+        context.dummyIdentifier = DUMMY_IDENTIFIER
     }
 
     init {
         val placePattern = psiElement()
             .andNot(psiElement().inside(PsiComment::class.java))
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.or(
-                placePattern
-                    .withElementType(
-                        PlatformPatterns.elementType().or(
-                            FlexibleSearchTypes.IDENTIFIER,
-                            FlexibleSearchTypes.BACKTICK_LITERAL
-                        )
-                    )
-                    .inside(psiElement(FlexibleSearchTypes.SELECTED_TABLE_NAME)),
-                placePattern
-                    .withElementType(FlexibleSearchTypes.IDENTIFIER)
-                    .inside(psiElement(FlexibleSearchTypes.COLUMN_NAME))
-            ),
-            FlexibleSearchReferenceVariantsCompletionProvider.instance
-        )
 
         extend(
             CompletionType.BASIC,
             placePattern
                 .withElementType(FlexibleSearchTypes.IDENTIFIER)
-                .inside(psiElement(FlexibleSearchTypes.DEFINED_TABLE_NAME)),
+                .withoutText(DUMMY_IDENTIFIER)
+                .withParent(psiElement(FlexibleSearchTypes.DEFINED_TABLE_NAME)),
             ItemCodeCompletionProvider.instance
         );
+
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withElementType(FlexibleSearchTypes.IDENTIFIER)
+                .withText(DUMMY_IDENTIFIER)
+                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME))
+                .inside(PlatformPatterns.not(psiElement(FlexibleSearchTypes.SELECT_CORE_SELECT)))
+            ,
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addElement(
+                        FxSLookupElementFactory.buildYColumnReference()
+                    )
+                }
+
+            }
+        )
+
 //        extend(
 //            CompletionType.BASIC,
 //            placePattern.withElementType(
@@ -165,6 +166,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
     }
 
     companion object {
-        const val DUMMY_IDENTIFIER_TRIMMED = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+        const val DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     }
 }

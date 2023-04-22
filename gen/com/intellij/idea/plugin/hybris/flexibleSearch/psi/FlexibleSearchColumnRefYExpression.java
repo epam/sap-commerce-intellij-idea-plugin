@@ -31,7 +31,7 @@ public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpres
   @Nullable
   FlexibleSearchColumnLocalizedName getColumnLocalizedName();
 
-  @NotNull
+  @Nullable
   FlexibleSearchColumnName getColumnName();
 
   @Nullable

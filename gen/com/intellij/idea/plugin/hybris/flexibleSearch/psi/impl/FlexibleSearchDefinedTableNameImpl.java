@@ -46,4 +46,10 @@ public class FlexibleSearchDefinedTableNameImpl extends FlexibleSearchTableNameM
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public String getTableName() {
+    return FlexibleSearchPsiUtil.getTableName(this);
+  }
+
 }

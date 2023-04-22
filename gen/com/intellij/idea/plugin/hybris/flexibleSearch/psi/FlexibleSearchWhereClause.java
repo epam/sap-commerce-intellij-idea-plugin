@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchWhereClause extends PsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchExpression getExpression();
 
 }

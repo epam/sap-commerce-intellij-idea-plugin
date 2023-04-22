@@ -34,7 +34,7 @@ public interface FlexibleSearchSelectCoreSelect extends FoldablePsiElement {
   @Nullable
   FlexibleSearchGroupByClause getGroupByClause();
 
-  @NotNull
+  @Nullable
   FlexibleSearchResultColumns getResultColumns();
 
   @Nullable

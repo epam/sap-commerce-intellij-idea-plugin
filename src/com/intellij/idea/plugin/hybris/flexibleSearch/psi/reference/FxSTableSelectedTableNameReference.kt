@@ -61,7 +61,7 @@ class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableSelectedTableNameReference> { ref ->
             val lookingForName = ref.element.text
-                .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER_TRIMMED, "")
+                .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 .trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)

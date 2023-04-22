@@ -196,12 +196,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean defined_table_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name")) return false;
     if (!nextTokenIs(b, "<defined table name>", IDENTIFIER, ORDER)) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, DEFINED_TABLE_NAME, "<defined table name>");
     r = defined_table_name_0(b, l + 1);
+    p = r; // pin = 1
     r = r && defined_table_name_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ORDER | IDENTIFIER
@@ -226,6 +227,18 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, EXCLAMATION_MARK);
     if (!r) r = consumeToken(b, STAR);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // EXISTS '('
+  static boolean exists_expression_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exists_expression_name")) return false;
+    if (!nextTokenIs(b, EXISTS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, EXISTS, LPAREN);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -293,13 +306,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean from_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause")) return false;
     if (!nextTokenIs(b, FROM)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FROM_CLAUSE, null);
     r = consumeToken(b, FROM);
-    r = r && from_clause_expression(b, l + 1);
-    r = r && from_clause_2(b, l + 1);
-    exit_section_(b, m, FROM_CLAUSE, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, from_clause_expression(b, l + 1));
+    r = p && from_clause_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( join_operator from_clause_expression )*
@@ -604,6 +618,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // function_name '('
+  static boolean function_call_expression_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_name")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = function_name(b, l + 1);
+    r = r && consumeToken(b, LPAREN);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // IDENTIFIER
   public static boolean function_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "function_name")) return false;
@@ -616,34 +643,35 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // GROUP BY expression ( ',' expression )* ( HAVING expression )?
+  // group_by_literal expression ( ',' expression )* ( HAVING expression )?
   public static boolean group_by_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause")) return false;
     if (!nextTokenIs(b, GROUP)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, GROUP, BY);
-    r = r && expression(b, l + 1, -1);
-    r = r && group_by_clause_3(b, l + 1);
-    r = r && group_by_clause_4(b, l + 1);
-    exit_section_(b, m, GROUP_BY_CLAUSE, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, GROUP_BY_CLAUSE, null);
+    r = group_by_literal(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, expression(b, l + 1, -1));
+    r = p && report_error_(b, group_by_clause_2(b, l + 1)) && r;
+    r = p && group_by_clause_3(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ',' expression )*
-  private static boolean group_by_clause_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "group_by_clause_3")) return false;
+  private static boolean group_by_clause_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!group_by_clause_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "group_by_clause_3", c)) break;
+      if (!group_by_clause_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "group_by_clause_2", c)) break;
     }
     return true;
   }
 
   // ',' expression
-  private static boolean group_by_clause_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "group_by_clause_3_0")) return false;
+  private static boolean group_by_clause_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -653,15 +681,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   // ( HAVING expression )?
-  private static boolean group_by_clause_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "group_by_clause_4")) return false;
-    group_by_clause_4_0(b, l + 1);
+  private static boolean group_by_clause_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_3")) return false;
+    group_by_clause_3_0(b, l + 1);
     return true;
   }
 
   // HAVING expression
-  private static boolean group_by_clause_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "group_by_clause_4_0")) return false;
+  private static boolean group_by_clause_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, HAVING);
@@ -671,56 +699,74 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ON expression | USING '(' column_name ( ',' column_name )* ')'
+  // GROUP BY
+  static boolean group_by_literal(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_literal")) return false;
+    if (!nextTokenIs(b, GROUP)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, GROUP, BY);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // join_constraint_on | join_constraint_using
   public static boolean join_constraint(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_constraint")) return false;
     if (!nextTokenIs(b, "<join constraint>", ON, USING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, JOIN_CONSTRAINT, "<join constraint>");
-    r = join_constraint_0(b, l + 1);
-    if (!r) r = join_constraint_1(b, l + 1);
+    r = join_constraint_on(b, l + 1);
+    if (!r) r = join_constraint_using(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
+  /* ********************************************************** */
   // ON expression
-  private static boolean join_constraint_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "join_constraint_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+  static boolean join_constraint_on(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "join_constraint_on")) return false;
+    if (!nextTokenIs(b, ON)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, ON);
+    p = r; // pin = 1
     r = r && expression(b, l + 1, -1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
+  /* ********************************************************** */
   // USING '(' column_name ( ',' column_name )* ')'
-  private static boolean join_constraint_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "join_constraint_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, USING, LPAREN);
-    r = r && column_name(b, l + 1);
-    r = r && join_constraint_1_3(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, m, null, r);
-    return r;
+  static boolean join_constraint_using(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "join_constraint_using")) return false;
+    if (!nextTokenIs(b, USING)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeTokens(b, 1, USING, LPAREN);
+    p = r; // pin = 1
+    r = r && report_error_(b, column_name(b, l + 1));
+    r = p && report_error_(b, join_constraint_using_3(b, l + 1)) && r;
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ',' column_name )*
-  private static boolean join_constraint_1_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "join_constraint_1_3")) return false;
+  private static boolean join_constraint_using_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "join_constraint_using_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!join_constraint_1_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "join_constraint_1_3", c)) break;
+      if (!join_constraint_using_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "join_constraint_using_3", c)) break;
     }
     return true;
   }
 
   // ',' column_name
-  private static boolean join_constraint_1_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "join_constraint_1_3_0")) return false;
+  private static boolean join_constraint_using_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "join_constraint_using_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -795,13 +841,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean limit_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "limit_clause")) return false;
     if (!nextTokenIs(b, LIMIT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, LIMIT_CLAUSE, null);
     r = consumeToken(b, LIMIT);
-    r = r && expression(b, l + 1, -1);
-    r = r && limit_clause_2(b, l + 1);
-    exit_section_(b, m, LIMIT_CLAUSE, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, expression(b, l + 1, -1));
+    r = p && limit_clause_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ( OFFSET | ',' ) expression )?
@@ -863,37 +910,50 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ORDER BY ordering_term ( ',' ordering_term )*
+  // order_clause_literal ordering_term ( ',' ordering_term )*
   public static boolean order_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "order_clause")) return false;
     if (!nextTokenIs(b, ORDER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, ORDER, BY);
-    r = r && ordering_term(b, l + 1);
-    r = r && order_clause_3(b, l + 1);
-    exit_section_(b, m, ORDER_CLAUSE, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ORDER_CLAUSE, null);
+    r = order_clause_literal(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, ordering_term(b, l + 1));
+    r = p && order_clause_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ',' ordering_term )*
-  private static boolean order_clause_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "order_clause_3")) return false;
+  private static boolean order_clause_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_clause_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!order_clause_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "order_clause_3", c)) break;
+      if (!order_clause_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "order_clause_2", c)) break;
     }
     return true;
   }
 
   // ',' ordering_term
-  private static boolean order_clause_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "order_clause_3_0")) return false;
+  private static boolean order_clause_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_clause_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
     r = r && ordering_term(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ORDER BY
+  static boolean order_clause_literal(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_clause_literal")) return false;
+    if (!nextTokenIs(b, ORDER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, ORDER, BY);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1063,16 +1123,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean select_core_select(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_core_select")) return false;
     if (!nextTokenIs(b, SELECT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SELECT_CORE_SELECT, null);
     r = consumeToken(b, SELECT);
-    r = r && select_core_select_1(b, l + 1);
-    r = r && result_columns(b, l + 1);
-    r = r && select_core_select_3(b, l + 1);
-    r = r && select_core_select_4(b, l + 1);
-    r = r && select_core_select_5(b, l + 1);
-    exit_section_(b, m, SELECT_CORE_SELECT, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, select_core_select_1(b, l + 1));
+    r = p && report_error_(b, result_columns(b, l + 1)) && r;
+    r = p && report_error_(b, select_core_select_3(b, l + 1)) && r;
+    r = p && report_error_(b, select_core_select_4(b, l + 1)) && r;
+    r = p && select_core_select_5(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( DISTINCT | ALL )?
@@ -1424,12 +1485,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean where_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "where_clause")) return false;
     if (!nextTokenIs(b, WHERE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, WHERE_CLAUSE, null);
     r = consumeToken(b, WHERE);
+    p = r; // pin = 1
     r = r && expression(b, l + 1, -1);
-    exit_section_(b, m, WHERE_CLAUSE, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1437,13 +1499,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean y_from_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "y_from_clause")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, Y_FROM_CLAUSE, null);
     r = consumeToken(b, LBRACE);
-    r = r && from_clause_simple(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, Y_FROM_CLAUSE, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, from_clause_simple(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1457,7 +1520,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // 5: POSTFIX(in_expression)
   // 6: POSTFIX(isnull_expression)
   // 7: BINARY(like_expression)
-  // 8: PREFIX(cast_expression)
+  // 8: ATOM(cast_expression)
   // 9: ATOM(function_call_expression)
   // 10: BINARY(equivalence_expression) BINARY(between_expression)
   // 11: BINARY(comparison_expression)
@@ -1569,15 +1632,16 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean case_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "case_expression")) return false;
     if (!nextTokenIsSmart(b, CASE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, CASE_EXPRESSION, null);
     r = consumeTokenSmart(b, CASE);
-    r = r && case_expression_1(b, l + 1);
-    r = r && case_expression_2(b, l + 1);
-    r = r && case_expression_3(b, l + 1);
-    r = r && consumeToken(b, END);
-    exit_section_(b, m, CASE_EXPRESSION, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, case_expression_1(b, l + 1));
+    r = p && report_error_(b, case_expression_2(b, l + 1)) && r;
+    r = p && report_error_(b, case_expression_3(b, l + 1)) && r;
+    r = p && consumeToken(b, END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // expression?
@@ -1633,40 +1697,24 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( NOT? EXISTS )? '(' from_clause_subqueries_statement ')'
+  // NOT? exists_expression_name from_clause_subqueries_statement ')'
   public static boolean exists_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exists_expression")) return false;
-    boolean r;
+    if (!nextTokenIsSmart(b, EXISTS, NOT)) return false;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, EXISTS_EXPRESSION, "<exists expression>");
     r = exists_expression_0(b, l + 1);
-    r = r && consumeToken(b, LPAREN);
-    r = r && from_clause_subqueries_statement(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // ( NOT? EXISTS )?
-  private static boolean exists_expression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "exists_expression_0")) return false;
-    exists_expression_0_0(b, l + 1);
-    return true;
-  }
-
-  // NOT? EXISTS
-  private static boolean exists_expression_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "exists_expression_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = exists_expression_0_0_0(b, l + 1);
-    r = r && consumeToken(b, EXISTS);
-    exit_section_(b, m, null, r);
-    return r;
+    r = r && exists_expression_name(b, l + 1);
+    p = r; // pin = 2
+    r = r && report_error_(b, from_clause_subqueries_statement(b, l + 1));
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // NOT?
-  private static boolean exists_expression_0_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "exists_expression_0_0_0")) return false;
+  private static boolean exists_expression_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exists_expression_0")) return false;
     consumeTokenSmart(b, NOT);
     return true;
   }
@@ -1767,96 +1815,87 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
+  // CAST '(' expression AS type_name ')'
   public static boolean cast_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cast_expression")) return false;
     if (!nextTokenIsSmart(b, CAST)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = parseTokensSmart(b, 0, CAST, LPAREN);
-    p = r;
-    r = p && expression(b, l, 8);
-    r = p && report_error_(b, cast_expression_1(b, l + 1)) && r;
-    exit_section_(b, l, m, CAST_EXPRESSION, r, p, null);
+    Marker m = enter_section_(b, l, _NONE_, CAST_EXPRESSION, null);
+    r = consumeTokensSmart(b, 1, CAST, LPAREN);
+    p = r; // pin = 1
+    r = r && report_error_(b, expression(b, l + 1, -1));
+    r = p && report_error_(b, consumeToken(b, AS)) && r;
+    r = p && report_error_(b, type_name(b, l + 1)) && r;
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // AS type_name ')'
-  private static boolean cast_expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "cast_expression_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, AS);
-    r = r && type_name(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
+  // function_call_expression_name ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
   public static boolean function_call_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "function_call_expression")) return false;
     if (!nextTokenIsSmart(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = function_name(b, l + 1);
-    r = r && consumeToken(b, LPAREN);
-    r = r && function_call_expression_2(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, m, FUNCTION_CALL_EXPRESSION, r);
-    return r;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FUNCTION_CALL_EXPRESSION, null);
+    r = function_call_expression_name(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, function_call_expression_1(b, l + 1));
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // ( ( DISTINCT )? expression ( ',' expression )* | '*' )?
-  private static boolean function_call_expression_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2")) return false;
-    function_call_expression_2_0(b, l + 1);
+  private static boolean function_call_expression_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1")) return false;
+    function_call_expression_1_0(b, l + 1);
     return true;
   }
 
   // ( DISTINCT )? expression ( ',' expression )* | '*'
-  private static boolean function_call_expression_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2_0")) return false;
+  private static boolean function_call_expression_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = function_call_expression_2_0_0(b, l + 1);
+    r = function_call_expression_1_0_0(b, l + 1);
     if (!r) r = consumeTokenSmart(b, STAR);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // ( DISTINCT )? expression ( ',' expression )*
-  private static boolean function_call_expression_2_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2_0_0")) return false;
+  private static boolean function_call_expression_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = function_call_expression_2_0_0_0(b, l + 1);
+    r = function_call_expression_1_0_0_0(b, l + 1);
     r = r && expression(b, l + 1, -1);
-    r = r && function_call_expression_2_0_0_2(b, l + 1);
+    r = r && function_call_expression_1_0_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // ( DISTINCT )?
-  private static boolean function_call_expression_2_0_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2_0_0_0")) return false;
+  private static boolean function_call_expression_1_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1_0_0_0")) return false;
     consumeTokenSmart(b, DISTINCT);
     return true;
   }
 
   // ( ',' expression )*
-  private static boolean function_call_expression_2_0_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2_0_0_2")) return false;
+  private static boolean function_call_expression_1_0_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1_0_0_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!function_call_expression_2_0_0_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "function_call_expression_2_0_0_2", c)) break;
+      if (!function_call_expression_1_0_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "function_call_expression_1_0_0_2", c)) break;
     }
     return true;
   }
 
   // ',' expression
-  private static boolean function_call_expression_2_0_0_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "function_call_expression_2_0_0_2_0")) return false;
+  private static boolean function_call_expression_1_0_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_call_expression_1_0_0_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, COMMA);
@@ -2007,16 +2046,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean column_ref_y_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression")) return false;
     if (!nextTokenIsSmart(b, LBRACE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, COLUMN_REF_Y_EXPRESSION, null);
     r = consumeTokenSmart(b, LBRACE);
-    r = r && column_ref_y_expression_1(b, l + 1);
-    r = r && column_name(b, l + 1);
-    r = r && column_ref_y_expression_3(b, l + 1);
-    r = r && column_ref_y_expression_4(b, l + 1);
-    r = r && consumeToken(b, RBRACE);
-    exit_section_(b, m, COLUMN_REF_Y_EXPRESSION, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, column_ref_y_expression_1(b, l + 1));
+    r = p && report_error_(b, column_name(b, l + 1)) && r;
+    r = p && report_error_(b, column_ref_y_expression_3(b, l + 1)) && r;
+    r = p && report_error_(b, column_ref_y_expression_4(b, l + 1)) && r;
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (selected_table_name column_separator)?
@@ -2079,13 +2119,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   public static boolean paren_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paren_expression")) return false;
     if (!nextTokenIsSmart(b, LPAREN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PAREN_EXPRESSION, null);
     r = consumeTokenSmart(b, LPAREN);
-    r = r && paren_expression_1(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    exit_section_(b, m, PAREN_EXPRESSION, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, paren_expression_1(b, l + 1));
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // (expression)*

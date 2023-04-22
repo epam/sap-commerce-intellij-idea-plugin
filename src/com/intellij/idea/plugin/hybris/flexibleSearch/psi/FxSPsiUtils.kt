@@ -20,12 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
 object FxSPsiUtils {
 
-    fun getTableName(text: String) = text
-        .replace("`", "")
-        .replace("!", "")
-        .replace("*", "")
-        .trim()
-
     fun getColumnName(text: String) = text
         .replace("`", "")
         .trim()

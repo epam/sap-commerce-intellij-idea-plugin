@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAli
 
 object FxSLookupElementFactory {
 
-    fun buildReference() = LookupElementBuilder.create("{}")
+    fun buildYColumnReference() = LookupElementBuilder.create("{}")
         .withPresentableText("{...}")
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset

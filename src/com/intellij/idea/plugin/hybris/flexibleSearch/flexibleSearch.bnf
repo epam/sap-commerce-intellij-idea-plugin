@@ -149,17 +149,16 @@ mul_expression ::= expression ( '*' | '/' | '%' ) expression
 concat_expression ::= expression '||' expression
 unary_expression ::= expression ('-' | '+' | '~' | NOT !IN) expression
 literal_expression ::= literal_value | bind_parameter
-paren_expression ::= '(' (expression)* ')'
+paren_expression ::= '(' (expression)* ')' {pin=1}
 between_expression ::= expression NOT? BETWEEN expression AND expression
-cast_expression ::= CAST '(' expression AS type_name ')'
-case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END
+cast_expression ::= CAST '(' expression AS type_name ')' {pin=1}
+case_expression ::= CASE expression? ( WHEN expression THEN expression )+ ( ELSE expression )? END {pin=1}
 like_expression ::= expression NOT? ( LIKE | GLOB | REGEXP | MATCH ) expression ( ESCAPE expression )?
 isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
-exists_expression ::= ( NOT? EXISTS )? '(' from_clause_subqueries_statement ')'
-function_call_expression ::= function_name '(' ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')'
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
-
+exists_expression ::= NOT? exists_expression_name from_clause_subqueries_statement ')' {pin=2}
+function_call_expression ::= function_call_expression_name ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')' {pin=1}
+column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}' {pin=1}
 // We may not have { } in case of Combined SELECT with table alias
 /*
 SELECT x.PK FROM (
@@ -173,6 +172,8 @@ column_ref_expression ::=
  selected_table_name column_separator column_name
  | column_name
 
+private exists_expression_name ::= EXISTS '('
+private function_call_expression_name ::= function_name '('
 private expression_in_subquery ::= NAMED_PARAMETER | expression ( ',' expression )* | from_clause_subqueries_statement
 
 bind_parameter ::= NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*)
@@ -187,23 +188,27 @@ private literal_value ::=
 
 select_statement ::= select_core_select (compound_operator select_core_select)* order_clause? limit_clause?
 
-limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )?
+limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )? {
+  pin=1
+}
 
-order_clause ::= ORDER BY ordering_term ( ',' ordering_term )*
+order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {pin=1}
+private order_clause_literal ::= ORDER BY
 
-select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause? where_clause? group_by_clause?
+select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause? where_clause? group_by_clause? {pin=1}
 
-group_by_clause ::= GROUP BY expression ( ',' expression )* ( HAVING expression )?
+group_by_clause ::= group_by_literal expression ( ',' expression )* ( HAVING expression )? {pin=1}
+private group_by_literal ::= GROUP BY
 
-where_clause ::= WHERE expression
+where_clause ::= WHERE expression {pin=1}
 
-from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )*
+from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )* {pin=1}
 
 from_clause_expression ::=
   y_from_clause
   | from_clause_select
 
-y_from_clause ::= '{' from_clause_simple '}'
+y_from_clause ::= '{' from_clause_simple '}' { pin=1}
 from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint?
 
 from_clause_select_query ::= '(' &(SELECT) from_query_greedy ')' {pin=2}
@@ -243,7 +248,9 @@ result_column ::=
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
 
-join_constraint ::= ON expression | USING '(' column_name ( ',' column_name )* ')'
+join_constraint ::= join_constraint_on | join_constraint_using
+private join_constraint_on ::= ON expression {pin=1}
+private join_constraint_using ::= USING '(' column_name ( ',' column_name )* ')' {pin=1}
 
 ordering_term ::= expression ( ASC | DESC )?
 
@@ -266,7 +273,9 @@ selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL
 }
 defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
 {
+    pin=1
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
+    methods=[getTableName]
 }
 column_name ::= ORDER | IDENTIFIER
 {

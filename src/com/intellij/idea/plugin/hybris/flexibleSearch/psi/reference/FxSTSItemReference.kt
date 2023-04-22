@@ -35,7 +35,7 @@ class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBas
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
-        val type = FxSPsiUtils.getTableName(element.text)
+        val type = element.tableName
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
@@ -48,7 +48,7 @@ class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBas
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSItemReference> { ref ->
-            val lookingForName = FxSPsiUtils.getTableName(ref.element.text)
+            val lookingForName = ref.element.tableName
             val modelAccess = TSMetaModelAccess.getInstance(ref.project)
 
             val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)

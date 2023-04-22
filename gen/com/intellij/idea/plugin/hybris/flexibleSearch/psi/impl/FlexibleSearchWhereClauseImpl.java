@@ -48,9 +48,9 @@ public class FlexibleSearchWhereClauseImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchExpression getExpression() {
-    return findNotNullChildByClass(FlexibleSearchExpression.class);
+    return findChildByClass(FlexibleSearchExpression.class);
   }
 
 }

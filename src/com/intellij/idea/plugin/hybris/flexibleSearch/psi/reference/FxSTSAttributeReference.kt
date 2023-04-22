@@ -58,8 +58,7 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
         } ?: emptyArray()
 
     fun getType() = element.table
-        ?.text
-        ?.let { FxSPsiUtils.getTableName(it) }
+        ?.tableName
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
@@ -77,8 +76,7 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSRefe
         private fun findReference(project: Project, itemType: FlexibleSearchDefinedTableName?, refName: String): Array<ResolveResult> {
             val metaService = TSMetaModelAccess.getInstance(project)
             val type = itemType
-                ?.text
-                ?.let { FxSPsiUtils.getTableName(it) }
+                ?.tableName
                 ?: return ResolveResult.EMPTY_ARRAY
             return tryResolveByItemType(type, refName, metaService)
                 ?: tryResolveByRelationType(type, refName, metaService)

@@ -60,9 +60,9 @@ public class FlexibleSearchSelectCoreSelectImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchResultColumns getResultColumns() {
-    return findNotNullChildByClass(FlexibleSearchResultColumns.class);
+    return findChildByClass(FlexibleSearchResultColumns.class);
   }
 
   @Override

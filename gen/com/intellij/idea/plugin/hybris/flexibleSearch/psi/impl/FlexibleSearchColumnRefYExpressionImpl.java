@@ -54,9 +54,9 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
   }
 
   @Override
-  @NotNull
+  @Nullable
   public FlexibleSearchColumnName getColumnName() {
-    return findNotNullChildByClass(FlexibleSearchColumnName.class);
+    return findChildByClass(FlexibleSearchColumnName.class);
   }
 
   @Override

@@ -79,5 +79,4 @@ fun getTable(element: FlexibleSearchColumnName): FlexibleSearchDefinedTableName?
             }
 }
 
-fun getTable(element: FlexibleSearchDefinedTableName) = element.backwardSiblings()
-    .firstOrNull { it is FlexibleSearchDefinedTableName }
+fun getTableName(element: FlexibleSearchDefinedTableName): String = element.firstChild.text
