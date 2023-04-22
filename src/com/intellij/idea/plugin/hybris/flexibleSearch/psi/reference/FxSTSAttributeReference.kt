@@ -23,8 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAM
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
@@ -39,7 +39,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-internal class FxSTSAttributeReference(owner: FlexibleSearchColumnName) : TSReferenceBase<FlexibleSearchColumnName>(owner) {
+internal class FxSTSAttributeReference(owner: FlexibleSearchYColumnName) : TSReferenceBase<FlexibleSearchYColumnName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text

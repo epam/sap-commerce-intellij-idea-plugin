@@ -258,6 +258,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitYColumnName(@NotNull FlexibleSearchYColumnName o) {
+    visitPsiElement(o);
+  }
+
   public void visitYFromClause(@NotNull FlexibleSearchYFromClause o) {
     visitPsiElement(o);
   }

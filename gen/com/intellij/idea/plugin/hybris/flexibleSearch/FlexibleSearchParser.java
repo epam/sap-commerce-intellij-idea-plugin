@@ -1495,6 +1495,18 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // column_name
+  public static boolean y_column_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "y_column_name")) return false;
+    if (!nextTokenIs(b, "<y column name>", IDENTIFIER, ORDER)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, Y_COLUMN_NAME, "<y column name>");
+    r = column_name(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // '{' from_clause_simple '}'
   public static boolean y_from_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "y_from_clause")) return false;
@@ -2042,7 +2054,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}'
+  // '{' (selected_table_name column_separator)? y_column_name column_localized_name? column_outer_join_name? '}'
   public static boolean column_ref_y_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression")) return false;
     if (!nextTokenIsSmart(b, LBRACE)) return false;
@@ -2051,7 +2063,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeTokenSmart(b, LBRACE);
     p = r; // pin = 1
     r = r && report_error_(b, column_ref_y_expression_1(b, l + 1));
-    r = p && report_error_(b, column_name(b, l + 1)) && r;
+    r = p && report_error_(b, y_column_name(b, l + 1)) && r;
     r = p && report_error_(b, column_ref_y_expression_3(b, l + 1)) && r;
     r = p && report_error_(b, column_ref_y_expression_4(b, l + 1)) && r;
     r = p && consumeToken(b, RBRACE) && r;

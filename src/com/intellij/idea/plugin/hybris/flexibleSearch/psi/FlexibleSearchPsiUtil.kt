@@ -20,6 +20,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYColumnNameMixin
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -41,7 +42,7 @@ fun getPresentationText(resultColumn: FlexibleSearchResultColumn) = (
             ?.firstOrNull()
             ?.text
             ?.let { "<$it>" }
-        ?: PsiTreeUtil.findChildOfType(resultColumn, FlexibleSearchColumnName::class.java)
+        ?: PsiTreeUtil.findChildOfType(resultColumn, FlexibleSearchYColumnNameMixin::class.java)
             ?.text
     )
     ?.trim()
@@ -66,7 +67,7 @@ fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement? = ele
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
 
-fun getTable(element: FlexibleSearchColumnName): FlexibleSearchDefinedTableName? {
+fun getTable(element: FlexibleSearchYColumnNameMixin): FlexibleSearchDefinedTableName? {
     val tableAlias = element.backwardSiblings()
         .firstOrNull { it is FlexibleSearchSelectedTableName }
         ?.reference

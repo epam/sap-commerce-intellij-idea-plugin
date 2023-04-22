@@ -30,15 +30,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpressionImpl implements FlexibleSearchColumnRefYExpression {
+public class FlexibleSearchYColumnNameImpl extends FlexibleSearchYColumnNameMixin implements FlexibleSearchYColumnName {
 
-  public FlexibleSearchColumnRefYExpressionImpl(@NotNull ASTNode node) {
+  public FlexibleSearchYColumnNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitColumnRefYExpression(this);
+    visitor.visitYColumnName(this);
   }
 
   @Override
@@ -48,33 +47,15 @@ public class FlexibleSearchColumnRefYExpressionImpl extends FlexibleSearchExpres
   }
 
   @Override
-  @Nullable
-  public FlexibleSearchColumnLocalizedName getColumnLocalizedName() {
-    return findChildByClass(FlexibleSearchColumnLocalizedName.class);
+  @NotNull
+  public FlexibleSearchColumnName getColumnName() {
+    return findNotNullChildByClass(FlexibleSearchColumnName.class);
   }
 
   @Override
   @Nullable
-  public FlexibleSearchColumnOuterJoinName getColumnOuterJoinName() {
-    return findChildByClass(FlexibleSearchColumnOuterJoinName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchColumnSeparator getColumnSeparator() {
-    return findChildByClass(FlexibleSearchColumnSeparator.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchSelectedTableName getSelectedTableName() {
-    return findChildByClass(FlexibleSearchSelectedTableName.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchYColumnName getYColumnName() {
-    return findChildByClass(FlexibleSearchYColumnName.class);
+  public FlexibleSearchDefinedTableName getTable() {
+    return FlexibleSearchPsiUtil.getTable(this);
   }
 
 }

@@ -158,7 +158,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= NOT? exists_expression_name from_clause_subqueries_statement ')' {pin=2}
 function_call_expression ::= function_call_expression_name ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')' {pin=1}
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? column_name column_localized_name? column_outer_join_name? '}' {pin=1}
+column_ref_y_expression ::= '{' (selected_table_name column_separator)? y_column_name column_localized_name? column_outer_join_name? '}' {pin=1}
 // We may not have { } in case of Combined SELECT with table alias
 /*
 SELECT x.PK FROM (
@@ -277,11 +277,12 @@ defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
     methods=[getTableName]
 }
-column_name ::= ORDER | IDENTIFIER
+y_column_name ::= column_name
 {
-    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYColumnNameMixin"
     methods=[getTable]
 }
+column_name ::= ORDER | IDENTIFIER
 function_name ::= IDENTIFIER
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL

@@ -32,9 +32,6 @@ public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpres
   FlexibleSearchColumnLocalizedName getColumnLocalizedName();
 
   @Nullable
-  FlexibleSearchColumnName getColumnName();
-
-  @Nullable
   FlexibleSearchColumnOuterJoinName getColumnOuterJoinName();
 
   @Nullable
@@ -42,5 +39,8 @@ public interface FlexibleSearchColumnRefYExpression extends FlexibleSearchExpres
 
   @Nullable
   FlexibleSearchSelectedTableName getSelectedTableName();
+
+  @Nullable
+  FlexibleSearchYColumnName getYColumnName();
 
 }

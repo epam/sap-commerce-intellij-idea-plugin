@@ -87,6 +87,7 @@ public interface FlexibleSearchTypes {
   IElementType TYPE_NAME = new FlexibleSearchElementType("TYPE_NAME");
   IElementType UNARY_EXPRESSION = new FlexibleSearchElementType("UNARY_EXPRESSION");
   IElementType WHERE_CLAUSE = new FlexibleSearchElementType("WHERE_CLAUSE");
+  IElementType Y_COLUMN_NAME = new FlexibleSearchElementType("Y_COLUMN_NAME");
   IElementType Y_FROM_CLAUSE = new FlexibleSearchElementType("Y_FROM_CLAUSE");
 
   IElementType ALL = new FlexibleSearchTokenType("ALL");
@@ -351,6 +352,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == WHERE_CLAUSE) {
         return new FlexibleSearchWhereClauseImpl(node);
+      }
+      else if (type == Y_COLUMN_NAME) {
+        return new FlexibleSearchYColumnNameImpl(node);
       }
       else if (type == Y_FROM_CLAUSE) {
         return new FlexibleSearchYFromClauseImpl(node);
