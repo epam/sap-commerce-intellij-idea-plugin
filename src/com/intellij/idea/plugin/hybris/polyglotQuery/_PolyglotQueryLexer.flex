@@ -21,6 +21,9 @@ import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTyp
 %function advance
 %type IElementType
 %unicode
+%caseless
+
+WHITE_SPACE=\s+
 
 EOL=\R
 WHITE_SPACE=\s+
