@@ -17,19 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
-import com.intellij.extapi.psi.PsiFileBase
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.psi.FileViewProvider
-import java.io.Serial
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage.Companion.INSTANCE
+import com.intellij.openapi.fileTypes.LanguageFileType
+import javax.swing.Icon
 
-class FlexibleSearchFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, FlexibleSearchLanguage.INSTANCE) {
+class FlexibleSearchFileType : LanguageFileType(INSTANCE) {
 
-    override fun getFileType(): FlexibleSearchFileType = FlexibleSearchFileType.instance
-    override fun toString() = "FlexibleSearch File"
-    override fun getIcon(flags: Int) = super.getIcon(flags)
+    override fun getName() = "FlexibleSearch file"
+    override fun getDescription() = "FlexibleSearch language file"
+    override fun getDefaultExtension() = "fxs"
+    override fun getIcon(): Icon = HybrisIcons.FS_FILE
 
     companion object {
-        @Serial
-        private const val serialVersionUID: Long = 1571628396866548247L
+        val instance = FlexibleSearchFileType()
     }
 }

@@ -41,7 +41,7 @@ public class ExecuteFlexibleSearchAction extends AbstractExecuteAction {
 
     @Override
     protected String getExtension() {
-        return FlexibleSearchFileType.getInstance().getDefaultExtension();
+        return FlexibleSearchFileType.Companion.getInstance().getDefaultExtension();
     }
 
     @Override
