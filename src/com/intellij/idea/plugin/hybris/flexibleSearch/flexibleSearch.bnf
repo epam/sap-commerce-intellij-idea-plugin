@@ -277,7 +277,7 @@ defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
     methods=[getTableName]
 }
-y_column_name ::= column_name
+y_column_name ::= ORDER | IDENTIFIER
 {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYColumnNameMixin"
     methods=[getTable]

@@ -27,9 +27,6 @@ import com.intellij.psi.PsiElement;
 
 public interface FlexibleSearchYColumnName extends PsiElement {
 
-  @NotNull
-  FlexibleSearchColumnName getColumnName();
-
   @Nullable
   FlexibleSearchDefinedTableName getTable();
 

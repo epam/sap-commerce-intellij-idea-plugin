@@ -57,7 +57,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 .withElementType(FlexibleSearchTypes.IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
                 .withParent(not(psiElement(FlexibleSearchTypes.Y_COLUMN_NAME)))
-                .inside(PlatformPatterns.not(psiElement(FlexibleSearchTypes.SELECT_CORE_SELECT)))
             ,
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

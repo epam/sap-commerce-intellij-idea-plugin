@@ -47,12 +47,6 @@ public class FlexibleSearchYColumnNameImpl extends FlexibleSearchYColumnNameMixi
   }
 
   @Override
-  @NotNull
-  public FlexibleSearchColumnName getColumnName() {
-    return findNotNullChildByClass(FlexibleSearchColumnName.class);
-  }
-
-  @Override
   @Nullable
   public FlexibleSearchDefinedTableName getTable() {
     return FlexibleSearchPsiUtil.getTable(this);

@@ -1495,13 +1495,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // column_name
+  // ORDER | IDENTIFIER
   public static boolean y_column_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "y_column_name")) return false;
     if (!nextTokenIs(b, "<y column name>", IDENTIFIER, ORDER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, Y_COLUMN_NAME, "<y column name>");
-    r = column_name(b, l + 1);
+    r = consumeToken(b, ORDER);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
