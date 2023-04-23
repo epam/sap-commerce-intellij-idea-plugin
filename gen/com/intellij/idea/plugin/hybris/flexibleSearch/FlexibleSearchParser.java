@@ -122,15 +122,16 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // BRACKET_LITERAL
+  // '[' IDENTIFIER ']'
   public static boolean column_localized_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_localized_name")) return false;
-    if (!nextTokenIs(b, BRACKET_LITERAL)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, BRACKET_LITERAL);
-    exit_section_(b, m, COLUMN_LOCALIZED_NAME, r);
-    return r;
+    if (!nextTokenIs(b, LBRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, COLUMN_LOCALIZED_NAME, null);
+    r = consumeTokens(b, 1, LBRACKET, IDENTIFIER, RBRACKET);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

@@ -28,7 +28,6 @@ WHITE_SPACE=\s+
 NUMERIC_LITERAL=(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)
 SINGLE_QUOTE_STRING_LITERAL=X?'(''|[^'])*'
 DOUBLE_QUOTE_STRING_LITERAL=X?\"(\"\"|[^\"])*\"
-BRACKET_LITERAL=\[[^\]]*\]
 BACKTICK_LITERAL=`(``|[^`])*`
 IDENTIFIER=([:letter:]|_)([:letter:]|[:digit:]|_)*
 NAMED_PARAMETER=[?][:jletterdigit:]+
@@ -125,7 +124,6 @@ LINE_COMMENT=--[^\r\n]*
   {NUMERIC_LITERAL}                  { return NUMERIC_LITERAL; }
   {SINGLE_QUOTE_STRING_LITERAL}      { return SINGLE_QUOTE_STRING_LITERAL; }
   {DOUBLE_QUOTE_STRING_LITERAL}      { return DOUBLE_QUOTE_STRING_LITERAL; }
-  {BRACKET_LITERAL}                  { return BRACKET_LITERAL; }
   {BACKTICK_LITERAL}                 { return BACKTICK_LITERAL; }
   {IDENTIFIER}                       { return IDENTIFIER; }
   {LINE_COMMENT}                     { return LINE_COMMENT; }

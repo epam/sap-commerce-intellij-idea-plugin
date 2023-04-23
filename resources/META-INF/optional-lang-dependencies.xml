@@ -215,7 +215,7 @@
         <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
         <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
         <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
-        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FlexibleSearchFormattingModelBuilder"/>
+        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
         <lang.foldingBuilder language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
         <lang.findUsagesProvider language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
         <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>

@@ -50,6 +50,8 @@ class FlexibleSearchAnnotator : Annotator {
                 DEFINED_TABLE_NAME -> highlightReference(DEFINED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.type.key")
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
                 TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
+                COLUMN_ALIAS_NAME -> highlight(COLUMN_ALIAS_NAME, holder, element)
+                COLUMN_LOCALIZED_NAME -> highlight(COLUMN_LOCALIZED_NAME, holder, element)
             }
 
             // Special case, [y] allows reserved words for attributes & types
@@ -65,21 +67,15 @@ class FlexibleSearchAnnotator : Annotator {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FS_TABLE_TRAIL, holder, element)
             }
 
-            BRACKET_LITERAL -> if (element.parent.elementType == COLUMN_LOCALIZED_NAME) {
-                val text = element.text
-                    .let { it.substring(it.indexOf('[') + 1, it.indexOf(']')) }
-                    .trim()
-
-                if (text.isEmpty()) {
-                    highlight(
-                        TokenType.BAD_CHARACTER, holder, element,
-                        highlightSeverity = HighlightSeverity.WARNING,
-                        message = message("hybris.editor.annotator.fxs.missingLangLiteral")
-                    )
-                } else {
-                    val startOffset = element.textRange.startOffset + element.text.indexOf(text)
-                    highlight(COLUMN_LOCALIZED_NAME, holder, element, range = TextRange.from(startOffset, text.length))
-                }
+            TokenType.ERROR_ELEMENT -> when (element.parent.elementType) {
+                COLUMN_LOCALIZED_NAME -> annotation(
+                    message("hybris.editor.annotator.fxs.missingLangLiteral"),
+                    holder,
+                    HighlightSeverity.ERROR
+                )
+                    .range(element.textRange)
+                    .highlightType(ProblemHighlightType.ERROR)
+                    .create()
             }
         }
     }

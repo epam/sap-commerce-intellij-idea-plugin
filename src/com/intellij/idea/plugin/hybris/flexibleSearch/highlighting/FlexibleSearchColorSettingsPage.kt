@@ -80,7 +80,6 @@ ORDER BY {p:code} ASC
             AttributesDescriptor("Braces//Bracket", FlexibleSearchHighlighterColors.FS_BRACKETS),
             AttributesDescriptor("Braces//Parentheses", FlexibleSearchHighlighterColors.FS_PARENTHESES),
             AttributesDescriptor("Braces//Paren", FlexibleSearchHighlighterColors.FS_PARENS),
-            AttributesDescriptor("Column//Localized `[]`", FlexibleSearchHighlighterColors.FS_LOCALIZED),
             AttributesDescriptor("Column//Outer Join `:o`", FlexibleSearchHighlighterColors.FS_OUTER_JOIN),
             AttributesDescriptor("Column//Separator `.` or `:`", FlexibleSearchHighlighterColors.FS_COLUMN_SEPARATOR),
             AttributesDescriptor("Parameter", FlexibleSearchHighlighterColors.FS_PARAMETER),
@@ -91,6 +90,7 @@ ORDER BY {p:code} ASC
             AttributesDescriptor("Not available in preview//Table", FlexibleSearchHighlighterColors.FS_TABLE),
             AttributesDescriptor("Not available in preview//Table Trail `!` or `*`", FlexibleSearchHighlighterColors.FS_TABLE_TRAIL),
             AttributesDescriptor("Not available in preview//Column", FlexibleSearchHighlighterColors.FS_COLUMN),
+            AttributesDescriptor("Not available in preview//Column - Localized `[]`", FlexibleSearchHighlighterColors.FS_LOCALIZED),
             AttributesDescriptor("Not available in preview//Alias", FlexibleSearchHighlighterColors.FS_ALIAS),
             AttributesDescriptor("Not available in preview//Nested parameter `\$session.user`", FlexibleSearchHighlighterColors.FS_PARAMETER),
         )

@@ -50,7 +50,6 @@
         // Manually tweaked in the flex file to handle literals without the closing character.
         SINGLE_QUOTE_STRING_LITERAL = "regexp:X?'(''|[^'])*'"
         DOUBLE_QUOTE_STRING_LITERAL = "regexp:X?\"(\"\"|[^\"])*\""
-        BRACKET_LITERAL             = "regexp:\[[^\]]*\]"
         BACKTICK_LITERAL            = "regexp:`(``|[^`])*`"
 
         // Some approximation of what's actually allowed. This doesn't seem to be defined anywhere.
@@ -261,7 +260,7 @@ compound_operator ::= UNION ALL?
 
 ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
-column_localized_name ::= BRACKET_LITERAL
+column_localized_name ::= '[' IDENTIFIER ']' {pin=1}
 column_alias_name ::= name
 table_alias_name ::= name
 {

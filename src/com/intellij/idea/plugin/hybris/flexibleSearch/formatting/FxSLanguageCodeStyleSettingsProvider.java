@@ -43,7 +43,7 @@ public class FxSLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSetti
             consumer.showCustomOption(
                 FxSCodeStyleSettings.class,
                 "SPACE_AROUND_OP",
-                "Around comparision operator",
+                "Around comparison operator",
                 styleOptions.SPACES_AROUND_OPERATORS
             );
             consumer.showCustomOption(

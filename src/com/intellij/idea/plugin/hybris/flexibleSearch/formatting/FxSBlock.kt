@@ -18,133 +18,94 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 
-import com.intellij.formatting.ASTBlock
-import com.intellij.formatting.Alignment
-import com.intellij.formatting.Block
-import com.intellij.formatting.ChildAttributes
-import com.intellij.formatting.Indent
-import com.intellij.formatting.Spacing
-import com.intellij.formatting.SpacingBuilder
-import com.intellij.formatting.Wrap
-import com.intellij.formatting.WrapType
-import com.intellij.formatting.alignment.AlignmentStrategy
-import com.intellij.formatting.alignment.AlignmentStrategy.createAlignmentPerTypeStrategy
+import com.intellij.formatting.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinOperator
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.formatter.FormatterUtil
-import java.util.function.Predicate
+import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.util.PsiTreeUtil
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class FxSBlock internal constructor(
-        private val node: ASTNode,
-        private val alignment: Alignment?,
-        private val indent: Indent?,
-        private val wrap: Wrap?,
-        private val codeStyleSettings: CodeStyleSettings,
-        private val spacingBuilder: SpacingBuilder
-) : ASTBlock {
+    private val node: ASTNode,
+    private val alignment: Alignment?,
+    private val indent: Indent?,
+    private val wrap: Wrap?,
+    private val codeStyleSettings: CodeStyleSettings,
+    private val spacingBuilder: SpacingBuilder
+) : AbstractBlock(node, wrap, alignment) {
 
-    private var subBlocks: MutableList<Block>? = null
+    override fun getDebugName() = "FxS Block"
+    override fun isLeaf() = node.firstChildNode == null
+    override fun getSpacing(child1: Block?, child2: Block) = spacingBuilder.getSpacing(this, child1, child2)
+    override fun getIndent() = indent
 
-    override fun getNode() = node
+    override fun buildChildren(): MutableList<Block> {
+        var child = node.firstChildNode
+        val blocks = mutableListOf<Block>()
+        while (child != null) {
+            if (child.elementType != TokenType.WHITE_SPACE) {
+                val block = FxSBlock(
+                    child,
+                    calculateAlignment(child),
+                    calculateIndent(child),
+                    calculateWrap(child),
+                    codeStyleSettings,
+                    spacingBuilder
+                )
 
-    override fun getTextRange(): TextRange = node.textRange
+                blocks.add(block)
+            }
 
-    override fun getSubBlocks(): List<Block> {
-        if (subBlocks == null) {
-            val isWhitespaceOrEmpty = Predicate<ASTNode> { isWhitespaceOrEmpty(it) }
-            val strategy = createStrategy(getNode())
+            child = child.treeNext
+        }
 
-            subBlocks = mutableListOf()
-            var subNode: ASTNode? = node.firstChildNode
-            while (subNode != null) {
-                if (isWhitespaceOrEmpty.test(subNode)) {
-                    subNode = subNode.treeNext
-                    continue
-                }
 
-                val alignment = strategy?.getAlignment(getNode().elementType, subNode.elementType)
+        return blocks;
+    }
 
-                val block = makeSubBlock(subNode, alignment)
-                subBlocks!!.add(block)
-                subNode = subNode.treeNext
+    private fun calculateAlignment(child: ASTNode) = when (child.elementType) {
+        RBRACE -> {
+            if (child.treeParent.elementType == Y_FROM_CLAUSE) {
+                null
+            } else {
+                Alignment.createAlignment()
             }
         }
-        return subBlocks as MutableList<Block>
+
+        else -> Alignment.createAlignment()
     }
 
-    private fun createStrategy(node: ASTNode?): AlignmentStrategy.AlignmentPerTypeStrategy? {
-        return if (node == null) {
-            null
-        } else createAlignmentPerTypeStrategy(arrayListOf(node.elementType), node.elementType, true
-        )
+    private fun calculateIndent(child: ASTNode) = when (child.elementType) {
+        FROM_CLAUSE_EXPRESSION,
+        WHEN,
+        THEN,
+        ELSE -> Indent.getNormalIndent()
 
+        else -> Indent.getNoneIndent()
     }
 
-    private fun makeSubBlock(node: ASTNode, alignment: Alignment?): FxSBlock {
-        val wrap = Wrap.createWrap(WrapType.NONE, false)
-        val indent = calcIndent(node)
-
-        return FxSBlock(node, alignment, indent, wrap, codeStyleSettings, spacingBuilder)
-    }
-
-    private fun calcIndent(node: ASTNode): Indent {
-        val parentType = this.node.elementType
-        val type = node.elementType
-
-//        if (type === LEFT_DOUBLE_BRACE || type === RIGHT_DOUBLE_BRACE) {
-//            return Indent.getNormalIndent()
-//        }
-        if (parentType === SELECT_SUBQUERY) {
-            return Indent.getContinuationWithoutFirstIndent()
+    private fun calculateWrap(child: ASTNode) = when (child.elementType) {
+        FROM_CLAUSE_SIMPLE,
+        RBRACE -> {
+            if (child.treeParent.elementType == Y_FROM_CLAUSE
+                && PsiTreeUtil.findChildOfType(child.treeParent.psi, FlexibleSearchJoinOperator::class.java) != null
+            ) {
+                Wrap.createWrap(WrapType.ALWAYS, true)
+            } else {
+                Wrap.createWrap(WrapType.NONE, false)
+            }
         }
-        if (type === FROM_CLAUSE) {
-            return Indent.getNormalIndent()
-        }
-        if (type !== FROM && parentType === FROM_CLAUSE) {
-            return Indent.getNormalIndent()
-        }
-        if (type === ON) {
-            return Indent.getNormalIndent()
-        }
-        if (isReturnBodyKeywords(node)) {
-            return Indent.getNormalIndent()
-        }
-        return if (type === WHERE) {
-            Indent.getNormalIndent()
-        } else Indent.getNoneIndent()
 
+        WHEN,
+        ELSE,
+        FROM_CLAUSE,
+        ORDER_CLAUSE,
+        JOIN_OPERATOR,
+        COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
+
+        else -> Wrap.createWrap(WrapType.NONE, false)
     }
 
-    override fun getWrap() = wrap
-    override fun getIndent() = indent
-    override fun getAlignment() = alignment
-
-    override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        return spacingBuilder.getSpacing(this, child1, child2)
-    }
-
-    override fun getChildAttributes(newChildIndex: Int) = ChildAttributes(Indent.getNoneIndent(), null)
-
-    override fun isIncomplete() = false
-
-    override fun isLeaf() = node.firstChildNode == null
-
-    private fun isWhitespaceOrEmpty(node: ASTNode): Boolean {
-        return node.elementType === TokenType.WHITE_SPACE || node.textLength == 0
-    }
-
-    private fun isReturnBodyKeywords(node: ASTNode): Boolean {
-        return FormatterUtil.isOneOf(
-                node,
-                LEFT,
-                JOIN,
-                ORDER
-        )
-    }
 }
