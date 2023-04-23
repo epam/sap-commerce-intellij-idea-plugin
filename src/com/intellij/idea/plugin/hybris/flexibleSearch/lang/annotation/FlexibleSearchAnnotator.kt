@@ -17,7 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
@@ -27,6 +28,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
@@ -41,17 +43,17 @@ class FlexibleSearchAnnotator : Annotator {
         when (element.elementType) {
             IDENTIFIER,
             BACKTICK_LITERAL -> when (element.parent.elementType) {
-                COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
-                Y_COLUMN_NAME -> highlight(Y_COLUMN_NAME, holder, element)
                 FUNCTION_NAME -> highlight(FUNCTION_NAME, holder, element)
-                SELECTED_TABLE_NAME -> highlight(SELECTED_TABLE_NAME, holder, element)
-                DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
+                COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
+                Y_COLUMN_NAME -> highlightReference(Y_COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.attribute.key")
+                SELECTED_TABLE_NAME -> highlightReference(SELECTED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.tableAlias.key")
+                DEFINED_TABLE_NAME -> highlightReference(DEFINED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.type.key")
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
                 TABLE_ALIAS_NAME -> highlight(TABLE_ALIAS_NAME, holder, element)
             }
 
             // Special case, [y] allows reserved words for attributes & types
-            ORDER -> when(element.parent.elementType) {
+            ORDER -> when (element.parent.elementType) {
                 COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
                 Y_COLUMN_NAME -> highlight(Y_COLUMN_NAME, holder, element)
                 DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
@@ -72,13 +74,38 @@ class FlexibleSearchAnnotator : Annotator {
                     highlight(
                         TokenType.BAD_CHARACTER, holder, element,
                         highlightSeverity = HighlightSeverity.WARNING,
-                        message = HybrisI18NBundleUtils.message("hybris.editor.annotator.fxs.missingLangLiteral")
+                        message = message("hybris.editor.annotator.fxs.missingLangLiteral")
                     )
                 } else {
                     val startOffset = element.textRange.startOffset + element.text.indexOf(text)
                     highlight(COLUMN_LOCALIZED_NAME, holder, element, range = TextRange.from(startOffset, text.length))
                 }
             }
+        }
+    }
+
+    private fun highlightReference(
+        tokenType: IElementType,
+        holder: AnnotationHolder,
+        element: PsiElement,
+        messageKey: String
+    ) {
+        val resolved = (element.parent.reference as? PsiReferenceBase.Poly<*>)
+            ?.multiResolve(true)
+            ?.isNotEmpty()
+            ?: true
+
+        if (resolved) {
+            highlight(tokenType, holder, element)
+        } else {
+            annotation(
+                message(messageKey, element.text),
+                holder,
+                HighlightSeverity.ERROR
+            )
+                .range(element.textRange)
+                .highlightType(ProblemHighlightType.ERROR)
+                .create()
         }
     }
 
@@ -102,12 +129,17 @@ class FlexibleSearchAnnotator : Annotator {
         range: TextRange = element.textRange,
         message: String? = null
     ) {
-        val annotation = message
-            ?.let { m -> holder.newAnnotation(highlightSeverity, m) }
-            ?: holder.newSilentAnnotation(highlightSeverity)
-        annotation
+        annotation(message, holder, highlightSeverity)
             .range(range)
             .textAttributes(textAttributesKey)
             .create()
     }
+
+    private fun annotation(
+        message: String?,
+        holder: AnnotationHolder,
+        highlightSeverity: HighlightSeverity
+    ) = message
+        ?.let { m -> holder.newAnnotation(highlightSeverity, m) }
+        ?: holder.newSilentAnnotation(highlightSeverity)
 }

@@ -31,10 +31,11 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemReso
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBase<FlexibleSearchDefinedTableName>(owner) {
+class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiReferenceBase.Poly<FlexibleSearchDefinedTableName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
@@ -42,7 +43,7 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSRefere
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
@@ -57,7 +58,7 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSRefere
             }
             ?: emptyArray()
 
-        val types = TSCompletionService.getInstance(project)
+        val types = TSCompletionService.getInstance(element.project)
             .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
             .toTypedArray()
 
@@ -71,7 +72,7 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSRefere
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSDefinedTableReference> { ref ->
             val lookingForName = ref.element.tableName
-            val modelAccess = TSMetaModelAccess.getInstance(ref.project)
+            val modelAccess = TSMetaModelAccess.getInstance(ref.element.project)
 
             val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)
                 ?.declarations

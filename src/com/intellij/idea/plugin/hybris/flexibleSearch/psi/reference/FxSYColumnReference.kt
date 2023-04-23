@@ -40,10 +40,11 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.Relation
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferenceBase<FlexibleSearchYColumnName>(owner) {
+internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
@@ -51,7 +52,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
@@ -60,7 +61,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
      */
     override fun getVariants() = getType()
         ?.let {
-            TSCompletionService.getInstance(project).getCompletions(it)
+            TSCompletionService.getInstance(element.project).getCompletions(it)
                 .toTypedArray()
         }
         ?: getSuitablePrefixes()
@@ -69,7 +70,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
     private fun getSuitablePrefixes(): Array<out Any> {
-        val fxsSettings = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+        val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
         val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
 
         val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
@@ -102,11 +103,11 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
             val featureName = FxSPsiUtils.getColumnName(ref.element.text)
-            val result = findReference(ref.project, ref.element.table, featureName)
+            val result = findReference(ref.element.project, ref.element.table, featureName)
 
             CachedValueProvider.Result.create(
                 result,
-                TSMetaModelAccess.getInstance(ref.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                TSMetaModelAccess.getInstance(ref.element.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 
