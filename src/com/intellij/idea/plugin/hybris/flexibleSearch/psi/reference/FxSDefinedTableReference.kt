@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
@@ -31,7 +32,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBase<FlexibleSearchDefinedTableName>(owner) {
+class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBase<FlexibleSearchDefinedTableName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
@@ -43,11 +44,15 @@ class FxSTSItemReference(owner: FlexibleSearchDefinedTableName) : TSReferenceBas
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
+    override fun getVariants() = TSCompletionService.getInstance(project)
+        .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+        .toTypedArray()
+
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSDefinedTableReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSItemReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSDefinedTableReference> { ref ->
             val lookingForName = ref.element.tableName
             val modelAccess = TSMetaModelAccess.getInstance(ref.project)
 

@@ -39,7 +39,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-internal class FxSTSAttributeReference(owner: FlexibleSearchYColumnName) : TSReferenceBase<FlexibleSearchYColumnName>(owner) {
+internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferenceBase<FlexibleSearchYColumnName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
@@ -61,9 +61,9 @@ internal class FxSTSAttributeReference(owner: FlexibleSearchYColumnName) : TSRef
         ?.tableName
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSYColumnReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTSAttributeReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
             val featureName = FxSPsiUtils.getColumnName(ref.element.text)
             val result = findReference(ref.project, ref.element.table, featureName)
 

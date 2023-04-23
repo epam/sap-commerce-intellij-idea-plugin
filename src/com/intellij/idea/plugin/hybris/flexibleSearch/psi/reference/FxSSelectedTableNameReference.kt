@@ -32,7 +32,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
+class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
@@ -57,9 +57,9 @@ class FxSTableSelectedTableNameReference(owner: FlexibleSearchSelectedTableName)
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSTableSelectedTableNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSSelectedTableNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSTableSelectedTableNameReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSSelectedTableNameReference> { ref ->
             val lookingForName = ref.element.text
                 .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 .trim()

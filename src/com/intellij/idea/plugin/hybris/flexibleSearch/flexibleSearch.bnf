@@ -100,7 +100,7 @@
   ]
 }
 
-root ::= statement SEMICOLON?
+root ::= statement
 
 private statement ::= (select_statement) { name="statement" }
 
@@ -224,7 +224,8 @@ from_clause_subqueries ::= '(' from_clause_subqueries_statement ')' ( ( AS )? ta
 
 private from_clause_subqueries_statement ::= ( select_subquery_combined compound_operator? )*
 
-result_columns ::= result_column ( ',' result_column )*
+result_columns ::= result_column ( following_result_column )* {pin=1}
+private following_result_column ::= ',' result_column {pin=1}
 
 table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 

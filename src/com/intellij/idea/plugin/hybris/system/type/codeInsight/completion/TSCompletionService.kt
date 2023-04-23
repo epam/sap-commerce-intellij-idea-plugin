@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.project.Project
 
 interface TSCompletionService {
@@ -27,6 +28,8 @@ interface TSCompletionService {
      * This method should return lookup elements for possible type code, it can be Item/Enum or Relation
      */
     fun getCompletions(typeCode: String): List<LookupElementBuilder>
+
+    fun getCompletions(vararg types: TSMetaType): List<LookupElementBuilder>
 
     companion object {
         fun getInstance(project: Project): TSCompletionService = project.getService(TSCompletionService::class.java)

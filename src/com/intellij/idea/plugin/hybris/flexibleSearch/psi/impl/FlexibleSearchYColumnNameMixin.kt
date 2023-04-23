@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSTSAttributeReference
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSYColumnReference
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -28,14 +28,14 @@ import java.io.Serial
 
 abstract class FlexibleSearchYColumnNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchYColumnName {
 
-    private var reference: FxSTSAttributeReference? = null
+    private var reference: FxSYColumnReference? = null
 
     override fun getReference() = references
         .firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
         if (PsiUtils.shouldCreateNewReference(reference, text)) {
-            reference = FxSTSAttributeReference(this)
+            reference = FxSYColumnReference(this)
         }
         return reference
             ?.let { arrayOf(it) }

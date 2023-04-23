@@ -17,30 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lexer.FlexAdapter
 
-class FlexibleSearchLexer : FlexAdapter(_FlexibleSearchLexer()) {
-    companion object {
-        fun needsQuoting(name: String): Boolean {
-            val lexer = FlexibleSearchLexer()
-            lexer.start(name)
-            return lexer.tokenType != FlexibleSearchTypes.IDENTIFIER || lexer.tokenEnd != lexer.bufferEnd
-        }
-
-        /** Checks if the given name (table name, column name) needs escaping and returns a string that's safe to put in SQL. */
-        @JvmStatic
-        fun getValidName(name: String): String {
-            return if (!needsQuoting(name)) name else "`${name.replace("`", "``")}`"
-        }
-
-        /**
-         * Checks if the given string value needs escaping and returns a string that's safe to put in SQL as a string value.
-         */
-        @JvmStatic
-        fun getValidStringValue(name: String): String {
-            // We can't use the back tick character (`) for strings because it's not a valid character to create strings
-            return if (!needsQuoting(name)) "'$name'" else "'${name.replace("'", "''")}'"
-        }
-    }
-}
+class FlexibleSearchLexer : FlexAdapter(_FlexibleSearchLexer())

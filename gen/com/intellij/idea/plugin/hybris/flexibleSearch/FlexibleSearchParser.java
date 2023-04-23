@@ -302,6 +302,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // ',' result_column
+  static boolean following_result_column(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "following_result_column")) return false;
+    if (!nextTokenIs(b, COMMA)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, COMMA);
+    p = r; // pin = 1
+    r = r && result_column(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // FROM from_clause_expression ( join_operator from_clause_expression )*
   public static boolean from_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause")) return false;
@@ -1065,18 +1079,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // result_column ( ',' result_column )*
+  // result_column ( following_result_column )*
   public static boolean result_columns(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_columns")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, RESULT_COLUMNS, "<result columns>");
     r = result_column(b, l + 1);
+    p = r; // pin = 1
     r = r && result_columns_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // ( ',' result_column )*
+  // ( following_result_column )*
   private static boolean result_columns_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_columns_1")) return false;
     while (true) {
@@ -1087,35 +1102,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ',' result_column
+  // ( following_result_column )
   private static boolean result_columns_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_columns_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && result_column(b, l + 1);
+    r = following_result_column(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // statement SEMICOLON?
+  // statement
   static boolean root(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root")) return false;
-    if (!nextTokenIs(b, SELECT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = statement(b, l + 1);
-    r = r && root_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // SEMICOLON?
-  private static boolean root_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_1")) return false;
-    consumeToken(b, SEMICOLON);
-    return true;
+    return statement(b, l + 1);
   }
 
   /* ********************************************************** */

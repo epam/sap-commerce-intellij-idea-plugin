@@ -46,17 +46,8 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             placePattern
                 .withElementType(FlexibleSearchTypes.IDENTIFIER)
-                .withoutText(DUMMY_IDENTIFIER)
-                .withParent(psiElement(FlexibleSearchTypes.DEFINED_TABLE_NAME)),
-            ItemCodeCompletionProvider.instance
-        );
-
-        extend(
-            CompletionType.BASIC,
-            placePattern
-                .withElementType(FlexibleSearchTypes.IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
-                .withParent(not(psiElement(FlexibleSearchTypes.Y_COLUMN_NAME)))
+                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME))
             ,
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
