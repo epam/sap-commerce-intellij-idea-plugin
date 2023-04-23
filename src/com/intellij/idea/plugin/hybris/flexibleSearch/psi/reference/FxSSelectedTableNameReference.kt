@@ -74,10 +74,13 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
             )
         }
 
+        // we may have subselect inside the Result column
         private fun getSuitableParent(element: FlexibleSearchSelectedTableName) =
-            (PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.fromClause
-                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java))
+            PsiTreeUtil.getParentOfType(element, FlexibleSearchResultColumns::class.java)
+                ?.let { PsiTreeUtil.getParentOfType(it, FlexibleSearchSelectCoreSelect::class.java) }
+                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                    ?.fromClause
+                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
     }
 
 }
