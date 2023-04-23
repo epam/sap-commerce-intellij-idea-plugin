@@ -37,6 +37,16 @@ object FxSLookupElementFactory {
         .withTailText(" (omit all subtypes)")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
+    fun buildSeparatorDot(aliasPrefix : String) = LookupElementBuilder.create("$aliasPrefix.")
+        .withPresentableText(".")
+        .withTailText(" (column separator)")
+        .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
+
+    fun buildSeparatorColon(aliasPrefix : String) = LookupElementBuilder.create("$aliasPrefix:")
+        .withPresentableText(":")
+        .withTailText(" (alternative column separator)")
+        .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
+
     fun buildStar() = LookupElementBuilder.create('*')
         .withTailText(" (omit type restrictions)")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)

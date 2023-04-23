@@ -24,10 +24,14 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
 public interface FlexibleSearchYColumnName extends PsiElement {
 
   @Nullable
   FlexibleSearchDefinedTableName getTable();
+
+  @NotNull
+  Collection<FlexibleSearchTableAliasName> getTableAliases();
 
 }

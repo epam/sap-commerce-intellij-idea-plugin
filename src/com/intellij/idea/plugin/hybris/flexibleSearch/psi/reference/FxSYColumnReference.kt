@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAM
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
@@ -51,11 +53,36 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
+    /*
+    By default Lexer will create non-aliased Element, so we may extend variants with supported aliases first
+     */
     override fun getVariants() = getType()
         ?.let {
             TSCompletionService.getInstance(project).getCompletions(it)
                 .toTypedArray()
-        } ?: emptyArray()
+        }
+        ?: getSuitablePrefixes()
+
+    /*
+    If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
+     */
+    private fun getSuitablePrefixes() : Array<out Any> {
+        val separators = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+            .takeIf { it.isBlank() }
+            ?.let {
+                val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+                arrayOf(
+                    FxSLookupElementFactory.buildSeparatorDot(aliasText),
+                    FxSLookupElementFactory.buildSeparatorColon(aliasText)
+                )
+            }
+            ?: emptyArray()
+       val tableAliases = element.tableAliases
+            .mapNotNull { FxSLookupElementFactory.build(it) }
+            .toTypedArray()
+
+        return separators + tableAliases
+    }
 
     fun getType() = element.table
         ?.tableName

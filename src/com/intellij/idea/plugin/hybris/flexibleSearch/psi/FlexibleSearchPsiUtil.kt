@@ -68,14 +68,14 @@ fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement? = ele
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
 
-fun getTable(element: FlexibleSearchYColumnNameMixin): FlexibleSearchDefinedTableName? {
+fun getTable(element: FlexibleSearchYColumnName): FlexibleSearchDefinedTableName? {
     val tableAlias = element.backwardSiblings()
         .firstOrNull { it is FlexibleSearchSelectedTableName }
         ?.reference
         ?.resolve() as? FlexibleSearchTableAliasName
     return tableAlias
         ?.table
-        ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+        ?: getSuitableTableContainerParent(element)
             ?.let { select ->
                 val definedTableName = PsiTreeUtil.findChildOfType(select, FlexibleSearchDefinedTableName::class.java)
 
@@ -88,5 +88,18 @@ fun getTable(element: FlexibleSearchYColumnNameMixin): FlexibleSearchDefinedTabl
                 } else null
             }
 }
+
+fun getTableAliases(element: FlexibleSearchYColumnName) = getSuitableTableContainerParent(element)
+    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+    ?: emptyList()
+
+/*
+ Order clause is not part of the CoreSelect, so we have to go upper to Statement itself
+ */
+private fun getSuitableTableContainerParent(element: FlexibleSearchYColumnName) = PsiTreeUtil.getParentOfType(
+    element,
+    FlexibleSearchSelectCoreSelect::class.java,
+    FlexibleSearchSelectStatement::class.java
+)
 
 fun getTableName(element: FlexibleSearchDefinedTableName): String = element.firstChild.text

@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.openapi.util.Key
@@ -46,8 +43,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants() = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-        ?.fromClause
+    override fun getVariants() = getSuitableParent(element)
         ?.let {
             PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
                 .mapNotNull { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
@@ -64,8 +60,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
                 .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 .trim()
 
-            val result: Array<ResolveResult> = PsiTreeUtil.getParentOfType(ref.element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.fromClause
+            val result: Array<ResolveResult> = getSuitableParent(ref.element)
                 ?.let {
                     PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
                         .firstOrNull { alias -> alias.text.trim() == lookingForName }
@@ -78,6 +73,11 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
                 PsiModificationTracker.MODIFICATION_COUNT
             )
         }
+
+        private fun getSuitableParent(element: FlexibleSearchSelectedTableName) =
+            (PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?.fromClause
+                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java))
     }
 
 }
