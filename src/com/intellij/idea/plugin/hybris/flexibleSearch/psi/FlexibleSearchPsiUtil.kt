@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYCo
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.siblings
 import org.jetbrains.plugins.groovy.lang.psi.util.backwardSiblings
 
 fun getPresentationText(resultColumn: FlexibleSearchResultColumn) = (
@@ -75,8 +76,16 @@ fun getTable(element: FlexibleSearchYColumnNameMixin): FlexibleSearchDefinedTabl
     return tableAlias
         ?.table
         ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-            ?.let {
-                PsiTreeUtil.findChildOfType(it, FlexibleSearchDefinedTableName::class.java)
+            ?.let { select ->
+                val definedTableName = PsiTreeUtil.findChildOfType(select, FlexibleSearchDefinedTableName::class.java)
+
+                val definedTableAlias = definedTableName
+                    ?.siblings()
+                    ?.firstOrNull { it is FlexibleSearchTableAliasName }
+
+                if (definedTableAlias == null) {
+                    definedTableName
+                } else null
             }
 }
 

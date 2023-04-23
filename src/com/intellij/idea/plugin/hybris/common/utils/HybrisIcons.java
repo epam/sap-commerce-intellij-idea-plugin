@@ -35,7 +35,7 @@ public final class HybrisIcons {
     }
 
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
-    public static final Icon FS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
+    public static final Icon FXS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
     public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
 
     public static final Icon IMPEX = getIcon("/icons/impex.svg");
@@ -126,6 +126,8 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
 
     public static final Icon FXS_TABLE_ALIAS = AllIcons.Nodes.Alias;
+    public static final Icon FXS_Y_COLUMN = AllIcons.Actions.PrettyPrint;
+    public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

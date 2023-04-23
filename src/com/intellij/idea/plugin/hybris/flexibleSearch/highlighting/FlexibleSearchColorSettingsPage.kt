@@ -27,7 +27,7 @@ import javax.swing.Icon
 class FlexibleSearchColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = "FlexibleSearch"
-    override fun getIcon(): Icon = HybrisIcons.FS_FILE
+    override fun getIcon(): Icon = HybrisIcons.FXS_FILE
     override fun getAdditionalHighlightingTagToDescriptorMap() = null
     override fun getAttributeDescriptors() = DESCRIPTORS
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY

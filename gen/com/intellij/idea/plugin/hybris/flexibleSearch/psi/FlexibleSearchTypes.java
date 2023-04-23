@@ -82,6 +82,7 @@ public interface FlexibleSearchTypes {
   IElementType SELECT_SUBQUERY = new FlexibleSearchElementType("SELECT_SUBQUERY");
   IElementType SELECT_SUBQUERY_COMBINED = new FlexibleSearchElementType("SELECT_SUBQUERY_COMBINED");
   IElementType SIGNED_NUMBER = new FlexibleSearchElementType("SIGNED_NUMBER");
+  IElementType SUBQUERY_PAREN_EXPRESSION = new FlexibleSearchElementType("SUBQUERY_PAREN_EXPRESSION");
   IElementType TABLE_ALIAS_NAME = new FlexibleSearchElementType("TABLE_ALIAS_NAME");
   IElementType TABLE_OR_SUBQUERY = new FlexibleSearchElementType("TABLE_OR_SUBQUERY");
   IElementType TYPE_NAME = new FlexibleSearchElementType("TYPE_NAME");
@@ -337,6 +338,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == SIGNED_NUMBER) {
         return new FlexibleSearchSignedNumberImpl(node);
+      }
+      else if (type == SUBQUERY_PAREN_EXPRESSION) {
+        return new FlexibleSearchSubqueryParenExpressionImpl(node);
       }
       else if (type == TABLE_ALIAS_NAME) {
         return new FlexibleSearchTableAliasNameImpl(node);

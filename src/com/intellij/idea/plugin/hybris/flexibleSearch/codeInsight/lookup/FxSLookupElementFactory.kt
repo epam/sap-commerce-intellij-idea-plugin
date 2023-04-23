@@ -30,7 +30,16 @@ object FxSLookupElementFactory {
             val cursorOffset = ctx.editor.caretModel.offset
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
+        .withIcon(HybrisIcons.FXS_Y_COLUMN)
         .withCaseSensitivity(false)
+
+    fun buildExclamationMark() = LookupElementBuilder.create('!')
+        .withTailText(" (omit all subtypes)")
+        .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
+
+    fun buildStar() = LookupElementBuilder.create('*')
+        .withTailText(" (omit type restrictions)")
+        .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
     fun build(tableAlias: FlexibleSearchTableAliasName) = tableAlias.name
         ?.let {

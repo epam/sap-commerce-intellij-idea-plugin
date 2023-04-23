@@ -61,7 +61,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
       CONCAT_EXPRESSION, EQUIVALENCE_EXPRESSION, EXISTS_EXPRESSION, EXPRESSION,
       FROM_CLAUSE_EXPRESSION, FUNCTION_CALL_EXPRESSION, IN_EXPRESSION, ISNULL_EXPRESSION,
       LIKE_EXPRESSION, LITERAL_EXPRESSION, MUL_EXPRESSION, MYSQL_FUNCTION_EXPRESSION,
-      OR_EXPRESSION, PAREN_EXPRESSION, UNARY_EXPRESSION),
+      OR_EXPRESSION, PAREN_EXPRESSION, SUBQUERY_PAREN_EXPRESSION, UNARY_EXPRESSION),
   };
 
   /* ********************************************************** */
@@ -1543,8 +1543,9 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // 15: BINARY(unary_expression)
   // 16: ATOM(literal_expression)
   // 17: ATOM(column_ref_y_expression)
-  // 18: ATOM(column_ref_expression)
-  // 19: ATOM(paren_expression)
+  // 18: ATOM(subquery_paren_expression)
+  // 19: ATOM(column_ref_expression)
+  // 20: ATOM(paren_expression)
   public static boolean expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expression")) return false;
     addVariant(b, "<expression>");
@@ -1557,6 +1558,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!r) r = function_call_expression(b, l + 1);
     if (!r) r = literal_expression(b, l + 1);
     if (!r) r = column_ref_y_expression(b, l + 1);
+    if (!r) r = subquery_paren_expression(b, l + 1);
     if (!r) r = column_ref_expression(b, l + 1);
     if (!r) r = paren_expression(b, l + 1);
     p = r;
@@ -2102,6 +2104,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "column_ref_y_expression_4")) return false;
     column_outer_join_name(b, l + 1);
     return true;
+  }
+
+  // '(' from_clause_subqueries_statement ')'
+  public static boolean subquery_paren_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "subquery_paren_expression")) return false;
+    if (!nextTokenIsSmart(b, LPAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenSmart(b, LPAREN);
+    r = r && from_clause_subqueries_statement(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, SUBQUERY_PAREN_EXPRESSION, r);
+    return r;
   }
 
   // selected_table_name column_separator column_name

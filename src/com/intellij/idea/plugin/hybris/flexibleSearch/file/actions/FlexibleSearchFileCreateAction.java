@@ -43,7 +43,7 @@ public class FlexibleSearchFileCreateAction extends CreateFileFromTemplateAction
     private static final String NEW_FS_FILE = "New FlexibleSearch File";
 
     public FlexibleSearchFileCreateAction() {
-        super(NEW_FS_FILE, "", HybrisIcons.FS_FILE);
+        super(NEW_FS_FILE, "", HybrisIcons.FXS_FILE);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FlexibleSearchFileCreateAction extends CreateFileFromTemplateAction
         final CreateFileFromTemplateDialog.Builder builder
     ) {
         builder.setTitle(NEW_FS_FILE)
-               .addKind("Empty file", HybrisIcons.FS_FILE, FILE_TEMPLATE);
+               .addKind("Empty file", HybrisIcons.FXS_FILE, FILE_TEMPLATE);
     }
 
     @Nullable

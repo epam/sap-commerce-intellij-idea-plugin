@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
@@ -44,9 +46,24 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSRefere
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants() = TSCompletionService.getInstance(project)
-        .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
-        .toTypedArray()
+    override fun getVariants(): Array<out Any> {
+        val suffixes = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+            .takeIf { it.isBlank() }
+            ?.let {
+                arrayOf(
+                    FxSLookupElementFactory.buildExclamationMark(),
+                    FxSLookupElementFactory.buildStar()
+                )
+            }
+            ?: emptyArray()
+
+        val types = TSCompletionService.getInstance(project)
+            .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+            .toTypedArray()
+
+        return suffixes + types
+    }
+
 
     companion object {
         val CACHE_KEY =

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage.Companion.INSTANCE
-import com.intellij.openapi.fileTypes.LanguageFileType
-import javax.swing.Icon
+import com.intellij.psi.tree.IElementType
+import org.jetbrains.annotations.NonNls
+import java.util.regex.Pattern
 
-class FlexibleSearchFileType : LanguageFileType(INSTANCE) {
+class FlexibleSearchTokenType(debugName: @NonNls String) : IElementType(debugName, INSTANCE) {
 
-    override fun getName() = "FlexibleSearch file"
-    override fun getDescription() = "FlexibleSearch language file"
-    override fun getDefaultExtension() = "fxs"
-    override fun getIcon(): Icon = HybrisIcons.FXS_FILE
+    override fun toString() = super.toString()
+        .takeIf { it.isNotBlank() }
+        ?.lowercase()
+        ?.let { PATTERN.matcher(it).replaceAll(" ") }
+        ?.let { "<$it>" }
+        ?: super.toString()
 
     companion object {
-        val instance = FlexibleSearchFileType()
+        private val PATTERN = Pattern.compile("[_]")
     }
 }

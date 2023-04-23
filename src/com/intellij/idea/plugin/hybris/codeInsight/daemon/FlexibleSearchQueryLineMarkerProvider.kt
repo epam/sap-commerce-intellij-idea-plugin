@@ -52,7 +52,7 @@ private val whitespaceRegex = "\\s+".toRegex()
 class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
     override fun getName() = message("hybris.editor.gutter.fsq.name")
-    override fun getIcon(): Icon = HybrisIcons.FS_FILE
+    override fun getIcon(): Icon = HybrisIcons.FXS_FILE
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (element !is PsiPolyadicExpression) return null

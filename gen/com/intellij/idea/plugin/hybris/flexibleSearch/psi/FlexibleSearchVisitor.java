@@ -238,6 +238,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSubqueryParenExpression(@NotNull FlexibleSearchSubqueryParenExpression o) {
+    visitExpression(o);
+  }
+
   public void visitTableAliasName(@NotNull FlexibleSearchTableAliasName o) {
     visitPsiNamedElement(o);
   }
