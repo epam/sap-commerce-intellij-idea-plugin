@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchC
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -154,7 +153,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
             val meta = metaService.findMetaEnumByName(type) ?: return null
 
-            return if (CODE_ATTRIBUTE_NAME == refName || NAME_ATTRIBUTE_NAME == refName) {
+            return if (HybrisConstants.ENUM_ATTRIBUTES.contains(refName.lowercase())) {
                 arrayOf(EnumResolveResult(meta))
             } else return null
         }
