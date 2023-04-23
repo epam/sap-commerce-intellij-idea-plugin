@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.settings
 import java.util.*
 
 data class HybrisProjectSettings(
+    var flexibleSearchSettings: FlexibleSearchSettings = FlexibleSearchSettings(),
+
     var customDirectory: String? = null,
     var hybrisDirectory: String? = null,
     var configDirectory: String? = null,

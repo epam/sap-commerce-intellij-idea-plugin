@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
@@ -30,6 +31,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnN
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
@@ -54,7 +56,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
         .let { PsiUtils.getValidResults(it) }
 
     /*
-    By default Lexer will create non-aliased Element, so we may extend variants with supported aliases first
+    By default, Lexer will create non-aliased Element, so we may extend variants with supported aliases first
      */
     override fun getVariants() = getType()
         ?.let {
@@ -66,8 +68,10 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
     /*
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
-    private fun getSuitablePrefixes() : Array<out Any> {
-        val separators = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+    private fun getSuitablePrefixes(): Array<out Any> {
+        val fxsSettings = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+
+        val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
             .takeIf { it.isBlank() }
             ?.let {
                 val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
@@ -77,8 +81,14 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
                 )
             }
             ?: emptyArray()
-       val tableAliases = element.tableAliases
-            .mapNotNull { FxSLookupElementFactory.build(it) }
+        val tableAliases: Array<LookupElementBuilder> = element.tableAliases
+            .mapNotNull {
+                if (fxsSettings.injectTableAliasSeparator) {
+                    FxSLookupElementFactory.build(it, fxsSettings.defaultTableAliasSeparator)
+                } else {
+                    FxSLookupElementFactory.build(it)
+                }
+            }
             .toTypedArray()
 
         return separators + tableAliases

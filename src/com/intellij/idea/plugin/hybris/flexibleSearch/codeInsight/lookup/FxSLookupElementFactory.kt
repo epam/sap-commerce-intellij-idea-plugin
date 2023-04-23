@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 
@@ -37,13 +38,13 @@ object FxSLookupElementFactory {
         .withTailText(" (omit all subtypes)")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
-    fun buildSeparatorDot(aliasPrefix : String) = LookupElementBuilder.create("$aliasPrefix.")
-        .withPresentableText(".")
+    fun buildSeparatorDot(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
+        .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" (column separator)")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
-    fun buildSeparatorColon(aliasPrefix : String) = LookupElementBuilder.create("$aliasPrefix:")
-        .withPresentableText(":")
+    fun buildSeparatorColon(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
+        .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
         .withTailText(" (alternative column separator)")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
@@ -51,9 +52,10 @@ object FxSLookupElementFactory {
         .withTailText(" (omit type restrictions)")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
-    fun build(tableAlias: FlexibleSearchTableAliasName) = tableAlias.name
+    fun build(tableAlias: FlexibleSearchTableAliasName, separatorPostfix: String = "") = tableAlias.name
         ?.let {
-            LookupElementBuilder.create(it)
+            LookupElementBuilder.create(it + separatorPostfix)
+                .withPresentableText(it)
                 .withTypeText(tableAlias.table?.text)
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         }
