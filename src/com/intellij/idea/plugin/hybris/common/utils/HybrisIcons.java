@@ -126,7 +126,8 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
 
     public static final Icon FXS_TABLE_ALIAS = AllIcons.Nodes.Alias;
-    public static final Icon FXS_Y_COLUMN = AllIcons.Actions.PrettyPrint;
+    public static final Icon FXS_Y_COLUMN_PLACEHOLDER = AllIcons.Actions.PrettyPrint;
+    public static final Icon FXS_Y_COLUMN_ALL = getIcon("/icons/flexibleSearch/star.svg");
     public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
     public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 

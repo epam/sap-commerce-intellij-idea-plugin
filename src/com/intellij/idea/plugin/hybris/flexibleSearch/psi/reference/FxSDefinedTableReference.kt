@@ -51,8 +51,8 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : TSRefere
             .takeIf { it.isBlank() }
             ?.let {
                 arrayOf(
-                    FxSLookupElementFactory.buildExclamationMark(),
-                    FxSLookupElementFactory.buildStar()
+                    FxSLookupElementFactory.buildTablePostfixExclamationMark(),
+                    FxSLookupElementFactory.buildTablePostfixStar()
                 )
             }
             ?: emptyArray()

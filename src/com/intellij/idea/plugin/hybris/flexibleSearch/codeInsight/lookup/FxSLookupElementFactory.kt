@@ -20,37 +20,43 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 
 object FxSLookupElementFactory {
 
     fun buildYColumnReference() = LookupElementBuilder.create("{}")
-        .withPresentableText("{...}")
+        .withPresentableText(" ")
+        .withTailText("{...}")
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
-        .withIcon(HybrisIcons.FXS_Y_COLUMN)
-        .withCaseSensitivity(false)
+        .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
 
-    fun buildExclamationMark() = LookupElementBuilder.create('!')
-        .withTailText(" (omit all subtypes)")
+    fun buildYColumnAll() = LookupElementBuilder.create("*")
+        .withPresentableText(" ")
+        .withTailText(message("hybris.fxs.completion.column.star"))
+        .withIcon(HybrisIcons.FXS_Y_COLUMN_ALL)
+
+    fun buildTablePostfixExclamationMark() = LookupElementBuilder.create('!')
+        .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
+        .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
+
+    fun buildTablePostfixStar() = LookupElementBuilder.create('*')
+        .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
     fun buildSeparatorDot(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
-        .withTailText(" (column separator)")
+        .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
     fun buildSeparatorColon(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
-        .withTailText(" (alternative column separator)")
+        .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
-
-    fun buildStar() = LookupElementBuilder.create('*')
-        .withTailText(" (omit type restrictions)")
-        .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
     fun build(tableAlias: FlexibleSearchTableAliasName, separatorPostfix: String = "") = tableAlias.name
         ?.let {

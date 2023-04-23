@@ -70,11 +70,11 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : TSReferen
      */
     private fun getSuitablePrefixes(): Array<out Any> {
         val fxsSettings = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+        val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
 
         val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
-            .takeIf { it.isBlank() }
+            .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
-                val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 arrayOf(
                     FxSLookupElementFactory.buildSeparatorDot(aliasText),
                     FxSLookupElementFactory.buildSeparatorColon(aliasText)
