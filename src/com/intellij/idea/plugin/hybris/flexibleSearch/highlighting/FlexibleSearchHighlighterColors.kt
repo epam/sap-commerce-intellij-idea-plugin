@@ -39,7 +39,8 @@ object FlexibleSearchHighlighterColors {
     val FS_LOCALIZED = key("FS_LOCALIZED", DefaultLanguageHighlighterColors.INLINE_PARAMETER_HINT)
     val FS_PARAMETER = key("FS_PARAMETER", DefaultLanguageHighlighterColors.PARAMETER)
     val FS_COLUMN_SEPARATOR = key("FS_COLUMN_SEPARATOR", DefaultLanguageHighlighterColors.DOT)
-    val FS_ALIAS = key("FS_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
+    val FS_TABLE_ALIAS = key("FS_TABLE_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
+    val FS_COLUMN_ALIAS = key("FS_COLUMN_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val FS_TABLE_TRAIL = key("FS_TABLE_TRAIL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
 
     private fun key(

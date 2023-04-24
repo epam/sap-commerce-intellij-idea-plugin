@@ -91,7 +91,7 @@ ORDER BY {p:code} ASC
             AttributesDescriptor("Not available in preview//Table Trail `!` or `*`", FlexibleSearchHighlighterColors.FS_TABLE_TRAIL),
             AttributesDescriptor("Not available in preview//Column", FlexibleSearchHighlighterColors.FS_COLUMN),
             AttributesDescriptor("Not available in preview//Column - Localized `[]`", FlexibleSearchHighlighterColors.FS_LOCALIZED),
-            AttributesDescriptor("Not available in preview//Alias", FlexibleSearchHighlighterColors.FS_ALIAS),
+            AttributesDescriptor("Not available in preview//Alias", FlexibleSearchHighlighterColors.FS_TABLE_ALIAS),
             AttributesDescriptor("Not available in preview//Nested parameter `\$session.user`", FlexibleSearchHighlighterColors.FS_PARAMETER),
         )
     }

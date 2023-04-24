@@ -54,7 +54,8 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FS_FUNCTION_CALL)
         private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FS_LOCALIZED)
         private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FS_COLUMN_SEPARATOR)
-        private val ALIAS = pack(FlexibleSearchHighlighterColors.FS_ALIAS)
+        private val TABLE_ALIAS = pack(FlexibleSearchHighlighterColors.FS_TABLE_ALIAS)
+        private val COLUMN_ALIAS = pack(FlexibleSearchHighlighterColors.FS_COLUMN_ALIAS)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
@@ -69,14 +70,15 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
 
             FlexibleSearchTypes.COLUMN_SEPARATOR to COLUMN_SEPARATOR,
 
-            FlexibleSearchTypes.TABLE_ALIAS_NAME to ALIAS,
-            FlexibleSearchTypes.COLUMN_ALIAS_NAME to ALIAS,
+            FlexibleSearchTypes.TABLE_ALIAS_NAME to TABLE_ALIAS,
+            FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_ALIAS,
+
+            FlexibleSearchTypes.COLUMN_ALIAS_NAME to COLUMN_ALIAS,
 
             FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL to STRING_KEYS,
             FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL to STRING_KEYS,
 
             FlexibleSearchTypes.DEFINED_TABLE_NAME to TABLE_KEYS,
-            FlexibleSearchTypes.SELECTED_TABLE_NAME to TABLE_KEYS,
 
             FlexibleSearchTypes.COLUMN_NAME to COLUMN_KEYS,
             FlexibleSearchTypes.Y_COLUMN_NAME to COLUMN_KEYS,

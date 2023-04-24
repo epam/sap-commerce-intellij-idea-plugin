@@ -33,9 +33,9 @@
             <option name="FONT_TYPE" value="3"/>
         </value>
     </option>
-    <option name="FS_ALIAS">
+    <option name="FS_TABLE_ALIAS">
         <value>
-            <option name="FOREGROUND" value="F59907"/>
+            <option name="FOREGROUND" value="757575"/>
         </value>
     </option>
 </list>
