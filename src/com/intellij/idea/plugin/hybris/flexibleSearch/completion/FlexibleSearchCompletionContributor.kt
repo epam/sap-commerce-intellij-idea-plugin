@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext

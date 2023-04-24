@@ -62,7 +62,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
             )
             .spaces(1)
 
-            .before(TokenSet.create(RBRACKET, COLUMN_OUTER_JOIN_NAME, COLUMN_LOCALIZED_NAME))
+            .before(TokenSet.create(RBRACKET, COLUMN_OUTER_JOIN_NAME, LBRACKET))
             .spaces(0)
 
             .after(LBRACKET)
