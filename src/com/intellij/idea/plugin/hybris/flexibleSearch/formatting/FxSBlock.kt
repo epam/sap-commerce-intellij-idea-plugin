@@ -33,7 +33,7 @@ class FxSBlock internal constructor(
     private val indent: Indent?,
     private val wrap: Wrap?,
     private val codeStyleSettings: CodeStyleSettings,
-    private val spacingBuilder: SpacingBuilder
+    private val spacingBuilder: FxSSpacingBuilder
 ) : AbstractBlock(node, wrap, alignment) {
 
     override fun getDebugName() = "FxS Block"
@@ -80,8 +80,22 @@ class FxSBlock internal constructor(
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
         FROM_CLAUSE_EXPRESSION,
         WHEN,
-        THEN,
+        JOIN_CONSTRAINT,
         ELSE -> Indent.getNormalIndent()
+
+        RESULT_COLUMNS -> Indent.getSpaceIndent("SELECT".length)
+
+        THEN -> Indent.getContinuationIndent()
+
+        SELECT_STATEMENT -> {
+            if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
+                Indent.getNormalIndent()
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
+
+        TABLE_OR_SUBQUERY -> Indent.getSpaceIndent(spacingBuilder.longestJoinOperatorSpaces(child))
 
         else -> Indent.getNoneIndent()
     }
@@ -98,14 +112,26 @@ class FxSBlock internal constructor(
             }
         }
 
+        LDBRACE,
+        RDBRACE,
+        CASE_EXPRESSION,
         WHEN,
+        THEN,
         ELSE,
         FROM_CLAUSE,
         ORDER_CLAUSE,
         JOIN_OPERATOR,
         COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
 
+        JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
+
         else -> Wrap.createWrap(WrapType.NONE, false)
+    }
+
+    private fun wrapIf(enabled: Boolean) = if (enabled) {
+        Wrap.createWrap(WrapType.ALWAYS, true)
+    } else {
+        Wrap.createWrap(WrapType.NONE, false)
     }
 
 }

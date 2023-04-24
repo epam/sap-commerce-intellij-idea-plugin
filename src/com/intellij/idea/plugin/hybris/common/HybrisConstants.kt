@@ -267,7 +267,8 @@ object HybrisConstants {
 
     const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."
     const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
-    val FXS_TABLE_ALIAS_SEPARATOR = listOf(FXS_TABLE_ALIAS_SEPARATOR_DOT, FXS_TABLE_ALIAS_SEPARATOR_COLON)
+    const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
+    const val FXS_TABLE_POSTFIX_STAR = "*"
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"

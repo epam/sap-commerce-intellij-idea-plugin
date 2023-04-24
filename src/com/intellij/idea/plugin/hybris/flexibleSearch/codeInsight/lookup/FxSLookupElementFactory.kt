@@ -40,11 +40,13 @@ object FxSLookupElementFactory {
         .withTailText(message("hybris.fxs.completion.column.star"))
         .withIcon(HybrisIcons.FXS_Y_COLUMN_ALL)
 
-    fun buildTablePostfixExclamationMark() = LookupElementBuilder.create('!')
+    fun buildTablePostfixExclamationMark(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
+        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK)
         .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
-    fun buildTablePostfixStar() = LookupElementBuilder.create('*')
+    fun buildTablePostfixStar(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_POSTFIX_STAR}")
+        .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_STAR)
         .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 

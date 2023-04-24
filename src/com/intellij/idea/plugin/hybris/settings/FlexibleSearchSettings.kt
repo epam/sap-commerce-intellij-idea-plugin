@@ -21,6 +21,22 @@ package com.intellij.idea.plugin.hybris.settings
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 
 data class FlexibleSearchSettings(
-    var injectTableAliasSeparator: Boolean = true,
-    var defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT
+    var verifyCaseForReservedWords: Boolean = true,
+    var defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
+
+    var completion: FlexibleSearchCompletionSettings = FlexibleSearchCompletionSettings(),
+    var folding: FlexibleSearchFoldingSettings = FlexibleSearchFoldingSettings(),
 )
+
+data class FlexibleSearchCompletionSettings(
+    var injectTableAliasSeparator: Boolean = true,
+    var defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT,
+)
+
+data class FlexibleSearchFoldingSettings(
+    var showSelectedTableName: Boolean = false,
+)
+
+enum class ReservedWordsCase {
+    UPPERCASE, LOWERCASE
+}

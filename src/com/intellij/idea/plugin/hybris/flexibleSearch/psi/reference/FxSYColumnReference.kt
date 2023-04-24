@@ -60,8 +60,12 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
      */
     override fun getVariants() = getType()
         ?.let {
-            TSCompletionService.getInstance(element.project).getCompletions(it)
+            val variants = TSCompletionService.getInstance(element.project).getCompletions(it)
                 .toTypedArray()
+// TODO: add localized postfixes for localized columns
+
+
+            variants
         }
         ?: getSuitablePrefixes()
 
@@ -83,8 +87,8 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
             ?: emptyArray()
         val tableAliases: Array<LookupElementBuilder> = element.tableAliases
             .mapNotNull {
-                if (fxsSettings.injectTableAliasSeparator) {
-                    FxSLookupElementFactory.build(it, fxsSettings.defaultTableAliasSeparator)
+                if (fxsSettings.completion.injectTableAliasSeparator) {
+                    FxSLookupElementFactory.build(it, fxsSettings.completion.defaultTableAliasSeparator)
                 } else {
                     FxSLookupElementFactory.build(it)
                 }

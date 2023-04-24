@@ -48,12 +48,13 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
         .let { PsiUtils.getValidResults(it) }
 
     override fun getVariants(): Array<out Any> {
+        val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
         val suffixes = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
-            .takeIf { it.isBlank() }
+            .takeIf { it.isBlank() && aliasText.isNotBlank()}
             ?.let {
                 arrayOf(
-                    FxSLookupElementFactory.buildTablePostfixExclamationMark(),
-                    FxSLookupElementFactory.buildTablePostfixStar()
+                    FxSLookupElementFactory.buildTablePostfixExclamationMark(aliasText),
+                    FxSLookupElementFactory.buildTablePostfixStar(aliasText)
                 )
             }
             ?: emptyArray()
