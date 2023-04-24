@@ -18,14 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
-import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.psi.ResolveResult
 
-class RelationEndResolveResult(
-    val meta: TSMetaRelation.TSMetaRelationElement
-) : TSReferenceBase.TSResolveResult {
-    private val myDom: RelationElement? = meta.retrieveDom()
-    override fun getElement() = myDom?.qualifier?.xmlAttributeValue
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
+object TSResolveResultUtil {
+
+    fun isLocalized(resolveResult: ResolveResult, featureName: String) =
+        (resolveResult is AttributeResolveResult && resolveResult.meta.isLocalized)
+            || (resolveResult is RelationEndResolveResult && resolveResult.meta.owner.isLocalized)
+            || (resolveResult is EnumResolveResult && featureName == HybrisConstants.ATTRIBUTE_NAME)
 }

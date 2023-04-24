@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -31,6 +33,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 
 class FlexibleSearchAnnotator : Annotator {
@@ -67,9 +70,31 @@ class FlexibleSearchAnnotator : Annotator {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FS_TABLE_TRAIL, holder, element)
             }
 
+            COLUMN_LOCALIZED_NAME -> {
+                element.parent.childrenOfType<FlexibleSearchYColumnName>()
+                    .firstOrNull()
+                    ?.let { yColumn ->
+                        val featureName = yColumn.text.trim()
+                        (yColumn.reference as? PsiReferenceBase.Poly<*>)
+                            ?.multiResolve(false)
+                            ?.firstOrNull()
+                            ?.takeIf { !TSResolveResultUtil.isLocalized(it, featureName) }
+                            ?.let {
+                                annotation(
+                                    message("hybris.editor.annotator.fxs.element.language.unexpected", featureName),
+                                    holder,
+                                    HighlightSeverity.ERROR
+                                )
+                                    .range(element.textRange)
+                                    .highlightType(ProblemHighlightType.ERROR)
+                                    .create()
+                            }
+                    }
+            }
+
             TokenType.ERROR_ELEMENT -> when (element.parent.elementType) {
                 COLUMN_LOCALIZED_NAME -> annotation(
-                    message("hybris.editor.annotator.fxs.missingLangLiteral"),
+                    message("hybris.editor.annotator.fxs.element.language.missing"),
                     holder,
                     HighlightSeverity.ERROR
                 )

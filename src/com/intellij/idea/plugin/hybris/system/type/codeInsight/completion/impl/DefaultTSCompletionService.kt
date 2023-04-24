@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -79,9 +79,9 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
         val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()
-        val completions = LinkedList(getCompletions(linkMetaItem, setOf(SOURCE_ATTRIBUTE_NAME, TARGET_ATTRIBUTE_NAME)))
-        completions.add(TSLookupElementFactory.build(metaRelation.source, SOURCE_ATTRIBUTE_NAME))
-        completions.add(TSLookupElementFactory.build(metaRelation.target, TARGET_ATTRIBUTE_NAME))
+        val completions = LinkedList(getCompletions(linkMetaItem, setOf(ATTRIBUTE_SOURCE, ATTRIBUTE_TARGET)))
+        completions.add(TSLookupElementFactory.build(metaRelation.source, ATTRIBUTE_SOURCE))
+        completions.add(TSLookupElementFactory.build(metaRelation.target, ATTRIBUTE_TARGET))
         return completions
     }
 

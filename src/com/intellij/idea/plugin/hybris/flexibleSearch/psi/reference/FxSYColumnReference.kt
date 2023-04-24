@@ -20,13 +20,11 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CODE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.NAME_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.SOURCE_ATTRIBUTE_NAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.TARGET_ATTRIBUTE_NAME
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
@@ -59,13 +57,26 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
     By default, Lexer will create non-aliased Element, so we may extend variants with supported aliases first
      */
     override fun getVariants() = getType()
-        ?.let {
-            val variants = TSCompletionService.getInstance(element.project).getCompletions(it)
+        ?.let { type ->
+            val variants = TSCompletionService.getInstance(element.project).getCompletions(type)
                 .toTypedArray()
-// TODO: add localized postfixes for localized columns
 
+            // no need to add localized postfix if there is already one
+            val postfixes: Array<LookupElementBuilder> = element.parent.childrenOfType<FlexibleSearchColumnLocalizedName>()
+                .firstOrNull()
+                ?.let { emptyArray() }
+                ?: with(element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")) {
+                    resolve(element.project, type, this)
+                        .firstOrNull()
+                        ?.let { result ->
+                            FxSLookupElementFactory.buildLocalizedName(result, this)
+                                ?.let { arrayOf(it) }
+                                ?: emptyArray()
+                        }
+                        ?: emptyArray()
+                }
 
-            variants
+            variants + postfixes
         }
         ?: getSuitablePrefixes()
 
@@ -106,7 +117,10 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
             val featureName = FxSPsiUtils.getColumnName(ref.element.text)
-            val result = findReference(ref.element.project, ref.element.table, featureName)
+            val result = ref.element.table
+                ?.tableName
+                ?.let { resolve(ref.element.project, it, featureName) }
+                ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
                 result,
@@ -114,11 +128,8 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
             )
         }
 
-        private fun findReference(project: Project, itemType: FlexibleSearchDefinedTableName?, refName: String): Array<ResolveResult> {
+        private fun resolve(project: Project, type: String, refName: String): Array<ResolveResult> {
             val metaService = TSMetaModelAccess.getInstance(project)
-            val type = itemType
-                ?.tableName
-                ?: return ResolveResult.EMPTY_ARRAY
             return tryResolveByItemType(type, refName, metaService)
                 ?: tryResolveByRelationType(type, refName, metaService)
                 ?: tryResolveByEnumType(type, refName, metaService)
@@ -142,9 +153,9 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
         private fun tryResolveByRelationType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
             val meta = metaService.findMetaRelationByName(type) ?: return null
 
-            if (SOURCE_ATTRIBUTE_NAME.equals(refName, true)) {
+            if (ATTRIBUTE_SOURCE.equals(refName, true)) {
                 return arrayOf(RelationEndResolveResult(meta.source))
-            } else if (TARGET_ATTRIBUTE_NAME.equals(refName, true)) {
+            } else if (ATTRIBUTE_TARGET.equals(refName, true)) {
                 return arrayOf(RelationEndResolveResult(meta.target))
             }
 

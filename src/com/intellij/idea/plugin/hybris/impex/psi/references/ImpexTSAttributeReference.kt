@@ -101,9 +101,9 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             ?.text
             ?.let { metaService.findMetaRelationByName(it) }
             ?.let {
-                if (HybrisConstants.SOURCE_ATTRIBUTE_NAME.equals(featureName, ignoreCase = true)) {
+                if (HybrisConstants.ATTRIBUTE_SOURCE.equals(featureName, ignoreCase = true)) {
                     return@let RelationEndResolveResult(it.source)
-                } else if (HybrisConstants.TARGET_ATTRIBUTE_NAME.equals(featureName, ignoreCase = true)) {
+                } else if (HybrisConstants.ATTRIBUTE_TARGET.equals(featureName, ignoreCase = true)) {
                     return@let RelationEndResolveResult(it.target)
                 }
 

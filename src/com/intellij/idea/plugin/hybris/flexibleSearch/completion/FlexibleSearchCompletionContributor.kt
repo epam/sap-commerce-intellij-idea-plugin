@@ -18,15 +18,13 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PlatformPatterns.not
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiComment
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -49,8 +47,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             placePattern
                 .withElementType(FlexibleSearchTypes.IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
-                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME))
-            ,
+                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME)),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYColumnReference())
@@ -60,7 +57,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                             result.addElement(FxSLookupElementFactory.buildYColumnAll())
                         }
                 }
-
             }
         )
 

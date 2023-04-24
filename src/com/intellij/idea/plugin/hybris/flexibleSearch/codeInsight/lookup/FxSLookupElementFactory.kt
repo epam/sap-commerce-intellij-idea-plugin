@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
+import com.intellij.psi.ResolveResult
 
 object FxSLookupElementFactory {
 
@@ -40,22 +42,40 @@ object FxSLookupElementFactory {
         .withTailText(message("hybris.fxs.completion.column.star"))
         .withIcon(HybrisIcons.FXS_Y_COLUMN_ALL)
 
-    fun buildTablePostfixExclamationMark(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
+    fun buildLocalizedName(resolveResult: ResolveResult, featureName: String) = if (TSResolveResultUtil.isLocalized(resolveResult, featureName)) {
+        LookupElementBuilder.create("$featureName[]")
+            .withPresentableText("[]")
+            .withTailText(" ${message("hybris.fxs.completion.column.postfix.localized")}")
+            .withInsertHandler { ctx, _ ->
+                val cursorOffset = ctx.editor.caretModel.offset
+                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+            }
+            .withIcon(HybrisIcons.LOCALIZED)
+    } else {
+        null
+    }
+
+    fun buildOuterJoin() = LookupElementBuilder.create(":o")
+        .withPresentableText(" ")
+        .withTailText(" ${message("hybris.fxs.completion.column.postfix.outerJoin")}")
+        .withIcon(HybrisIcons.TS_MAP)
+
+    fun buildTablePostfixExclamationMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
         .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK)
         .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
-    fun buildTablePostfixStar(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_POSTFIX_STAR}")
+    fun buildTablePostfixStar(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_STAR}")
         .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_STAR)
         .withTailText(" ${message("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FXS_TABLE_SUFFIX)
 
-    fun buildSeparatorDot(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
+    fun buildSeparatorDot(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
-    fun buildSeparatorColon(aliasPrefix: String) = LookupElementBuilder.create("$aliasPrefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
+    fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)

@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 
 class EnumResolveResult(
-    myMeta: TSMetaEnum
+    val meta: TSMetaEnum
 ) : TSReferenceBase.TSResolveResult {
-    private val myDom: EnumType? = myMeta.retrieveDom()
+    private val myDom: EnumType? = meta.retrieveDom()
     override fun getElement() = myDom?.code?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

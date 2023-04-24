@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 
 class AttributeResolveResult(
-    myMeta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
+    val meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
 ) : TSReferenceBase.TSResolveResult {
-    private val myDom: Attribute? = myMeta.retrieveDom()
+    private val myDom: Attribute? = meta.retrieveDom()
     override fun getElement() = myDom?.qualifier?.xmlAttributeValue
     override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }
