@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
@@ -61,24 +60,27 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
             val variants = TSCompletionService.getInstance(element.project).getCompletions(type)
                 .toTypedArray()
 
-            // no need to add localized postfix if there is already one
-            val postfixes: Array<LookupElementBuilder> = element.parent.childrenOfType<FlexibleSearchColumnLocalizedName>()
-                .firstOrNull()
-                ?.let { emptyArray() }
-                ?: with(element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")) {
-                    resolve(element.project, type, this)
-                        .firstOrNull()
-                        ?.let { result ->
-                            FxSLookupElementFactory.buildLocalizedName(result, this)
-                                ?.let { arrayOf(it) }
-                                ?: emptyArray()
-                        }
-                        ?: emptyArray()
-                }
-
-            variants + postfixes
+            variants + getPostfixes(type)
         }
         ?: getSuitablePrefixes()
+
+    // no need to add localized postfix if there is already one
+    private fun getPostfixes(type: String) = if (element.parent.text.contains("[")) {
+        emptyArray()
+    } else {
+        val text = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+            .takeIf { it.isBlank() && text.isNotBlank() }
+            ?.let {
+                resolve(element.project, type, text)
+                    .firstOrNull()
+                    ?.let { result ->
+                        FxSLookupElementFactory.tryBuildLocalizedName(result, text)
+                            ?.let { arrayOf(it) }
+                    }
+            }
+            ?: emptyArray()
+    }
 
     /*
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators

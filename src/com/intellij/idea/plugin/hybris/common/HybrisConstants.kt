@@ -171,6 +171,9 @@ object HybrisConstants {
     const val PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH = "deployment.tablename.maxlength"
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
+    const val PROPERTY_LANG_PACKS = "lang.packs"
+
+    const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
     const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
@@ -269,8 +272,6 @@ object HybrisConstants {
     const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
     const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
     const val FXS_TABLE_POSTFIX_STAR = "*"
-    const val FXS_LBRACKET = "["
-    const val FXS_RBRACKET = "]"
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"

@@ -159,7 +159,7 @@ isnull_expression ::= expression IS NOT? NULL
 in_expression ::=  expression NOT? IN '(' ( expression_in_subquery ) ')'
 exists_expression ::= NOT? exists_expression_name from_clause_subqueries_statement ')' {pin=2}
 function_call_expression ::= function_call_expression_name ( ( DISTINCT )? expression ( ',' expression )* | '*' )? ')' {pin=1}
-column_ref_y_expression ::= '{' (selected_table_name column_separator)? y_column_name column_localized_name? column_outer_join_name? '}' {pin=1}
+column_ref_y_expression ::= '{' (selected_table_name column_separator)? y_column_name y_column_localized_name? column_outer_join_name? '}' {pin=1}
 // We may not have { } in case of Combined SELECT with table alias
 /*
 SELECT x.PK FROM (
@@ -260,8 +260,11 @@ compound_operator ::= UNION ALL?
 
 ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
-column_localized_name ::= '[' IDENTIFIER ']' {pin=1}
 column_alias_name ::= name
+private y_column_localized_name ::= '[' column_localized_name ']' {pin=1}
+column_localized_name ::= IDENTIFIER {
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnLocalizedNameMixin"
+}
 table_alias_name ::= name
 {
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"

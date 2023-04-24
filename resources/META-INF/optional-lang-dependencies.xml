@@ -37,6 +37,11 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- ####################################################################################################### -->
+        <!--                                        Project Properties                                                 -->
+        <!-- ####################################################################################################### -->
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.properties.PropertiesService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.properties.impl.PropertiesServiceImpl"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->

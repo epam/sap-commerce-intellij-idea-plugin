@@ -42,7 +42,7 @@ object FxSLookupElementFactory {
         .withTailText(message("hybris.fxs.completion.column.star"))
         .withIcon(HybrisIcons.FXS_Y_COLUMN_ALL)
 
-    fun buildLocalizedName(resolveResult: ResolveResult, featureName: String) = if (TSResolveResultUtil.isLocalized(resolveResult, featureName)) {
+    fun tryBuildLocalizedName(resolveResult: ResolveResult, featureName: String) = if (TSResolveResultUtil.isLocalized(resolveResult, featureName)) {
         LookupElementBuilder.create("$featureName[]")
             .withPresentableText("[]")
             .withTailText(" ${message("hybris.fxs.completion.column.postfix.localized")}")
@@ -87,5 +87,10 @@ object FxSLookupElementFactory {
                 .withTypeText(tableAlias.table?.text)
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         }
+
+    fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
+        .withTypeText(" ${message("hybris.fxs.completion.column.language.${isoCode.lowercase()}")}")
+        .withCaseSensitivity(false)
+        .withIcon(HybrisIcons.LOCALIZED)
 
 }

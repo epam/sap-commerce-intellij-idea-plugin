@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnLocalizedNameImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnLocalizedName {
+public class FlexibleSearchColumnLocalizedNameImpl extends FlexibleSearchColumnLocalizedNameMixin implements FlexibleSearchColumnLocalizedName {
 
   public FlexibleSearchColumnLocalizedNameImpl(@NotNull ASTNode node) {
     super(node);

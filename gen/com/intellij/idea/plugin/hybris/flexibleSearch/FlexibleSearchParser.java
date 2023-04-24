@@ -122,16 +122,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '[' IDENTIFIER ']'
+  // IDENTIFIER
   public static boolean column_localized_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_localized_name")) return false;
-    if (!nextTokenIs(b, LBRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, COLUMN_LOCALIZED_NAME, null);
-    r = consumeTokens(b, 1, LBRACKET, IDENTIFIER, RBRACKET);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, COLUMN_LOCALIZED_NAME, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1496,6 +1495,21 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // '[' column_localized_name ']'
+  static boolean y_column_localized_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "y_column_localized_name")) return false;
+    if (!nextTokenIs(b, LBRACKET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, LBRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, column_localized_name(b, l + 1));
+    r = p && consumeToken(b, RBRACKET) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // ORDER | IDENTIFIER
   public static boolean y_column_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "y_column_name")) return false;
@@ -2058,7 +2072,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '{' (selected_table_name column_separator)? y_column_name column_localized_name? column_outer_join_name? '}'
+  // '{' (selected_table_name column_separator)? y_column_name y_column_localized_name? column_outer_join_name? '}'
   public static boolean column_ref_y_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression")) return false;
     if (!nextTokenIsSmart(b, LBRACE)) return false;
@@ -2093,10 +2107,10 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // column_localized_name?
+  // y_column_localized_name?
   private static boolean column_ref_y_expression_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_y_expression_3")) return false;
-    column_localized_name(b, l + 1);
+    y_column_localized_name(b, l + 1);
     return true;
   }
 
