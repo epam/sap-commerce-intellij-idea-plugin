@@ -248,7 +248,7 @@ result_column ::=
     methods=[getPresentationText]
   }
 
-join_operator ::= ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
+join_operator ::= ',' | ( LEFT OUTER? | INNER | RIGHT )? JOIN
 
 join_constraint ::= join_constraint_on | join_constraint_using
 private join_constraint_on ::= ON expression {pin=1}

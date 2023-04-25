@@ -790,7 +790,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ',' | ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
+  // ',' | ( LEFT OUTER? | INNER | RIGHT )? JOIN
   public static boolean join_operator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator")) return false;
     boolean r;
@@ -801,7 +801,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( LEFT OUTER? | INNER | CROSS | RIGHT )? JOIN
+  // ( LEFT OUTER? | INNER | RIGHT )? JOIN
   private static boolean join_operator_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1")) return false;
     boolean r;
@@ -812,21 +812,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( LEFT OUTER? | INNER | CROSS | RIGHT )?
+  // ( LEFT OUTER? | INNER | RIGHT )?
   private static boolean join_operator_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1_0")) return false;
     join_operator_1_0_0(b, l + 1);
     return true;
   }
 
-  // LEFT OUTER? | INNER | CROSS | RIGHT
+  // LEFT OUTER? | INNER | RIGHT
   private static boolean join_operator_1_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "join_operator_1_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = join_operator_1_0_0_0(b, l + 1);
     if (!r) r = consumeToken(b, INNER);
-    if (!r) r = consumeToken(b, CROSS);
     if (!r) r = consumeToken(b, RIGHT);
     exit_section_(b, m, null, r);
     return r;

@@ -79,6 +79,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 }
             }
         )
+
         // <{{ }}> after paren `(` and not in the column element
         extend(
             CompletionType.BASIC,
@@ -93,6 +94,50 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYSubSelect())
+                }
+            }
+        )
+
+        // special case for root element -> `select`
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withParent(PsiErrorElement::class.java)
+                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    val psiErrorElement = parameters.position.parent as? PsiErrorElement
+                        ?: return
+
+                    // FlexibleSearchTokenType.toString()
+                    when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
+                        "<statement>" -> result.addAllElements(
+                            FxSLookupElementFactory.buildKeywords("SELECT")
+                        )
+                    }
+                }
+            }
+        )
+
+        // <AS or ? JOIN> after `Identifier` leaf in the `Defined table name`
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withText(DUMMY_IDENTIFIER)
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+                    psiElement(IDENTIFIER)
+                        .withParent(psiElement(DEFINED_TABLE_NAME))
+                )
+                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME)))
+                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addAllElements(
+                        FxSLookupElementFactory.buildKeywords(
+                            "AS", "LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN"
+                        )
+                    )
                 }
             }
         )

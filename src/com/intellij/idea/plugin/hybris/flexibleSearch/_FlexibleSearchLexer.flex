@@ -112,7 +112,6 @@ LINE_COMMENT=--[^\r\n]*
   "LEFT"                             { return LEFT; }
   "OUTER"                            { return OUTER; }
   "INNER"                            { return INNER; }
-  "CROSS"                            { return CROSS; }
   "RIGHT"                            { return RIGHT; }
   "JOIN"                             { return JOIN; }
   "ON"                               { return ON; }
