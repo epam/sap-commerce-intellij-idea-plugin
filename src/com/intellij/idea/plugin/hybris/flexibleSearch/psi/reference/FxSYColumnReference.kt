@@ -162,8 +162,8 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
             }
 
             return metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                ?.attributes
-                ?.get(refName)
+                ?.allAttributes
+                ?.find { refName.equals(it.name, true) }
                 ?.let { arrayOf(AttributeResolveResult(it)) }
         }
 
