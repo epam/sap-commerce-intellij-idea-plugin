@@ -19,47 +19,90 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisTypeSystemDiagramSettingsForm
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.options.Configurable
+import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
-import javax.swing.JComponent
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.*
+import com.intellij.ui.dsl.builder.bindItem
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.toNullableProperty
+import com.intellij.ui.layout.selected
+import javax.swing.JCheckBox
 
 class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : Configurable, Disposable {
-        private val settingsForm = HybrisTypeSystemDiagramSettingsForm(project)
+    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+        message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
+    ) {
 
-        init {
-            Disposer.register(this, settingsForm)
+        private val state = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+
+        private lateinit var verifyCaseCheckBox: JCheckBox
+        private lateinit var defaultCaseComboBox: ComboBox<ReservedWordsCase>
+        private lateinit var injectSeparatorAfterTableAliasCheckBox: JCheckBox
+        private lateinit var defaultTableAliasSeparatorComboBox: ComboBox<String>
+
+        private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
+        private val tableAliasSeparatorsModel = CollectionComboBoxModel(listOf(".", ":"))
+
+        override fun apply() {
+            super.apply()
+
+            EditorNotificationProvider.EP_NAME.findExtension(FlexibleSearchEditorNotificationProvider::class.java, project)
+                ?.let { EditorNotifications.getInstance(project).updateNotifications(it) }
         }
 
-        override fun getDisplayName() = message("hybris.settings.project.fxs.title")
-
-        override fun createComponent(): JComponent {
-            return settingsForm
-                .init(project)
-                .mainPanel
-        }
-
-        override fun isModified() = settingsForm.isModified(project)
-        override fun apply() = settingsForm.apply(project)
-        override fun reset() {
-            settingsForm.setData(project)
-        }
-
-        override fun disposeUIResources() {
-            Disposer.dispose(settingsForm)
-        }
-
-        override fun dispose() {
-            // NOP
+        override fun createPanel() = panel {
+            group("Language") {
+                row {
+                    verifyCaseCheckBox =
+                        checkBox("Verify case of the reserved words")
+                            .bindSelected(state::verifyCaseForReservedWords)
+                            .component
+                }
+                row {
+                    defaultCaseComboBox =
+                        comboBox(
+                            reservedWordsModel,
+                            renderer = SimpleListCellRenderer.create("?") { message("hybris.fxs.notification.provider.keywords.case.$it") }
+                        )
+                            .label("Default case for reserved words")
+                            .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
+                            .enabledIf(verifyCaseCheckBox.selected)
+                            .component
+                }
+            }
+            group("Code Completion") {
+                row {
+                    injectSeparatorAfterTableAliasCheckBox =
+                        checkBox("Automatically inject separator after table alias")
+                            .bindSelected(state.completion::injectTableAliasSeparator)
+                            .component
+                }
+                row {
+                    defaultTableAliasSeparatorComboBox = comboBox(
+                        tableAliasSeparatorsModel,
+                        renderer = SimpleListCellRenderer.create("?") {
+                            when (it) {
+                                "." -> message("hybris.settings.project.fxs.code.completion.separator.dot")
+                                ":" -> message("hybris.settings.project.fxs.code.completion.separator.colon")
+                                else -> it
+                            }
+                        }
+                    )
+                        .label("Default separator")
+                        .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
+                        .component
+                }
+            }
         }
     }
 }
