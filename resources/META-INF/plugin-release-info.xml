@@ -93,6 +93,7 @@
         <![CDATA[
             <h3>2023.1.5</h3>
             <ul>
+                <li><i>Feature:</i> Polyglot Query Language support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)</li>
                 <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch value parameters code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345" target="_blank" rel="nofollow">#345</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch & Impex code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
