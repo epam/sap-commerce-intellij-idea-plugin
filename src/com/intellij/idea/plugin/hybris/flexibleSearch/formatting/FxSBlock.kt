@@ -26,6 +26,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 
 class FxSBlock internal constructor(
     private val node: ASTNode,
@@ -97,7 +98,13 @@ class FxSBlock internal constructor(
 
         TABLE_OR_SUBQUERY -> Indent.getSpaceIndent(spacingBuilder.longestJoinOperatorSpaces(child))
 
-        else -> Indent.getNoneIndent()
+        else -> {
+            if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
+                Indent.getNormalIndent()
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
     }
 
     private fun calculateWrap(child: ASTNode) = when (child.elementType) {
