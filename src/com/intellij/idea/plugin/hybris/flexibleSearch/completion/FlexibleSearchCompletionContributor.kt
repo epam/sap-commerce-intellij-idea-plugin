@@ -48,15 +48,15 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             .andNot(psiElement().inside(PsiComment::class.java))
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
 
-        extend(
-            CompletionType.BASIC,
-            fxsBasePattern,
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("_test_")))
-                }
-            }
-        )
+//        extend(
+//            CompletionType.BASIC,
+//            fxsBasePattern,
+//            object : CompletionProvider<CompletionParameters>() {
+//                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+//                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("_test_")))
+//                }
+//            }
+//        )
 
 //        extend(
 //            CompletionType.BASIC,
