@@ -895,18 +895,12 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // signed_number
   //   | string_literal // X marks a blob literal
   //   | NULL
-  //   | CURRENT_TIME
-  //   | CURRENT_DATE
-  //   | CURRENT_TIMESTAMP
   static boolean literal_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal_value")) return false;
     boolean r;
     r = signed_number(b, l + 1);
     if (!r) r = string_literal(b, l + 1);
     if (!r) r = consumeToken(b, NULL);
-    if (!r) r = consumeToken(b, CURRENT_TIME);
-    if (!r) r = consumeToken(b, CURRENT_DATE);
-    if (!r) r = consumeToken(b, CURRENT_TIMESTAMP);
     return r;
   }
 

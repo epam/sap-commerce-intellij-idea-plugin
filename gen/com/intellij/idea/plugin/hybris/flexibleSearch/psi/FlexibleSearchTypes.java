@@ -107,9 +107,6 @@ public interface FlexibleSearchTypes {
   IElementType COMMA = new FlexibleSearchTokenType(",");
   IElementType COMMENT = new FlexibleSearchTokenType("COMMENT");
   IElementType CONCAT = new FlexibleSearchTokenType("||");
-  IElementType CURRENT_DATE = new FlexibleSearchTokenType("CURRENT_DATE");
-  IElementType CURRENT_TIME = new FlexibleSearchTokenType("CURRENT_TIME");
-  IElementType CURRENT_TIMESTAMP = new FlexibleSearchTokenType("CURRENT_TIMESTAMP");
   IElementType DESC = new FlexibleSearchTokenType("DESC");
   IElementType DISTINCT = new FlexibleSearchTokenType("DISTINCT");
   IElementType DIV = new FlexibleSearchTokenType("/");

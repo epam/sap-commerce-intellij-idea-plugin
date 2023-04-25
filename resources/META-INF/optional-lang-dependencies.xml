@@ -231,6 +231,7 @@
         <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
 
         <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
+        <editorNotificationProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider"/>
 
         <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
 
@@ -238,6 +239,9 @@
 
         <annotator language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
         <highlightErrorFilter implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
+
+        <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.HybrisProjectFlexibleSearchSettingsConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBlocksFilter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
@@ -429,6 +433,7 @@
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
 
+        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.OpenFlexibleSearchSettingsAction"/>
     </actions>
 
 </idea-plugin>

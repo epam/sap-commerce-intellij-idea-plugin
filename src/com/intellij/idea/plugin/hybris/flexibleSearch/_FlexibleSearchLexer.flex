@@ -97,9 +97,6 @@ LINE_COMMENT=--[^\r\n]*
   "DISTINCT"                         { return DISTINCT; }
   "SELECT"                           { return SELECT; }
   "NUMBERED_PARAMETER"               { return NUMBERED_PARAMETER; }
-  "CURRENT_TIME"                     { return CURRENT_TIME; }
-  "CURRENT_DATE"                     { return CURRENT_DATE; }
-  "CURRENT_TIMESTAMP"                { return CURRENT_TIMESTAMP; }
   "LIMIT"                            { return LIMIT; }
   "OFFSET"                           { return OFFSET; }
   "ORDER"                            { return ORDER; }

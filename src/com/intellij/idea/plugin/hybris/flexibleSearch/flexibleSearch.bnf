@@ -183,9 +183,6 @@ private literal_value ::=
   signed_number
   | string_literal // X marks a blob literal
   | NULL
-  | CURRENT_TIME
-  | CURRENT_DATE
-  | CURRENT_TIMESTAMP
 
 select_statement ::= select_core_select (compound_operator select_core_select)* order_clause? limit_clause?
 
