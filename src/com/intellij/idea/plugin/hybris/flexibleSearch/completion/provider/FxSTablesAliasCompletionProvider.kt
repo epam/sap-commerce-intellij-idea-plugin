@@ -21,23 +21,35 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.util.ProcessingContext
 
-class FlexibleSearchReferenceVariantsCompletionProvider : CompletionProvider<CompletionParameters>() {
+class FxSTablesAliasCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        parameters.position.parent
-            ?.reference
-            ?.variants
-            ?.filterIsInstance<LookupElement>()
-            ?.forEach {
-                result.addElement(it)
+        (parameters.position.parent as? FlexibleSearchTableAliasName)
+            ?.table
+            ?.tableName
+            ?.let { tableName ->
+                val suggestions = setOf(
+                    regexNoUpper.replace(tableName, ""),
+                    regexNoUpperAndDigits.replace(tableName, ""),
+                    regexNoUpper.replace(tableName, "").replace(regexDigitsToUnderscore, "_"),
+                )
+                    .map { it.lowercase() }
+                    .takeIf { it.isNotEmpty() }
+                // if nothing match - fallback to table name
+                    ?: setOf(tableName.lowercase())
+
+                result.addAllElements(FxSLookupElementFactory.buildTableAliases(suggestions))
             }
+            ?: return
     }
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(FlexibleSearchReferenceVariantsCompletionProvider::class.java)
+        private val regexDigitsToUnderscore = Regex("[0-9]")
+        private val regexNoUpper = Regex("[a-z]")
+        private val regexNoUpperAndDigits = Regex("[a-z0-9]")
     }
 }

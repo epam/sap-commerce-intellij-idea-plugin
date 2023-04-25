@@ -20,9 +20,12 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSKeywordsCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSRootCompletionProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -30,7 +33,6 @@ import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
@@ -42,13 +44,13 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
     }
 
     init {
-        val placePattern = psiElement()
+        val fxsBasePattern = psiElement()
             .andNot(psiElement().inside(PsiComment::class.java))
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
 
         extend(
             CompletionType.BASIC,
-            placePattern,
+            fxsBasePattern,
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("_test_")))
@@ -56,17 +58,29 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
+//        extend(
+//            CompletionType.BASIC,
+//            fxsBasePattern
+//                .withText(DUMMY_IDENTIFIER)
+//                .afterLeafSkipping(
+//                    psiElement(TokenType.WHITE_SPACE),
+//                    psiElement().withParent(FlexibleSearchExpression::class.java),
+//                ),
+//            FxSKeywordsCompletionProvider(setOf("AND", "OR"))
+//        )
+
         // suggest table alias after `as`
         // TODO: if there multiple joins on a same table - add # postfix to the name
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .withParent(
                     psiElement(TABLE_ALIAS_NAME)
                         .withParent(
                             psiElement(FROM_TABLE)
                                 .withText(
+
                                     StandardPatterns.or(
                                         // no idea how to make it case insensitive
                                         StandardPatterns.string().contains(" AS "),
@@ -77,62 +91,28 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                                 )
                         )
                 ),
-            object : CompletionProvider<CompletionParameters>() {
-                private val regexDigitsToUnderscore = Regex("[0-9]")
-                private val regexNoUpper = Regex("[a-z]")
-                private val regexNoUpperAndDigits = Regex("[a-z0-9]")
-
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    (parameters.position.parent as? FlexibleSearchTableAliasName)
-                        ?.table
-                        ?.tableName
-                        ?.let { tableName ->
-                            val suggestions = setOf(
-                                regexNoUpper.replace(tableName, ""),
-                                regexNoUpperAndDigits.replace(tableName, ""),
-                                regexNoUpper.replace(tableName, "").replace(regexDigitsToUnderscore, "_"),
-                            )
-                                .map { it.lowercase() }
-                                .takeIf { it.isNotEmpty() }
-                            // if nothing match - fallback to table name
-                                ?: setOf(tableName.lowercase())
-
-                            result.addAllElements(FxSLookupElementFactory.buildTableAliases(suggestions))
-                        }
-                        ?: return
-                }
-            }
+            FxSTablesAliasCompletionProvider()
         )
 
         // <{}> and optional <*> inside the [y] column
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withElementType(IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
                 .withParent(psiElement(COLUMN_NAME)),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addElement(FxSLookupElementFactory.buildYColumn())
-
-                    PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchResultColumns::class.java)
-                        ?.let {
-                            result.addElement(FxSLookupElementFactory.buildYColumnAll())
-                        }
-                }
-            }
+            FxSHybrisColumnCompletionProvider()
         )
 
         // <{} and <()> after FROM keyword
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(FROM)
-                )
-                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+                ),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYFrom())
@@ -144,14 +124,13 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         // <{{ }}> after paren `(` and not in the column element
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(LPAREN)
                 )
-                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME)))
-                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME))),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYSubSelect())
@@ -162,48 +141,29 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         // special case for root element -> `select`
         extend(
             CompletionType.BASIC,
-            placePattern
-                .withParent(PsiErrorElement::class.java)
-                .withLanguage(FlexibleSearchLanguage.INSTANCE),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    val psiErrorElement = parameters.position.parent as? PsiErrorElement
-                        ?: return
-
-                    // FlexibleSearchTokenType.toString()
-                    when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
-                        "<statement>" -> result.addAllElements(
-                            FxSLookupElementFactory.buildKeywords(setOf("SELECT"))
-                        )
-                    }
-                }
-            }
+            fxsBasePattern
+                .withParent(PsiErrorElement::class.java),
+            FxSRootCompletionProvider()
         )
 
         // <AS> and <.. JOIN> after `Identifier` leaf in the `Defined table name`
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(IDENTIFIER)
                         .withParent(psiElement(DEFINED_TABLE_NAME))
                 )
-                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME)))
-                .withLanguage(FlexibleSearchLanguage.INSTANCE),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("AS")))
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords(JOINS))
-                }
-            }
+                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME))),
+            FxSKeywordsCompletionProvider(setOf("AS") + KEYWORDS_JOINS)
         )
 
         // suggest different joins after `as` after `on`
         extend(
             CompletionType.BASIC,
-            placePattern
+            fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
@@ -214,17 +174,12 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                             .withParent(psiElement(TABLE_ALIAS_NAME))
                     )
                 ),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("ON")))
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords(JOINS))
-                }
-            }
+            FxSKeywordsCompletionProvider(setOf("ON") + KEYWORDS_JOINS)
         )
     }
 
     companion object {
         const val DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
-        val JOINS = setOf("LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN")
+        val KEYWORDS_JOINS = setOf("LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN")
     }
 }
