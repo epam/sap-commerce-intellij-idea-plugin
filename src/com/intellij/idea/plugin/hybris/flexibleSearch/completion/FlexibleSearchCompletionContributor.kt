@@ -209,13 +209,14 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                     psiElement(TokenType.WHITE_SPACE),
                     PlatformPatterns.or(
                         psiElement()
-                            .inside(psiElement(JOIN_CONSTRAINT)),
+                            .withSuperParent(3, psiElement(JOIN_CONSTRAINT)),
                         psiElement()
-                            .inside(psiElement(TABLE_ALIAS_NAME))
+                            .withParent(psiElement(TABLE_ALIAS_NAME))
                     )
                 ),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("ON")))
                     result.addAllElements(FxSLookupElementFactory.buildKeywords(JOINS))
                 }
             }
