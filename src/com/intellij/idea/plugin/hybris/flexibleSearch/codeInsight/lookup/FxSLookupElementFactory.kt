@@ -84,7 +84,7 @@ object FxSLookupElementFactory {
         null
     }
 
-    fun buildKeywords(vararg keywords: String) = keywords
+    fun buildKeywords(keywords: Collection<String>) = keywords
         .map {
             LookupElementBuilder.create(it)
                 .bold()

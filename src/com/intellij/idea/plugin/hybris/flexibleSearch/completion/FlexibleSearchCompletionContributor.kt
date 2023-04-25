@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAli
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
@@ -50,17 +51,32 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             placePattern,
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addAllElements(FxSLookupElementFactory.buildKeywords("_test_"))
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("_test_")))
                 }
             }
         )
 
         // suggest table alias after `as`
+        // TODO: if there multiple joins on a same table - add # postfix to the name
         extend(
             CompletionType.BASIC,
             placePattern
                 .withText(DUMMY_IDENTIFIER)
-                .withParent(psiElement(TABLE_ALIAS_NAME)),
+                .withParent(
+                    psiElement(TABLE_ALIAS_NAME)
+                        .withParent(
+                            psiElement(FROM_TABLE)
+                                .withText(
+                                    StandardPatterns.or(
+                                        // no idea how to make it case insensitive
+                                        StandardPatterns.string().contains(" AS "),
+                                        StandardPatterns.string().contains(" as "),
+                                        StandardPatterns.string().contains(" As "),
+                                        StandardPatterns.string().contains(" aS "),
+                                    )
+                                )
+                        )
+                ),
             object : CompletionProvider<CompletionParameters>() {
                 private val regexDigitsToUnderscore = Regex("[0-9]")
                 private val regexNoUpper = Regex("[a-z]")
@@ -157,7 +173,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                     // FlexibleSearchTokenType.toString()
                     when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
                         "<statement>" -> result.addAllElements(
-                            FxSLookupElementFactory.buildKeywords("SELECT")
+                            FxSLookupElementFactory.buildKeywords(setOf("SELECT"))
                         )
                     }
                 }
@@ -178,11 +194,29 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 .withLanguage(FlexibleSearchLanguage.INSTANCE),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addAllElements(
-                        FxSLookupElementFactory.buildKeywords(
-                            "AS", "LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN"
-                        )
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("AS")))
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords(JOINS))
+                }
+            }
+        )
+
+        // suggest different joins after `as` after `on`
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withText(DUMMY_IDENTIFIER)
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+                    PlatformPatterns.or(
+                        psiElement()
+                            .inside(psiElement(JOIN_CONSTRAINT)),
+                        psiElement()
+                            .inside(psiElement(TABLE_ALIAS_NAME))
                     )
+                ),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords(JOINS))
                 }
             }
         )
@@ -190,5 +224,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 
     companion object {
         const val DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+        val JOINS = setOf("LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN")
     }
 }
