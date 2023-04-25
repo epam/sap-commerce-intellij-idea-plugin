@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -46,6 +47,50 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 
         extend(
             CompletionType.BASIC,
+            placePattern,
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addAllElements(FxSLookupElementFactory.buildKeywords("_test_"))
+                }
+            }
+        )
+
+        // suggest table alias after `as`
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withText(DUMMY_IDENTIFIER)
+                .withParent(psiElement(TABLE_ALIAS_NAME)),
+            object : CompletionProvider<CompletionParameters>() {
+                private val regexDigitsToUnderscore = Regex("[0-9]")
+                private val regexNoUpper = Regex("[a-z]")
+                private val regexNoUpperAndDigits = Regex("[a-z0-9]")
+
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    (parameters.position.parent as? FlexibleSearchTableAliasName)
+                        ?.table
+                        ?.tableName
+                        ?.let { tableName ->
+                            val suggestions = setOf(
+                                regexNoUpper.replace(tableName, ""),
+                                regexNoUpperAndDigits.replace(tableName, ""),
+                                regexNoUpper.replace(tableName, "").replace(regexDigitsToUnderscore, "_"),
+                            )
+                                .map { it.lowercase() }
+                                .takeIf { it.isNotEmpty() }
+                            // if nothing match - fallback to table name
+                                ?: setOf(tableName.lowercase())
+
+                            result.addAllElements(FxSLookupElementFactory.buildTableAliases(suggestions))
+                        }
+                        ?: return
+                }
+            }
+        )
+
+        // <{}> and optional <*> inside the [y] column
+        extend(
+            CompletionType.BASIC,
             placePattern
                 .withElementType(IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
@@ -62,7 +107,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
-        // <{} or ()> after FROM keyword
+        // <{} and <()> after FROM keyword
         extend(
             CompletionType.BASIC,
             placePattern
@@ -119,7 +164,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
-        // <AS or ? JOIN> after `Identifier` leaf in the `Defined table name`
+        // <AS> and <.. JOIN> after `Identifier` leaf in the `Defined table name`
         extend(
             CompletionType.BASIC,
             placePattern

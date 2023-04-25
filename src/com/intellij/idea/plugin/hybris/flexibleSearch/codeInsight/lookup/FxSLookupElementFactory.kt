@@ -90,10 +90,6 @@ object FxSLookupElementFactory {
                 .bold()
                 .withCaseSensitivity(false)
                 .withIcon(AllIcons.Nodes.Static)
-                .withInsertHandler { ctx, _ ->
-                    val cursorOffset = ctx.editor.caretModel.offset
-                    ctx.editor.caretModel.moveToOffset(cursorOffset + 10)
-                }
         }
 
     fun buildSymbols(vararg symbols: String) = symbols
@@ -101,11 +97,15 @@ object FxSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .bold()
                 .withCaseSensitivity(false)
-                .withIcon(AllIcons.Nodes.Static)
-                .withInsertHandler { ctx, _ ->
-                    val cursorOffset = ctx.editor.caretModel.offset
-                    ctx.editor.caretModel.moveToOffset(cursorOffset + 10)
-                }
+                .withIcon(AllIcons.Nodes.Function)
+        }
+
+    fun buildTableAliases(aliases: Collection<String>) = aliases
+        .map {
+            LookupElementBuilder.create(it)
+                .bold()
+                .withCaseSensitivity(false)
+                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         }
 
     fun buildOuterJoin() = LookupElementBuilder.create(":o")
