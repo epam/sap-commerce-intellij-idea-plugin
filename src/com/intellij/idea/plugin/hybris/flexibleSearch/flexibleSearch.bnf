@@ -196,7 +196,7 @@ limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )? {
 order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {pin=1}
 private order_clause_literal ::= ORDER BY
 
-select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause? where_clause? group_by_clause? {pin=1}
+select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause? {pin=1}
 
 group_by_clause ::= group_by_literal expression ( ',' expression )* ( HAVING expression )? {pin=1}
 private group_by_literal ::= GROUP BY

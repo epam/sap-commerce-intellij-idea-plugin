@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultCo
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
+import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
@@ -49,7 +50,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME)),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-                    result.addElement(FxSLookupElementFactory.buildYColumnReference())
+                    result.addElement(FxSLookupElementFactory.buildYColumn())
 
                     PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchResultColumns::class.java)
                         ?.let {
@@ -59,101 +60,22 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
-//        extend(
-//            CompletionType.BASIC,
-//            placePattern.withElementType(
-//                PlatformPatterns.elementType().or(
-//                    FlexibleSearchTypes.IDENTIFIER,
-//                    FlexibleSearchTypes.BACKTICK_LITERAL
-//                )
-//            ),
-//            object : CompletionProvider<CompletionParameters>() {
-//                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-//                    parameters.originalPosition
-//                        ?.let {
-//                            val provider = when (it.parent.elementType) {
-//                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> FlexibleSearchTableAliasCompletionProvider.instance
-//                                else -> null
-//                            }
-//                            provider
-//                                ?.addCompletionVariants(parameters, context, result)
-//                        }
-//                }
-//            }
-//        )
-
-        // keywords
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement(PsiElement.class)
-//                .withLanguage(FlexibleSearchLanguage.getInstance())
-//                            .andNot(psiElement().withParents(
-//                                FlexibleSearchTableName.class,
-//                                FlexibleSearchFromClause.class,
-//                                FlexibleSearchWhereClause.class
-//                            ))
-//                            .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE)))
-//                            .andNot(psiElement().inside(psiElement(TABLE_NAME_IDENTIFIER)))
-//            /*.andNot(psiElement().inside(psiElement(COLUMN_REFERENCE_IDENTIFIER)))*/,
-//            FxsKeywordCompletionProvider.Companion.getInstance()
-//        );
-
-
-//        extend(
-//            CompletionType.BASIC,
-//            PlatformPatterns.psiElement(FlexibleSearchTypes.IDENTIFIER)
-//                .inside(psiElement(TABLE_NAME))
-//                .withLanguage(FlexibleSearchLanguage.IN),
-//            ItemCodeCompletionProvider.Companion.getInstance()
-//        );
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement(TABLE_NAME_IDENTIFIER)
-//                .inside(psiElement(TABLE_NAME))
-//                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            ItemCodeCompletionProvider.Companion.getInstance()
-//        );
-
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement(COLUMN_REFERENCE_IDENTIFIER)
-//                .inside(psiElement(COLUMN_ALIAS_REFERENCE))
-//                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            FxsColumnReferenceCompletionProvider.Companion.getInstance()
-//        );
-
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement(TABLE_NAME_IDENTIFIER)
-//                .inside(psiElement(TABLE_ALIAS_REFERENCE))
-//                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            FxsTableAliasReferenceCompletionProvider.Companion.getInstance()
-//        );
-
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement()
-//                .afterLeaf(psiElement().withElementType(TokenSet.create(TABLE_NAME_IDENTIFIER)))
-//                .withLanguage(FlexibleSearchLanguage.getInstance()),
-//            new FSKeywordCompletionProvider(newHashSet("AS"), (keyword) ->
-//                LookupElementBuilder.create(keyword)
-//                                    .withCaseSensitivity(false)
-//                                    .withIcon(AllIcons.Nodes.Function))
-//        );
-
-
-//        extend(
-//            CompletionType.BASIC,
-//            psiElement()
-//                .inside(psiElement(SELECT_LIST))
-//                .withLanguage(FlexibleSearchLanguage.getInstance())
-//                .andNot(psiElement().inside(psiElement(COLUMN_REFERENCE))),
-//            new FSKeywordCompletionProvider(newHashSet("*", "DISTINCT", "COUNT"), (keyword) ->
-//                LookupElementBuilder.create(keyword)
-//                                    .bold()
-//                                    .withCaseSensitivity(false)
-//                                    .withIcon(AllIcons.Nodes.Static))
-//        );
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withText(DUMMY_IDENTIFIER)
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+                    psiElement(FlexibleSearchTypes.FROM)
+                )
+                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addElement(FxSLookupElementFactory.buildYFrom())
+                    result.addElement(FxSLookupElementFactory.buildFromParen())
+                }
+            }
+        )
     }
 
     companion object {

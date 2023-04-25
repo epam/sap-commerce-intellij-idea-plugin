@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -28,7 +29,7 @@ import com.intellij.psi.ResolveResult
 
 object FxSLookupElementFactory {
 
-    fun buildYColumnReference() = LookupElementBuilder.create("{}")
+    fun buildYColumn() = LookupElementBuilder.create("{}")
         .withPresentableText(" ")
         .withTailText("{...}")
         .withInsertHandler { ctx, _ ->
@@ -36,6 +37,24 @@ object FxSLookupElementFactory {
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
+
+    fun buildYFrom() = LookupElementBuilder.create("{}")
+        .withPresentableText(" ")
+        .withTailText("{...}")
+        .withInsertHandler { ctx, _ ->
+            val cursorOffset = ctx.editor.caretModel.offset
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        }
+        .withIcon(HybrisIcons.FXS_Y_FROM_PLACEHOLDER)
+
+    fun buildFromParen() = LookupElementBuilder.create("()")
+        .withPresentableText(" ")
+        .withTailText("(...)")
+        .withInsertHandler { ctx, _ ->
+            val cursorOffset = ctx.editor.caretModel.offset
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        }
+        .withIcon(HybrisIcons.FXS_FROM_PARENS_PLACEHOLDER)
 
     fun buildYColumnAll() = LookupElementBuilder.create("*")
         .withPresentableText(" ")
@@ -54,6 +73,18 @@ object FxSLookupElementFactory {
     } else {
         null
     }
+
+    fun buildKeywords(vararg keywords: String) = keywords
+        .map {
+            LookupElementBuilder.create(it)
+                .bold()
+                .withCaseSensitivity(false)
+                .withIcon(AllIcons.Nodes.Static)
+                .withInsertHandler { ctx, _ ->
+                    val cursorOffset = ctx.editor.caretModel.offset
+                    ctx.editor.caretModel.moveToOffset(cursorOffset + 10)
+                }
+        }
 
     fun buildOuterJoin() = LookupElementBuilder.create(":o")
         .withPresentableText(" ")

@@ -1119,7 +1119,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SELECT ( DISTINCT | ALL )? result_columns from_clause? where_clause? group_by_clause?
+  // SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause?
   public static boolean select_core_select(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_core_select")) return false;
     if (!nextTokenIs(b, SELECT)) return false;
@@ -1129,7 +1129,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, select_core_select_1(b, l + 1));
     r = p && report_error_(b, result_columns(b, l + 1)) && r;
-    r = p && report_error_(b, select_core_select_3(b, l + 1)) && r;
+    r = p && report_error_(b, from_clause(b, l + 1)) && r;
     r = p && report_error_(b, select_core_select_4(b, l + 1)) && r;
     r = p && select_core_select_5(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
@@ -1150,13 +1150,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DISTINCT);
     if (!r) r = consumeToken(b, ALL);
     return r;
-  }
-
-  // from_clause?
-  private static boolean select_core_select_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "select_core_select_3")) return false;
-    from_clause(b, l + 1);
-    return true;
   }
 
   // where_clause?
