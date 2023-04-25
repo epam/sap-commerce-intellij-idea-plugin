@@ -38,6 +38,16 @@ object FxSLookupElementFactory {
         }
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
 
+    fun buildYSubSelect() = LookupElementBuilder.create("{{ }}")
+        .withPresentableText(" ")
+        .withTailText("{{...}}")
+        .withTypeText(message("hybris.fxs.completion.subQuery"), true)
+        .withInsertHandler { ctx, _ ->
+            val cursorOffset = ctx.editor.caretModel.offset
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        }
+        .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
+
     fun buildYFrom() = LookupElementBuilder.create("{}")
         .withPresentableText(" ")
         .withTailText("{...}")
@@ -75,6 +85,18 @@ object FxSLookupElementFactory {
     }
 
     fun buildKeywords(vararg keywords: String) = keywords
+        .map {
+            LookupElementBuilder.create(it)
+                .bold()
+                .withCaseSensitivity(false)
+                .withIcon(AllIcons.Nodes.Static)
+                .withInsertHandler { ctx, _ ->
+                    val cursorOffset = ctx.editor.caretModel.offset
+                    ctx.editor.caretModel.moveToOffset(cursorOffset + 10)
+                }
+        }
+
+    fun buildSymbols(vararg symbols: String) = symbols
         .map {
             LookupElementBuilder.create(it)
                 .bold()

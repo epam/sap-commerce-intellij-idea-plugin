@@ -22,9 +22,11 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -45,9 +47,9 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             placePattern
-                .withElementType(FlexibleSearchTypes.IDENTIFIER)
+                .withElementType(IDENTIFIER)
                 .withText(DUMMY_IDENTIFIER)
-                .withParent(psiElement(FlexibleSearchTypes.COLUMN_NAME)),
+                .withParent(psiElement(COLUMN_NAME)),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYColumn())
@@ -60,19 +62,37 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
+        // <{} or ()> after FROM keyword
         extend(
             CompletionType.BASIC,
             placePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
-                    psiElement(FlexibleSearchTypes.FROM)
+                    psiElement(FROM)
                 )
                 .withLanguage(FlexibleSearchLanguage.INSTANCE),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                     result.addElement(FxSLookupElementFactory.buildYFrom())
                     result.addElement(FxSLookupElementFactory.buildFromParen())
+                }
+            }
+        )
+        // <{{ }}> after paren `(` and not in the column element
+        extend(
+            CompletionType.BASIC,
+            placePattern
+                .withText(DUMMY_IDENTIFIER)
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+                    psiElement(LPAREN)
+                )
+                .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME)))
+                .withLanguage(FlexibleSearchLanguage.INSTANCE),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    result.addElement(FxSLookupElementFactory.buildYSubSelect())
                 }
             }
         )
