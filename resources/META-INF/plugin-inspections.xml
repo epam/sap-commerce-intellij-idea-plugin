@@ -43,14 +43,6 @@
                          shortName="CngContextParentIsNotValid" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
 
-        <!-- Flexible Search -->
-<!--        <localInspection groupPath="SAP Commerce" shortName="FxsUnknownTypeNameInspection" displayName="[y] Unknown type"-->
-<!--                         groupName="[y] Flexible Search" level="ERROR" language="FlexibleSearch" enabledByDefault="true"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.flexibleSearch.FxsUnknownTypeNameInspection"/>-->
-<!--        <localInspection groupPath="SAP Commerce" shortName="FxsUnknownTypeAttributeInspection" displayName="[y] Unknown attribute"-->
-<!--                         groupName="[y] Flexible Search" level="ERROR" language="FlexibleSearch" enabledByDefault="true"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.flexibleSearch.FxsUnknownTypeAttributeInspection"/>-->
-
         <!-- Impex -->
         <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
                          groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"

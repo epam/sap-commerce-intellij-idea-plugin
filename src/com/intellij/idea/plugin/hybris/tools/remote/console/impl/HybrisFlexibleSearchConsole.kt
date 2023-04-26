@@ -103,9 +103,9 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
                 )
     }
 
-    override fun title(): String = "Flexible Search"
+    override fun title(): String = "FlexibleSearch"
 
-    override fun tip(): String = "Flexible Search Console"
+    override fun tip(): String = "FlexibleSearch Console"
 
     override fun icon(): Icon = HybrisIcons.FXS_FILE
 

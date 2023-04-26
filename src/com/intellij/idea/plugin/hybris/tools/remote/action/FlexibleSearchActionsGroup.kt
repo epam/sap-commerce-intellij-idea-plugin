@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.impl.ActionButton
 
-class FlexibleSearchActionsGroup : DefaultActionGroup({ "Flexible Search" }, true) {
+class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
 
     init {
         templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
