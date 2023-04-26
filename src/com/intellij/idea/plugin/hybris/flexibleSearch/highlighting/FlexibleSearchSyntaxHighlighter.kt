@@ -37,25 +37,25 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
 
         val instance: FlexibleSearchSyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
 
-        private val CASE_KEYS = pack(FlexibleSearchHighlighterColors.FS_KEYWORD)
-        private val PARAMETER_KEYS = pack(FlexibleSearchHighlighterColors.FS_PARAMETER)
-        private val KEYWORD_KEYS = pack(FlexibleSearchHighlighterColors.FS_KEYWORD)
-        private val STRING_KEYS = pack(FlexibleSearchHighlighterColors.FS_STRING)
-        private val SYMBOL_KEYS = pack(FlexibleSearchHighlighterColors.FS_SYMBOL)
-        private val BRACES_KEYS = pack(FlexibleSearchHighlighterColors.FS_BRACES)
-        private val PARENS_KEYS = pack(FlexibleSearchHighlighterColors.FS_PARENS)
-        private val BRACKETS_KEYS = pack(FlexibleSearchHighlighterColors.FS_BRACKETS)
-        private val PARENTHESES_KEYS = pack(FlexibleSearchHighlighterColors.FS_PARENTHESES)
-        private val NUMBER_KEYS = pack(FlexibleSearchHighlighterColors.FS_NUMBER)
-        private val COLUMN_KEYS = pack(FlexibleSearchHighlighterColors.FS_COLUMN)
-        private val TABLE_KEYS = pack(FlexibleSearchHighlighterColors.FS_TABLE)
-        private val COMMENT_KEYS = pack(FlexibleSearchHighlighterColors.FS_COMMENT)
-        private val OUTER_JOIN_KEYS = pack(FlexibleSearchHighlighterColors.FS_OUTER_JOIN)
-        private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FS_FUNCTION_CALL)
-        private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FS_LOCALIZED)
-        private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FS_COLUMN_SEPARATOR)
-        private val TABLE_ALIAS = pack(FlexibleSearchHighlighterColors.FS_TABLE_ALIAS)
-        private val COLUMN_ALIAS = pack(FlexibleSearchHighlighterColors.FS_COLUMN_ALIAS)
+        private val CASE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_KEYWORD)
+        private val PARAMETER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARAMETER)
+        private val KEYWORD_KEYS = pack(FlexibleSearchHighlighterColors.FXS_KEYWORD)
+        private val STRING_KEYS = pack(FlexibleSearchHighlighterColors.FXS_STRING)
+        private val SYMBOL_KEYS = pack(FlexibleSearchHighlighterColors.FXS_SYMBOL)
+        private val BRACES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACES)
+        private val PARENS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENS)
+        private val BRACKETS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACKETS)
+        private val PARENTHESES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENTHESES)
+        private val NUMBER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_NUMBER)
+        private val COLUMN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN)
+        private val TABLE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_TABLE)
+        private val COMMENT_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COMMENT)
+        private val OUTER_JOIN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_OUTER_JOIN)
+        private val FUNCTION_CALL_KEYS = pack(FlexibleSearchHighlighterColors.FXS_FUNCTION_CALL)
+        private val LOCALIZED_KEYS = pack(FlexibleSearchHighlighterColors.FXS_LOCALIZED)
+        private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_SEPARATOR)
+        private val TABLE_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_TABLE_ALIAS)
+        private val COLUMN_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_ALIAS)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
@@ -84,6 +84,7 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.Y_COLUMN_NAME to COLUMN_KEYS,
 
             FlexibleSearchTypes.SIGNED_NUMBER to NUMBER_KEYS,
+            FlexibleSearchTypes.NUMERIC_LITERAL to NUMBER_KEYS,
 
             FlexibleSearchTypes.LINE_COMMENT to COMMENT_KEYS,
             FlexibleSearchTypes.COMMENT to COMMENT_KEYS,

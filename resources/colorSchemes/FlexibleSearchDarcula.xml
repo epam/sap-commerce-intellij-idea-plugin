@@ -18,32 +18,32 @@
   -->
 
 <list>
-    <option name="FS_PARAMETER">
+    <option name="FXS_PARAMETER">
         <value>
             <option name="FOREGROUND" value="0097C5"/>
         </value>
     </option>
-    <option name="FS_OUTER_JOIN">
+    <option name="FXS_OUTER_JOIN">
         <value>
             <option name="FOREGROUND" value="0097C5"/>
         </value>
     </option>
-    <option name="COLUMN">
+    <option name="FXS_COLUMN">
         <value>
             <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
-    <option name="FS_TABLE_TRAIL">
+    <option name="FXS_TABLE_TAIL">
         <value>
             <option name="FONT_TYPE" value="3"/>
         </value>
     </option>
-    <option name="FS_TABLE_ALIAS">
+    <option name="FXS_TABLE_ALIAS">
         <value>
             <option name="FOREGROUND" value="757575"/>
         </value>
     </option>
-    <option name="FS_COLUMN_ALIAS">
+    <option name="FXS_COLUMN_ALIAS">
         <value>
             <option name="FOREGROUND" value="757575"/>
             <option name="FONT_TYPE" value="2"/>

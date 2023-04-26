@@ -68,7 +68,7 @@ class FlexibleSearchAnnotator : Annotator {
 
             STAR,
             EXCLAMATION_MARK -> when (element.parent.elementType) {
-                DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FS_TABLE_TRAIL, holder, element)
+                DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FXS_TABLE_TAIL, holder, element)
             }
 
             COLUMN_LOCALIZED_NAME -> {
