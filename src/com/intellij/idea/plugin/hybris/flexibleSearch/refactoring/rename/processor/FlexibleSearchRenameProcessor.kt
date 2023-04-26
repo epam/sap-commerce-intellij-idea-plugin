@@ -17,11 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo
@@ -67,7 +69,15 @@ class FlexibleSearchRenameProcessor : RenamePsiElementProcessor() {
                 findElements(element, newName)
                     .forEach {
                         result.add(object : UnresolvableCollisionUsageInfo(it, element) {
-                            override fun getDescription() = HybrisI18NBundleUtils.message("hybris.fxs.refactoring.rename.existing.tableAlias.conflict", newName)
+                            override fun getDescription() = when (element.elementType) {
+                                FlexibleSearchTypes.TABLE_ALIAS_NAME,
+                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> message("hybris.fxs.refactoring.rename.existing.tableAlias.conflict", newName)
+
+                                FlexibleSearchTypes.COLUMN_ALIAS_NAME,
+                                FlexibleSearchTypes.COLUMN_NAME -> message("hybris.fxs.refactoring.rename.existing.columnAlias.conflict", newName)
+
+                                else -> message("hybris.fxs.refactoring.rename.existing.conflict", newName)
+                            }
                         })
                     }
             }
