@@ -148,6 +148,14 @@ object FxSLookupElementFactory {
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         }
 
+    fun buildColumnLookup(tableAlias: String?, columnAlias: String, separatorPostfix: String) = tableAlias
+        ?.let {
+            LookupElementBuilder.create("$it${separatorPostfix}${columnAlias}")
+                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        } ?: LookupElementBuilder.create(columnAlias)
+        .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+
+
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
         .withTypeText(" ${message("hybris.fxs.completion.column.language.${isoCode.lowercase()}")}")
         .withCaseSensitivity(false)
