@@ -66,7 +66,6 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
         return suffixes + types
     }
 
-
     companion object {
         val CACHE_KEY =
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSDefinedTableReference>>("HYBRIS_TS_CACHED_REFERENCE")

@@ -43,7 +43,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
 
             .before(
                 TokenSet.create(
-                    LDBRACE, RDBRACE,
+                    LDBRACE, RDBRACE, AS,
                     IS, NOT, NULL,
                     THEN, ELSE, END,
                     BETWEEN, JOIN,

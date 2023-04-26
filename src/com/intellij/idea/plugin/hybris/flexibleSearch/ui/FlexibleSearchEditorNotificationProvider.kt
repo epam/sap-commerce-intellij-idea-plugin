@@ -86,11 +86,10 @@ class FlexibleSearchEditorNotificationProvider : EditorNotificationProvider, Dum
     ): MutableCollection<LeafPsiElement> {
         val processor = Collector(fxsSettings)
         PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, processor)
-        val foundElements = processor.collection
-        return foundElements
+        return processor.collection
     }
 
-    class Collector(val fxsSettings: FlexibleSearchSettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
+    class Collector(private val fxsSettings: FlexibleSearchSettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
         override fun execute(element: LeafPsiElement): Boolean {
             if (RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()

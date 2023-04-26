@@ -84,6 +84,12 @@ class FxSBlock internal constructor(
         JOIN_CONSTRAINT,
         ELSE -> Indent.getNormalIndent()
 
+        AS -> if (child.treeParent.elementType == RESULT_COLUMN) {
+            Indent.getNormalIndent()
+        } else {
+            Indent.getNoneIndent()
+        }
+
         RESULT_COLUMNS -> Indent.getSpaceIndent("SELECT".length)
 
         THEN -> Indent.getContinuationIndent()
@@ -98,12 +104,10 @@ class FxSBlock internal constructor(
 
         TABLE_OR_SUBQUERY -> Indent.getSpaceIndent(spacingBuilder.longestJoinOperatorSpaces(child))
 
-        else -> {
-            if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
-                Indent.getNormalIndent()
-            } else {
-                Indent.getNoneIndent()
-            }
+        else -> if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
+            Indent.getNormalIndent()
+        } else {
+            Indent.getNoneIndent()
         }
     }
 

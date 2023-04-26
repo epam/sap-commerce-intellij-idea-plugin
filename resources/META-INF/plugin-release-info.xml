@@ -27,15 +27,16 @@
                 <li>Import of SAP Commerce extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.</li>
                 <li>Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.</li>
                 <li>Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.</li>
-                <li>Custom editor for Flexible Search queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
-                <li>Custom editor for Impex files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html?locale=en-US">Polyglot Query.</a></li>
+                <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc399c186691014b8fce25e96614547.html?locale=en-US">FlexibleSearch</a> queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html?locale=en-US">Impex</a> files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
                 <li>Visualization of Business Process, <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md" target="_blank" rel="nofollow">Type System</a> and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
                 <li>Enhanced project view tree.</li>
-                <li>Execution of Flexible Search queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
+                <li>Execution of FlexibleSearch queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
                 <li>Execution of queries on remote Solr instances.</li>
                 <li>And much more</li>
             </ul>
@@ -94,6 +95,23 @@
             <h3>2023.1.5</h3>
             <ul>
                 <li><i>Feature:</i> Polyglot Query Language support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)</li>
+                <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>)
+                    <ul>
+                        <li>Rewritten from the Scratch</li>
+                        <li>Folding support</li>
+                        <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with single click</li>
+                        <li>Added support of the multiline comment block <code>/**/</code></li>
+                        <li>Added find usages for table aliases</li>
+                        <li>Added support of the localized attributes</li>
+                        <li>Improved inspection and validation of the FXS</li>
+                        <li>Improved Formatting, better table based formatting for multiline entities (eg, several joins)</li>
+                        <li>Improved Color Scheme</li>
+                        <li>Improved code completion</li>
+                        <li>Refactoring: rename of the table alias</li>
+                        <li>Project specific Settings pane</li>
+                        <li>Dozens of other improvements</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch value parameters code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345" target="_blank" rel="nofollow">#345</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch & Impex code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
@@ -189,7 +207,7 @@
                 <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
                 <li><i>Feature:</i> Added Line Marker Provider settings and unified API usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294" target="_blank" rel="nofollow">#294</a>)</li>
                 <li><i>Feature:</i> Added navigation to Bean siblings in the <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/295" target="_blank" rel="nofollow">#295</a>)</li>
-                <li><i>Feature:</i> Added new <strong>Flexible Search</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
+                <li><i>Feature:</i> Added new <strong>FlexibleSearch</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
                     <ul>
                         <li>Item Type is not defined</li>
                         <li>Attribute is not defined</li>
@@ -278,7 +296,7 @@
                 <li><i>Feature:</i> Added completion for <code>required-extension</code> under <code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/149" target="_blank" rel="nofollow">#149</a>)</li>
                 <li><i>Feature:</i> Filter out already defined extension dependencies in the completion for <code>extensioninfo.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/150" target="_blank" rel="nofollow">#150</a>)</li>
                 <li><i>Feature:</i> Added possibility to change current Project settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/131" target="_blank" rel="nofollow">#131</a>)</li>
-                <li><i>Feature:</i> Added possibility to preview preformatted Flexible Search Queries and copy them to Clipboard (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/118" target="_blank" rel="nofollow">#118</a>)</li>
+                <li><i>Feature:</i> Added possibility to preview preformatted FlexibleSearch Queries and copy them to Clipboard (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/118" target="_blank" rel="nofollow">#118</a>)</li>
                 <li><i>Feature:</i> Added customized Structure View for <code>beans.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/113" target="_blank" rel="nofollow">#113</a>)</li>
                 <li><i>Feature:</i> Added new <code>localextensions.xml</code> inspection rules
                     <ul>
