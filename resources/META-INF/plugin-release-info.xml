@@ -95,7 +95,9 @@
             <h3>2023.1.5</h3>
             <ul>
                 <li><i>Feature:</i> Polyglot Query Language support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)</li>
-                <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>)
+                <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
+                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/350" target="_blank" rel="nofollow">#350</a>
+                    )
                     <ul>
                         <li>Rewritten from the Scratch</li>
                         <li>Folding support</li>
