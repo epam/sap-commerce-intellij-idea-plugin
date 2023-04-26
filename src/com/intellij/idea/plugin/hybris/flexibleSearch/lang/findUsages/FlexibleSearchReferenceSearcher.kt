@@ -17,13 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COLUMN_ALIAS_NAME
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_ALIAS_NAME
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.application.ReadAction
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import com.intellij.util.Processor
 
 class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>() {
@@ -32,13 +36,34 @@ class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, Referenc
         ReadAction.run<Throwable> {
             val elementToSearch = queryParameters.elementToSearch;
             if (!elementToSearch.isValid) return@run
-            if (elementToSearch !is FlexibleSearchTableAliasName) return@run
-            val file = elementToSearch.getContainingFile();
+            if (!FlexibleSearchFindUsagesProvider.SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return@run
 
-            PsiTreeUtil.collectElements(file) { element -> element is FlexibleSearchSelectedTableName && element.textMatches(elementToSearch) }
-                .mapNotNull { it.reference }
-                .forEach { consumer.process(it) }
+            when (elementToSearch.elementType) {
+                TABLE_ALIAS_NAME -> processTableAlias(elementToSearch, consumer)
+                COLUMN_ALIAS_NAME -> processColumnAlias(elementToSearch, consumer)
+                else -> throw UnsupportedOperationException("Missing implementation for ${elementToSearch.elementType}")
+            }
         }
 
+    }
+
+    private fun processTableAlias(elementToSearch: PsiElement, consumer: Processor<in PsiReference>) {
+        val file = elementToSearch.containingFile;
+
+        PsiTreeUtil.collectElements(file) {
+            it is FlexibleSearchSelectedTableName && it.textMatches(elementToSearch)
+        }
+            .mapNotNull { it.reference }
+            .forEach { consumer.process(it) }
+    }
+
+    private fun processColumnAlias(elementToSearch: PsiElement, consumer: Processor<in PsiReference>) {
+        val file = elementToSearch.containingFile;
+
+        PsiTreeUtil.collectElements(file) {
+            it is FlexibleSearchColumnName && it.textMatches(elementToSearch)
+        }
+            .mapNotNull { it.reference }
+            .forEach { consumer.process(it) }
     }
 }

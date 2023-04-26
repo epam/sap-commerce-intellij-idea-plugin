@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLexer
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
@@ -42,7 +41,7 @@ class FlexibleSearchFindUsagesProvider : FindUsagesProvider {
         TokenSet.EMPTY
     )
 
-    override fun canFindUsagesFor(psiElement: PsiElement) = psiElement.elementType == FlexibleSearchTypes.TABLE_ALIAS_NAME
+    override fun canFindUsagesFor(psiElement: PsiElement) = SUPPORTED_ELEMENT_TYPES.contains(psiElement.elementType)
     override fun getHelpId(psiElement: PsiElement) = null
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String = element.text
 
@@ -50,4 +49,10 @@ class FlexibleSearchFindUsagesProvider : FindUsagesProvider {
     override fun getType(element: PsiElement) = ""
     override fun getDescriptiveName(element: PsiElement) = ""
 
+    companion object {
+        val SUPPORTED_ELEMENT_TYPES = setOf(
+            FlexibleSearchTypes.TABLE_ALIAS_NAME,
+            FlexibleSearchTypes.COLUMN_ALIAS_NAME
+        )
+    }
 }
