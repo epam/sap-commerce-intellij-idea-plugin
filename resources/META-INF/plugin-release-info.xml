@@ -101,13 +101,13 @@
                         <li>Folding support</li>
                         <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with single click</li>
                         <li>Added support of the multiline comment block <code>/**/</code></li>
-                        <li>Added find usages for table aliases</li>
+                        <li>Added find usages for table & column aliases</li>
                         <li>Added support of the localized attributes</li>
                         <li>Improved inspection and validation of the FXS</li>
                         <li>Improved Formatting, better table based formatting for multiline entities (eg, several joins)</li>
                         <li>Improved Color Scheme</li>
                         <li>Improved code completion</li>
-                        <li>Refactoring: rename of the table alias</li>
+                        <li>Refactoring: rename of the table & column alias</li>
                         <li>Project specific Settings pane</li>
                         <li>Dozens of other improvements</li>
                     </ul>
