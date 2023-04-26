@@ -136,6 +136,14 @@ class FxSBlock internal constructor(
 
         JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
 
+        SELECT_STATEMENT -> {
+            if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
+                wrapIf(FxSCodeStyleSettings.WRAP_SELECT_STATEMENT_IN_SUBQUERY)
+            } else {
+                Wrap.createWrap(WrapType.NONE, false)
+            }
+        }
+
         else -> Wrap.createWrap(WrapType.NONE, false)
     }
 
