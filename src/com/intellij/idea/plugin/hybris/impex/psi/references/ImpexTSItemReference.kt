@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult

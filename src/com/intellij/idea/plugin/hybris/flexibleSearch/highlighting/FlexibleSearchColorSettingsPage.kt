@@ -59,7 +59,7 @@ SELECT {${tableAlias("cat")}:${column("pk")}} FROM {${table("Category")} AS ${ta
    {{ SELECT * FROM {${table("CategoryCategoryRelation")}} WHERE {${column("target")}}={${tableAlias("cat")}:${column("pk")}} }}
 )
 
-SELECT ${function("COUNT")}(*), COUNT({${column("pk")}}) FROM {${table("Product")}${tableTail("!")} WHERE {${column("code")}} LIKE '%al%'
+SELECT ${function("COUNT")}(*), ${function("COUNT")}({${column("pk")}}) FROM {${table("Product")}${tableTail("!")} WHERE {${column("code")}} LIKE '%al%'
 
 SELECT ${function("COUNT")}(DISTINCT {${column("code")}}) FROM {${table("Product")}${tableTail("*")}} WHERE {${column("code")}} LIKE '%al%' AND {${column("code")}} LIKE '%15%'
 

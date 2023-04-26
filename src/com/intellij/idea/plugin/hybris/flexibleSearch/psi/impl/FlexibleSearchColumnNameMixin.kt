@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSColumnNameReference
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import java.io.Serial

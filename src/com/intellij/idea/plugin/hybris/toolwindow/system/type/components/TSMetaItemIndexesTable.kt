@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemIndex
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable

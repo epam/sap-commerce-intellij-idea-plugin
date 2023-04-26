@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils;
 import com.intellij.idea.plugin.hybris.system.type.model.Items;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;

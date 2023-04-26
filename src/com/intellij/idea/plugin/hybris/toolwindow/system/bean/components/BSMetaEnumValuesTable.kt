@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable

@@ -21,7 +21,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils;
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;

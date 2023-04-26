@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLook
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
-import com.intellij.idea.plugin.hybris.psi.utils.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.pom.references.PomService

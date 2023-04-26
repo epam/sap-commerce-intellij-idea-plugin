@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 import com.intellij.formatting.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinOperator
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -97,6 +98,15 @@ class FxSBlock internal constructor(
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
                 Indent.getSpaceIndent("{{".length)
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
+
+        SELECT_SUBQUERY_COMBINED,
+        COMPOUND_OPERATOR -> {
+            if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, LPAREN) != null) {
+                Indent.getSpaceIndent("(".length)
             } else {
                 Indent.getNoneIndent()
             }
