@@ -139,6 +139,8 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.NOT to KEYWORD_KEYS,
             FlexibleSearchTypes.EXISTS to KEYWORD_KEYS,
             FlexibleSearchTypes.HAVING to KEYWORD_KEYS,
+            FlexibleSearchTypes.BETWEEN to KEYWORD_KEYS,
+            FlexibleSearchTypes.INTERVAL to KEYWORD_KEYS,
 
             )
     }
