@@ -34,6 +34,8 @@ NAMED_PARAMETER=[?][:jletterdigit:]+
 COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 LINE_COMMENT=--[^\r\n]*
 
+%state TRIPLE_BRACE
+
 %%
 <YYINITIAL> {
   {WHITE_SPACE}                      { return WHITE_SPACE; }
@@ -46,6 +48,7 @@ LINE_COMMENT=--[^\r\n]*
   "}"                                { return RBRACE; }
   "{{"                               { return LDBRACE; }
   "}}"                               { return RDBRACE; }
+  "}}}"                              { yypushback(2); return RBRACE; }
   "("                                { return LPAREN; }
   ")"                                { return RPAREN; }
   "&"                                { return AMP; }
