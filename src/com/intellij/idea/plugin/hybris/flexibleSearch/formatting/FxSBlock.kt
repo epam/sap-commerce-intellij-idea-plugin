@@ -134,7 +134,7 @@ class FxSBlock internal constructor(
         }
 
         RPAREN -> {
-            if (child.treePrev.elementType == SELECT_SUBQUERY_COMBINED) {
+            if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, SELECT_SUBQUERY_COMBINED) != null) {
                 Wrap.createWrap(WrapType.ALWAYS, true)
             } else {
                 Wrap.createWrap(WrapType.NONE, false)
