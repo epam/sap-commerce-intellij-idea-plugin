@@ -24,6 +24,7 @@ import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
@@ -32,10 +33,12 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyadicExpression
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiVariable
+import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator
 import com.intellij.util.Function
 import java.awt.datatransfer.StringSelection
@@ -61,7 +64,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         if (!CommonIdeaService.getInstance().isHybrisProject(element.project)) return null
 
         val expression = computeExpression(element)
-        val formattedExpression = formatExpression(expression)
+        val formattedExpression = formatExpression(element.project, expression)
 
         if (!(expression.contains(topRegex) && expression.contains('{') && expression.contains('}'))) return null
 
@@ -72,19 +75,10 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         return FlexibleSearchQueryLineMarkerInfo(parent.nameIdentifier!!, icon, tooltipProvider, CopyToClipboard(formattedExpression))
     }
 
-    // TODO: Refactor after migration to new FlexibleSearch parser
-    private fun formatExpression(expression: String): String {
-        return expression
-            .replace(regexFrom, "\n FROM ")
-            .replace(regexLeftJoin, "\n LEFT JOIN ")
-            .replace(regexWhere, "\n WHERE \n")
-            .replace(regexUnit, "\n UNION ")
-            .replace(" ({{ ", " (\n {{\n")
-            .replace(" ( {{ ", "\n (\n {{\n")
-            .replace(" )}} ", "\n )\n }}\n")
-            .replace(" ) }} ", "\n )\n }}\n")
-            .replace(" }} ", "\n }} \n")
-            .replace(" {{ ", "\n {{ \n")
+    private fun formatExpression(project: Project, expression: String): String {
+        val fxsFile = FlexibleSearchElementFactory.createFile(project, expression)
+
+        return CodeStyleManager.getInstance(project).reformat(fxsFile).text
     }
 
     private fun computeExpression(literalExpression: PsiPolyadicExpression): String {

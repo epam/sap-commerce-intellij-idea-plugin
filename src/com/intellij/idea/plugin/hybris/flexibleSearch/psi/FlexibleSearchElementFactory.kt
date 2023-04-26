@@ -28,6 +28,6 @@ object FlexibleSearchElementFactory {
 
     fun createIdentifier(project: Project, name: String): PsiElement = createFile(project, name).firstChild
 
-    private fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
+    fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.fxs", FlexibleSearchFileType.instance, text) as FlexibleSearchFile
 }

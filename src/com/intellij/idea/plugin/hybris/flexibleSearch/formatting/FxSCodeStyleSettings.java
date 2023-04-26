@@ -30,6 +30,7 @@ public class FxSCodeStyleSettings extends CustomCodeStyleSettings {
     public static boolean SPACES_INSIDE_DOUBLE_BRACES = true;
     public static boolean SPACE_AROUND_OP = true;
     public static boolean WRAP_JOIN_CONSTRAINT = false;
+    public static boolean WRAP_SELECT_STATEMENT_IN_SUBQUERY = true;
 
     public FxSCodeStyleSettings(final CodeStyleSettings settings) {
         super("FSCodeStyleSettings", settings);
