@@ -123,6 +123,14 @@ class FxSBlock internal constructor(
             }
         }
 
+        RPAREN -> {
+            if (child.treePrev.elementType == SELECT_SUBQUERY_COMBINED) {
+                Wrap.createWrap(WrapType.ALWAYS, true)
+            } else {
+                Wrap.createWrap(WrapType.NONE, false)
+            }
+        }
+
         LDBRACE,
         RDBRACE,
         CASE_EXPRESSION,
