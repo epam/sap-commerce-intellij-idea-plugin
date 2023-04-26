@@ -192,7 +192,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
+  // (ORDER | IDENTIFIER) ('!' | '*')?
   public static boolean defined_table_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name")) return false;
     if (!nextTokenIs(b, "<defined table name>", IDENTIFIER, ORDER)) return false;
@@ -214,14 +214,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (EXCLAMATION_MARK | STAR)?
+  // ('!' | '*')?
   private static boolean defined_table_name_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name_1")) return false;
     defined_table_name_1_0(b, l + 1);
     return true;
   }
 
-  // EXCLAMATION_MARK | STAR
+  // '!' | '*'
   private static boolean defined_table_name_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "defined_table_name_1_0")) return false;
     boolean r;
@@ -578,14 +578,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = select_statement(b, l + 1);
-    exit_section_(b, l, m, r, false, FlexibleSearchParser::from_query_recover);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::from_query_greedy_recover);
     return r;
   }
 
   /* ********************************************************** */
   // !')'
-  static boolean from_query_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_query_recover")) return false;
+  static boolean from_query_greedy_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "from_query_greedy_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
     r = !consumeToken(b, RPAREN);
@@ -1359,18 +1359,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = select_statement(b, l + 1);
-    exit_section_(b, l, m, r, false, FlexibleSearchParser::subquery_recover);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !"}}"
-  static boolean subquery_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "subquery_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !consumeToken(b, RDBRACE);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::y_subquery_greedy_recover);
     return r;
   }
 
@@ -1521,6 +1510,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = p && consumeToken(b, RBRACE) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // !"}}"
+  static boolean y_subquery_greedy_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "y_subquery_greedy_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RDBRACE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */

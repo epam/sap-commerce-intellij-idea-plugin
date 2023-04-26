@@ -61,11 +61,11 @@
 //        COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 
         QUESTION_MARK       = '?'
-        EXCLAMATION_MARK    = "!"
+        EXCLAMATION_MARK    = '!'
         LBRACKET            = '['
         RBRACKET            = ']'
-        LBRACE              = "{"
-        RBRACE              = "}"
+        LBRACE              = '{'
+        RBRACE              = '}'
         LDBRACE             = "{{"
         RDBRACE             = "}}"
         LPAREN              = '('
@@ -102,13 +102,6 @@
 root ::= statement
 
 private statement ::= (select_statement) { name="statement" }
-
-// Variant of with_clause_select_statement that is inside parens and consumes all input until the matching paren.
-private subquery_greedy ::= select_statement {
-  recoverWhile=subquery_recover
-}
-
-private subquery_recover ::= !"}}"
 
 type_name ::= name ( '(' signed_number ')' | '(' signed_number ',' signed_number ')' )?
 
@@ -212,10 +205,9 @@ from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) 
 from_clause_select_query ::= '(' &(SELECT) from_query_greedy ')' {pin=2}
 
 private from_query_greedy ::= select_statement {
-  recoverWhile=from_query_recover
+  recoverWhile=from_query_greedy_recover
 }
-
-private from_query_recover ::= !')'
+private from_query_greedy_recover ::= !')'
 
 from_clause_simple ::= table_or_subquery ( join_operator table_or_subquery join_constraint? )*
 from_clause_subqueries ::= '(' from_clause_subqueries_statement ')' ( ( AS )? table_alias_name)?
@@ -235,6 +227,10 @@ select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' ( ( AS )? table_
 select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
   pin=2
 }
+private subquery_greedy ::= select_statement {
+  recoverWhile=y_subquery_greedy_recover
+}
+private y_subquery_greedy_recover ::= !"}}"
 
 result_column ::=
   '*'
@@ -274,7 +270,7 @@ selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL {
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[getName setName getNameIdentifier]
 }
-defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)? {
+defined_table_name ::= (ORDER | IDENTIFIER) ('!' | '*')? {
     pin=1
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
     methods=[getTableName]
