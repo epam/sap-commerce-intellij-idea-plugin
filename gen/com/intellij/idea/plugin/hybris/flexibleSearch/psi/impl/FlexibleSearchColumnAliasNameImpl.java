@@ -47,4 +47,22 @@ public class FlexibleSearchColumnAliasNameImpl extends ASTWrapperPsiElement impl
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public String getName() {
+    return FlexibleSearchPsiUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
+    return FlexibleSearchPsiUtil.setName(this, newName);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return FlexibleSearchPsiUtil.getNameIdentifier(this);
+  }
+
 }

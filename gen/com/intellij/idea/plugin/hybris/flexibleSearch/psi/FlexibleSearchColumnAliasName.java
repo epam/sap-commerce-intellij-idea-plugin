@@ -25,6 +25,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FlexibleSearchColumnAliasName extends PsiElement {
+public interface FlexibleSearchColumnAliasName extends FlexibleSearchPsiNamedElement {
+
+  @Nullable
+  String getName();
+
+  @NotNull
+  PsiElement setName(@NotNull String newName);
+
+  @Nullable
+  PsiElement getNameIdentifier();
 
 }

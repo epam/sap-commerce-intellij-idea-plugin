@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchColumnNameImpl extends ASTWrapperPsiElement implements FlexibleSearchColumnName {
+public class FlexibleSearchColumnNameImpl extends FlexibleSearchColumnNameMixin implements FlexibleSearchColumnName {
 
   public FlexibleSearchColumnNameImpl(@NotNull ASTNode node) {
     super(node);
@@ -45,6 +44,24 @@ public class FlexibleSearchColumnNameImpl extends ASTWrapperPsiElement implement
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public String getName() {
+    return FlexibleSearchPsiUtil.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
+    return FlexibleSearchPsiUtil.setName(this, newName);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return FlexibleSearchPsiUtil.getNameIdentifier(this);
   }
 
 }

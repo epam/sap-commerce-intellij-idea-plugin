@@ -23,6 +23,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
@@ -138,6 +139,12 @@ object FxSLookupElementFactory {
             LookupElementBuilder.create(it + separatorPostfix)
                 .withPresentableText(it)
                 .withTypeText(tableAlias.table?.text)
+                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        }
+
+    fun build(columnAlias: FlexibleSearchColumnAliasName) = columnAlias.name
+        ?.let {
+            LookupElementBuilder.create(it)
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         }
 

@@ -257,34 +257,37 @@ compound_operator ::= UNION ALL?
 
 ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
-column_alias_name ::= name
+column_alias_name ::= name {
+   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+   methods=[getName setName getNameIdentifier]
+}
 private y_column_localized_name ::= '[' column_localized_name ']' {pin=1}
 column_localized_name ::= IDENTIFIER {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnLocalizedNameMixin"
 }
-table_alias_name ::= name
-{
+table_alias_name ::= name {
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[getName setName getNameIdentifier getTable]
 }
-selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL
-{
+selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
     methods=[getName setName getNameIdentifier]
 }
-defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)?
-{
+defined_table_name ::= (ORDER | IDENTIFIER) (EXCLAMATION_MARK | STAR)? {
     pin=1
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
     methods=[getTableName]
 }
-y_column_name ::= ORDER | IDENTIFIER
-{
+y_column_name ::= ORDER | IDENTIFIER {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYColumnNameMixin"
     methods=[getTable getTableAliases]
 }
-column_name ::= ORDER | IDENTIFIER
+column_name ::= ORDER | IDENTIFIER {
+   mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
+   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+   methods=[getName setName getNameIdentifier]
+}
 function_name ::= IDENTIFIER
 
 signed_number ::= ( '+' | '-' )? NUMERIC_LITERAL

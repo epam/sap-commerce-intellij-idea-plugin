@@ -48,7 +48,7 @@ class FlexibleSearchAnnotator : Annotator {
             IDENTIFIER,
             BACKTICK_LITERAL -> when (element.parent.elementType) {
                 FUNCTION_NAME -> highlight(FUNCTION_NAME, holder, element)
-                COLUMN_NAME -> highlight(COLUMN_NAME, holder, element)
+                COLUMN_NAME -> highlightReference(COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.columnAlias.key")
                 Y_COLUMN_NAME -> highlightReference(Y_COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.attribute.key")
                 SELECTED_TABLE_NAME -> highlightReference(SELECTED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.tableAlias.key")
                 DEFINED_TABLE_NAME -> highlightReference(DEFINED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.type.key")

@@ -53,7 +53,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitColumnAliasName(@NotNull FlexibleSearchColumnAliasName o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitColumnLocalizedName(@NotNull FlexibleSearchColumnLocalizedName o) {
@@ -61,7 +61,7 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
   }
 
   public void visitColumnName(@NotNull FlexibleSearchColumnName o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitColumnOuterJoinName(@NotNull FlexibleSearchColumnOuterJoinName o) {
