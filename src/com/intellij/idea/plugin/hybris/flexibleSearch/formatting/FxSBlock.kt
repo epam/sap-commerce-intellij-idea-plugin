@@ -96,7 +96,7 @@ class FxSBlock internal constructor(
 
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
-                Indent.getNormalIndent()
+                Indent.getSpaceIndent("{{".length)
             } else {
                 Indent.getNoneIndent()
             }
