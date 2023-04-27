@@ -163,8 +163,10 @@ SELECT x.PK FROM (
 ) x
  */
 column_ref_expression ::=
- selected_table_name column_separator column_name
+ aliased_column_ref_expression
  | column_name
+
+private aliased_column_ref_expression ::= selected_table_name column_separator column_name {pin=2}
 
 private exists_expression_name ::= EXISTS '('
 private function_call_expression_name ::= function_name '('

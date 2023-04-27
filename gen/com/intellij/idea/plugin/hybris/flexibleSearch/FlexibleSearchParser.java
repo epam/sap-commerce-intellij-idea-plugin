@@ -66,6 +66,21 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
+  // selected_table_name column_separator column_name
+  static boolean aliased_column_ref_expression(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aliased_column_ref_expression")) return false;
+    if (!nextTokenIs(b, "", BACKTICK_LITERAL, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = selected_table_name(b, l + 1);
+    r = r && column_separator(b, l + 1);
+    p = r; // pin = 2
+    r = r && column_name(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*)
   public static boolean bind_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "bind_parameter")) return false;
@@ -2134,27 +2149,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // selected_table_name column_separator column_name
+  // aliased_column_ref_expression
   //  | column_name
   public static boolean column_ref_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_ref_expression")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COLUMN_REF_EXPRESSION, "<column ref expression>");
-    r = column_ref_expression_0(b, l + 1);
+    r = aliased_column_ref_expression(b, l + 1);
     if (!r) r = column_name(b, l + 1);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // selected_table_name column_separator column_name
-  private static boolean column_ref_expression_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_ref_expression_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = selected_table_name(b, l + 1);
-    r = r && column_separator(b, l + 1);
-    r = r && column_name(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 

@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
+import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
 
@@ -135,33 +136,22 @@ object FxSLookupElementFactory {
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
-    fun build(tableAlias: FlexibleSearchTableAliasName, separatorPostfix: String = "") = tableAlias.name
-        ?.let {
-            LookupElementBuilder.create(it + separatorPostfix)
-                .withPresentableText(it)
-                .withTypeText(tableAlias.table?.text)
-                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
-        }
+    fun build(tableAlias: FlexibleSearchTableAliasName, fxsSettings: FlexibleSearchSettings): LookupElementBuilder {
+        val separator = if (fxsSettings.completion.injectTableAliasSeparator) fxsSettings.completion.defaultTableAliasSeparator
+        else ""
+        return build(tableAlias, separator)
+    }
 
-    fun build(columnAlias: FlexibleSearchColumnAliasName) = columnAlias.name
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
-        }
+    fun build(tableAlias: FlexibleSearchTableAliasName, separator: String = "") = LookupElementBuilder.create(tableAlias.text.trim() + separator)
+        .withPresentableText(tableAlias.text.trim())
+        .withTypeText(tableAlias.table?.text)
+        .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
 
-    fun build(yColumnName: FlexibleSearchYColumnName) = yColumnName.text
-        ?.let {
-            LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.HYBRIS)
-        }
+    fun build(columnAlias: FlexibleSearchColumnAliasName) = LookupElementBuilder.create(columnAlias.text.trim())
+        .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
 
-    fun buildColumnLookup(tableAlias: String?, columnAlias: String, separatorPostfix: String) = tableAlias
-        ?.let {
-            LookupElementBuilder.create("$it${separatorPostfix}${columnAlias}")
-                .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
-        } ?: LookupElementBuilder.create(columnAlias)
+    fun build(yColumnName: FlexibleSearchYColumnName) = LookupElementBuilder.create(yColumnName.text.trim())
         .withIcon(HybrisIcons.HYBRIS)
-
 
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
         .withTypeText(" ${message("hybris.fxs.completion.column.language.${isoCode.lowercase()}")}")

@@ -99,13 +99,7 @@ internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiRefere
             }
             ?: emptyArray()
         val tableAliases: Array<LookupElementBuilder> = element.tableAliases
-            .mapNotNull {
-                if (fxsSettings.completion.injectTableAliasSeparator) {
-                    FxSLookupElementFactory.build(it, fxsSettings.completion.defaultTableAliasSeparator)
-                } else {
-                    FxSLookupElementFactory.build(it)
-                }
-            }
+            .map { FxSLookupElementFactory.build(it, fxsSettings) }
             .toTypedArray()
 
         return separators + tableAliases

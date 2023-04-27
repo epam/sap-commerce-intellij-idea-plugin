@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
 public interface FlexibleSearchColumnRefExpression extends FlexibleSearchExpression, FoldablePsiElement {
 
-  @NotNull
+  @Nullable
   FlexibleSearchColumnName getColumnName();
 
   @Nullable

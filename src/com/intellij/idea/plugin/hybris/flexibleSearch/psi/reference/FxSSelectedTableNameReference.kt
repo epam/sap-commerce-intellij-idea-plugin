@@ -44,7 +44,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
         .let { PsiUtils.getValidResults(it) }
 
     override fun getVariants() = getTableAliases(element)
-        .mapNotNull { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
+        .map { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
         .toTypedArray()
 
     companion object {
