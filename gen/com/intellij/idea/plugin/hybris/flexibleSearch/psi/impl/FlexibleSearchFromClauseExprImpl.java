@@ -28,35 +28,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchFromClauseExpressionImpl extends FlexibleSearchExpressionImpl implements FlexibleSearchFromClauseExpression {
+public abstract class FlexibleSearchFromClauseExprImpl extends ASTWrapperPsiElement implements FlexibleSearchFromClauseExpr {
 
-  public FlexibleSearchFromClauseExpressionImpl(@NotNull ASTNode node) {
+  public FlexibleSearchFromClauseExprImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
-    visitor.visitFromClauseExpression(this);
+    visitor.visitFromClauseExpr(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FlexibleSearchVisitor) accept((FlexibleSearchVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchFromClauseSelect getFromClauseSelect() {
-    return findChildByClass(FlexibleSearchFromClauseSelect.class);
-  }
-
-  @Override
-  @Nullable
-  public FlexibleSearchYFromClause getYFromClause() {
-    return findChildByClass(FlexibleSearchYFromClause.class);
   }
 
 }

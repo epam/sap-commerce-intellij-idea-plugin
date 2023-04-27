@@ -49,8 +49,8 @@ public class FlexibleSearchFromClauseImpl extends ASTWrapperPsiElement implement
 
   @Override
   @NotNull
-  public List<FlexibleSearchFromClauseExpression> getFromClauseExpressionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchFromClauseExpression.class);
+  public List<FlexibleSearchFromClauseExpr> getFromClauseExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchFromClauseExpr.class);
   }
 
   @Override

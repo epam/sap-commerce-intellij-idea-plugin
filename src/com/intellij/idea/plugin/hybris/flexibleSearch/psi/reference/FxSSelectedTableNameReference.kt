@@ -20,7 +20,10 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
@@ -43,13 +46,9 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants() = getSuitableParent(element)
-        ?.let {
-            PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
-                .mapNotNull { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
-                .toTypedArray()
-        }
-        ?: emptyArray()
+    override fun getVariants() = getTableAliases(element)
+        .mapNotNull { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
+        .toTypedArray()
 
     companion object {
         val CACHE_KEY =
@@ -60,11 +59,8 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
                 .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 .trim()
 
-            val result: Array<ResolveResult> = getSuitableParent(ref.element)
-                ?.let {
-                    PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java)
-                        .firstOrNull { alias -> alias.text.trim() == lookingForName }
-                }
+            val result: Array<ResolveResult> = getTableAliases(ref.element)
+                .firstOrNull { alias -> alias.text.trim() == lookingForName }
                 ?.let { arrayOf(FxSTableAliasNameResolveResult(it)) }
                 ?: ResolveResult.EMPTY_ARRAY
 
@@ -74,13 +70,31 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
             )
         }
 
-        // we may have subselect inside the Result column
-        private fun getSuitableParent(element: FlexibleSearchSelectedTableName) =
-            PsiTreeUtil.getParentOfType(element, FlexibleSearchResultColumns::class.java)
-                ?.let { PsiTreeUtil.getParentOfType(it, FlexibleSearchSelectCoreSelect::class.java) }
-                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                    ?.fromClause
-                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
+        private fun getTableAliases(element: FlexibleSearchSelectedTableName): List<FlexibleSearchTableAliasName> {
+            var selectCore: FlexibleSearchSelectCoreSelect? = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?: return emptyList()
+            val foundSelectCores = mutableSetOf(selectCore!!)
+            val tableAliases = mutableListOf<FlexibleSearchTableAliasName>()
+
+            while (selectCore != null) {
+                selectCore = PsiTreeUtil.getParentOfType(selectCore, FlexibleSearchSelectCoreSelect::class.java)
+                if (selectCore != null) {
+                    foundSelectCores.add(selectCore)
+                }
+            }
+
+            return foundSelectCores
+                .mapNotNull { it.fromClause }
+                .flatMap { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+        }
+
+//        private fun collectTableAliases(element: FlexibleSearchSelectCoreSelect): List<FlexibleSearchTableAliasName> {
+//            element.fromClause
+//                ?.fromClauseExpressionList
+//                ?.map {
+//                    it.
+//                }
+//        }
     }
 
 }

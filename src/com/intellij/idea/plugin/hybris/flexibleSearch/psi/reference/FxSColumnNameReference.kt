@@ -118,26 +118,41 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
         private fun getAlternativeVariants(element: PsiElement): MutableMap<String?, MutableSet<PsiElement>> {
             val map = mutableMapOf<String?, MutableSet<PsiElement>>()
-            PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.childrenOfType<FlexibleSearchFromClause>()
-                ?.firstOrNull()
-                ?.fromClauseExpressionList
-                ?.mapNotNull { it.fromClauseSelect }
-                ?.mapNotNull { it.fromClauseSubqueries }
-                ?.map {
-                    val columns = map.computeIfAbsent(it.tableAliasName?.name) { mutableSetOf() }
-                    val foundColumns = it.selectSubqueryCombinedList
-                        .mapNotNull { subQuery -> subQuery.selectStatement }
-                        .flatMap { subSelect -> subSelect.selectCoreSelectList }
-                        .mapNotNull { subCoreSelect -> subCoreSelect.resultColumns }
-                        .flatMap { subResultColumns -> subResultColumns.resultColumnList }
-                        .mapNotNull { subResultColumn ->
-                            // if there is no column alias we may try to fallback to first [y] column name
-                            subResultColumn.columnAliasName
-                                ?: PsiTreeUtil.findChildOfType(subResultColumn.expression, FlexibleSearchYColumnName::class.java)
-                        }
-                    columns.addAll(foundColumns)
-                }
+//            PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+//                ?.childrenOfType<FlexibleSearchFromClause>()
+//                ?.firstOrNull()
+//                ?.fromClauseExprList
+//                ?.mapNotNull {
+//                    when (it) {
+//                        is FlexibleSearchFromClauseSelect -> it.tableAliasName
+//                            ?.name
+//                            ?: it.fromClauseSubqueries
+//                                ?.tableAliasName
+//                                ?.text
+//
+//                        is FlexibleSearchYFromClause -> it.fromClauseSimple
+//                            ?.let { that ->
+//                                PsiTreeUtil.findChildOfType(that, FlexibleSearchDefinedTableName::class.java)
+//                            }
+//
+//                        else -> null
+//                    it.fromClauseSelect
+//                    }
+//                ?.mapNotNull { it.fromClauseSubqueries }
+//                ?.map {
+//                    val columns = map.computeIfAbsent(it.tableAliasName?.name) { mutableSetOf() }
+//                    val foundColumns = it.selectSubqueryCombinedList
+//                        .mapNotNull { subQuery -> subQuery.selectStatement }
+//                        .flatMap { subSelect -> subSelect.selectCoreSelectList }
+//                        .mapNotNull { subCoreSelect -> subCoreSelect.resultColumns }
+//                        .flatMap { subResultColumns -> subResultColumns.resultColumnList }
+//                        .mapNotNull { subResultColumn ->
+//                            // if there is no column alias we may try to fallback to first [y] column name
+//                            subResultColumn.columnAliasName
+//                                ?: PsiTreeUtil.findChildOfType(subResultColumn.expression, FlexibleSearchYColumnName::class.java)
+//                        }
+//                    columns.addAll(foundColumns)
+//                }
             return map
         }
     }

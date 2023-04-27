@@ -52,7 +52,7 @@ public interface FlexibleSearchTypes {
   IElementType EXPRESSION = new FlexibleSearchElementType("EXPRESSION");
   IElementType EXT_PARAMETER_NAME = new FlexibleSearchElementType("EXT_PARAMETER_NAME");
   IElementType FROM_CLAUSE = new FlexibleSearchElementType("FROM_CLAUSE");
-  IElementType FROM_CLAUSE_EXPRESSION = new FlexibleSearchElementType("FROM_CLAUSE_EXPRESSION");
+  IElementType FROM_CLAUSE_EXPR = new FlexibleSearchElementType("FROM_CLAUSE_EXPR");
   IElementType FROM_CLAUSE_SELECT = new FlexibleSearchElementType("FROM_CLAUSE_SELECT");
   IElementType FROM_CLAUSE_SELECT_QUERY = new FlexibleSearchElementType("FROM_CLAUSE_SELECT_QUERY");
   IElementType FROM_CLAUSE_SIMPLE = new FlexibleSearchElementType("FROM_CLAUSE_SIMPLE");
@@ -244,9 +244,6 @@ public interface FlexibleSearchTypes {
       }
       else if (type == FROM_CLAUSE) {
         return new FlexibleSearchFromClauseImpl(node);
-      }
-      else if (type == FROM_CLAUSE_EXPRESSION) {
-        return new FlexibleSearchFromClauseExpressionImpl(node);
       }
       else if (type == FROM_CLAUSE_SELECT) {
         return new FlexibleSearchFromClauseSelectImpl(node);

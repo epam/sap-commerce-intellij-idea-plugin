@@ -28,7 +28,7 @@ import com.intellij.psi.PsiElement;
 public interface FlexibleSearchFromClause extends PsiElement {
 
   @NotNull
-  List<FlexibleSearchFromClauseExpression> getFromClauseExpressionList();
+  List<FlexibleSearchFromClauseExpr> getFromClauseExprList();
 
   @NotNull
   List<FlexibleSearchJoinOperator> getJoinOperatorList();

@@ -28,15 +28,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
 
-public class FlexibleSearchYFromClauseImpl extends ASTWrapperPsiElement implements FlexibleSearchYFromClause {
+public class FlexibleSearchYFromClauseImpl extends FlexibleSearchFromClauseExprImpl implements FlexibleSearchYFromClause {
 
   public FlexibleSearchYFromClauseImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull FlexibleSearchVisitor visitor) {
     visitor.visitYFromClause(this);
   }

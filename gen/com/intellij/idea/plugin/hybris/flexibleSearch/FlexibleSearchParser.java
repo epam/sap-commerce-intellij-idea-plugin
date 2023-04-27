@@ -56,12 +56,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
+    create_token_set_(FROM_CLAUSE_EXPR, FROM_CLAUSE_SELECT, Y_FROM_CLAUSE),
     create_token_set_(AND_EXPRESSION, BETWEEN_EXPRESSION, BIT_EXPRESSION, CASE_EXPRESSION,
       CAST_EXPRESSION, COLUMN_REF_EXPRESSION, COLUMN_REF_Y_EXPRESSION, COMPARISON_EXPRESSION,
       CONCAT_EXPRESSION, EQUIVALENCE_EXPRESSION, EXISTS_EXPRESSION, EXPRESSION,
-      FROM_CLAUSE_EXPRESSION, FUNCTION_CALL_EXPRESSION, IN_EXPRESSION, ISNULL_EXPRESSION,
-      LIKE_EXPRESSION, LITERAL_EXPRESSION, MUL_EXPRESSION, MYSQL_FUNCTION_EXPRESSION,
-      OR_EXPRESSION, PAREN_EXPRESSION, SUBQUERY_PAREN_EXPRESSION, UNARY_EXPRESSION),
+      FUNCTION_CALL_EXPRESSION, IN_EXPRESSION, ISNULL_EXPRESSION, LIKE_EXPRESSION,
+      LITERAL_EXPRESSION, MUL_EXPRESSION, MYSQL_FUNCTION_EXPRESSION, OR_EXPRESSION,
+      PAREN_EXPRESSION, SUBQUERY_PAREN_EXPRESSION, UNARY_EXPRESSION),
   };
 
   /* ********************************************************** */
@@ -316,7 +317,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FROM from_clause_expression ( join_operator from_clause_expression )*
+  // FROM from_clause_expr ( join_operator from_clause_expr )*
   public static boolean from_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause")) return false;
     if (!nextTokenIs(b, FROM)) return false;
@@ -324,13 +325,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, FROM_CLAUSE, null);
     r = consumeToken(b, FROM);
     p = r; // pin = 1
-    r = r && report_error_(b, from_clause_expression(b, l + 1));
+    r = r && report_error_(b, from_clause_expr(b, l + 1));
     r = p && from_clause_2(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // ( join_operator from_clause_expression )*
+  // ( join_operator from_clause_expr )*
   private static boolean from_clause_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause_2")) return false;
     while (true) {
@@ -341,13 +342,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // join_operator from_clause_expression
+  // join_operator from_clause_expr
   private static boolean from_clause_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = join_operator(b, l + 1);
-    r = r && from_clause_expression(b, l + 1);
+    r = r && from_clause_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -355,11 +356,11 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // y_from_clause
   //   | from_clause_select
-  public static boolean from_clause_expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_expression")) return false;
-    if (!nextTokenIs(b, "<from clause expression>", LBRACE, LPAREN)) return false;
+  public static boolean from_clause_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "from_clause_expr")) return false;
+    if (!nextTokenIs(b, "<from clause expr>", LBRACE, LPAREN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FROM_CLAUSE_EXPRESSION, "<from clause expression>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, FROM_CLAUSE_EXPR, "<from clause expr>");
     r = y_from_clause(b, l + 1);
     if (!r) r = from_clause_select(b, l + 1);
     exit_section_(b, l, m, r, false, null);

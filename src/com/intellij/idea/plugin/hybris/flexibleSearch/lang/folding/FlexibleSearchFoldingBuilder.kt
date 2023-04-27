@@ -19,9 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -84,22 +82,24 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             val tables = coreSelect
                 ?.fromClause
-                ?.fromClauseExpressionList
+                ?.fromClauseExprList
                 ?.map {
-                    val fromClauseSelect = it.fromClauseSelect
-                    fromClauseSelect
-                        ?.tableAliasName
-                        ?.text
-                        ?: fromClauseSelect
-                            ?.fromClauseSubqueries
-                            ?.tableAliasName
-                            ?.text
-                        ?: it.yFromClause
+                    when (it) {
+                        is FlexibleSearchFromClauseSelect -> it.tableAliasName
+                            ?.name
+                            ?: it.fromClauseSubqueries
+                                ?.tableAliasName
+                                ?.text
+
+                        is FlexibleSearchYFromClause -> it.fromClauseSimple
                             ?.let { that ->
                                 PsiTreeUtil.findChildOfType(that, FlexibleSearchDefinedTableName::class.java)
                             }
-                            ?.text
+
+                        else -> null
+                    }
                 }
+                ?.map { it ?: "?" }
                 ?.joinToString()
                 ?.let { if (it.contains(",")) "[$it]" else it }
 

@@ -193,19 +193,24 @@ private group_by_literal ::= GROUP BY
 
 where_clause ::= WHERE expression {pin=1}
 
-from_clause ::= FROM from_clause_expression ( join_operator from_clause_expression )* {pin=1}
+from_clause ::= FROM from_clause_expr ( join_operator from_clause_expr )* {pin=1}
 
-from_clause_expression ::=
+from_clause_expr ::=
   y_from_clause
   | from_clause_select
 
-y_from_clause ::= '{' from_clause_simple '}' { pin=1}
-from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint?
+y_from_clause ::= '{' from_clause_simple '}' {
+    pin=1
+    extends=from_clause_expr
+}
+from_clause_select ::= ((from_clause_select_query ( ( AS )? table_alias_name)?) | from_clause_subqueries) join_constraint? {
+    extends=from_clause_expr
+}
 
 from_clause_select_query ::= '(' &(SELECT) from_query_greedy ')' {pin=2}
 
 private from_query_greedy ::= select_statement {
-  recoverWhile=from_query_greedy_recover
+    recoverWhile=from_query_greedy_recover
 }
 private from_query_greedy_recover ::= !')'
 
@@ -222,10 +227,10 @@ table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 from_table ::= defined_table_name ( ( AS )? table_alias_name )?
 
 select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' ( ( AS )? table_alias_name)? {
-  pin=3
+    pin=3
 }
 select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
-  pin=2
+    pin=2
 }
 private subquery_greedy ::= select_statement {
   recoverWhile=y_subquery_greedy_recover
@@ -254,8 +259,8 @@ compound_operator ::= UNION ALL?
 ext_parameter_name ::= ORDER | IDENTIFIER
 column_outer_join_name ::= OUTER_JOIN
 column_alias_name ::= name {
-   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-   methods=[getName setName getNameIdentifier]
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[getName setName getNameIdentifier]
 }
 private y_column_localized_name ::= '[' column_localized_name ']' {pin=1}
 column_localized_name ::= IDENTIFIER {
@@ -280,9 +285,9 @@ y_column_name ::= ORDER | IDENTIFIER {
     methods=[getTable getTableAliases]
 }
 column_name ::= ORDER | IDENTIFIER {
-   mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
-   implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-   methods=[getName setName getNameIdentifier]
+    mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"
+    implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
+    methods=[getName setName getNameIdentifier]
 }
 function_name ::= IDENTIFIER
 

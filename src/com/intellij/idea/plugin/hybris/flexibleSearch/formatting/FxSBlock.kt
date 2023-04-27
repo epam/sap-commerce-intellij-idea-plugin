@@ -80,7 +80,9 @@ class FxSBlock internal constructor(
     }
 
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
-        FROM_CLAUSE_EXPRESSION,
+        Y_FROM_CLAUSE,
+        FROM_CLAUSE_SUBQUERIES -> Indent.getSpaceIndent("FROM".length)
+
         WHEN,
         JOIN_CONSTRAINT,
         ELSE -> Indent.getNormalIndent()
