@@ -22,13 +22,18 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        result.addElement(FxSLookupElementFactory.buildYColumn())
+        val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()
+        if (parent == null || parent.selectedTableName == null) {
+            result.addElement(FxSLookupElementFactory.buildYColumn())
+        }
 
         PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchResultColumns::class.java)
             ?.let {
