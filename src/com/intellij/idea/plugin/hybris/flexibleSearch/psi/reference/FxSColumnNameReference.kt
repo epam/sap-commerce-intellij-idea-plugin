@@ -67,13 +67,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             .completion
             .defaultTableAliasSeparator
 
-        return getAlternativeVariants(element).entries
-            .flatMap { entry ->
-                entry.value.map {
-                    FxSLookupElementFactory.buildColumnLookup(entry.key, it.text.trim(), separator)
-                }
-            }
-            .toTypedArray()
+        return getAlternativeVariants(element, separator)
     }
 
     companion object {
@@ -124,31 +118,23 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchYColumnName::class.java) }
             .filter(filter)
 
-        private fun getAlternativeVariants(element: PsiElement): MutableMap<String?, MutableSet<PsiElement>> {
-            val map = mutableMapOf<String?, MutableSet<PsiElement>>()
-//            PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-//                ?.childrenOfType<FlexibleSearchFromClause>()
-//                ?.firstOrNull()
-//                ?.fromClauseExprList
-//                ?.mapNotNull {
-//                    when (it) {
-//                        is FlexibleSearchFromClauseSelect -> it.tableAliasName
-//                            ?.name
-//                            ?: it.fromClauseSubqueries
-//                                ?.tableAliasName
-//                                ?.text
-//
-//                        is FlexibleSearchYFromClause -> it.fromClauseSimple
-//                            ?.let { that ->
-//                                PsiTreeUtil.findChildOfType(that, FlexibleSearchDefinedTableName::class.java)
-//                            }
-//
-//                        else -> null
-//                    it.fromClauseSelect
-//                    }
-//                ?.mapNotNull { it.fromClauseSubqueries }
-//                ?.map {
-//                    val columns = map.computeIfAbsent(it.tableAliasName?.name) { mutableSetOf() }
+        private fun getAlternativeVariants(element: PsiElement, separator: String): Array<LookupElementBuilder> {
+            val map = mutableMapOf<String?, MutableSet<ResolveResult>>()
+            PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?.childrenOfType<FlexibleSearchFromClause>()
+                ?.firstOrNull()
+                ?.fromClauseExprList
+                ?.filterIsInstance<FlexibleSearchFromClauseSelect>()
+                ?.mapNotNull { it.fromClauseSubqueries }
+                ?.map {
+                    val tableAliasName = it.tableAliasName?.name
+                    val columns = map.computeIfAbsent(tableAliasName) { mutableSetOf() }
+
+                    val aliases = findColumnAliasNames(it) { true }
+                        .map { alias -> FxSLookupElementFactory.buildColumnLookup(tableAliasName, alias.text.trim(), separator) }
+                    val nonAliasedColumns = findYColumnNames(it) { yColumn -> yColumn.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
+                        .map { alias -> FxSLookupElementFactory.buildColumnLookup(tableAliasName, alias.text.trim(), separator) }
+
 //                    val foundColumns = it.selectSubqueryCombinedList
 //                        .mapNotNull { subQuery -> subQuery.selectStatement }
 //                        .flatMap { subSelect -> subSelect.selectCoreSelectList }
@@ -159,9 +145,10 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 //                            subResultColumn.columnAliasName
 //                                ?: PsiTreeUtil.findChildOfType(subResultColumn.expression, FlexibleSearchYColumnName::class.java)
 //                        }
-//                    columns.addAll(foundColumns)
-//                }
-            return map
+//                    columns.addAll(aliases)
+//                    columns.addAll(nonAliasedColumns)
+                }
+            return emptyArray()
         }
     }
 

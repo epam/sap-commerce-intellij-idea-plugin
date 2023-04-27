@@ -160,7 +160,7 @@ object FxSLookupElementFactory {
             LookupElementBuilder.create("$it${separatorPostfix}${columnAlias}")
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
         } ?: LookupElementBuilder.create(columnAlias)
-        .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        .withIcon(HybrisIcons.HYBRIS)
 
 
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
