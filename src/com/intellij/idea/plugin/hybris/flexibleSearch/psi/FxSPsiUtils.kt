@@ -18,6 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
+import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
+
 object FxSPsiUtils {
 
     fun getColumnName(text: String) = text
@@ -27,5 +32,17 @@ object FxSPsiUtils {
     fun getTableAliasName(text: String) = text
         .replace("`", "")
         .trim()
+
+    fun shouldAddCommaAfterResultColumn(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
+        var addComma = false
+        if (fxsSettings.completion.injectCommaAfterResultColumn && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
+            addComma = element.parentOfType<FlexibleSearchResultColumn>()
+                ?.text
+                ?.replace(element.text, "")
+                ?.isNotEmpty()
+                ?: false
+        }
+        return addComma
+    }
 
 }

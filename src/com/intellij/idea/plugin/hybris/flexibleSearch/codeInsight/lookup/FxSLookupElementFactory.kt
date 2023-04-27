@@ -32,12 +32,13 @@ import com.intellij.psi.ResolveResult
 
 object FxSLookupElementFactory {
 
-    fun buildYColumn() = LookupElementBuilder.create("{}")
+    fun buildYColumn(addComma: Boolean) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
         .withPresentableText(" ")
         .withTailText("{...}")
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset
-            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+            val moveBackTo = if (addComma) 2 else 1
+            ctx.editor.caretModel.moveToOffset(cursorOffset - moveBackTo)
         }
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
 
@@ -69,7 +70,7 @@ object FxSLookupElementFactory {
         }
         .withIcon(HybrisIcons.FXS_FROM_PARENS_PLACEHOLDER)
 
-    fun buildYColumnAll() = LookupElementBuilder.create("*")
+    fun buildYColumnAll(addComma: Boolean) = LookupElementBuilder.create("*" + if (addComma) "," else "")
         .withPresentableText(" ")
         .withTailText(message("hybris.fxs.completion.column.star"))
         .withIcon(HybrisIcons.FXS_Y_COLUMN_ALL)

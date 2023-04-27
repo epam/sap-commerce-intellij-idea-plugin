@@ -116,14 +116,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
-            var addComma = false
-            if (fxsSettings.completion.injectCommaAfterResultColumn && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
-                addComma = element.parentOfType<FlexibleSearchResultColumn>()
-                    ?.text
-                    ?.replace(element.text, "")
-                    ?.isNotEmpty()
-                    ?: false
-            }
+            val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(element, fxsSettings)
 
             return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
                 ?.childrenOfType<FlexibleSearchFromClause>()
