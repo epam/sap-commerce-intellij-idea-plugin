@@ -54,7 +54,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
 
             .after(
                 TokenSet.create(
-                    LDBRACE,
+                    LDBRACE, JOIN_OPERATOR,
                     SELECT, FROM, WHERE, AS, ON, BY,
                     CASE, WHEN, THEN, ELSE, COMMA,
                     AND, OR, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ
