@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectCoreSelect
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
@@ -70,31 +67,37 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
             )
         }
 
-        private fun getTableAliases(element: FlexibleSearchSelectedTableName): List<FlexibleSearchTableAliasName> {
-            var selectCore: FlexibleSearchSelectCoreSelect? = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?: return emptyList()
-            val foundSelectCores = mutableSetOf(selectCore!!)
-            val tableAliases = mutableListOf<FlexibleSearchTableAliasName>()
-
-            while (selectCore != null) {
-                selectCore = PsiTreeUtil.getParentOfType(selectCore, FlexibleSearchSelectCoreSelect::class.java)
-                if (selectCore != null) {
-                    foundSelectCores.add(selectCore)
-                }
+        private fun getTableAliases(element: FlexibleSearchSelectedTableName): Collection<FlexibleSearchTableAliasName> {
+            // Order clause is outside the select core
+            if (PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java) != null) {
+                return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
+                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                    ?: emptyList()
             }
 
-            return foundSelectCores
-                .mapNotNull { it.fromClause }
-                .flatMap { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+            // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
+            val topResultColumns = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
+            if (topResultColumns != null) {
+                return PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
+                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                    ?: emptyList()
+            }
+
+            // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
+            val topWhereClause = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
+            if (topWhereClause != null) {
+                return PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
+                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                    ?: emptyList()
+            }
+
+            // all other cases, like GROUP BY, HAVING, etc
+            return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?.fromClause
+                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                ?: emptyList()
         }
 
-//        private fun collectTableAliases(element: FlexibleSearchSelectCoreSelect): List<FlexibleSearchTableAliasName> {
-//            element.fromClause
-//                ?.fromClauseExpressionList
-//                ?.map {
-//                    it.
-//                }
-//        }
     }
 
 }
