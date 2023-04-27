@@ -89,11 +89,12 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                             ?.name
                             ?: it.fromClauseSubqueries
                                 ?.tableAliasName
-                                ?.text
+                                ?.name
 
                         is FlexibleSearchYFromClause -> it.fromClauseSimple
                             ?.let { that ->
                                 PsiTreeUtil.findChildOfType(that, FlexibleSearchDefinedTableName::class.java)
+                                    ?.tableName
                             }
 
                         else -> null
