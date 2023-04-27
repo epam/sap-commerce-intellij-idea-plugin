@@ -1104,13 +1104,12 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // result_column ( following_result_column )*
   public static boolean result_columns(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_columns")) return false;
-    boolean r, p;
+    boolean r;
     Marker m = enter_section_(b, l, _NONE_, RESULT_COLUMNS, "<result columns>");
     r = result_column(b, l + 1);
-    p = r; // pin = 1
     r = r && result_columns_1(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::result_columns_recover);
+    return r;
   }
 
   // ( following_result_column )*
@@ -1131,6 +1130,17 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = following_result_column(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(FROM)
+  static boolean result_columns_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "result_columns_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, FROM);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

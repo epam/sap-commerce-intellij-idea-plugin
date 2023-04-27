@@ -130,19 +130,6 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                     } else {
                         return@map setOf<LookupElementBuilder>()
                     }
-
-//                    val foundColumns = it.selectSubqueryCombinedList
-//                        .mapNotNull { subQuery -> subQuery.selectStatement }
-//                        .flatMap { subSelect -> subSelect.selectCoreSelectList }
-//                        .mapNotNull { subCoreSelect -> subCoreSelect.resultColumns }
-//                        .flatMap { subResultColumns -> subResultColumns.resultColumnList }
-//                        .mapNotNull { subResultColumn ->
-//                            // if there is no column alias we may try to fallback to first [y] column name
-//                            subResultColumn.columnAliasName
-//                                ?: PsiTreeUtil.findChildOfType(subResultColumn.expression, FlexibleSearchYColumnName::class.java)
-//                        }
-//                    columns.addAll(aliases)
-//                    columns.addAll(nonAliasedColumns)
                 }
                 ?.flatten()
                 ?.toTypedArray()
