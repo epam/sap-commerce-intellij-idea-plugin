@@ -103,6 +103,14 @@ class FxSBlock internal constructor(
             }
         }
 
+        FROM_CLAUSE_SIMPLE -> {
+            if (child.treeParent.elementType == Y_FROM_CLAUSE) {
+                Indent.getSpaceIndent("{".length)
+            } else {
+                Indent.getNoneIndent()
+            }
+        }
+
         SELECT_SUBQUERY_COMBINED,
         COMPOUND_OPERATOR -> {
             if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, LPAREN) != null) {
