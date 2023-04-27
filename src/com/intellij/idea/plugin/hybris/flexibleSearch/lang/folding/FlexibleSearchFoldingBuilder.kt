@@ -100,8 +100,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                         else -> null
                     }
                 }
-                ?.map { it ?: "?" }
-                ?.joinToString()
+                ?.joinToString { it ?: "?" }
                 ?.let { if (it.contains(",")) "[$it]" else it }
 
             "$tables($columns)"

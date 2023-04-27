@@ -37,6 +37,10 @@ fun getPresentationText(resultColumn: FlexibleSearchResultColumn) = (
         ?: resultColumn.childrenOfType<FlexibleSearchCaseExpression>()
             .firstOrNull()
             ?.let { "<CASE>" }
+        ?: resultColumn.childrenOfType<FlexibleSearchColumnRefExpression>()
+            .firstOrNull()
+            ?.columnName
+            ?.name
         ?: resultColumn.childrenOfType<FlexibleSearchFunctionCallExpression>()
             .firstOrNull()
             ?.childrenOfType<FlexibleSearchFunctionName>()
