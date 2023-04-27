@@ -37,7 +37,7 @@ class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameter
 
         val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()
         if (parent == null || parent.selectedTableName == null) {
-            result.addElement(FxSLookupElementFactory.buildYColumn(addComma))
+            result.addElement(FxSLookupElementFactory.buildYColumn(addComma, parameters))
         }
 
         PsiTreeUtil.getParentOfType(parameters.position, FlexibleSearchResultColumns::class.java)

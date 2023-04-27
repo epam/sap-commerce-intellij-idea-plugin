@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
+import com.intellij.codeInsight.AutoPopupController
 import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
@@ -33,6 +34,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
+import java.util.concurrent.TimeUnit
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
 
@@ -41,6 +43,18 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 
         context.dummyIdentifier = DUMMY_IDENTIFIER
     }
+
+//    override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+//        val position = parameters.position
+
+//        if (position.prevSibling?.text in listOf(":", ".")) {
+//            val autoPopupController = AutoPopupController.getInstance(position.project)
+//
+//            autoPopupController.autoPopupMemberLookup(parameters.editor, null)
+//            autoPopupController.scheduleAutoPopup(parameters.editor, CompletionType.BASIC, null)
+//            autoPopupController.waitForDelayedActions(1, TimeUnit.SECONDS)
+//        }
+//    }
 
     init {
         val fxsBasePattern = psiElement()

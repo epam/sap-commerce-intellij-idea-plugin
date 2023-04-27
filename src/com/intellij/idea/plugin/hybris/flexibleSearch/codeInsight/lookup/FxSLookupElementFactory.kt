@@ -18,8 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -32,15 +36,17 @@ import com.intellij.psi.ResolveResult
 
 object FxSLookupElementFactory {
 
-    fun buildYColumn(addComma: Boolean) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
+    fun buildYColumn(addComma: Boolean, parameters: CompletionParameters) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
         .withPresentableText(" ")
         .withTailText("{...}")
-        .withInsertHandler { ctx, _ ->
-            val cursorOffset = ctx.editor.caretModel.offset
-            val moveBackTo = if (addComma) 2 else 1
-            ctx.editor.caretModel.moveToOffset(cursorOffset - moveBackTo)
-        }
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
+        .withInsertHandler(object : AutoPopupInsertHandler() {
+            override fun handle(context: InsertionContext, item: LookupElement) {
+                val cursorOffset = context.editor.caretModel.offset
+                val moveBackTo = if (addComma) 2 else 1
+                context.editor.caretModel.moveToOffset(cursorOffset - moveBackTo)
+            }
+        })
 
     fun buildYSubSelect() = LookupElementBuilder.create("{{ }}")
         .withPresentableText(" ")
@@ -55,20 +61,22 @@ object FxSLookupElementFactory {
     fun buildYFrom() = LookupElementBuilder.create("{}")
         .withPresentableText(" ")
         .withTailText("{...}")
-        .withInsertHandler { ctx, _ ->
-            val cursorOffset = ctx.editor.caretModel.offset
-            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
-        }
         .withIcon(HybrisIcons.FXS_Y_FROM_PLACEHOLDER)
+        .withInsertHandler(object : AutoPopupInsertHandler() {
+            override fun handle(context: InsertionContext, item: LookupElement) {
+                val cursorOffset = context.editor.caretModel.offset
+                context.editor.caretModel.moveToOffset(cursorOffset - 1)
+            }
+        })
 
     fun buildFromParen() = LookupElementBuilder.create("()")
         .withPresentableText(" ")
         .withTailText("(...)")
+        .withIcon(HybrisIcons.FXS_FROM_PARENS_PLACEHOLDER)
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
-        .withIcon(HybrisIcons.FXS_FROM_PARENS_PLACEHOLDER)
 
     fun buildYColumnAll(addComma: Boolean) = LookupElementBuilder.create("*" + if (addComma) "," else "")
         .withPresentableText(" ")
@@ -79,11 +87,13 @@ object FxSLookupElementFactory {
         LookupElementBuilder.create("$featureName[]")
             .withPresentableText("[]")
             .withTailText(" ${message("hybris.fxs.completion.column.postfix.localized")}")
-            .withInsertHandler { ctx, _ ->
-                val cursorOffset = ctx.editor.caretModel.offset
-                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
-            }
             .withIcon(HybrisIcons.LOCALIZED)
+            .withInsertHandler(object : AutoPopupInsertHandler() {
+                override fun handle(context: InsertionContext, item: LookupElement) {
+                    val cursorOffset = context.editor.caretModel.offset
+                    context.editor.caretModel.moveToOffset(cursorOffset - 1)
+                }
+            })
     } else {
         null
     }
@@ -148,12 +158,14 @@ object FxSLookupElementFactory {
         .withPresentableText(tableAlias.text.trim())
         .withTypeText(tableAlias.table?.text)
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
-        .withInsertHandler { ctx, _ ->
-            if (addComma) {
-                val cursorOffset = ctx.editor.caretModel.offset
-                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        .withInsertHandler(object : AutoPopupInsertHandler() {
+            override fun handle(context: InsertionContext, item: LookupElement) {
+                if (addComma) {
+                    val cursorOffset = context.editor.caretModel.offset
+                    context.editor.caretModel.moveToOffset(cursorOffset - 1)
+                }
             }
-        }
+        })
 
     fun build(columnAlias: FlexibleSearchColumnAliasName, addComma: Boolean) = LookupElementBuilder
         .create(columnAlias.text.trim() + (if (addComma) "," else ""))
