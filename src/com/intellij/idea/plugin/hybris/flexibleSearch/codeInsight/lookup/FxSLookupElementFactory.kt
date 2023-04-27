@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
 
@@ -146,6 +147,12 @@ object FxSLookupElementFactory {
         ?.let {
             LookupElementBuilder.create(it)
                 .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        }
+
+    fun build(yColumnName: FlexibleSearchYColumnName) = yColumnName.text
+        ?.let {
+            LookupElementBuilder.create(it)
+                .withIcon(HybrisIcons.HYBRIS)
         }
 
     fun buildColumnLookup(tableAlias: String?, columnAlias: String, separatorPostfix: String) = tableAlias

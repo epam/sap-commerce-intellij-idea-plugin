@@ -51,8 +51,14 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.reference
         ?.resolve()
         ?.parent
-        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java) }
-        ?.map { FxSLookupElementFactory.build(it) }
+        ?.let { fromClause ->
+            val aliases = findColumnAliasNames(fromClause) { true }
+                .map { FxSLookupElementFactory.build(it) }
+            val nonAliasedColumns = findYColumnNames(fromClause) { yColumn -> yColumn.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
+                .map { FxSLookupElementFactory.build(it) }
+
+            return@let aliases + nonAliasedColumns
+        }
         ?.toTypedArray()
         ?: getNonAliasedVariants()
 
@@ -83,12 +89,17 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                 ?.reference
                 ?.resolve()
                 ?.parent
-                ?.let {
-                    PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java)
-                        .firstOrNull { alias -> alias.text.trim() == lookingForName }
+                ?.let { fromClause ->
+                    val aliases = findColumnAliasNames(fromClause) { alias -> alias.text.trim() == lookingForName }
+                        .map { FxSColumnAliasNameResolveResult(it) }
+                    if (aliases.isEmpty()) {
+                        return@let findYColumnNames(fromClause) { alias -> alias.text.trim() == lookingForName }
+                            .map { FxSYColumnNameResolveResult(it) }
+                    } else {
+                        return@let aliases
+                    }
                 }
-                ?.let { arrayOf(FxSColumnAliasNameResolveResult(it)) }
-                ?: resolveByAlternatives(ref, lookingForName)
+                ?.toTypedArray()
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
@@ -97,24 +108,21 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             )
         }
 
-        private fun resolveByAlternatives(ref: FxSColumnNameReference, lookingForName: String): Array<ResolveResult>? = getAlternativeVariants(ref.element).entries
-            .firstNotNullOfOrNull { entry ->
-                val found = entry.value.firstOrNull { it.text.trim() == lookingForName } != null
-                if (found) entry
-                else null
-            }
-            ?.let { entry ->
-                entry.value
-                    .firstOrNull { it -> it.text.trim() == lookingForName }
-                    ?.let {
-                        when (it) {
-                            is FlexibleSearchColumnAliasName -> FxSColumnAliasNameResolveResult(it)
-                            is FlexibleSearchYColumnName -> FxSYColumnNameResolveResult(it)
-                            else -> null
-                        }
-                    }
-            }
-            ?.let { arrayOf(it) }
+        private fun findColumnAliasNames(
+            fromClause: PsiElement,
+            filter: (FlexibleSearchColumnAliasName) -> Boolean
+        ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchColumnAliasName::class.java)
+            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java) == null }
+            .filter(filter)
+
+        private fun findYColumnNames(
+            fromClause: PsiElement,
+            filter: (FlexibleSearchYColumnName) -> Boolean
+        ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchResultColumn::class.java)
+            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java) == null }
+            .filter { it.expression is FlexibleSearchColumnRefYExpression }
+            .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchYColumnName::class.java) }
+            .filter(filter)
 
         private fun getAlternativeVariants(element: PsiElement): MutableMap<String?, MutableSet<PsiElement>> {
             val map = mutableMapOf<String?, MutableSet<PsiElement>>()
