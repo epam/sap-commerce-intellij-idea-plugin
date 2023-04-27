@@ -114,10 +114,16 @@ class FxSBlock internal constructor(
 
         TABLE_OR_SUBQUERY -> Indent.getSpaceIndent(spacingBuilder.longestJoinOperatorSpaces(child))
 
-        else -> if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
-            Indent.getNormalIndent()
-        } else {
-            Indent.getNoneIndent()
+        RPAREN -> Indent.getNoneIndent()
+
+        else -> {
+            if (PsiTreeUtil.skipWhitespacesAndCommentsBackward(child.psi)?.elementType == WHERE) {
+                Indent.getNormalIndent()
+            } else if (child.treeParent.elementType == PAREN_EXPRESSION) {
+                Indent.getSpaceIndent("(".length)
+            } else {
+                Indent.getNoneIndent()
+            }
         }
     }
 
@@ -149,8 +155,13 @@ class FxSBlock internal constructor(
         ELSE,
         FROM_CLAUSE,
         ORDER_CLAUSE,
-        JOIN_OPERATOR,
         COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
+
+        JOIN_OPERATOR -> if (child.firstChildNode.elementType != COMMA) {
+            Wrap.createWrap(WrapType.ALWAYS, true)
+        } else {
+            Wrap.createWrap(WrapType.NONE, false)
+        }
 
         JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
 
