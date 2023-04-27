@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 
-abstract class AutoPopupInsertHandler : InsertHandler<LookupElement> {
+open class AutoPopupInsertHandler : InsertHandler<LookupElement> {
 
     override fun handleInsert(context: InsertionContext, item: LookupElement) {
         val autoPopupController = AutoPopupController.getInstance(context.project)
@@ -33,5 +33,9 @@ abstract class AutoPopupInsertHandler : InsertHandler<LookupElement> {
     }
 
     open fun handle(context: InsertionContext, item: LookupElement) {}
+
+    companion object {
+        val INSTANCE = AutoPopupInsertHandler()
+    }
 
 }

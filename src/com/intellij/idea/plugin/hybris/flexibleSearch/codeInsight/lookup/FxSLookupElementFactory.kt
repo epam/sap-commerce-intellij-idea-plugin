@@ -141,11 +141,13 @@ object FxSLookupElementFactory {
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean, fxsSettings: FlexibleSearchSettings): LookupElementBuilder {
         val separator = if (fxsSettings.completion.injectTableAliasSeparator) fxsSettings.completion.defaultTableAliasSeparator
