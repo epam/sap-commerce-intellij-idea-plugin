@@ -91,6 +91,8 @@ fun getTable(element: FlexibleSearchYColumnName): FlexibleSearchDefinedTableName
 
 fun getTableAliases(element: FlexibleSearchYColumnName) = getSuitableTableContainerParent(element)
     ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+    // allow only aliases with tables
+    ?.filter { it.table != null}
     ?: emptyList()
 
 /*
