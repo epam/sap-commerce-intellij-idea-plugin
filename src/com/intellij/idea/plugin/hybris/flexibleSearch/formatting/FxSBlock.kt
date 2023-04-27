@@ -98,6 +98,8 @@ class FxSBlock internal constructor(
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
                 Indent.getSpaceIndent("{{".length)
+            } else if (PsiTreeUtilExt.getPrevSiblingOfElementType(child.psi, LPAREN) != null) {
+                Indent.getSpaceIndent("(".length)
             } else {
                 Indent.getNoneIndent()
             }
