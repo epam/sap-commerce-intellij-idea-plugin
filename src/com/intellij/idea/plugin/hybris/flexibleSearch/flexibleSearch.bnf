@@ -250,7 +250,9 @@ result_column ::=
   | expression ( ( AS )? column_alias_name )?
   {
     methods=[getPresentationText]
+    recoverWhile=result_column_recover
   }
+private result_column_recover ::= !(FROM | ',')
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | RIGHT )? JOIN
 

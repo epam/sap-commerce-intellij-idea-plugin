@@ -60,11 +60,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             return@let aliases + nonAliasedColumns
         }
         ?.toTypedArray()
-        ?: getNonAliasedVariants()
-
-    private fun getNonAliasedVariants(): Array<LookupElementBuilder> {
-        return getAlternativeVariants(element)
-    }
+        ?: getAlternativeVariants(element)
 
     companion object {
         val CACHE_KEY =
@@ -120,6 +116,15 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
+            var addComma = false
+            if (fxsSettings.completion.injectCommaAfterResultColumn && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
+                addComma = element.parentOfType<FlexibleSearchResultColumn>()
+                    ?.text
+                    ?.replace(element.text, "")
+                    ?.isNotEmpty()
+                    ?: false
+            }
+
             return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
                 ?.childrenOfType<FlexibleSearchFromClause>()
                 ?.firstOrNull()
@@ -129,8 +134,9 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                 ?.map {
                     val tableAliasName = it.tableAliasName
                     if (tableAliasName != null) {
-                        return@map setOf(FxSLookupElementFactory.build(tableAliasName, fxsSettings))
+                        return@map setOf(FxSLookupElementFactory.build(tableAliasName, addComma, fxsSettings))
                     } else {
+                        // TODO: not sure what to do if there is no table alias
                         return@map setOf<LookupElementBuilder>()
                     }
                 }

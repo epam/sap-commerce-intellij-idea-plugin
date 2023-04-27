@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindSelected
@@ -46,9 +45,6 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
         private val state = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
 
         private lateinit var verifyCaseCheckBox: JCheckBox
-        private lateinit var defaultCaseComboBox: ComboBox<ReservedWordsCase>
-        private lateinit var injectSeparatorAfterTableAliasCheckBox: JCheckBox
-        private lateinit var defaultTableAliasSeparatorComboBox: ComboBox<String>
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
         private val tableAliasSeparatorsModel = CollectionComboBoxModel(listOf(".", ":"))
@@ -69,26 +65,34 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                             .component
                 }
                 row {
-                    defaultCaseComboBox =
-                        comboBox(
-                            reservedWordsModel,
-                            renderer = SimpleListCellRenderer.create("?") { message("hybris.fxs.notification.provider.keywords.case.$it") }
-                        )
-                            .label("Default case for reserved words")
-                            .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
-                            .enabledIf(verifyCaseCheckBox.selected)
-                            .component
+                    comboBox(
+                        reservedWordsModel,
+                        renderer = SimpleListCellRenderer.create("?") { message("hybris.fxs.notification.provider.keywords.case.$it") }
+                    )
+                        .label("Default case for reserved words")
+                        .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
+                        .enabledIf(verifyCaseCheckBox.selected)
+                        .component
                 }
             }
             group("Code Completion") {
                 row {
-                    injectSeparatorAfterTableAliasCheckBox =
-                        checkBox("Automatically inject separator after table alias")
-                            .bindSelected(state.completion::injectTableAliasSeparator)
-                            .component
+                    checkBox("Automatically inject separator after table alias")
+                        .bindSelected(state.completion::injectTableAliasSeparator)
+                        .component
                 }
                 row {
-                    defaultTableAliasSeparatorComboBox = comboBox(
+                    checkBox("Automatically inject comma after result column")
+                        .bindSelected(state.completion::injectCommaAfterResultColumn)
+                        .component
+                }
+                row {
+                    checkBox("Suggest table alias name after AS keyword")
+                        .bindSelected(state.completion::suggestTableAliasNames)
+                        .component
+                }
+                row {
+                    comboBox(
                         tableAliasSeparatorsModel,
                         renderer = SimpleListCellRenderer.create("?") {
                             when (it) {

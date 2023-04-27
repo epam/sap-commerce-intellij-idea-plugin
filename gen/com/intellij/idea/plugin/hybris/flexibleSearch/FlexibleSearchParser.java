@@ -1035,7 +1035,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!r) r = result_column_1(b, l + 1);
     if (!r) r = result_column_2(b, l + 1);
     if (!r) r = result_column_3(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, r, false, FlexibleSearchParser::result_column_recover);
     return r;
   }
 
@@ -1098,6 +1098,26 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "result_column_3_1_0_0")) return false;
     consumeToken(b, AS);
     return true;
+  }
+
+  /* ********************************************************** */
+  // !(FROM | ',')
+  static boolean result_column_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "result_column_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !result_column_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // FROM | ','
+  private static boolean result_column_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "result_column_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, FROM);
+    if (!r) r = consumeToken(b, COMMA);
+    return r;
   }
 
   /* ********************************************************** */

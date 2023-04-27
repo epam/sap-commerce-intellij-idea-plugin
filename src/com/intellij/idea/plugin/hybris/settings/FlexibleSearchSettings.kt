@@ -30,6 +30,8 @@ data class FlexibleSearchSettings(
 
 data class FlexibleSearchCompletionSettings(
     var injectTableAliasSeparator: Boolean = true,
+    var suggestTableAliasNames: Boolean = true,
+    var injectCommaAfterResultColumn: Boolean = true,
     var defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT,
 )
 

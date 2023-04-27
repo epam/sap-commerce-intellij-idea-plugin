@@ -136,19 +136,26 @@ object FxSLookupElementFactory {
         .withTailText(" ${message("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS_SEPARATOR)
 
-    fun build(tableAlias: FlexibleSearchTableAliasName, fxsSettings: FlexibleSearchSettings): LookupElementBuilder {
+    fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean, fxsSettings: FlexibleSearchSettings): LookupElementBuilder {
         val separator = if (fxsSettings.completion.injectTableAliasSeparator) fxsSettings.completion.defaultTableAliasSeparator
         else ""
-        return build(tableAlias, separator)
+        return build(tableAlias, addComma, separator)
     }
 
-    fun build(tableAlias: FlexibleSearchTableAliasName, separator: String = "") = LookupElementBuilder.create(tableAlias.text.trim() + separator)
+    fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean = false, separator: String = "") = LookupElementBuilder
+        .create(tableAlias.text.trim() + separator + (if (addComma) "," else ""))
         .withPresentableText(tableAlias.text.trim())
         .withTypeText(tableAlias.table?.text)
         .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        .withInsertHandler { ctx, _ ->
+            if (addComma) {
+                val cursorOffset = ctx.editor.caretModel.offset
+                ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+            }
+        }
 
     fun build(columnAlias: FlexibleSearchColumnAliasName) = LookupElementBuilder.create(columnAlias.text.trim())
-        .withIcon(HybrisIcons.FXS_TABLE_ALIAS)
+        .withIcon(HybrisIcons.FXS_COLUMN_ALIAS)
 
     fun build(yColumnName: FlexibleSearchYColumnName) = LookupElementBuilder.create(yColumnName.text.trim())
         .withIcon(HybrisIcons.HYBRIS)
