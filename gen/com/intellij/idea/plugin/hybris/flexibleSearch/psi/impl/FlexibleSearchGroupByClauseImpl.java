@@ -53,4 +53,10 @@ public class FlexibleSearchGroupByClauseImpl extends ASTWrapperPsiElement implem
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchExpression.class);
   }
 
+  @Override
+  @Nullable
+  public FlexibleSearchHavingClause getHavingClause() {
+    return findChildByClass(FlexibleSearchHavingClause.class);
+  }
+
 }

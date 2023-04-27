@@ -658,7 +658,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // group_by_literal expression ( ',' expression )* ( HAVING expression )?
+  // group_by_literal expression ( ',' expression )* ( having_clause )?
   public static boolean group_by_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause")) return false;
     if (!nextTokenIs(b, GROUP)) return false;
@@ -695,20 +695,19 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ( HAVING expression )?
+  // ( having_clause )?
   private static boolean group_by_clause_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause_3")) return false;
     group_by_clause_3_0(b, l + 1);
     return true;
   }
 
-  // HAVING expression
+  // ( having_clause )
   private static boolean group_by_clause_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, HAVING);
-    r = r && expression(b, l + 1, -1);
+    r = having_clause(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -723,6 +722,20 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, GROUP, BY);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // HAVING expression
+  public static boolean having_clause(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "having_clause")) return false;
+    if (!nextTokenIs(b, HAVING)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, HAVING_CLAUSE, null);
+    r = consumeToken(b, HAVING);
+    p = r; // pin = 1
+    r = r && expression(b, l + 1, -1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

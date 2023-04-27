@@ -154,6 +154,10 @@ public class FlexibleSearchVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitHavingClause(@NotNull FlexibleSearchHavingClause o) {
+    visitPsiElement(o);
+  }
+
   public void visitInExpression(@NotNull FlexibleSearchInExpression o) {
     visitExpression(o);
   }

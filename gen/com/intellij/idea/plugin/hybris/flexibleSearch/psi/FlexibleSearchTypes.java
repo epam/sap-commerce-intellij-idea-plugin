@@ -61,6 +61,7 @@ public interface FlexibleSearchTypes {
   IElementType FUNCTION_CALL_EXPRESSION = new FlexibleSearchElementType("FUNCTION_CALL_EXPRESSION");
   IElementType FUNCTION_NAME = new FlexibleSearchElementType("FUNCTION_NAME");
   IElementType GROUP_BY_CLAUSE = new FlexibleSearchElementType("GROUP_BY_CLAUSE");
+  IElementType HAVING_CLAUSE = new FlexibleSearchElementType("HAVING_CLAUSE");
   IElementType IN_EXPRESSION = new FlexibleSearchElementType("IN_EXPRESSION");
   IElementType ISNULL_EXPRESSION = new FlexibleSearchElementType("ISNULL_EXPRESSION");
   IElementType JOIN_CONSTRAINT = new FlexibleSearchElementType("JOIN_CONSTRAINT");
@@ -268,6 +269,9 @@ public interface FlexibleSearchTypes {
       }
       else if (type == GROUP_BY_CLAUSE) {
         return new FlexibleSearchGroupByClauseImpl(node);
+      }
+      else if (type == HAVING_CLAUSE) {
+        return new FlexibleSearchHavingClauseImpl(node);
       }
       else if (type == IN_EXPRESSION) {
         return new FlexibleSearchInExpressionImpl(node);

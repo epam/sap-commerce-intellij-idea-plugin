@@ -188,7 +188,8 @@ private order_clause_literal ::= ORDER BY
 
 select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause? {pin=1}
 
-group_by_clause ::= group_by_literal expression ( ',' expression )* ( HAVING expression )? {pin=1}
+group_by_clause ::= group_by_literal expression ( ',' expression )* ( having_clause )? {pin=1}
+having_clause ::= HAVING expression {pin=1}
 private group_by_literal ::= GROUP BY
 
 where_clause ::= WHERE expression {pin=1}
