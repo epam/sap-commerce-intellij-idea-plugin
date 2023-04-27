@@ -46,7 +46,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
                     LDBRACE, RDBRACE, AS, COMPOUND_OPERATOR,
                     IS, NOT, NULL,
                     THEN, ELSE, END,
-                    BETWEEN, JOIN,
+                    BETWEEN, JOIN, WHERE,
                     AND, OR, FROM, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ
                 )
             )
