@@ -154,6 +154,7 @@ class FxSBlock internal constructor(
         THEN,
         ELSE,
         FROM_CLAUSE,
+        WHERE_CLAUSE,
         ORDER_CLAUSE,
         COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
 
