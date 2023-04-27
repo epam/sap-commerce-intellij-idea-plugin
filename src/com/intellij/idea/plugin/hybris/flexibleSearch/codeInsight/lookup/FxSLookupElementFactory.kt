@@ -155,10 +155,14 @@ object FxSLookupElementFactory {
             }
         }
 
-    fun build(columnAlias: FlexibleSearchColumnAliasName) = LookupElementBuilder.create(columnAlias.text.trim())
+    fun build(columnAlias: FlexibleSearchColumnAliasName, addComma: Boolean) = LookupElementBuilder
+        .create(columnAlias.text.trim() + (if (addComma) "," else ""))
+        .withPresentableText(columnAlias.text.trim())
         .withIcon(HybrisIcons.FXS_COLUMN_ALIAS)
 
-    fun build(yColumnName: FlexibleSearchYColumnName) = LookupElementBuilder.create(yColumnName.text.trim())
+    fun build(yColumnName: FlexibleSearchYColumnName, addComma: Boolean) = LookupElementBuilder
+        .create(yColumnName.text.trim() + (if (addComma) "," else ""))
+        .withPresentableText(yColumnName.text.trim())
         .withIcon(HybrisIcons.HYBRIS)
 
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())

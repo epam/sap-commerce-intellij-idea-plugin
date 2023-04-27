@@ -52,10 +52,13 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.resolve()
         ?.parent
         ?.let { fromClause ->
+            val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+            val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(element, fxsSettings)
+
             val aliases = findColumnAliasNames(fromClause) { true }
-                .map { FxSLookupElementFactory.build(it) }
+                .map { FxSLookupElementFactory.build(it, addComma) }
             val nonAliasedColumns = findYColumnNames(fromClause) { true }
-                .map { FxSLookupElementFactory.build(it) }
+                .map { FxSLookupElementFactory.build(it, addComma) }
 
             return@let aliases + nonAliasedColumns
         }
