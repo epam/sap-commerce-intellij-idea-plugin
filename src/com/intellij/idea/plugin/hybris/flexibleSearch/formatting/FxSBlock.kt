@@ -81,7 +81,13 @@ class FxSBlock internal constructor(
 
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
         Y_FROM_CLAUSE,
-        FROM_CLAUSE_SUBQUERIES -> Indent.getSpaceIndent("FROM".length)
+        FROM_CLAUSE_SELECT -> Indent.getSpaceIndent("FROM".length)
+
+        JOIN_OPERATOR -> if (child.treeParent.elementType == FROM_CLAUSE) {
+            Indent.getSpaceIndent("FROM".length)
+        } else {
+            Indent.getNoneIndent()
+        }
 
         WHEN,
         JOIN_CONSTRAINT,
@@ -168,6 +174,8 @@ class FxSBlock internal constructor(
         FROM_CLAUSE,
         WHERE_CLAUSE,
         ORDER_CLAUSE,
+        HAVING_CLAUSE,
+        GROUP_BY_CLAUSE,
         COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
 
         JOIN_OPERATOR -> if (child.firstChildNode.elementType != COMMA) {
