@@ -54,7 +54,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.let { fromClause ->
             val aliases = findColumnAliasNames(fromClause) { true }
                 .map { FxSLookupElementFactory.build(it) }
-            val nonAliasedColumns = findYColumnNames(fromClause) { yColumn -> yColumn.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
+            val nonAliasedColumns = findYColumnNames(fromClause) { true }
                 .map { FxSLookupElementFactory.build(it) }
 
             return@let aliases + nonAliasedColumns
@@ -109,10 +109,13 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             fromClause: PsiElement,
             filter: (FlexibleSearchYColumnName) -> Boolean
         ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchResultColumn::class.java)
+            .asSequence()
+            .filter { it.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
             .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java) == null }
             .filter { it.expression is FlexibleSearchColumnRefYExpression }
             .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchYColumnName::class.java) }
             .filter(filter)
+            .toList()
 
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
