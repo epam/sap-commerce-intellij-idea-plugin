@@ -121,9 +121,15 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
             val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(element, fxsSettings)
 
-            return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.childrenOfType<FlexibleSearchFromClause>()
-                ?.firstOrNull()
+            val selectCores = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+                ?.let { listOf(it) }
+                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java)
+                    ?.parentOfType<FlexibleSearchSelectStatement>()
+                    ?.selectCoreSelectList
+                ?: emptyList()
+
+            return selectCores
+                .firstNotNullOfOrNull { it.fromClause }
                 ?.fromClauseExprList
                 ?.filterIsInstance<FlexibleSearchFromClauseSelect>()
                 ?.mapNotNull { it.fromClauseSubqueries }
