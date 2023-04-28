@@ -733,15 +733,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // group_by_literal expression ( ',' expression )* ( having_clause )?
   public static boolean group_by_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause")) return false;
-    if (!nextTokenIs(b, GROUP)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, GROUP_BY_CLAUSE, null);
+    Marker m = enter_section_(b, l, _NONE_, GROUP_BY_CLAUSE, "<group by clause>");
     r = group_by_literal(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, expression(b, l + 1, -1));
     r = p && report_error_(b, group_by_clause_2(b, l + 1)) && r;
     r = p && group_by_clause_3(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::group_by_clause_recover);
     return r || p;
   }
 
@@ -780,6 +779,31 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = having_clause(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | HAVING | order_clause_literal | ')' | '}}')
+  static boolean group_by_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !group_by_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | HAVING | order_clause_literal | ')' | '}}'
+  private static boolean group_by_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "group_by_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, HAVING);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, RPAREN);
+    if (!r) r = consumeToken(b, RDBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -939,14 +963,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // LIMIT expression ( ( OFFSET | ',' ) expression )?
   public static boolean limit_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "limit_clause")) return false;
-    if (!nextTokenIs(b, LIMIT)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, LIMIT_CLAUSE, null);
+    Marker m = enter_section_(b, l, _NONE_, LIMIT_CLAUSE, "<limit clause>");
     r = consumeToken(b, LIMIT);
     p = r; // pin = 1
     r = r && report_error_(b, expression(b, l + 1, -1));
     r = p && limit_clause_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::limit_clause_recover);
     return r || p;
   }
 
@@ -974,6 +997,29 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeToken(b, OFFSET);
     if (!r) r = consumeToken(b, COMMA);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | ')' | '}}')
+  static boolean limit_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "limit_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !limit_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | ')' | '}}'
+  private static boolean limit_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "limit_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, RPAREN);
+    if (!r) r = consumeToken(b, RDBRACE);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1006,14 +1052,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // order_clause_literal ordering_term ( ',' ordering_term )*
   public static boolean order_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "order_clause")) return false;
-    if (!nextTokenIs(b, ORDER)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ORDER_CLAUSE, null);
+    Marker m = enter_section_(b, l, _NONE_, ORDER_CLAUSE, "<order clause>");
     r = order_clause_literal(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, ordering_term(b, l + 1));
     r = p && order_clause_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::order_clause_recover);
     return r || p;
   }
 
@@ -1047,6 +1092,30 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, ORDER, BY);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | LIMIT | ')' | '}}')
+  static boolean order_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !order_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | LIMIT | ')' | '}}'
+  private static boolean order_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, LIMIT);
+    if (!r) r = consumeToken(b, RPAREN);
+    if (!r) r = consumeToken(b, RDBRACE);
     exit_section_(b, m, null, r);
     return r;
   }

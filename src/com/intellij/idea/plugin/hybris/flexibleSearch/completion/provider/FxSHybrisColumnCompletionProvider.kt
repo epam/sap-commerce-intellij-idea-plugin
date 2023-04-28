@@ -33,7 +33,7 @@ import com.intellij.util.ProcessingContext
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val fxsSettings = HybrisProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
-        val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(parameters.position, fxsSettings)
+        val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(parameters.position, fxsSettings)
 
         val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()
         if (parent == null || parent.selectedTableName == null) {

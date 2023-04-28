@@ -189,14 +189,24 @@ select_statement ::= select_core_select (compound_operator select_core_select)* 
 
 limit_clause ::= LIMIT expression ( ( OFFSET | ',' ) expression )? {
   pin=1
+  recoverWhile=limit_clause_recover
 }
+private limit_clause_recover ::= !(<<eof>> | ')' | '}}')
 
-order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {pin=1}
+order_clause ::= order_clause_literal ordering_term ( ',' ordering_term )* {
+    pin=1
+    recoverWhile=order_clause_recover
+}
+private order_clause_recover ::= !(<<eof>> | LIMIT | ')' | '}}')
 private order_clause_literal ::= ORDER BY
 
 select_core_select ::= SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause? {pin=1}
 
-group_by_clause ::= group_by_literal expression ( ',' expression )* ( having_clause )? {pin=1}
+group_by_clause ::= group_by_literal expression ( ',' expression )* ( having_clause )? {
+    pin=1
+    recoverWhile=group_by_clause_recover
+}
+private group_by_clause_recover ::= !(<<eof>> | HAVING | order_clause_literal | ')' | '}}')
 having_clause ::= HAVING expression {pin=1}
 private group_by_literal ::= GROUP BY
 

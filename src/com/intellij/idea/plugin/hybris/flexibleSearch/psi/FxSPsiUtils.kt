@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor.Companion.DUMMY_IDENTIFIER
 import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.PsiTreeUtil
 
 object FxSPsiUtils {
 
@@ -33,10 +33,16 @@ object FxSPsiUtils {
         .replace("`", "")
         .trim()
 
-    fun shouldAddCommaAfterResultColumn(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
+    fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
         var addComma = false
-        if (fxsSettings.completion.injectCommaAfterResultColumn && element.text == DUMMY_IDENTIFIER) {
-            addComma = element.parentOfType<FlexibleSearchResultColumns>()
+        if (fxsSettings.completion.injectCommaAfterExpression && element.text == DUMMY_IDENTIFIER) {
+            addComma = PsiTreeUtil
+                .getParentOfType(
+                    element,
+                    FlexibleSearchResultColumns::class.java,
+                    FlexibleSearchOrderClause::class.java,
+                    FlexibleSearchGroupByClause::class.java,
+                )
                 ?.text
                 ?.substringAfter(DUMMY_IDENTIFIER)
                 ?.trim()

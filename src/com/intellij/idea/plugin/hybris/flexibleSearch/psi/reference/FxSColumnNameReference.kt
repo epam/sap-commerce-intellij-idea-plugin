@@ -53,7 +53,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.parent
         ?.let { fromClause ->
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
-            val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(element, fxsSettings)
+            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
             val aliases = findColumnAliasNames(fromClause) { true }
                 .map { FxSLookupElementFactory.build(it, addComma) }
@@ -119,7 +119,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
-            val addComma = FxSPsiUtils.shouldAddCommaAfterResultColumn(element, fxsSettings)
+            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
             val selectCores = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
                 ?.let { listOf(it) }

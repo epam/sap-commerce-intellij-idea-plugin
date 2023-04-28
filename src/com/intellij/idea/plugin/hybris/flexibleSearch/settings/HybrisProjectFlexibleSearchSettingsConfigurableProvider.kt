@@ -82,8 +82,8 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                         .component
                 }
                 row {
-                    checkBox("Automatically inject comma after result column")
-                        .bindSelected(state.completion::injectCommaAfterResultColumn)
+                    checkBox("Automatically inject comma after expression")
+                        .bindSelected(state.completion::injectCommaAfterExpression)
                         .component
                 }
                 row {
