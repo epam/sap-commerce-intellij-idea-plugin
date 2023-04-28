@@ -17,9 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage.Companion.INSTANCE
-import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
@@ -32,33 +31,30 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         consumer: CodeStyleSettingsCustomizable,
         settingsType: SettingsType
     ) {
+        val styleOptions = CodeStyleSettingsCustomizableOptions.getInstance()
+
         when (settingsType) {
             SettingsType.SPACING_SETTINGS -> {
-                val styleOptions = CodeStyleSettingsCustomizableOptions.getInstance()
-                consumer.showCustomOption(
-                    FxSCodeStyleSettings::class.java,
-                    "SPACE_AROUND_OP",
-                    "Around comparison operator",
-                    styleOptions.SPACES_AROUND_OPERATORS
-                )
-                consumer.showCustomOption(
-                    FxSCodeStyleSettings::class.java,
-                    "SPACES_INSIDE_BRACES",
-                    "Inside braces",
-                    styleOptions.SPACES_AROUND_OPERATORS
-                )
-                consumer.showCustomOption(
-                    FxSCodeStyleSettings::class.java,
-                    "SPACES_INSIDE_DOUBLE_BRACES",
-                    "Inside double braces",
-                    styleOptions.SPACES_AROUND_OPERATORS
-                )
-                consumer.showCustomOption(
-                    FxSCodeStyleSettings::class.java,
-                    "SPACES_INSIDE_BRACKETS",
-                    "Inside brackets",
-                    styleOptions.SPACES_AROUND_OPERATORS
-                )
+                spacingSettings(styleOptions).forEach { (fieldName, group) ->
+                    consumer.showCustomOption(
+                        FxSCodeStyleSettings::class.java,
+                        fieldName,
+                        HybrisI18NBundleUtils.message("hybris.style.settings.project.fxs.$fieldName.name"),
+                        group
+                    )
+                }
+            }
+
+
+            SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
+                indentSettings(styleOptions).forEach { (fieldName, group) ->
+                    consumer.showCustomOption(
+                        FxSCodeStyleSettings::class.java,
+                        fieldName,
+                        HybrisI18NBundleUtils.message("hybris.style.settings.project.fxs.$fieldName.name"),
+                        group
+                    )
+                }
             }
 
             SettingsType.BLANK_LINES_SETTINGS -> {
@@ -69,13 +65,36 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         }
     }
 
+    private fun spacingSettings(styleOptions: CodeStyleSettingsCustomizableOptions) = mapOf(
+        "SPACE_AROUND_OP" to styleOptions.SPACES_AROUND_OPERATORS,
+        "SPACES_INSIDE_BRACES" to styleOptions.SPACES_AROUND_OPERATORS,
+        "SPACES_INSIDE_DOUBLE_BRACES" to styleOptions.SPACES_AROUND_OPERATORS,
+        "SPACES_INSIDE_BRACKETS" to styleOptions.SPACES_AROUND_OPERATORS,
+    )
+
+    private fun indentSettings(styleOptions: CodeStyleSettingsCustomizableOptions) = mapOf(
+        "WRAP_CASE" to "Case Expression",
+        "WRAP_CASE_THEN" to "Case Expression",
+        "WRAP_CASE_WHEN" to "Case Expression",
+        "WRAP_CASE_ELSE" to "Case Expression",
+        "WRAP_COMPOUND_OPERATOR" to "Joins",
+        "WRAP_JOIN_CONSTRAINT" to "Joins",
+        "WRAP_SELECT_STATEMENT_IN_SUBQUERY" to "Clauses",
+        "WRAP_FROM_CLAUSE" to "Clauses",
+        "WRAP_WHERE_CLAUSE" to "Clauses",
+        "WRAP_ORDER_CLAUSE" to "Clauses",
+        "WRAP_GROUP_BY_CLAUSE" to "Clauses",
+        "WRAP_HAVING_CLAUSE" to "Clauses",
+        "WRAP_DBRACES" to "Braces",
+    )
+
     override fun getCodeSample(settingsType: SettingsType) = """
 SELECT DISTINCT * FROM {Category AS c} WHERE NOT EXISTS (
     {{
       SELECT *
       FROM {CategoryCategoryRelation}
       WHERE {target}={c:pk}
-//            and {
+            and {c.name[en]:o} is not null
     }}
 )
 """

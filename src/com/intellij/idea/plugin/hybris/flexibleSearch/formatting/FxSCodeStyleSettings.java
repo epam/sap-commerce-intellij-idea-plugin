@@ -21,17 +21,26 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.formatting;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 public class FxSCodeStyleSettings extends CustomCodeStyleSettings {
 
     public static boolean SPACES_INSIDE_BRACES = false;
     public static boolean SPACES_INSIDE_BRACKETS = false;
     public static boolean SPACES_INSIDE_DOUBLE_BRACES = true;
     public static boolean SPACE_AROUND_OP = true;
+
     public static boolean WRAP_JOIN_CONSTRAINT = false;
     public static boolean WRAP_SELECT_STATEMENT_IN_SUBQUERY = true;
+    public static boolean WRAP_CASE_THEN = true;
+    public static boolean WRAP_CASE_WHEN = true;
+    public static boolean WRAP_CASE_ELSE = true;
+    public static boolean WRAP_CASE = true;
+    public static boolean WRAP_COMPOUND_OPERATOR = true;
+    public static boolean WRAP_FROM_CLAUSE = true;
+    public static boolean WRAP_WHERE_CLAUSE = true;
+    public static boolean WRAP_ORDER_CLAUSE = true;
+    public static boolean WRAP_GROUP_BY_CLAUSE = true;
+    public static boolean WRAP_HAVING_CLAUSE = true;
+    public static boolean WRAP_DBRACES = true;
 
     public FxSCodeStyleSettings(final CodeStyleSettings settings) {
         super("FSCodeStyleSettings", settings);

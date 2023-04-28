@@ -43,32 +43,38 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
 
             .before(
                 TokenSet.create(
-                    LDBRACE, RDBRACE, AS, COMPOUND_OPERATOR,
+                    LDBRACE, AS, COMPOUND_OPERATOR,
                     IS, NOT, NULL, FROM,
                     THEN, ELSE, END, ON,
                     BETWEEN, JOIN, WHERE,
-                    AND, OR, FROM, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ
                 )
             )
             .spaces(1)
 
             .after(
                 TokenSet.create(
-                    LDBRACE, JOIN_OPERATOR,
+                    JOIN_OPERATOR,
                     SELECT, FROM, WHERE, AS, ON, BY,
                     CASE, WHEN, THEN, ELSE, COMMA,
-                    AND, OR, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ
                 )
             )
             .spaces(1)
 
-            .before(TokenSet.create(COLUMN_OUTER_JOIN_NAME, LBRACKET))
+            .around(TokenSet.create(AND, OR, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ))
+            .spaceIf(FxSCodeStyleSettings.SPACE_AROUND_OP)
+
+            .before(TokenSet.create(COLUMN_OUTER_JOIN_NAME))
             .spaces(0)
 
             .after(LBRACKET)
             .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_BRACKETS)
             .before(RBRACKET)
             .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_BRACKETS)
+
+            .after(LDBRACE)
+            .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
+            .before(RDBRACE)
+            .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
     }
 
     override fun getSpacing(parent: Block?, child1: Block?, child2: Block?): Spacing? {

@@ -165,26 +165,27 @@ class FxSBlock internal constructor(
             }
         }
 
+        COMPOUND_OPERATOR -> wrapIf(FxSCodeStyleSettings.WRAP_COMPOUND_OPERATOR)
+        FROM_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_FROM_CLAUSE)
+        WHERE_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_WHERE_CLAUSE)
+        ORDER_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_ORDER_CLAUSE)
+        GROUP_BY_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_GROUP_BY_CLAUSE)
+        HAVING_CLAUSE -> wrapIf(FxSCodeStyleSettings.WRAP_HAVING_CLAUSE)
+        JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
+
         LDBRACE,
-        RDBRACE,
-        CASE_EXPRESSION,
-        WHEN,
-        THEN,
-        ELSE,
-        FROM_CLAUSE,
-        WHERE_CLAUSE,
-        ORDER_CLAUSE,
-        HAVING_CLAUSE,
-        GROUP_BY_CLAUSE,
-        COMPOUND_OPERATOR -> Wrap.createWrap(WrapType.ALWAYS, true)
+        RDBRACE -> wrapIf(FxSCodeStyleSettings.WRAP_DBRACES)
+
+        CASE_EXPRESSION -> wrapIf(FxSCodeStyleSettings.WRAP_CASE)
+        THEN -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_THEN)
+        WHEN -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_WHEN)
+        ELSE -> wrapIf(FxSCodeStyleSettings.WRAP_CASE_ELSE)
 
         JOIN_OPERATOR -> if (child.firstChildNode.elementType != COMMA) {
             Wrap.createWrap(WrapType.ALWAYS, true)
         } else {
             Wrap.createWrap(WrapType.NONE, false)
         }
-
-        JOIN_CONSTRAINT -> wrapIf(FxSCodeStyleSettings.WRAP_JOIN_CONSTRAINT)
 
         SELECT_STATEMENT -> {
             if (child.treeParent.elementType == SELECT_SUBQUERY_COMBINED) {
