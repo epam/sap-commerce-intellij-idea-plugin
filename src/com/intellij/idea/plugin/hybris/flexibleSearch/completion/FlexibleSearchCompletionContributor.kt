@@ -193,13 +193,12 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             fxsBasePattern
                 .withText(DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
-                    psiElement(TokenType.WHITE_SPACE),
                     PlatformPatterns.or(
-                        psiElement()
-                            .withSuperParent(3, psiElement(JOIN_CONSTRAINT)),
-                        psiElement()
-                            .withParent(psiElement(TABLE_ALIAS_NAME))
-                    )
+                        psiElement(TokenType.WHITE_SPACE),
+                        psiElement(TokenType.ERROR_ELEMENT),
+                    ),
+                    psiElement(IDENTIFIER)
+                        .withParent(psiElement(TABLE_ALIAS_NAME))
                 ),
             FxSKeywordsCompletionProvider(setOf("ON") + KEYWORDS_JOINS)
         )
