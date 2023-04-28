@@ -382,6 +382,11 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
+        <action id="PolyglotQuery.NewPolyglotQueryFile"
+                class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryFileCreateAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
         <group id="ImpexTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
             <!-- This feature not ready for production. Temporary disabled.  -->
             <!--<action id="ImpexTableFormatter.FormatAllTables"-->
