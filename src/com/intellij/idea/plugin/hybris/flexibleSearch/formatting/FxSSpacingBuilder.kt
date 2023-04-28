@@ -44,7 +44,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
             .before(
                 TokenSet.create(
                     LDBRACE, RDBRACE, AS, COMPOUND_OPERATOR,
-                    IS, NOT, NULL,
+                    IS, NOT, NULL, FROM,
                     THEN, ELSE, END, ON,
                     BETWEEN, JOIN, WHERE,
                     AND, OR, FROM, EQ, EQEQ, GT, GTE, LT, LTE, MINUS, MOD, NOT_EQ, PLUS, SHL, SHR, UNEQ
@@ -62,11 +62,13 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
             )
             .spaces(1)
 
-            .before(TokenSet.create(RBRACKET, COLUMN_OUTER_JOIN_NAME, LBRACKET))
+            .before(TokenSet.create(COLUMN_OUTER_JOIN_NAME, LBRACKET))
             .spaces(0)
 
             .after(LBRACKET)
-            .spaces(0)
+            .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_BRACKETS)
+            .before(RBRACKET)
+            .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_BRACKETS)
     }
 
     override fun getSpacing(parent: Block?, child1: Block?, child2: Block?): Spacing? {
