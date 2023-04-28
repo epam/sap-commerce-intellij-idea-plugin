@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery
 import com.intellij.lang.Language
 import java.io.Serial
 
-class PolyglotQueryLanguage : Language("PolyglotQueryLanguage") {
+class PolyglotQueryLanguage : Language("Polyglot Query") {
     companion object {
         @Serial
         private const val serialVersionUID: Long = -8539604107669994901L

@@ -18,10 +18,17 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <fileType language="PolyglotQueryLanguage" extensions="pgq" name="Polyglot Query File" fieldName="instance"
+        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
 
-        <lang.parserDefinition language="PolyglotQueryLanguage"
+        <lang.parserDefinition language="Polyglot Query"
                                implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserDefinition"/>
     </extensions>
+
+    <actions>
+        <action id="PolyglotQuery.NewPolyglotQueryFile"
+                class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryFileCreateAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+    </actions>
 </idea-plugin>
