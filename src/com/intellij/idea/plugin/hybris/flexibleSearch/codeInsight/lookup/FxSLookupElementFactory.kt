@@ -125,7 +125,7 @@ object FxSLookupElementFactory {
     fun buildOuterJoin() = LookupElementBuilder.create(":o")
         .withPresentableText(" ")
         .withTailText(" ${message("hybris.fxs.completion.column.postfix.outerJoin")}")
-        .withIcon(HybrisIcons.TS_MAP)
+        .withIcon(HybrisIcons.FXS_OUTER_JOIN)
 
     fun buildTablePostfixExclamationMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
         .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK)

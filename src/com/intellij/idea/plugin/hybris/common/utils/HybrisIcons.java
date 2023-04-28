@@ -128,6 +128,7 @@ public final class HybrisIcons {
 
     public static final Icon FXS_TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg");
     public static final Icon FXS_COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg");
+    public static final Icon FXS_OUTER_JOIN = getIcon("/icons/flexibleSearch/outerJoin.svg");
     public static final Icon FXS_Y_COLUMN_PLACEHOLDER = AllIcons.Actions.PrettyPrint;
     public static final Icon FXS_Y_FROM_PLACEHOLDER = AllIcons.Actions.PrettyPrint;
     public static final Icon FXS_FROM_PARENS_PLACEHOLDER = getIcon("/icons/flexibleSearch/parens.svg");
