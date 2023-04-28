@@ -123,7 +123,6 @@ object FxSLookupElementFactory {
         }
 
     fun buildOuterJoin() = LookupElementBuilder.create(":o")
-        .withPresentableText(" ")
         .withTailText(" ${message("hybris.fxs.completion.column.postfix.outerJoin")}")
         .withIcon(HybrisIcons.FXS_OUTER_JOIN)
 
