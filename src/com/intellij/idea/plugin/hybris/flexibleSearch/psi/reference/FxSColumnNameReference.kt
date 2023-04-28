@@ -110,7 +110,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ) = PsiTreeUtil.findChildrenOfType(fromClause, FlexibleSearchResultColumn::class.java)
             .asSequence()
             .filter { it.childrenOfType<FlexibleSearchColumnAliasName>().isEmpty() }
-            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java) == null }
+            .filter { PsiTreeUtil.getParentOfType(it, FlexibleSearchWhereClause::class.java, FlexibleSearchHavingClause::class.java) == null }
             .filter { it.expression is FlexibleSearchColumnRefYExpression }
             .mapNotNull { PsiTreeUtil.findChildOfType(it, FlexibleSearchYColumnName::class.java) }
             .filter(filter)
