@@ -98,6 +98,7 @@
                 <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/350" target="_blank" rel="nofollow">#350</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/351" target="_blank" rel="nofollow">#351</a>
+                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/352" target="_blank" rel="nofollow">#352</a>
                     )
                     <ul>
                         <li>Rewritten from the Scratch</li>
