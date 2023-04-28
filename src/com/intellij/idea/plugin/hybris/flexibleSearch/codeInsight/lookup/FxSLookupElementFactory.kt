@@ -40,6 +40,8 @@ object FxSLookupElementFactory {
         .withPresentableText(" ")
         .withTailText("{...}")
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
+        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeIconRightAligned(true)
         .withInsertHandler(object : AutoPopupInsertHandler() {
             override fun handle(context: InsertionContext, item: LookupElement) {
                 val cursorOffset = context.editor.caretModel.offset
@@ -48,19 +50,23 @@ object FxSLookupElementFactory {
             }
         })
 
-    fun buildYSubSelect() = LookupElementBuilder.create("{{ }}")
+    fun buildYSubSelect() = LookupElementBuilder.create("{{  }}")
         .withPresentableText(" ")
         .withTailText("{{...}}")
         .withTypeText(message("hybris.fxs.completion.subQuery"), true)
+        .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
+        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeIconRightAligned(true)
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset
-            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 3)
         }
-        .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
 
     fun buildYFrom() = LookupElementBuilder.create("{}")
         .withPresentableText(" ")
         .withTailText("{...}")
+        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeIconRightAligned(true)
         .withIcon(HybrisIcons.FXS_Y_FROM_PLACEHOLDER)
         .withInsertHandler(object : AutoPopupInsertHandler() {
             override fun handle(context: InsertionContext, item: LookupElement) {

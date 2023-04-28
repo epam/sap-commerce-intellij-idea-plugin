@@ -46,7 +46,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
 //    override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
 //        val position = parameters.position
 //
-//        if (position.prevSibling?.text in listOf("]")) {
+//        if (position.prevSibling?.text in listOf(":")) {
 //            result.addElement(FxSLookupElementFactory.buildOuterJoin())
 //            val autoPopupController = AutoPopupController.getInstance(position.project)
 
@@ -173,7 +173,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             FxSRootCompletionProvider()
         )
 
-        // <AS> and <.. JOIN> after `Identifier` leaf in the `Defined table name`
+        // <AS>, <ON>, <.. JOIN> after `Identifier` leaf in the `Defined table name`
         extend(
             CompletionType.BASIC,
             fxsBasePattern
@@ -184,10 +184,10 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(psiElement(DEFINED_TABLE_NAME))
                 )
                 .withParent(PlatformPatterns.not(psiElement(COLUMN_NAME))),
-            FxSKeywordsCompletionProvider(setOf("AS") + KEYWORDS_JOINS)
+            FxSKeywordsCompletionProvider(setOf("AS", "ON") + KEYWORDS_JOINS)
         )
 
-        // suggest different joins after `as` after `on`
+        // <ON>, <.. JOIN> after `AS`
         extend(
             CompletionType.BASIC,
             fxsBasePattern
