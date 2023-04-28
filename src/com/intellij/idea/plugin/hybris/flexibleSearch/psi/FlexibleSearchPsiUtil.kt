@@ -123,11 +123,17 @@ private fun getAliases(element: FlexibleSearchFromClause) = PsiTreeUtil
 
 /*
  Order clause is not part of the CoreSelect, so we have to go upper to Statement itself
+ ORDER BY can be in the sub-query, so let's check for it first
  */
 private fun getSuitableTableContainerParent(element: PsiElement) = PsiTreeUtil
-    .getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-    ?.fromClause
-    ?.let { listOf(it) }
+    .getParentOfType(element, FlexibleSearchOrderClause::class.java)
+    ?.parentOfType<FlexibleSearchSelectStatement>()
+    ?.selectCoreSelectList
+    ?.mapNotNull { it.fromClause }
+    ?: PsiTreeUtil
+        .getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+        ?.fromClause
+        ?.let { listOf(it) }
     ?: PsiTreeUtil
         .getParentOfType(element, FlexibleSearchSelectStatement::class.java)
         ?.selectCoreSelectList
