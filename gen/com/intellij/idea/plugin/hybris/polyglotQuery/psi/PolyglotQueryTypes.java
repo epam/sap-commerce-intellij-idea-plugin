@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.*;
 public interface PolyglotQueryTypes {
 
   IElementType ATTRIBUTE_KEY = new PolyglotQueryElementType("ATTRIBUTE_KEY");
+  IElementType BIND_PARAMETER = new PolyglotQueryElementType("BIND_PARAMETER");
   IElementType CMP_OPERATOR = new PolyglotQueryElementType("CMP_OPERATOR");
   IElementType EXPRESSION = new PolyglotQueryElementType("EXPRESSION");
   IElementType EXPR_AND = new PolyglotQueryElementType("EXPR_AND");
@@ -42,42 +43,44 @@ public interface PolyglotQueryTypes {
   IElementType QUERY = new PolyglotQueryElementType("QUERY");
   IElementType TYPE_KEY = new PolyglotQueryElementType("TYPE_KEY");
 
-  IElementType BY = new PolyglotQueryTokenType("BY");
+  IElementType AMP = new PolyglotQueryTokenType("&");
   IElementType AND = new PolyglotQueryTokenType("AND");
   IElementType ASC = new PolyglotQueryTokenType("ASC");
+  IElementType BY = new PolyglotQueryTokenType("BY");
+  IElementType COMMENT = new PolyglotQueryTokenType("COMMENT");
   IElementType DESC = new PolyglotQueryTokenType("DESC");
+  IElementType DOT = new PolyglotQueryTokenType(".");
+  IElementType EQ = new PolyglotQueryTokenType("=");
   IElementType GET = new PolyglotQueryTokenType("GET");
+  IElementType GT = new PolyglotQueryTokenType(">");
+  IElementType GTE = new PolyglotQueryTokenType(">=");
+  IElementType IDENTIFIER = new PolyglotQueryTokenType("IDENTIFIER");
   IElementType IS = new PolyglotQueryTokenType("IS");
+  IElementType LBRACE = new PolyglotQueryTokenType("{");
+  IElementType LBRACKET = new PolyglotQueryTokenType("[");
+  IElementType LINE_COMMENT = new PolyglotQueryTokenType("LINE_COMMENT");
+  IElementType LPAREN = new PolyglotQueryTokenType("(");
+  IElementType LT = new PolyglotQueryTokenType("<");
+  IElementType LTE = new PolyglotQueryTokenType("<=");
   IElementType NOT = new PolyglotQueryTokenType("NOT");
   IElementType NULL = new PolyglotQueryTokenType("NULL");
   IElementType OR = new PolyglotQueryTokenType("OR");
   IElementType ORDER = new PolyglotQueryTokenType("ORDER");
-  IElementType WHERE = new PolyglotQueryTokenType("WHERE");
-
   IElementType QUESTION_MARK = new PolyglotQueryTokenType("?");
-  IElementType EQ = new PolyglotQueryTokenType("=");
-  IElementType GT = new PolyglotQueryTokenType(">");
-  IElementType GTE = new PolyglotQueryTokenType(">=");
-  IElementType LT = new PolyglotQueryTokenType("<");
-  IElementType LTE = new PolyglotQueryTokenType("<=");
-  IElementType UNEQ = new PolyglotQueryTokenType("<>");
-  IElementType AMP = new PolyglotQueryTokenType("&");
-
-  IElementType IDENTIFIER = new PolyglotQueryTokenType("IDENTIFIER");
-  IElementType LBRACKET = new PolyglotQueryTokenType("[");
-  IElementType LINE_COMMENT = new PolyglotQueryTokenType("LINE_COMMENT");
-  IElementType COMMENT = new PolyglotQueryTokenType("COMMENT");
-  IElementType RBRACKET = new PolyglotQueryTokenType("]");
-  IElementType LPAREN = new PolyglotQueryTokenType("(");
-  IElementType LBRACE = new PolyglotQueryTokenType("{");
   IElementType RBRACE = new PolyglotQueryTokenType("}");
+  IElementType RBRACKET = new PolyglotQueryTokenType("]");
   IElementType RPAREN = new PolyglotQueryTokenType(")");
+  IElementType UNEQ = new PolyglotQueryTokenType("<>");
+  IElementType WHERE = new PolyglotQueryTokenType("WHERE");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
       if (type == ATTRIBUTE_KEY) {
         return new PolyglotQueryAttributeKeyImpl(node);
+      }
+      else if (type == BIND_PARAMETER) {
+        return new PolyglotQueryBindParameterImpl(node);
       }
       else if (type == CMP_OPERATOR) {
         return new PolyglotQueryCmpOperatorImpl(node);

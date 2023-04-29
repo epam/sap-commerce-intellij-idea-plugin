@@ -88,6 +88,41 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // '?' IDENTIFIER ('.' IDENTIFIER)*
+  public static boolean bind_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter")) return false;
+    if (!nextTokenIs(b, QUESTION_MARK)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, BIND_PARAMETER, null);
+    r = consumeTokens(b, 1, QUESTION_MARK, IDENTIFIER);
+    p = r; // pin = 1
+    r = r && bind_parameter_2(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // ('.' IDENTIFIER)*
+  private static boolean bind_parameter_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!bind_parameter_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "bind_parameter_2", c)) break;
+    }
+    return true;
+  }
+
+  // '.' IDENTIFIER
+  private static boolean bind_parameter_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "bind_parameter_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DOT, IDENTIFIER);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // '=' | '<>' | '>' | '<' | '>=' | '<='
   public static boolean cmp_operator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cmp_operator")) return false;
@@ -139,7 +174,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // attribute_key cmp_operator '?' IDENTIFIER
+  // attribute_key cmp_operator bind_parameter
   //     | attribute_key null_operator
   //     | '(' expr_or ')'
   public static boolean expr_atom(PsiBuilder b, int l) {
@@ -154,14 +189,14 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // attribute_key cmp_operator '?' IDENTIFIER
+  // attribute_key cmp_operator bind_parameter
   private static boolean expr_atom_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_atom_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = attribute_key(b, l + 1);
     r = r && cmp_operator(b, l + 1);
-    r = r && consumeTokens(b, 0, QUESTION_MARK, IDENTIFIER);
+    r = r && bind_parameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

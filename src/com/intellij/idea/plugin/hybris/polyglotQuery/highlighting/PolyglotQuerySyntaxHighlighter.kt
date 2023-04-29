@@ -90,6 +90,7 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
             PolyglotQueryTypes.RPAREN to PARENS,
 
             PolyglotQueryTypes.TYPE_KEY to TYPE,
+            PolyglotQueryTypes.BIND_PARAMETER to PARAMETER,
         )
     }
 }

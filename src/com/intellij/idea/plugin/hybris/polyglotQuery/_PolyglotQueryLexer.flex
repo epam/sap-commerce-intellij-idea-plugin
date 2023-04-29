@@ -34,6 +34,7 @@ COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
   {WHITE_SPACE}       { return WHITE_SPACE; }
 
   "?"                 { return QUESTION_MARK; }
+  "."                 { return DOT; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
   "{"                 { return LBRACE; }

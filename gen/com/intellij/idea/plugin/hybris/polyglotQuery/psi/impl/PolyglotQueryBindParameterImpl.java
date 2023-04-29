@@ -31,50 +31,20 @@ import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTyp
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public class PolyglotQueryExprAtomImpl extends ASTWrapperPsiElement implements PolyglotQueryExprAtom {
+public class PolyglotQueryBindParameterImpl extends ASTWrapperPsiElement implements PolyglotQueryBindParameter {
 
-  public PolyglotQueryExprAtomImpl(@NotNull ASTNode node) {
+  public PolyglotQueryBindParameterImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PolyglotQueryVisitor visitor) {
-    visitor.visitExprAtom(this);
+    visitor.visitBindParameter(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof PolyglotQueryVisitor) accept((PolyglotQueryVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public PolyglotQueryAttributeKey getAttributeKey() {
-    return findChildByClass(PolyglotQueryAttributeKey.class);
-  }
-
-  @Override
-  @Nullable
-  public PolyglotQueryBindParameter getBindParameter() {
-    return findChildByClass(PolyglotQueryBindParameter.class);
-  }
-
-  @Override
-  @Nullable
-  public PolyglotQueryCmpOperator getCmpOperator() {
-    return findChildByClass(PolyglotQueryCmpOperator.class);
-  }
-
-  @Override
-  @Nullable
-  public PolyglotQueryExprOr getExprOr() {
-    return findChildByClass(PolyglotQueryExprOr.class);
-  }
-
-  @Override
-  @Nullable
-  public PolyglotQueryNullOperator getNullOperator() {
-    return findChildByClass(PolyglotQueryNullOperator.class);
   }
 
 }

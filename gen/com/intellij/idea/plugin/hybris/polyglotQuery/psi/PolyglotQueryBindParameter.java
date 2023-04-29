@@ -25,21 +25,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface PolyglotQueryExprAtom extends PsiElement {
-
-  @Nullable
-  PolyglotQueryAttributeKey getAttributeKey();
-
-  @Nullable
-  PolyglotQueryBindParameter getBindParameter();
-
-  @Nullable
-  PolyglotQueryCmpOperator getCmpOperator();
-
-  @Nullable
-  PolyglotQueryExprOr getExprOr();
-
-  @Nullable
-  PolyglotQueryNullOperator getNullOperator();
+public interface PolyglotQueryBindParameter extends PsiElement {
 
 }

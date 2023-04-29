@@ -31,6 +31,10 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBindParameter(@NotNull PolyglotQueryBindParameter o) {
+    visitPsiElement(o);
+  }
+
   public void visitCmpOperator(@NotNull PolyglotQueryCmpOperator o) {
     visitPsiElement(o);
   }

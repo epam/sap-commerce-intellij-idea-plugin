@@ -36,6 +36,7 @@
         UNEQ                = '<>'
         LPAREN              = '('
         RPAREN              = ')'
+        DOT                 = '.'
     ]
 }
 
@@ -61,10 +62,11 @@ private where_clause ::= WHERE expr_or order_by?
 expr_or ::= expr_and ( OR expr_and )*
 expr_and ::= expr_atom ( AND expr_atom )*
 expr_atom ::=
-    attribute_key cmp_operator '?' IDENTIFIER
+    attribute_key cmp_operator bind_parameter
     | attribute_key null_operator
     | '(' expr_or ')'
-null_operator ::= IS (NOT)? NULL{pin=1}
+bind_parameter ::= '?' IDENTIFIER ('.' IDENTIFIER)* {pin=1}
+null_operator ::= IS (NOT)? NULL {pin=1}
 cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
-attribute_key ::= '{' IDENTIFIER ('[' IDENTIFIER ']')? '}'{pin=1}
+attribute_key ::= '{' IDENTIFIER ('[' IDENTIFIER ']')? '}' {pin=1}
 
