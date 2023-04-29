@@ -88,12 +88,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '='
-  //     | '<>'
-  //     | '>'
-  //     | '<'
-  //     | '>='
-  //     | '<='
+  // '=' | '<>' | '>' | '<' | '>=' | '<='
   public static boolean cmp_operator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cmp_operator")) return false;
     boolean r;
@@ -250,6 +245,28 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // GET type_key expression?
+  static boolean get_query(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "get_query")) return false;
+    if (!nextTokenIs(b, GET)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, GET);
+    p = r; // pin = 1
+    r = r && report_error_(b, type_key(b, l + 1));
+    r = p && get_query_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // expression?
+  private static boolean get_query_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "get_query_2")) return false;
+    expression(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // IS (NOT)? NULL
   public static boolean null_operator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "null_operator")) return false;
@@ -350,24 +367,36 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // GET type_key expression?
+  // get_query
   public static boolean query(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "query")) return false;
-    if (!nextTokenIs(b, GET)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, GET);
-    r = r && type_key(b, l + 1);
-    r = r && query_2(b, l + 1);
-    exit_section_(b, m, QUERY, r);
+    Marker m = enter_section_(b, l, _NONE_, QUERY, "<query>");
+    r = get_query(b, l + 1);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::query_recover);
     return r;
   }
 
-  // expression?
-  private static boolean query_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "query_2")) return false;
-    expression(b, l + 1);
-    return true;
+  /* ********************************************************** */
+  // !(<<eof>> | GET)
+  static boolean query_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "query_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !query_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | GET
+  private static boolean query_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "query_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, GET);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -377,10 +406,20 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (query)
+  // (query)*
   static boolean statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "statement")) return false;
-    if (!nextTokenIs(b, GET)) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!statement_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "statement", c)) break;
+    }
+    return true;
+  }
+
+  // (query)
+  private static boolean statement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "statement_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = query(b, l + 1);

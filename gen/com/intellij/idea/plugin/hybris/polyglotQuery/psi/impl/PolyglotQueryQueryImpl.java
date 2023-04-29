@@ -54,9 +54,9 @@ public class PolyglotQueryQueryImpl extends ASTWrapperPsiElement implements Poly
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PolyglotQueryTypeKey getTypeKey() {
-    return findNotNullChildByClass(PolyglotQueryTypeKey.class);
+    return findChildByClass(PolyglotQueryTypeKey.class);
   }
 
 }

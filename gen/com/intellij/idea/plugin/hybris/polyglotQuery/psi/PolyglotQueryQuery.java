@@ -30,7 +30,7 @@ public interface PolyglotQueryQuery extends PsiElement {
   @Nullable
   PolyglotQueryExpression getExpression();
 
-  @NotNull
+  @Nullable
   PolyglotQueryTypeKey getTypeKey();
 
 }

@@ -40,9 +40,16 @@
 }
 
 root ::= statement
-private statement ::= (query)
+private statement ::= (query)*
 //pin -> if GET is written in file -> psi element is pinned as MVP of a group(group == instance of java class)
-query ::= GET type_key expression? {pin=1}
+query ::= get_query {
+    recoverWhile=query_recover
+}
+
+private query_recover ::= !(<<eof>> | GET)
+
+private get_query ::= GET type_key expression? {pin=1}
+
 type_key ::= '{' IDENTIFIER '}' {pin=1}
 expression ::=
     where_clause
@@ -60,5 +67,4 @@ expr_atom ::=
 null_operator ::= IS (NOT)? NULL{pin=1}
 cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
 attribute_key ::= '{' IDENTIFIER ('[' IDENTIFIER ']')? '}'{pin=1}
-
 
