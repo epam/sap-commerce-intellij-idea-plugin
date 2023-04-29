@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -19,18 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
+package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.util.PsiElementFilter
+import com.intellij.psi.util.elementType
 
-public interface PolyglotQueryExpression extends PsiElement {
+class PolyglotQueryFoldingBlocksFilter : PsiElementFilter {
 
-  @Nullable
-  PolyglotQueryExprOr getExprOr();
-
-  @Nullable
-  PolyglotQueryOrderBy getOrderBy();
-
+    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
+        && (element is FoldablePsiElement || element.elementType == PolyglotQueryTypes.COMMENT)
+        && !element.textRange.isEmpty
 }

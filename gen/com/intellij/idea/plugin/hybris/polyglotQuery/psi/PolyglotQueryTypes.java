@@ -33,7 +33,6 @@ public interface PolyglotQueryTypes {
   IElementType ATTRIBUTE_KEY = new PolyglotQueryElementType("ATTRIBUTE_KEY");
   IElementType BIND_PARAMETER = new PolyglotQueryElementType("BIND_PARAMETER");
   IElementType CMP_OPERATOR = new PolyglotQueryElementType("CMP_OPERATOR");
-  IElementType EXPRESSION = new PolyglotQueryElementType("EXPRESSION");
   IElementType EXPR_AND = new PolyglotQueryElementType("EXPR_AND");
   IElementType EXPR_ATOM = new PolyglotQueryElementType("EXPR_ATOM");
   IElementType EXPR_OR = new PolyglotQueryElementType("EXPR_OR");
@@ -43,6 +42,7 @@ public interface PolyglotQueryTypes {
   IElementType ORDER_KEY = new PolyglotQueryElementType("ORDER_KEY");
   IElementType QUERY = new PolyglotQueryElementType("QUERY");
   IElementType TYPE_KEY = new PolyglotQueryElementType("TYPE_KEY");
+  IElementType WHERE_CLAUSE = new PolyglotQueryElementType("WHERE_CLAUSE");
 
   IElementType AMP = new PolyglotQueryTokenType("&");
   IElementType AND = new PolyglotQueryTokenType("AND");
@@ -86,9 +86,6 @@ public interface PolyglotQueryTypes {
       else if (type == CMP_OPERATOR) {
         return new PolyglotQueryCmpOperatorImpl(node);
       }
-      else if (type == EXPRESSION) {
-        return new PolyglotQueryExpressionImpl(node);
-      }
       else if (type == EXPR_AND) {
         return new PolyglotQueryExprAndImpl(node);
       }
@@ -115,6 +112,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == TYPE_KEY) {
         return new PolyglotQueryTypeKeyImpl(node);
+      }
+      else if (type == WHERE_CLAUSE) {
+        return new PolyglotQueryWhereClauseImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

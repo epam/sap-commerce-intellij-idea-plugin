@@ -24,11 +24,12 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
 public class PolyglotQueryVisitor extends PsiElementVisitor {
 
   public void visitAttributeKey(@NotNull PolyglotQueryAttributeKey o) {
-    visitPsiElement(o);
+    visitFoldablePsiElement(o);
   }
 
   public void visitBindParameter(@NotNull PolyglotQueryBindParameter o) {
@@ -51,10 +52,6 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExpression(@NotNull PolyglotQueryExpression o) {
-    visitPsiElement(o);
-  }
-
   public void visitLocalizedName(@NotNull PolyglotQueryLocalizedName o) {
     visitPsiElement(o);
   }
@@ -64,7 +61,7 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
   }
 
   public void visitOrderBy(@NotNull PolyglotQueryOrderBy o) {
-    visitPsiElement(o);
+    visitFoldablePsiElement(o);
   }
 
   public void visitOrderKey(@NotNull PolyglotQueryOrderKey o) {
@@ -76,7 +73,15 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
   }
 
   public void visitTypeKey(@NotNull PolyglotQueryTypeKey o) {
-    visitPsiElement(o);
+    visitFoldablePsiElement(o);
+  }
+
+  public void visitWhereClause(@NotNull PolyglotQueryWhereClause o) {
+    visitFoldablePsiElement(o);
+  }
+
+  public void visitFoldablePsiElement(@NotNull FoldablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

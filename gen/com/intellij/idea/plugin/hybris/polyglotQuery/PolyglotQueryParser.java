@@ -260,27 +260,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // where_clause
-  //     | order_by?
-  public static boolean expression(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, EXPRESSION, "<expression>");
-    r = where_clause(b, l + 1);
-    if (!r) r = expression_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // order_by?
-  private static boolean expression_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expression_1")) return false;
-    order_by(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // GET type_key expression?
+  // GET type_key where_clause? order_by?
   static boolean get_query(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "get_query")) return false;
     if (!nextTokenIs(b, GET)) return false;
@@ -289,15 +269,23 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, GET);
     p = r; // pin = 1
     r = r && report_error_(b, type_key(b, l + 1));
-    r = p && get_query_2(b, l + 1) && r;
+    r = p && report_error_(b, get_query_2(b, l + 1)) && r;
+    r = p && get_query_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // expression?
+  // where_clause?
   private static boolean get_query_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "get_query_2")) return false;
-    expression(b, l + 1);
+    where_clause(b, l + 1);
+    return true;
+  }
+
+  // order_by?
+  private static boolean get_query_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "get_query_3")) return false;
+    order_by(b, l + 1);
     return true;
   }
 
@@ -339,14 +327,13 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   // order_clause_literal order_key ( ',' order_key )*
   public static boolean order_by(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "order_by")) return false;
-    if (!nextTokenIs(b, ORDER)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ORDER_BY, null);
+    Marker m = enter_section_(b, l, _NONE_, ORDER_BY, "<order by>");
     r = order_clause_literal(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, order_key(b, l + 1));
     r = p && order_by_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::order_by_clause_recover);
     return r || p;
   }
 
@@ -368,6 +355,28 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, ",");
     r = r && order_key(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | GET)
+  static boolean order_by_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_by_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !order_by_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | GET
+  private static boolean order_by_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "order_by_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, GET);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -488,24 +497,39 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // WHERE expr_or order_by?
-  static boolean where_clause(PsiBuilder b, int l) {
+  // WHERE expr_or
+  public static boolean where_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "where_clause")) return false;
-    if (!nextTokenIs(b, WHERE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, WHERE_CLAUSE, "<where clause>");
     r = consumeToken(b, WHERE);
+    p = r; // pin = 1
     r = r && expr_or(b, l + 1);
-    r = r && where_clause_2(b, l + 1);
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::where_clause_recover);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | order_clause_literal | GET)
+  static boolean where_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "where_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !where_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // order_by?
-  private static boolean where_clause_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "where_clause_2")) return false;
-    order_by(b, l + 1);
-    return true;
+  // <<eof>> | order_clause_literal | GET
+  private static boolean where_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "where_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, GET);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

@@ -49,14 +49,20 @@ public class PolyglotQueryQueryImpl extends ASTWrapperPsiElement implements Poly
 
   @Override
   @Nullable
-  public PolyglotQueryExpression getExpression() {
-    return findChildByClass(PolyglotQueryExpression.class);
+  public PolyglotQueryOrderBy getOrderBy() {
+    return findChildByClass(PolyglotQueryOrderBy.class);
   }
 
   @Override
   @Nullable
   public PolyglotQueryTypeKey getTypeKey() {
     return findChildByClass(PolyglotQueryTypeKey.class);
+  }
+
+  @Override
+  @Nullable
+  public PolyglotQueryWhereClause getWhereClause() {
+    return findChildByClass(PolyglotQueryWhereClause.class);
   }
 
 }

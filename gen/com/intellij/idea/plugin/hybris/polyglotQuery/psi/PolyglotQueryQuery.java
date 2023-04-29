@@ -28,9 +28,12 @@ import com.intellij.psi.PsiElement;
 public interface PolyglotQueryQuery extends PsiElement {
 
   @Nullable
-  PolyglotQueryExpression getExpression();
+  PolyglotQueryOrderBy getOrderBy();
 
   @Nullable
   PolyglotQueryTypeKey getTypeKey();
+
+  @Nullable
+  PolyglotQueryWhereClause getWhereClause();
 
 }

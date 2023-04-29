@@ -15,6 +15,11 @@
 
     classHeader="generatedFilesHeader.txt"
 
+    implements("type_key")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+    implements("attribute_key")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+    implements("where_clause")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+    implements("order_by")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+
     generate=[java='17']
 
     tokens = [
@@ -49,16 +54,21 @@ query ::= get_query {
 
 private query_recover ::= !(<<eof>> | GET)
 
-private get_query ::= GET type_key expression? {pin=1}
+private get_query ::= GET type_key where_clause? order_by? {pin=1}
 
 type_key ::= '{' IDENTIFIER '}' {pin=1}
-expression ::=
-    where_clause
-    | order_by?
-order_by ::= order_clause_literal order_key ( ',' order_key )* {pin=1}
+order_by ::= order_clause_literal order_key ( ',' order_key )* {
+    pin=1
+    recoverWhile=order_by_clause_recover
+}
+private order_by_clause_recover::= !(<<eof>> | GET)
 order_key ::= attribute_key (ASC | DESC)?
 private order_clause_literal ::= ORDER BY
-private where_clause ::= WHERE expr_or order_by?
+where_clause ::= WHERE expr_or {
+    pin=1
+    recoverWhile=where_clause_recover
+}
+private where_clause_recover ::= !(<<eof>> | order_clause_literal | GET)
 expr_or ::= expr_and ( OR expr_and )*
 expr_and ::= expr_atom ( AND expr_atom )*
 expr_atom ::=
