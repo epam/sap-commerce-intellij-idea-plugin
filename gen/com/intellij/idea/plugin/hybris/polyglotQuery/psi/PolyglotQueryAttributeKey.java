@@ -27,4 +27,10 @@ import com.intellij.psi.PsiElement;
 
 public interface PolyglotQueryAttributeKey extends PsiElement {
 
+  @Nullable
+  PolyglotQueryLocalizedName getLocalizedName();
+
+  @Nullable
+  PsiElement getIdentifier();
+
 }

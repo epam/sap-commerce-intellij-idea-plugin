@@ -68,5 +68,6 @@ expr_atom ::=
 bind_parameter ::= '?' IDENTIFIER ('.' IDENTIFIER)* {pin=1}
 null_operator ::= IS (NOT)? NULL {pin=1}
 cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
-attribute_key ::= '{' IDENTIFIER ('[' IDENTIFIER ']')? '}' {pin=1}
-
+attribute_key ::= '{' IDENTIFIER ( y_localized_name )? '}' {pin=1}
+private y_localized_name ::= '[' localized_name ']' {pin=1}
+localized_name ::= IDENTIFIER

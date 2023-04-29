@@ -47,4 +47,16 @@ public class PolyglotQueryAttributeKeyImpl extends ASTWrapperPsiElement implemen
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public PolyglotQueryLocalizedName getLocalizedName() {
+    return findChildByClass(PolyglotQueryLocalizedName.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
 }

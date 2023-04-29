@@ -37,6 +37,7 @@ public interface PolyglotQueryTypes {
   IElementType EXPR_AND = new PolyglotQueryElementType("EXPR_AND");
   IElementType EXPR_ATOM = new PolyglotQueryElementType("EXPR_ATOM");
   IElementType EXPR_OR = new PolyglotQueryElementType("EXPR_OR");
+  IElementType LOCALIZED_NAME = new PolyglotQueryElementType("LOCALIZED_NAME");
   IElementType NULL_OPERATOR = new PolyglotQueryElementType("NULL_OPERATOR");
   IElementType ORDER_BY = new PolyglotQueryElementType("ORDER_BY");
   IElementType ORDER_KEY = new PolyglotQueryElementType("ORDER_KEY");
@@ -96,6 +97,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == EXPR_OR) {
         return new PolyglotQueryExprOrImpl(node);
+      }
+      else if (type == LOCALIZED_NAME) {
+        return new PolyglotQueryLocalizedNameImpl(node);
       }
       else if (type == NULL_OPERATOR) {
         return new PolyglotQueryNullOperatorImpl(node);

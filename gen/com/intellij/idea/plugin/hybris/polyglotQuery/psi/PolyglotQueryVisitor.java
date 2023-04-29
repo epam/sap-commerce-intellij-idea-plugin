@@ -55,6 +55,10 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitLocalizedName(@NotNull PolyglotQueryLocalizedName o) {
+    visitPsiElement(o);
+  }
+
   public void visitNullOperator(@NotNull PolyglotQueryNullOperator o) {
     visitPsiElement(o);
   }
