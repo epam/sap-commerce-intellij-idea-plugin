@@ -23,6 +23,9 @@
 
         <lang.parserDefinition language="Polyglot Query"
                                implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Polyglot Query"
+                                       implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
     </extensions>
 
     <actions>
@@ -31,4 +34,6 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
     </actions>
+
+
 </idea-plugin>
