@@ -92,6 +92,7 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
             PolyglotQueryTypes.TYPE_KEY to TYPE,
             PolyglotQueryTypes.BIND_PARAMETER to PARAMETER,
             PolyglotQueryTypes.LOCALIZED_NAME to LOCALIZED,
+            PolyglotQueryTypes.ATTRIBUTE_KEY to COLUMN,
         )
     }
 }

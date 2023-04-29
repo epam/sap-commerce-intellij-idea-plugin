@@ -47,6 +47,7 @@ class PolyglotQueryAnnotator : Annotator {
                 TYPE_KEY -> highlight(TYPE_KEY, holder, element)
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
                 LOCALIZED_NAME -> highlight(LOCALIZED_NAME, holder, element)
+                ATTRIBUTE_KEY -> highlight(ATTRIBUTE_KEY, holder, element)
                 /*COLUMN_NAME -> highlightReference(COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.columnAlias.key")
                 Y_COLUMN_NAME -> highlightReference(Y_COLUMN_NAME, holder, element, "hybris.inspections.fxs.unresolved.attribute.key")
                 SELECTED_TABLE_NAME -> highlightReference(SELECTED_TABLE_NAME, holder, element, "hybris.inspections.fxs.unresolved.tableAlias.key")
@@ -60,6 +61,8 @@ class PolyglotQueryAnnotator : Annotator {
             QUESTION_MARK -> when (element.parent.elementType) {
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
             }
+
+
 
             /*COLUMN_LOCALIZED_NAME -> {
                 val language = element.text.trim()
