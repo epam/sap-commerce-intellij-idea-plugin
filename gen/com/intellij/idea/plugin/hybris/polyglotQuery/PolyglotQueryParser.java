@@ -56,33 +56,66 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' IDENTIFIER ( y_localized_name )? '}'
+  // '{' IDENTIFIER ( localized_name )? '}'
   public static boolean attribute_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY, null);
+    Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY, "<attribute key>");
     r = consumeTokens(b, 1, LBRACE, IDENTIFIER);
     p = r; // pin = 1
     r = r && report_error_(b, attribute_key_2(b, l + 1));
     r = p && consumeToken(b, RBRACE) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::attribute_key_recover);
     return r || p;
   }
 
-  // ( y_localized_name )?
+  // ( localized_name )?
   private static boolean attribute_key_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2")) return false;
     attribute_key_2_0(b, l + 1);
     return true;
   }
 
-  // ( y_localized_name )
+  // ( localized_name )
   private static boolean attribute_key_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = y_localized_name(b, l + 1);
+    r = localized_name(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC)
+  static boolean attribute_key_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !attribute_key_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC
+  private static boolean attribute_key_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, AMP);
+    if (!r) r = consumeToken(b, EQ);
+    if (!r) r = consumeToken(b, GT);
+    if (!r) r = consumeToken(b, GTE);
+    if (!r) r = consumeToken(b, LT);
+    if (!r) r = consumeToken(b, LTE);
+    if (!r) r = consumeToken(b, UNEQ);
+    if (!r) r = consumeToken(b, RPAREN);
+    if (!r) r = consumeToken(b, FROM);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, GET);
+    if (!r) r = consumeToken(b, ASC);
+    if (!r) r = consumeToken(b, DESC);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -290,14 +323,25 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER
+  // '[' IDENTIFIER ']'
   public static boolean localized_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "localized_name")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, LOCALIZED_NAME, "<localized name>");
+    r = consumeTokens(b, 1, LBRACKET, IDENTIFIER, RBRACKET);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::localized_name_recover);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean localized_name_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized_name_recover")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, m, LOCALIZED_NAME, r);
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACE);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -487,13 +531,37 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   // '{' IDENTIFIER '}'
   public static boolean type_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key")) return false;
-    if (!nextTokenIs(b, LBRACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, TYPE_KEY, null);
+    Marker m = enter_section_(b, l, _NONE_, TYPE_KEY, "<type key>");
     r = consumeTokens(b, 1, LBRACE, IDENTIFIER, RBRACE);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::type_key_recover);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
+  static boolean type_key_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !type_key_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | FROM | order_clause_literal | GET | WHERE
+  private static boolean type_key_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, FROM);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, GET);
+    if (!r) r = consumeToken(b, WHERE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -530,21 +598,6 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, GET);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  /* ********************************************************** */
-  // '[' localized_name ']'
-  static boolean y_localized_name(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "y_localized_name")) return false;
-    if (!nextTokenIs(b, LBRACKET)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, LBRACKET);
-    p = r; // pin = 1
-    r = r && report_error_(b, localized_name(b, l + 1));
-    r = p && consumeToken(b, RBRACKET) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
   }
 
 }

@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement;
 
 public interface PolyglotQueryLocalizedName extends PsiElement {
 
-  @NotNull
+  @Nullable
   PsiElement getIdentifier();
 
 }

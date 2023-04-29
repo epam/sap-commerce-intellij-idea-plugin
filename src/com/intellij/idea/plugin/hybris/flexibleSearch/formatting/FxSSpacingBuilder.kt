@@ -46,7 +46,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
                     LDBRACE, AS, COMPOUND_OPERATOR,
                     IS, NOT, NULL, FROM,
                     THEN, ELSE, END, ON,
-                    BETWEEN, JOIN, WHERE,
+                    BETWEEN, JOIN, WHERE, JOIN_OPERATOR,
                 )
             )
             .spaces(1)

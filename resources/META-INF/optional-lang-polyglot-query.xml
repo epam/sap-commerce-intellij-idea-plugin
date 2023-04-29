@@ -26,6 +26,7 @@
 
         <lang.commenter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.commenter.PolyglotQueryCommenter"/>
         <lang.braceMatcher language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
+        <lang.foldingBuilder language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
@@ -35,7 +36,9 @@
         <lang.syntaxHighlighterFactory language="Polyglot Query"
                                        implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
         <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
+
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBlocksFilter"/>
     </extensions>
 
     <actions>

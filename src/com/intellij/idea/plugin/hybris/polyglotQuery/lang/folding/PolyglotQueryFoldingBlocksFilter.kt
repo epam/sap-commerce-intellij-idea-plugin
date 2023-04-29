@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiElementFilter
@@ -29,4 +30,8 @@ class PolyglotQueryFoldingBlocksFilter : PsiElementFilter {
     override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
         && (element is FoldablePsiElement || element.elementType == PolyglotQueryTypes.COMMENT)
         && !element.textRange.isEmpty
+
+    companion object {
+        val instance: PolyglotQueryFoldingBlocksFilter = ApplicationManager.getApplication().getService(PolyglotQueryFoldingBlocksFilter::class.java)
+    }
 }
