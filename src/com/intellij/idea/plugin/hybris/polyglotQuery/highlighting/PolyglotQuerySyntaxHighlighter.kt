@@ -50,6 +50,9 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
         private val LOCALIZED = pack(PolyglotQueryHighlighterColors.PGQ_LOCALIZED)
         private val PARAMETER = pack(PolyglotQueryHighlighterColors.PGQ_PARAMETER)
         private val OPERAND = pack(PolyglotQueryHighlighterColors.PGQ_OPERAND)
+        private val TYPE = pack(PolyglotQueryHighlighterColors.PGQ_TYPE)
+        private val COLUMN = pack(PolyglotQueryHighlighterColors.PGQ_COLUMN)
+
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
             TokenType.BAD_CHARACTER to BAD_CHARACTER_KEYS,
@@ -84,7 +87,9 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
             PolyglotQueryTypes.RBRACKET to BRACKETS,
 
             PolyglotQueryTypes.LPAREN to PARENS,
-            PolyglotQueryTypes.RPAREN to PARENS
+            PolyglotQueryTypes.RPAREN to PARENS,
+
+            PolyglotQueryTypes.TYPE_KEY to TYPE,
         )
     }
 }

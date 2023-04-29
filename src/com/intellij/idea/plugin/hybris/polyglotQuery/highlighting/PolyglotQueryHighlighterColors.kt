@@ -34,6 +34,8 @@ object PolyglotQueryHighlighterColors {
     val PGQ_LOCALIZED = key("PGQ_LOCALIZED", DefaultLanguageHighlighterColors.INLINE_PARAMETER_HINT)
     val PGQ_PARAMETER = key("PGQ_PARAMETER", DefaultLanguageHighlighterColors.PARAMETER)
     val PGQ_OPERAND = key("PGQ_OPERAND", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
+    val PGQ_COLUMN = key("PGQ_COLUMN", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
+    val PGQ_TYPE = key("PGQ_TYPE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
 
     private fun key(
         externalName: @NonNls String,

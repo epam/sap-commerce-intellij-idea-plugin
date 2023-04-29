@@ -18,6 +18,10 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
+
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
 
@@ -25,6 +29,7 @@
                                implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Polyglot Query"
                                        implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
+        <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
     </extensions>
 
