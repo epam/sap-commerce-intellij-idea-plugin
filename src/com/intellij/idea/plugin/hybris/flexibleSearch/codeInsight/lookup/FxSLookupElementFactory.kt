@@ -26,6 +26,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messageFallback
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
@@ -185,7 +186,9 @@ object FxSLookupElementFactory {
         .withIcon(HybrisIcons.HYBRIS)
 
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
-        .withTypeText(" ${message("hybris.fxs.completion.column.language.${isoCode.lowercase()}")}")
+        .withTypeText(messageFallback("hybris.fxs.completion.column.language.${isoCode.lowercase()}", "")
+            ?.let { " $it" }
+        )
         .withCaseSensitivity(false)
         .withIcon(HybrisIcons.LOCALIZED)
 
