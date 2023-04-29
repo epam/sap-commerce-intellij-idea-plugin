@@ -25,6 +25,7 @@
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
 
         <lang.commenter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.commenter.PolyglotQueryCommenter"/>
+        <lang.braceMatcher language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
 
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
