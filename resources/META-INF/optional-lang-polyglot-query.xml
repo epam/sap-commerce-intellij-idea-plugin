@@ -22,6 +22,8 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
 
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
+
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
 
