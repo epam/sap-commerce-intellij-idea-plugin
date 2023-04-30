@@ -784,7 +784,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(<<eof>> | HAVING | order_clause_literal | ')' | '}}')
+  // !(<<eof>> | HAVING | order_clause_literal | LIMIT | ')' | '}}')
   static boolean group_by_clause_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause_recover")) return false;
     boolean r;
@@ -794,7 +794,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>> | HAVING | order_clause_literal | ')' | '}}'
+  // <<eof>> | HAVING | order_clause_literal | LIMIT | ')' | '}}'
   private static boolean group_by_clause_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "group_by_clause_recover_0")) return false;
     boolean r;
@@ -802,6 +802,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     r = eof(b, l + 1);
     if (!r) r = consumeToken(b, HAVING);
     if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, LIMIT);
     if (!r) r = consumeToken(b, RPAREN);
     if (!r) r = consumeToken(b, RDBRACE);
     exit_section_(b, m, null, r);
@@ -824,14 +825,38 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // HAVING expression
   public static boolean having_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "having_clause")) return false;
-    if (!nextTokenIs(b, HAVING)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, HAVING_CLAUSE, null);
+    Marker m = enter_section_(b, l, _NONE_, HAVING_CLAUSE, "<having clause>");
     r = consumeToken(b, HAVING);
     p = r; // pin = 1
     r = r && expression(b, l + 1, -1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::having_clause_recover);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | LIMIT | order_clause_literal | ')' | '}}')
+  static boolean having_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "having_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !having_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | LIMIT | order_clause_literal | ')' | '}}'
+  private static boolean having_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "having_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, LIMIT);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, RPAREN);
+    if (!r) r = consumeToken(b, RDBRACE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1227,7 +1252,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(FROM | ',')
+  // !(<<eof>> | FROM | ',')
   static boolean result_column_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_column_recover")) return false;
     boolean r;
@@ -1237,12 +1262,15 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FROM | ','
+  // <<eof>> | FROM | ','
   private static boolean result_column_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_column_recover_0")) return false;
     boolean r;
-    r = consumeToken(b, FROM);
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, FROM);
     if (!r) r = consumeToken(b, COMMA);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1280,13 +1308,24 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(FROM)
+  // !(<<eof>> | FROM)
   static boolean result_columns_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "result_columns_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !consumeToken(b, FROM);
+    r = !result_columns_recover_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | FROM
+  private static boolean result_columns_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "result_columns_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = consumeToken(b, FROM);
+    exit_section_(b, m, null, r);
     return r;
   }
 

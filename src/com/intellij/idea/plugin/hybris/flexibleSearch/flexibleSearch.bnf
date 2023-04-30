@@ -206,8 +206,12 @@ group_by_clause ::= group_by_literal expression ( ',' expression )* ( having_cla
     pin=1
     recoverWhile=group_by_clause_recover
 }
-private group_by_clause_recover ::= !(<<eof>> | HAVING | order_clause_literal | ')' | '}}')
-having_clause ::= HAVING expression {pin=1}
+private group_by_clause_recover ::= !(<<eof>> | HAVING | order_clause_literal | LIMIT | ')' | '}}')
+having_clause ::= HAVING expression {
+    pin=1
+    recoverWhile=having_clause_recover
+}
+private having_clause_recover ::= !(<<eof>> | LIMIT | order_clause_literal | ')' | '}}')
 private group_by_literal ::= GROUP BY
 
 where_clause ::= WHERE expression {pin=1}
@@ -242,7 +246,7 @@ result_columns ::= result_column ( following_result_column )* {
     recoverWhile=result_columns_recover
 }
 private following_result_column ::= ',' result_column {pin=1}
-private result_columns_recover ::= !(FROM)
+private result_columns_recover ::= !(<<eof>> | FROM)
 
 table_or_subquery ::= from_table | select_subquery | '(' table_or_subquery ')'
 
@@ -268,7 +272,7 @@ result_column ::=
     methods=[getPresentationText]
     recoverWhile=result_column_recover
   }
-private result_column_recover ::= !(FROM | ',')
+private result_column_recover ::= !(<<eof>> | FROM | ',')
 
 join_operator ::= ',' | ( LEFT OUTER? | INNER | RIGHT )? JOIN
 
