@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.impex.injection
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.psi.GroovyLanguageInjector
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger
@@ -59,6 +60,6 @@ class ImpexJavaScriptLanguageInjector : LanguageInjector {
 
     companion object {
         private const val QUOTE_SYMBOL_LENGTH = 1
-        private val LOG = Logger.getInstance(ImpexGroovyLanguageInjector::class.java)
+        private val LOG = Logger.getInstance(GroovyLanguageInjector::class.java)
     }
 }

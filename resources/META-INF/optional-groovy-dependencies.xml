@@ -20,7 +20,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexGroovyLanguageInjector" />
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.psi.GroovyLanguageInjector" />
 
     </extensions>
 

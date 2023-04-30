@@ -122,6 +122,7 @@
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added injection of the Groovy Language into <code>Script.content</code> in the Impex files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361" target="_blank" rel="nofollow">#361</a>)</li>
+                <li><i>Feature:</i> Added injection of the Groovy Language into <code>script</code> in the Business Process files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/363" target="_blank" rel="nofollow">#363</a>)</li>
                 <li><i>Feature:</i> Added injection of the JavaScript Language into <code>Script.content</code> in the Impex files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/362" target="_blank" rel="nofollow">#362</a>)</li>
                 <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch value parameters code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345" target="_blank" rel="nofollow">#345</a>)</li>

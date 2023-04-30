@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -15,9 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.injection
+package com.intellij.idea.plugin.hybris.psi
 
+import com.intellij.idea.plugin.hybris.impex.injection.ImpexScriptLanguageInjectionValidator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -26,17 +28,53 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.xml.XmlFile
+import com.intellij.psi.xml.XmlTag
+import com.intellij.util.xml.DomManager
 import org.jetbrains.plugins.groovy.GroovyLanguage
 
-/**
- * @author Nosov Aleksandr <nosovae.dev></nosovae.dev>@gmail.com>
- */
-class ImpexGroovyLanguageInjector : LanguageInjector {
+class GroovyLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
+        handleImpex(host, injectionPlacesRegistrar)
+        handleBusinessProcess(host, injectionPlacesRegistrar)
+    }
+
+    private fun handleBusinessProcess(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
+        val xmlFile = host.containingFile as? XmlFile
+            ?: return
+        if (DomManager.getDomManager(host.project).getDomFileDescription(xmlFile) !is BpDomFileDescription) return
+
+        val scriptType = host.parentOfType<XmlTag>()
+            ?.takeIf { it.name == "script" }
+            ?.getAttribute("type")
+            ?.value
+            ?.let { ScriptType.byName(it) }
+
+        if (scriptType == ScriptType.GROOVY) {
+            val cdataOpen = "<![CDATA["
+            val offset: Int
+            val length: Int
+            if (host.text.contains(cdataOpen)) {
+                offset = host.text.indexOf("<![CDATA[") + cdataOpen.length
+                length = host.text.substringAfter(cdataOpen)
+                    .substringBeforeLast("]]")
+                    .length
+
+                injectLanguage(injectionPlacesRegistrar, length, offset)
+            } else {
+                offset = 0
+                length = host.textLength
+            }
+            injectLanguage(injectionPlacesRegistrar, length, offset)
+        }
+    }
+
+    private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         val impexString = host as? ImpexString
             ?: return
 
@@ -66,6 +104,6 @@ class ImpexGroovyLanguageInjector : LanguageInjector {
         private const val GROOVY_MARKER = "#%groovy%"
         private const val QUOTE_SYMBOL_LENGTH = 1
         private val OFFSET = "\"#%groovy%".count()
-        private val LOG = Logger.getInstance(ImpexGroovyLanguageInjector::class.java)
+        private val LOG = Logger.getInstance(GroovyLanguageInjector::class.java)
     }
 }
