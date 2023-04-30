@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.psi
+package com.intellij.idea.plugin.hybris.psi.injector
 
-import com.intellij.idea.plugin.hybris.impex.injection.ImpexScriptLanguageInjectionValidator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
-import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -28,10 +26,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
-import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.DomManager
 import org.jetbrains.plugins.groovy.GroovyLanguage
 
 class GroovyLanguageInjector : LanguageInjector {
@@ -47,31 +42,8 @@ class GroovyLanguageInjector : LanguageInjector {
     private fun handleBusinessProcess(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         val xmlFile = host.containingFile as? XmlFile
             ?: return
-        if (DomManager.getDomManager(host.project).getDomFileDescription(xmlFile) !is BpDomFileDescription) return
 
-        val scriptType = host.parentOfType<XmlTag>()
-            ?.takeIf { it.name == "script" }
-            ?.getAttribute("type")
-            ?.value
-            ?.let { ScriptType.byName(it) }
-
-        if (scriptType == ScriptType.GROOVY) {
-            val cdataOpen = "<![CDATA["
-            val offset: Int
-            val length: Int
-            if (host.text.contains(cdataOpen)) {
-                offset = host.text.indexOf("<![CDATA[") + cdataOpen.length
-                length = host.text.substringAfter(cdataOpen)
-                    .substringBeforeLast("]]")
-                    .length
-
-                injectLanguage(injectionPlacesRegistrar, length, offset)
-            } else {
-                offset = 0
-                length = host.textLength
-            }
-            injectLanguage(injectionPlacesRegistrar, length, offset)
-        }
+        LanguageInjectionUtil.tryInject(xmlFile, host, ScriptType.GROOVY) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
     }
 
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
@@ -81,7 +53,7 @@ class GroovyLanguageInjector : LanguageInjector {
         val hostString = StringUtil.unquoteString(impexString.text).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
             injectLanguage(injectionPlacesRegistrar, impexString.textLength - OFFSET - QUOTE_SYMBOL_LENGTH, OFFSET)
-        } else if (ImpexScriptLanguageInjectionValidator.getLanguageForInjection(impexString) == ScriptType.GROOVY) {
+        } else if (LanguageInjectionUtil.getLanguageForInjection(impexString) == ScriptType.GROOVY) {
             injectLanguage(injectionPlacesRegistrar, impexString.textLength - QUOTE_SYMBOL_LENGTH - 1, QUOTE_SYMBOL_LENGTH)
         }
     }

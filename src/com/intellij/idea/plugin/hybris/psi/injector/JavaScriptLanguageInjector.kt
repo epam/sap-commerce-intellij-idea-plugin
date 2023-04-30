@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.injection
+package com.intellij.idea.plugin.hybris.psi.injector
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
-import com.intellij.idea.plugin.hybris.psi.GroovyLanguageInjector
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger
@@ -27,17 +26,30 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.xml.XmlFile
 
-class ImpexJavaScriptLanguageInjector : LanguageInjector {
+class JavaScriptLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
+        handleImpex(host, injectionPlacesRegistrar)
+        handleBusinessProcess(host, injectionPlacesRegistrar)
+    }
+
+    private fun handleBusinessProcess(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
+        val xmlFile = host.containingFile as? XmlFile
+            ?: return
+
+        LanguageInjectionUtil.tryInject(xmlFile, host, ScriptType.JAVASCRIPT) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
+    }
+
+    private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         val impexString = host as? ImpexString
             ?: return
 
-        if (ImpexScriptLanguageInjectionValidator.getLanguageForInjection(impexString) == ScriptType.JAVASCRIPT) {
+        if (LanguageInjectionUtil.getLanguageForInjection(impexString) == ScriptType.JAVASCRIPT) {
             injectLanguage(
                 injectionPlacesRegistrar, impexString.textLength - QUOTE_SYMBOL_LENGTH - 1, QUOTE_SYMBOL_LENGTH
             )

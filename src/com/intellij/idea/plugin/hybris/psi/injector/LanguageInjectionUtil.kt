@@ -16,13 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.injection
+package com.intellij.idea.plugin.hybris.psi.injector
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
+import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.xml.XmlFile
+import com.intellij.psi.xml.XmlTag
+import com.intellij.util.xml.DomManager
 
-object ImpexScriptLanguageInjectionValidator {
+object LanguageInjectionUtil {
 
     fun getLanguageForInjection(impexString: ImpexString): ScriptType? {
         val valueGroup = impexString
@@ -63,5 +69,38 @@ object ImpexScriptLanguageInjectionValidator {
                 ?.text
                 ?.replace("\"", "")
                 ?.let { ScriptType.byName(it) }
+    }
+
+    fun tryInject(
+        xmlFile: XmlFile,
+        host: PsiLanguageInjectionHost,
+        targetScriptType: ScriptType,
+        inject: (Int, Int) -> Unit
+    ) {
+        if (DomManager.getDomManager(xmlFile.project).getDomFileDescription(xmlFile) !is BpDomFileDescription) return
+
+        val scriptType = host.parentOfType<XmlTag>()
+            ?.takeIf { it.name == "script" }
+            ?.getAttribute("type")
+            ?.value
+            ?.let { ScriptType.byName(it) }
+
+        if (scriptType == targetScriptType) {
+            val cdataOpen = "<![CDATA["
+            val offset: Int
+            val length: Int
+            if (host.text.contains(cdataOpen)) {
+                offset = host.text.indexOf("<![CDATA[") + cdataOpen.length
+                length = host.text.substringAfter(cdataOpen)
+                    .substringBeforeLast("]]")
+                    .length
+
+                inject.invoke(length, offset)
+            } else {
+                offset = 0
+                length = host.textLength
+            }
+            inject.invoke(length, offset)
+        }
     }
 }
