@@ -118,11 +118,15 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
         val itemRootClass = JavaPsiFacade.getInstance(project).findClass(
             rootClass, GlobalSearchScope.allScope(project)
         ) ?: return emptyMap()
+
+        if (itemRootClass.name == null) return emptyMap()
+
         val foundClasses = ClassInheritorsSearch.search(itemRootClass).findAll()
         val result: MutableMap<String, PsiClass> = CaseInsensitiveMap()
         result[itemRootClass.name!!] = itemRootClass
         for (psiClass in foundClasses) {
-            result[psiClass.name!!] = psiClass
+            psiClass.name
+                ?.let { result[it] = psiClass }
         }
         return result
     }
