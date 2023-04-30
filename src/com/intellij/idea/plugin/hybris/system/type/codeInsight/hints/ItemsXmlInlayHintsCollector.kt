@@ -32,6 +32,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
@@ -76,11 +77,13 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     private fun retrievePresentation(parent: XmlTag, attribute: String, project: Project, element: XmlToken): InlayPresentation? {
         if (parent.name == EnumTypes.ENUMTYPE && attribute == EnumType.CODE) {
             return finEnumClass(project, element.text)
-                ?.let { inlayPresentation(it, HybrisIcons.TS_ENUM) }
+                .takeIf { it.isNotEmpty() }
+                ?.let { inlayPresentation(HybrisIcons.TS_ENUM, it) }
                 ?: unknown
         } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE) {
             return findItemClass(project, element.text)
-                ?.let { inlayPresentation(it, HybrisIcons.TS_ITEM) }
+                .takeIf { it.isNotEmpty() }
+                ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
                 ?: unknown
         } else if (parent.name == "value") {
             val enumName = parent.parentOfType<XmlTag>()
@@ -89,37 +92,41 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 ?: return null
 
             return finEnumClass(project, enumName)
-                ?.allFields
-                ?.find { it.name.equals(element.text, true) }
-                ?.let { inlayPresentation(it, HybrisIcons.TS_ENUM_VALUE) }
+                .takeIf { it.isNotEmpty() }
+                ?.mapNotNull { it.allFields.find { field -> field.name.equals(element.text, true) } }
+                ?.toTypedArray()
+                ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it) }
                 ?: unknown
         }
         return null
     }
 
-    private fun inlayPresentation(it: Navigatable, i: Icon): InlayPresentation {
-        val icon = factory.icon(i)
+    private fun inlayPresentation(icon: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
+        val icon = factory.icon(icon)
         val inset = factory.inset(icon, right = 5, top = 3)
         val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
 
-        return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(it) }
+        return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(*navigatables) }
     }
 
-    private fun findItemClass(project: Project, element: String) =
+    private fun findItemClass(project: Project, element: String): Array<out PsiClass> =
         PsiShortNamesCache.getInstance(project).getClassesByName(
             element + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
         )
-            .firstOrNull()
+            .filter { it.containingFile.virtualFile.path.contains(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) }
+            .toTypedArray()
 
-    private fun finEnumClass(project: Project, element: String) =
+    private fun finEnumClass(project: Project, element: String): Array<out PsiClass> =
         PsiShortNamesCache.getInstance(project).getClassesByName(
             element, GlobalSearchScope.allScope(project)
         )
-            .firstOrNull { psiClass ->
+            .filter { it.containingFile.virtualFile.path.contains(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) }
+            .filter { psiClass ->
                 psiClass.implementsListTypes
                     .mapNotNull { it.resolve() }
                     .any {
                         it.qualifiedName == HybrisConstants.CLASS_ENUM_ROOT
                     }
             }
+            .toTypedArray()
 }
