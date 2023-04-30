@@ -16,16 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
+package com.intellij.idea.plugin.hybris.system.type
 
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+// Representation of the [y] ScriptType Enum
+enum class ScriptType {
+    GROOVY,
+    JAVASCRIPT,
+    BEANSHELL;
 
-class ItemResolveResult(
-    val meta: TSMetaItem
-) : TSReferenceBase.TSResolveResult {
-    private val myDom: ItemType? = meta.retrieveDom()
-    override fun getElement() = myDom?.code?.xmlAttributeValue
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
+    companion object {
+        private val cache = values()
+            .associateBy { it.name }
+
+        fun byName(name: String) = cache.get(name.uppercase())
+    }
 }

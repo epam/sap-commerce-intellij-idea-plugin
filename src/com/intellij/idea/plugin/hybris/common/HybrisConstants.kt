@@ -205,6 +205,7 @@ object HybrisConstants {
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"
     const val TS_TYPE_EXTENSIBLE_ITEM = "ExtensibleItem"
+    const val TS_TYPE_SCRIPT = "Script"
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"

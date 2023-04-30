@@ -18,39 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.impex.psi.util.setName
-import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 interface ImpexPsiNamedElement : PsiNamedElement
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-open class ImpexPsiNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), ImpexPsiNamedElement {
-
-    override fun setName(newName: String): PsiElement = setName(this, newName)
-
-    override fun getName(): String? {
-        return getKey()
-    }
-
-    fun getKey(): String? {
-        val keyNode = this.node.findChildByType(ImpexTypes.VALUE)
-        if (keyNode != null) {
-            // IMPORTANT: Convert embedded escaped spaces to simple spaces
-            return keyNode.text.replace("\\\\ ", " ")
-        } else {
-            return null
-        }
-    }
-
-    override fun toString() = text ?: super.toString()
-}
-
-
