@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 
-import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -37,7 +36,7 @@ import com.intellij.psi.ResolveResult
 
 object FxSLookupElementFactory {
 
-    fun buildYColumn(addComma: Boolean, parameters: CompletionParameters) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
+    fun buildYColumn(addComma: Boolean) = LookupElementBuilder.create("{}" + if (addComma) "," else "")
         .withPresentableText(" ")
         .withTailText("{...}")
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)

@@ -47,7 +47,7 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
 
 
             SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
-                indentSettings(styleOptions).forEach { (fieldName, group) ->
+                indentSettings().forEach { (fieldName, group) ->
                     consumer.showCustomOption(
                         FxSCodeStyleSettings::class.java,
                         fieldName,
@@ -72,7 +72,7 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         "SPACES_INSIDE_BRACKETS" to styleOptions.SPACES_AROUND_OPERATORS,
     )
 
-    private fun indentSettings(styleOptions: CodeStyleSettingsCustomizableOptions) = mapOf(
+    private fun indentSettings() = mapOf(
         "WRAP_CASE" to "Case Expression",
         "WRAP_CASE_THEN" to "Case Expression",
         "WRAP_CASE_WHEN" to "Case Expression",

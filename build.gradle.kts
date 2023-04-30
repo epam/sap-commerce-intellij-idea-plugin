@@ -74,6 +74,13 @@ tasks {
     runIde {
         jvmArgs = listOf(properties("intellij.jvm.args").get())
         maxHeapSize = "3g"
+        /*
+        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify absolute path to the Application
+        references:
+         - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
+         - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute
+         */
+//        ideDir = file("/Users/<user>/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/231.8770.65/IntelliJ IDEA CE.app/Contents")
     }
 
     patchPluginXml {

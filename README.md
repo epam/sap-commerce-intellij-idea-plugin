@@ -39,7 +39,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
   * if this is a first execution of the `runIde` task
   * or if `clean` was executed, because `clean` task will delete `build/idea-sandbox`
   * once installed, restart IDE
-* By default, IDEA Ultimate version will be started and if it closed Community edition will be started right away
+* By default, IDEA Ultimate version will be started. To be able to start IDEA Community edition `ideDir` has to be configured for `runIde` Gradle task
 
 ### Contributors and Developers
 
