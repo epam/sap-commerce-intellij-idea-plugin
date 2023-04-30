@@ -148,6 +148,7 @@
                 </li>
                 <li><i>Fix:</i> Navigate to Model will filter out non platform classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/358" target="_blank" rel="nofollow">#358</a>)</li>
                 <li><i>Fix:</i> Non-navigable relation ends will be correctly resolved as <code>source</code> or <code>target</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/359" target="_blank" rel="nofollow">#359</a>)</li>
+                <li><i>Fix:</i> NPE for items file validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/360" target="_blank" rel="nofollow">#360</a>)</li>
                 <li><i>Other:</i> Updated to Gradle 8.1 and added GitHub Actions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/337" target="_blank" rel="nofollow">#337</a>)</li>
             </ul>
             <h3>2023.1.4</h3>
