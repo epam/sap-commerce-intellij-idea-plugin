@@ -261,7 +261,9 @@ select_subquery ::= '(' "{{" &(SELECT) subquery_greedy "}}" ')' ( ( AS )? table_
 }
 select_subquery_combined ::= "{{" &(SELECT) subquery_greedy "}}" {
     pin=2
+    recoverWhile=select_subquery_combined_recover
 }
+private select_subquery_combined_recover ::= !(')' | compound_operator)
 private subquery_greedy ::= select_statement {
   recoverWhile=y_subquery_greedy_recover
 }
