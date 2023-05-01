@@ -76,20 +76,22 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
             }
 
             // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
-            val topWhereClause = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
-            if (topWhereClause != null) {
-                return PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
-                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                    ?: emptyList()
-            }
-
+            val topWhereClauseTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
+                ?.let { topWhereClause ->
+                    PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
+                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                }
+                ?: emptyList()
             // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
-            val topResultColumns = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
-            if (topResultColumns != null) {
-                return PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
-                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                    ?: emptyList()
-            }
+            val topResultColumnsTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
+                ?.let { topResultColumns ->
+                    PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
+                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+                }
+                ?: emptyList()
+
+            val tableAliases = topWhereClauseTableAliases + topResultColumnsTableAliases
+            if (tableAliases.isNotEmpty()) return tableAliases
 
             // all other cases, like GROUP BY, HAVING, etc
             return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)

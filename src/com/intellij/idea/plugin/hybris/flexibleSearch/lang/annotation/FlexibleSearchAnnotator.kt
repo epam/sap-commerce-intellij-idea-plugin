@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
@@ -98,7 +99,26 @@ class FlexibleSearchAnnotator : Annotator {
             COLON -> if (element.parent.elementType == COLUMN_SEPARATOR
                 && element.parent.parent.elementType == COLUMN_REF_EXPRESSION
             ) {
-                highlightError(holder, element, message("hybris.editor.annotator.fxs.element.separator.colon.notAllowed"))
+                highlight(
+                    textAttributesKey = null,
+                    holder = holder,
+                    element = element,
+                    highlightSeverity = HighlightSeverity.ERROR,
+                    message = message("hybris.editor.annotator.fxs.element.separator.colon.notAllowed"),
+                    fix = object : BaseIntentionAction() {
+
+                        override fun getFamilyName() = "[y] FlexibleSearch"
+                        override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = (file?.isWritable ?: false) && canModify(file)
+                        override fun getText() = "Replace with '.'"
+
+                        override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+                            if (editor == null || file == null) return
+
+                            (element as? LeafPsiElement)
+                                ?.replaceWithText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
+                        }
+                    }
+                )
             }
 
             STAR,
