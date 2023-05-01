@@ -141,6 +141,7 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.HAVING to KEYWORD_KEYS,
             FlexibleSearchTypes.BETWEEN to KEYWORD_KEYS,
             FlexibleSearchTypes.INTERVAL to KEYWORD_KEYS,
+            FlexibleSearchTypes.LIMIT to KEYWORD_KEYS,
 
             )
     }
