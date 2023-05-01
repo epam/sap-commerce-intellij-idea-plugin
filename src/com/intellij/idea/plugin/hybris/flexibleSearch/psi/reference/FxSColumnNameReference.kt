@@ -89,6 +89,10 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                     }
                 }
                 ?.toTypedArray()
+                ?: findAliasedResultColumn(ref.element, getSuitableSelectCores(ref.element))
+                    ?.filter { resultColumnAlias -> resultColumnAlias.text.trim() == lookingForName }
+                    ?.map { FxSColumnAliasNameResolveResult(it) }
+                    ?.toTypedArray()
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
@@ -121,14 +125,9 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
             val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
-            val selectCores = PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.let { listOf(it) }
-                ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java)
-                    ?.parentOfType<FlexibleSearchSelectStatement>()
-                    ?.selectCoreSelectList
-                ?: emptyList()
+            val selectCores = getSuitableSelectCores(element)
 
-            return selectCores
+            val fromVariants = selectCores
                 .firstNotNullOfOrNull { it.fromClause }
                 ?.fromClauseExprList
                 ?.filterIsInstance<FlexibleSearchFromClauseSelect>()
@@ -143,9 +142,37 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                     }
                 }
                 ?.flatten()
-                ?.toTypedArray()
-                ?: emptyArray()
+                ?: emptyList()
+
+            val resultColumnAliases = findAliasedResultColumn(element, selectCores)
+                ?.map { FxSLookupElementFactory.build(it, false) }
+                ?: emptyList()
+
+            return (fromVariants + resultColumnAliases)
+                .toTypedArray()
         }
+
+        private fun getSuitableSelectCores(element: PsiElement) = PsiTreeUtil
+            .getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+            ?.let { listOf(it) }
+            ?: PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java)
+                ?.parentOfType<FlexibleSearchSelectStatement>()
+                ?.selectCoreSelectList
+            ?: emptyList()
+
+        private fun findAliasedResultColumn(
+            element: PsiElement,
+            selectCores: List<FlexibleSearchSelectCoreSelect>
+        ) = PsiTreeUtil.getParentOfType(
+            element,
+            FlexibleSearchWhereClause::class.java,
+            FlexibleSearchGroupByClause::class.java,
+            FlexibleSearchHavingClause::class.java,
+        )
+            ?.takeIf { selectCores.contains(it.parentOfType<FlexibleSearchSelectCoreSelect>()) }
+            ?.parentOfType<FlexibleSearchSelectCoreSelect>()
+            ?.resultColumns
+            ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchColumnAliasName::class.java) }
     }
 
 }
