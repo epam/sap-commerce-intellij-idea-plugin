@@ -91,7 +91,6 @@ LINE_COMMENT=--[^\r\n]*
   "ELSE"                             { return ELSE; }
   "END"                              { return END; }
   "LIKE"                             { return LIKE; }
-  "GLOB"                             { return GLOB; }
   "REGEXP"                           { return REGEXP; }
   "MATCH"                            { return MATCH; }
   "ESCAPE"                           { return ESCAPE; }

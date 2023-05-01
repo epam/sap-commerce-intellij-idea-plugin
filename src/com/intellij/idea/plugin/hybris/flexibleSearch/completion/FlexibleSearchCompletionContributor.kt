@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSRoo
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -201,6 +202,22 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(psiElement(TABLE_ALIAS_NAME))
                 ),
             FxSKeywordsCompletionProvider(setOf("ON") + KEYWORDS_JOINS)
+        )
+
+        // <AND>, <OR> with WHERE_CLAUSE parent after any EXPRESSION
+        extend(
+            CompletionType.BASIC,
+            fxsBasePattern
+                .withText(DUMMY_IDENTIFIER)
+                .withSuperParent(2, psiElement(WHERE_CLAUSE))
+                .withParent(
+                    psiElement(TokenType.ERROR_ELEMENT)
+                        .afterSiblingSkipping(
+                            psiElement(TokenType.WHITE_SPACE),
+                            psiElement(FlexibleSearchExpression::class.java),
+                        )
+                ),
+            FxSKeywordsCompletionProvider(setOf("AND", "OR"))
         )
     }
 

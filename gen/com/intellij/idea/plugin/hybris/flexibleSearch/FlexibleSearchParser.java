@@ -1336,7 +1336,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SELECT ( DISTINCT | ALL )? result_columns from_clause where_clause? group_by_clause?
+  // SELECT ( DISTINCT | ALL )? result_columns from_clause (where_clause)? (group_by_clause)?
   public static boolean select_core_select(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_core_select")) return false;
     if (!nextTokenIs(b, SELECT)) return false;
@@ -1369,18 +1369,38 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // where_clause?
+  // (where_clause)?
   private static boolean select_core_select_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_core_select_4")) return false;
-    where_clause(b, l + 1);
+    select_core_select_4_0(b, l + 1);
     return true;
   }
 
-  // group_by_clause?
+  // (where_clause)
+  private static boolean select_core_select_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "select_core_select_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = where_clause(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (group_by_clause)?
   private static boolean select_core_select_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "select_core_select_5")) return false;
-    group_by_clause(b, l + 1);
+    select_core_select_5_0(b, l + 1);
     return true;
+  }
+
+  // (group_by_clause)
+  private static boolean select_core_select_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "select_core_select_5_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = group_by_clause(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1683,14 +1703,38 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   // WHERE expression
   public static boolean where_clause(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "where_clause")) return false;
-    if (!nextTokenIs(b, WHERE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, WHERE_CLAUSE, null);
+    Marker m = enter_section_(b, l, _NONE_, WHERE_CLAUSE, "<where clause>");
     r = consumeToken(b, WHERE);
     p = r; // pin = 1
     r = r && expression(b, l + 1, -1);
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, FlexibleSearchParser::where_clause_recover);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(<<eof>> | group_by_literal | order_clause_literal | LIMIT | '}}')
+  static boolean where_clause_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "where_clause_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !where_clause_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // <<eof>> | group_by_literal | order_clause_literal | LIMIT | '}}'
+  private static boolean where_clause_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "where_clause_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = eof(b, l + 1);
+    if (!r) r = group_by_literal(b, l + 1);
+    if (!r) r = order_clause_literal(b, l + 1);
+    if (!r) r = consumeToken(b, LIMIT);
+    if (!r) r = consumeToken(b, RDBRACE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -2008,7 +2052,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // NOT? ( LIKE | GLOB | REGEXP | MATCH )
+  // NOT? ( LIKE | REGEXP | MATCH )
   private static boolean like_expression_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "like_expression_0")) return false;
     boolean r;
@@ -2026,12 +2070,11 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // LIKE | GLOB | REGEXP | MATCH
+  // LIKE | REGEXP | MATCH
   private static boolean like_expression_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "like_expression_0_1")) return false;
     boolean r;
     r = consumeTokenSmart(b, LIKE);
-    if (!r) r = consumeTokenSmart(b, GLOB);
     if (!r) r = consumeTokenSmart(b, REGEXP);
     if (!r) r = consumeTokenSmart(b, MATCH);
     return r;

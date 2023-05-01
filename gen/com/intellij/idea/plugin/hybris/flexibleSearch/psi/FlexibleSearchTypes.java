@@ -122,7 +122,6 @@ public interface FlexibleSearchTypes {
   IElementType EXISTS = new FlexibleSearchTokenType("EXISTS");
   IElementType FROM = new FlexibleSearchTokenType("FROM");
   IElementType FULL = new FlexibleSearchTokenType("FULL");
-  IElementType GLOB = new FlexibleSearchTokenType("GLOB");
   IElementType GROUP = new FlexibleSearchTokenType("GROUP");
   IElementType GT = new FlexibleSearchTokenType(">");
   IElementType GTE = new FlexibleSearchTokenType(">=");
