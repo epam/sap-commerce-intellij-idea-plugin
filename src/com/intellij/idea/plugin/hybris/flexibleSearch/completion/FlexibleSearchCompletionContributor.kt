@@ -62,11 +62,11 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             .andNot(psiElement().inside(PsiComment::class.java))
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
 
-        extend(
-            CompletionType.BASIC,
-            fxsBasePattern,
-            FxSKeywordsCompletionProvider(setOf("_test_"))
-        )
+//        extend(
+//            CompletionType.BASIC,
+//            fxsBasePattern,
+//            FxSKeywordsCompletionProvider(setOf("_test_"))
+//        )
 
         extend(
             CompletionType.BASIC,
