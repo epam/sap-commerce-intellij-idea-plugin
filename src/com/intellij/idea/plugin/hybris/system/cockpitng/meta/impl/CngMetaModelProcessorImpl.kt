@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
@@ -100,6 +99,7 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
             dom,
             processWidgets(psiFile, dom.widgets),
             dom.widgetExtensions
+                .filter { it.widgetId.stringValue?.isNotBlank() ?: false }
                 .map { CngMetaWidgetExtension(psiFile, it, processWidgets(psiFile, it.widgets)) }
         )
     }
@@ -110,7 +110,7 @@ class CngMetaModelProcessorImpl(myProject: Project) : CngMetaModelProcessor {
     ): List<CngMetaWidget> = widgets
         // if ID is null we may need to re-index the project, faced such issue due broken Stubs
         .filter { it.id.exists() }
-        .filter { it.id.stringValue != null && it.id.stringValue!!.isNotBlank() }
+        .filter { it.id.stringValue?.isNotBlank() ?: false }
         .map {
             val subWidgets = if (it.widgets.isNotEmpty()) processWidgets(psiFile, it.widgets)
             else emptyList()
