@@ -65,10 +65,4 @@ public class FlexibleSearchInExpressionImpl extends FlexibleSearchExpressionImpl
     return PsiTreeUtil.getChildrenOfTypeAsList(this, FlexibleSearchSelectSubqueryCombined.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getNamedParameter() {
-    return findChildByType(NAMED_PARAMETER);
-  }
-
 }

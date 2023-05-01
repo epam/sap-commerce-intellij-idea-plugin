@@ -36,7 +36,4 @@ public interface FlexibleSearchInExpression extends FlexibleSearchExpression {
   @NotNull
   List<FlexibleSearchSelectSubqueryCombined> getSelectSubqueryCombinedList();
 
-  @Nullable
-  PsiElement getNamedParameter();
-
 }
