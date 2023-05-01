@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -84,6 +83,26 @@ object FxSLookupElementFactory {
             ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
         }
 
+    fun buildIn() = LookupElementBuilder.create("IN ()")
+        .bold()
+        .withPresentableText("IN")
+        .withTailText(" (...)")
+        .withIcon(HybrisIcons.FXS_KEYWORD)
+        .withInsertHandler { ctx, _ ->
+            val cursorOffset = ctx.editor.caretModel.offset
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        }
+
+    fun buildNotIn() = LookupElementBuilder.create("NOT IN ()")
+        .bold()
+        .withPresentableText("NOT IN")
+        .withTailText(" (...)")
+        .withIcon(HybrisIcons.FXS_KEYWORD)
+        .withInsertHandler { ctx, _ ->
+            val cursorOffset = ctx.editor.caretModel.offset
+            ctx.editor.caretModel.moveToOffset(cursorOffset - 1)
+        }
+
     fun buildYColumnAll(addComma: Boolean) = LookupElementBuilder.create("*" + if (addComma) "," else "")
         .withPresentableText(" ")
         .withTailText(message("hybris.fxs.completion.column.star"))
@@ -104,20 +123,13 @@ object FxSLookupElementFactory {
         null
     }
 
-    fun buildKeywords(keywords: Collection<String>) = keywords
+    fun buildKeywords(keywords: Collection<String>, fxsSettings: FlexibleSearchSettings) = keywords
         .map {
-            LookupElementBuilder.create(it)
+            LookupElementBuilder.create(if (fxsSettings.completion.injectSpaceAfterKeywords) "$it " else it)
+                .withPresentableText(it)
                 .bold()
                 .withCaseSensitivity(false)
-                .withIcon(AllIcons.Nodes.Static)
-        }
-
-    fun buildSymbols(vararg symbols: String) = symbols
-        .map {
-            LookupElementBuilder.create(it)
-                .bold()
-                .withCaseSensitivity(false)
-                .withIcon(AllIcons.Nodes.Function)
+                .withIcon(HybrisIcons.FXS_KEYWORD)
         }
 
     fun buildTableAliases(aliases: Collection<String>) = aliases

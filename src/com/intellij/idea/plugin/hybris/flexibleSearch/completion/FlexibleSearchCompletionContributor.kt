@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSKey
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSRootCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
@@ -61,15 +62,11 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             .andNot(psiElement().inside(PsiComment::class.java))
             .withLanguage(FlexibleSearchLanguage.INSTANCE)
 
-//        extend(
-//            CompletionType.BASIC,
-//            fxsBasePattern,
-//            object : CompletionProvider<CompletionParameters>() {
-//                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-//                    result.addAllElements(FxSLookupElementFactory.buildKeywords(setOf("_test_")))
-//                }
-//            }
-//        )
+        extend(
+            CompletionType.BASIC,
+            fxsBasePattern,
+            FxSKeywordsCompletionProvider(setOf("_test_"))
+        )
 
         extend(
             CompletionType.BASIC,
@@ -87,19 +84,8 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             }
         )
 
-//        extend(
-//            CompletionType.BASIC,
-//            fxsBasePattern
-//                .withText(DUMMY_IDENTIFIER)
-//                .afterLeafSkipping(
-//                    psiElement(TokenType.WHITE_SPACE),
-//                    psiElement().withParent(FlexibleSearchExpression::class.java),
-//                ),
-//            FxSKeywordsCompletionProvider(setOf("AND", "OR"))
-//        )
-
         // suggest table alias after `as`
-        // TODO: if there multiple joins on a same table - add # postfix to the name
+        // TODO: if there are multiple joins on a same table - add # postfix to the name
         extend(
             CompletionType.BASIC,
             fxsBasePattern
@@ -212,17 +198,69 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                 .withSuperParent(2, psiElement(WHERE_CLAUSE))
                 .withParent(
                     psiElement(TokenType.ERROR_ELEMENT)
-                        .afterSiblingSkipping(
+                        .afterLeafSkipping(
                             psiElement(TokenType.WHITE_SPACE),
-                            psiElement(FlexibleSearchExpression::class.java),
+                            psiElement()
+                                .withParent(
+                                    psiElement(FlexibleSearchExpression::class.java)
+                                        .andNot(
+                                            PlatformPatterns.or(
+                                                psiElement(FlexibleSearchColumnRefYExpression::class.java),
+                                                psiElement(FlexibleSearchColumnRefExpression::class.java)
+                                            )
+                                        )
+                                ),
                         )
                 ),
             FxSKeywordsCompletionProvider(setOf("AND", "OR"))
+        )
+
+        // <operations> with WHERE_CLAUSE parent after any EXPRESSION
+        extend(
+            CompletionType.BASIC,
+            fxsBasePattern
+                .withText(DUMMY_IDENTIFIER)
+                .withSuperParent(2, psiElement(WHERE_CLAUSE))
+                .afterLeafSkipping(
+                    psiElement(TokenType.WHITE_SPACE),
+
+                    PlatformPatterns.or(
+                        psiElement(RBRACE)
+                            .withParent(psiElement(COLUMN_REF_Y_EXPRESSION)),
+                        psiElement(IDENTIFIER)
+                            .withParent(psiElement(COLUMN_NAME)),
+                    )
+//                )
+//                .withParent(
+//                    psiElement(TokenType.ERROR_ELEMENT)
+//                        .afterSiblingSkipping(
+//                            psiElement(TokenType.WHITE_SPACE),
+//                            PlatformPatterns.or(
+//                                psiElement(FlexibleSearchColumnRefYExpression::class.java),
+//                                psiElement(FlexibleSearchColumnRefExpression::class.java)
+//                            ),
+//                        )
+                ),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+                    EXPRESSION_OPERATIONS.addCompletionVariants(parameters, context, result)
+
+                    result.addElement(FxSLookupElementFactory.buildIn())
+                    result.addElement(FxSLookupElementFactory.buildNotIn())
+                }
+            }
         )
     }
 
     companion object {
         const val DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
         val KEYWORDS_JOINS = setOf("LEFT JOIN", "LEFT OUTER JOIN", "INNER JOIN", "RIGHT JOIN", "JOIN")
+
+        val EXPRESSION_OPERATIONS = FxSKeywordsCompletionProvider(
+            setOf(
+                "IS NULL", "IS NOT NULL",
+                "=", "==", ">", ">=", "<", "<=", "!=", "<>",
+            )
+        )
     }
 }

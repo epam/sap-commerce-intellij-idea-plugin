@@ -112,7 +112,7 @@ class FlexibleSearchEditorNotificationProvider : EditorNotificationProvider, Dum
         val RESERVED_KEYWORDS = setOf(
             ALL, AND, AS, ASC, BETWEEN, BY,
             CASE, CAST, DESC, DISTINCT, ELSE, END,
-            EXISTS, FROM, FULL, GLOB, GROUP, HAVING, IN,
+            EXISTS, FROM, FULL, GROUP, HAVING, IN,
             INNER, INTERVAL, IS, JOIN, LEFT, LIKE, LIMIT, NOT,
             NULL, OFFSET, ON, OR, ORDER, OUTER, RIGHT,
             SELECT, THEN, UNION, USING, WHEN, WHERE,

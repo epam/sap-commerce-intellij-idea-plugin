@@ -29,6 +29,7 @@ data class FlexibleSearchSettings(
 )
 
 data class FlexibleSearchCompletionSettings(
+    var injectSpaceAfterKeywords: Boolean = true,
     var injectTableAliasSeparator: Boolean = true,
     var suggestTableAliasNames: Boolean = true,
     var injectCommaAfterExpression: Boolean = true,
