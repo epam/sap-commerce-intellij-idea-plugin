@@ -34,7 +34,7 @@ NAMED_PARAMETER=[?][:jletterdigit:]+
 COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 LINE_COMMENT=--[^\r\n]*
 
-%state TRIPLE_BRACE
+%state LOCALIZED_STATE
 
 %%
 <YYINITIAL> {
@@ -43,7 +43,7 @@ LINE_COMMENT=--[^\r\n]*
   "?"                                { return QUESTION_MARK; }
   "!"                                { return EXCLAMATION_MARK; }
   "["                                { return LBRACKET; }
-  "]"                                { return RBRACKET; }
+  "]"                                { yybegin(LOCALIZED_STATE); return RBRACKET; }
   "{"                                { return LBRACE; }
   "}"                                { return RBRACE; }
   "{{"                               { return LDBRACE; }
@@ -74,7 +74,7 @@ LINE_COMMENT=--[^\r\n]*
   "*"                                { return STAR; }
   "~"                                { return TILDE; }
   "<>"                               { return UNEQ; }
-  ":o"                               { return OUTER_JOIN; }
+  //":o"                               { return OUTER_JOIN; }
   "FULL"                             { return FULL; }
   "INTERVAL"                         { return INTERVAL; }
   "AND"                              { return AND; }
@@ -127,6 +127,13 @@ LINE_COMMENT=--[^\r\n]*
   {LINE_COMMENT}                     { return LINE_COMMENT; }
   {NAMED_PARAMETER}                  { return NAMED_PARAMETER; }
   {COMMENT}                          { return COMMENT; }
+
+}
+<LOCALIZED_STATE> {
+  {WHITE_SPACE}                      { return WHITE_SPACE; }
+
+  ":o"                               { yybegin(YYINITIAL); return OUTER_JOIN; }
+  "}"                                { yybegin(YYINITIAL); return RBRACE; }
 
 }
 

@@ -533,27 +533,6 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(AS | table_alias_name | '}}')
-  static boolean from_clause_select_query_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_select_query_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !from_clause_select_query_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // AS | table_alias_name | '}}'
-  private static boolean from_clause_select_query_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_select_query_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, AS);
-    if (!r) r = table_alias_name(b, l + 1);
-    if (!r) r = consumeToken(b, RDBRACE);
-    return r;
-  }
-
-  /* ********************************************************** */
   // table_or_subquery ( join_operator table_or_subquery join_constraint? )*
   public static boolean from_clause_simple(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause_simple")) return false;
@@ -636,64 +615,33 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ( select_subquery_combined compound_operator? )* {
-  // //    recoverWhile=from_clause_subqueries_statement_recover
-  // }
+  // ( select_subquery_combined compound_operator? )*
   static boolean from_clause_subqueries_statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "from_clause_subqueries_statement")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = from_clause_subqueries_statement_0(b, l + 1);
-    r = r && from_clause_subqueries_statement_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ( select_subquery_combined compound_operator? )*
-  private static boolean from_clause_subqueries_statement_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_0")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!from_clause_subqueries_statement_0_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "from_clause_subqueries_statement_0", c)) break;
+      if (!from_clause_subqueries_statement_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "from_clause_subqueries_statement", c)) break;
     }
     return true;
   }
 
   // select_subquery_combined compound_operator?
-  private static boolean from_clause_subqueries_statement_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_0_0")) return false;
+  private static boolean from_clause_subqueries_statement_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = select_subquery_combined(b, l + 1);
-    r = r && from_clause_subqueries_statement_0_0_1(b, l + 1);
+    r = r && from_clause_subqueries_statement_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // compound_operator?
-  private static boolean from_clause_subqueries_statement_0_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_0_0_1")) return false;
+  private static boolean from_clause_subqueries_statement_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_0_1")) return false;
     compound_operator(b, l + 1);
     return true;
-  }
-
-  // {
-  // //    recoverWhile=from_clause_subqueries_statement_recover
-  // }
-  private static boolean from_clause_subqueries_statement_1(PsiBuilder b, int l) {
-    return true;
-  }
-
-  /* ********************************************************** */
-  // !(')')
-  static boolean from_clause_subqueries_statement_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "from_clause_subqueries_statement_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !consumeToken(b, RPAREN);
-    exit_section_(b, l, m, r, false, null);
-    return r;
   }
 
   /* ********************************************************** */
