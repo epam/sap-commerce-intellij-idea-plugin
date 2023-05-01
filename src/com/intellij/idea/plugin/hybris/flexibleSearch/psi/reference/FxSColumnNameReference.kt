@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -124,6 +125,9 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
             val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
+            // only DOT allowed for non [y] columns
+            val nonYColumnAliasSeparator = if (fxsSettings.completion.injectTableAliasSeparator) HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT
+            else ""
 
             val selectCores = getSuitableSelectCores(element)
 
@@ -135,7 +139,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
                 ?.map {
                     val tableAliasName = it.tableAliasName
                     if (tableAliasName != null) {
-                        return@map setOf(FxSLookupElementFactory.build(tableAliasName, addComma, fxsSettings))
+                        return@map setOf(FxSLookupElementFactory.build(tableAliasName, addComma, nonYColumnAliasSeparator))
                     } else {
                         // TODO: not sure what to do if there is no table alias
                         return@map setOf<LookupElementBuilder>()

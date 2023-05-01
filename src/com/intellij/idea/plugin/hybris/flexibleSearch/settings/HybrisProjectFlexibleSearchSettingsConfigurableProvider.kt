@@ -107,7 +107,7 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                             }
                         }
                     )
-                        .label("Default separator")
+                        .label("Default [y] separator")
                         .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
                         .component
                 }
