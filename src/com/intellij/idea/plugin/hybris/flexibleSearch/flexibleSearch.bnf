@@ -46,6 +46,7 @@
   tokens = [
 
         NUMERIC_LITERAL             = 'regexp:(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)'
+        BOOLEAN_LITERAL             = 'regexp:((true)|(false))'
 
         // Manually tweaked in the flex file to handle literals without the closing character.
         SINGLE_QUOTE_STRING_LITERAL = "regexp:X?'(''|[^'])*'"
@@ -95,7 +96,10 @@
         UNEQ                = '<>'
         OUTER_JOIN          = ':o'
 
-        FULL        = 'FULL'
+        FULL                = 'FULL'
+
+        TRUE                = 'TRUE'
+        FALSE               = 'FALSE'
   ]
 }
 
@@ -183,6 +187,7 @@ bind_parameter ::= NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_nam
 private literal_value ::=
   signed_number
   | string_literal // X marks a blob literal
+  | BOOLEAN_LITERAL
   | NULL
 
 select_statement ::= select_core_select (compound_operator select_core_select)* order_clause? limit_clause?

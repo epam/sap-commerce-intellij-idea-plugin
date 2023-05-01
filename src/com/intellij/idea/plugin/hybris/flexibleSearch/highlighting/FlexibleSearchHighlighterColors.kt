@@ -42,6 +42,7 @@ object FlexibleSearchHighlighterColors {
     val FXS_TABLE_ALIAS = key("FXS_TABLE_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val FXS_COLUMN_ALIAS = key("FXS_COLUMN_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val FXS_TABLE_TAIL = key("FXS_TABLE_TAIL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
+    val FXS_BOOLEAN = key("FXS_BOOLEAN", FXS_KEYWORD)
 
     private fun key(
         externalName: @NonNls String,

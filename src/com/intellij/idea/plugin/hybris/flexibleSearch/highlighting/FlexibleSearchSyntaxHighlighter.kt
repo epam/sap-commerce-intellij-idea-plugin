@@ -56,10 +56,13 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val COLUMN_SEPARATOR = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_SEPARATOR)
         private val TABLE_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_TABLE_ALIAS)
         private val COLUMN_ALIAS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN_ALIAS)
+        private val BOOLEAN = pack(FlexibleSearchHighlighterColors.FXS_BOOLEAN)
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
             TokenType.BAD_CHARACTER to BAD_CHARACTER_KEYS,
+
+            FlexibleSearchTypes.BOOLEAN_LITERAL to BOOLEAN,
 
             FlexibleSearchTypes.COLUMN_OUTER_JOIN_NAME to OUTER_JOIN_KEYS,
             FlexibleSearchTypes.OUTER_JOIN to OUTER_JOIN_KEYS,

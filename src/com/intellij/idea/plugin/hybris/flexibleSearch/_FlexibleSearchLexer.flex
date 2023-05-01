@@ -26,6 +26,7 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 WHITE_SPACE=\s+
 
 NUMERIC_LITERAL=(([0-9]+(\.[0-9]*)?|\.[0-9]+)(E(\+|-)?[0-9]+)?)|(0x[0-9a-f]+)
+BOOLEAN_LITERAL=((true)|(false))
 SINGLE_QUOTE_STRING_LITERAL=X?'(''|[^'])*'
 DOUBLE_QUOTE_STRING_LITERAL=X?\"(\"\"|[^\"])*\"
 BACKTICK_LITERAL=`(``|[^`])*`
@@ -119,6 +120,7 @@ LINE_COMMENT=--[^\r\n]*
   "DESC"                             { return DESC; }
   "UNION"                            { return UNION; }
 
+  {BOOLEAN_LITERAL}                  { return BOOLEAN_LITERAL; }
   {NUMERIC_LITERAL}                  { return NUMERIC_LITERAL; }
   {SINGLE_QUOTE_STRING_LITERAL}      { return SINGLE_QUOTE_STRING_LITERAL; }
   {DOUBLE_QUOTE_STRING_LITERAL}      { return DOUBLE_QUOTE_STRING_LITERAL; }

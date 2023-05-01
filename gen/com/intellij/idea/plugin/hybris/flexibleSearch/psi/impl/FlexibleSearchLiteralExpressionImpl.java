@@ -61,6 +61,12 @@ public class FlexibleSearchLiteralExpressionImpl extends FlexibleSearchExpressio
 
   @Override
   @Nullable
+  public PsiElement getBooleanLiteral() {
+    return findChildByType(BOOLEAN_LITERAL);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getDoubleQuoteStringLiteral() {
     return findChildByType(DOUBLE_QUOTE_STRING_LITERAL);
   }

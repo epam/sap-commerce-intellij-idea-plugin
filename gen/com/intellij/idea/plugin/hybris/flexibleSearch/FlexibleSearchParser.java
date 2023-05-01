@@ -1083,12 +1083,14 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // signed_number
   //   | string_literal // X marks a blob literal
+  //   | BOOLEAN_LITERAL
   //   | NULL
   static boolean literal_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal_value")) return false;
     boolean r;
     r = signed_number(b, l + 1);
     if (!r) r = string_literal(b, l + 1);
+    if (!r) r = consumeToken(b, BOOLEAN_LITERAL);
     if (!r) r = consumeToken(b, NULL);
     return r;
   }

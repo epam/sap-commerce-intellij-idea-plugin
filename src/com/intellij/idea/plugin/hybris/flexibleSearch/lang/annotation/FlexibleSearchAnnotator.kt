@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 
+import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
@@ -28,11 +30,15 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolv
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.TokenType
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
@@ -65,6 +71,29 @@ class FlexibleSearchAnnotator : Annotator {
                 DEFINED_TABLE_NAME -> highlight(DEFINED_TABLE_NAME, holder, element)
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
             }
+
+            BOOLEAN_LITERAL -> highlight(
+                textAttributesKey = null,
+                holder = holder,
+                element = element,
+                highlightSeverity = HighlightSeverity.WARNING,
+                message = "Since not all databases recognize true as a query parameter, 0 and 1 should be used instead of false and true.",
+                fix = object : BaseIntentionAction() {
+
+                    val newValue = if (element.text.trim().equals("true", true)) 1 else 0
+
+                    override fun getFamilyName() = "[y] FlexibleSearch"
+                    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = (file?.isWritable ?: false) && canModify(file)
+                    override fun getText() = "Replace with $newValue"
+
+                    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+                        if (editor == null || file == null) return
+
+                        (element as? LeafPsiElement)
+                            ?.replaceWithText(newValue.toString())
+                    }
+                }
+            )
 
             COLON -> if (element.parent.elementType == COLUMN_SEPARATOR
                 && element.parent.parent.elementType == COLUMN_REF_EXPRESSION
@@ -143,14 +172,7 @@ class FlexibleSearchAnnotator : Annotator {
         if (resolved) {
             highlight(tokenType, holder, element)
         } else {
-            annotation(
-                message(messageKey, element.text),
-                holder,
-                HighlightSeverity.ERROR
-            )
-                .range(element.textRange)
-                .highlightType(ProblemHighlightType.ERROR)
-                .create()
+            highlightError(holder, element, message(messageKey, element.text))
         }
     }
 
@@ -160,24 +182,27 @@ class FlexibleSearchAnnotator : Annotator {
         element: PsiElement,
         highlightSeverity: HighlightSeverity = HighlightSeverity.TEXT_ATTRIBUTES,
         range: TextRange = element.textRange,
-        message: String? = null
+        message: String? = null,
+        fix: IntentionAction? = null,
     ) = highlighter
         .getTokenHighlights(tokenType)
         .firstOrNull()
-        ?.let { highlight(it, holder, element, highlightSeverity, range, message) }
+        ?.let { highlight(it, holder, element, highlightSeverity, range, message, fix) }
 
     private fun highlight(
-        textAttributesKey: TextAttributesKey,
+        textAttributesKey: TextAttributesKey?,
         holder: AnnotationHolder,
         element: PsiElement,
         highlightSeverity: HighlightSeverity = HighlightSeverity.TEXT_ATTRIBUTES,
         range: TextRange = element.textRange,
-        message: String? = null
+        message: String? = null,
+        fix: IntentionAction? = null,
     ) {
-        annotation(message, holder, highlightSeverity)
+        val builder = annotation(message, holder, highlightSeverity)
             .range(range)
-            .textAttributes(textAttributesKey)
-            .create()
+        textAttributesKey?.let { builder.textAttributes(it) }
+        fix?.let { builder.withFix(it) }
+        builder.create()
     }
 
     private fun annotation(

@@ -34,6 +34,9 @@ public interface FlexibleSearchLiteralExpression extends FlexibleSearchExpressio
   FlexibleSearchSignedNumber getSignedNumber();
 
   @Nullable
+  PsiElement getBooleanLiteral();
+
+  @Nullable
   PsiElement getDoubleQuoteStringLiteral();
 
   @Nullable
