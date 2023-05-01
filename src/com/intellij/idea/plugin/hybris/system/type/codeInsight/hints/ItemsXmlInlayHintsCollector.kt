@@ -101,8 +101,8 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         return null
     }
 
-    private fun inlayPresentation(icon: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
-        val icon = factory.icon(icon)
+    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
+        val icon = factory.icon(i)
         val inset = factory.inset(icon, right = 5, top = 3)
         val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
 

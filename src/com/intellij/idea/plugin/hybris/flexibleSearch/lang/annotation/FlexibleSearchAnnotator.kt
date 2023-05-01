@@ -66,6 +66,12 @@ class FlexibleSearchAnnotator : Annotator {
                 EXT_PARAMETER_NAME -> highlight(EXT_PARAMETER_NAME, holder, element)
             }
 
+            COLON -> if (element.parent.elementType == COLUMN_SEPARATOR
+                && element.parent.parent.elementType == COLUMN_REF_EXPRESSION
+            ) {
+                highlightError(holder, element, message("hybris.editor.annotator.fxs.element.separator.colon.notAllowed"))
+            }
+
             STAR,
             EXCLAMATION_MARK -> when (element.parent.elementType) {
                 DEFINED_TABLE_NAME -> highlight(FlexibleSearchHighlighterColors.FXS_TABLE_TAIL, holder, element)
