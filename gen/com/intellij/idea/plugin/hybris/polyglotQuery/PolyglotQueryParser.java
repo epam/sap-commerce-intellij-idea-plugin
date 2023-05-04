@@ -119,7 +119,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
+  // !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
   static boolean attribute_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover")) return false;
     boolean r;
@@ -129,13 +129,14 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC
+  // <<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC
   private static boolean attribute_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = eof(b, l + 1);
     if (!r) r = consumeToken(b, AMP);
+    if (!r) r = consumeToken(b, COMMA);
     if (!r) r = cmp_operator(b, l + 1);
     if (!r) r = null_operator(b, l + 1);
     if (!r) r = consumeToken(b, RPAREN);
@@ -449,7 +450,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "order_by_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ",");
+    r = consumeToken(b, COMMA);
     r = r && order_key(b, l + 1);
     exit_section_(b, m, null, r);
     return r;

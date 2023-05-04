@@ -35,6 +35,7 @@ COMMENT="/*" ( ([^"*"]|[\r\n])* ("*"+ [^"*""/"] )? )* ("*" | "*"+"/")?
 
   "?"                 { return QUESTION_MARK; }
   "."                 { return DOT; }
+  ","                 { return COMMA; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
   "{"                 { return LBRACE; }

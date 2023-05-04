@@ -96,7 +96,8 @@
             <ul>
                 <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/374" target="_blank" rel="nofollow">#374</a>,
-                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/375" target="_blank" rel="nofollow">#375</a>)
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/375" target="_blank" rel="nofollow">#375</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/376" target="_blank" rel="nofollow">#376</a>)
                     <ul>
                         <li>Integration with Type System (references, code completion)</li>
                     </ul>
