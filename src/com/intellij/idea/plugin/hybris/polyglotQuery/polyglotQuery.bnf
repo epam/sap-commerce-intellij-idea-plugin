@@ -8,6 +8,7 @@
     psiImplClassSuffix="Impl"
     psiPackage="com.intellij.idea.plugin.hybris.polyglotQuery.psi"
     psiImplPackage="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl"
+    psiImplUtilClass="com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryPsiUtil"
 
     elementTypeHolderClass="com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes"
     elementTypeClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryElementType"
@@ -21,6 +22,7 @@
     implements("order_by")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 
     generate=[java='17']
+    generateTokenAccessors(".*_name")=false
 
     tokens = [
         IDENTIFIER      = 'regexp:([:letter:])([:letter:]|[:digit:]|_)*'
@@ -47,48 +49,62 @@
 
 root ::= statement
 private statement ::= (query)*
+
 //pin -> if GET is written in file -> psi element is pinned as MVP of a group(group == instance of java class)
 query ::= get_query {
     recoverWhile=query_recover
 }
-
 private query_recover ::= !(<<eof>> | GET)
-
 private get_query ::= GET type_key where_clause? order_by? {pin=1}
 
-type_key ::= '{' IDENTIFIER '}' {
+type_key ::= '{' type_key_name '}' {
     pin=1
     recoverWhile=type_key_recover
+    methods=[getTableName]
 }
 private type_key_recover::= !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
+
 order_by ::= order_clause_literal order_key ( ',' order_key )* {
     pin=1
     recoverWhile=order_by_clause_recover
 }
 private order_by_clause_recover::= !(<<eof>> | GET)
+
 order_key ::= attribute_key (ASC | DESC)?
 private order_clause_literal ::= ORDER BY
+
 where_clause ::= WHERE expr_or {
     pin=1
     recoverWhile=where_clause_recover
 }
 private where_clause_recover ::= !(<<eof>> | order_clause_literal | GET)
+
 expr_or ::= expr_and ( OR expr_and )*
 expr_and ::= expr_atom ( AND expr_atom )*
 expr_atom ::=
     attribute_key cmp_operator bind_parameter
     | attribute_key null_operator
     | '(' expr_or ')'
+
 bind_parameter ::= '?' IDENTIFIER ('.' IDENTIFIER)* {pin=1}
 null_operator ::= IS (NOT)? NULL {pin=1}
 cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
+
 attribute_key ::= '{' IDENTIFIER ( localized_name )? '}' {
     pin=1
     recoverWhile=attribute_key_recover
 }
 private attribute_key_recover::= !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
+
 localized_name ::= '[' IDENTIFIER ']' {
     pin=1
     recoverWhile=localized_name_recover
 }
 private localized_name_recover::= !('}')
+
+type_key_name ::= IDENTIFIER {
+    recoverWhile=type_key_name_recover
+    mixin="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.PolyglotQueryTypeKeyNameMixin"
+    methods=[getTableName]
+}
+private type_key_name_recover ::= !('}')

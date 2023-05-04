@@ -47,10 +47,4 @@ public class PolyglotQueryLocalizedNameImpl extends ASTWrapperPsiElement impleme
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
-  }
-
 }

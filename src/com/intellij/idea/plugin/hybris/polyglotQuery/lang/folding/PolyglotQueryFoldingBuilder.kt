@@ -55,7 +55,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
         PolyglotQueryTypes.COMMENT -> "/*...*/"
 
-        PolyglotQueryTypes.TYPE_KEY -> node.findChildByType(PolyglotQueryTypes.IDENTIFIER)
+        PolyglotQueryTypes.TYPE_KEY -> node.findChildByType(PolyglotQueryTypes.TYPE_KEY_NAME)
             ?.text
             ?.trim()
 

@@ -49,8 +49,14 @@ public class PolyglotQueryTypeKeyImpl extends ASTWrapperPsiElement implements Po
 
   @Override
   @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+  public PolyglotQueryTypeKeyName getTypeKeyName() {
+    return findChildByClass(PolyglotQueryTypeKeyName.class);
+  }
+
+  @Override
+  @Nullable
+  public String getTableName() {
+    return PolyglotQueryPsiUtil.getTableName(this);
   }
 
 }

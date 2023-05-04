@@ -76,6 +76,10 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
     visitFoldablePsiElement(o);
   }
 
+  public void visitTypeKeyName(@NotNull PolyglotQueryTypeKeyName o) {
+    visitPsiElement(o);
+  }
+
   public void visitWhereClause(@NotNull PolyglotQueryWhereClause o) {
     visitFoldablePsiElement(o);
   }

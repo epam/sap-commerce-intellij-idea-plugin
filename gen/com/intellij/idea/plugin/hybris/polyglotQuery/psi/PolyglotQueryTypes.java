@@ -42,6 +42,7 @@ public interface PolyglotQueryTypes {
   IElementType ORDER_KEY = new PolyglotQueryElementType("ORDER_KEY");
   IElementType QUERY = new PolyglotQueryElementType("QUERY");
   IElementType TYPE_KEY = new PolyglotQueryElementType("TYPE_KEY");
+  IElementType TYPE_KEY_NAME = new PolyglotQueryElementType("TYPE_KEY_NAME");
   IElementType WHERE_CLAUSE = new PolyglotQueryElementType("WHERE_CLAUSE");
 
   IElementType AMP = new PolyglotQueryTokenType("&");
@@ -113,6 +114,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == TYPE_KEY) {
         return new PolyglotQueryTypeKeyImpl(node);
+      }
+      else if (type == TYPE_KEY_NAME) {
+        return new PolyglotQueryTypeKeyNameImpl(node);
       }
       else if (type == WHERE_CLAUSE) {
         return new PolyglotQueryWhereClauseImpl(node);

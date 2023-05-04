@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -19,19 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
+@file:JvmName("PolyglotQueryPsiUtil")
 
-public interface PolyglotQueryTypeKey extends FoldablePsiElement {
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi
 
-  @Nullable
-  PolyglotQueryTypeKeyName getTypeKeyName();
+import com.intellij.psi.util.childrenOfType
 
-  @Nullable
-  String getTableName();
+fun getTableName(element: PolyglotQueryTypeKey): String? = element.childrenOfType<PolyglotQueryTypeKeyName>()
+    .firstOrNull()
+    ?.text
 
-}
+fun getTableName(element: PolyglotQueryTypeKeyName): String = element.firstChild.text

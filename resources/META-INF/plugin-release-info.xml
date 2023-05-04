@@ -94,14 +94,27 @@
         <![CDATA[
             <h3>2023.1.6</h3>
             <ul>
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>)
+                    <ul>
+                        <li>Integration with Type System (references, code completion)</li>
+                    </ul>
+                </li>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
                 <li><i>Fix:</i> Adjusted Polyglot language Parser (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/372" target="_blank" rel="nofollow">#372</a>)</li>
             </ul>
             <h3>2023.1.5</h3>
             <ul>
-                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/356" target="_blank" rel="nofollow">#356</a>,
+                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/353" target="_blank" rel="nofollow">#353</a>)
                     <ul>
-                        <li><i>Feature:</i> Create new file via context menu (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/353" target="_blank" rel="nofollow">#353</a>)</li>
+                        <li>Syntax highlighting</li>
+                        <li>Single and multi-line comments</li>
+                        <li>Several <code>GET</code> statements per file</li>
+                        <li>Braces matcher - opening and closing braces will be highlighted</li>
+                        <li>Custom configurable Color Schema</li>
+                        <li>Elements Folding</li>
+                        <li>Create new file via context menu</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> <strong>FlexibleSearch 2.0</strong> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,

@@ -19,19 +19,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*;
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public interface PolyglotQueryTypeKey extends FoldablePsiElement {
+public class PolyglotQueryTypeKeyNameImpl extends PolyglotQueryTypeKeyNameMixin implements PolyglotQueryTypeKeyName {
 
-  @Nullable
-  PolyglotQueryTypeKeyName getTypeKeyName();
+  public PolyglotQueryTypeKeyNameImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-  @Nullable
-  String getTableName();
+  public void accept(@NotNull PolyglotQueryVisitor visitor) {
+    visitor.visitTypeKeyName(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof PolyglotQueryVisitor) accept((PolyglotQueryVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public String getTableName() {
+    return PolyglotQueryPsiUtil.getTableName(this);
+  }
 
 }

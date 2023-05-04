@@ -524,15 +524,39 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' IDENTIFIER '}'
+  // '{' type_key_name '}'
   public static boolean type_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, TYPE_KEY, "<type key>");
-    r = consumeTokens(b, 1, LBRACE, IDENTIFIER, RBRACE);
+    r = consumeToken(b, LBRACE);
     p = r; // pin = 1
+    r = r && report_error_(b, type_key_name(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
     exit_section_(b, l, m, r, p, PolyglotQueryParser::type_key_recover);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean type_key_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TYPE_KEY_NAME, "<type key name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::type_key_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean type_key_name_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_key_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */

@@ -24,14 +24,10 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
-public interface PolyglotQueryTypeKey extends FoldablePsiElement {
+public interface PolyglotQueryTypeKeyName extends PsiElement {
 
-  @Nullable
-  PolyglotQueryTypeKeyName getTypeKeyName();
-
-  @Nullable
+  @NotNull
   String getTableName();
 
 }

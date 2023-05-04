@@ -40,7 +40,7 @@ class PolyglotQueryAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
             IDENTIFIER -> when (element.parent.elementType) {
-                TYPE_KEY -> highlight(TYPE_KEY, holder, element)
+                TYPE_KEY_NAME -> highlight(TYPE_KEY, holder, element)
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
                 LOCALIZED_NAME -> highlight(LOCALIZED_NAME, holder, element)
                 ATTRIBUTE_KEY -> highlight(ATTRIBUTE_KEY, holder, element)
