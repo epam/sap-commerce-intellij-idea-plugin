@@ -104,6 +104,7 @@ private localized_recover::= !('}')
 
 localized_name ::= IDENTIFIER {
     recoverWhile=localized_name_recover
+    mixin="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.PolyglotQueryLocalizedNameMixin"
 }
 private localized_name_recover ::= !(']')
 

@@ -196,11 +196,4 @@ object FxSLookupElementFactory {
         .withPresentableText(yColumnName.text.trim())
         .withIcon(HybrisIcons.HYBRIS)
 
-    fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
-        .withTypeText(messageFallback("hybris.fxs.completion.column.language.${isoCode.lowercase()}", "")
-            ?.let { " $it" }
-        )
-        .withCaseSensitivity(false)
-        .withIcon(HybrisIcons.LOCALIZED)
-
 }

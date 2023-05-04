@@ -76,7 +76,7 @@ internal class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttrib
     }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryAttributeKeyNameReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryAttributeKeyNameReference>>("HYBRIS_PGQ_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryAttributeKeyNameReference> { ref ->
             val featureName = FxSPsiUtils.getColumnName(ref.element.text)

@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public class PolyglotQueryLocalizedNameImpl extends ASTWrapperPsiElement implements PolyglotQueryLocalizedName {
+public class PolyglotQueryLocalizedNameImpl extends PolyglotQueryLocalizedNameMixin implements PolyglotQueryLocalizedName {
 
   public PolyglotQueryLocalizedNameImpl(@NotNull ASTNode node) {
     super(node);

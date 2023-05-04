@@ -49,7 +49,7 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryDefinedTableReference>>("HYBRIS_TS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryDefinedTableReference>>("HYBRIS_PGQ_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryDefinedTableReference> { ref ->
             val lookingForName = ref.element.typeName

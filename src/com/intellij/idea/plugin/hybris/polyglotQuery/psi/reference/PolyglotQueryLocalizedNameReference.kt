@@ -16,12 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 
 import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryLocalizedName
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
@@ -31,7 +33,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 
 
-class FxSColumnLocalizedNameReference(owner: FlexibleSearchColumnLocalizedName) : PsiReferenceBase.Poly<FlexibleSearchColumnLocalizedName>(owner) {
+class PolyglotQueryLocalizedNameReference(owner: PolyglotQueryLocalizedName) : PsiReferenceBase.Poly<PolyglotQueryLocalizedName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val language = element.text.trim()
@@ -48,9 +50,9 @@ class FxSColumnLocalizedNameReference(owner: FlexibleSearchColumnLocalizedName) 
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSColumnLocalizedNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryLocalizedNameReference>>("HYBRIS_PGQ_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSColumnLocalizedNameReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryLocalizedNameReference> { ref ->
             val result: Array<ResolveResult> = ProjectPropertiesUtils.findMacroProperty(ref.element.project, HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement
