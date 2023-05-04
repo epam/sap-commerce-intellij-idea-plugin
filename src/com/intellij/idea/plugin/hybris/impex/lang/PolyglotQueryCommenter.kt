@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.commenter
+package com.intellij.idea.plugin.hybris.impex.lang
 
 import com.intellij.lang.Commenter
 
-class FlexibleSearchCommenter : Commenter {
+class PolyglotQueryCommenter : Commenter {
 
     override fun getLineCommentPrefix() = "-- "
     override fun getBlockCommentPrefix() = "/*"

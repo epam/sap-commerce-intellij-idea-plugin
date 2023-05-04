@@ -51,6 +51,7 @@ public interface PolyglotQueryTypes {
   IElementType AND = new PolyglotQueryTokenType("AND");
   IElementType ASC = new PolyglotQueryTokenType("ASC");
   IElementType BY = new PolyglotQueryTokenType("BY");
+  IElementType COMMA = new PolyglotQueryTokenType(",");
   IElementType COMMENT = new PolyglotQueryTokenType("COMMENT");
   IElementType DESC = new PolyglotQueryTokenType("DESC");
   IElementType DOT = new PolyglotQueryTokenType(".");

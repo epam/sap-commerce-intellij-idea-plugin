@@ -23,8 +23,11 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
 
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
 
-        <lang.commenter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.commenter.PolyglotQueryCommenter"/>
+        <lang.formatter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
+        <lang.commenter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.PolyglotQueryCommenter"/>
         <lang.braceMatcher language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
         <lang.foldingBuilder language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 

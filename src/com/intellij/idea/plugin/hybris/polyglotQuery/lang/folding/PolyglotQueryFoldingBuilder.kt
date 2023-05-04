@@ -63,9 +63,9 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
         PolyglotQueryTypes.WHERE_CLAUSE -> "WHERE ..."
 
         PolyglotQueryTypes.ATTRIBUTE_KEY -> {
-            val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
+            val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
                 ?.let {
-                    it.findChildByType(PolyglotQueryTypes.IDENTIFIER)
+                    it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
                         ?.text
                         ?.trim()
                         ?: "?"
@@ -73,7 +73,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?.let { ":$it" }
                 ?: ""
 
-            val attribute = node.findChildByType(PolyglotQueryTypes.IDENTIFIER)
+            val attribute = node.findChildByType(PolyglotQueryTypes.ATTRIBUTE_KEY_NAME)
                 ?.text
                 ?.trim()
                 ?: "?"
