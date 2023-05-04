@@ -19,9 +19,8 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation
 
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
@@ -46,13 +45,46 @@ class PolyglotQueryAnnotator : Annotator {
         when (element.elementType) {
             IDENTIFIER -> when (element.parent.elementType) {
                 TYPE_KEY_NAME -> highlightReference(TYPE_KEY_NAME, holder, element, "hybris.inspections.pgq.unresolved.type.key")
-                BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
-                LOCALIZED_NAME -> highlight(LOCALIZED_NAME, holder, element)
                 ATTRIBUTE_KEY_NAME -> highlightReference(ATTRIBUTE_KEY_NAME, holder, element, "hybris.inspections.pgq.unresolved.attribute.key")
+                BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
+                LOCALIZED_NAME -> {
+                    val language = element.text.trim()
+                    val supportedLanguages = PropertiesService.getInstance(element.project).getLanguages()
+                    if (!supportedLanguages.contains(language)) {
+                        highlightError(
+                            holder, element,
+                            message(
+                                "hybris.inspections.language.unsupported",
+                                language,
+                                supportedLanguages.joinToString()
+                            )
+                        )
+                    } else {
+                        highlight(LOCALIZED_NAME, holder, element)
+                    }
+                }
             }
 
             QUESTION_MARK -> when (element.parent.elementType) {
                 BIND_PARAMETER -> highlight(BIND_PARAMETER, holder, element)
+            }
+
+            LOCALIZED -> {
+                element.parent.childrenOfType<PolyglotQueryAttributeKeyName>()
+                    .firstOrNull()
+                    ?.let { attribute ->
+                        val featureName = attribute.text.trim()
+                        (attribute.reference as? PsiReferenceBase.Poly<*>)
+                            ?.multiResolve(false)
+                            ?.firstOrNull()
+                            ?.takeIf { !TSResolveResultUtil.isLocalized(it, featureName) }
+                            ?.let {
+                                highlightError(
+                                    holder, element,
+                                    message("hybris.inspections.language.unexpected", featureName)
+                                )
+                            }
+                    }
             }
         }
     }

@@ -104,7 +104,7 @@ class FlexibleSearchAnnotator : Annotator {
                     holder = holder,
                     element = element,
                     highlightSeverity = HighlightSeverity.ERROR,
-                    message = message("hybris.editor.annotator.fxs.element.separator.colon.notAllowed"),
+                    message = message("hybris.inspections.fxs.element.separator.colon.notAllowed"),
                     fix = object : BaseIntentionAction() {
 
                         override fun getFamilyName() = "[y] FlexibleSearch"
@@ -133,7 +133,7 @@ class FlexibleSearchAnnotator : Annotator {
                     highlightError(
                         holder, element,
                         message(
-                            "hybris.editor.annotator.fxs.element.language.unsupported",
+                            "hybris.inspections.language.unsupported",
                             language,
                             supportedLanguages.joinToString()
                         )
@@ -151,7 +151,7 @@ class FlexibleSearchAnnotator : Annotator {
                             ?.let {
                                 highlightError(
                                     holder, element,
-                                    message("hybris.editor.annotator.fxs.element.language.unexpected", featureName)
+                                    message("hybris.inspections.language.unexpected", featureName)
                                 )
                             }
                     }
@@ -161,7 +161,7 @@ class FlexibleSearchAnnotator : Annotator {
                 COLUMN_LOCALIZED_NAME ->
                     highlightError(
                         holder, element,
-                        message("hybris.editor.annotator.fxs.element.language.missing")
+                        message("hybris.inspections.fxs.element.language.missing")
                     )
             }
         }
