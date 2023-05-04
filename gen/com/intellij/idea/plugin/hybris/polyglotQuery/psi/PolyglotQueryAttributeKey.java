@@ -29,9 +29,9 @@ import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 public interface PolyglotQueryAttributeKey extends FoldablePsiElement {
 
   @Nullable
-  PolyglotQueryLocalizedName getLocalizedName();
+  PolyglotQueryAttributeKeyName getAttributeKeyName();
 
   @Nullable
-  PsiElement getIdentifier();
+  PolyglotQueryLocalized getLocalized();
 
 }

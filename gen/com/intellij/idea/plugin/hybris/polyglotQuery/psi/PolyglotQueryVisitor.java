@@ -32,6 +32,10 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
     visitFoldablePsiElement(o);
   }
 
+  public void visitAttributeKeyName(@NotNull PolyglotQueryAttributeKeyName o) {
+    visitPsiElement(o);
+  }
+
   public void visitBindParameter(@NotNull PolyglotQueryBindParameter o) {
     visitPsiElement(o);
   }
@@ -49,6 +53,10 @@ public class PolyglotQueryVisitor extends PsiElementVisitor {
   }
 
   public void visitExprOr(@NotNull PolyglotQueryExprOr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLocalized(@NotNull PolyglotQueryLocalized o) {
     visitPsiElement(o);
   }
 

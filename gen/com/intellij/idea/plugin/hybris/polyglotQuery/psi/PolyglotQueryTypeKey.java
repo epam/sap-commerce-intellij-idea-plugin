@@ -32,6 +32,6 @@ public interface PolyglotQueryTypeKey extends FoldablePsiElement {
   PolyglotQueryTypeKeyName getTypeKeyName();
 
   @Nullable
-  String getTableName();
+  String getTypeName();
 
 }

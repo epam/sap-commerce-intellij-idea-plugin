@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypeKeyName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -37,7 +35,7 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
-        val type = element.tableName
+        val type = element.typeName
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
@@ -45,31 +43,16 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants(): Array<out Any> {
-        val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
-        val suffixes = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
-            .takeIf { it.isBlank() && aliasText.isNotBlank() }
-            ?.let {
-                arrayOf(
-                    FxSLookupElementFactory.buildTablePostfixExclamationMark(aliasText),
-                    FxSLookupElementFactory.buildTablePostfixStar(aliasText)
-                )
-            }
-            ?: emptyArray()
-
-        val types = TSCompletionService.getInstance(element.project)
-            .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
-            .toTypedArray()
-
-        return suffixes + types
-    }
+    override fun getVariants() = TSCompletionService.getInstance(element.project)
+        .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
+        .toTypedArray()
 
     companion object {
         val CACHE_KEY =
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryDefinedTableReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryDefinedTableReference> { ref ->
-            val lookingForName = ref.element.tableName
+            val lookingForName = ref.element.typeName
             val modelAccess = TSMetaModelAccess.getInstance(ref.element.project)
 
             val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)

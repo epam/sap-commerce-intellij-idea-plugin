@@ -30,14 +30,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*;
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public class PolyglotQueryTypeKeyNameImpl extends PolyglotQueryTypeKeyNameMixin implements PolyglotQueryTypeKeyName {
+public class PolyglotQueryAttributeKeyNameImpl extends PolyglotQueryAttributeKeyNameMixin implements PolyglotQueryAttributeKeyName {
 
-  public PolyglotQueryTypeKeyNameImpl(@NotNull ASTNode node) {
+  public PolyglotQueryAttributeKeyNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PolyglotQueryVisitor visitor) {
-    visitor.visitTypeKeyName(this);
+    visitor.visitAttributeKeyName(this);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class PolyglotQueryTypeKeyNameImpl extends PolyglotQueryTypeKeyNameMixin 
   }
 
   @Override
-  @NotNull
+  @Nullable
   public String getTypeName() {
     return PolyglotQueryPsiUtil.getTypeName(this);
   }

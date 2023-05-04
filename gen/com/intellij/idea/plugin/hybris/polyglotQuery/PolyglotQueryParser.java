@@ -56,33 +56,65 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' IDENTIFIER ( localized_name )? '}'
+  // '{' attribute_key_name ( localized )? '}'
   public static boolean attribute_key(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY, "<attribute key>");
-    r = consumeTokens(b, 1, LBRACE, IDENTIFIER);
+    r = consumeToken(b, LBRACE);
     p = r; // pin = 1
-    r = r && report_error_(b, attribute_key_2(b, l + 1));
+    r = r && report_error_(b, attribute_key_name(b, l + 1));
+    r = p && report_error_(b, attribute_key_2(b, l + 1)) && r;
     r = p && consumeToken(b, RBRACE) && r;
     exit_section_(b, l, m, r, p, PolyglotQueryParser::attribute_key_recover);
     return r || p;
   }
 
-  // ( localized_name )?
+  // ( localized )?
   private static boolean attribute_key_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2")) return false;
     attribute_key_2_0(b, l + 1);
     return true;
   }
 
-  // ( localized_name )
+  // ( localized )
   private static boolean attribute_key_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = localized_name(b, l + 1);
+    r = localized(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean attribute_key_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_KEY_NAME, "<attribute key name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::attribute_key_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('[' | '}')
+  static boolean attribute_key_name_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !attribute_key_name_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '[' | '}'
+  private static boolean attribute_key_name_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_key_name_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, LBRACKET);
+    if (!r) r = consumeToken(b, RBRACE);
     return r;
   }
 
@@ -319,21 +351,45 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '[' IDENTIFIER ']'
-  public static boolean localized_name(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "localized_name")) return false;
+  // '[' localized_name ']'
+  public static boolean localized(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, LOCALIZED_NAME, "<localized name>");
-    r = consumeTokens(b, 1, LBRACKET, IDENTIFIER, RBRACKET);
+    Marker m = enter_section_(b, l, _NONE_, LOCALIZED, "<localized>");
+    r = consumeToken(b, LBRACKET);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, PolyglotQueryParser::localized_name_recover);
+    r = r && report_error_(b, localized_name(b, l + 1));
+    r = p && consumeToken(b, RBRACKET) && r;
+    exit_section_(b, l, m, r, p, PolyglotQueryParser::localized_recover);
     return r || p;
   }
 
   /* ********************************************************** */
-  // !('}')
+  // IDENTIFIER
+  public static boolean localized_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized_name")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, LOCALIZED_NAME, "<localized name>");
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, PolyglotQueryParser::localized_name_recover);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(']')
   static boolean localized_name_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "localized_name_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, RBRACKET);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !('}')
+  static boolean localized_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "localized_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
     r = !consumeToken(b, RBRACE);

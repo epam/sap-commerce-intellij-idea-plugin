@@ -49,14 +49,14 @@ public class PolyglotQueryAttributeKeyImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @Nullable
-  public PolyglotQueryLocalizedName getLocalizedName() {
-    return findChildByClass(PolyglotQueryLocalizedName.class);
+  public PolyglotQueryAttributeKeyName getAttributeKeyName() {
+    return findChildByClass(PolyglotQueryAttributeKeyName.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+  public PolyglotQueryLocalized getLocalized() {
+    return findChildByClass(PolyglotQueryLocalized.class);
   }
 
 }

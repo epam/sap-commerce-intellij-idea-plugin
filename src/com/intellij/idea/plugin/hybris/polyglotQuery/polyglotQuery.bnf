@@ -60,7 +60,7 @@ private get_query ::= GET type_key where_clause? order_by? {pin=1}
 type_key ::= '{' type_key_name '}' {
     pin=1
     recoverWhile=type_key_recover
-    methods=[getTableName]
+    methods=[getTypeName]
 }
 private type_key_recover::= !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
 
@@ -90,21 +90,33 @@ bind_parameter ::= '?' IDENTIFIER ('.' IDENTIFIER)* {pin=1}
 null_operator ::= IS (NOT)? NULL {pin=1}
 cmp_operator ::= '=' | '<>' | '>' | '<' | '>=' | '<='
 
-attribute_key ::= '{' IDENTIFIER ( localized_name )? '}' {
+attribute_key ::= '{' attribute_key_name ( localized )? '}' {
     pin=1
     recoverWhile=attribute_key_recover
 }
-private attribute_key_recover::= !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
+private attribute_key_recover ::= !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
 
-localized_name ::= '[' IDENTIFIER ']' {
+localized ::= '[' localized_name ']' {
     pin=1
+    recoverWhile=localized_recover
+}
+private localized_recover::= !('}')
+
+localized_name ::= IDENTIFIER {
     recoverWhile=localized_name_recover
 }
-private localized_name_recover::= !('}')
+private localized_name_recover ::= !(']')
 
 type_key_name ::= IDENTIFIER {
     recoverWhile=type_key_name_recover
     mixin="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.PolyglotQueryTypeKeyNameMixin"
-    methods=[getTableName]
+    methods=[getTypeName]
 }
 private type_key_name_recover ::= !('}')
+
+attribute_key_name ::= IDENTIFIER {
+    recoverWhile=attribute_key_name_recover
+    mixin="com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.PolyglotQueryAttributeKeyNameMixin"
+    methods=[getTypeName]
+}
+private attribute_key_name_recover ::= !('[' | '}')

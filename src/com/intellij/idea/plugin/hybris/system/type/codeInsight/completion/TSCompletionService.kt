@@ -28,6 +28,7 @@ interface TSCompletionService {
      * This method should return lookup elements for possible type code, it can be Item/Enum or Relation
      */
     fun getCompletions(typeCode: String): List<LookupElementBuilder>
+    fun getCompletions(typeCode: String, vararg types: TSMetaType): List<LookupElementBuilder>
 
     fun getCompletions(vararg types: TSMetaType): List<LookupElementBuilder>
 

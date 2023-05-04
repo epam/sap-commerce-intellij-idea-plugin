@@ -94,7 +94,8 @@
         <![CDATA[
             <h3>2023.1.6</h3>
             <ul>
-                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>)
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/374" target="_blank" rel="nofollow">#374</a>)
                     <ul>
                         <li>Integration with Type System (references, code completion)</li>
                     </ul>

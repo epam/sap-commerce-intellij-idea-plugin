@@ -32,16 +32,28 @@ import java.util.*
 
 class DefaultTSCompletionService(private val project: Project) : TSCompletionService {
 
-    override fun getCompletions(typeCode: String): List<LookupElementBuilder> {
-        val metaService = TSMetaModelAccess.getInstance(project)
+    override fun getCompletions(typeCode: String) = getCompletions(
+        typeCode,
+        TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
+    )
 
-        return (metaService.findMetaItemByName(typeCode)
-            ?.let { getCompletions(it) }
-            ?: metaService.findMetaEnumByName(typeCode)
-                ?.let { getCompletions() }
-            ?: metaService.findMetaRelationByName(typeCode)
-                ?.let { getCompletions(it, metaService) }
-            ?: emptyList())
+    override fun getCompletions(typeCode: String, vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
+        types
+            .firstNotNullOfOrNull { metaType ->
+                when (metaType) {
+                    TSMetaType.META_ITEM -> this.findMetaItemByName(typeCode)
+                        ?.let { getCompletions(it) }
+
+                    TSMetaType.META_ENUM -> this.findMetaEnumByName(typeCode)
+                        ?.let { getCompletionsForEnum() }
+
+                    TSMetaType.META_RELATION -> this.findMetaRelationByName(typeCode)
+                        ?.let { getCompletions(it, this) }
+
+                    else -> null
+                }
+            }
+            ?: emptyList()
     }
 
     override fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
@@ -74,7 +86,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             .flatten()
     }
 
-    private fun getCompletions() = HybrisConstants.ENUM_ATTRIBUTES
+    private fun getCompletionsForEnum() = HybrisConstants.ENUM_ATTRIBUTES
         .map { TSLookupElementFactory.buildAttribute(it) }
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {

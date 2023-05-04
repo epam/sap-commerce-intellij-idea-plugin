@@ -55,8 +55,8 @@ public class PolyglotQueryTypeKeyImpl extends ASTWrapperPsiElement implements Po
 
   @Override
   @Nullable
-  public String getTableName() {
-    return PolyglotQueryPsiUtil.getTableName(this);
+  public String getTypeName() {
+    return PolyglotQueryPsiUtil.getTypeName(this);
   }
 
 }

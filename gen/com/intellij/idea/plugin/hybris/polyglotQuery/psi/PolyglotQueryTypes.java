@@ -31,11 +31,13 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl.*;
 public interface PolyglotQueryTypes {
 
   IElementType ATTRIBUTE_KEY = new PolyglotQueryElementType("ATTRIBUTE_KEY");
+  IElementType ATTRIBUTE_KEY_NAME = new PolyglotQueryElementType("ATTRIBUTE_KEY_NAME");
   IElementType BIND_PARAMETER = new PolyglotQueryElementType("BIND_PARAMETER");
   IElementType CMP_OPERATOR = new PolyglotQueryElementType("CMP_OPERATOR");
   IElementType EXPR_AND = new PolyglotQueryElementType("EXPR_AND");
   IElementType EXPR_ATOM = new PolyglotQueryElementType("EXPR_ATOM");
   IElementType EXPR_OR = new PolyglotQueryElementType("EXPR_OR");
+  IElementType LOCALIZED = new PolyglotQueryElementType("LOCALIZED");
   IElementType LOCALIZED_NAME = new PolyglotQueryElementType("LOCALIZED_NAME");
   IElementType NULL_OPERATOR = new PolyglotQueryElementType("NULL_OPERATOR");
   IElementType ORDER_BY = new PolyglotQueryElementType("ORDER_BY");
@@ -82,6 +84,9 @@ public interface PolyglotQueryTypes {
       if (type == ATTRIBUTE_KEY) {
         return new PolyglotQueryAttributeKeyImpl(node);
       }
+      else if (type == ATTRIBUTE_KEY_NAME) {
+        return new PolyglotQueryAttributeKeyNameImpl(node);
+      }
       else if (type == BIND_PARAMETER) {
         return new PolyglotQueryBindParameterImpl(node);
       }
@@ -96,6 +101,9 @@ public interface PolyglotQueryTypes {
       }
       else if (type == EXPR_OR) {
         return new PolyglotQueryExprOrImpl(node);
+      }
+      else if (type == LOCALIZED) {
+        return new PolyglotQueryLocalizedImpl(node);
       }
       else if (type == LOCALIZED_NAME) {
         return new PolyglotQueryLocalizedNameImpl(node);

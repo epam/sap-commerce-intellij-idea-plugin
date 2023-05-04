@@ -89,10 +89,13 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
             PolyglotQueryTypes.LPAREN to PARENS,
             PolyglotQueryTypes.RPAREN to PARENS,
 
-            PolyglotQueryTypes.TYPE_KEY to TYPE,
+            PolyglotQueryTypes.TYPE_KEY_NAME to TYPE,
+
             PolyglotQueryTypes.BIND_PARAMETER to PARAMETER,
+
             PolyglotQueryTypes.LOCALIZED_NAME to LOCALIZED,
-            PolyglotQueryTypes.ATTRIBUTE_KEY to COLUMN,
+
+            PolyglotQueryTypes.ATTRIBUTE_KEY_NAME to COLUMN,
         )
     }
 }

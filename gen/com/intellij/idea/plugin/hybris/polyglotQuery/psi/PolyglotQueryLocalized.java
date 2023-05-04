@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -15,21 +19,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
 
-@file:JvmName("PolyglotQueryPsiUtil")
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi
+public interface PolyglotQueryLocalized extends PsiElement {
 
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
+  @Nullable
+  PolyglotQueryLocalizedName getLocalizedName();
 
-fun getTypeName(element: PolyglotQueryTypeKey): String? = element.childrenOfType<PolyglotQueryTypeKeyName>()
-    .firstOrNull()
-    ?.text
-
-fun getTypeName(element: PolyglotQueryTypeKeyName): String = element.firstChild.text
-
-fun getTypeName(element: PolyglotQueryAttributeKeyName): String? = PsiTreeUtil
-    .getParentOfType(element, PolyglotQueryQuery::class.java)
-    ?.typeKey
-    ?.typeName
+}

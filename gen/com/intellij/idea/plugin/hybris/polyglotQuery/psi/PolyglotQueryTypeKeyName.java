@@ -28,6 +28,6 @@ import com.intellij.psi.PsiElement;
 public interface PolyglotQueryTypeKeyName extends PsiElement {
 
   @NotNull
-  String getTableName();
+  String getTypeName();
 
 }
