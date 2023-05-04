@@ -92,14 +92,18 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.1.6</h3>
+            <ul>
+                <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
+            </ul>
             <h3>2023.1.5</h3>
             <ul>
-                <li><i>Feature:</i> Polyglot Query Language support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)
+                <li><i>Feature:</i> <strong>Polyglot Query Language</strong> support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/348" target="_blank" rel="nofollow">#348</a>)
                     <ul>
                         <li><i>Feature:</i> Create new file via context menu (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/353" target="_blank" rel="nofollow">#353</a>)</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> FlexibleSearch 2.0 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
+                <li><i>Feature:</i> <strong>FlexibleSearch 2.0</strong> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/349" target="_blank" rel="nofollow">#349</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/350" target="_blank" rel="nofollow">#350</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/351" target="_blank" rel="nofollow">#351</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/352" target="_blank" rel="nofollow">#352</a>,

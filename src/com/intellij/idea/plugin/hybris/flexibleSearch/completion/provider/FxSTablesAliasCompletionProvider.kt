@@ -23,11 +23,16 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.util.ProcessingContext
 
 class FxSTablesAliasCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        val fxsSettings = HybrisProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+
+        if (!fxsSettings.completion.suggestTableAliasNames) return
+
         (parameters.position.parent as? FlexibleSearchTableAliasName)
             ?.table
             ?.tableName

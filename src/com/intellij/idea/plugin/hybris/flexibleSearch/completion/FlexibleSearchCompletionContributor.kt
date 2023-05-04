@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRe
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.patterns.CaseInsensitiveContainsPatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns
@@ -95,13 +96,8 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         .withParent(
                             psiElement(FROM_TABLE)
                                 .withText(
-                                    StandardPatterns.or(
-                                        // no idea how to make it case insensitive
-                                        StandardPatterns.string().contains(" AS "),
-                                        StandardPatterns.string().contains(" as "),
-                                        StandardPatterns.string().contains(" As "),
-                                        StandardPatterns.string().contains(" aS "),
-                                    )
+                                    StandardPatterns.string()
+                                        .with(CaseInsensitiveContainsPatternCondition(" AS "))
                                 )
                         )
                 ),
