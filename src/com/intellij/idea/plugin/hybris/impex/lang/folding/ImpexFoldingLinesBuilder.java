@@ -21,11 +21,13 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.ImpexFoldingLinesFilter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SyntaxTraverser;
 import org.apache.commons.lang3.Validate;
@@ -61,7 +63,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
         @NotNull final Document document,
         final boolean quick
     ) {
-        if (this.isFoldingDisabled()) {
+        if (this.isFoldingDisabled(root.getProject())) {
             return EMPTY_ARRAY;
         }
 
@@ -122,8 +124,11 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
 
 
     @Contract(pure = true)
-    protected boolean isFoldingDisabled() {
-        return !HybrisApplicationSettingsComponent.getInstance().getState().isFoldingEnabled();
+    protected boolean isFoldingDisabled(final @NotNull Project project) {
+        return !HybrisProjectSettingsComponent.getInstance(project).getState()
+            .getImpexSettings()
+            .getFolding()
+            .getEnabled();
     }
 
     @NotNull
@@ -143,7 +148,7 @@ public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
     public String getPlaceholderText(@NotNull final ASTNode node) {
         Validate.notNull(node);
 
-        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
+        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(node.getPsi().getProject()).getPlaceholder(node.getPsi());
     }
 
     @Override

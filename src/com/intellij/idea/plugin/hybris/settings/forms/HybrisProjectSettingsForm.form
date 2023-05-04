@@ -83,7 +83,7 @@
             </constraints>
             <properties>
               <selected value="false"/>
-              <text resource-bundle="i18n/HybrisBundle" key="hybris.project.import.scannExternalModules"/>
+              <text resource-bundle="i18n/HybrisBundle" key="hybris.project.import.scanExternalModules"/>
             </properties>
           </component>
           <component id="ce3de" class="javax.swing.JCheckBox" binding="createBackwardCyclicDependenciesForAddons">

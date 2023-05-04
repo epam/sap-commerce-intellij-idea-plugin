@@ -18,10 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
+import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import java.util.*
 
 data class HybrisProjectSettings(
     var flexibleSearchSettings: FlexibleSearchSettings = FlexibleSearchSettings(),
+    var polyglotQuerySettings: PolyglotQuerySettings = PolyglotQuerySettings(),
+    var impexSettings: ImpexSettings = ImpexSettings(),
 
     var customDirectory: String? = null,
     var hybrisDirectory: String? = null,

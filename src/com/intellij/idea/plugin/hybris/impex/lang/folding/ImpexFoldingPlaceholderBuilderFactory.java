@@ -21,7 +21,10 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 import com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created 22:45 29 March 2015
@@ -34,14 +37,17 @@ public final class ImpexFoldingPlaceholderBuilderFactory {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    public static ImpexFoldingPlaceholderBuilder getPlaceholderBuilder() {
-        return isUseSmartFolding()
+    public static ImpexFoldingPlaceholderBuilder getPlaceholderBuilder(final @NotNull Project project) {
+        return isUseSmartFolding(project)
             ? ApplicationManager.getApplication().getService(SmartImpexFoldingPlaceholderBuilder.class)
             : ApplicationManager.getApplication().getService(DefaultImpexFoldingPlaceholderBuilder.class);
     }
 
-    private static boolean isUseSmartFolding() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().isUseSmartFolding();
+    private static boolean isUseSmartFolding(final @NotNull Project project) {
+        return HybrisProjectSettingsComponent.getInstance(project).getState()
+            .getImpexSettings()
+            .getFolding()
+            .getUseSmartFolding();
     }
 
 }

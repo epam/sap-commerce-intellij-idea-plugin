@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -37,8 +38,12 @@ import com.intellij.psi.util.PsiTreeUtil
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> =
-        CachedValuesManager.getCachedValue(root) {
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        if (!HybrisProjectSettingsComponent.getInstance(root.project).state.flexibleSearchSettings.folding.enabled) {
+            return emptyArray()
+        }
+
+        return CachedValuesManager.getCachedValue(root) {
             val filter = ApplicationManager.getApplication().getService(FlexibleSearchFoldingBlocksFilter::class.java)
             val results = SyntaxTraverser.psiTraverser(root)
                 .filter { filter.isAccepted(it) }
@@ -54,6 +59,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ProjectRootModificationTracker.getInstance(root.project)
             )
         }
+    }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
         FlexibleSearchTypes.COMMENT -> "/*...*/"

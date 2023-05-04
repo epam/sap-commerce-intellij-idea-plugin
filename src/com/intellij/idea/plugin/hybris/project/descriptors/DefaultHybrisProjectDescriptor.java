@@ -426,7 +426,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final List<HybrisModuleDescriptor> moduleDescriptors = new ArrayList<>();
         final List<File> pathsFailedToImport = new ArrayList<>();
 
-        addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.isGroupModules());
+        addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.getGroupModules());
 
         final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = HybrisModuleDescriptorFactory.getInstance();
 

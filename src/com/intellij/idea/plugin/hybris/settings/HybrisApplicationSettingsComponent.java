@@ -24,6 +24,7 @@ import com.intellij.openapi.components.SettingsCategory;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS;
@@ -55,5 +56,12 @@ public class HybrisApplicationSettingsComponent implements PersistentStateCompon
     @Override
     public void loadState(final HybrisApplicationSettings state) {
         XmlSerializerUtil.copyBean(state, this.hybrisApplicationSettings);
+    }
+
+    public static String[] toIdeaGroup(final String group) {
+        if (group == null || group.trim().isEmpty()) {
+            return null;
+        }
+        return StringUtils.split(group, " ,.;>/\\");
     }
 }

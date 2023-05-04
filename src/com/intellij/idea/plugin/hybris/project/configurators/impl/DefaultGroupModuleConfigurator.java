@@ -28,6 +28,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,6 @@ import java.util.Set;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
-import static com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings.toIdeaGroup;
 
 /**
  * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
@@ -161,7 +161,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (rawGroupText == null) {
             rawGroupText = properties.getProperty(moduleName + '.' + GROUP_OVERRIDE_KEY);
         }
-        return toIdeaGroup(rawGroupText);
+        return HybrisApplicationSettingsComponent.toIdeaGroup(rawGroupText);
     }
 
     private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
@@ -248,14 +248,14 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private void readSettings() {
         final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
                                                                                                       .getState();
-        groupModules = hybrisApplicationSettings.isGroupModules();
-        groupCustom = toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
-        groupNonHybris = toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());
-        groupOtherCustom = toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
-        groupHybris = toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
-        groupOtherHybris = toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
-        groupPlatform = toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
-        groupCCv2 = toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
+        groupModules = hybrisApplicationSettings.getGroupModules();
+        groupCustom = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
+        groupNonHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());
+        groupOtherCustom = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupOtherCustom());
+        groupHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
+        groupOtherHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupOtherHybris());
+        groupPlatform = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
+        groupCCv2 = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
     }
 
 }

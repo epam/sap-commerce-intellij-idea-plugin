@@ -37,7 +37,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-internal class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyName) : PsiReferenceBase.Poly<PolyglotQueryAttributeKeyName>(owner) {
+class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyName) : PsiReferenceBase.Poly<PolyglotQueryAttributeKeyName>(owner) {
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.text.length)
 

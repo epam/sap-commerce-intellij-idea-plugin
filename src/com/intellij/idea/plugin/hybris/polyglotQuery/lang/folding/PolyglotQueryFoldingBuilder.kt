@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -34,8 +35,12 @@ import com.intellij.psi.util.CachedValuesManager
 
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> =
-        CachedValuesManager.getCachedValue(root) {
+    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        if (!HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding.enabled) {
+            return emptyArray()
+        }
+
+        return CachedValuesManager.getCachedValue(root) {
             val filter = PolyglotQueryFoldingBlocksFilter.instance
             val results = SyntaxTraverser.psiTraverser(root)
                 .filter { filter.isAccepted(it) }
@@ -51,6 +56,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ProjectRootModificationTracker.getInstance(root.project)
             )
         }
+    }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
         PolyglotQueryTypes.COMMENT -> "/*...*/"

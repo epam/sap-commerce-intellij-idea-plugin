@@ -18,36 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference.PolyglotQueryAttributeKeyNameReference
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference.PolyglotQueryDefinedTableReference
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class PolyglotQueryAttributeKeyNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), PolyglotQueryAttributeKeyName {
+abstract class PolyglotQueryAttributeKeyNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), PolyglotQueryAttributeKeyName {
 
-    private var myReference: PolyglotQueryAttributeKeyNameReference? = null
-
-    override fun getReference() = references
-        .firstOrNull()
-
-    override fun getReferences(): Array<PsiReference> {
-        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = PolyglotQueryAttributeKeyNameReference(this)
-        }
-        return myReference
-            ?.let { arrayOf(it) }
-            ?: emptyArray()
-    }
-
-    override fun clone(): Any {
-        val result = super.clone() as PolyglotQueryAttributeKeyNameMixin
-        result.myReference = null
-        return result
-    }
+    override fun createReference() = PolyglotQueryAttributeKeyNameReference(this)
 
     companion object {
         @Serial

@@ -43,7 +43,7 @@ import org.apache.commons.collections4.map.CaseInsensitiveMap
 class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation {
 
     override fun isFileOutOfDate(file: VirtualFile): Boolean {
-        if (!HybrisApplicationSettingsComponent.getInstance().state.isWarnIfGeneratedItemsAreOutOfDate) return false
+        if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return false
         if (!file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)) return false
         if (!ModuleUtil.projectContainsFile(project, file, false)) return false
 

@@ -40,7 +40,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-internal class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
+class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text

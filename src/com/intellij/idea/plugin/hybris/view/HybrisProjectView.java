@@ -76,9 +76,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         this.hybrisProjectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         this.hybrisProjectSettings = hybrisProjectSettingsComponent.getState();
         this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        this.commerceGroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
-        this.platformGroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
-        this.ccv2GroupName = HybrisApplicationSettings.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
+        this.commerceGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
+        this.platformGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
+        this.ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
     }
 
     protected boolean isCompactEmptyMiddleFoldersEnabled(@Nullable final NodeOptions settings) {
-        return this.hybrisApplicationSettings.isHideEmptyMiddleFolders()
+        return this.hybrisApplicationSettings.getHideEmptyMiddleFolders()
                && (null != settings)
                && settings.isHideEmptyMiddlePackages();
     }

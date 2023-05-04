@@ -16,21 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl
+package com.intellij.idea.plugin.hybris.polyglotQuery.settings
 
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryLocalizedName
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference.PolyglotQueryLocalizedNameReference
-import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
-import com.intellij.lang.ASTNode
-import java.io.Serial
+import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 
-abstract class PolyglotQueryLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), PolyglotQueryLocalizedName {
+data class PolyglotQuerySettings(
+    var verifyCaseForReservedWords: Boolean = true,
+    var defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
 
-    override fun createReference() = PolyglotQueryLocalizedNameReference(this)
+    var folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
+)
 
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -6995701864673445029L
-    }
-
-}
+data class PolyglotQueryFoldingSettings(
+    var enabled: Boolean = true,
+    var showLanguage: Boolean = true,
+)

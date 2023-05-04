@@ -51,7 +51,7 @@ public class SmartFoldingBlocksFilter implements PsiElementFilter {
     @Contract(pure = true)
     private boolean isNotBlankPlaceholder(final @Nullable PsiElement element) {
         return (null != element) && !StringUtils.isBlank(
-            ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(element)
+            ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(element.getProject()).getPlaceholder(element)
         );
     }
 

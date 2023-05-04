@@ -19,11 +19,13 @@
 package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SyntaxTraverser;
 import org.apache.commons.lang3.Validate;
@@ -57,7 +59,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
         @NotNull final Document document,
         final boolean quick
     ) {
-        if (this.isFoldingDisabled()) {
+        if (this.isFoldingDisabled(root.getProject())) {
             return EMPTY_ARRAY;
         }
 
@@ -90,8 +92,11 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
 
     @Contract(pure = true)
-    protected boolean isFoldingDisabled() {
-        return !HybrisApplicationSettingsComponent.getInstance().getState().isFoldingEnabled();
+    protected boolean isFoldingDisabled(final @NotNull Project project) {
+        return !HybrisProjectSettingsComponent.getInstance(project).getState()
+            .getImpexSettings()
+            .getFolding()
+            .getEnabled();
     }
 
     @NotNull
@@ -101,7 +106,7 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
             return Collections.emptyList();
         }
 
-        final var filter = PsiElementFilterFactory.getPsiElementFilter();
+        final var filter = PsiElementFilterFactory.getPsiElementFilter(root.getProject());
         return SyntaxTraverser.psiTraverser(root)
                               .filter(filter::isAccepted)
                               .toList();
@@ -112,10 +117,11 @@ public class ImpexFoldingBuilder extends FoldingBuilderEx {
     public String getPlaceholderText(@NotNull final ASTNode node) {
         Validate.notNull(node);
 
-        String text = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder().getPlaceholder(node.getPsi());
+        final PsiElement psi = node.getPsi();
+        String text = ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(psi.getProject()).getPlaceholder(psi);
         String resolvedMacro = text;
         if (text.startsWith("$")) {
-            final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
+            final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(psi.getContainingFile()).getValue();
             final ImpexMacroDescriptor descriptor = cache.get(text);
             if (descriptor != null) {
                 resolvedMacro = descriptor.resolvedValue();

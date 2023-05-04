@@ -16,21 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl
+package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryLocalizedName
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference.PolyglotQueryLocalizedNameReference
-import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
-import com.intellij.lang.ASTNode
-import java.io.Serial
-
-abstract class PolyglotQueryLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), PolyglotQueryLocalizedName {
-
-    override fun createReference() = PolyglotQueryLocalizedNameReference(this)
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -6995701864673445029L
-    }
-
+enum class ReservedWordsCase {
+    UPPERCASE, LOWERCASE
 }

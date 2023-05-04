@@ -20,9 +20,11 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter;
 import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiElementFilter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created 22:32 29 March 2015
@@ -35,14 +37,17 @@ public final class PsiElementFilterFactory {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-    public static PsiElementFilter getPsiElementFilter() {
-        return isUseSmartFolding()
+    public static PsiElementFilter getPsiElementFilter(final @NotNull Project project) {
+        return isUseSmartFolding(project)
             ? ApplicationManager.getApplication().getService(SmartFoldingBlocksFilter.class)
             : ApplicationManager.getApplication().getService(DefaultFoldingBlocksFilter.class);
     }
 
-    private static boolean isUseSmartFolding() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().isUseSmartFolding();
+    private static boolean isUseSmartFolding(final @NotNull Project project) {
+        return HybrisProjectSettingsComponent.getInstance(project).getState()
+            .getImpexSettings()
+            .getFolding()
+            .getUseSmartFolding();
     }
 
 }

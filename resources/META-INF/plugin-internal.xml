@@ -56,9 +56,9 @@
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
 
         <applicationConfigurable id="hybris.settings" parentId="root"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsConfigurable"/>
+                                 provider="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurable"/>
+                                 provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurableProvider"/>
 
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider"/>

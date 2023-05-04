@@ -1,12 +1,14 @@
 package com.intellij.idea.plugin.hybris.jsp;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiInvalidElementAccessException;
@@ -50,7 +52,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     public FoldingDescriptor[] buildFoldRegions(
         @NotNull final PsiElement root, @NotNull final Document document, final boolean quick
     ) {
-        if (quick || !isFoldingEnabled()) {
+        if (quick || !isFoldingEnabled(root.getProject())) {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
         if (!(root instanceof XmlFile)) {
@@ -110,11 +112,14 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
-        return isFoldingEnabled();
+        return isFoldingEnabled(node.getPsi().getProject());
     }
 
-    private boolean isFoldingEnabled() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().isFoldingEnabled();
+    private boolean isFoldingEnabled(final @NotNull Project project) {
+        return HybrisProjectSettingsComponent.getInstance(project).getState()
+            .getImpexSettings()
+            .getFolding()
+            .getEnabled();
     }
 
     @Nullable

@@ -33,7 +33,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class FlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
@@ -109,6 +109,18 @@ class HybrisProjectFlexibleSearchSettingsConfigurableProvider(val project: Proje
                     )
                         .label("Default [y] separator")
                         .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
+                        .component
+                }
+            }
+            group("Code Folding") {
+                row {
+                    checkBox("Enable code folding")
+                        .bindSelected(state.folding::enabled)
+                        .component
+                }
+                row {
+                    checkBox("Show table alias")
+                        .bindSelected(state.folding::showSelectedTableName)
                         .component
                 }
             }

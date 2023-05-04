@@ -174,7 +174,6 @@
 
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider" order="first"/>
         <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider" order="first"/>
-        <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                Bean System                                              -->
@@ -199,242 +198,19 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
 
-        <!-- ####################################################################################################### -->
-        <!--                                          Flexible Search                                                -->
-        <!-- ####################################################################################################### -->
-
-        <!-- Support FlexibleSearch Language-->
-        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="instance"
-                  implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
-
-        <!-- Core elements -->
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
-
-        <langCodeStyleSettingsProvider
-            implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
-
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
-
-        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
-        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
-        <lang.quoteHandler language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
-        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
-        <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.commenter.FlexibleSearchCommenter"/>
-        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
-        <lang.foldingBuilder language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
-        <lang.findUsagesProvider language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
-        <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
-
-        <referencesSearch implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
-        <elementDescriptionProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
-
-        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
-
-        <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
-        <editorNotificationProvider id="fxsEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider"/>
-
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
-
-        <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
-
-        <annotator language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
-        <highlightErrorFilter implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
-
-        <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
-                             provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.HybrisProjectFlexibleSearchSettingsConfigurableProvider"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-
-        <!-- ####################################################################################################### -->
-        <!--                                                   Impex                                                 -->
-        <!-- ####################################################################################################### -->
-
-        <!-- Core elements -->
-
-        <!-- Support Impex Language-->
-        <fileType name="Impex" language="Impex" extensions="impex" fieldName="INSTANCE"
-                  implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
-
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
-
-        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
-        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
-
-
-        <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-        <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
-        <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingLinesBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
-
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
-
-        <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
-
-        <applicationConfigurable id="hybris.impex.settings" parentId="hybris.settings"
-                                 instance="com.intellij.idea.plugin.hybris.settings.HybrisImpexApplicationSettingsConfigurable"/>
-
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
-
-        <applicationService
-            serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
-            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.ColumnsAlignmentStrategy"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.TableAlignmentStrategy"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
-
-        <defaultLiveTemplates file="liveTemplates/Impex.xml"/>
-        <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
-
-        <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>
-        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
-
-        <!-- ####################################################################################################### -->
-        <!--                                        Impex Completion Providers                                       -->
-        <!-- ####################################################################################################### -->
-
-        <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosConfigCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordMacroCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordModeCompletionProvider"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl.DefaultTSCompletionService"/>
-
-        <!-- ####################################################################################################### -->
-
-        <gotoDeclarationHandler
-            implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>
-
-        <highlightUsagesHandlerFactory
-            implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
-
-        <findUsagesHandlerFactory
-            implementation="com.intellij.idea.plugin.hybris.impex.find.findUsages.MacrosFindUsagesHandlerFactory"/>
-
-        <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
-        <lang.findUsagesProvider language="Impex"
-                                 implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
-
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector"/>
-
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
-
-        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexEditorFactoryListener"/>
     </extensions>
 
     <actions>
-
-        <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
-                text="Impex File" description="Create new Impex file">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-        </action>
-
-        <group>
-            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS"
-                    text="Copy to Impex Console" description="Copy impex file to SAP Commerce Console">
-            </action>
-            <action id="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
-                    class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS"
-                    text="Copy to FlexibleSearch Console" description="Copy FlexibleSearch to SAP Commerce console">
-            </action>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
-
-        <action id="FlexibleSearch.NewFlexibleSearchFile"
-                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
-                text="FlexibleSearch File" description="Create new FlexibleSearch file">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-        </action>
-
-        <group id="ImpexTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
-            <!-- This feature not ready for production. Temporary disabled.  -->
-            <!--<action id="ImpexTableFormatter.FormatAllTables"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
-            <!--text="Format All"-->
-            <!--description="Formats table with pipe delimiters">-->
-            <!--</action>-->
-            <!--<action id="ImpexTableFormatter.AddColumnBefore"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
-            <!--text="Add Column Before"-->
-            <!--description="Add Column Before">-->
-            <!--</action>-->
-            <action id="ImpexTableFormatter.SelectTable"
-                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
-                    text="Select Impex"
-                    icon="/icons/hybrisIcon.svg"
-                    description="Select Impex">
-                <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
-            </action>
-
-            <action id="ImpexRemoteControl.Validate"
-                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
-                    icon="/icons/hybrisIcon.svg">
-            </action>
-
-            <action id="ImpexRemoteControl.Import"
-                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
-                    icon="/icons/hybrisIcon.svg">
-            </action>
-
-            <add-to-group group-id="CodeMenu" anchor="last"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </group>
-
-        <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.FlexibleSearchActionsGroup">
-            <action id="FSRemoteControl.Execute"
-                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ExecuteFlexibleSearchAction"
-                    text="Execute selected FlexibleSearch Statement"
-                    icon="/icons/hybrisIcon.svg"
-                    description="Execute FlexibleSearch file via remote hybris instance">
-            </action>
-
-            <add-to-group group-id="CodeMenu" anchor="last"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </group>
-
         <action id="File.yRefresh" class="com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction"
                 text="Refresh SAP Commerce Project" description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
-
-        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.OpenFlexibleSearchSettingsAction"/>
     </actions>
 
 </idea-plugin>

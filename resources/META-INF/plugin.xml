@@ -28,7 +28,9 @@
     <depends optional="true" config-file="optional-support-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="optional-support-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
     <depends optional="true" config-file="optional-lang-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="optional-lang-polyglot-query.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="lang/optional-polyglot-query.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="lang/optional-flexibleSearch.xml">com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="lang/optional-impex.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="optional-spring-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="optional-javaee-dependencies.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="optional-java-dependencies.xml">com.intellij.modules.java</depends>

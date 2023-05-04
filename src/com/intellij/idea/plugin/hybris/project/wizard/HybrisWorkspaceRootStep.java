@@ -366,20 +366,20 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
 
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(
-            appSettings.isDefaultPlatformInReadOnly()
+            appSettings.getDefaultPlatformInReadOnly()
         );
         hybrisProjectDescriptor.setFollowSymlink(
-            appSettings.isFollowSymlink()
+            appSettings.getFollowSymlink()
         );
         hybrisProjectDescriptor.setScanThroughExternalModule(
-            appSettings.isScanThroughExternalModule()
+            appSettings.getScanThroughExternalModule()
         );
         hybrisProjectDescriptor.setExcludeTestSources(
-            appSettings.isExcludeTestSources()
+            appSettings.getExcludeTestSources()
         );
-        hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
-        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
-        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.isWithStandardProvidedSources());
+        hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
+        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
+        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
             hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
         );
@@ -447,7 +447,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
             hybrisVersion = getHybrisVersion(this.hybrisDistributionDirectoryFilesInChooser.getText(), false);
             final String sourceCodeDirectory = appSettings.getSourceCodeDirectory();
-            final File sourceFile = appSettings.isSourceZipUsed()
+            final File sourceFile = appSettings.getSourceZipUsed()
                 ? findSourceZip(sourceCodeDirectory, hybrisVersion)
                 : new File(sourceCodeDirectory);
 
@@ -621,9 +621,9 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        hybrisProjectDescriptor.setWithMavenSources(appSettings.isWithMavenSources());
-        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.isWithMavenJavadocs());
-        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.isWithStandardProvidedSources());
+        hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
+        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
+        hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
 
         final String ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
         if (ideModulesFilesDirectory != null) {

@@ -1,0 +1,100 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+
+        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="instance"
+                  implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
+
+        <!-- Core elements -->
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
+
+        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
+
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
+
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
+        <lang.quoteHandler language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+        <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchCommenter"/>
+        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
+        <lang.foldingBuilder language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
+        <lang.findUsagesProvider language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
+        <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
+
+        <referencesSearch implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
+        <elementDescriptionProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
+
+        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
+
+        <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
+        <editorNotificationProvider id="fxsEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider"/>
+
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
+
+        <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
+
+        <annotator language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
+        <highlightErrorFilter implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
+
+        <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettingsConfigurableProvider"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBlocksFilter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
+    </extensions>
+
+
+
+    <actions>
+        <group>
+            <action id="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
+                    class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
+                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS"
+                    text="Copy to FlexibleSearch Console" description="Copy FlexibleSearch to SAP Commerce console">
+            </action>
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
+        </group>
+
+        <action id="FlexibleSearch.NewFlexibleSearchFile"
+                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
+                text="FlexibleSearch File" description="Create new FlexibleSearch file">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
+        <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.FlexibleSearchActionsGroup">
+            <action id="FSRemoteControl.Execute"
+                    class="com.intellij.idea.plugin.hybris.tools.remote.action.ExecuteFlexibleSearchAction"
+                    text="Execute selected FlexibleSearch Statement"
+                    icon="/icons/hybrisIcon.svg"
+                    description="Execute FlexibleSearch file via remote hybris instance">
+            </action>
+
+            <add-to-group group-id="CodeMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.OpenFlexibleSearchSettingsAction"/>
+    </actions>
+
+</idea-plugin>

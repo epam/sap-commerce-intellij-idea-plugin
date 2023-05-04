@@ -40,6 +40,9 @@
                                        implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
         <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
 
+        <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettingsConfigurableProvider"/>
+
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBlocksFilter"/>
     </extensions>

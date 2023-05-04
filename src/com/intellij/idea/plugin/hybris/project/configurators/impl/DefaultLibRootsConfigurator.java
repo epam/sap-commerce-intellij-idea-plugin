@@ -263,7 +263,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final @NotNull HybrisModuleDescriptor moduleDescriptor
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        if (!appSettings.isWithStandardProvidedSources()) {
+        if (!appSettings.getWithStandardProvidedSources()) {
             return Collections.emptyList();
         }
 

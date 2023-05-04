@@ -65,7 +65,7 @@ public interface MavenUtils {
         final @NotNull ProgressIndicator progressIndicator
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        if (appSettings.isWithMavenJavadocs()) {
+        if (appSettings.getWithMavenJavadocs()) {
             return resolveMavenDependencies(modifiableRootModel, moduleDescriptor, progressIndicator, false, true);
         }
         return Collections.emptyList();
@@ -77,7 +77,7 @@ public interface MavenUtils {
         final @NotNull ProgressIndicator progressIndicator
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        if (appSettings.isWithMavenSources()) {
+        if (appSettings.getWithMavenSources()) {
             return resolveMavenDependencies(modifiableRootModel, moduleDescriptor, progressIndicator, true, false);
         }
         return Collections.emptyList();

@@ -440,7 +440,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     protected boolean isResourceDirExcluded(final String moduleName) {
         List<String> extensionsResourcesToExcludeList = HybrisApplicationSettingsComponent.getInstance()
                                                                                            .getState()
-                                                                                           .getExtensionsResourcesToExcludeList();
+                                                                                           .getExtensionsResourcesToExclude();
         return (CollectionUtils.isNotEmpty(extensionsResourcesToExcludeList) && extensionsResourcesToExcludeList
             .contains(moduleName));
     }

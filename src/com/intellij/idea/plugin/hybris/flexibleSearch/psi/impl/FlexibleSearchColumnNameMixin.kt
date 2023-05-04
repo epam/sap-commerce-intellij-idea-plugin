@@ -18,35 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSColumnNameReference
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class FlexibleSearchColumnNameMixin(node: ASTNode) : ASTWrapperPsiElement(node), FlexibleSearchColumnName {
+abstract class FlexibleSearchColumnNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnName {
 
-    private var myReference: FxSColumnNameReference? = null
-
-    override fun getReference() = references
-        .firstOrNull()
-
-    override fun getReferences(): Array<PsiReference> {
-        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = FxSColumnNameReference(this)
-        }
-        return myReference
-            ?.let { arrayOf(it) }
-            ?: emptyArray()
-    }
-
-    override fun clone(): Any {
-        val result = super.clone() as FlexibleSearchColumnNameMixin
-        result.myReference = null
-        return result
-    }
+    override fun createReference() = FxSColumnNameReference(this)
 
     companion object {
         @Serial

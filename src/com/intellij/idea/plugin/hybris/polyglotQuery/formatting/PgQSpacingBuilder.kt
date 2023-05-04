@@ -38,23 +38,20 @@ class PgQSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
                 TokenSet.create(
                     NULL_OPERATOR, NOT, NULL,
                     WHERE_CLAUSE, ORDER_BY,
+                    AND, OR,
                 )
             )
             .spaces(1)
 
             .after(
                 TokenSet.create(
-                    GET, FROM, WHERE, BY, COMMA, ORDER
+                    GET, FROM, WHERE, BY, COMMA, ORDER,
+                    AND, OR,
                 )
             )
             .spaces(1)
 
             .before(COMMA)
-            .spaces(0)
-
-            .after(TokenSet.create(
-                AND, OR
-            ))
             .spaces(0)
 
             .around(TokenSet.create(CMP_OPERATOR))

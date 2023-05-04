@@ -18,36 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSColumnLocalizedNameReference
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
 import java.io.Serial
 
-abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperPsiElement(node),
-    FlexibleSearchColumnLocalizedName {
+abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnLocalizedName {
 
-    private var myReference: FxSColumnLocalizedNameReference? = null
-
-    override fun getReference() = references
-        .firstOrNull()
-
-    override fun getReferences(): Array<PsiReference> {
-        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = FxSColumnLocalizedNameReference(this)
-        }
-        return myReference
-            ?.let { arrayOf(it) }
-            ?: emptyArray()
-    }
-
-    override fun clone(): Any {
-        val result = super.clone() as FlexibleSearchColumnLocalizedNameMixin
-        result.myReference = null
-        return result
-    }
+    override fun createReference() = FxSColumnLocalizedNameReference(this)
 
     companion object {
         @Serial

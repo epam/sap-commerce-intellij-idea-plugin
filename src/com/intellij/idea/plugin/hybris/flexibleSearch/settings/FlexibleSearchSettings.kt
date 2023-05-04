@@ -16,9 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 
 data class FlexibleSearchSettings(
     var verifyCaseForReservedWords: Boolean = true,
@@ -37,9 +38,7 @@ data class FlexibleSearchCompletionSettings(
 )
 
 data class FlexibleSearchFoldingSettings(
+    var enabled: Boolean = true,
     var showSelectedTableName: Boolean = false,
 )
 
-enum class ReservedWordsCase {
-    UPPERCASE, LOWERCASE
-}

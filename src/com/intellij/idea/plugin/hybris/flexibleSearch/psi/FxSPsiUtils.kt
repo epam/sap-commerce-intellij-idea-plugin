@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor.Companion.DUMMY_IDENTIFIER
-import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
