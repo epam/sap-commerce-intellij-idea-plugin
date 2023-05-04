@@ -87,7 +87,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(<<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC)
+  // !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
   static boolean attribute_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover")) return false;
     boolean r;
@@ -97,19 +97,15 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC
+  // <<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC
   private static boolean attribute_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = eof(b, l + 1);
     if (!r) r = consumeToken(b, AMP);
-    if (!r) r = consumeToken(b, EQ);
-    if (!r) r = consumeToken(b, GT);
-    if (!r) r = consumeToken(b, GTE);
-    if (!r) r = consumeToken(b, LT);
-    if (!r) r = consumeToken(b, LTE);
-    if (!r) r = consumeToken(b, UNEQ);
+    if (!r) r = cmp_operator(b, l + 1);
+    if (!r) r = null_operator(b, l + 1);
     if (!r) r = consumeToken(b, RPAREN);
     if (!r) r = consumeToken(b, FROM);
     if (!r) r = order_clause_literal(b, l + 1);

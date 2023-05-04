@@ -86,7 +86,7 @@ attribute_key ::= '{' IDENTIFIER ( localized_name )? '}' {
     pin=1
     recoverWhile=attribute_key_recover
 }
-private attribute_key_recover::= !(<<eof>>  | '&' | '=' | '>' | '>=' | '<' | '<=' | '<>'  | ')' | FROM |order_clause_literal | GET | ASC | DESC)
+private attribute_key_recover::= !(<<eof>>  | '&' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
 localized_name ::= '[' IDENTIFIER ']' {
     pin=1
     recoverWhile=localized_name_recover

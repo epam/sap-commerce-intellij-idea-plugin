@@ -95,6 +95,7 @@
             <h3>2023.1.6</h3>
             <ul>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
+                <li><i>Fix:</i> Adjusted Polyglot language Parser (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/372" target="_blank" rel="nofollow">#372</a>)</li>
             </ul>
             <h3>2023.1.5</h3>
             <ul>
