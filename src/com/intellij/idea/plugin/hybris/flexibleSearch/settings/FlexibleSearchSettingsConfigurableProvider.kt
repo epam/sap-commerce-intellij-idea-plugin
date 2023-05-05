@@ -72,29 +72,24 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
                         .label("Default case for reserved words")
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
-                        .component
                 }
             }
             group("Code Completion") {
                 row {
                     checkBox("Automatically inject separator after table alias")
                         .bindSelected(state.completion::injectTableAliasSeparator)
-                        .component
                 }
                 row {
                     checkBox("Automatically inject comma after expression")
                         .bindSelected(state.completion::injectCommaAfterExpression)
-                        .component
                 }
                 row {
                     checkBox("Automatically inject space after keywords")
                         .bindSelected(state.completion::injectSpaceAfterKeywords)
-                        .component
                 }
                 row {
                     checkBox("Suggest table alias name after AS keyword")
                         .bindSelected(state.completion::suggestTableAliasNames)
-                        .component
                 }
                 row {
                     comboBox(
@@ -109,19 +104,16 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
                     )
                         .label("Default [y] separator")
                         .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
-                        .component
                 }
             }
             group("Code Folding") {
                 row {
                     checkBox("Enable code folding")
                         .bindSelected(state.folding::enabled)
-                        .component
                 }
                 row {
                     checkBox("Show table alias")
                         .bindSelected(state.folding::showSelectedTableName)
-                        .component
                 }
             }
         }

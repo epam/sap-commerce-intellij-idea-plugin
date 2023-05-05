@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.forms;
+package com.intellij.idea.plugin.hybris.ui;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.project.Project;
@@ -32,9 +32,10 @@ import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.io.Serial;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-abstract class RemoteInstancesListPanel extends AddEditDeleteListPanel<HybrisRemoteConnectionSettings> {
+abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<HybrisRemoteConnectionSettings> {
 
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
@@ -46,12 +47,8 @@ abstract class RemoteInstancesListPanel extends AddEditDeleteListPanel<HybrisRem
     abstract void saveSettings();
     abstract void addItem();
 
-    public RemoteInstancesListPanel(
-        final Project project,
-        final String title,
-        final List<HybrisRemoteConnectionSettings> initialList
-    ) {
-        super(title, initialList);
+    public RemoteInstancesListPanel(final Project project) {
+        super(null, Collections.emptyList());
         this.myProject = project;
         myList.getModel().addListDataListener(new ListDataListener() {
 

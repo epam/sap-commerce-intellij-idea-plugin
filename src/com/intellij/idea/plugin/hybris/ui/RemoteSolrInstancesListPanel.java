@@ -16,51 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.forms;
+package com.intellij.idea.plugin.hybris.ui;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
-import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog;
+import com.intellij.idea.plugin.hybris.toolwindow.RemoteSolrConnectionDialog;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.Serial;
-import java.util.List;
 
-class RemoteHacInstancesListPanel extends RemoteInstancesListPanel {
+public class RemoteSolrInstancesListPanel extends RemoteInstancesListPanel {
 
     @Serial
-    private static final long serialVersionUID = -4192832265110127713L;
+    private static final long serialVersionUID = -6666004870055817895L;
 
-    public RemoteHacInstancesListPanel(final Project project, final String title, final List<HybrisRemoteConnectionSettings> initialList) {
-        super(project, title, initialList);
-    }
-
-    @Override
-    Icon getCellIcon() {
-        return HybrisIcons.HYBRIS;
-    }
-
-    @Override
-    void saveSettings() {
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).saveRemoteConnectionSettingsList(Type.Hybris, getData());
-    }
-
-    @Override
-    void addItem() {
-        final var item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultHacRemoteConnectionSettings(myProject);
-        final var dialog = new RemoteHacConnectionDialog(myProject, this, item);
-        if (dialog.showAndGet()) {
-            addElement(item);
-        }
+    public RemoteSolrInstancesListPanel(final Project project) {
+        super(project);
     }
 
     @Override
     protected @Nullable HybrisRemoteConnectionSettings editSelectedItem(final HybrisRemoteConnectionSettings item) {
-        final boolean ok = new RemoteHacConnectionDialog(myProject, this, item).showAndGet();
+        final boolean ok = new RemoteSolrConnectionDialog(myProject, this, item).showAndGet();
         return ok ? item : null;
+    }
+
+    @Override
+    Icon getCellIcon() {
+        return HybrisIcons.CONSOLE_SOLR;
+    }
+
+    @Override
+    void saveSettings() {
+        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).saveRemoteConnectionSettingsList(Type.SOLR, getData());
+    }
+
+    @Override
+    void addItem() {
+        final var item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultSolrRemoteConnectionSettings(myProject);
+        final var dialog = new RemoteSolrConnectionDialog(myProject, this, item);
+        if (dialog.showAndGet()) {
+            addElement(item);
+        }
     }
 }

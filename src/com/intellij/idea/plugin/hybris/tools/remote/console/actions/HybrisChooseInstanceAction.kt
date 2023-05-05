@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS_REMOTE
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider.HybrisProjectSettingsConfigurable
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -18,7 +18,7 @@ class HybrisChooseInstanceAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = getEventProject(e) ?: return
 
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, HybrisProjectSettingsConfigurable::class.java)
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsConfigurable::class.java)
     }
 
     override fun update(e: AnActionEvent) {

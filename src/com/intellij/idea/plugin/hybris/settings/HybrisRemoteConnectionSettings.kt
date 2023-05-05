@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import org.apache.commons.lang3.StringUtils
 import java.io.Serializable
 
 class HybrisRemoteConnectionSettings : Serializable {
@@ -39,12 +38,11 @@ class HybrisRemoteConnectionSettings : Serializable {
     var type: Type = Type.Hybris
 
 
-    override fun toString(): String {
-        if (StringUtils.isNotBlank(displayName) ) return displayName!!
-        if (StringUtils.isNotBlank(generatedURL) ) return generatedURL!!
-
-        return super.toString()
-    }
+    override fun toString() = displayName
+        ?.takeIf { it.isNotBlank() }
+        ?: generatedURL
+            ?.takeIf { it.isNotBlank() }
+        ?: super.toString()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

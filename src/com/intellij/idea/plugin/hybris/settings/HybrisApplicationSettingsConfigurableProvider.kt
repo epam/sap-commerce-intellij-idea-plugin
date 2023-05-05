@@ -38,47 +38,38 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                 checkBox(message("hybris.import.settings.import.ootb.modules.read.only.label"))
                     .comment(message("hybris.import.settings.import.ootb.modules.read.only.tooltip"))
                     .bindSelected(state::defaultPlatformInReadOnly)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.import.scanExternalModules"))
                     .bindSelected(state::scanThroughExternalModule)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.import.followSymlink"))
                     .bindSelected(state::followSymlink)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.view.tree.hide.empty.middle.folders"))
                     .bindSelected(state::hideEmptyMiddleFolders)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.maven.download.sources.folders"))
                     .bindSelected(state::withMavenSources)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.maven.download.javadocs.folders"))
                     .bindSelected(state::withMavenJavadocs)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.attach.standard.sources"))
                     .bindSelected(state::withStandardProvidedSources)
-                    .component
             }
             row {
                 checkBox(message("hybris.project.import.excludeTestSources"))
                     .bindSelected(state::excludeTestSources)
-                    .component
             }
             row {
                 checkBox(message("hybris.ts.items.validation.settings.enabled"))
                     .bindSelected(state::warnIfGeneratedItemsAreOutOfDate)
-                    .component
             }
         }
     }

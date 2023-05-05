@@ -19,29 +19,128 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectRemoteInstancesSettingsForm
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.kotlin.equalsIgnoreOrder
+import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
+import com.intellij.idea.plugin.hybris.ui.RemoteSolrInstancesListPanel
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import javax.swing.JComponent
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.panel
+import com.jetbrains.rd.framework.base.deepClonePolymorphic
+import javax.swing.DefaultComboBoxModel
 
-class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider(), Disposable {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
-    override fun createConfigurable() = HybrisProjectRemoteInstancesSettingsConfigurable(project)
+    override fun createConfigurable(): Configurable {
+        val settingsConfigurable = SettingsConfigurable(project)
 
-    class HybrisProjectRemoteInstancesSettingsConfigurable(project: Project) : Configurable {
-        private val settingsForm = HybrisProjectRemoteInstancesSettingsForm(project)
+        project.messageBus
+            .connect(this)
+            .subscribe<HybrisDeveloperSpecificProjectSettingsListener>(HybrisDeveloperSpecificProjectSettingsListener.TOPIC,
+                object : HybrisDeveloperSpecificProjectSettingsListener {
+                    override fun hacConnectionSettingsChanged() = settingsConfigurable.updateHacModel()
+                    override fun solrConnectionSettingsChanged() = settingsConfigurable.updateSolrModel()
+                }
+            )
+        return settingsConfigurable
+    }
 
-        override fun getDisplayName() = message("hybris.settings.project.remote_instances.title")
+    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+        message("hybris.settings.project.remote_instances.title"), "hybris.project.remote_instances.settings"
+    ) {
 
-        override fun createComponent(): JComponent {
-            settingsForm.setData()
-            return settingsForm.mainPanel
+        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        private val activeHacServerModel = DefaultComboBoxModel<HybrisRemoteConnectionSettings>()
+        private val activeSolrServerModel = DefaultComboBoxModel<HybrisRemoteConnectionSettings>()
+        private val hacInstances = RemoteHacInstancesListPanel(project)
+        private val solrInstances = RemoteSolrInstancesListPanel(project)
+
+        private var initialHacInstances = settings.hacRemoteConnectionSettings.deepClonePolymorphic()
+        private var initialSolrInstances = settings.solrRemoteConnectionSettings.deepClonePolymorphic()
+
+        override fun createPanel() = panel {
+            row {
+                icon(HybrisIcons.HYBRIS_REMOTE)
+                comboBox(
+                    activeHacServerModel,
+                    renderer = SimpleListCellRenderer.create("?") { it.toString() }
+                )
+                    .label(message("hybris.settings.project.remote_instances.hac.active.title"))
+                    .onReset { updateHacModel() }
+                    .onApply { settings.setActiveHacRemoteConnectionSettings(activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings) }
+                    .onIsModified { activeHacServerModel.selectedItem != settings.getActiveHacRemoteConnectionSettings(project) }
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                icon(HybrisIcons.CONSOLE_SOLR)
+                comboBox(
+                    activeSolrServerModel,
+                    renderer = SimpleListCellRenderer.create("?") { it.toString() }
+                )
+                    .label(message("hybris.settings.project.remote_instances.solr.active.title"))
+                    .onReset { updateSolrModel() }
+                    .onApply { settings.setActiveSolrRemoteConnectionSettings(activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings) }
+                    .onIsModified { activeSolrServerModel.selectedItem != settings.getActiveSolrRemoteConnectionSettings(project) }
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+
+            group(message("hybris.settings.project.remote_instances.hac.title"), false) {
+                row {
+                    cell(hacInstances)
+                        .onReset { hacInstances.setInitialList(initialHacInstances) }
+                        .onApply { initialHacInstances = hacInstances.data.deepClonePolymorphic() }
+                        .onIsModified { hacInstances.data.equalsIgnoreOrder(initialHacInstances).not() }
+                        .align(AlignX.FILL)
+                }
+            }
+
+            group(message("hybris.settings.project.remote_instances.solr.title"), false) {
+                row {
+                    cell(solrInstances)
+                        .onReset { solrInstances.setInitialList(initialSolrInstances) }
+                        .onApply { initialSolrInstances = solrInstances.data.deepClonePolymorphic() }
+                        .onIsModified { solrInstances.data.equalsIgnoreOrder(initialSolrInstances).not() }
+                        .align(AlignX.FILL)
+                }
+            }
         }
 
-        override fun isModified() = false
-        override fun apply() = Unit
-        override fun reset() = Unit
+        fun updateHacModel() {
+            updateRemoteInstancesModel(
+                activeHacServerModel,
+                settings.getActiveHacRemoteConnectionSettings(project),
+                settings.hacRemoteConnectionSettings,
+            )
+        }
+
+        fun updateSolrModel() {
+            updateRemoteInstancesModel(
+                activeSolrServerModel,
+                settings.getActiveSolrRemoteConnectionSettings(project),
+                settings.solrRemoteConnectionSettings,
+            )
+        }
+
+        private fun updateRemoteInstancesModel(
+            model: DefaultComboBoxModel<HybrisRemoteConnectionSettings>,
+            activeRemoteConnection: HybrisRemoteConnectionSettings,
+            remoteConnectionSettingsList: List<HybrisRemoteConnectionSettings>
+        ) {
+            model.removeAllElements()
+            remoteConnectionSettingsList.forEach { model.addElement(it) }
+            model.selectedItem = activeRemoteConnection
+        }
+    }
+
+    override fun dispose() {
     }
 }

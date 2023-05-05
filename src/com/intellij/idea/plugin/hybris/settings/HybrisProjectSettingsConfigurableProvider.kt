@@ -19,46 +19,66 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisProjectSettingsForm
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
-import javax.swing.JComponent
+import com.intellij.ui.dsl.builder.*
 
 class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
-    override fun createConfigurable() = HybrisProjectSettingsConfigurable(project)
+    override fun createConfigurable() = SettingsConfigurable(project)
 
-    class HybrisProjectSettingsConfigurable(private val project: Project) : Configurable, Disposable {
-        private val settingsForm = HybrisProjectSettingsForm()
+    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+        message("hybris.settings.project.title"), "hybris.project.settings"
+    ) {
 
-        init {
-            Disposer.register(this, settingsForm)
-        }
+        private val state = HybrisProjectSettingsComponent.getInstance(project).state
 
-        override fun getDisplayName() = message("hybris.settings.project.title")
+        override fun createPanel() = panel {
+            group(message("hybris.settings.project.details.title")) {
+                row(message("hybris.settings.project.details.platform_version.title")) {
+                    textField()
+                        .enabled(false)
+                        .text(state.hybrisVersion ?: "")
+                        .align(AlignX.FILL)
+                }.layout(RowLayout.PARENT_GRID)
+                row(message("hybris.import.wizard.hybris.distribution.directory.label")) {
+                    textField()
+                        .enabled(false)
+                        .text(state.hybrisDirectory ?: "")
+                        .align(AlignX.FILL)
+                }.layout(RowLayout.PARENT_GRID)
+                row(message("hybris.import.wizard.javadoc.url.label")) {
+                    textField()
+                        .enabled(false)
+                        .text(state.javadocUrl ?: "")
+                        .align(AlignX.FILL)
+                }.layout(RowLayout.PARENT_GRID)
+            }
 
-        override fun createComponent(): JComponent {
-            return settingsForm
-                .init(project)
-                .mainPanel
-        }
-
-        override fun isModified() = settingsForm.isModified(project)
-        override fun apply() = settingsForm.apply(project)
-        override fun reset() {
-            settingsForm.setData(project)
-        }
-
-        override fun disposeUIResources() {
-            Disposer.dispose(settingsForm)
-        }
-
-        override fun dispose() {
-            // NOP
+            group(message("hybris.settings.project.refresh.title")) {
+                row {
+                    checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                        .bindSelected(state::importOotbModulesInReadOnlyMode)
+                }
+                row {
+                    checkBox(message("hybris.project.import.followSymlink"))
+                        .bindSelected(state::followSymlink)
+                }
+                row {
+                    checkBox(message("hybris.project.import.scanExternalModules"))
+                        .bindSelected(state::scanThroughExternalModule)
+                }
+                row {
+                    checkBox(message("hybris.import.wizard.hybris.addon.circular.dependency.label"))
+                        .bindSelected(state::createBackwardCyclicDependenciesForAddOns)
+                }
+                row {
+                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
+                        .bindSelected(state::excludeTestSources)
+                }
+            }
         }
     }
 }

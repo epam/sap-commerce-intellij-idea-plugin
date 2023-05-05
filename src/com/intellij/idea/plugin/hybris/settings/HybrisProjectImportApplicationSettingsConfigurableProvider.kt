@@ -19,14 +19,13 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.kotlin.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
-
-infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
 
 class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
@@ -39,6 +38,25 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
         private val state = HybrisApplicationSettingsComponent.getInstance().state
 
         private lateinit var groupModulesCheckBox: JCheckBox
+
+        private val junkList = CRUDListPanel(
+            "hybris.import.settings.junk.directory.popup.add.title",
+            "hybris.import.settings.junk.directory.popup.add.text",
+            "hybris.import.settings.junk.directory.popup.edit.title",
+            "hybris.import.settings.junk.directory.popup.edit.text",
+        )
+        private val excludeResources = CRUDListPanel(
+            "hybris.import.settings.exclude.resources.popup.add.title",
+            "hybris.import.settings.exclude.resources.popup.add.text",
+            "hybris.import.settings.exclude.resources.popup.edit.title",
+            "hybris.import.settings.exclude.resources.popup.edit.text",
+        )
+        private val excludeFromIndex = CRUDListPanel(
+            "hybris.import.settings.excludedFromIndex.directory.popup.add.title",
+            "hybris.import.settings.excludedFromIndex.directory.popup.add.text",
+            "hybris.import.settings.excludedFromIndex.directory.popup.edit.title",
+            "hybris.import.settings.excludedFromIndex.directory.popup.edit.text",
+        )
 
         override fun createPanel() = panel {
             group("Modules Grouping") {
@@ -84,27 +102,6 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
                 }.visibleIf(groupModulesCheckBox.selected)
             }
 
-            val junkList = CRUDListPanel(
-                "hybris.import.settings.junk.directory.popup.add.title",
-                "hybris.import.settings.junk.directory.popup.add.text",
-                "hybris.import.settings.junk.directory.popup.edit.title",
-                "hybris.import.settings.junk.directory.popup.edit.text",
-            )
-
-            val excludeResources = CRUDListPanel(
-                "hybris.import.settings.exclude.resources.popup.add.title",
-                "hybris.import.settings.exclude.resources.popup.add.text",
-                "hybris.import.settings.exclude.resources.popup.edit.title",
-                "hybris.import.settings.exclude.resources.popup.edit.text",
-            )
-
-            val excludeFromIndex = CRUDListPanel(
-                "hybris.import.settings.excludedFromIndex.directory.popup.add.title",
-                "hybris.import.settings.excludedFromIndex.directory.popup.add.text",
-                "hybris.import.settings.excludedFromIndex.directory.popup.edit.title",
-                "hybris.import.settings.excludedFromIndex.directory.popup.edit.text",
-            )
-
             group(message("hybris.import.settings.junk.directory.name"), false) {
                 row {
                     cell(junkList)
@@ -112,28 +109,26 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
                         .onApply { state.junkDirectoryList = junkList.data }
                         .onReset { junkList.data = state.junkDirectoryList }
                         .onIsModified { junkList.data.equalsIgnoreOrder(state.junkDirectoryList).not() }
-                        .component
-
                 }
             }
 
             group(message("hybris.import.settings.exclude.resources.name"), false) {
                 row {
                     cell(excludeResources)
+                        .align(AlignX.FILL)
                         .onApply { state.extensionsResourcesToExclude = excludeResources.data }
                         .onReset { excludeResources.data = state.extensionsResourcesToExclude }
                         .onIsModified { excludeResources.data.equalsIgnoreOrder(state.extensionsResourcesToExclude).not() }
-                        .align(AlignX.FILL)
                 }
             }
 
             group(message("hybris.import.settings.excludedFromIndex.directory.name"), false) {
                 row {
                     cell(excludeFromIndex)
+                        .align(AlignX.FILL)
                         .onApply { state.excludedFromIndexList = excludeFromIndex.data }
                         .onReset { excludeFromIndex.data = state.excludedFromIndexList }
                         .onIsModified { excludeFromIndex.data.equalsIgnoreOrder(state.excludedFromIndexList).not() }
-                        .align(AlignX.FILL)
                 }
             }
         }
