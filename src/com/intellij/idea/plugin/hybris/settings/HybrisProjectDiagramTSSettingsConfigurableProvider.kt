@@ -19,46 +19,89 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.forms.HybrisTypeSystemDiagramSettingsForm
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.options.Configurable
+import com.intellij.idea.plugin.hybris.settings.components.TSDiagramSettingsExcludedTypeNameTable
+import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
-import javax.swing.JComponent
+import com.intellij.ui.ToolbarDecorator
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.util.minimumHeight
+import com.intellij.util.ui.JBUI
 
 class HybrisProjectDiagramTSSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : Configurable, Disposable {
-        private val settingsForm = HybrisTypeSystemDiagramSettingsForm(project)
+    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+        message("hybris.settings.project.diagram.ts.title"), "[y] SAP Commerce plugin Type System Diagram configuration."
+    ) {
+
+        private val tsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.typeSystemDiagramSettings;
+
+        private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
+        private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
 
         init {
-            Disposer.register(this, settingsForm)
+            excludedTypeNamesPane.minimumHeight = 400
         }
 
-        override fun getDisplayName() = message("hybris.settings.project.diagram.ts.title")
+        override fun createPanel() = panel {
+            group("Common Settings") {
+                row {
+                    checkBox("Nodes collapsed by default")
+                        .bindSelected(tsSettings::nodesCollapsedByDefault)
+                }
 
-        override fun createComponent(): JComponent {
-            return settingsForm
-                .init(project)
-                .mainPanel
+                row {
+                    checkBox("Show OOTB Map Nodes")
+                        .comment("One of the OOTB Map example is `localized:java.lang.String`")
+                        .bindSelected(tsSettings::showOOTBMapNodes)
+                }
+
+                row {
+                    checkBox("Show Custom Atomic Nodes")
+                        .bindSelected(tsSettings::showCustomAtomicNodes)
+                }
+
+                row {
+                    checkBox("Show Custom Collection Nodes")
+                        .bindSelected(tsSettings::showCustomCollectionNodes)
+                }
+
+                row {
+                    checkBox("Show Custom Enum Nodes")
+                        .bindSelected(tsSettings::showCustomEnumNodes)
+                }
+
+                row {
+                    checkBox("Show Custom Map Nodes")
+                        .bindSelected(tsSettings::showCustomMapNodes)
+                }
+
+                row {
+                    checkBox("Show Custom Relation Nodes")
+                        .comment("Relations with Deployment details are not affected by this flag")
+                        .bindSelected(tsSettings::showCustomRelationNodes)
+                }
+            }
+
+            group("Excluded Type Names", false) {
+                row {
+                    cell(excludedTypeNamesPane)
+                        .onApply { tsSettings.excludedTypeNames = getNewTypeNames() }
+                        .onReset { excludedTypeNamesTable.updateModel(tsSettings) }
+                        .onIsModified { tsSettings.excludedTypeNames != getNewTypeNames()  }
+                        .align(Align.FILL)
+                }
+            }
         }
 
-        override fun isModified() = settingsForm.isModified(project)
-        override fun apply() = settingsForm.apply(project)
-        override fun reset() {
-            settingsForm.setData(project)
-        }
-
-        override fun disposeUIResources() {
-            Disposer.dispose(settingsForm)
-        }
-
-        override fun dispose() {
-            // NOP
-        }
+        private fun getNewTypeNames() = excludedTypeNamesTable.getItems()
+            .map { it.typeName }
+            .toMutableSet()
     }
 }
