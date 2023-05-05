@@ -75,7 +75,7 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
                         .component
                 }
                 row {
-                    checkBox("Include language in the folded attribute")
+                    checkBox("Include language for folded attribute")
                         .bindSelected(state.folding::showLanguage)
                         .enabledIf(foldingEnableCheckBox.selected)
                         .component
