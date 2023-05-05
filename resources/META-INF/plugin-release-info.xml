@@ -99,11 +99,13 @@
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/375" target="_blank" rel="nofollow">#375</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/376" target="_blank" rel="nofollow">#376</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/377" target="_blank" rel="nofollow">#377</a>,
-                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/378" target="_blank" rel="nofollow">#378</a>)
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/378" target="_blank" rel="nofollow">#378</a>,
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/379" target="_blank" rel="nofollow">#379</a>)
                     <ul>
                         <li>Integration with Type System (references, code completion)</li>
                         <li>Code suggestions for localized attributes</li>
                         <li>Code formatting</li>
+                        <li>Project specific settings</li>
                     </ul>
                 </li>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
