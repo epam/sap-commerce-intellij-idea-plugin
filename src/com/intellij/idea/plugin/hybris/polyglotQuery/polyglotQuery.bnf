@@ -63,7 +63,7 @@ type_key ::= '{' type_key_name '}' {
     recoverWhile=type_key_recover
     methods=[getTypeName]
 }
-private type_key_recover::= !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
+private type_key_recover::= !(<<eof>> | order_clause_literal | GET | WHERE)
 
 order_by ::= order_clause_literal order_key ( ',' order_key )* {
     pin=1
@@ -95,7 +95,7 @@ attribute_key ::= '{' attribute_key_name ( localized )? '}' {
     pin=1
     recoverWhile=attribute_key_recover
 }
-private attribute_key_recover ::= !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
+private attribute_key_recover ::= !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | order_clause_literal | GET | ASC | DESC)
 
 localized ::= '[' localized_name ']' {
     pin=1

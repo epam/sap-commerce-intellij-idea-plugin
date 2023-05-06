@@ -39,7 +39,9 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
         if (!HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding.enabled) {
             return emptyArray()
         }
-
+        /*
+        *  qwe.rty
+        * */
         return CachedValuesManager.getCachedValue(root) {
             val filter = PolyglotQueryFoldingBlocksFilter.instance
             val results = SyntaxTraverser.psiTraverser(root)

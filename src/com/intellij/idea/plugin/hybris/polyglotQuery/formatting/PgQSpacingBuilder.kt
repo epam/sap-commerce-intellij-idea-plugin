@@ -45,7 +45,7 @@ class PgQSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
 
             .after(
                 TokenSet.create(
-                    GET, FROM, WHERE, BY, COMMA, ORDER,
+                    GET, WHERE, BY, COMMA, ORDER,
                     AND, OR,
                 )
             )

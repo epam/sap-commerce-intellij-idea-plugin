@@ -119,7 +119,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC)
+  // !(<<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | order_clause_literal | GET | ASC | DESC)
   static boolean attribute_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover")) return false;
     boolean r;
@@ -129,7 +129,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | FROM | order_clause_literal | GET | ASC | DESC
+  // <<eof>>  | '&' | ',' | cmp_operator | null_operator | ')' | order_clause_literal | GET | ASC | DESC
   private static boolean attribute_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_key_recover_0")) return false;
     boolean r;
@@ -140,7 +140,6 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     if (!r) r = cmp_operator(b, l + 1);
     if (!r) r = null_operator(b, l + 1);
     if (!r) r = consumeToken(b, RPAREN);
-    if (!r) r = consumeToken(b, FROM);
     if (!r) r = order_clause_literal(b, l + 1);
     if (!r) r = consumeToken(b, GET);
     if (!r) r = consumeToken(b, ASC);
@@ -617,7 +616,7 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(<<eof>> | FROM | order_clause_literal | GET | WHERE)
+  // !(<<eof>> | order_clause_literal | GET | WHERE)
   static boolean type_key_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key_recover")) return false;
     boolean r;
@@ -627,13 +626,12 @@ public class PolyglotQueryParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // <<eof>> | FROM | order_clause_literal | GET | WHERE
+  // <<eof>> | order_clause_literal | GET | WHERE
   private static boolean type_key_recover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_key_recover_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = eof(b, l + 1);
-    if (!r) r = consumeToken(b, FROM);
     if (!r) r = order_clause_literal(b, l + 1);
     if (!r) r = consumeToken(b, GET);
     if (!r) r = consumeToken(b, WHERE);

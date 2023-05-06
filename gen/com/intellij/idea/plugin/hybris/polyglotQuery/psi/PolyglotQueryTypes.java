@@ -56,7 +56,6 @@ public interface PolyglotQueryTypes {
   IElementType DESC = new PolyglotQueryTokenType("DESC");
   IElementType DOT = new PolyglotQueryTokenType(".");
   IElementType EQ = new PolyglotQueryTokenType("=");
-  IElementType FROM = new PolyglotQueryTokenType("FROM");
   IElementType GET = new PolyglotQueryTokenType("GET");
   IElementType GT = new PolyglotQueryTokenType(">");
   IElementType GTE = new PolyglotQueryTokenType(">=");
