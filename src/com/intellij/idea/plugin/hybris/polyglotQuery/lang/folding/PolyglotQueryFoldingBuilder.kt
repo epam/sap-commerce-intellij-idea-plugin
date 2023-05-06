@@ -36,12 +36,12 @@ import com.intellij.psi.util.CachedValuesManager
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding.enabled) {
+        val foldingSetting = HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
+
+        if (!foldingSetting.enabled) {
             return emptyArray()
         }
-        /*
-        *  qwe.rty
-        * */
+
         return CachedValuesManager.getCachedValue(root) {
             val filter = PolyglotQueryFoldingBlocksFilter.instance
             val results = SyntaxTraverser.psiTraverser(root)
@@ -55,7 +55,8 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
             CachedValueProvider.Result.create(
                 results,
                 root.containingFile,
-                ProjectRootModificationTracker.getInstance(root.project)
+                ProjectRootModificationTracker.getInstance(root.project),
+                foldingSetting
             )
         }
     }
@@ -71,22 +72,27 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
         PolyglotQueryTypes.WHERE_CLAUSE -> "WHERE ..."
 
         PolyglotQueryTypes.ATTRIBUTE_KEY -> {
-            val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
-                ?.let {
-                    it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
-                        ?.text
-                        ?.trim()
-                        ?: "?"
-                }
-                ?.let { ":$it" }
-                ?: ""
 
             val attribute = node.findChildByType(PolyglotQueryTypes.ATTRIBUTE_KEY_NAME)
                 ?.text
                 ?.trim()
                 ?: "?"
 
-            attribute + language
+            if (HybrisProjectSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
+                val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
+                    ?.let {
+                        it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)
+                            ?.text
+                            ?.trim()
+                            ?: "?"
+                    }
+                    ?.let { ":$it" }
+                    ?: ""
+
+                attribute + language
+            } else {
+                attribute
+            }
         }
 
         else -> FALLBACK_PLACEHOLDER

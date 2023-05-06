@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.settings
 
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.components.BaseState
 
 data class PolyglotQuerySettings(
     var verifyCaseForReservedWords: Boolean = true,
@@ -27,7 +28,7 @@ data class PolyglotQuerySettings(
     var folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
 )
 
-data class PolyglotQueryFoldingSettings(
-    var enabled: Boolean = true,
-    var showLanguage: Boolean = true,
-)
+class PolyglotQueryFoldingSettings() : BaseState() {
+    var enabled by property(true)
+    var showLanguage by property(true)
+}

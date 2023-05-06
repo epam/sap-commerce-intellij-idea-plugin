@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
@@ -90,6 +89,7 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
                     checkBox("Include language for folded attribute")
                         .bindSelected(state.folding::showLanguage)
                         .enabledIf(foldingEnableCheckBox.selected)
+                        .comment("If checked localized attribute `{name[en]}` will be represented as `name:en`")
                         .component
                 }
             }
