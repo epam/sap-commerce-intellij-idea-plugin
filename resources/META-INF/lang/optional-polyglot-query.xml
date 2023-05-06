@@ -39,6 +39,7 @@
         <lang.syntaxHighlighterFactory language="Polyglot Query"
                                        implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
         <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
+        <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettingsConfigurableProvider"/>
@@ -52,6 +53,8 @@
                 class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryFileCreateAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
+
+        <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.OpenPolyglotQuerySettingsAction"/>
     </actions>
 
 

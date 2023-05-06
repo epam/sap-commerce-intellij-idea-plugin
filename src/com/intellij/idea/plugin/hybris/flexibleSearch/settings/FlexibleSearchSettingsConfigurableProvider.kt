@@ -62,6 +62,7 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
                     verifyCaseCheckBox =
                         checkBox("Verify case of the reserved words")
                             .bindSelected(state::verifyCaseForReservedWords)
+                            .comment("Case will be verified when the file is being opened for the first time")
                             .component
                 }
                 row {
@@ -72,7 +73,8 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
                         .label("Default case for reserved words")
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
-                }
+                }.rowComment("Existing case-related notifications will be closed for all related editors. Verification of the case will be re-triggered on the next re-opening of the file")
+
             }
             group("Code Completion") {
                 row {

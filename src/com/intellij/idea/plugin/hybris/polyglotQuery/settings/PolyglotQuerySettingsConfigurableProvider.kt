@@ -19,11 +19,15 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.ui.EditorNotificationProvider
+import com.intellij.ui.EditorNotifications
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.bindItem
@@ -49,12 +53,20 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
 
+        override fun apply() {
+            super.apply()
+
+            EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
+                ?.let { EditorNotifications.getInstance(project).updateNotifications(it) }
+        }
+
         override fun createPanel() = panel {
             group("Language") {
                 row {
                     verifyCaseCheckBox =
                         checkBox("Verify case of the reserved words")
                             .bindSelected(state::verifyCaseForReservedWords)
+                            .comment("Case will be verified when the file is being opened for the first time")
                             .component
                 }
                 row {
@@ -66,7 +78,7 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                         .component
-                }
+                }.rowComment("Existing case-related notifications will be closed for all related editors. Verification of the case will be re-triggered on the next re-opening of the file")
             }
             group("Code Folding") {
                 row {

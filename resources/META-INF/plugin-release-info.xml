@@ -3,7 +3,7 @@
     <id>com.intellij.idea.plugin.sap.commerce</id>
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
-    <version>2023.1.5</version>
+    <version>2023.1.6</version>
 
     <!-- http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html -->
     <idea-version since-build="231.8770.65" until-build="231.*"/>
@@ -100,14 +100,14 @@
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/376" target="_blank" rel="nofollow">#376</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/377" target="_blank" rel="nofollow">#377</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/378" target="_blank" rel="nofollow">#378</a>,
-                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/379" target="_blank" rel="nofollow">#379</a>,
-                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/380" target="_blank" rel="nofollow">#380</a>)
+                <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/379" target="_blank" rel="nofollow">#379</a>)
                     <ul>
                         <li>Integration with Type System (references, code completion)</li>
                         <li>Code suggestions for localized attributes</li>
                         <li>Code formatting</li>
-                        <li>Improved Lexer to support <code>order</code> keyword as type and attribute</li>
+                        <li>Improved Lexer to support <code>order</code> keyword as type and attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/380" target="_blank" rel="nofollow">#380</a>)</li>
                         <li>Project specific settings</li>
+                        <li>Added possibility to unify case of keywords (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/381" target="_blank" rel="nofollow">#381</a>)</li>
                     </ul>
                 </li>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
