@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaEnumValueNode(val parent: TSMetaEnumNode, val meta: TSMetaEnumValue) : TSNode(parent), Disposable {
+class TSMetaEnumValueNode(val parent: TSMetaEnumNode, meta: TSMetaEnumValue) : TSMetaNode<TSMetaEnumValue>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name

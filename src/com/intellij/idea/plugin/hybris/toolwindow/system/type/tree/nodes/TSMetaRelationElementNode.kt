@@ -26,7 +26,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaRelationElementNode(parent: TSMetaRelationNode, val meta: TSMetaRelationElement) : TSNode(parent), Disposable {
+class TSMetaRelationElementNode(parent: TSMetaRelationNode, meta: TSMetaRelationElement) : TSMetaNode<TSMetaRelationElement>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.type

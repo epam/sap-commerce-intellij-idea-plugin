@@ -29,9 +29,9 @@ import com.intellij.ui.SimpleTextAttributes
 
 class TSMetaItemNode(
     parent: TSNode,
-    val meta: TSGlobalMetaItem,
+    meta: TSGlobalMetaItem,
     val groupedByExtends: Map<String?, List<TSGlobalMetaItem>> = emptyMap()
-) : TSNode(parent), Disposable {
+) : TSMetaNode<TSGlobalMetaItem>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"

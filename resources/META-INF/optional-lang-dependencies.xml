@@ -211,6 +211,12 @@
                 text="Refresh SAP Commerce Project" description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
+
+        <group id="TSView.ToolWindow.TreePopup">
+            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToTSItemDeclarationAction"
+                    use-shortcut-of="GotoDeclaration"
+            />
+        </group>
     </actions>
 
 </idea-plugin>

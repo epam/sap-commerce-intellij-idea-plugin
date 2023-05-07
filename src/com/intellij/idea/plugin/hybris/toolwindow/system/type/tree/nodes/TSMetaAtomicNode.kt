@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaAtomicNode(parent: TSNode, val meta: TSGlobalMetaAtomic) : TSNode(parent), Disposable {
+class TSMetaAtomicNode(parent: TSNode, meta: TSGlobalMetaAtomic) : TSMetaNode<TSGlobalMetaAtomic>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name

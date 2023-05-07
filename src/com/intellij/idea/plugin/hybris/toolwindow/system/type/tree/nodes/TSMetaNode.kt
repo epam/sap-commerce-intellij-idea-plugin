@@ -18,22 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
+import com.intellij.util.xml.DomElement
 
-class TSMetaCollectionNode(parent: TSNode, meta: TSGlobalMetaCollection) : TSMetaNode<TSGlobalMetaCollection>(parent, meta), Disposable {
-
-    override fun dispose() = Unit
-    override fun getName() = meta.name ?: "-- no name --"
-
-    override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.TS_COLLECTION)
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.locationString = meta.flattenType
-    }
-
-}
+abstract class TSMetaNode<T : TSMetaClassifier<out DomElement>>(parent: TSNode, val meta: T) : TSNode(parent)

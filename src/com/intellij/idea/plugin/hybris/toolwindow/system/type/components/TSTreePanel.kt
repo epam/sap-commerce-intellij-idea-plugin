@@ -28,6 +28,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import javax.swing.event.TreeSelectionListener
@@ -50,6 +51,7 @@ class TSTreePanel(
         secondComponent = myDefaultPanel
 
         tree.addTreeSelectionListener(myTreeSelectionListener)
+        PopupHandler.installPopupMenu(tree, "TSView.ToolWindow.TreePopup", "TSView.ToolWindow.TreePopup")
 
         Disposer.register(this, tree)
     }

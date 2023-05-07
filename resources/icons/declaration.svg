@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  - Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Lesser General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  - See the GNU Lesser General Public License for more details.
+  -
+  - You should have received a copy of the GNU Lesser General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
+    <style type="text/css">
+        .st0{fill:#389FD6}
+        .st1{fill:#6E6E6E}
+    </style>
+    <g>
+        <path class="st0"
+              d="M 12.253906 3.296875 L 12.703125 3.746094 L 7.90625 8.542969 L 7.457031 8.09375 Z M 12.253906 3.296875 "/>
+        <path class="st0"
+              d="M 12.800781 6.398438 L 12.160156 6.398438 L 12.160156 3.839844 L 9.601562 3.839844 L 9.601562 3.199219 L 12.800781 3.199219 Z M 12.800781 6.398438 "/>
+        <path class="st1"
+              d="M 11.199219 12.160156 L 4.800781 12.160156 C 4.257812 12.160156 3.839844 11.742188 3.839844 11.199219 L 3.839844 4.800781 C 3.839844 4.257812 4.257812 3.839844 4.800781 3.839844 L 8.320312 3.839844 L 8.320312 4.480469 L 4.800781 4.480469 C 4.609375 4.480469 4.480469 4.609375 4.480469 4.800781 L 4.480469 11.199219 C 4.480469 11.390625 4.609375 11.519531 4.800781 11.519531 L 11.199219 11.519531 C 11.390625 11.519531 11.519531 11.390625 11.519531 11.199219 L 11.519531 7.679688 L 12.160156 7.679688 L 12.160156 11.199219 C 12.160156 11.742188 11.742188 12.160156 11.199219 12.160156 Z M 11.199219 12.160156 "/>
+    </g>
+</svg>

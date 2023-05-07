@@ -25,7 +25,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaMapNode(parent: TSNode, val meta: TSGlobalMetaMap) : TSNode(parent), Disposable {
+class TSMetaMapNode(parent: TSNode, meta: TSGlobalMetaMap) : TSMetaNode<TSGlobalMetaMap>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
