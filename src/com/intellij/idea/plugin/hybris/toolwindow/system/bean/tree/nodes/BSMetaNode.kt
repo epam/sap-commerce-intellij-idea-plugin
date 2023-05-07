@@ -18,21 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
+import com.intellij.util.xml.DomElement
 
-class BSMetaEnumValueNode(val parent: BSMetaEnumNode, meta: BSMetaEnum.BSMetaEnumValue) : BSMetaNode<BSMetaEnum.BSMetaEnumValue>(parent, meta), Disposable {
-
-    override fun dispose() = Unit
-    override fun getName() = meta.name ?: "-- no name --"
-
-    override fun update(project: Project, presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.BS_ENUM_VALUE)
-    }
-
-}
+abstract class BSMetaNode<T : BSMetaClassifier<out DomElement>>(parent: BSNode, val meta: T) : BSNode(parent)

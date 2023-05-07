@@ -26,7 +26,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSMetaBeanNode(val parent: BSNode, val meta: BSGlobalMetaBean) : BSNode(parent), Disposable {
+class BSMetaBeanNode(val parent: BSNode, meta: BSGlobalMetaBean) : BSMetaNode<BSGlobalMetaBean>(parent, meta), Disposable {
 
     override fun dispose() = Unit
     override fun getName() = meta.shortName ?: "-- no name --"

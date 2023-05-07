@@ -16,23 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
+package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
-import com.intellij.openapi.Disposable
+import com.intellij.ide.util.PsiNavigationSupport
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.xml.DomElement
 
-class BSMetaEnumValueNode(val parent: BSMetaEnumNode, meta: BSMetaEnum.BSMetaEnumValue) : BSMetaNode<BSMetaEnum.BSMetaEnumValue>(parent, meta), Disposable {
+abstract class AbstractGoToDeclarationAction : AnAction() {
 
-    override fun dispose() = Unit
-    override fun getName() = meta.name ?: "-- no name --"
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-    override fun update(project: Project, presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.BS_ENUM_VALUE)
+    protected fun navigate(project: Project, dom: DomElement, offset: Int?) {
+        if (offset == null) return
+
+        dom.xmlTag?.containingFile?.virtualFile
+            ?.let {
+                PsiNavigationSupport.getInstance()
+                    .createNavigatable(project, it, offset)
+                    .navigate(false)
+            }
     }
-
 }

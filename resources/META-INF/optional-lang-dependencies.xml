@@ -33,7 +33,8 @@
     </projectListeners>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.ManifestJsonSchemaProviderFactory"/>
+        <ProviderFactory
+                implementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.ManifestJsonSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -46,28 +47,38 @@
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
         <!-- ####################################################################################################### -->
-        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML"
+                                  implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Completion Providers                                             -->
         <!-- ####################################################################################################### -->
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            CCv2 manifest.json                                             -->
         <!-- ####################################################################################################### -->
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider"/>
 
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider"/>
+        <projectService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider"/>
+        <projectService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider"/>
+        <projectService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Business Process                                             -->
@@ -81,9 +92,11 @@
         <dom.fileMetaData rootTagName="extensioninfo" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.extensioninfo.EiSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion.ExtensionInfoCompletionContributor"/>
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.completion.ExtensionInfoCompletionContributor"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            LocalExtensions                                              -->
@@ -91,14 +104,17 @@
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
                           implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Cockpit NG                                                   -->
         <!-- ####################################################################################################### -->
-        <dom.extender domClass="com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context" extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
+        <dom.extender domClass="com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context"
+                      extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
         <dom.fileMetaData rootTagName="config" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
         <dom.fileMetaData rootTagName="widgets" stubVersion="3"
@@ -110,17 +126,28 @@
         <dom.fileMetaData rootTagName="editor-definition" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionContributor"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngContextParentNonItemTypeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngActionDefinitionCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetDefinitionCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetIdCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetSettingCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetConnectionWidgetIdCompletionProvider"/>
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionContributor"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngContextParentNonItemTypeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngActionDefinitionCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetDefinitionCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetIdCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetSettingCompletionProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetConnectionWidgetIdCompletionProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl.CngMetaModelAccessImpl"/>
@@ -141,12 +168,17 @@
         <dom.fileMetaData rootTagName="items" stubVersion="22"
                           implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionContributor"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionContributor"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl"/>
@@ -166,14 +198,23 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemsFileValidation"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
+        <applicationService
+                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
 
-        <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider" order="first"/>
-        <xmlStructureViewBuilderProvider implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider" order="first"/>
+        <xmlStructureViewBuilderProvider
+                implementation="com.intellij.idea.plugin.hybris.structureView.TSXmlStructureViewBuilderProvider"
+                order="first"/>
+        <xmlStructureViewBuilderProvider
+                implementation="com.intellij.idea.plugin.hybris.structureView.BSXmlStructureViewBuilderProvider"
+                order="first"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                Bean System                                              -->
@@ -182,9 +223,12 @@
         <dom.fileMetaData rootTagName="beans" stubVersion="7"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML"
+                                        implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>
@@ -198,30 +242,49 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
 
-        <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
+        <postStartupActivity order="first" id="hybrisProjectImport"
+                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport"
+                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport"
+                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <backgroundPostStartupActivity
+                implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
+        <backgroundPostStartupActivity
+                implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
+        <backgroundPostStartupActivity
+                implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
     </extensions>
 
     <actions>
         <action id="File.yRefresh" class="com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction"
-                text="Refresh SAP Commerce Project" description="Re-imports the current hybris project with default values">
+                text="Refresh SAP Commerce Project"
+                description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
 
-        <group id="TSView.ToolWindow.TreePopup">
-            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSNodeAction"
-                    use-shortcut-of="GotoDeclaration"
-            />
+        <group id="TSView.ToolWindow">
+            <group id="TSView.ToolWindow.TreePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSNodeAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+
+            <group id="TSView.ToolWindow.TablePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSTableAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
         </group>
 
-        <group id="TSView.ToolWindow.TablePopup">
-            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSTableAction"
-                    use-shortcut-of="GotoDeclaration"
-            />
+        <group id="BSView.ToolWindow">
+            <group id="BSView.ToolWindow.TreePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationBSNodeAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+
+<!--            <group id="BSView.ToolWindow.TablePopup">-->
+<!--                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationTSTableAction"-->
+<!--                        use-shortcut-of="GotoDeclaration"/>-->
+<!--            </group>-->
         </group>
     </actions>
 

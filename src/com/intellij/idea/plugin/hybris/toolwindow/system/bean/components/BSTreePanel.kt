@@ -29,8 +29,10 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import java.io.Serial
 import javax.swing.event.TreeSelectionListener
 
 class BSTreePanel(
@@ -55,6 +57,7 @@ class BSTreePanel(
         secondComponent = myDefaultPanel
 
         tree.addTreeSelectionListener(myTreeSelectionListener)
+        PopupHandler.installPopupMenu(tree, "BSView.ToolWindow.TreePopup", "BSView.ToolWindow.TreePopup")
 
         Disposer.register(this, tree)
     }
@@ -84,6 +87,11 @@ class BSTreePanel(
         } else {
             secondComponent = myDefaultPanel
         }
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 7171096529464716313L
     }
 
 }

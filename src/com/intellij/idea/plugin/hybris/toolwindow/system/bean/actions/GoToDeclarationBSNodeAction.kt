@@ -15,35 +15,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.intellij.idea.plugin.hybris.toolwindow.system.type.actions
+package com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.model.*
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaTypeNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
+import com.intellij.idea.plugin.hybris.system.bean.model.Property
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTreeModel
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaNode
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaTypeNode
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.refactoring.suggested.startOffset
 import javax.swing.JTree
 
-class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
+class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-
     override fun update(e: AnActionEvent) {
-        val tsNode = getSelectedNode(e)
+        val node = getSelectedNode(e)
 
-        if (tsNode == null || tsNode is TSMetaTypeNode) {
+        if (node == null || node is BSMetaTypeNode) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -55,20 +54,13 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val tsNode = getSelectedNode(e) ?: return
         val project = e.project ?: return
-        if (tsNode !is TSMetaNode<*>) return
+        if (tsNode !is BSMetaNode<*>) return
 
         when (val dom = tsNode.meta.retrieveDom()) {
-            is AtomicType -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
-            is CollectionType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is EnumType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is EnumValue -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is Attribute -> navigate(project, dom, dom.qualifier.xmlAttributeValue?.startOffset)
-            is CustomProperty -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
-            is Index -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
-            is ItemType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is MapType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is Relation -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is RelationElement -> navigate(project, dom, dom.xmlTag?.startOffset)
+            is Bean -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
+            is Enum -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
+            is EnumValue -> navigate(project, dom, dom.xmlElement?.startOffset)
+            is Property -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
         }
     }
 
@@ -77,7 +69,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         ?.let { it as? JTree }
         ?.selectionPath
         ?.lastPathComponent
-        ?.let { it as? TSTreeModel.Node }
+        ?.let { it as? BSTreeModel.Node }
         ?.userObject
-        ?.let { it as? TSNode }
+        ?.let { it as? BSNode }
 }

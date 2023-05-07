@@ -18,30 +18,24 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.actions
 
-import com.intellij.ide.util.PsiNavigationSupport
+import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.project.Project
 import com.intellij.refactoring.suggested.startOffset
-import com.intellij.util.xml.DomElement
 
-class GoToDeclarationTSTableAction : AnAction() {
+class GoToDeclarationTSTableAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-
     override fun update(e: AnActionEvent) {
-        val item = getSelectedNode(e)
+        val item = getSelectedItem(e)
 
         if (item == null) {
             e.presentation.isEnabledAndVisible = false
@@ -53,7 +47,7 @@ class GoToDeclarationTSTableAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val item = getSelectedNode(e) ?: return
+        val item = getSelectedItem(e) ?: return
         val project = e.project ?: return
         if (item !is TSMetaClassifier<*>) return
 
@@ -66,18 +60,7 @@ class GoToDeclarationTSTableAction : AnAction() {
         }
     }
 
-    private fun navigate(project: Project, dom: DomElement, offset: Int?) {
-        if (offset == null) return
-
-        dom.xmlTag?.containingFile?.virtualFile
-            ?.let {
-                PsiNavigationSupport.getInstance()
-                    .createNavigatable(project, it, offset)
-                    .navigate(false)
-            }
-    }
-
-    private fun getSelectedNode(event: AnActionEvent) = event
+    private fun getSelectedItem(event: AnActionEvent) = event
         .getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
         ?.let { it as? AbstractTable<*, *> }
         ?.getCurrentItem()
