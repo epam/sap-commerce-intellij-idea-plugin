@@ -37,7 +37,7 @@ class GoToDeclarationTSTableAction : AbstractGoToDeclarationAction() {
     override fun update(e: AnActionEvent) {
         val item = getSelectedItem(e)
 
-        if (item == null) {
+        if (item == null || item !is TSMetaClassifier<*>) {
             e.presentation.isEnabledAndVisible = false
             return
         }

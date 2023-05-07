@@ -281,10 +281,10 @@
                         use-shortcut-of="GotoDeclaration"/>
             </group>
 
-<!--            <group id="BSView.ToolWindow.TablePopup">-->
-<!--                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationTSTableAction"-->
-<!--                        use-shortcut-of="GotoDeclaration"/>-->
-<!--            </group>-->
+            <group id="BSView.ToolWindow.TablePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationBSTableAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
         </group>
     </actions>
 

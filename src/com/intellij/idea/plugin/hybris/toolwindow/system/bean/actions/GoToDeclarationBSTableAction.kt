@@ -15,34 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean
-import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
-import com.intellij.idea.plugin.hybris.system.bean.model.Property
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaTypeNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
+import com.intellij.idea.plugin.hybris.system.bean.model.*
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.refactoring.suggested.startOffset
-import javax.swing.JTree
 
-class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
+class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
     override fun update(e: AnActionEvent) {
-        val node = getSelectedNode(e)
+        val item = getSelectedItem(e)
 
-        if (node == null || node !is BSMetaNode<*>) {
+        if (item == null || item !is BSMetaClassifier<*>) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -52,24 +47,21 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val tsNode = getSelectedNode(e) ?: return
+        val item = getSelectedItem(e) ?: return
         val project = e.project ?: return
-        if (tsNode !is BSMetaNode<*>) return
+        if (item !is BSMetaClassifier<*>) return
 
-        when (val dom = tsNode.meta.retrieveDom()) {
-            is Bean -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
-            is Enum -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
+        when (val dom = item.retrieveDom()) {
             is EnumValue -> navigate(project, dom, dom.xmlElement?.startOffset)
             is Property -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is Hint -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is Import -> navigate(project, dom, dom.xmlTag?.startOffset)
+            is Annotations -> navigate(project, dom, dom.xmlTag?.startOffset)
         }
     }
 
-    private fun getSelectedNode(event: AnActionEvent) = event
+    private fun getSelectedItem(event: AnActionEvent) = event
         .getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-        ?.let { it as? JTree }
-        ?.selectionPath
-        ?.lastPathComponent
-        ?.let { it as? BSTreeModel.Node }
-        ?.userObject
-        ?.let { it as? BSNode }
+        ?.let { it as? AbstractTable<*, *> }
+        ?.getCurrentItem()
 }

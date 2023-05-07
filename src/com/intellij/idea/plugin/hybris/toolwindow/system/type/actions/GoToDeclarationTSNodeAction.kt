@@ -43,7 +43,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
     override fun update(e: AnActionEvent) {
         val tsNode = getSelectedNode(e)
 
-        if (tsNode == null || tsNode is TSMetaTypeNode) {
+        if (tsNode == null || tsNode !is TSMetaNode<*>) {
             e.presentation.isEnabledAndVisible = false
             return
         }

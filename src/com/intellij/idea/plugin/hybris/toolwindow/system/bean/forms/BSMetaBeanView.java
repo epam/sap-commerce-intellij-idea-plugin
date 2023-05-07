@@ -32,6 +32,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaP
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -136,5 +137,10 @@ public class BSMetaBeanView {
         myHintsPane.setBorder(IdeBorderFactory.createTitledBorder("Hints"));
         myImportsPane.setBorder(IdeBorderFactory.createTitledBorder("Imports"));
         myAnnotationsPane.setBorder(IdeBorderFactory.createTitledBorder("Annotations"));
+
+        PopupHandler.installPopupMenu(myProperties, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myHints, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myImports, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myAnnotations, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
     }
 }

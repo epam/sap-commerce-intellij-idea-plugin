@@ -22,9 +22,11 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum;
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum;
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaEnumValuesTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -47,7 +49,7 @@ public class BSMetaEnumView {
     private JBPanel myDetailsPane;
     private JPanel myFlagsPane;
     private JBTextField myDeprecatedSince;
-    private BSMetaEnumValuesTable myEnumValues;
+    private AbstractTable<BSGlobalMetaEnum, BSMetaEnum.BSMetaEnumValue> myEnumValues;
 
     public BSMetaEnumView(final Project project) {
         this.myProject = project;
@@ -95,5 +97,7 @@ public class BSMetaEnumView {
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
         myValuesPane.setBorder(IdeBorderFactory.createTitledBorder("Values"));
+
+        PopupHandler.installPopupMenu(myEnumValues, "BSView.ToolWindow.TablePopup", "BSView.ToolWindow.TablePopup");
     }
 }
