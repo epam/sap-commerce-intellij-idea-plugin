@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -99,5 +100,7 @@ public class TSMetaEnumView {
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myFlagsPane.setBorder(IdeBorderFactory.createTitledBorder("Flags"));
         myValuesPane.setBorder(IdeBorderFactory.createTitledBorder("Values"));
+
+        PopupHandler.installPopupMenu(myEnumValues, "TSView.ToolWindow.TablePopup", "TSView.ToolWindow.TablePopup");
     }
 }

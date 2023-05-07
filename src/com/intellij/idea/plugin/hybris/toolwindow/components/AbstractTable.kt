@@ -61,6 +61,14 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     fun getItems(): List<Item> = (model as? ListTableModel<Item>)?.items
         ?: emptyList()
 
+    fun getItem(rowIndex: Int): Item? = try {
+        (model as? ListTableModel<Item>)?.getItem(rowIndex)
+    } catch (x: IndexOutOfBoundsException) {
+        null
+    }
+
+    fun getCurrentItem(): Item? = getItem(selectedRow)
+
     fun getCastedModel() = model as? ListTableModel<Item>
 
     abstract fun select(item: Item)

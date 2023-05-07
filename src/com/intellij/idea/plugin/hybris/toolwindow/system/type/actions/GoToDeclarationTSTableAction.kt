@@ -20,11 +20,9 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.actions
 
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.type.model.*
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaTypeNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -33,9 +31,8 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.project.Project
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.xml.DomElement
-import javax.swing.JTree
 
-class GoToTSItemDeclarationAction : AnAction() {
+class GoToDeclarationTSTableAction : AnAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
@@ -44,9 +41,9 @@ class GoToTSItemDeclarationAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun update(e: AnActionEvent) {
-        val tsNode = getSelectedNode(e)
+        val item = getSelectedNode(e)
 
-        if (tsNode == null || tsNode is TSMetaTypeNode) {
+        if (item == null) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -56,21 +53,15 @@ class GoToTSItemDeclarationAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val tsNode = getSelectedNode(e) ?: return
+        val item = getSelectedNode(e) ?: return
         val project = e.project ?: return
-        if (tsNode !is TSMetaNode<*>) return
+        if (item !is TSMetaClassifier<*>) return
 
-        when (val dom = tsNode.meta.retrieveDom()) {
-            is AtomicType -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
-            is CollectionType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is EnumType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+        when (val dom = item.retrieveDom()) {
             is EnumValue -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
             is Attribute -> navigate(project, dom, dom.qualifier.xmlAttributeValue?.startOffset)
             is CustomProperty -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
             is Index -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
-            is ItemType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is MapType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
-            is Relation -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
             is RelationElement -> navigate(project, dom, dom.xmlTag?.startOffset)
         }
     }
@@ -88,10 +79,6 @@ class GoToTSItemDeclarationAction : AnAction() {
 
     private fun getSelectedNode(event: AnActionEvent) = event
         .getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-        ?.let { it as? JTree }
-        ?.selectionPath
-        ?.lastPathComponent
-        ?.let { it as? TSTreeModel.Node }
-        ?.userObject
-        ?.let { it as? TSNode }
+        ?.let { it as? AbstractTable<*, *> }
+        ?.getCurrentItem()
 }

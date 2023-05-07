@@ -32,6 +32,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaI
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementsTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
@@ -178,5 +179,10 @@ public class TSMetaItemView {
         myCustomPropertiesPane.setBorder(IdeBorderFactory.createTitledBorder("Custom Properties"));
         myIndexesPane.setBorder(IdeBorderFactory.createTitledBorder("Indexes"));
         myRelationsPane.setBorder(IdeBorderFactory.createTitledBorder("Relations"));
+
+        PopupHandler.installPopupMenu(myAttributes, "TSView.ToolWindow.TablePopup", "TSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myCustomProperties, "TSView.ToolWindow.TablePopup", "TSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myIndexes, "TSView.ToolWindow.TablePopup", "TSView.ToolWindow.TablePopup");
+        PopupHandler.installPopupMenu(myRelations, "TSView.ToolWindow.TablePopup", "TSView.ToolWindow.TablePopup");
     }
 }

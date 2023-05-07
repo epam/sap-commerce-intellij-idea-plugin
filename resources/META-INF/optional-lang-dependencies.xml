@@ -213,7 +213,13 @@
         </action>
 
         <group id="TSView.ToolWindow.TreePopup">
-            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToTSItemDeclarationAction"
+            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSNodeAction"
+                    use-shortcut-of="GotoDeclaration"
+            />
+        </group>
+
+        <group id="TSView.ToolWindow.TablePopup">
+            <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSTableAction"
                     use-shortcut-of="GotoDeclaration"
             />
         </group>
