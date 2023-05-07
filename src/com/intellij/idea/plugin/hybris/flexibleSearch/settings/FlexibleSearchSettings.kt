@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.components.BaseState
 
 data class FlexibleSearchSettings(
     var verifyCaseForReservedWords: Boolean = true,
@@ -37,8 +38,9 @@ data class FlexibleSearchCompletionSettings(
     var defaultTableAliasSeparator: String = HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT,
 )
 
-data class FlexibleSearchFoldingSettings(
-    var enabled: Boolean = true,
-    var showSelectedTableName: Boolean = false,
-)
+class FlexibleSearchFoldingSettings : BaseState() {
+    var enabled by property(true)
+    var showSelectedTableNameForYColumn by property(false)
+    var showLanguageForYColumn by property(true)
+}
 

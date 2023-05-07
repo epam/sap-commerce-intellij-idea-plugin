@@ -48,6 +48,7 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
         private val tableAliasSeparatorsModel = CollectionComboBoxModel(listOf(".", ":"))
+        private lateinit var foldingEnableCheckBox: JCheckBox
 
         override fun apply() {
             super.apply()
@@ -73,7 +74,7 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
                         .label("Default case for reserved words")
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
-                }.rowComment("Existing case-related notifications will be closed for all related editors. Verification of the case will be re-triggered on the next re-opening of the file")
+                }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
 
             }
             group("Code Completion") {
@@ -110,12 +111,21 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
             }
             group("Code Folding") {
                 row {
-                    checkBox("Enable code folding")
+                    foldingEnableCheckBox = checkBox("Enable code folding")
                         .bindSelected(state.folding::enabled)
+                        .component
                 }
                 row {
-                    checkBox("Show table alias")
-                        .bindSelected(state.folding::showSelectedTableName)
+                    checkBox("Show table alias for folded [y] attributes")
+                        .comment("If checked attribute <code>{alias.name[en]}</code> will be represented as <code>alias.name</code>")
+                        .bindSelected(state.folding::showSelectedTableNameForYColumn)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Show language for folded [y] attribute")
+                        .bindSelected(state.folding::showLanguageForYColumn)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                        .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }
             }
         }

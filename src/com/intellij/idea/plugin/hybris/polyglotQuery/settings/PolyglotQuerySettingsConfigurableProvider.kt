@@ -76,8 +76,7 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
                         .label("Default case for reserved words")
                         .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
-                        .component
-                }.rowComment("Existing case-related notifications will be closed for all related editors. Verification of the case will be re-triggered on the next re-opening of the file")
+                }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
             }
             group("Code Folding") {
                 row {
@@ -86,11 +85,10 @@ class PolyglotQuerySettingsConfigurableProvider(val project: Project) : Configur
                         .component
                 }
                 row {
-                    checkBox("Include language for folded attribute")
+                    checkBox("Show language for folded attribute")
                         .bindSelected(state.folding::showLanguage)
                         .enabledIf(foldingEnableCheckBox.selected)
-                        .comment("If checked localized attribute `{name[en]}` will be represented as `name:en`")
-                        .component
+                        .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }
             }
         }
