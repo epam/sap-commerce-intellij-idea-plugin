@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -53,12 +53,17 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
         override fun apply() {
             super.apply()
 
-            EditorNotificationProvider.EP_NAME.findExtension(FlexibleSearchEditorNotificationProvider::class.java, project)
+            EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateNotifications(it) }
         }
 
         override fun createPanel() = panel {
             group("Language") {
+                row {
+                    checkBox("Verify used table alias separator")
+                        .bindSelected(state::verifyUsedTableAliasSeparator)
+                        .comment("Usage of the default table alias separator will be verified when the file is being opened for the first time")
+                }
                 row {
                     verifyCaseCheckBox =
                         checkBox("Verify case of the reserved words")

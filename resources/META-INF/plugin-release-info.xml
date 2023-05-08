@@ -111,6 +111,7 @@
                         <li>Respect value of the `show language` flag (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/382" target="_blank" rel="nofollow">#382</a>)</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> Added possibility to Unify table alias separator for FlexibleSearch with a single click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/389" target="_blank" rel="nofollow">#389</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/384" target="_blank" rel="nofollow">#384</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/385" target="_blank" rel="nofollow">#385</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/386" target="_blank" rel="nofollow">#386</a>)</li>
@@ -144,7 +145,7 @@
                     <ul>
                         <li>Rewritten from the Scratch</li>
                         <li>Folding support</li>
-                        <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with single click</li>
+                        <li>Brand new possibility to Unify case of the reserved words, change to upper or lowercase with a single click</li>
                         <li>Added support of the multiline comment block <code>/**/</code></li>
                         <li>Added find usages for table & column aliases</li>
                         <li>Added support of the localized attributes</li>

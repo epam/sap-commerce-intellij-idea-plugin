@@ -23,10 +23,15 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileTyp
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
+import com.intellij.psi.util.PsiTreeUtil
 
 object FlexibleSearchElementFactory {
 
     fun createIdentifier(project: Project, name: String): PsiElement = createFile(project, name).firstChild
+
+    fun createColumnSeparator(project: Project, separator: String): PsiElement? = createFile(project, "SELECT {alias${separator}name}")
+        .let { PsiTreeUtil.findChildOfType(it, FlexibleSearchColumnSeparator::class.java) }
+        ?.firstChild
 
     fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.fxs", FlexibleSearchFileType.instance, text) as FlexibleSearchFile

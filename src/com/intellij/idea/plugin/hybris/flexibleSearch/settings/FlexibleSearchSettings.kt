@@ -24,6 +24,7 @@ import com.intellij.openapi.components.BaseState
 
 data class FlexibleSearchSettings(
     var verifyCaseForReservedWords: Boolean = true,
+    var verifyUsedTableAliasSeparator: Boolean = true,
     var defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
 
     var completion: FlexibleSearchCompletionSettings = FlexibleSearchCompletionSettings(),

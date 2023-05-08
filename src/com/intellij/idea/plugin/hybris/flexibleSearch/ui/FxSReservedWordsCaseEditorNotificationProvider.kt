@@ -19,41 +19,31 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditor
-import com.intellij.openapi.fileTypes.FileTypeRegistry
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import java.util.function.Function
-import javax.swing.JComponent
 
-class FlexibleSearchEditorNotificationProvider : EditorNotificationProvider, DumbAware {
+class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {
 
-    override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val settings = HybrisProjectSettingsComponent.getInstance(project)
-        if (!settings.isHybrisProject()) return null
-        if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType.instance)) return null
-        val fxsSettings = settings.state.flexibleSearchSettings
-        if (!fxsSettings.verifyCaseForReservedWords) return null
+    override fun shouldCollect(fxsSettings: FlexibleSearchSettings) = fxsSettings.verifyCaseForReservedWords
 
-        val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null
-
-        if (collect(fxsSettings, psiFile).isEmpty()) return null
-
+    override fun panelFunction(
+        fxsSettings: FlexibleSearchSettings,
+        project: Project,
+        psiFile: PsiFile,
+        file: VirtualFile
+    ): Function<FileEditor, EditorNotificationPanel> {
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
             panel.icon(HybrisIcons.HYBRIS)
@@ -70,7 +60,6 @@ class FlexibleSearchEditorNotificationProvider : EditorNotificationProvider, Dum
                                 ReservedWordsCase.LOWERCASE -> it.replaceWithText(it.text.lowercase())
                             }
                         }
-
                 }
 
                 EditorNotifications.getInstance(project).updateNotifications(file)
@@ -80,7 +69,7 @@ class FlexibleSearchEditorNotificationProvider : EditorNotificationProvider, Dum
         }
     }
 
-    private fun collect(
+    override fun collect(
         fxsSettings: FlexibleSearchSettings,
         psiFile: PsiFile
     ): MutableCollection<LeafPsiElement> {

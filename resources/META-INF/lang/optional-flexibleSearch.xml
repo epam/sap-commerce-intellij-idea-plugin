@@ -46,7 +46,8 @@
         <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
 
         <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
-        <editorNotificationProvider id="fxsEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FlexibleSearchEditorNotificationProvider"/>
+        <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
+        <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
         <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
 

@@ -52,7 +52,6 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                     checkBox("Use smart folding")
                         .bindSelected(state.folding::useSmartFolding)
                         .enabledIf(foldingEnableCheckBox.selected)
-                        .component
                 }
             }
         }
