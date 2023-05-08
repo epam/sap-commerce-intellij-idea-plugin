@@ -137,6 +137,8 @@ LINE_COMMENT=--[^\r\n]*
   ":o"                               { yybegin(YYINITIAL); return OUTER_JOIN; }
   "}"                                { yybegin(YYINITIAL); return RBRACE; }
 
+  {IDENTIFIER}                       { return IDENTIFIER; }
+
 }
 
 [^] { return BAD_CHARACTER; }

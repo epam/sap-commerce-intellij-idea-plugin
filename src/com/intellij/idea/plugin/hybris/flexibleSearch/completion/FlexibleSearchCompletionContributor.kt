@@ -72,7 +72,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(DUMMY_IDENTIFIER)
+                .withText(StandardPatterns.string().startsWith(DUMMY_IDENTIFIER))
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(RBRACKET)
@@ -226,16 +226,6 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
                         psiElement(IDENTIFIER)
                             .withParent(psiElement(COLUMN_NAME)),
                     )
-//                )
-//                .withParent(
-//                    psiElement(TokenType.ERROR_ELEMENT)
-//                        .afterSiblingSkipping(
-//                            psiElement(TokenType.WHITE_SPACE),
-//                            PlatformPatterns.or(
-//                                psiElement(FlexibleSearchColumnRefYExpression::class.java),
-//                                psiElement(FlexibleSearchColumnRefExpression::class.java)
-//                            ),
-//                        )
                 ),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
