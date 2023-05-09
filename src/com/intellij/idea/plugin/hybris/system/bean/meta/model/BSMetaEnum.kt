@@ -29,7 +29,7 @@ interface BSMetaEnum : BSMetaClassifier<Enum>  {
     val isDeprecated: Boolean
 
     interface BSMetaEnumValue : BSMetaClassifier<EnumValue> {
-
+        var globalOwner: BSGlobalMetaEnum
     }
 }
 

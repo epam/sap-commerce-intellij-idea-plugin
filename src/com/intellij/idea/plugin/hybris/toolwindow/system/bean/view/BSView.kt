@@ -24,7 +24,7 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -54,8 +54,6 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             val panel = JBPanel<JBPanel<*>>(GridBagLayout())
             panel.add(JBLabel(message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
             setContent(panel)
-        } else {
-            refreshContent()
         }
 
         Disposer.register(this, myTreePane)
@@ -79,19 +77,19 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         with(myProject.messageBus.connect(this)) {
             subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
                 override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
-                    myTreePane.update(changeType)
+                    myTreePane.update(BSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
                 }
             })
-            subscribe(BSMetaModelAccessImpl.topic, object : BSChangeListener {
+            subscribe(BSMetaModelAccess.TOPIC, object : BSChangeListener {
                 override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
-                    refreshContent()
+                    refreshContent(globalMetaModel)
                 }
             })
         }
     }
 
-    private fun refreshContent() {
-        myTreePane.update(BSViewSettings.ChangeType.FULL)
+    private fun refreshContent(globalMetaModel: BSGlobalMetaModel) {
+        myTreePane.update(globalMetaModel, BSViewSettings.ChangeType.FULL)
 
         if (content != myTreePane) {
             setContent(myTreePane)

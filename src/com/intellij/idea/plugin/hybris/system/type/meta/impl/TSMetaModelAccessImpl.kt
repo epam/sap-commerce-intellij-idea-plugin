@@ -43,7 +43,6 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.annotation.concurrent.GuardedBy
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -66,7 +65,6 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
-    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = TSMetaModelCollector.getInstance(myProject).collectDependencies()
@@ -85,6 +83,30 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }, false
     )
 
+    private val task = object : Task.Backgroundable(myProject, message("hybris.ts.access.progress.title.building")) {
+        override fun run(indicator: ProgressIndicator) {
+            indicator.text2 = message("hybris.ts.access.progress.subTitle.waitingForIndex")
+
+            DumbService.getInstance(project).runReadActionInSmartMode(
+                Computable {
+                    if (DumbService.isDumb(project)) throw ProcessCanceledException()
+                    val lock = semaphore.tryAcquire()
+
+                    if (lock) {
+                        try {
+                            building = true
+                            val globalMetaModel = myGlobalMetaModelCache.value
+                            building = false
+                            myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
+                        } finally {
+                            semaphore.release();
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     override fun getMetaModel(): TSGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
@@ -92,27 +114,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
             return myGlobalMetaModelCache.value
         }
 
-        val task = object : Task.Backgroundable(myProject, message("hybris.ts.access.progress.title.building")) {
-            override fun run(indicator: ProgressIndicator) {
-                DumbService.getInstance(project).runReadActionInSmartMode(
-                        Computable {
-                            if (DumbService.isDumb(project)) throw ProcessCanceledException()
-                            val lock = semaphore.tryAcquire()
+        building = true
 
-                            if (lock) {
-                                try {
-                                    building = true
-                                    val globalMetaModel = myGlobalMetaModelCache.value
-                                    building = false
-                                    myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
-                                } finally {
-                                    semaphore.release();
-                                }
-                            }
-                        }
-                )
-            }
-        }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
 
         throw ProcessCanceledException()

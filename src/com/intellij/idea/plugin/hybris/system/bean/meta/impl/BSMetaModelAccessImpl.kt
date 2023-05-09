@@ -40,20 +40,18 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.util.messages.Topic
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.annotation.concurrent.GuardedBy
 
 class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess {
 
     private val myGlobalMetaModel = BSGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
+
     @Volatile
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
-    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val localMetaModels = BSMetaModelCollector.getInstance(myProject).collectDependencies()
@@ -71,6 +69,30 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         }, false
     )
 
+    private val task = object : Task.Backgroundable(myProject, message("hybris.bs.access.progress.title.building")) {
+        override fun run(indicator: ProgressIndicator) {
+            indicator.text2 = message("hybris.bs.access.progress.subTitle.waitingForIndex")
+
+            DumbService.getInstance(project).runReadActionInSmartMode(
+                Computable {
+                    val lock = semaphore.tryAcquire()
+
+                    if (lock) {
+                        try {
+                            building = true
+                            val globalMetaModel = myGlobalMetaModelCache.value
+                            building = false
+
+                            myMessageBus.syncPublisher(BSMetaModelAccess.TOPIC).beanSystemChanged(globalMetaModel)
+                        } finally {
+                            semaphore.release();
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     override fun getMetaModel(): BSGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
@@ -78,26 +100,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
             return myGlobalMetaModelCache.value
         }
 
-        val task = object : Task.Backgroundable(myProject, message("hybris.bs.access.progress.title.building")) {
-            override fun run(indicator: ProgressIndicator) {
-                DumbService.getInstance(project).runReadActionInSmartMode(
-                    Computable {
-                        val lock = semaphore.tryAcquire()
-
-                        if (lock) {
-                            try {
-                                building = true
-                                val globalMetaModel = myGlobalMetaModelCache.value
-                                building = false
-                                myMessageBus.syncPublisher(topic).beanSystemChanged(globalMetaModel)
-                            } finally {
-                                semaphore.release();
-                            }
-                        }
-                    }
-                )
-            }
-        }
+        building = true
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
 
         throw ProcessCanceledException()
@@ -154,7 +157,6 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     }
 
     companion object {
-        val topic = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEAN_SYSTEM_MODEL_CACHE")
     }
 }

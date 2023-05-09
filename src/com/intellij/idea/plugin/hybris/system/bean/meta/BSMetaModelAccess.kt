@@ -24,10 +24,13 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.openapi.project.Project
+import com.intellij.util.messages.Topic
 
 interface BSMetaModelAccess {
 
     companion object {
+        val TOPIC = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
+
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 

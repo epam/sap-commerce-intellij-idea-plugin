@@ -23,9 +23,8 @@ import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
 import com.intellij.idea.plugin.hybris.system.bean.model.Property
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTreeModel
+import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaTypeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
@@ -69,7 +68,7 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
         ?.let { it as? JTree }
         ?.selectionPath
         ?.lastPathComponent
-        ?.let { it as? BSTreeModel.Node }
+        ?.let { it as? TreeNode }
         ?.userObject
         ?.let { it as? BSNode }
 }

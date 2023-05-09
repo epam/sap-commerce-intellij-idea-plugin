@@ -22,13 +22,11 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSMetaEnumNode(val parent: BSNode, meta: BSGlobalMetaEnum) : BSMetaNode<BSGlobalMetaEnum>(parent, meta), Disposable {
+class BSMetaEnumNode(val parent: BSNode, meta: BSGlobalMetaEnum) : BSMetaNode<BSGlobalMetaEnum>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.shortName ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
@@ -39,9 +37,9 @@ class BSMetaEnumNode(val parent: BSNode, meta: BSGlobalMetaEnum) : BSMetaNode<BS
         }
     }
 
-    override fun getChildren(): Collection<BSNode?> = if (BSViewSettings.getInstance(project).isShowEnumValues()) meta.values.values
+    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).isShowEnumValues()) meta.values.values
         .filter { it.isCustom }
-        .sortedBy { it.name }
         .map { BSMetaEnumValueNode(this, it) }
-    else emptyList()
+        .associateBy { it.name }
+    else emptyMap()
 }

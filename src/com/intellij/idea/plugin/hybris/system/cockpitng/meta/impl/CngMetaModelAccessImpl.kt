@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
@@ -45,7 +45,6 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomFileElement
 import java.util.*
 import java.util.concurrent.Semaphore
-import javax.annotation.concurrent.GuardedBy
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -68,7 +67,6 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
 
-    @GuardedBy("semaphore")
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
         {
             val processor = CngMetaModelProcessor.getInstance(myProject)
@@ -119,6 +117,29 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         return Pair(localConfigMetaModels, dependencies)
     }
 
+    private val task = object : Task.Backgroundable(myProject, message("hybris.cng.access.progress.title.building")) {
+        override fun run(indicator: ProgressIndicator) {
+            indicator.text2 = message("hybris.cng.access.progress.subTitle.waitingForIndex")
+
+            DumbService.getInstance(project).runReadActionInSmartMode(
+                Computable {
+                    val lock = semaphore.tryAcquire()
+
+                    if (lock) {
+                        try {
+                            building = true
+                            val globalMetaModel = myGlobalMetaModelCache.value
+                            building = false
+                            myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
+                        } finally {
+                            semaphore.release();
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     override fun getMetaModel(): CngGlobalMetaModel {
         if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
@@ -126,26 +147,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
             return myGlobalMetaModelCache.value
         }
 
-        val task = object : Task.Backgroundable(myProject, HybrisI18NBundleUtils.message("hybris.cng.access.progress.title.building")) {
-            override fun run(indicator: ProgressIndicator) {
-                DumbService.getInstance(project).runReadActionInSmartMode(
-                    Computable {
-                        val lock = semaphore.tryAcquire()
+        building = true
 
-                        if (lock) {
-                            try {
-                                building = true
-                                val globalMetaModel = myGlobalMetaModelCache.value
-                                building = false
-                                myMessageBus.syncPublisher(topic).cngSystemChanged(globalMetaModel)
-                            } finally {
-                                semaphore.release();
-                            }
-                        }
-                    }
-                )
-            }
-        }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
 
         throw ProcessCanceledException()

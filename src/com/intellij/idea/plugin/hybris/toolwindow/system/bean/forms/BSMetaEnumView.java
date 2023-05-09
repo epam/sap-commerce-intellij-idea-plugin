@@ -18,12 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms;
 
+import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum;
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum;
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaEnumValuesTable;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;
@@ -32,9 +35,11 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.xml.DomElement;
 
 import javax.swing.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BSMetaEnumView {
 
@@ -88,9 +93,28 @@ public class BSMetaEnumView {
     private void createUIComponents() {
         myEnumValues = BSMetaEnumValuesTable.Companion.getInstance(myProject);
         myValuesPane = ToolbarDecorator.createDecorator(myEnumValues)
-                                       .disableUpDownActions()
-                                       .setPanelBorder(JBUI.Borders.empty())
-                                       .createPanel();
+            .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .map(BSMetaEnum.BSMetaEnumValue::retrieveDom)
+                .map(DomElement::getXmlTag)
+                .ifPresent(currentItem -> {
+                    WriteCommandAction.runWriteCommandAction(myProject, () -> {
+                        final String name = myEnumValues.getCurrentItem().getName();
+                        currentItem.delete();
+
+                        Notifications.create(
+                            NotificationType.INFORMATION
+                            , "Bean System - Enum modified"
+                            , "Enum <code>" + myMeta.getName() + "</code>.<code>"+name+"</code> has been removed."
+                        )
+                            .notify(myProject);
+                    });
+                }))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .map(BSMetaClassifier::isCustom)
+                .orElse(false))
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myDetailsPane = new JBPanel();
         myFlagsPane = new JBPanel();
 

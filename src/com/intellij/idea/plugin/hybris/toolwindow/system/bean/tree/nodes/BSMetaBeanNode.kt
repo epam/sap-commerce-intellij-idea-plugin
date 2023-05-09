@@ -22,13 +22,11 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSMetaBeanNode(val parent: BSNode, meta: BSGlobalMetaBean) : BSMetaNode<BSGlobalMetaBean>(parent, meta), Disposable {
+class BSMetaBeanNode(val parent: BSNode, meta: BSGlobalMetaBean) : BSMetaNode<BSGlobalMetaBean>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.shortName ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
@@ -39,10 +37,10 @@ class BSMetaBeanNode(val parent: BSNode, meta: BSGlobalMetaBean) : BSMetaNode<BS
         }
     }
 
-    override fun getChildren(): Collection<BSNode?> = if (BSViewSettings.getInstance(project).isShowBeanProperties()) meta.properties.values
+    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).isShowBeanProperties()) meta.properties.values
         .filter { it.isCustom }
-        .sortedBy { it.name }
         .map { BSMetaPropertyNode(this, it) }
-    else emptyList()
+        .associateBy { it.name }
+    else emptyMap()
 
 }

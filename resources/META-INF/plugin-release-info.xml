@@ -111,6 +111,7 @@
                         <li>Respect value of the `show language` flag (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/382" target="_blank" rel="nofollow">#382</a>)</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> Improved representation of the Bean System preview (better state synchronization and no flickering) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/391" target="_blank" rel="nofollow">#391</a>)</li>
                 <li><i>Feature:</i> Added possibility to Unify table alias separator for FlexibleSearch with a single click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/389" target="_blank" rel="nofollow">#389</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/384" target="_blank" rel="nofollow">#384</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/385" target="_blank" rel="nofollow">#385</a>)</li>
