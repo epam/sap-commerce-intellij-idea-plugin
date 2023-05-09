@@ -49,4 +49,19 @@
             <option name="FOREGROUND" value="01A308"/>
         </value>
     </option>
+    <option name="FXS_DBRACES">
+        <value>
+            <option name="FOREGROUND" value="BD2D01"/>
+        </value>
+    </option>
+    <option name="FXS_PARENS">
+        <value>
+            <option name="FOREGROUND" value="008D8D"/>
+        </value>
+    </option>
+    <option name="FXS_STAR">
+        <value>
+            <option name="FOREGROUND" value="C48400"/>
+        </value>
+    </option>
 </list>

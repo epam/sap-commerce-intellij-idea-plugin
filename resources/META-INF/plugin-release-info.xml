@@ -117,6 +117,7 @@
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/386" target="_blank" rel="nofollow">#386</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/387" target="_blank" rel="nofollow">#387</a>)</li>
                 <li><i>Feature:</i> Added new FlexibleSearch folding settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/383" target="_blank" rel="nofollow">#383</a>)</li>
+                <li><i>Other:</i> Improved FlexibleSearch color scheme (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/390" target="_blank" rel="nofollow">#390</a>)</li>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
                 <li><i>Fix:</i> Suggest outer join after <code>]</code> symbol (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/388" target="_blank" rel="nofollow">#388</a>)</li>
                 <li><i>Fix:</i> Adjusted Polyglot language Parser (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/372" target="_blank" rel="nofollow">#372</a>)</li>

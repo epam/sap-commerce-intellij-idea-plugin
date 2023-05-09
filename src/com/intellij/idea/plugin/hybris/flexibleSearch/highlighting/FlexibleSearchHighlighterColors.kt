@@ -26,10 +26,10 @@ object FlexibleSearchHighlighterColors {
     val FXS_KEYWORD = key("FXS_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
     val FXS_STRING = key("FXS_STRING", DefaultLanguageHighlighterColors.STRING)
     val FXS_BRACES = key("FXS_BRACES", DefaultLanguageHighlighterColors.BRACES)
-    val FXS_PARENS = key("FXS_PARENS", DefaultLanguageHighlighterColors.BRACES)
+    val FXS_DBRACES = key("FXS_DBRACES", DefaultLanguageHighlighterColors.BRACES)
+    val FXS_PARENS = key("FXS_PARENS", DefaultLanguageHighlighterColors.PARENTHESES)
     val FXS_BRACKETS = key("FXS_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS)
-    val FXS_PARENTHESES = key("FXS_PARENTHESES", DefaultLanguageHighlighterColors.PARENTHESES)
-    val FXS_SYMBOL = key("FXS_COMMA", DefaultLanguageHighlighterColors.KEYWORD)
+    val FXS_SYMBOL = key("FXS_SYMBOL", DefaultLanguageHighlighterColors.KEYWORD)
     val FXS_NUMBER = key("FXS_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
     val FXS_COLUMN = key("FXS_COLUMN", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
     val FXS_TABLE = key("FXS_TABLE_NAME", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
@@ -42,7 +42,8 @@ object FlexibleSearchHighlighterColors {
     val FXS_TABLE_ALIAS = key("FXS_TABLE_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val FXS_COLUMN_ALIAS = key("FXS_COLUMN_ALIAS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val FXS_TABLE_TAIL = key("FXS_TABLE_TAIL", DefaultLanguageHighlighterColors.PREDEFINED_SYMBOL)
-    val FXS_BOOLEAN = key("FXS_BOOLEAN", FXS_KEYWORD)
+    val FXS_BOOLEAN = key("FXS_BOOLEAN", DefaultLanguageHighlighterColors.KEYWORD)
+    val FXS_STAR = key("FXS_STAR", DefaultLanguageHighlighterColors.STATIC_FIELD)
 
     private fun key(
         externalName: @NonNls String,

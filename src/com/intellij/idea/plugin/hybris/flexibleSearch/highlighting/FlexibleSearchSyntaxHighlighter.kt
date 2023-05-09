@@ -43,9 +43,10 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
         private val STRING_KEYS = pack(FlexibleSearchHighlighterColors.FXS_STRING)
         private val SYMBOL_KEYS = pack(FlexibleSearchHighlighterColors.FXS_SYMBOL)
         private val BRACES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACES)
+        private val DBRACES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_DBRACES)
+        private val STAR = pack(FlexibleSearchHighlighterColors.FXS_STAR)
         private val PARENS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENS)
         private val BRACKETS_KEYS = pack(FlexibleSearchHighlighterColors.FXS_BRACKETS)
-        private val PARENTHESES_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARENTHESES)
         private val NUMBER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_NUMBER)
         private val COLUMN_KEYS = pack(FlexibleSearchHighlighterColors.FXS_COLUMN)
         private val TABLE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_TABLE)
@@ -93,9 +94,10 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.COMMENT to COMMENT_KEYS,
 
             FlexibleSearchTypes.LBRACE to BRACES_KEYS,
-            FlexibleSearchTypes.LDBRACE to BRACES_KEYS,
             FlexibleSearchTypes.RBRACE to BRACES_KEYS,
-            FlexibleSearchTypes.RDBRACE to BRACES_KEYS,
+
+            FlexibleSearchTypes.LDBRACE to DBRACES_KEYS,
+            FlexibleSearchTypes.RDBRACE to DBRACES_KEYS,
 
             FlexibleSearchTypes.LBRACKET to BRACKETS_KEYS,
             FlexibleSearchTypes.RBRACKET to BRACKETS_KEYS,
@@ -110,6 +112,8 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
             FlexibleSearchTypes.DOT to SYMBOL_KEYS,
             FlexibleSearchTypes.COLON to SYMBOL_KEYS,
             FlexibleSearchTypes.COMMA to SYMBOL_KEYS,
+
+            FlexibleSearchTypes.STAR to STAR,
 
             FlexibleSearchTypes.CASE to CASE_KEYS,
             FlexibleSearchTypes.WHEN to CASE_KEYS,

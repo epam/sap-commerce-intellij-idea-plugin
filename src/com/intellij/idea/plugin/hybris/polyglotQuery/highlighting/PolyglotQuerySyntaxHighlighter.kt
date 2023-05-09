@@ -43,7 +43,6 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
         private val STRING = pack(PolyglotQueryHighlighterColors.PGQ_STRING)
         private val PARENS = pack(PolyglotQueryHighlighterColors.PGQ_PARENS)
         private val BRACKETS = pack(PolyglotQueryHighlighterColors.PGQ_BRACKETS)
-        private val PARENTHESES = pack(PolyglotQueryHighlighterColors.PGQ_PARENTHESES)
         private val BRACES = pack(PolyglotQueryHighlighterColors.PGQ_BRACES)
         private val NUMBER = pack(PolyglotQueryHighlighterColors.PGQ_NUMBER)
         private val COMMENT = pack(PolyglotQueryHighlighterColors.PGQ_COMMENT)

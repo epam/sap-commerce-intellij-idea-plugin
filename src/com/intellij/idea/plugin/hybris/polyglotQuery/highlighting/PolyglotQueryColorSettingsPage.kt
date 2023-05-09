@@ -26,12 +26,9 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryH
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_COMMENT
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_KEYWORD
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_LOCALIZED
-import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_NUMBER
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_OPERAND
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_PARAMETER
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_PARENS
-import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_PARENTHESES
-import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_STRING
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryHighlighterColors.PGQ_TYPE
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter

@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearc
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_COLUMN_ALIAS
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_COLUMN_SEPARATOR
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_COMMENT
+import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_DBRACES
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_FUNCTION_CALL
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_KEYWORD
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_LOCALIZED
@@ -32,7 +33,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearc
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_OUTER_JOIN
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_PARAMETER
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_PARENS
-import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_PARENTHESES
+import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_STAR
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_STRING
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_SYMBOL
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_TABLE
@@ -75,14 +76,14 @@ WHERE {${tableAlias("p")}:${column("code")}} LIKE '%myProduct'
   OR {${tableAlias("p")}:${column("name")}${localized("en")}} LIKE '%myProduct'
   OR {${tableAlias("p")}:${column("name")}${localized("de")}:o} LIKE '%myProduct'
   /*
-    OR {${tableAlias("p")}:${column("name")}${localized("de")}:o} LIKE '%myProduct'
-    OR {${tableAlias("p")}:${column("name")}${localized("es")}:o} LIKE '%myProduct'
+    OR {p:name[de]:o} LIKE '%myProduct'
+    OR {p:name[es]:o} LIKE '%myProduct'
   */
   OR ( {${tableAlias("p")}.${column("modifiedtime")}} >= ?startDate AND {${tableAlias("p")}.${column("modifiedtime")}} <= ?endDate )
   AND (
         {${tableAlias("p")}.${column("code")}} IS NOT NULL
     AND {${tableAlias("p")}:${column("code")}} LIKE '%al%'
---    AND {${tableAlias("p")}:${column("code")}} LIKE '%al%'
+--    AND {p:code} LIKE '%al%'
     OR  {${tableAlias("p")}.${column("code")}} = 2
     OR  {${tableAlias("p")}.${column("modifiedtime")}} = ${param("?session")}.${param("user")}.${param("modifiedtime")}
     AND {${tableAlias("p")}.${column("code")}} NOT LIKE '%15%'
@@ -109,9 +110,9 @@ SELECT ${tableAlias("tableAlias")}.${column("PK")} FROM (
         private val DESCRIPTORS = arrayOf(
             AttributesDescriptor("Keyword", FXS_KEYWORD),
             AttributesDescriptor("Symbol", FXS_SYMBOL),
-            AttributesDescriptor("Braces//Braces", FXS_BRACES),
+            AttributesDescriptor("Braces//Single braces", FXS_BRACES),
+            AttributesDescriptor("Braces//Double braces", FXS_DBRACES),
             AttributesDescriptor("Braces//Bracket", FXS_BRACKETS),
-            AttributesDescriptor("Braces//Parentheses", FXS_PARENTHESES),
             AttributesDescriptor("Braces//Paren", FXS_PARENS),
             AttributesDescriptor("Column//Name", FXS_COLUMN),
             AttributesDescriptor("Column//Outer Join `:o`", FXS_OUTER_JOIN),
@@ -126,6 +127,7 @@ SELECT ${tableAlias("tableAlias")}.${column("PK")} FROM (
             AttributesDescriptor("Comment", FXS_COMMENT),
             AttributesDescriptor("Tokens//String", FXS_STRING),
             AttributesDescriptor("Tokens//Number", FXS_NUMBER),
+            AttributesDescriptor("Tokens//Star", FXS_STAR),
         )
 
         private val customTags = RainbowHighlighter.createRainbowHLM()

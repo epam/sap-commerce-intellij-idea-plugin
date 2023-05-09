@@ -49,4 +49,19 @@
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>
+    <option name="FXS_DBRACES">
+        <value>
+            <option name="FOREGROUND" value="39FF02"/>
+        </value>
+    </option>
+    <option name="FXS_PARENS">
+        <value>
+            <option name="FOREGROUND" value="00FFFF"/>
+        </value>
+    </option>
+    <option name="FXS_STAR">
+        <value>
+            <option name="FOREGROUND" value="FFE66B"/>
+        </value>
+    </option>
 </list>
