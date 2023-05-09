@@ -20,11 +20,17 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.LeafState
 import com.intellij.ui.tree.LeafState.Supplier
 
-abstract class TSNode : PresentableNodeDescriptor<TSNode?>, Supplier {
+abstract class TSNode : PresentableNodeDescriptor<TSNode>, Supplier, Disposable {
+
+    private val myChildren = mutableMapOf<String, TSNode>()
+    var globalMetaModel: TSGlobalMetaModel? = null
+
     protected constructor(project: Project) : super(project, null)
     protected constructor(parent: TSNode) : super(parent.project, parent)
 
@@ -34,7 +40,40 @@ abstract class TSNode : PresentableNodeDescriptor<TSNode?>, Supplier {
 
     override fun getElement() = this
 
-    open fun getChildren(): Collection<TSNode?> = emptyList()
+    open fun getNewChildren(): Map<String, TSNode> = emptyMap()
+
+    override fun dispose() {
+        myChildren.clear()
+    }
+
+    fun getChildren(globalMetaModel: TSGlobalMetaModel?): Collection<TSNode> {
+        this.globalMetaModel = globalMetaModel
+
+        val newChildren = getNewChildren()
+
+        myChildren.keys
+            .filterNot { newChildren.containsKey(it) }
+            .forEach {
+                myChildren[it]?.dispose()
+                myChildren.remove(it)
+            }
+
+        newChildren.forEach { (newName, newNode) ->
+            if (myChildren[newName] == null) {
+                myChildren[newName] = newNode
+            } else {
+                update(myChildren[newName]!!, newNode)
+            }
+        }
+
+        return myChildren.keys
+            .sorted()
+            .map { myChildren[it]!! }
+            .onEach { it.globalMetaModel = globalMetaModel }
+    }
+
+    open fun update(existingNode: TSNode, newNode: TSNode) {
+    }
 
     override fun update(presentation: PresentationData) {
         if (myProject == null || myProject.isDisposed) return

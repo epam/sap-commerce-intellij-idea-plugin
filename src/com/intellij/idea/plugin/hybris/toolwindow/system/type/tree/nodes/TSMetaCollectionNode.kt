@@ -21,13 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaCollectionNode(parent: TSNode, meta: TSGlobalMetaCollection) : TSMetaNode<TSGlobalMetaCollection>(parent, meta), Disposable {
+class TSMetaCollectionNode(parent: TSNode, meta: TSGlobalMetaCollection) : TSMetaNode<TSGlobalMetaCollection>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {

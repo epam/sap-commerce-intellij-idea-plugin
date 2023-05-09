@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms;
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*;
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean;
+import com.intellij.idea.plugin.hybris.system.bean.psi.BSPsiHelper;
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaAnnotationsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaHintsTable;
@@ -41,7 +41,7 @@ import java.util.Optional;
 public class BSMetaBeanView {
 
     private final Project myProject;
-    private BSMetaClassifier<Bean> myMeta;
+    private BSGlobalMetaBean myMeta;
     private JPanel myContentPane;
     private JBTextField myDescription;
     private JBTextField myClass;
@@ -110,6 +110,8 @@ public class BSMetaBeanView {
 
         myPropertiesPane = ToolbarDecorator.createDecorator(myProperties)
             .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myProperties.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myProperties.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
@@ -117,6 +119,8 @@ public class BSMetaBeanView {
             .createPanel();
         myHintsPane = ToolbarDecorator.createDecorator(myHints)
             .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myHints.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myHints.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
@@ -124,6 +128,8 @@ public class BSMetaBeanView {
             .createPanel();
         myImportsPane = ToolbarDecorator.createDecorator(myImports)
             .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myImports.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myImports.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
@@ -131,6 +137,8 @@ public class BSMetaBeanView {
             .createPanel();
         myAnnotationsPane = ToolbarDecorator.createDecorator(myAnnotations)
             .disableUpDownActions()
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myAnnotations.getCurrentItem())
+                .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myAnnotations.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))

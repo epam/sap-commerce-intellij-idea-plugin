@@ -16,21 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
+package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum.TSMetaEnumValue
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
+import javax.swing.tree.DefaultMutableTreeNode
 
-class TSMetaEnumValueNode(val parent: TSMetaEnumNode, meta: TSMetaEnumValue) : TSMetaNode<TSMetaEnumValue>(parent, meta) {
+class TreeNode(private val node: TSNode) : DefaultMutableTreeNode(node) {
 
-    override fun getName() = meta.name
+    override fun toString() = node.toString()
 
-    override fun update(project: Project, presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.TS_ENUM_VALUE)
+    companion object {
+        private const val serialVersionUID: Long = -4729552031003080261L
     }
-
 }

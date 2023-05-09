@@ -28,7 +28,7 @@ internal class BSMetaImportImpl(
     dom: Import,
     override val module: Module,
     override val isCustom: Boolean,
-    override val name: String?,
+    override val name: String? = dom.type.stringValue,
 ) : BSMetaImport {
 
     override val domAnchor: DomAnchor<Import> = DomService.getInstance().createAnchor(dom)

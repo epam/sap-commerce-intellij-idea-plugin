@@ -101,7 +101,7 @@ class BSMetaModelBuilder(
 
     private fun create(dom: Annotations) = BSMetaAnnotationsImpl(dom, myModule, myCustom, null)
 
-    private fun create(dom: Import) = BSMetaImportImpl(dom, myModule, myCustom, null)
+    private fun create(dom: Import) = BSMetaImportImpl(dom, myModule, myCustom)
 
     private fun create(dom: Property): BSMetaProperty? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null

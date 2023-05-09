@@ -21,4 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
 import com.intellij.util.xml.DomElement
 
-abstract class TSMetaNode<T : TSMetaClassifier<out DomElement>>(parent: TSNode, val meta: T) : TSNode(parent)
+abstract class TSMetaNode<T : TSMetaClassifier<out DomElement>>(parent: TSNode, var meta: T) : TSNode(parent) {
+
+    override fun update(existingNode: TSNode, newNode: TSNode) {
+        val current = existingNode as? TSMetaNode<TSMetaClassifier<out DomElement>> ?: return
+        val new = newNode as? TSMetaNode<*> ?: return
+        current.meta = new.meta
+    }
+}

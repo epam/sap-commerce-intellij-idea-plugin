@@ -39,7 +39,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import java.util.*
 import java.util.concurrent.Semaphore
@@ -97,7 +96,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
                             building = true
                             val globalMetaModel = myGlobalMetaModelCache.value
                             building = false
-                            myMessageBus.syncPublisher(topic).typeSystemChanged(globalMetaModel)
+                            myMessageBus.syncPublisher(TSMetaModelAccess.TOPIC).typeSystemChanged(globalMetaModel)
                         } finally {
                             semaphore.release();
                         }
@@ -178,7 +177,6 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     companion object {
-        val topic = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
         private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
     }
 }

@@ -19,24 +19,21 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSRootNode(tree: TSTree) : TSNode(tree.myProject), Disposable {
+class TSRootNode(tree: TSTree) : TSNode(tree.myProject) {
 
-    override fun dispose() = Unit
     override fun getName() = "root"
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getChildren(): Collection<TSNode> = TSMetaModelAccess.getInstance(myProject).getMetaModel()
-        .getMetaTypes().keys
+    override fun getNewChildren(): Map<String, TSNode> = TSMetaType.values()
         .map { TSMetaTypeNode(this, it) }
-        .sortedBy { it.name }
+        .associateBy { it.name }
 
 }

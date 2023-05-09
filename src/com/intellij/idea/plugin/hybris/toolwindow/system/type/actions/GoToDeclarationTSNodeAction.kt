@@ -21,9 +21,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.actions
 import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.*
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSMetaTypeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -77,7 +76,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         ?.let { it as? JTree }
         ?.selectionPath
         ?.lastPathComponent
-        ?.let { it as? TSTreeModel.Node }
+        ?.let { it as? TreeNode }
         ?.userObject
         ?.let { it as? TSNode }
 }

@@ -52,8 +52,6 @@ internal class BSMetaEnumImpl(
         override val name: String?
     ) : BSMetaEnum.BSMetaEnumValue {
 
-        override lateinit var globalOwner: BSGlobalMetaEnum
-
         override val domAnchor: DomAnchor<EnumValue> = DomService.getInstance().createAnchor(dom)
 
         override fun toString() = "EnumValue(module=$module, name=$name, isCustom=$isCustom)"
@@ -79,7 +77,6 @@ internal class BSGlobalMetaEnumImpl(localMeta: BSMetaEnum)
 
         localMeta.values.values
             .filterNot { values.contains(it.name) }
-            .onEach { it.globalOwner = this }
             .forEach { values[it.name] = it }
     }
 

@@ -21,13 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProperty
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaItemCustomPropertyNode(val parent: TSMetaItemNode, meta: TSMetaCustomProperty) : TSMetaNode<TSMetaCustomProperty>(parent, meta), Disposable {
+class TSMetaItemCustomPropertyNode(val parent: TSMetaItemNode, meta: TSMetaCustomProperty) : TSMetaNode<TSMetaCustomProperty>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name
 
     override fun update(project: Project, presentation: PresentationData) {

@@ -22,11 +22,10 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaRelationElementNode(parent: TSMetaRelationNode, meta: TSMetaRelationElement) : TSMetaNode<TSMetaRelationElement>(parent, meta), Disposable {
+class TSMetaRelationElementNode(parent: TSMetaRelationNode, meta: TSMetaRelationElement) : TSMetaNode<TSMetaRelationElement>(parent, meta) {
 
     override fun dispose() = Unit
     override fun getName() = meta.type
