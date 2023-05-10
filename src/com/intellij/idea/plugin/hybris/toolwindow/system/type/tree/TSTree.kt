@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree
 
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSRootNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
@@ -29,6 +30,7 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import org.jetbrains.annotations.NonNls
 import java.util.function.Function
+import javax.swing.event.TreeModelListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
@@ -37,7 +39,8 @@ private const val SEARCH_CAN_EXPAND = true
 
 class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
 
-    private val myTreeModel = TSTreeModel(TSRootNode(this))
+    private val myTreeModel = TSTreeModel(TreeNode(TSRootNode(this)))
+    private var previousSelection: TreeNode? = null
 
     init {
         isRootVisible = false
@@ -51,19 +54,18 @@ class TSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         })
     }
 
-    override fun getData(dataId: @NonNls String): Any? {
-        return null
-    }
+    override fun getData(dataId: @NonNls String) = null
+    override fun dispose() = Unit
 
-    override fun dispose() {
-    }
-
-    fun update(changeType: TSViewSettings.ChangeType) {
-        // handle UPDATE case better, adjust visibility of the existing nodes
+    fun update(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
         if (changeType == TSViewSettings.ChangeType.FULL || changeType == TSViewSettings.ChangeType.UPDATE) {
-            myTreeModel.reload()
+            previousSelection = lastSelectedPathComponent as? TreeNode
+
+            myTreeModel.reload(globalMetaModel)
         }
     }
+
+    fun addTreeModelListener(listener: TreeModelListener) = model.addTreeModelListener(listener)
 
     companion object {
         private const val serialVersionUID: Long = -4523404713991136984L

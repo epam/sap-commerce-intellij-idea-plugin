@@ -21,13 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaRelationNode(parent: TSNode, meta: TSGlobalMetaRelation) : TSMetaNode<TSGlobalMetaRelation>(parent, meta), Disposable {
+class TSMetaRelationNode(parent: TSNode, meta: TSGlobalMetaRelation) : TSMetaNode<TSGlobalMetaRelation>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
@@ -36,9 +34,9 @@ class TSMetaRelationNode(parent: TSNode, meta: TSGlobalMetaRelation) : TSMetaNod
         presentation.locationString = meta.flattenType
     }
 
-    override fun getChildren() = listOf(
-        TSMetaRelationElementNode(this, meta.source),
-        TSMetaRelationElementNode(this, meta.target)
+    override fun getNewChildren() = mapOf(
+        (meta.source.name ?: "source") to TSMetaRelationElementNode(this, meta.source),
+        (meta.target.name ?: "target") to TSMetaRelationElementNode(this, meta.target)
     )
 
 }

@@ -22,13 +22,11 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class TSMetaEnumNode(val parent: TSNode, meta: TSGlobalMetaEnum) : TSMetaNode<TSGlobalMetaEnum>(parent, meta), Disposable {
+class TSMetaEnumNode(val parent: TSNode, meta: TSGlobalMetaEnum) : TSMetaNode<TSGlobalMetaEnum>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
@@ -39,11 +37,9 @@ class TSMetaEnumNode(val parent: TSNode, meta: TSGlobalMetaEnum) : TSMetaNode<TS
         }
     }
 
-    override fun getChildren(): Collection<TSNode?> {
-        return meta.values.values
-            .filter { it.isCustom }
-            .sortedBy { it.name }
-            .map { TSMetaEnumValueNode(this, it) }
-    }
+    override fun getNewChildren(): Map<String, TSNode> = meta.values.values
+        .filter { it.isCustom }
+        .map { TSMetaEnumValueNode(this, it) }
+        .associateBy { it.name }
 
 }

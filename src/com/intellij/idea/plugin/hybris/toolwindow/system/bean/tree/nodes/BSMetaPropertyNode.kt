@@ -21,13 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSMetaPropertyNode(val parent: BSMetaBeanNode, meta: BSMetaProperty) : BSMetaNode<BSMetaProperty>(parent, meta), Disposable {
+class BSMetaPropertyNode(val parent: BSMetaBeanNode, meta: BSMetaProperty) : BSMetaNode<BSMetaProperty>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {

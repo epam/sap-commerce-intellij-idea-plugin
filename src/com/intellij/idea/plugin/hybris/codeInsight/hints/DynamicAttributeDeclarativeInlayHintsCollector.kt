@@ -20,19 +20,14 @@ package com.intellij.idea.plugin.hybris.codeInsight.hints
 
 import com.intellij.codeInsight.completion.CompletionMemory
 import com.intellij.codeInsight.completion.JavaMethodCallElement
-import com.intellij.codeInsight.hints.declarative.InlayTreeSink
-import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
-import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
+import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiLiteralExpression
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.*
 
 class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
@@ -40,7 +35,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
         if (!element.isValid || element.project.isDefault) return
         if (element !is PsiMethodCallExpression) return
 
-        val method = (if(JavaMethodCallElement.isCompletionMode(element)) CompletionMemory.getChosenMethod(element) else null)
+        val method = (if (JavaMethodCallElement.isCompletionMode(element)) CompletionMemory.getChosenMethod(element) else null)
             ?: element.resolveMethodGenerics().element
             ?: return
 
@@ -58,14 +53,33 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
             .map { it.value }
             .firstOrNull { it != null } ?: return
 
-        meta.allAttributes
+        val attribute = meta.allAttributes
             .filter { it.persistence.type == PersistenceType.DYNAMIC }
             .firstOrNull { it.name == qualifier } ?: return
 
         val identifier = element.methodExpression.lastChild
 
-        sink.addPresentation(InlineInlayPosition(identifier.textRange.startOffset, true), hasBackground = true) {
-            text(message("hybris.ts.type.dynamic"))
+        val inlayActionData = attribute.retrieveDom()
+            ?.persistence
+            ?.attributeHandler
+            ?.xmlAttributeValue
+            ?.reference
+            ?.resolve()
+            ?.let { it as? PsiClass }
+            ?.let { SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(it) }
+            ?.let {
+                InlayActionData(
+                    PsiPointerInlayActionPayload(it),
+                    DynamicAttributeDeclarativeInlayActionHandler.ID,
+                )
+            }
+
+        sink.addPresentation(
+            InlineInlayPosition(identifier.textRange.startOffset, true),
+            tooltip = "Navigate to the ${meta.name}.${attribute.name} dynamic attribute handler",
+            hasBackground = true
+        ) {
+            text(message("hybris.ts.type.dynamic") + (inlayActionData?.let { "⌝" } ?: ""), inlayActionData)
         }
     }
 

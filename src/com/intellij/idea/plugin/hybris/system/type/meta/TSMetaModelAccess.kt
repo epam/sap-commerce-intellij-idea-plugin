@@ -21,11 +21,13 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.project.Project
+import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 
 interface TSMetaModelAccess {
 
     companion object {
+        val TOPIC = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 

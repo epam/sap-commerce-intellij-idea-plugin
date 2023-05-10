@@ -19,24 +19,20 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTree
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSRootNode(tree: BSTree) : BSNode(tree.myProject), Disposable {
+class BSRootNode(tree: BSTree) : BSNode(tree.myProject) {
 
-    override fun dispose() = Unit
     override fun getName() = "root"
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getChildren(): Collection<BSNode> = BSMetaModelAccess.getInstance(myProject).getMetaModel()
-        .getMetaTypes().keys
+    override fun getNewChildren() = BSMetaType.values()
         .map { BSMetaTypeNode(this, it) }
-        .sortedBy { it.name }
-
+        .associateBy { it.name }
 }

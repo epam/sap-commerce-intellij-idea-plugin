@@ -19,25 +19,24 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
-import java.util.*
 
-class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(parent), Disposable {
+class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(parent) {
 
-    override fun dispose() = Unit
     override fun getName() = HybrisI18NBundleUtils.message("hybris.toolwindow.beans.group.${metaType.name.lowercase()}.name")
+
+    override fun update(existingNode: BSNode, newNode: BSNode) {
+        val current = existingNode as? BSMetaNode<BSMetaClassifier<out DomElement>> ?: return
+        val new = newNode as? BSMetaNode<*> ?: return
+        current.meta = new.meta
+    }
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
@@ -49,33 +48,35 @@ class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
         val settings = BSViewSettings.getInstance(myProject)
-        val entries = BSMetaModelAccess.getInstance(myProject).getMetaModel().getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType).values
-            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
-            .filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
-            .size
+        val entries = globalMetaModel
+            ?.getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType)
+            ?.values
+            ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+            ?.filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
+            ?.size
+            ?: 0
         if (entries > 0) {
             presentation.locationString = "$entries"
         }
     }
 
-    override fun getChildren(): Collection<BSNode?> {
+    override fun getNewChildren(): Map<String, BSNode> {
         val settings = BSViewSettings.getInstance(myProject)
 
-        return BSMetaModelAccess.getInstance(myProject).getMetaModel()
-            .getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType).values
-            .asSequence()
-            .filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
-            .filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
-            .map {
+        return globalMetaModel
+            ?.getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType)
+            ?.values
+            ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+            ?.filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
+            ?.mapNotNull {
                 when (it) {
                     is BSGlobalMetaEnum -> BSMetaEnumNode(this, it)
                     is BSGlobalMetaBean -> BSMetaBeanNode(this, it)
                     else -> null
                 }
             }
-            .filter { Objects.nonNull(it) }
-            .sortedBy { it!!.name }
-            .toList()
+            ?.associateBy { it.name }
+            ?: emptyMap()
     }
 
 }

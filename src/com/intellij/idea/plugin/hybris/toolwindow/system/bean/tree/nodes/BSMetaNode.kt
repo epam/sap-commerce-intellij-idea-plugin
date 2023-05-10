@@ -21,4 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.util.xml.DomElement
 
-abstract class BSMetaNode<T : BSMetaClassifier<out DomElement>>(parent: BSNode, val meta: T) : BSNode(parent)
+abstract class BSMetaNode<T : BSMetaClassifier<out DomElement>>(parent: BSNode, var meta: T) : BSNode(parent) {
+
+    override fun update(existingNode: BSNode, newNode: BSNode) {
+        val current = existingNode as? BSMetaNode<BSMetaClassifier<out DomElement>> ?: return
+        val new = newNode as? BSMetaNode<*> ?: return
+        current.meta = new.meta
+    }
+}

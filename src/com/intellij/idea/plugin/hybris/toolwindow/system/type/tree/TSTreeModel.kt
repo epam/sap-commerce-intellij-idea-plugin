@@ -18,49 +18,53 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree
 
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.DumbService
 import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
-import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.TreePath
 
-class TSTreeModel(private val root: TSNode)
-    : BaseTreeModel<TSTreeModel.Node>(), Disposable, InvokerSupplier {
+class TSTreeModel(private val rootTreeNode: TreeNode) : BaseTreeModel<TreeNode>(), Disposable, InvokerSupplier {
 
+    private var globalMetaModel: TSGlobalMetaModel? = null
+    private val nodes = mutableMapOf<TSNode, TreeNode>()
     private val myInvoker = if (ApplicationManager.getApplication().isUnitTestMode) {
         Invoker.forEventDispatchThread(this)
     } else {
         Invoker.forBackgroundThreadWithReadAction(this)
     }
 
-    override fun getRoot() = Node(root)
+    override fun getRoot() = rootTreeNode
 
-    override fun getChildren(parent: Any?): List<Node> {
-        if (parent !is Node || !parent.allowsChildren || parent.userObject !is TSNode || DumbService.isDumb(root.project)) {
-            return emptyList();
-        }
-
-        return (parent.userObject as TSNode).getChildren()
-            .onEach { it!!.update() }
-            .map { Node(it) }
+    override fun getChildren(parent: Any?) = if (parent == rootTreeNode
+        || (
+            globalMetaModel != null
+                && parent is TreeNode
+                && parent.allowsChildren
+                && parent.userObject is TSNode
+            )
+    ) {
+        ((parent as TreeNode).userObject as TSNode).getChildren(globalMetaModel)
+            .onEach { it.update() }
+            .map { nodes.computeIfAbsent(it) { tsNode -> TreeNode(tsNode) } }
+    } else {
+        emptyList()
     }
 
-    fun reload() {
-        treeNodesChanged(null, null, null)
-    }
+    fun reload(globalMetaModel: TSGlobalMetaModel) {
+        this.globalMetaModel = globalMetaModel
 
-    class Node(private val node: TSNode?) : DefaultMutableTreeNode(node) {
-
-        override fun toString() = node.toString()
-
-        companion object {
-            private const val serialVersionUID: Long = -4729552031003080261L
-        }
+        treeStructureChanged(TreePath(root), null, null)
     }
 
     override fun getInvoker() = myInvoker
+
+    override fun dispose() {
+        super.dispose()
+        nodes.clear()
+    }
 
 }

@@ -21,19 +21,16 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.openapi.Disposable
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
 class TSMetaItemNode(
     parent: TSNode,
     meta: TSGlobalMetaItem,
-    val groupedByExtends: Map<String?, List<TSGlobalMetaItem>> = emptyMap()
-) : TSMetaNode<TSGlobalMetaItem>(parent, meta), Disposable {
+) : TSMetaNode<TSGlobalMetaItem>(parent, meta) {
 
-    override fun dispose() = Unit
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
@@ -44,31 +41,40 @@ class TSMetaItemNode(
         }
     }
 
-    override fun getChildren(): Collection<TSNode> {
+    override fun getNewChildren(): Map<String, TSNode> {
         val settings = TSViewSettings.getInstance(myProject)
         val showOnlyCustom = settings.isShowOnlyCustom()
 
         val childrenItems = groupedByExtends[meta.name]
-            ?.map { TSMetaItemNode(this, it, groupedByExtends) }
-            ?.sortedBy { it.name }
-            ?: emptyList()
+            ?.map { TSMetaItemNode(this, it) }
+            ?.associateBy { "0_extends_${it.name}" }
+            ?: emptyMap()
 
-        val indexes = if (!settings.isShowMetaItemIndexes()) emptyList() else meta.indexes.values
+        val indexes = if (!settings.isShowMetaItemIndexes()) emptyMap() else meta.indexes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
-            .sortedBy { it.name }
+            .associateBy { "1_index_${it.name}" }
 
-        val customProperties = if (!settings.isShowMetaItemCustomProperties()) emptyList() else meta.customProperties.values
+        val customProperties = if (!settings.isShowMetaItemCustomProperties()) emptyMap() else meta.customProperties.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
-            .sortedBy { it.name }
+            .associateBy { "2_customProperty_${it.name}" }
 
-        val attributes = if (!settings.isShowMetaItemAttributes()) emptyList() else meta.attributes.values
+        val attributes = if (!settings.isShowMetaItemAttributes()) emptyMap() else meta.attributes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
-            .sortedBy { it.name }
+            .associateBy { "3_attribute_${it.name}" }
 
         return childrenItems + indexes + customProperties + attributes
+    }
+
+    override fun dispose() {
+        super.dispose()
+        groupedByExtends = emptyMap()
+    }
+
+    companion object {
+        var groupedByExtends: Map<String?, List<TSGlobalMetaItem>> = emptyMap()
     }
 
 }

@@ -15,29 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.bean
+package com.intellij.idea.plugin.hybris.codeInsight.hints
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.codeInsight.hints.declarative.InlayActionHandler
+import com.intellij.codeInsight.hints.declarative.InlayActionPayload
+import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiClass
 
-object BeansUtils {
+class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
 
-    fun isEnumFile(psiClass: PsiClass): Boolean {
-        if (!psiClass.isEnum) return false
-
-        return isGeneratedFile(psiClass)
+    override fun handleClick(editor: Editor, payload: InlayActionPayload) {
+        val target = (payload as? PsiPointerInlayActionPayload)?.pointer?.element as? PsiClass
+        target
+            ?.let {
+                invokeLater { it.navigate(true) }
+            }
     }
 
-    fun isBeanFile(psiClass: PsiClass): Boolean {
-        return !psiClass.isEnum && isGeneratedFile(psiClass)
-    }
-
-    fun isGeneratedFile(psiClass: PsiClass): Boolean {
-        val virtualFile = psiClass.containingFile.virtualFile
-
-        if (virtualFile?.extension == null) return false
-
-        return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
-                || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
+    companion object {
+        const val ID = "inlay.hybris.dynamic.attribute"
     }
 }

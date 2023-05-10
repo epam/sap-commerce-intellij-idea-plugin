@@ -20,11 +20,17 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.LeafState
 import com.intellij.ui.tree.LeafState.Supplier
 
-abstract class BSNode : PresentableNodeDescriptor<BSNode?>, Supplier {
+abstract class BSNode : PresentableNodeDescriptor<BSNode>, Supplier, Disposable {
+
+    private val myChildren = mutableMapOf<String, BSNode>()
+    var globalMetaModel: BSGlobalMetaModel? = null
+
     protected constructor(project: Project) : super(project, null)
     protected constructor(parent: BSNode) : super(parent.project, parent)
 
@@ -34,7 +40,40 @@ abstract class BSNode : PresentableNodeDescriptor<BSNode?>, Supplier {
 
     override fun getElement() = this
 
-    open fun getChildren(): Collection<BSNode?> = emptyList()
+    open fun getNewChildren(): Map<String, BSNode> = emptyMap()
+
+    override fun dispose() {
+        myChildren.clear()
+    }
+
+    fun getChildren(globalMetaModel: BSGlobalMetaModel?): Collection<BSNode> {
+        this.globalMetaModel = globalMetaModel
+
+        val newChildren = getNewChildren()
+
+        myChildren.keys
+            .filterNot { newChildren.containsKey(it) }
+            .forEach {
+                myChildren[it]?.dispose()
+                myChildren.remove(it)
+            }
+
+        newChildren.forEach { (newName, newNode) ->
+            if (myChildren[newName] == null) {
+                myChildren[newName] = newNode
+            } else {
+                update(myChildren[newName]!!, newNode)
+            }
+        }
+
+        return myChildren.values
+            .onEach { it.globalMetaModel = globalMetaModel }
+            .sortedBy { it.name }
+    }
+
+    open fun update(existingNode: BSNode, newNode: BSNode) {
+
+    }
 
     override fun update(presentation: PresentationData) {
         if (myProject == null || myProject.isDisposed) return

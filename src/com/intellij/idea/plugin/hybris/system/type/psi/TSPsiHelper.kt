@@ -18,13 +18,67 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.xml.DomElement
 
 object TSPsiHelper {
 
     fun resolveTypeCode(element: PsiElement) = element.parentsOfType<XmlTag>()
         .firstOrNull { it.localName == "itemtype" && it.getAttribute("code") != null }
         ?.getAttributeValue("code")
+
+    fun delete(project: Project, owner: TSGlobalMetaEnum, meta: TSMetaEnum.TSMetaEnumValue) = delete(
+        project, owner.name, meta,
+        "hybris.ts.wizard.enum.modified.title",
+        "hybris.ts.wizard.enum.value.delete.content"
+    )
+
+    fun delete(project: Project, owner: TSGlobalMetaItem, meta: TSMetaItem.TSMetaItemAttribute) = delete(
+        project, owner.name, meta,
+        "hybris.ts.wizard.item.modified.title",
+        "hybris.ts.wizard.item.attribute.delete.content"
+    )
+
+    fun delete(project: Project, owner: TSGlobalMetaItem, meta: TSMetaItem.TSMetaItemIndex) = delete(
+        project, owner.name, meta,
+        "hybris.ts.wizard.item.modified.title",
+        "hybris.ts.wizard.item.index.delete.content"
+    )
+
+    fun delete(project: Project, owner: TSGlobalMetaItem, meta: TSMetaCustomProperty) = delete(
+        project, owner.name, meta,
+        "hybris.ts.wizard.item.modified.title",
+        "hybris.ts.wizard.item.customProperty.delete.content"
+    )
+
+    private fun delete(
+        project: Project,
+        ownerName: String?,
+        meta: TSMetaClassifier<out DomElement>,
+        messageTitleKey: String,
+        messageContentKey: String,
+    ) {
+        meta.retrieveDom()
+            ?.xmlTag
+            ?.let { xmlTag ->
+                WriteCommandAction.runWriteCommandAction(project) {
+                    xmlTag.delete()
+
+                    Notifications.create(
+                        NotificationType.INFORMATION,
+                        HybrisI18NBundleUtils.message(messageTitleKey),
+                        HybrisI18NBundleUtils.message(messageContentKey, ownerName ?: "?", meta.name ?: "?")
+                    )
+                        .notify(project)
+                }
+            }
+    }
 }

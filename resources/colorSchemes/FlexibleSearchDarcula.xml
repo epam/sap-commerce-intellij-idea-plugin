@@ -64,4 +64,10 @@
             <option name="FOREGROUND" value="FFE66B"/>
         </value>
     </option>
+    <option name="FXS_OPERATION_SIGN">
+        <value>
+            <option name="FOREGROUND" value="C885FF"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
 </list>

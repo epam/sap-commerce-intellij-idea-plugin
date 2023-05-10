@@ -19,9 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.ide.IdeBundle
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTreeModel
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.Disposable
@@ -31,12 +32,14 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import javax.swing.event.TreeModelEvent
+import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
 
 class TSTreePanel(
     private val myProject: Project,
 ) : OnePixelSplitter(false, 0.25f), Disposable {
-    val tree = TSTree(myProject)
+    val tree: TSTree
     private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
     private val myMetaItemView: TSMetaItemView by lazy { TSMetaItemView(myProject) }
     private val myMetaEnumView: TSMetaEnumView by lazy { TSMetaEnumView(myProject) }
@@ -45,21 +48,22 @@ class TSTreePanel(
     private val myMetaRelationView: TSMetaRelationView by lazy { TSMetaRelationView(myProject) }
     private val myMetaMapView: TSMetaMapView by lazy { TSMetaMapView(myProject) }
     private val myTreeSelectionListener: TreeSelectionListener = treeSelectionListener()
+    private val myTreeModelListener: TreeModelListener = treeModelListener()
 
     init {
+        tree = TSTree(myProject)
         firstComponent = JBScrollPane(tree)
         secondComponent = myDefaultPanel
 
         tree.addTreeSelectionListener(myTreeSelectionListener)
+        tree.addTreeModelListener(myTreeModelListener)
         PopupHandler.installPopupMenu(tree, "TSView.ToolWindow.TreePopup", "TSView.ToolWindow.TreePopup")
 
         Disposer.register(this, tree)
     }
 
-    fun update(changeType: TSViewSettings.ChangeType) {
-        secondComponent = myDefaultPanel;
-
-        tree.update(changeType)
+    fun update(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
+        tree.update(globalMetaModel, changeType)
     }
 
     override fun dispose() {
@@ -69,24 +73,42 @@ class TSTreePanel(
     private fun treeSelectionListener() = TreeSelectionListener { tls ->
         val path = tls.newLeadSelectionPath
         val component = path?.lastPathComponent
-        if (component != null && component is TSTreeModel.Node && component.userObject is TSNode) {
-            secondComponent = myDefaultPanel
+        val node = (component as? TreeNode)?.userObject as? TSNode
+        updateSecondComponent(node)
+    }
 
-            when (val node = component.userObject) {
-                is TSMetaAtomicNode -> secondComponent = myMetaAtomicView.getContent(node.meta)
-                is TSMetaCollectionNode -> secondComponent = myMetaCollectionView.getContent(node.meta)
-                is TSMetaEnumNode -> secondComponent = myMetaEnumView.getContent(node.meta)
-                is TSMetaEnumValueNode -> secondComponent = myMetaEnumView.getContent(node.parent.meta, node.meta)
-                is TSMetaItemNode -> secondComponent = myMetaItemView.getContent(node.meta)
-                is TSMetaItemIndexNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
-                is TSMetaItemAttributeNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
-                is TSMetaItemCustomPropertyNode -> secondComponent = myMetaItemView.getContent(node.parent.meta, node.meta)
-                is TSMetaMapNode -> secondComponent = myMetaMapView.getContent(node.meta)
-                is TSMetaRelationNode -> secondComponent = myMetaRelationView.getContent(node.meta)
-                is TSMetaRelationElementNode -> secondComponent = myMetaRelationView.getContent(node.meta)
+    private fun treeModelListener() = object : TreeModelListener {
+        override fun treeNodesChanged(e: TreeModelEvent) {
+            if (e.treePath?.lastPathComponent == tree.selectionPath?.parentPath?.lastPathComponent) {
+                val node = tree
+                    .selectionPath
+                    ?.lastPathComponent
+                    ?.let { it as? TreeNode }
+                    ?.userObject
+                    ?.let { it as? TSNode }
+                updateSecondComponent(node)
             }
-        } else {
-            secondComponent = myDefaultPanel
+        }
+
+        override fun treeNodesInserted(e: TreeModelEvent) = Unit
+        override fun treeNodesRemoved(e: TreeModelEvent) = Unit
+        override fun treeStructureChanged(e: TreeModelEvent) = Unit
+    }
+
+    private fun updateSecondComponent(node: TSNode?) {
+        secondComponent = when (node) {
+            is TSMetaAtomicNode -> myMetaAtomicView.getContent(node.meta)
+            is TSMetaCollectionNode -> myMetaCollectionView.getContent(node.meta)
+            is TSMetaEnumNode -> myMetaEnumView.getContent(node.meta)
+            is TSMetaEnumValueNode -> myMetaEnumView.getContent(node.parent.meta, node.meta)
+            is TSMetaItemNode -> myMetaItemView.getContent(node.meta)
+            is TSMetaItemIndexNode -> myMetaItemView.getContent(node.parent.meta, node.meta)
+            is TSMetaItemAttributeNode -> myMetaItemView.getContent(node.parent.meta, node.meta)
+            is TSMetaItemCustomPropertyNode -> myMetaItemView.getContent(node.parent.meta, node.meta)
+            is TSMetaMapNode -> myMetaMapView.getContent(node.meta)
+            is TSMetaRelationNode -> myMetaRelationView.getContent(node.meta)
+            is TSMetaRelationElementNode -> myMetaRelationView.getContent(node.meta)
+            else -> myDefaultPanel
         }
     }
 
