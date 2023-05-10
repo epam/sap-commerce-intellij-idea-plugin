@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaEnumValuesTable;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum;
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType;
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper;
+import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaEnumValuesTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;
@@ -35,11 +35,12 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TSMetaEnumView {
 
     private final Project myProject;
-    private TSMetaClassifier<EnumType> myMeta;
+    private TSGlobalMetaEnum myMeta;
 
     private JBPanel myContentPane;
     private JBTextField myJaloClass;
@@ -91,9 +92,14 @@ public class TSMetaEnumView {
     private void createUIComponents() {
         myEnumValues = TSMetaEnumValuesTable.Companion.getInstance(myProject);
         myValuesPane = ToolbarDecorator.createDecorator(myEnumValues)
-                                       .disableUpDownActions()
-                                       .setPanelBorder(JBUI.Borders.empty())
-                                       .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .ifPresent(it -> TSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myEnumValues.getCurrentItem())
+                .map(TSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myDetailsPane = new JBPanel();
         myFlagsPane = new JBPanel();
 

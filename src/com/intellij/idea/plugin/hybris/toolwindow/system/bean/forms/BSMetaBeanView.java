@@ -109,39 +109,39 @@ public class BSMetaBeanView {
         myAnnotations = BSMetaAnnotationsTable.Companion.getInstance(myProject);
 
         myPropertiesPane = ToolbarDecorator.createDecorator(myProperties)
-            .disableUpDownActions()
             .setRemoveAction(anActionButton -> Optional.ofNullable(myProperties.getCurrentItem())
                 .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myProperties.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
+            .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
             .createPanel();
         myHintsPane = ToolbarDecorator.createDecorator(myHints)
-            .disableUpDownActions()
             .setRemoveAction(anActionButton -> Optional.ofNullable(myHints.getCurrentItem())
                 .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myHints.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
+            .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
             .createPanel();
         myImportsPane = ToolbarDecorator.createDecorator(myImports)
-            .disableUpDownActions()
             .setRemoveAction(anActionButton -> Optional.ofNullable(myImports.getCurrentItem())
                 .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myImports.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
+            .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
             .createPanel();
         myAnnotationsPane = ToolbarDecorator.createDecorator(myAnnotations)
-            .disableUpDownActions()
             .setRemoveAction(anActionButton -> Optional.ofNullable(myAnnotations.getCurrentItem())
                 .ifPresent(it -> BSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
             .setRemoveActionUpdater(e -> Optional.ofNullable(myAnnotations.getCurrentItem())
                 .map(BSMetaClassifier::isCustom)
                 .orElse(false))
+            .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
             .createPanel();
         myDetailsPane = new JBPanel();

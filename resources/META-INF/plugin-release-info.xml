@@ -111,8 +111,23 @@
                         <li>Respect value of the `show language` flag (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/382" target="_blank" rel="nofollow">#382</a>)</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Improved representation of the Type System preview (better state synchronization and no flickering) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/392" target="_blank" rel="nofollow">#392</a>)</li>
-                <li><i>Feature:</i> Improved representation of the Bean System preview (better state synchronization and no flickering) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/391" target="_blank" rel="nofollow">#391</a>)</li>
+                <li><i>Feature:</i> Type System preview enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/392" target="_blank" rel="nofollow">#392</a>,
+                    <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/395" target="_blank" rel="nofollow">#395</a>)
+                    <ul>
+                        <li>Improved synchronization of the Tree with Type System GlobalMetaModel</li>
+                        <li>Resolved "flickering" issue on any TypeSystem related changes</li>
+                        <li>Added possibility to remove Enum's values from the details pane</li>
+                        <li>Added possibility to remove Item's attributes/custom properties/indexes from the details pane</li>
+                    </ul>
+                </li>
+                <li><i>Feature:</i> Bean System preview enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/391" target="_blank" rel="nofollow">#391</a>)
+                    <ul>
+                        <li>Improved synchronization of the Tree with Bean System GlobalMetaModel</li>
+                        <li>Resolved "flickering" issue on any TypeSystem related changes</li>
+                        <li>Added possibility to remove Enum's values from the details pane</li>
+                        <li>Added possibility to remove Bean's properties/annotations/hints/imports from the details pane</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added possibility to Unify table alias separator for FlexibleSearch with a single click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/389" target="_blank" rel="nofollow">#389</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tree (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/384" target="_blank" rel="nofollow">#384</a>)</li>
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Type System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/385" target="_blank" rel="nofollow">#385</a>)</li>
@@ -120,7 +135,7 @@
                 <li><i>Feature:</i> Added <code>Go to Declaration</code> action for Bean System preview Tables (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/387" target="_blank" rel="nofollow">#387</a>)</li>
                 <li><i>Feature:</i> Added new FlexibleSearch folding settings (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/383" target="_blank" rel="nofollow">#383</a>)</li>
                 <li><i>Other:</i> Improved FlexibleSearch color scheme (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/390" target="_blank" rel="nofollow">#390</a>)</li>
-                <li><i>Other:</i> Styled FlexibleSearch operation signs (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/393" target="_blank" rel="nofollow">#393</a>)</li>
+                <li><i>Other:</i> Styled FlexibleSearch operation signs (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/394" target="_blank" rel="nofollow">#394</a>)</li>
                 <li><i>Other:</i> Respect FlexibleSearch settings responsible for table alias suggestions (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/371" target="_blank" rel="nofollow">#371</a>)</li>
                 <li><i>Fix:</i> Suggest outer join after <code>]</code> symbol (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/388" target="_blank" rel="nofollow">#388</a>)</li>
                 <li><i>Fix:</i> Adjusted Polyglot language Parser (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/372" target="_blank" rel="nofollow">#372</a>)</li>

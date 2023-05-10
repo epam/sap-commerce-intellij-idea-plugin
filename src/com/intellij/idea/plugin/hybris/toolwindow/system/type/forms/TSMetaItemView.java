@@ -18,18 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProperty;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
-import com.intellij.idea.plugin.hybris.system.type.model.ItemType;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*;
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper;
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemAttributesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaItemIndexesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementsTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;
@@ -42,11 +34,12 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TSMetaItemView {
 
     private final Project myProject;
-    private TSMetaClassifier<ItemType> myMeta;
+    private TSGlobalMetaItem myMeta;
 
     private JBPanel myContentPane;
     private JBTextField myExtends;
@@ -156,21 +149,37 @@ public class TSMetaItemView {
         myFlagsPane = new JBPanel();
 
         myAttributesPane = ToolbarDecorator.createDecorator(myAttributes)
-                                           .disableUpDownActions()
-                                           .setPanelBorder(JBUI.Borders.empty())
-                                           .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myAttributes.getCurrentItem())
+                .ifPresent(it -> TSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myAttributes.getCurrentItem())
+                .map(TSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myCustomPropertiesPane = ToolbarDecorator.createDecorator(myCustomProperties)
-                                                 .disableUpDownActions()
-                                                 .setPanelBorder(JBUI.Borders.empty())
-                                                 .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myCustomProperties.getCurrentItem())
+                .ifPresent(it -> TSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myCustomProperties.getCurrentItem())
+                .map(TSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myIndexesPane = ToolbarDecorator.createDecorator(myIndexes)
-                                        .disableUpDownActions()
-                                        .setPanelBorder(JBUI.Borders.empty())
-                                        .createPanel();
+            .setRemoveAction(anActionButton -> Optional.ofNullable(myIndexes.getCurrentItem())
+                .ifPresent(it -> TSPsiHelper.INSTANCE.delete(myProject, myMeta, it)))
+            .setRemoveActionUpdater(e -> Optional.ofNullable(myIndexes.getCurrentItem())
+                .map(TSMetaClassifier::isCustom)
+                .orElse(false))
+            .disableUpDownActions()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
         myRelationsPane = ToolbarDecorator.createDecorator(myRelations)
-                                          .disableUpDownActions()
-                                          .setPanelBorder(JBUI.Borders.empty())
-                                          .createPanel();
+            .disableUpDownActions()
+            .disableRemoveAction()
+            .setPanelBorder(JBUI.Borders.empty())
+            .createPanel();
 
         myDetailsPane.setBorder(IdeBorderFactory.createTitledBorder("Details"));
         myDeploymentPane.setBorder(IdeBorderFactory.createTitledBorder("Deployment"));
