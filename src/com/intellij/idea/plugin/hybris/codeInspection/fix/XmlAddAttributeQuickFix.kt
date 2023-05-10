@@ -20,19 +20,29 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemDescriptorBase
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.PsiNavigateUtil
 
 class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
     override fun getFamilyName() = message("hybris.inspections.fix.xml.AddAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        (descriptor.psiElement as? XmlTag)
-            ?.setAttribute(attributeName, "")
-            ?.valueElement
-            ?.let { PsiNavigateUtil.navigate(descriptor, it) }
+        val currentElement = descriptor.psiElement
+
+        if (currentElement is XmlTag) {
+            val xmlAttribute = currentElement.setAttribute(attributeName, "")
+            xmlAttribute.valueElement?.let { navigateIfNotPreviewMode(descriptor, it) }
+        }
+    }
+
+    private fun navigateIfNotPreviewMode(descriptor: ProblemDescriptor, psiElement: PsiElement) {
+        if (descriptor is ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement)
+        }
     }
 }

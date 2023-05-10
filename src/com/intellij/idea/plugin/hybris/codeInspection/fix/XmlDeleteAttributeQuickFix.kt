@@ -20,34 +20,40 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemDescriptorBase
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.PsiNavigateUtil
 
 class XmlDeleteAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
     override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        when (val currentElement = descriptor.psiElement) {
+        when(val currentElement = descriptor.psiElement) {
             is XmlTag -> {
                 currentElement.getAttribute(attributeName)?.delete()
-                PsiNavigateUtil.navigate(descriptor, currentElement)
+                navigateIfNotPreviewMode(descriptor, currentElement)
             }
-
             is XmlAttribute -> {
-                PsiNavigateUtil.navigate(descriptor, currentElement.parent)
+                navigateIfNotPreviewMode(descriptor, currentElement.parent)
                 currentElement.delete()
             }
-
             is XmlAttributeValue -> {
-                (currentElement.parent as? XmlAttribute)
-                    ?.also { PsiNavigateUtil.navigate(descriptor, currentElement.parent) }
-                    ?.delete()
+                val xmlAttribute =  currentElement.parent as XmlAttribute
+                navigateIfNotPreviewMode(descriptor, xmlAttribute.parent)
+                xmlAttribute.delete()
             }
+        }
+    }
+
+    private fun navigateIfNotPreviewMode(descriptor: ProblemDescriptor, psiElement: PsiElement ) {
+        if (descriptor is ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement)
         }
     }
 }
