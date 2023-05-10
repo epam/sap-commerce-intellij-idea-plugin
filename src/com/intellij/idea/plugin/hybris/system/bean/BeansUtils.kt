@@ -28,6 +28,10 @@ object BeansUtils {
         return isGeneratedFile(psiClass)
     }
 
+    fun isBeanFile(psiClass: PsiClass): Boolean {
+        return !psiClass.isEnum && isGeneratedFile(psiClass)
+    }
+
     fun isGeneratedFile(psiClass: PsiClass): Boolean {
         val virtualFile = psiClass.containingFile.virtualFile
 

@@ -35,7 +35,7 @@ class DtoBeanPropertyLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<
 
     override fun getName() = message("hybris.editor.gutter.bs.dto.bean.property.name")
     override fun getIcon(): Icon = HybrisIcons.BS_PROPERTY
-    override fun canProcess(psi: PsiClass) = !BeansUtils.isEnumFile(psi)
+    override fun canProcess(psi: PsiClass) = BeansUtils.isBeanFile(psi)
     override fun tryCast(psi: PsiElement) = psi as? PsiField
 
     override fun collectDeclarations(psi: PsiField): Collection<LineMarkerInfo<PsiElement>> {

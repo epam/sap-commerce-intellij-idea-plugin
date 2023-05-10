@@ -64,8 +64,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     override fun getNewChildren(): Map<String, TSNode> {
         val settings = TSViewSettings.getInstance(myProject)
 
-        if (metaType == TSMetaType.META_ITEM && settings.isGroupItemByParent()) {
-            return getGroupedByParentMetaItemChildren(settings)
+        if (metaType == TSMetaType.META_ITEM) {
+            TSMetaItemNode.groupedByExtends = emptyMap()
+
+            if (settings.isGroupItemByParent()) {
+                return getGroupedByParentMetaItemChildren(settings)
+            }
         }
         return getChildren(metaType, settings)
     }
