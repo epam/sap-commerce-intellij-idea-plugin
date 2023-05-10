@@ -99,6 +99,8 @@
                                               bundle="i18n/HybrisBundle"
                                               nameKey="hybris.editor.java.inlay_provider.dynamic_attribute.name"
                                               descriptionKey="hybris.editor.java.inlay_provider.dynamic_attribute.description"/>
+        <codeInsight.inlayActionHandler handlerId="inlay.hybris.dynamic.attribute"
+                                        implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.DynamicAttributeDeclarativeInlayActionHandler"/>
         <codeInsight.inlayProvider language="XML"
                                    implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
     </extensions>

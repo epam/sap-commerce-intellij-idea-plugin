@@ -41,7 +41,7 @@ object TSPsiHelper {
         "hybris.ts.wizard.enum.value.delete.content"
     )
 
-    fun delete(project: Project, owner: TSGlobalMetaEnum, meta: TSMetaItem.TSMetaItemAttribute) = delete(
+    fun delete(project: Project, owner: TSGlobalMetaItem, meta: TSMetaItem.TSMetaItemAttribute) = delete(
         project, owner.name, meta,
         "hybris.ts.wizard.item.modified.title",
         "hybris.ts.wizard.item.attribute.delete.content"
