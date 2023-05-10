@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearc
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_KEYWORD
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_LOCALIZED
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_NUMBER
+import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_OPERATION_SIGN
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_OUTER_JOIN
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_PARAMETER
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors.FXS_PARENS
@@ -85,6 +86,7 @@ WHERE {${tableAlias("p")}:${column("code")}} LIKE '%myProduct'
     AND {${tableAlias("p")}:${column("code")}} LIKE '%al%'
 --    AND {p:code} LIKE '%al%'
     OR  {${tableAlias("p")}.${column("code")}} = 2
+    OR  {${tableAlias("p")}.${column("code")}} != 3
     OR  {${tableAlias("p")}.${column("modifiedtime")}} = ${param("?session")}.${param("user")}.${param("modifiedtime")}
     AND {${tableAlias("p")}.${column("code")}} NOT LIKE '%15%'
   )
@@ -128,6 +130,7 @@ SELECT ${tableAlias("tableAlias")}.${column("PK")} FROM (
             AttributesDescriptor("Tokens//String", FXS_STRING),
             AttributesDescriptor("Tokens//Number", FXS_NUMBER),
             AttributesDescriptor("Tokens//Star", FXS_STAR),
+            AttributesDescriptor("Operation sign", FXS_OPERATION_SIGN),
         )
 
         private val customTags = RainbowHighlighter.createRainbowHLM()
