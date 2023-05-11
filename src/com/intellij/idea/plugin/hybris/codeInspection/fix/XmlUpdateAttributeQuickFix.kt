@@ -20,43 +20,36 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemDescriptorBase
+import com.intellij.idea.plugin.hybris.common.PsiNavigateUtil
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.PsiNavigateUtil
 
 class XmlUpdateAttributeQuickFix(private val attributeName: String, private val attributeValue: String) : LocalQuickFix {
 
     override fun getFamilyName() = message("hybris.inspections.fix.xml.UpdateAttribute", attributeName, attributeValue);
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val currentElement = descriptor.psiElement
-        when(currentElement) {
+        when (val currentElement = descriptor.psiElement) {
             is XmlTag -> {
                 val xmlAttribute = currentElement.setAttribute(attributeName, attributeValue)
-                navigateIfNotPreviewMode(descriptor, xmlAttribute);
+                PsiNavigateUtil.navigate(descriptor, xmlAttribute)
             }
-            is XmlAttribute -> {
-                val xmlAttribute = currentElement
-                xmlAttribute.setValue(attributeValue)
-                navigateIfNotPreviewMode(descriptor, xmlAttribute)
-            }
-        }
-        if ((currentElement is XmlElement)) {
-            val parentElement = currentElement.parent
-            if (parentElement is XmlAttribute) {
-                parentElement.setValue(attributeValue)
-                navigateIfNotPreviewMode(descriptor, parentElement)
-            }
-        }
-    }
 
-    private fun navigateIfNotPreviewMode( descriptor: ProblemDescriptor, xmlAttribute: XmlAttribute) {
-        if (descriptor is ProblemDescriptorBase) {
-            PsiNavigateUtil.navigate(xmlAttribute)
+            is XmlAttribute -> {
+                currentElement.setValue(attributeValue)
+                PsiNavigateUtil.navigate(descriptor, currentElement)
+            }
+
+            is XmlElement -> {
+                (currentElement.parent as? XmlAttribute)
+                    ?.let {
+                        it.setValue(attributeValue)
+                        PsiNavigateUtil.navigate(descriptor, it)
+                    }
+            }
         }
     }
 }

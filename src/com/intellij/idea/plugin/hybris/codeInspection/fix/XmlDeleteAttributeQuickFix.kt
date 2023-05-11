@@ -20,40 +20,34 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemDescriptorBase
+import com.intellij.idea.plugin.hybris.common.PsiNavigateUtil
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.PsiNavigateUtil
 
 class XmlDeleteAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
     override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        when(val currentElement = descriptor.psiElement) {
+        when (val currentElement = descriptor.psiElement) {
             is XmlTag -> {
                 currentElement.getAttribute(attributeName)?.delete()
-                navigateIfNotPreviewMode(descriptor, currentElement)
+                PsiNavigateUtil.navigate(descriptor, currentElement)
             }
+
             is XmlAttribute -> {
-                navigateIfNotPreviewMode(descriptor, currentElement.parent)
+                PsiNavigateUtil.navigate(descriptor, currentElement.parent)
                 currentElement.delete()
             }
-            is XmlAttributeValue -> {
-                val xmlAttribute =  currentElement.parent as XmlAttribute
-                navigateIfNotPreviewMode(descriptor, xmlAttribute.parent)
-                xmlAttribute.delete()
-            }
-        }
-    }
 
-    private fun navigateIfNotPreviewMode(descriptor: ProblemDescriptor, psiElement: PsiElement ) {
-        if (descriptor is ProblemDescriptorBase) {
-            PsiNavigateUtil.navigate(psiElement)
+            is XmlAttributeValue -> {
+                (currentElement.parent as? XmlAttribute)
+                    ?.also { PsiNavigateUtil.navigate(descriptor, currentElement.parent) }
+                    ?.delete()
+            }
         }
     }
 }

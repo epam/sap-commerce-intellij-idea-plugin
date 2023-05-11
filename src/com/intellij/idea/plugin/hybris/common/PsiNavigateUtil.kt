@@ -16,23 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.fix;
+package com.intellij.idea.plugin.hybris.common
 
-import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.idea.plugin.hybris.common.PsiNavigateUtil
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.openapi.project.Project
-import com.intellij.psi.xml.XmlTag
+import com.intellij.codeInspection.ProblemDescriptorBase
+import com.intellij.psi.PsiElement
 
-class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
+object PsiNavigateUtil {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.AddAttribute", attributeName)
+    fun navigate(descriptor: ProblemDescriptor, psiElement: PsiElement?, requestFocus: Boolean = true) {
+        if (descriptor !is ProblemDescriptorBase) return
+        navigate(psiElement, requestFocus)
+    }
 
-    override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        (descriptor.psiElement as? XmlTag)
-            ?.setAttribute(attributeName, "")
-            ?.valueElement
-            ?.let { PsiNavigateUtil.navigate(descriptor, it) }
+    fun navigate(psiElement: PsiElement?, requestFocus: Boolean = true) {
+        com.intellij.util.PsiNavigateUtil.navigate(psiElement, requestFocus)
     }
 }
