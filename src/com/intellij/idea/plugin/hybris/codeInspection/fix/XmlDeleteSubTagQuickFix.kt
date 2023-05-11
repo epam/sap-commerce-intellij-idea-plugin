@@ -20,26 +20,20 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.codeInspection.ProblemDescriptorBase
+import com.intellij.idea.plugin.hybris.common.PsiNavigateUtil
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.PsiNavigateUtil
 
 class XmlDeleteSubTagQuickFix(private val tagName: String) : LocalQuickFix {
 
     override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteSubTag", tagName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val currentElement = descriptor.psiElement
-        if (currentElement is XmlTag) {
-            val subTag = currentElement.findFirstSubTag(tagName)
-            if (subTag != null) {
-                subTag.delete()
-                if (descriptor is ProblemDescriptorBase) {
-                    PsiNavigateUtil.navigate(currentElement)
-                }
-            }
-        }
+        val xmlTag = descriptor.psiElement as? XmlTag ?: return
+        val subTag = xmlTag.findFirstSubTag(tagName) ?: return
+
+        subTag.delete()
+        PsiNavigateUtil.navigate(descriptor, subTag)
     }
 }
