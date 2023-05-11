@@ -20,30 +20,28 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
-import com.intellij.idea.plugin.hybris.common.PsiNavigateUtil
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.xml.XmlTagImpl
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlTokenType
-import org.apache.commons.lang3.StringUtils.isNotBlank
-import java.util.SortedMap
-
+import java.util.*
 
 class XmlAddTagQuickFix(
     private val tagName: String,
     private val tagBody: String,
-    private val attributes: SortedMap<String, String>?,
-    private val insertAfterTag: String
+    private val attributes: SortedMap<String, String>? = null,
+    private val insertAfterTag: String?
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String {
         if (attributes.isNullOrEmpty()) {
-            return HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.AddTag", tagName)
+            return message("hybris.inspections.fix.xml.AddTag", tagName)
         }
 
-        return HybrisI18NBundleUtils.message(
+        return message(
             "hybris.inspections.fix.xml.AddTagWithAttributes",
             tagName,
             attributes.entries.joinToString(", ") { "'${it.key}'='${it.value}'" }
@@ -61,7 +59,7 @@ class XmlAddTagQuickFix(
         )
 
         val insertedTag =
-            if (isNotBlank(insertAfterTag)) {
+            if (!insertAfterTag.isNullOrBlank()) {
                 currentElement.findFirstSubTag(insertAfterTag)
                     ?.let { subTag -> currentElement.addAfter(tagToInsert, subTag) as XmlTag }
             } else {
@@ -73,9 +71,8 @@ class XmlAddTagQuickFix(
         val children = (insertedTag as XmlTagImpl)
             .getChildren(TokenSet.create(XmlTokenType.XML_END_TAG_START))
 
-        val psiElement = if (children.isNotEmpty()) children[0].psi else insertedTag
+        val psiElement = children.firstOrNull()?.psi ?: insertedTag
 
         PsiNavigateUtil.navigate(descriptor, psiElement)
-
     }
 }
