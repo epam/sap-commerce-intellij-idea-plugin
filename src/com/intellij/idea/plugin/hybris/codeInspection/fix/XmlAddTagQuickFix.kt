@@ -31,13 +31,13 @@ import java.util.*
 
 class XmlAddTagQuickFix(
     private val tagName: String,
-    private val tagBody: String,
-    private val attributes: SortedMap<String, String>? = null,
+    private val tagBody: String? = null,
+    private val attributes: SortedMap<String, String?> = sortedMapOf(),
     private val insertAfterTag: String?
 ) : LocalQuickFix {
 
     override fun getFamilyName(): String {
-        if (attributes.isNullOrEmpty()) {
+        if (attributes.isEmpty()) {
             return message("hybris.inspections.fix.xml.AddTag", tagName)
         }
 
