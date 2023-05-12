@@ -51,7 +51,9 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
         // skip non-ComposedType
         if ("ViewType".equals(dom.metaType.stringValue, true) || "ComposedType".equals(dom.metaType.stringValue, true)) return
 
-        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(dom.code.stringValue)
+        val itemTypeCode = dom.code.stringValue ?: return
+
+        val metaItem = TSMetaModelAccess.getInstance(project).getMetaModel().getMetaItem(itemTypeCode)
             ?: return
 
         if (StringUtils.isNotBlank(metaItem.deployment?.typeCode)) return
@@ -75,7 +77,7 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
         if (countDeploymentTablesInParents > 0) return
 
         val attributes = sortedMapOf(
-            Deployment.TABLE to dom.code.stringValue,
+            Deployment.TABLE to itemTypeCode,
             Deployment.TYPE_CODE to TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString(),
         )
 
@@ -85,10 +87,9 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
             displayName,
             getTextRange(dom),
             XmlAddTagQuickFix(
-                ItemType.DEPLOYMENT,
-                null,
-                attributes,
-                ItemType.DESCRIPTION
+                tagName = ItemType.DEPLOYMENT,
+                insertAfterTag = ItemType.DESCRIPTION,
+                attributes = attributes
             )
         )
     }
