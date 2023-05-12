@@ -36,17 +36,11 @@ class XmlAddTagQuickFix(
     private val insertAfterTag: String?
 ) : LocalQuickFix {
 
-    override fun getFamilyName(): String {
-        if (attributes.isEmpty()) {
-            return message("hybris.inspections.fix.xml.AddTag", tagName)
-        }
-
-        return message(
-            "hybris.inspections.fix.xml.AddTagWithAttributes",
-            tagName,
-            attributes.entries.joinToString(", ") { "'${it.key}'='${it.value}'" }
-        )
-    }
+    override fun getFamilyName() = attributes
+        .takeIf { it.isNotEmpty() }
+        ?.let { attributes.entries.joinToString(", ") { "'${it.key}'='${it.value}'" } }
+        ?.let { message("hybris.inspections.fix.xml.AddTagWithAttributes", tagName, it) }
+        ?: message("hybris.inspections.fix.xml.AddTag", tagName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val currentElement = descriptor.psiElement as? XmlTag ?: return
@@ -58,15 +52,12 @@ class XmlAddTagQuickFix(
             false
         )
 
-        val insertedTag =
-            if (!insertAfterTag.isNullOrBlank()) {
-                currentElement.findFirstSubTag(insertAfterTag)
-                    ?.let { subTag -> currentElement.addAfter(tagToInsert, subTag) as XmlTag }
-            } else {
-                currentElement.addSubTag(tagToInsert, true)
-            }
+        val insertedTag = insertAfterTag?.takeIf { it.isNotBlank() }
+            ?.let { currentElement.findFirstSubTag(it) }
+            ?.let { subTag -> currentElement.addAfter(tagToInsert, subTag) as XmlTag }
+            ?: currentElement.addSubTag(tagToInsert, true)
 
-        attributes?.forEach { insertedTag?.setAttribute(it.key, it.value) }
+        attributes.forEach { insertedTag.setAttribute(it.key, it.value) }
 
         val children = (insertedTag as XmlTagImpl)
             .getChildren(TokenSet.create(XmlTokenType.XML_END_TAG_START))
