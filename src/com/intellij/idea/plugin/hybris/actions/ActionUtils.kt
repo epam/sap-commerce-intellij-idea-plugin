@@ -18,17 +18,19 @@
 
 package com.intellij.idea.plugin.hybris.actions;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.project.DumbAware;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.project.Project
 
-/**
- * @author Eugene.Kudelevsky
- */
-public class HybrisToolsActionGroup extends DefaultActionGroup implements DumbAware {
+object ActionUtils {
 
-    @Override
-    public void update(final AnActionEvent e) {
-        e.getPresentation().setEnabledAndVisible(ActionUtils.isHybrisContext(e));
-    }
+    fun isHybrisContext(event: AnActionEvent) = isHybrisContext(event.dataContext)
+
+    fun isHybrisContext(dataContext: DataContext) = CommonDataKeys.PROJECT.getData(dataContext)
+        ?.let { CommonIdeaService.getInstance().isHybrisProject(it) }
+        ?: false
+
+    fun isHybrisContext(project: Project) = CommonIdeaService.getInstance().isHybrisProject(project);
 }
