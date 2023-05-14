@@ -114,6 +114,7 @@ object HybrisConstants {
     const val GEN_SRC_DIRECTORY = "gensrc"
     const val TEST_SRC_DIRECTORY = "testsrc"
     const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
+    const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
@@ -330,6 +331,7 @@ object HybrisConstants {
 
     private const val SRC_DIRECTORY = "src"
     private const val GROOVY_SRC_DIRECTORY = "groovysrc"
+    private const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
@@ -468,9 +470,9 @@ object HybrisConstants {
     @JvmField
     val QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage"
     @JvmField
-    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
+    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
     @JvmField
-    val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
+    val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, KOTLIN_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
     @JvmField
     val LOCAL_GROUP_OVERRIDE_COMMENTS = """

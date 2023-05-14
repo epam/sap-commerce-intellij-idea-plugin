@@ -128,6 +128,12 @@
                         <li>Added possibility to remove Bean's properties/annotations/hints/imports from the details pane</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> Project import/refresh will register <code>kotlinsrc</code>/<code>kotlintestsrc</code> as the source directory (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/403" target="_blank" rel="nofollow">#403</a>)
+                    <ul>
+                        <li>For details on <strong>Kotlin</strong> integration with SAP Commerce see <a href="https://github.com/mlytvyn/kotlinnature">Kotlin nature extension</a></li>
+                        <li>As for now - registration of the Kotlin library has to be done manually via IDE</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Project import/refresh will register <code>groovysrc</code> as the source directory (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/402" target="_blank" rel="nofollow">#402</a>)</li>
                 <li><i>Feature:</i> Added navigate to the Dynamic Handler class for <code>dynamic</code> inlay hint on Ctrl + click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/396" target="_blank" rel="nofollow">#396</a>)</li>
                 <li><i>Feature:</i> Added possibility to Unify table alias separator for FlexibleSearch with a single click (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/389" target="_blank" rel="nofollow">#389</a>)</li>
