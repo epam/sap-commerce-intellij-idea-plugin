@@ -329,6 +329,7 @@ object HybrisConstants {
     );
 
     private const val SRC_DIRECTORY = "src"
+    private const val GROOVY_SRC_DIRECTORY = "groovysrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
@@ -467,7 +468,7 @@ object HybrisConstants {
     @JvmField
     val QUERY_STORAGE_FOLDER_PATH = EXCLUDE_IDEA_DIRECTORY + File.separator + "consolestorage"
     @JvmField
-    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
+    val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
     @JvmField
     val TEST_SRC_DIR_NAMES = listOf(TEST_SRC_DIRECTORY, GROOVY_TEST_SRC_DIRECTORY, SCALA_TEST_SRC_DIRECTORY)
 
