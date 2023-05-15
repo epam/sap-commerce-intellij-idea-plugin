@@ -86,7 +86,7 @@ object TSInterceptorSpringBuilderFactory {
             .setEmptyPopupText(message("hybris.editor.gutter.ts.interceptor.no.matches"))
             .setPopupTitle(message("hybris.editor.gutter.ts.interceptor.choose.title"))
             .setTooltipText(message("hybris.editor.gutter.ts.interceptor.tooltip.text"))
-            .setCellRenderer { SpringBeansPsiElementCellRenderer() }
+            .setTargetRenderer { SpringBeansPsiElementCellRenderer() }
 
         return builder
     }
