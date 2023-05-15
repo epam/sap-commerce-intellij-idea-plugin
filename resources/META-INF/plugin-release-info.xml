@@ -92,6 +92,8 @@
 
     <change-notes>
         <![CDATA[
+            <h3>2023.2.0</h3>
+                <li><i>Fix:</i> Check additional active plugin for java EE (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/406" target="_blank" rel="nofollow">#406</a>)</li>
             <h3>2023.1.6</h3>
             <ul>
                 <li><i>Feature:</i> Added 2023.2 support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405" target="_blank" rel="nofollow">#405</a>)</li>

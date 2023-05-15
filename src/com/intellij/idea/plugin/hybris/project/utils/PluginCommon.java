@@ -29,6 +29,7 @@ public class PluginCommon {
 
     public static final String ANT_SUPPORT_PLUGIN_ID = "AntSupport";
     public static final String JAVAEE_PLUGIN_ID = "com.intellij.javaee";
+    public static final String JAVAEE_WEB_PLUGIN_ID = "com.intellij.javaee.web";
     public static final String SPRING_PLUGIN_ID = "com.intellij.spring";
     public static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
 

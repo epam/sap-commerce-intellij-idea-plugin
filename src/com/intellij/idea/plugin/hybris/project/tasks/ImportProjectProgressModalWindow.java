@@ -249,8 +249,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
             if (isPluginActive(JAVAEE_PLUGIN_ID)) {
-                this.excludeFrameworkDetection(project, WebFacet.ID);
                 this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
+            }
+            if (isPluginActive(JAVAEE_WEB_PLUGIN_ID)) {
+                this.excludeFrameworkDetection(project, WebFacet.ID);
             }
         }
     }
@@ -536,6 +538,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
+        //TODO add try catch
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
         final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
