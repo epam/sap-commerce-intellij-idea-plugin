@@ -329,9 +329,9 @@ object HybrisConstants {
         "common/temp/node_modules"
     );
 
+    const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
     private const val GROOVY_SRC_DIRECTORY = "groovysrc"
-    private const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"

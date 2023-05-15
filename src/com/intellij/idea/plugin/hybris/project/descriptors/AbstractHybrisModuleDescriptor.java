@@ -208,6 +208,12 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
+    public boolean isKotlinEnabled() {
+        return new File(this.getRootDirectory(), HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
+            || new File(this.getRootDirectory(), HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists();
+    }
+
+    @Override
     public boolean isAddOn() {
         return HybrisUtil.isAcceleratorAddOnModuleRoot(getRootDirectory());
     }

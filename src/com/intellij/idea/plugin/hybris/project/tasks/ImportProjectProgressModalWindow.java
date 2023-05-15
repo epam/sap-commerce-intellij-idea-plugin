@@ -34,6 +34,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -52,6 +53,7 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
@@ -74,27 +76,30 @@ import com.intellij.spellchecker.dictionary.ProjectDictionary;
 import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.kotlin.idea.configuration.*;
+import org.jetbrains.kotlin.idea.framework.KotlinSdkType;
+import org.jetbrains.kotlin.training.ift.KotlinLessonsBundle;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.*;
 
 /**
  * Created by Martin Zdarsky-Jones on 2/11/16.
@@ -144,7 +149,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.saveCustomDirectoryLocation(project);
         this.saveImportedSettings(project);
         this.disableWrapOnType(ImpexLanguage.getInstance());
-        PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
+        PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 
         processUltimateEdition(indicator);
 
@@ -202,6 +207,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
         configureJavaCompiler(indicator, cache);
+        configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator, groupModuleConfigurator);
         configureGradleModules(indicator, groupModuleConfigurator);
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
@@ -245,10 +251,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(message("hybris.project.import.facets"));
-            if (isPluginActive(SPRING_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
-            if (isPluginActive(JAVAEE_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.JAVAEE_PLUGIN_ID)) {
                 this.excludeFrameworkDetection(project, WebFacet.ID);
                 this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
             }
@@ -260,8 +266,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final @NotNull ProgressIndicator indicator,
         final ModifiableModuleModel rootProjectModifiableModel,
         final HybrisModuleDescriptor moduleDescriptor,
-        final GroupModuleConfigurator groupModuleConfigurator
-    ) {
+        final GroupModuleConfigurator groupModuleConfigurator) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
@@ -312,11 +317,20 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getCompilerConfigurator();
+        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getJavaCompilerConfigurator();
 
         if (compilerConfigurator == null) return;
 
-        indicator.setText(message("hybris.project.import.compiler"));
+        indicator.setText(message("hybris.project.import.compiler.java"));
+        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+    }
+
+    private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
+        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
+
+        if (compilerConfigurator == null) return;
+
+        indicator.setText(message("hybris.project.import.compiler.kotlin"));
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
     }
 

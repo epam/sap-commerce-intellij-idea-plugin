@@ -89,5 +89,8 @@ public interface ConfiguratorFactory {
     DataSourcesConfigurator getDataSourcesConfigurator();
 
     @Nullable
-    JavaCompilerConfigurator getCompilerConfigurator();
+    JavaCompilerConfigurator getJavaCompilerConfigurator();
+
+    @Nullable
+    KotlinCompilerConfigurator getKotlinCompilerConfigurator();
 }

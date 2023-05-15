@@ -80,6 +80,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean isAddOn();
 
+    boolean isKotlinEnabled();
+
     @NotNull
     HybrisModuleDescriptorType getDescriptorType();
 
