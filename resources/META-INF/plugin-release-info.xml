@@ -103,6 +103,10 @@
             </ul>
             <h3>2023.1.6</h3>
             <ul>
+                <li><i>Feature:</i> Added 2023.2 support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405" target="_blank" rel="nofollow">#405</a>)</li>
+            </ul>
+            <h3>2023.1.6</h3>
+            <ul>
                 <li><i>Feature:</i> <strong>Polyglot Query Language</strong> enhancements (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/373" target="_blank" rel="nofollow">#373</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/374" target="_blank" rel="nofollow">#374</a>,
                 <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/375" target="_blank" rel="nofollow">#375</a>,
