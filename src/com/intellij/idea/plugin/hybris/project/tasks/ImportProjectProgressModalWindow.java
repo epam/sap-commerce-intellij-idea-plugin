@@ -538,7 +538,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
-        //TODO add try catch
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
         final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);
