@@ -59,7 +59,8 @@ public class CheckRequiredPluginsStep extends ProjectImportWizardStep {
         "com.intellij.database",
         "com.intellij.spring",
         "com.intellij.javaee",
-        "com.intellij.diagram"
+        "com.intellij.diagram",
+        "com.intellij.javaee.web"
     );
     private final String EXCLUDED_ID_PREFIX = "com.intellij.modules";
 
