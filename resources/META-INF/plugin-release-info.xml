@@ -99,6 +99,7 @@
                 <li><i>Feature:</i> <strong>Kotlin</strong> language support (<a href="https://github.com/mlytvyn/kotlinnature">kotlinnature</a>)
                     <ul>
                         <li>Register Kotlin Facet for extensions with <code>kotlinsrc</code> / <code>kotlintestsrc</code> directories (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/407" target="_blank" rel="nofollow">#407</a>)</li>
+                        <li>Automatically adjust Kotlin Compiler based on <code>kotlinnature</code> settings and project JDK (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/409" target="_blank" rel="nofollow">#409</a>)</li>
                         <li>Show different icon for <code>kotlinnature</code> extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408" target="_blank" rel="nofollow">#408</a>)</li>
                     </ul>
                 </li>

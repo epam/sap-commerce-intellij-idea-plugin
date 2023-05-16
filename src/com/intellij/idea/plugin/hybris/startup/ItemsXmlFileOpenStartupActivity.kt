@@ -37,7 +37,7 @@ import com.intellij.psi.search.GlobalSearchScope
 class ItemsXmlFileOpenStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) return
+        if (!CommonIdeaService.getInstance().isHybrisProject(project)) return
         if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return
 
         val task = object : Task.Backgroundable(project, message("hybris.startupActivity.itemsXmlValidation.progress.title")) {

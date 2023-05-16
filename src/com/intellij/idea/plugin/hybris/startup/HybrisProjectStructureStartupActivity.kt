@@ -50,7 +50,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val commonIdeaService = CommonIdeaService.getInstance()
         val isHybrisProject = commonIdeaService.isHybrisProject(project)
 
         if (isHybrisProject) {
@@ -105,7 +105,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     }
 
     private fun resetSpringGeneralSettings(project: Project) {
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val commonIdeaService = CommonIdeaService.getInstance()
 
         if (commonIdeaService.isHybrisProject(project) && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
             val springGeneralSettings = SpringGeneralSettings.getInstance(project)

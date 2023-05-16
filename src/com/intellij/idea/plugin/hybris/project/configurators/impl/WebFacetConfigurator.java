@@ -26,6 +26,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.WriteAction;
@@ -49,7 +50,7 @@ public class WebFacetConfigurator implements FacetConfigurator {
 
     @Override
     public void configure(
-        @NotNull final ModifiableFacetModel modifiableFacetModel,
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final ModifiableFacetModel modifiableFacetModel,
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel

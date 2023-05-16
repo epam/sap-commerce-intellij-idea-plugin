@@ -20,14 +20,19 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 
+/**
+ * Kotlin Facets will be configured only if `kotlinnature` extension is available and
+ */
 class KotlinFacetConfigurator : FacetConfigurator {
 
     override fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: HybrisModuleDescriptor,
         javaModule: Module,
@@ -35,10 +40,11 @@ class KotlinFacetConfigurator : FacetConfigurator {
     ) {
         // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
         modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-            ?.takeUnless { moduleDescriptor.isKotlinEnabled }
+            ?.takeUnless { moduleDescriptor.hasKotlinSourceDirectories() }
             ?.let { modifiableFacetModel.removeFacet(it) }
 
-        if (!moduleDescriptor.isKotlinEnabled) return
+        if (!moduleDescriptor.hasKotlinSourceDirectories()) return
+        if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return
 
         val facet = KotlinFacet.get(javaModule)
             ?: createFacet(javaModule)
@@ -47,10 +53,10 @@ class KotlinFacetConfigurator : FacetConfigurator {
     }
 
     private fun createFacet(javaModule: Module) = with(KotlinFacetType.INSTANCE) {
-        this.createFacet(
+        createFacet(
             javaModule,
-            this.defaultFacetName,
-            this.createDefaultConfiguration(),
+            defaultFacetName,
+            createDefaultConfiguration(),
             null
         )
     }

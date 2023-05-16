@@ -139,9 +139,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
         final List<HybrisModuleDescriptor> allModules = getHybrisModuleDescriptors();
 
-        final SpringConfigurator springConfigurator = configuratorFactory.getSpringConfigurator();
+        final var springConfigurator = configuratorFactory.getSpringConfigurator();
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final VersionControlSystemConfigurator versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
+        final var versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
 
         this.initializeHybrisProjectSettings(project);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
@@ -301,7 +301,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
-            facetConfigurator.configure(modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
+            facetConfigurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, javaModule, modifiableRootModel);
         }
         return javaModule;
     }

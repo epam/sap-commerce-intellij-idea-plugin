@@ -25,13 +25,16 @@ import com.intellij.openapi.extensions.PluginId;
 /**
  * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/3/17.
  */
-public class PluginCommon {
+public final class PluginCommon {
 
     public static final String ANT_SUPPORT_PLUGIN_ID = "AntSupport";
     public static final String JAVAEE_PLUGIN_ID = "com.intellij.javaee";
     public static final String SPRING_PLUGIN_ID = "com.intellij.spring";
     public static final String KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin";
     public static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
+
+    private PluginCommon() {
+    }
 
     public static boolean isPluginActive(final String id) {
         final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(id));

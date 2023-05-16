@@ -80,7 +80,10 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean isAddOn();
 
-    boolean isKotlinEnabled();
+    /**
+     * This method will return true if module has `kotlinsrc` or `kotlintestsrc` directories
+     */
+    boolean hasKotlinSourceDirectories();
 
     @NotNull
     HybrisModuleDescriptorType getDescriptorType();

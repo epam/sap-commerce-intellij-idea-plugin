@@ -17,59 +17,68 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.facet.FacetManager
-import com.intellij.ide.GeneralSettingsConfigurableEP
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache
 import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import org.jetbrains.kotlin.cli.common.arguments.unfrozen
+import com.intellij.openapi.projectRoots.JavaSdk
+import com.intellij.openapi.projectRoots.JavaSdkVersion
+import com.intellij.openapi.roots.ProjectRootManager
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
-import org.jetbrains.kotlin.idea.compiler.configuration.KotlinCompilerSettings
-import org.jetbrains.kotlin.idea.facet.KotlinFacet
-import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 
 class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
 
     override fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache) {
-//        val moduleRootManager = ModuleRootManager.getInstance(project)
-//        val modules = moduleRootManager.modules
-//
-//
-//        for (module in modules) {
-//            val kotlinFacet = KotlinFacet.get(module)
-//
-//            if (kotlinFacet == null) {
-//                val facetManager = FacetManager.getInstance(module)
-//                val facetType = KotlinFacetType.INSTANCE
-//                val facet = facetManager.createFacet(facetType, facetType.defaultFacetName, null)
-//                facetManager.addFacet(facet)
-//
-//                val facetConfiguration = facet.configuration
-//                facetConfiguration.settings.compilerSettings.kotlinCompilerVersion = "1.5.0"
-//
-//                // Save the changes
-//                facetConfiguration.commit()
-//            } else {
-//                val facetConfiguration = kotlinFacet.configuration
-//
-//                // Set the desired Kotlin compiler version
-//                facetConfiguration.kotlinCompilerVersion = "1.5.0"
-//
-//                // Save the changes
-//                kotlinFacet.configuration.commit()
-//            }
-//        }
+        val hasKotlinnatureExtension = descriptor.modulesChosenForImport.stream()
+            .anyMatch { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+        if (!hasKotlinnatureExtension) return
 
-
-//
-//        val kotlinCompilerSettings = KotlinCompilerSettings.getInstance(project)
-//
-//        val compilerSettings = kotlinCompilerSettings.settings.unfrozen()
-//        val k2JVMCompilerArguments = Kotlin2JvmCompilerArgumentsHolder.getInstance(project).settings.unfrozen()
-//
-//        org.jetbrains.kotlin.config.KotlinCompilerSettings
-//        k2JVMCompilerArguments.apiVersion = "1.8"
+        setKotlinCompilerVersion(project, HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION)
+        setKotlinJvmTarget(project)
     }
+
+    override fun configureAfterImport(project: Project) {
+        val hasKotlinnatureExtension = ModuleManager.getInstance(project).modules
+            .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.name }
+        if (!hasKotlinnatureExtension) return
+
+        val compilerVersion = ProjectPropertiesUtils.findMacroProperty(project, HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
+            ?.value
+            ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
+        setKotlinCompilerVersion(project, compilerVersion)
+    }
+
+    // Kotlin compiler version will be updated after project import / refresh in BGT
+    // we have to have indexes ready to be able to get correct value of the project property responsible for custom Kotlin compiler version
+    private fun setKotlinCompilerVersion(project: Project, compilerVersion: String) {
+        ApplicationManager.getApplication().runReadAction {
+            KotlinJpsPluginSettings.getInstance(project).update {
+                version = compilerVersion
+            }
+        }
+    }
+
+    private fun setKotlinJvmTarget(project: Project) {
+        ApplicationManager.getApplication().runReadAction {
+            val projectRootManager = ProjectRootManager.getInstance(project)
+            val sdk = projectRootManager.projectSdk ?: return@runReadAction
+            val javaSdk = sdk.sdkType as? JavaSdk ?: return@runReadAction
+            val javaSdkVersion = javaSdk.getVersion(sdk) ?: return@runReadAction
+
+            val projectJvmTarget = if (javaSdkVersion == JavaSdkVersion.JDK_1_8) {
+                "1.8"
+            } else {
+                javaSdkVersion.description
+            }
+            Kotlin2JvmCompilerArgumentsHolder.getInstance(project).update {
+                jvmTarget = projectJvmTarget
+            }
+        }
+    }
+
 }

@@ -123,6 +123,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private ConfigHybrisModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
     private PlatformHybrisModuleDescriptor platformHybrisModuleDescriptor;
+    @Nullable
+    private HybrisModuleDescriptor kotlinNatureModuleDescriptor;
     private final Set<File> vcs = new HashSet<>();
 
     private void processLocalExtensions() {
@@ -783,6 +785,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (module instanceof PlatformHybrisModuleDescriptor) {
                 platformHybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) module;
             }
+            if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE.equals(module.getName())) {
+                kotlinNatureModuleDescriptor = module;
+            }
         });
     }
 
@@ -796,6 +801,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor() {
         return platformHybrisModuleDescriptor;
+    }
+
+    @Nullable
+    @Override
+    public HybrisModuleDescriptor getKotlinNatureModuleDescriptor() {
+        return kotlinNatureModuleDescriptor;
     }
 
     @NotNull

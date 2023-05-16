@@ -6,4 +6,6 @@ import com.intellij.openapi.project.Project
 interface KotlinCompilerConfigurator {
 
     fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache)
+
+    fun configureAfterImport(project: Project)
 }
