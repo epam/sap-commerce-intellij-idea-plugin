@@ -32,7 +32,7 @@
     <depends optional="true" config-file="lang/optional-flexibleSearch.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="lang/optional-impex.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="optional-spring-dependencies.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="optional-javaee-dependencies.xml">com.intellij.javaee</depends>
+    <depends optional="true" config-file="optional-javaee-web-dependencies.xml">com.intellij.javaee.web</depends>
     <depends optional="true" config-file="optional-java-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="optional-diagram-dependencies.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="optional-properties-dependencies.xml">com.intellij.properties</depends>
