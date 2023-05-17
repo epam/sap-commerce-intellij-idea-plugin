@@ -23,10 +23,13 @@ import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.roots.ProjectRootManager
+import org.jetbrains.kotlin.idea.KotlinIcons
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
@@ -46,7 +49,9 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         when (descriptorType) {
             HybrisModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
             HybrisModuleDescriptorType.CONFIG -> data.setIcon(AllIcons.Nodes.ConfigFolder)
-            else -> {}
+            else -> if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.name && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
+                data.setIcon(KotlinIcons.SMALL_LOGO)
+            }
         }
     }
 }

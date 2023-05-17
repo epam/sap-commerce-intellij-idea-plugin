@@ -57,6 +57,8 @@ public interface HybrisProjectDescriptor {
     @NotNull
     PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor();
 
+    @Nullable HybrisModuleDescriptor getKotlinNatureModuleDescriptor();
+
     @NotNull
     Set<HybrisModuleDescriptor> getAlreadyOpenedModules();
 

@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,7 @@ public interface Mold extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("spring-bean")
+	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getSpringBean();
 
 

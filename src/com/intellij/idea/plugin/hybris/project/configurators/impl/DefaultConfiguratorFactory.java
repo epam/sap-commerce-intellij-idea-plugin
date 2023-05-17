@@ -18,27 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
-import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.TestRunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
+import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
@@ -58,12 +38,17 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
         final FacetConfigurator springFacetConfigurator = ApplicationManager.getApplication().getService(SpringFacetConfigurator.class);
+        final FacetConfigurator kotlinFacetConfigurator = ApplicationManager.getApplication().getService(KotlinFacetConfigurator.class);
         final FacetConfigurator webFacetConfigurator = ApplicationManager.getApplication().getService(WebFacetConfigurator.class);
 
-        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(2);
+        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(3);
 
         if (null != springFacetConfigurator) {
             facetConfigurators.add(springFacetConfigurator);
+        }
+
+        if (null != kotlinFacetConfigurator) {
+            facetConfigurators.add(kotlinFacetConfigurator);
         }
 
         if (null != webFacetConfigurator) {
@@ -185,8 +170,13 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @Nullable
     @Override
-    public JavaCompilerConfigurator getCompilerConfigurator() {
+    public JavaCompilerConfigurator getJavaCompilerConfigurator() {
         return ApplicationManager.getApplication().getService(JavaCompilerConfigurator.class);
+    }
+
+    @Override
+    public @Nullable KotlinCompilerConfigurator getKotlinCompilerConfigurator() {
+        return ApplicationManager.getApplication().getService(KotlinCompilerConfigurator.class);
     }
 
     @NotNull

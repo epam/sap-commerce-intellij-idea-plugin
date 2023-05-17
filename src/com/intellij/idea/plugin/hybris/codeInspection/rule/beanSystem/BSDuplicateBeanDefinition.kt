@@ -52,7 +52,7 @@ class BSDuplicateBeanDefinition : AbstractBSInspection() {
         val currentFileDeclarations = metas
             .flatMap { it.declarations }
             .map { it.domAnchor }
-            .filter { it.containingFile == dom.xmlElement!!.containingFile }
+            .filter { it.containingFile == dom.xmlElement?.containingFile }
             .mapNotNull { it.retrieveDomElement() }
         if (currentFileDeclarations.size > 1) {
             holder.createProblem(

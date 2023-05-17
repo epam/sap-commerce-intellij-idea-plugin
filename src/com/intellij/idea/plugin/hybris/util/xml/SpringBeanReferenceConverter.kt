@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
+package com.intellij.idea.plugin.hybris.util.xml
 
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive
@@ -30,12 +30,21 @@ import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
 
-class AttributeHandlerReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
+class SpringBeanReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
-    override fun createReferences(value: GenericDomValue<String>, element: PsiElement, context: ConvertContext): Array<PsiReference> = if (isPluginActive(SPRING_PLUGIN_ID)) {
-        arrayOf(SpringReference(element, value.stringValue!!.trim()))
-    } else {
-        arrayOf(PlainXmlReference(element, value))
+    override fun createReferences(
+        value: GenericDomValue<String>,
+        element: PsiElement,
+        context: ConvertContext
+    ): Array<out PsiReference> {
+        val text = value.stringValue
+        if (text.isNullOrBlank()) return emptyArray()
+
+        return if (isPluginActive(SPRING_PLUGIN_ID)) {
+            arrayOf(SpringReference(element, text.trim()))
+        } else {
+            arrayOf(PlainXmlReference(element, value))
+        }
     }
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)

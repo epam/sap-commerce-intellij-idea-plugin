@@ -23,6 +23,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -45,7 +46,7 @@ public class SpringFacetConfigurator implements FacetConfigurator {
 
     @Override
     public void configure(
-        @NotNull final ModifiableFacetModel modifiableFacetModel,
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final ModifiableFacetModel modifiableFacetModel,
         @NotNull final HybrisModuleDescriptor moduleDescriptor,
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel

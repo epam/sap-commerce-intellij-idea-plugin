@@ -17,9 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.vfs.listeners
 
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -29,8 +29,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.wm.WindowManager
 
 class BSBulkFileListener : BulkFileListener {
-
-    private val logger = Logger.getInstance(BSBulkFileListener::class.java)
 
     override fun after(events: MutableList<out VFileEvent>) {
         val project = getActiveProject() ?: return
@@ -45,9 +43,12 @@ class BSBulkFileListener : BulkFileListener {
             .filter { fileIndex.isInContent(it) }
 
         if (items.isNotEmpty()) {
-            logger.debug("Re-triggering GlobalMetaModel re-calculation due following beans.xml changes: ${items.map { it.nameWithoutExtension }}")
             // re-triggering GlobalMetaModel state on file changes
-            BSMetaModelAccess.getInstance(project).getMetaModel()
+            try {
+                BSMetaModelAccess.getInstance(project).getMetaModel()
+            } catch (e: ProcessCanceledException) {
+                // do nothing, once done, model access service will notify all listeners
+            }
         }
     }
 

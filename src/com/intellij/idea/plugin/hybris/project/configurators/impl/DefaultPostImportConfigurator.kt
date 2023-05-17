@@ -74,6 +74,9 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
 
+            configuratorFactory.kotlinCompilerConfigurator
+                ?.configureAfterImport(project)
+
             configuratorFactory.mavenConfigurator
                 ?.let {
                     try {

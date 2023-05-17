@@ -31,7 +31,7 @@ import com.intellij.psi.PsiManager
 class ImpexHeaderHighlighterStartupActivity : ProjectActivity, Disposable {
 
     override suspend fun execute(project: Project) {
-        if (!ApplicationManager.getApplication().getService(CommonIdeaService::class.java).isHybrisProject(project)) {
+        if (!CommonIdeaService.getInstance().isHybrisProject(project)) {
             return
         }
 

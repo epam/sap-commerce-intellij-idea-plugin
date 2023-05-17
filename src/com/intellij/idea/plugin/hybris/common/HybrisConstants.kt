@@ -91,6 +91,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
     const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
+    const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
     const val EXTENSION_META_KEY_BACKOFFICE_MODULE = "backoffice-module"
     const val EXTENSION_META_KEY_HAC_MODULE = "hac-module"
@@ -329,12 +330,16 @@ object HybrisConstants {
         "common/temp/node_modules"
     );
 
+    const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
     private const val GROOVY_SRC_DIRECTORY = "groovysrc"
-    private const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
     private const val WEB_XML_FILE_NAME = "web.xml"
     private const val WEB_INF_DIRECTORY = "WEB-INF"
+
+    // kotlinnature extension integration
+    const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
+    const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
