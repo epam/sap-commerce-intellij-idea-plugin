@@ -21,7 +21,9 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Referencing;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,7 @@ public interface Action extends NavigableElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute (BEAN)
 	@Required
+	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getBean();
 
 

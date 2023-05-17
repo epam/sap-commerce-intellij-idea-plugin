@@ -61,7 +61,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
             NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES,
             NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD,
             NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST,
-            NAMESPACE_COCKPIT_NG_CONFIG_FULLT_EXT_SEARCH,
+            NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH,
             NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW,
             NAMESPACE_COCKPIT_NG_CONFIG_COMMON,
             NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS,
@@ -95,7 +95,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
         const val NAMESPACE_COCKPIT_NG_CONFIG_AVAILABLE_LOCALES = "http://www.hybris.com/cockpitng/config/availableLocales"
         const val NAMESPACE_COCKPIT_NG_CONFIG_DASHBOARD = "http://www.hybris.com/cockpitng/config/dashboard"
         const val NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST = "http://www.hybris.com/cockpitng/config/simplelist"
-        const val NAMESPACE_COCKPIT_NG_CONFIG_FULLT_EXT_SEARCH = "http://www.hybris.com/cockpitng/config/fulltextsearch"
+        const val NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH = "http://www.hybris.com/cockpitng/config/fulltextsearch"
         const val NAMESPACE_COCKPIT_NG_CONFIG_GRID_VIEW = "http://www.hybris.com/cockpitng/config/gridView"
         const val NAMESPACE_COCKPIT_NG_CONFIG_COMMON = "http://www.hybris.com/cockpitng/config/common"
         const val NAMESPACE_COCKPIT_NG_CONFIG_NOTIFICATIONS = "http://www.hybris.com/cockpitng/config/notifications"

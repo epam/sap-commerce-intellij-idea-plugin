@@ -21,10 +21,8 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,6 +37,7 @@ public interface Renderer extends DomElement, Positioned {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("spring-bean")
+    @Referencing(SpringBeanReferenceConverter.class)
     @Required
     GenericAttributeValue<String> getSpringBean();
 

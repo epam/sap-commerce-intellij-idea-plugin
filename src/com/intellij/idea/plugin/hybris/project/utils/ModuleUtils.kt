@@ -32,4 +32,7 @@ object ModuleUtils {
         return descriptorType == HybrisModuleDescriptorType.PLATFORM
             || descriptorType == HybrisModuleDescriptorType.EXT
     }
+
+    fun getShortName(module: Module) = module.name.substringAfterLast(".")
+
 }

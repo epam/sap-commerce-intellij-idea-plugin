@@ -21,13 +21,16 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpitng/config/viewSwitcher:view-switcherElemType interface.
  */
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ViewSwitcher extends DomElement {
 
     /**

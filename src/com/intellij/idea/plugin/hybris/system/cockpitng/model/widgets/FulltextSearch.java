@@ -21,15 +21,14 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpitng/config/fulltextsearch:fulltext-searchElemType interface.
  */
+@Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface FulltextSearch extends DomElement {
 
     /**

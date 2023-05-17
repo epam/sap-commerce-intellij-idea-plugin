@@ -103,6 +103,7 @@
                         <li>Show different icon for <code>kotlinnature</code> extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408" target="_blank" rel="nofollow">#408</a>)</li>
                     </ul>
                 </li>
+                <li><i>Fix:</i> IDEA 2023.2: the expensive method should not be called inside the Highlighting Pass (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/411" target="_blank" rel="nofollow">#411</a>)</li>
             </ul>
             <h3>2023.1.6</h3>
             <ul>
