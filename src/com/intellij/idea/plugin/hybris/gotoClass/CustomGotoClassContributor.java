@@ -37,7 +37,7 @@ public class CustomGotoClassContributor implements GotoClassContributor {
     @NotNull
     @Override
     public String[] getNames(final Project project, final boolean includeNonProjectItems) {
-        if (includeNonProjectItems || !CommonIdeaService.getInstance().isHybrisProject(project)) {
+        if (includeNonProjectItems || !CommonIdeaService.Companion.getInstance().isHybrisProject(project)) {
             return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final GlobalSearchScope scope = new OotbClassesSearchScope(project);
@@ -60,7 +60,7 @@ public class CustomGotoClassContributor implements GotoClassContributor {
         final Project project,
         final boolean includeNonProjectItems
     ) {
-        if (includeNonProjectItems || !CommonIdeaService.getInstance().isHybrisProject(project)) {
+        if (includeNonProjectItems || !CommonIdeaService.Companion.getInstance().isHybrisProject(project)) {
             return NavigationItem.EMPTY_NAVIGATION_ITEM_ARRAY;
         }
         final List<NavigationItem> result = new ArrayList<>();

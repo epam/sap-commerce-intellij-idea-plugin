@@ -29,8 +29,8 @@ object ActionUtils {
     fun isHybrisContext(event: AnActionEvent) = isHybrisContext(event.dataContext)
 
     fun isHybrisContext(dataContext: DataContext) = CommonDataKeys.PROJECT.getData(dataContext)
-        ?.let { CommonIdeaService.getInstance().isHybrisProject(it) }
+        ?.let { CommonIdeaService.instance.isHybrisProject(it) }
         ?: false
 
-    fun isHybrisContext(project: Project) = CommonIdeaService.getInstance().isHybrisProject(project);
+    fun isHybrisContext(project: Project) = CommonIdeaService.instance.isHybrisProject(project);
 }

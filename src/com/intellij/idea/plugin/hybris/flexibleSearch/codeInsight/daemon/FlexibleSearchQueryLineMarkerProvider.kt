@@ -63,7 +63,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     ): FlexibleSearchQueryLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
-        if (!CommonIdeaService.getInstance().isHybrisProject(element.project)) return null
+        if (!CommonIdeaService.instance.isHybrisProject(element.project)) return null
 
         val expression = expressionProvider.invoke()
         if (!FxSUtils.isFlexibleSearchQuery(expression)) return null

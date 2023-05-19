@@ -41,7 +41,7 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
     override fun checkFileElement(domFileElement: DomFileElement<T>, holder: DomElementAnnotationHolder) {
         val file = domFileElement.file
         val project = file.project
-        if (!CommonIdeaService.getInstance().isHybrisProject(project)) return
+        if (!CommonIdeaService.instance.isHybrisProject(project)) return
         if (!canProcess(project, file)) return
 
         val helper = DomElementAnnotationsManager.getInstance(project).highlightingHelper

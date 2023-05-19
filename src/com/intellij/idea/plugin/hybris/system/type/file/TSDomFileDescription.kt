@@ -34,7 +34,7 @@ class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, Hybris
         file: XmlFile, module: Module?
     ) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
         && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
         && file.rootTag
         ?.attributes

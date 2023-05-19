@@ -33,17 +33,8 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
 import org.apache.commons.lang3.StringUtils
-import java.io.File
-import java.io.FileReader
-import java.io.IOException
-import java.util.*
 import java.util.function.Consumer
 
-/**
- * Created 10:24 PM 10 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash></AlexanderBartash>@gmail.com>
- */
 val regex = Regex("https?://")
 
 class DefaultCommonIdeaService : CommonIdeaService {
@@ -58,18 +49,18 @@ class DefaultCommonIdeaService : CommonIdeaService {
         return isTyping || isUndoOrRedo
     }
 
-    override fun getHybrisDirectory(project: Project): Optional<String> {
-        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-            .map { it.state }
-            .map { it.hybrisDirectory }
-    }
+    /* override fun getHybrisDirectory(project: Project): Optional<String> {
+         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
+             .map { it.state }
+             .map { it.hybrisDirectory }
+     }*/
 
-    override fun getCustomDirectory(project: Project): Optional<String> {
-        return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-            .map { it.state }
-            .map { it.customDirectory }
-    }
-
+    /* override fun getCustomDirectory(project: Project): Optional<String> {
+         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
+             .map { it.state }
+             .map { it.customDirectory }
+     }
+ */
     override fun isHybrisProject(project: Project): Boolean {
         return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     }
@@ -204,7 +195,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         connectionSettings.hostIP = connectionSettings.hostIP?.replace(regex, "")
     }
 
-    private fun getLocalProperties(project: Project): Properties? {
+    /*private fun getLocalProperties(project: Project): Properties? {
         val configDir = HybrisProjectSettingsComponent.getInstance(project).state.configDirectory ?: return null
         val propFile = File(configDir, HybrisConstants.LOCAL_PROPERTIES)
         if (!propFile.exists()) {
@@ -220,7 +211,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
             LOG.info(e.message, e)
         }
         return null
-    }
+    }*/
 
     private fun matchAllModuleNames(
         namePatterns: Collection<String>,

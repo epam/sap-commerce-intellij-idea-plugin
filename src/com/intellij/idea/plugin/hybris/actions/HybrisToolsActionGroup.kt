@@ -18,11 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbAware
 
 class HybrisToolsActionGroup : DefaultActionGroup(), DumbAware {
+
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
     override fun update(event: AnActionEvent) {
         event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(event)

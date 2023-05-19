@@ -191,18 +191,18 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     public String getHostHacURL(final Project project) {
-        return CommonIdeaService.getInstance().getActiveHacUrl(project);
+        return CommonIdeaService.Companion.getInstance().getActiveHacUrl(project);
     }
 
     public String getSslProtocol(
         final Project project,
         final @Nullable HybrisRemoteConnectionSettings settings
     ) {
-        return CommonIdeaService.getInstance().getActiveSslProtocol(project, settings);
+        return CommonIdeaService.Companion.getInstance().getActiveSslProtocol(project, settings);
     }
 
     public String getHostHacURL(final Project project, final HybrisRemoteConnectionSettings settings) {
-        return CommonIdeaService.getInstance().getHostHacUrl(project, settings);
+        return CommonIdeaService.Companion.getInstance().getHostHacUrl(project, settings);
     }
 
     protected CloseableHttpClient createAllowAllClient(final long timeout) {

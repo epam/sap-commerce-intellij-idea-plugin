@@ -100,7 +100,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         resetSpringGeneralSettings(project)
         fixBackOfficeJRebelSupport(project)
 
-        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
+        CommonIdeaService.instance.fixRemoteConnectionSettings(project)
         ConsolePersistenceService.getInstance(project).loadPersistedQueries()
     }
 

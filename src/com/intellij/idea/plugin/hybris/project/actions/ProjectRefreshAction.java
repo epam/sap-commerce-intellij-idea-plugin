@@ -121,7 +121,7 @@ public class ProjectRefreshAction extends AnAction {
             return;
         }
         presentation.setIcon(HybrisIcons.HYBRIS);
-        presentation.setVisible(CommonIdeaService.getInstance().isHybrisProject(project));
+        presentation.setVisible(CommonIdeaService.Companion.getInstance().isHybrisProject(project));
     }
 
     @Override

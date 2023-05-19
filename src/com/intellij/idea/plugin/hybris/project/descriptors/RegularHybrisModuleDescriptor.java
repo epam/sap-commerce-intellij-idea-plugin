@@ -257,14 +257,14 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
             libs.add(new DefaultJavaLibraryDescriptor(
                 new File(
                     this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    CommonIdeaService.getInstance().getBackofficeWebInfLib(getRootProjectDescriptor().getProject())
+                    CommonIdeaService.Companion.getInstance().getBackofficeWebInfLib(getRootProjectDescriptor().getProject())
                 ),
                 false, false
             ));
             libs.add(new DefaultJavaLibraryDescriptor(
                 new File(
                     this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    CommonIdeaService.getInstance().getBackofficeWebInfClasses(getRootProjectDescriptor().getProject())
+                    CommonIdeaService.Companion.getInstance().getBackofficeWebInfClasses(getRootProjectDescriptor().getProject())
                 ),
                 false, true
             ));

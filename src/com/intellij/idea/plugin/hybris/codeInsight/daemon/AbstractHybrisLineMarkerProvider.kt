@@ -44,7 +44,7 @@ abstract class AbstractHybrisLineMarkerProvider<T : PsiElement> : LineMarkerProv
     protected open fun canProcess(elements: MutableList<out PsiElement>): Boolean {
         val psiFile = elements.firstOrNull()?.containingFile
             ?: return false
-        if (!CommonIdeaService.getInstance().isHybrisProject(psiFile.project)) return false
+        if (!CommonIdeaService.instance.isHybrisProject(psiFile.project)) return false
         return canProcess(psiFile)
     }
 }

@@ -34,7 +34,7 @@ class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.virtualFile != null
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
         && file.rootTag
         ?.attributes

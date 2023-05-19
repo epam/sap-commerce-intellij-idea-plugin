@@ -142,7 +142,7 @@ public class RemoteHacConnectionDialog extends DialogWrapper {
         mySettings.setHacWebroot(hacWebrootTextField.getText());
         mySettings.setHacLogin(loginTextField.getText());
         mySettings.setHacPassword(new String(passwordField.getPassword()));
-        final String previewUrl = CommonIdeaService.getInstance().getHostHacUrl(myProject, mySettings);
+        final String previewUrl = CommonIdeaService.Companion.getInstance().getHostHacUrl(myProject, mySettings);
         projectUrlPreviewValueLabel.setText(previewUrl);
         mySettings.setGeneratedURL(previewUrl);
     }

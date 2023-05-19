@@ -519,7 +519,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .collect(Collectors.toSet()));
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
 
-        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project);
+        CommonIdeaService.Companion.getInstance().fixRemoteConnectionSettings(project);
 
         project.putUserData(HybrisProjectImportStartupActivity.Companion.getSyncProjectSettingsKey(), true);
     }

@@ -35,7 +35,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
         && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
 
     override fun initializeFileDescription() {

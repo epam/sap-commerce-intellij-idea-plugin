@@ -36,6 +36,6 @@ class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::cla
         && file.virtualFile != null
         && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
 
 }

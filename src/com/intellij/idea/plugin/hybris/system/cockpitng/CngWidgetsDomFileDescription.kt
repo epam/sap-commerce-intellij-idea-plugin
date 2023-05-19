@@ -36,6 +36,6 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && file.name.endsWith(HybrisConstants.COCKPIT_NG_WIDGETS_XML, true)
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
 
 }

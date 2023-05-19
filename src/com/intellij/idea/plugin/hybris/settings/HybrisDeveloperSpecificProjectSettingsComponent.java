@@ -107,7 +107,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setHacPassword("nimda");
         item.setSsl(true);
         item.setSslProtocol(HybrisConstants.DEFAULT_SSL_PROTOCOL);
-        item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
+        item.setGeneratedURL(CommonIdeaService.Companion.getInstance().getHostHacUrl(project, item));
         return item;
     }
 
@@ -123,7 +123,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setAdminLogin(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"));
         item.setAdminPassword(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123"));
         item.setSsl(true);
-        item.setGeneratedURL(CommonIdeaService.getInstance().getSolrUrl(project, item));
+        item.setGeneratedURL(CommonIdeaService.Companion.getInstance().getSolrUrl(project, item));
         return item;
     }
 

@@ -133,7 +133,7 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
         mySettings.setSolrWebroot(solrWebrootTextField.getText());
         mySettings.setAdminLogin(loginTextField.getText());
         mySettings.setAdminPassword(new String(passwordField.getPassword()));
-        final String previewUrl = CommonIdeaService.getInstance().getSolrUrl(myProject, mySettings);
+        final String previewUrl = CommonIdeaService.Companion.getInstance().getSolrUrl(myProject, mySettings);
         projectUrlPreviewValueLabel.setText(previewUrl);
         mySettings.setGeneratedURL(previewUrl);
     }

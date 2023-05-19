@@ -36,6 +36,6 @@ class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::c
         && file.virtualFile != null
         && file.name == HybrisConstants.EXTENSION_INFO_XML
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.getInstance().isHybrisProject(file.project)
+        && CommonIdeaService.instance.isHybrisProject(file.project)
 
 }
