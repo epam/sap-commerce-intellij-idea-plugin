@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
@@ -32,7 +33,7 @@ import com.intellij.util.xml.DomElement
 object TSPsiHelper {
 
     fun resolveTypeCode(element: PsiElement) = element.parentsOfType<XmlTag>()
-        .firstOrNull { it.localName == "itemtype" && it.getAttribute("code") != null }
+        .firstOrNull { it.localName == ItemTypes.ITEMTYPE && it.getAttribute("code") != null }
         ?.getAttributeValue("code")
 
     fun delete(project: Project, owner: TSGlobalMetaEnum, meta: TSMetaEnum.TSMetaEnumValue) = delete(

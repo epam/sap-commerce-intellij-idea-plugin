@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -16,12 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.references
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.references.FunctionTSAttributeReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
@@ -34,6 +36,8 @@ import com.intellij.psi.PsiReferenceBase
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
 
     private var myReference: PsiReferenceBase.Poly<out PsiElement>? = null
+
+    override fun getReference() = references.firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
         val leafType = firstChild

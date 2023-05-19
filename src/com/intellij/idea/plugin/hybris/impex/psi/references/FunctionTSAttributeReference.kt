@@ -19,21 +19,22 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import com.intellij.psi.xml.XmlTag
 
 class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
@@ -65,21 +66,26 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                 .substringBefore("(")
                 .substringBefore("[")
                 .trim()
-            val typeName = findItemTypeReference(ref.element)
+            val typeName = findItemTypeName(ref.element)
 
-            val result: Array<ResolveResult> = (
-                metaService.findMetaEnumByName(typeName)
-                    ?.let { EnumResolveResult(it) }
-                    ?: metaService.findMetaItemByName(typeName)
-                        ?.let {
-                            it.allAttributes
-                                .find { attr -> attr.name == featureName }
-                                ?.let { attr -> AttributeResolveResult(attr) }
-                                ?: it.allRelationEnds
-                                    .find { relationEnd -> relationEnd.name == featureName }
-                                    ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
-                        }
-                )
+            val result: Array<ResolveResult> = metaService.findMetaClassifierByName(typeName)
+                ?.let { meta ->
+                    when (meta) {
+                        is TSGlobalMetaEnum -> metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                            ?.allAttributes
+                            ?.find { attr -> attr.name.equals(featureName, true) }
+                            ?.let { attr -> AttributeResolveResult(attr) }
+
+                        is TSGlobalMetaItem -> meta.allAttributes
+                            .find { attr -> attr.name.equals(featureName, true) }
+                            ?.let { attr -> AttributeResolveResult(attr) }
+                            ?: meta.allRelationEnds
+                                .find { relationEnd -> relationEnd.name.equals(featureName, true) }
+                                ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
+
+                        else -> null
+                    }
+                }
                 ?.let { arrayOf(it) }
                 ?: ResolveResult.EMPTY_ARRAY
 
@@ -90,20 +96,25 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
             )
         }
 
-        private fun findItemTypeReference(element: PsiElement) = (
+        private fun findItemTypeName(element: PsiElement) = (
             PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
                 ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
                     ?.anyHeaderParameterName
             )
-            ?.references
+            ?.reference
+            ?.let { it as PsiPolyVariantReference }
+            ?.multiResolve(false)
             ?.firstOrNull()
-            ?.resolve()
-            ?.let { obtainTypeName(it) }
-
-        private fun obtainTypeName(reference: PsiElement?): String {
-            val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
-            return if (typeTag != null) (typeTag as XmlTag).attributes.first { it.name == "type" }.value!! else ""
-        }
+            ?.let {
+                when (it) {
+                    is AttributeResolveResult -> it.meta.type
+                    is EnumResolveResult -> it.meta.name
+                    is ItemResolveResult -> it.meta.name
+                    is RelationResolveResult -> it.meta.name
+                    is RelationEndResolveResult -> it.meta.name
+                    else -> null
+                }
+            }
     }
 
 }

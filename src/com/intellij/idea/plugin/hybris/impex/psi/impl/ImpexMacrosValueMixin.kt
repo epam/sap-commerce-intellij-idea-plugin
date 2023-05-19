@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as 
@@ -16,26 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.references
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexPropertiesBaseReference
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
-import javax.lang.model.SourceVersion.isName
+import com.intellij.psi.util.PsiTreeUtil.prevLeaf
 
 /**
  * @author Nosov Aleksandr <nosovae.dev@gmail.com>
  */
-abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeValue {
+abstract class ImpexMacrosValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexMacroValue {
 
-    private var myReference: ImpexJavaClassBaseReference? = null
+    private var myReference: PsiReference? = null
 
     override fun getReferences(): Array<PsiReference> {
-
-        if (isName(text)) {
+        val prevLeaf = prevLeaf(this)
+        if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
             if (myReference == null) {
-                myReference = ImpexJavaClassBaseReference(this)
+                myReference = ImpexPropertiesBaseReference(prevLeaf, this)
+            }
+            return arrayOf(myReference!!)
+        }
+        if (this.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
+            if (myReference == null) {
+                myReference = ImpexPropertiesBaseReference(null, this)
             }
             return arrayOf(myReference!!)
         }
@@ -44,7 +52,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
     }
 
     override fun clone(): Any {
-        val result = super.clone() as ImpexAttributeValueMixin
+        val result = super.clone() as ImpexMacrosValueMixin
         result.myReference = null
         return result
     }

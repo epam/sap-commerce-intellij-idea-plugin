@@ -211,6 +211,7 @@ object HybrisConstants {
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
+    const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_JAVA_LANG_PREFIX = "java.lang."
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
@@ -267,8 +268,6 @@ object HybrisConstants {
     const val ATTRIBUTE_PK = "pk"
     const val DICTIONARY_NAME = "hybris_integration"
     const val DIALOG_TITLE = "hybris.copy.file.dialog."
-
-    val ENUM_ATTRIBUTES = listOf(ATTRIBUTE_PK, ATTRIBUTE_CODE, ATTRIBUTE_NAME)
 
     const val FLEXIBLE_SEARCH_FILE_EXTENSION = "fxs"
     const val FXS_TABLE_ALIAS_SEPARATOR_DOT = "."

@@ -45,7 +45,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
                         ?.let { getCompletions(it) }
 
                     TSMetaType.META_ENUM -> this.findMetaEnumByName(typeCode)
-                        ?.let { getCompletionsForEnum() }
+                        ?.let { getCompletionsForEnum(this) }
 
                     TSMetaType.META_RELATION -> this.findMetaRelationByName(typeCode)
                         ?.let { getCompletions(it, this) }
@@ -86,8 +86,10 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             .flatten()
     }
 
-    private fun getCompletionsForEnum() = HybrisConstants.ENUM_ATTRIBUTES
-        .map { TSLookupElementFactory.buildAttribute(it) }
+    private fun getCompletionsForEnum(metaModelAccess: TSMetaModelAccess) = metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+        ?.allAttributes
+        ?.map { TSLookupElementFactory.build(it) }
+        ?: emptyList()
 
     private fun getCompletions(metaRelation: TSGlobalMetaRelation, metaService: TSMetaModelAccess): List<LookupElementBuilder> {
         val linkMetaItem = metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK) ?: return emptyList()

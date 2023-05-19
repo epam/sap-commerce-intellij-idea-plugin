@@ -23,21 +23,16 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.model.EnumType
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import org.apache.commons.lang3.Validate
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
@@ -52,55 +47,32 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
             parameters.position.parent
         else parameters.position
-        val typeName = findItemTypeReference(psiElementUnderCaret) ?: return
+        val typeName = findItemTypeName(psiElementUnderCaret) ?: return
 
-        val metaService = TSMetaModelAccess.getInstance(project)
-
-        val metaItem = metaService.findMetaItemByName(typeName)
-        if (metaItem == null) {
-            addCompletionsForEnum(metaService, typeName, result)
-        } else {
-            addCompletionsForItem(metaItem, result)
-        }
+        TSCompletionService.getInstance(project)
+            .getCompletions(typeName)
+            .let { result.addAllElements(it) }
     }
 
-    private fun addCompletionsForItem(
-        metaItem: TSGlobalMetaItem,
-        resultSet: CompletionResultSet
-    ) {
-        metaItem.allAttributes
-            .map { TSLookupElementFactory.build(it) }
-            .forEach { resultSet.addElement(it) }
-
-        metaItem.allRelationEnds
-            .mapNotNull { TSLookupElementFactory.build(it) }
-            .forEach { resultSet.addElement(it) }
-    }
-
-    private fun addCompletionsForEnum(
-        metaService: TSMetaModelAccess,
-        typeName: String,
-        resultSet: CompletionResultSet
-    ) {
-        metaService.findMetaEnumByName(typeName)
-            ?.let { TSLookupElementFactory.build(it, EnumType.CODE) }
-            ?.let { resultSet.addElement(it) }
-    }
-
-    private fun findItemTypeReference(element: PsiElement) = (
+    private fun findItemTypeName(element: PsiElement) = (
         PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
             ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
                 ?.anyHeaderParameterName
         )
-        ?.references
+        ?.reference
+        ?.let { it as PsiPolyVariantReference }
+        ?.multiResolve(false)
         ?.firstOrNull()
-        ?.resolve()
-        ?.let { obtainTypeName(it) }
-
-    private fun obtainTypeName(reference: PsiElement): String? {
-        val typeTag = PsiTreeUtil.findFirstParent(reference) { value -> value is XmlTag }
-        return (typeTag as XmlTag).attributes.first { it.name == "type" }.value
-    }
+        ?.let {
+            when (it) {
+                is AttributeResolveResult -> it.meta.type
+                is EnumResolveResult -> it.meta.name
+                is ItemResolveResult -> it.meta.name
+                is RelationResolveResult -> it.meta.name
+                is RelationEndResolveResult -> it.meta.name
+                else -> null
+            }
+        }
 
     companion object {
 

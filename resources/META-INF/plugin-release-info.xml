@@ -96,6 +96,7 @@
             <h3>2023.2.0</h3>
             <ul>
                 <li><i>Feature:</i> Added 2023.2 support (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405" target="_blank" rel="nofollow">#405</a>)</li>
+                <li><i>Feature:</i> Improved code completion and reference resolution for Enum attributes in impex/fxs/pgq files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/414" target="_blank" rel="nofollow">#414</a>)</li>
                 <li><i>Feature:</i> <strong>Kotlin</strong> language support (<a href="https://github.com/mlytvyn/kotlinnature">kotlinnature</a>)
                     <ul>
                         <li>Register Kotlin Facet for extensions with <code>kotlinsrc</code> / <code>kotlintestsrc</code> directories (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/407" target="_blank" rel="nofollow">#407</a>)</li>

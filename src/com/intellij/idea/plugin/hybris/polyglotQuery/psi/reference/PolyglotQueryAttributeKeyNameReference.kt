@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSComp
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -111,13 +110,11 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
                     (attributes + relations).toTypedArray()
                 }
 
-        private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? {
-            val meta = metaService.findMetaEnumByName(type) ?: return null
-
-            return if (HybrisConstants.ENUM_ATTRIBUTES.contains(refName.lowercase())) {
-                arrayOf(EnumResolveResult(meta))
-            } else return null
-        }
+        private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
+            ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
+            ?.allAttributes
+            ?.firstOrNull { refName.equals(it.name, true) }
+            ?.let { arrayOf(AttributeResolveResult(it)) }
 
     }
 

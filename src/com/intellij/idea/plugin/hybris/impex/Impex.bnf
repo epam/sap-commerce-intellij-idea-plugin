@@ -95,7 +95,7 @@ comment ::= LINE_COMMENT
 {pin = 1}
 
 macro_value_dec ::= MACRO_VALUE
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosValueMixin"}
+{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacrosValueMixin"}
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
       macro_value_dec
@@ -183,7 +183,7 @@ full_header_type ::= header_type_name modifiers?
 header_type_name ::= HEADER_TYPE
 {
     recoverWhile = recover_header_type
-    mixin="com.intellij.idea.plugin.hybris.impex.psi.references.ImpexHeaderTypeNameMixin"
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderTypeNameMixin"
 }
 
 full_header_parameter ::= any_header_parameter_name parameters? modifiers* parameters?
@@ -196,7 +196,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION
 {
     recoverWhile = recover_parameter_name
-    mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAnyHeaderParameterNameMixin"
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderParameterNameMixin"
 }
 
 /*#################################################################################*/
@@ -208,7 +208,7 @@ parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) para
 {pin = 1 recoverWhile = recover_parameters}
 
 parameter ::= (HEADER_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
-{pin = 1 mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexParameterMixin"}
+{pin = 1 mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexParameterMixin"}
 
 sub_parameters ::= LEFT_ROUND_BRACKET (parameter ((COMMA | ALTERNATIVE_PATTERN) parameter)*)? RIGHT_ROUND_BRACKET
 {pin = 1 extends = parameters}
@@ -233,4 +233,4 @@ any_attribute_value ::= (
   | string
   | macro_usage_dec
 )+
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAttributeValueMixin"}
+{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"}

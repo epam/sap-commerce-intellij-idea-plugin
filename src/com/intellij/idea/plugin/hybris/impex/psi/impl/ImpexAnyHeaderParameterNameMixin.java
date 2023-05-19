@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,13 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.psi.references;
+package com.intellij.idea.plugin.hybris.impex.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.references.FunctionTSAttributeReference;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosReferenceBase;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference;
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -58,6 +62,14 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
         }
     }
 
+    @Override
+    public PsiReference getReference() {
+        final PsiReference[] references = getReferences();
+        return references.length > 0
+            ? references[0]
+            : null;
+    }
+
     @NotNull
     @Override
     public final PsiReference[] getReferences() {
@@ -74,7 +86,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
             return new PsiReference[]{new ImpexDocumentIdReference(this)};
         }
 
-        //optimisation: dont even try for macro's and documents
+        //optimisation: don't even try for macro's and documents
         if (!ImpexTypes.HEADER_PARAMETER_NAME.equals(leafType) &&
             !ImpexTypes.FUNCTION.equals(leafType)) {
             return PsiReference.EMPTY_ARRAY;

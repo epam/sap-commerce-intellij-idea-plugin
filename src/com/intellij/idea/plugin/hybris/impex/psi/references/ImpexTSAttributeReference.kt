@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAnyHeaderParameterNameMixin
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
@@ -55,7 +55,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             val result = (
                 tryResolveForItemType(metaModelAccess, featureName, ImpexPsiUtils.findHeaderItemTypeName(ref.element)?.text)
                     ?: tryResolveForRelationType(ref.element, metaModelAccess, featureName)
-                    ?: tryResolveForEnumType(ref.element, metaModelAccess, featureName)
+                    ?: tryResolveByEnumType(ref.element, metaModelAccess, featureName)
                 )
                 ?.let { arrayOf(it) }
                 ?: ResolveResult.EMPTY_ARRAY
@@ -67,16 +67,17 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             )
         }
 
-        private fun tryResolveForEnumType(
+        private fun tryResolveByEnumType(
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
-            featureName: String
-        ): ResolveResult? = if (HybrisConstants.ENUM_ATTRIBUTES.contains(featureName))
-            ImpexPsiUtils.findHeaderItemTypeName(element)
-                ?.text
-                ?.let { metaService.findMetaEnumByName(it) }
-                ?.let { EnumResolveResult(it) }
-        else null
+            refName: String
+        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
+            ?.text
+            ?.let { metaService.findMetaEnumByName(it) }
+            ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
+            ?.allAttributes
+            ?.firstOrNull { refName.equals(it.name, true) }
+            ?.let { AttributeResolveResult(it) }
 
         private fun tryResolveForItemType(
             metaModelService: TSMetaModelAccess,
