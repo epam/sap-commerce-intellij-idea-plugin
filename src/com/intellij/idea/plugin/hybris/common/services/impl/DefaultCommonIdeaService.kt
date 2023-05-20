@@ -49,22 +49,6 @@ class DefaultCommonIdeaService : CommonIdeaService {
         return isTyping || isUndoOrRedo
     }
 
-    /* override fun getHybrisDirectory(project: Project): Optional<String> {
-         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-             .map { it.state }
-             .map { it.hybrisDirectory }
-     }*/
-
-    /* override fun getCustomDirectory(project: Project): Optional<String> {
-         return Optional.ofNullable(HybrisProjectSettingsComponent.getInstance(project))
-             .map { it.state }
-             .map { it.customDirectory }
-     }
- */
-    override fun isHybrisProject(project: Project): Boolean {
-        return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
-    }
-
     override fun isOutDatedHybrisProject(project: Project): Boolean {
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
         val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true

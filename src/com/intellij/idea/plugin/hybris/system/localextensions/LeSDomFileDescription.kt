@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.localextensions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
@@ -36,6 +36,6 @@ class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::cla
         && file.virtualFile != null
         && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.instance.isHybrisProject(file.project)
+        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
 }

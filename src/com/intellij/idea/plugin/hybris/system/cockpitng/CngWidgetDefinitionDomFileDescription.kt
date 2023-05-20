@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
@@ -35,6 +35,6 @@ class CngWidgetDefinitionDomFileDescription : DomFileDescription<WidgetDefinitio
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && file.name == HybrisConstants.COCKPIT_NG_DEFINITION_XML
-        && CommonIdeaService.instance.isHybrisProject(file.project)
+        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
 }

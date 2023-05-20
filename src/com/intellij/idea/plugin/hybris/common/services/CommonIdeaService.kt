@@ -18,23 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.common.services;
 
-
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import java.util.*
 
 interface CommonIdeaService {
 
     fun isTypingActionInProgress(): Boolean
-
-    /*fun getHybrisDirectory(project: Project): Optional<String>*///TODO Looks unused
-
-    /*fun getCustomDirectory(project: Project): Optional<String>//TODO Looks Unused*/
-
-    fun isHybrisProject(project: Project): Boolean
 
     fun isOutDatedHybrisProject(project: Project): Boolean
 

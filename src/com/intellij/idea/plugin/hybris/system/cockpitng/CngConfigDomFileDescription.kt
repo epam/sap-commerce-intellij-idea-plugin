@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
@@ -35,7 +35,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && CommonIdeaService.instance.isHybrisProject(file.project)
+        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
 
     override fun initializeFileDescription() {

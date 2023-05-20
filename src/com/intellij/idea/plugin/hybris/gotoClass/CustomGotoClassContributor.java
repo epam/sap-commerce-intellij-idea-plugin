@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.gotoClass;
 
 import com.intellij.ide.util.gotoByName.DefaultClassNavigationContributor;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.navigation.GotoClassContributor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
@@ -37,7 +37,7 @@ public class CustomGotoClassContributor implements GotoClassContributor {
     @NotNull
     @Override
     public String[] getNames(final Project project, final boolean includeNonProjectItems) {
-        if (includeNonProjectItems || !CommonIdeaService.Companion.getInstance().isHybrisProject(project)) {
+        if (includeNonProjectItems || !HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) {
             return ArrayUtil.EMPTY_STRING_ARRAY;
         }
         final GlobalSearchScope scope = new OotbClassesSearchScope(project);
@@ -60,7 +60,7 @@ public class CustomGotoClassContributor implements GotoClassContributor {
         final Project project,
         final boolean includeNonProjectItems
     ) {
-        if (includeNonProjectItems || !CommonIdeaService.Companion.getInstance().isHybrisProject(project)) {
+        if (includeNonProjectItems || !HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) {
             return NavigationItem.EMPTY_NAVIGATION_ITEM_ARRAY;
         }
         final List<NavigationItem> result = new ArrayList<>();

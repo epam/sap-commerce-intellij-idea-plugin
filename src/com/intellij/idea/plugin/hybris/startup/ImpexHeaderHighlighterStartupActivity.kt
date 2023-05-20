@@ -17,12 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener
 import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
@@ -31,13 +30,10 @@ import com.intellij.psi.PsiManager
 class ImpexHeaderHighlighterStartupActivity : ProjectActivity, Disposable {
 
     override suspend fun execute(project: Project) {
-        if (!CommonIdeaService.getInstance().isHybrisProject(project)) {
-            return
-        }
-
-        val eventFactory = EditorFactory.getInstance()
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
         PsiManager.getInstance(project).addPsiTreeChangeListener(ImpexPsiTreeChangeListener(), this)
+        val eventFactory = EditorFactory.getInstance()
         eventFactory.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener(), this)
         eventFactory.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener(), this)
     }

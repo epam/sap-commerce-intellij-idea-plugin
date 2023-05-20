@@ -21,6 +21,8 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisItemsXmlFileType
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent.Companion.getInstance
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
@@ -37,7 +39,7 @@ import com.intellij.psi.search.GlobalSearchScope
 class ItemsXmlFileOpenStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!CommonIdeaService.getInstance().isHybrisProject(project)) return
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
         if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return
 
         val task = object : Task.Backgroundable(project, message("hybris.startupActivity.itemsXmlValidation.progress.title")) {

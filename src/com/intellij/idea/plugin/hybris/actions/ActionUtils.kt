@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.actions;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
@@ -29,8 +29,8 @@ object ActionUtils {
     fun isHybrisContext(event: AnActionEvent) = isHybrisContext(event.dataContext)
 
     fun isHybrisContext(dataContext: DataContext) = CommonDataKeys.PROJECT.getData(dataContext)
-        ?.let { CommonIdeaService.instance.isHybrisProject(it) }
+        ?.let { HybrisProjectSettingsComponent.getInstance(it).isHybrisProject() }
         ?: false
 
-    fun isHybrisContext(project: Project) = CommonIdeaService.instance.isHybrisProject(project);
+    fun isHybrisContext(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 }

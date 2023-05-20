@@ -51,7 +51,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (project.isDisposed) return
 
         val commonIdeaService = CommonIdeaService.getInstance()
-        val isHybrisProject = commonIdeaService.isHybrisProject(project)
+        val isHybrisProject = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 
         if (isHybrisProject) {
             commonIdeaService.refreshProjectSettings(project)
@@ -105,9 +105,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     }
 
     private fun resetSpringGeneralSettings(project: Project) {
-        val commonIdeaService = CommonIdeaService.getInstance()
-
-        if (commonIdeaService.isHybrisProject(project) && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
+        if (HybrisProjectSettingsComponent.getInstance(project).isHybrisProject() && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
             val springGeneralSettings = SpringGeneralSettings.getInstance(project)
             springGeneralSettings.isShowMultipleContextsPanel = false
             springGeneralSettings.isShowProfilesPanel = false
