@@ -25,12 +25,12 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSetting
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.DataProvider
 import com.intellij.openapi.project.Project
-import com.intellij.ui.TreeSpeedSearch
+import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
+import com.intellij.util.containers.Convertor
 import org.jetbrains.annotations.NonNls
 import java.io.Serial
-import java.util.function.Function
 import javax.swing.event.TreeModelListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeNode
@@ -48,12 +48,12 @@ class BSTree(val myProject: Project) : Tree(), DataProvider, Disposable {
         isRootVisible = false
         model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
 
-        TreeSpeedSearch(this, SEARCH_CAN_EXPAND, Function { treePath: TreePath ->
+        TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
-                is BSNode -> return@Function uObj.name
-                else -> return@Function ""
+                is BSNode -> return@Convertor uObj.name
+                else -> return@Convertor ""
             }
-        })
+        }, SEARCH_CAN_EXPAND)
     }
 
     override fun getData(dataId: @NonNls String) = null
