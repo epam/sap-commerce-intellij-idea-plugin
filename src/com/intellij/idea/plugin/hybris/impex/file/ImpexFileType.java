@@ -57,7 +57,7 @@ public class ImpexFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDescription() {
-        return "Impex language file";
+        return "ImpEx language file";
     }
 
     @NotNull

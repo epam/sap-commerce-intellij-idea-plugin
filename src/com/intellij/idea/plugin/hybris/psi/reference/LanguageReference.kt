@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
+package com.intellij.idea.plugin.hybris.psi.reference
 
 import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -30,8 +29,7 @@ import com.intellij.pom.references.PomService
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 
-
-class FxSColumnLocalizedNameReference(owner: FlexibleSearchColumnLocalizedName) : PsiReferenceBase.Poly<FlexibleSearchColumnLocalizedName>(owner) {
+class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val language = element.text.trim()
@@ -48,9 +46,9 @@ class FxSColumnLocalizedNameReference(owner: FlexibleSearchColumnLocalizedName) 
 
     companion object {
         val CACHE_KEY =
-            Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSColumnLocalizedNameReference>>("HYBRIS_FXS_CACHED_REFERENCE")
+            Key.create<ParameterizedCachedValue<Array<ResolveResult>, LanguageReference>>("HYBRIS_LANGUAGE_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSColumnLocalizedNameReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, LanguageReference> { ref ->
             val result: Array<ResolveResult> = ProjectPropertiesUtils.findMacroProperty(ref.element.project, HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement

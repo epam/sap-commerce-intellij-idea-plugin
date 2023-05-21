@@ -113,7 +113,7 @@
 
     <actions>
         <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
-                text="Impex File" description="Create new Impex file">
+                text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
@@ -121,7 +121,7 @@
             <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
                     class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
                     icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS"
-                    text="Copy to Impex Console" description="Copy impex file to SAP Commerce Console">
+                    text="Copy to ImpEx Console" description="Copy ImpEx file to SAP Commerce Console">
             </action>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>

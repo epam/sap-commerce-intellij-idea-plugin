@@ -19,14 +19,14 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSColumnLocalizedNameReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
+import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.lang.ASTNode
 import java.io.Serial
 
 abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnLocalizedName {
 
-    override fun createReference() = FxSColumnLocalizedNameReference(this)
+    override fun createReference() = LanguageReference(this)
 
     companion object {
         @Serial

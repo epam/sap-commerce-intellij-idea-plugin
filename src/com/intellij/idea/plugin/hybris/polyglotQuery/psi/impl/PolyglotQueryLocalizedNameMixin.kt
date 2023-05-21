@@ -19,14 +19,14 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryLocalizedName
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference.PolyglotQueryLocalizedNameReference
+import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import java.io.Serial
 
 abstract class PolyglotQueryLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), PolyglotQueryLocalizedName {
 
-    override fun createReference() = PolyglotQueryLocalizedNameReference(this)
+    override fun createReference() = LanguageReference(this)
 
     companion object {
         @Serial

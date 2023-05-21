@@ -19,34 +19,55 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier.*
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassBaseReference
+import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
-import javax.lang.model.SourceVersion.isName
+import java.io.Serial
+import javax.lang.model.SourceVersion
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeValue {
 
-    private var myReference: ImpexJavaClassBaseReference? = null
+    private var myReference: PsiReference? = null
 
-    override fun getReferences(): Array<PsiReference> {
+    override fun getReferences(): Array<PsiReference> = myReference
+        ?.let { arrayOf(it) }
+        ?: computeReference()
 
-        if (isName(text)) {
-            if (myReference == null) {
-                myReference = ImpexJavaClassBaseReference(this)
-            }
-            return arrayOf(myReference!!)
+    private fun computeReference(): Array<PsiReference> {
+        val modifierName = (parent as? ImpexAttribute)
+            ?.anyAttributeName
+            ?.text
+            ?.let { AttributeModifier.getByModifierName(it) }
+            ?: return PsiReference.EMPTY_ARRAY
+
+        val reference = when (modifierName) {
+            TRANSLATOR,
+            CELL_DECORATOR -> if (SourceVersion.isName(text)) {
+                ImpexJavaClassBaseReference(this)
+            } else null
+
+            LANG -> LanguageReference(this)
+            else -> null
         }
-
-        return PsiReference.EMPTY_ARRAY
+        return reference
+            ?.also { myReference = it }
+            ?.let { arrayOf(it) }
+            ?: PsiReference.EMPTY_ARRAY
     }
 
     override fun clone(): Any {
         val result = super.clone() as ImpexAttributeValueMixin
         result.myReference = null
         return result
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -1264040766293615937L
     }
 }

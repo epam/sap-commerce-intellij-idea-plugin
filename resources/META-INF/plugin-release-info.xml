@@ -106,7 +106,8 @@
                 </li>
                 <li><i>Feature:</i> <strong>ImpEx</strong> enhancements
                     <ul>
-                        <li>Added code completion of all available languages for <code>lang</code> column attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
+                        <li>Added code completion of all available languages for <code>lang</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
+                        <li>Added reference support for <code>lang</code> modifier value (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419" target="_blank" rel="nofollow">#419</a>)</li>
                         <li>Added <code>env.properties</code> support for project properties code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419" target="_blank" rel="nofollow">#419</a>)</li>
                         <li>Inspection rule: validate that <code>lang</code> modifier value is present in the <code>lang.packs</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417" target="_blank" rel="nofollow">#417</a>)</li>
                         <li>Inspection rule: validate that <code>lang</code> modifier is used only for localized attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418" target="_blank" rel="nofollow">#418</a>)</li>

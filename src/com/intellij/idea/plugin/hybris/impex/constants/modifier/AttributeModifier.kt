@@ -45,11 +45,7 @@ enum class AttributeModifier(
     DATE_FORMAT("dateformat"),
     DEFAULT("default"),
     KEY_2_VALUE_DELIMITER("key2value-delimiter"),
-    LANG("lang") {
-        override fun getLookupElements(project: Project): Set<LookupElement> = PropertiesService.getInstance(project).getLanguages()
-            .map { LookupElementFactory.buildLanguage(it) }
-            .toSet()
-    },
+    LANG("lang"),
     MAP_DELIMITER("map-delimiter"),
     NUMBER_FORMAT("numberformat"),
     PATH_DELIMITER("path-delimiter"),
