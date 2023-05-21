@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteSubTagQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteSubTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items

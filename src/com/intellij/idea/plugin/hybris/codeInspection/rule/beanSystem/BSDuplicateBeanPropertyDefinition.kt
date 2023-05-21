@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans

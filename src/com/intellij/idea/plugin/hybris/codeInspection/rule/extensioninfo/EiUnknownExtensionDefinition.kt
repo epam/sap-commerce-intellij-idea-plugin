@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteTagQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo

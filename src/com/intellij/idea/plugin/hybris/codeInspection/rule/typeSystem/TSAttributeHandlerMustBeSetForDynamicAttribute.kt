@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlAddAttributeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddAttributeQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project

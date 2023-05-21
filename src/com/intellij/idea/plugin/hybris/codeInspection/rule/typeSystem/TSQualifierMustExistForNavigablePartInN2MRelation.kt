@@ -18,8 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlAddAttributeQuickFix
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddAttributeQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement

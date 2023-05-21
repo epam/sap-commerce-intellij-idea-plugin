@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlAddTagQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddTagQuickFix
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType

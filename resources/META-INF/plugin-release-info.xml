@@ -107,7 +107,8 @@
                 <li><i>Feature:</i> <strong>Impex</strong> enhancements
                     <ul>
                         <li>Added code completion of all available languages for <code>lang</code> column attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
-                        <li>Inspection rule: validate that <code>lang</code> column attribute value is present in the <code>lang.packs</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417" target="_blank" rel="nofollow">#417</a>)</li>
+                        <li>Inspection rule: validate that <code>lang</code> modifier value is present in the <code>lang.packs</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417" target="_blank" rel="nofollow">#417</a>)</li>
+                        <li>Inspection rule: validate that <code>lang</code> modifier is used only for localized attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418" target="_blank" rel="nofollow">#418</a>)</li>
                     </ul>
                 </li>
                 <li><i>Feature:</i> Added Node.js version 18 to the CCv2 js-storefront manifest file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/413" target="_blank" rel="nofollow">#413</a>)</li>

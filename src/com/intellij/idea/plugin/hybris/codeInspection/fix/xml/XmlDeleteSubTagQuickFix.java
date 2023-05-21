@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.fix;
+package com.intellij.idea.plugin.hybris.codeInspection.fix.xml;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -24,26 +24,18 @@ import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlElement;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class XmlUpdateAttributeQuickFix implements LocalQuickFix {
+public class XmlDeleteSubTagQuickFix implements LocalQuickFix {
 
     private final String myFixName;
-    private final String myAttributeName;
-    private final String myAttributeValue;
+    private final String myTagName;
 
-    public XmlUpdateAttributeQuickFix(
-        final String attributeName,
-        final String attributeValue
-    ) {
-
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.UpdateAttribute", attributeName, attributeValue);
-        myAttributeName = attributeName;
-        myAttributeValue = attributeValue;
+    public XmlDeleteSubTagQuickFix(final @NotNull String tagName) {
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.DeleteSubTag", tagName);
+        myTagName = tagName;
     }
 
     @NotNull
@@ -58,22 +50,13 @@ public class XmlUpdateAttributeQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, myAttributeValue);
-            navigateIfNotPreviewMode(descriptor, xmlAttribute);
-        } else if (currentElement instanceof XmlAttribute) {
-            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement;
-            xmlAttribute.setValue(myAttributeValue);
-            navigateIfNotPreviewMode(descriptor, xmlAttribute);
-        } else if (currentElement instanceof XmlElement && currentElement.getParent() instanceof XmlAttribute) {
-            final XmlAttribute xmlAttribute = (XmlAttribute) currentElement.getParent();
-            xmlAttribute.setValue(myAttributeValue);
-            navigateIfNotPreviewMode(descriptor, xmlAttribute);
-        }
-    }
-
-    private void navigateIfNotPreviewMode(final ProblemDescriptor descriptor, final XmlAttribute xmlAttribute) {
-        if (descriptor instanceof ProblemDescriptorBase) {
-            PsiNavigateUtil.navigate(xmlAttribute);
+            final XmlTag subTag = currentTag.findFirstSubTag(myTagName);
+            if (subTag != null) {
+                subTag.delete();
+                if (descriptor instanceof ProblemDescriptorBase) {
+                    PsiNavigateUtil.navigate(currentTag);
+                }
+            }
         }
     }
 }

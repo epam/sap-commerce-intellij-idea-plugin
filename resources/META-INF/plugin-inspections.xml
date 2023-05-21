@@ -48,6 +48,10 @@
                          groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexLanguageIsNotSupportedInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageModifierIsNotAllowedInspection" displayName="[y] Lang modifier is not allowed for non-localized attributes"
+                         groupName="[y] Impex" level="ERROR" language="Impex" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexLanguageModifierIsNotAllowedInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
                          groupName="[y] Impex" level="WEAK WARNING" language="Impex" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>

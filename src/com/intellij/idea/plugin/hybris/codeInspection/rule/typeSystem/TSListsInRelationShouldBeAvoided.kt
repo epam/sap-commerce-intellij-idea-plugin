@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.codeInspection.fix.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.fix;
+package com.intellij.idea.plugin.hybris.codeInspection.fix.xml;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -24,18 +24,22 @@ import com.intellij.codeInspection.ProblemDescriptorBase;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PsiNavigateUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class XmlDeleteSubTagQuickFix implements LocalQuickFix {
+public class XmlAddAttributeQuickFix implements LocalQuickFix {
 
     private final String myFixName;
-    private final String myTagName;
+    private final String myAttributeName;
 
-    public XmlDeleteSubTagQuickFix(final @NotNull String tagName) {
-        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.DeleteSubTag", tagName);
-        myTagName = tagName;
+    public XmlAddAttributeQuickFix(
+        final String attributeName
+    ) {
+
+        myFixName = HybrisI18NBundleUtils.message("hybris.inspections.fix.xml.AddAttribute", attributeName);
+        myAttributeName = attributeName;
     }
 
     @NotNull
@@ -50,13 +54,14 @@ public class XmlDeleteSubTagQuickFix implements LocalQuickFix {
 
         if (currentElement instanceof XmlTag) {
             final XmlTag currentTag = (XmlTag) currentElement;
-            final XmlTag subTag = currentTag.findFirstSubTag(myTagName);
-            if (subTag != null) {
-                subTag.delete();
-                if (descriptor instanceof ProblemDescriptorBase) {
-                    PsiNavigateUtil.navigate(currentTag);
-                }
-            }
+            final XmlAttribute xmlAttribute = currentTag.setAttribute(myAttributeName, "");
+            navigateIfNotPreviewMode(descriptor, xmlAttribute.getValueElement());
+        }
+    }
+
+    private void navigateIfNotPreviewMode(final ProblemDescriptor descriptor, final PsiElement psiElement) {
+        if (descriptor instanceof ProblemDescriptorBase) {
+            PsiNavigateUtil.navigate(psiElement);
         }
     }
 }
