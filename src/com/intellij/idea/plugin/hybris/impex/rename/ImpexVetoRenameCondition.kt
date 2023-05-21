@@ -15,15 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.lang.refactoring
+package com.intellij.idea.plugin.hybris.impex.rename
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
-import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiElement
 
-class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
+class ImpexVetoRenameCondition : Condition<PsiElement> {
 
-    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is ImpexPsiNamedElement
-        && !element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+    override fun value(t: PsiElement?) = t?.text?.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        ?: false
 }

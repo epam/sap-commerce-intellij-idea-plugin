@@ -62,7 +62,7 @@
         <defaultLiveTemplates file="liveTemplates/Impex.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
 
-        <renameHandler implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexMacrosRenameHandler"/>
+        <vetoRenameCondition implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexVetoRenameCondition"/>
         <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.rename.processor.ImpexMacrosRenameProcessor"/>
 
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"

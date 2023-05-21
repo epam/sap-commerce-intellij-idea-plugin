@@ -49,6 +49,7 @@ fun getKey(node: ASTNode) = node.findChildByType(ImpexTypes.VALUE)
     ?.text
     // IMPORTANT: Convert embedded escaped spaces to simple spaces
     ?.replace("\\\\ ", " ")
+    ?: node.text
 
 fun createFile(project: Project, text: String): ImpexFile {
     val name = "dummy.impex"

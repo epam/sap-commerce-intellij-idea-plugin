@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection;
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexString;
 import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringImpl;
 import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
@@ -47,7 +48,7 @@ public class FlexibleSearchInjector implements LanguageInjector {
         @NotNull final InjectedLanguagePlaces injectionPlacesRegistrar
     ) {
         final PsiElement hostParent = host.getParent();
-        if (host instanceof ImpexStringImpl) {
+        if (host instanceof ImpexString) {
             final String hostString = StringUtil.unquoteString(host.getText()).toLowerCase();
             if (StringUtil.trim(hostString).startsWith("select ")) {
                 registerInjectionPlace(injectionPlacesRegistrar, host);
