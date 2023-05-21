@@ -28,9 +28,9 @@ import java.io.Serial
 
 abstract class ASTWrapperReferencePsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
 
-    private var myReference: PsiReferenceBase.Poly<out PsiElement>? = null
+    private var myReference: PsiReferenceBase<out PsiElement>? = null
 
-    abstract fun createReference(): PsiReferenceBase.Poly<out PsiElement>
+    abstract fun createReference(): PsiReferenceBase<out PsiElement>?
 
     override fun getReference() = references
         .firstOrNull()

@@ -47,8 +47,7 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighter"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>

@@ -20,7 +20,10 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.openapi.project.DumbService
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 
@@ -48,3 +51,18 @@ fun getValueLine(element: ImpexValueGroup): ImpexValueLine? = PsiTreeUtil
 
 fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
     .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter
+
+fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
+    if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null
+
+    val propertyKey = element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+
+    if (propertyKey.isBlank()) return null
+
+    return if (DumbService.isDumb(element.project)) {
+        element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+    } else ProjectPropertiesUtils
+        .findMacroProperty(element.project, propertyKey)
+        ?.key
+        ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+}

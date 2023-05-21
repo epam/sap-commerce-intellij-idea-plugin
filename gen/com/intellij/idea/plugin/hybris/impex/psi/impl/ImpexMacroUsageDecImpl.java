@@ -30,7 +30,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexMacroUsageDecImpl extends ImpexPsiNamedElementImpl implements ImpexMacroUsageDec {
+public class ImpexMacroUsageDecImpl extends ImpexMacroUsageDecMixin implements ImpexMacroUsageDec {
 
   public ImpexMacroUsageDecImpl(@NotNull ASTNode node) {
     super(node);
@@ -44,6 +44,12 @@ public class ImpexMacroUsageDecImpl extends ImpexPsiNamedElementImpl implements 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public String getConfigPropertyKey() {
+    return ImpexPsiUtil.getConfigPropertyKey(this);
   }
 
 }

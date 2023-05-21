@@ -79,4 +79,19 @@
             <option name="FOREGROUND" value="757575"/>
         </value>
     </option>
+    <option name="IMPEX_MACRO_CONFIG_KEY">
+        <value>
+            <option name="FOREGROUND" value="E0BB65"/>
+        </value>
+    </option>
+    <option name="IMPEX_MACRO_CONFIG_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="757575"/>
+        </value>
+    </option>
+    <option name="IMPEX_MACRO_USAGE_DEC">
+        <value>
+            <option name="FOREGROUND" value="FC67E4"/>
+        </value>
+    </option>
 </list>

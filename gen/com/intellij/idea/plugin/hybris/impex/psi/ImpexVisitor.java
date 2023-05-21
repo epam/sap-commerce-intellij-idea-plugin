@@ -80,7 +80,7 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitMacroUsageDec(@NotNull ImpexMacroUsageDec o) {
-    visitPsiNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitMacroValueDec(@NotNull ImpexMacroValueDec o) {

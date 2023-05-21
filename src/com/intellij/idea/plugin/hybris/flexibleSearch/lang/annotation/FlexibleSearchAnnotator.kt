@@ -17,38 +17,29 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
+import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 
-class FlexibleSearchAnnotator : Annotator {
-
-    private val highlighter: FlexibleSearchSyntaxHighlighter by lazy {
-        FlexibleSearchSyntaxHighlighter.instance
-    }
+class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.instance) {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
@@ -167,69 +158,4 @@ class FlexibleSearchAnnotator : Annotator {
         }
     }
 
-    private fun highlightError(holder: AnnotationHolder, element: PsiElement, message: String) {
-        annotation(
-            message,
-            holder,
-            HighlightSeverity.ERROR
-        )
-            .range(element.textRange)
-            .highlightType(ProblemHighlightType.ERROR)
-            .create()
-    }
-
-    private fun highlightReference(
-        tokenType: IElementType,
-        holder: AnnotationHolder,
-        element: PsiElement,
-        messageKey: String
-    ) {
-        val resolved = (element.parent.reference as? PsiReferenceBase.Poly<*>)
-            ?.multiResolve(true)
-            ?.isNotEmpty()
-            ?: true
-
-        if (resolved) {
-            highlight(tokenType, holder, element)
-        } else {
-            highlightError(holder, element, message(messageKey, element.text))
-        }
-    }
-
-    private fun highlight(
-        tokenType: IElementType,
-        holder: AnnotationHolder,
-        element: PsiElement,
-        highlightSeverity: HighlightSeverity = HighlightSeverity.TEXT_ATTRIBUTES,
-        range: TextRange = element.textRange,
-        message: String? = null,
-        fix: IntentionAction? = null,
-    ) = highlighter
-        .getTokenHighlights(tokenType)
-        .firstOrNull()
-        ?.let { highlight(it, holder, element, highlightSeverity, range, message, fix) }
-
-    private fun highlight(
-        textAttributesKey: TextAttributesKey?,
-        holder: AnnotationHolder,
-        element: PsiElement,
-        highlightSeverity: HighlightSeverity = HighlightSeverity.TEXT_ATTRIBUTES,
-        range: TextRange = element.textRange,
-        message: String? = null,
-        fix: IntentionAction? = null,
-    ) {
-        val builder = annotation(message, holder, highlightSeverity)
-            .range(range)
-        textAttributesKey?.let { builder.textAttributes(it) }
-        fix?.let { builder.withFix(it) }
-        builder.create()
-    }
-
-    private fun annotation(
-        message: String?,
-        holder: AnnotationHolder,
-        highlightSeverity: HighlightSeverity
-    ) = message
-        ?.let { m -> holder.newAnnotation(highlightSeverity, m) }
-        ?: holder.newSilentAnnotation(highlightSeverity)
 }

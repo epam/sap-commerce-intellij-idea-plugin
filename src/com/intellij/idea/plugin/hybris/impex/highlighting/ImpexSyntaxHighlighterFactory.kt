@@ -15,16 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.highlighting
 
-package com.intellij.idea.plugin.hybris.impex.highlighting;
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
+class ImpexSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
 
-/**
- * Created 1:33 AM 11 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public abstract class ImpexSyntaxHighlighter extends SyntaxHighlighterBase {
-
+    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?) = DefaultImpexSyntaxHighlighter.instance
 }

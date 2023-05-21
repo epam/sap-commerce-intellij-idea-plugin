@@ -54,8 +54,8 @@ double_string = [\"](([\"][\"])|[^\"])*[\"]
 macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
 macro_usage            = [$](config-)?({identifier}({dot})?)+
-macro_config_usage = [$](config-)({identifier}({dot})?)+
-macro_value       = ({not_crlf}|({identifier}({dot})?)+)
+macro_config_usage     = [$](config-)({identifier}({dot})?)+
+macro_value            = ({not_crlf}|({identifier}({dot})?)+)
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -261,18 +261,12 @@ field_value_ignore = "<ignore>"
 }
 
 <WAITING_MACRO_CONFIG_USAGE> {
-   {macro_config_usage}                                     {
-                                                                yybegin(WAITING_MACRO_VALUE);
-                                                                return ImpexTypes.MACRO_USAGE;
-                                                            }
+   {macro_config_usage}                                     { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
    .                                                        { yypushback(yylength()); yybegin(MACRO_USAGE); }
 }
 
 <MACRO_USAGE> {
-   {macro_usage}                                            {
-                                                                yybegin(WAITING_MACRO_VALUE);
-                                                                return ImpexTypes.MACRO_USAGE; 
-                                                            }
+   {macro_usage}                                            { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
 }
 
 // Fallback

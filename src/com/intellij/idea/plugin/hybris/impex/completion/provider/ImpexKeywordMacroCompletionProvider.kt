@@ -28,7 +28,8 @@ import com.intellij.util.ProcessingContext
 
 private val keywords = mutableListOf(
     "\$START_USERRIGHTS",
-    "\$END_USERRIGHTS"
+    "\$END_USERRIGHTS",
+    "\$config-"
 )
 
 class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParameters>() {

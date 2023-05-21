@@ -123,7 +123,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public SyntaxHighlighter getHighlighter() {
-        return ApplicationManager.getApplication().getService(ImpexSyntaxHighlighter.class);
+        return DefaultImpexSyntaxHighlighter.Companion.getInstance();
     }
 
     @NotNull
@@ -131,6 +131,7 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     public String getDemoText() {
         return "# Comment\n" +
                "$lang = en\n" +
+               "$configProperty = $config-HYBRIS_BIN_DIR\n" +
                "$contentCatalog = projectContentCatalog\n" +
                "$contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = $contentCatalog]), CatalogVersion.version[default = 'Staged'])[default = $contentCatalog:Staged]\n" +
                "$macro = qwe;qwe, qwe, ;qwe\n" +

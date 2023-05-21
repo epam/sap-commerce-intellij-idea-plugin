@@ -102,7 +102,7 @@ public final class PsiUtils {
         return HybrisModuleDescriptorType.CUSTOM;
     }
 
-    public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase.Poly<? extends PsiElement> reference, final String text) {
+    public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase<? extends PsiElement> reference, final String text) {
         return reference == null
                || (text != null
                    && (

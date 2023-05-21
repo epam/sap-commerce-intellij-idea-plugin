@@ -25,12 +25,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexMacroUsageDec extends ImpexPsiNamedElement {
+public interface ImpexMacroUsageDec extends PsiElement {
 
   @Nullable
-  String getName();
-
-  @NotNull
-  PsiElement setName(@NotNull String newName);
+  String getConfigPropertyKey();
 
 }
