@@ -106,7 +106,7 @@
                 </li>
                 <li><i>Feature:</i> <strong>ImpEx</strong> enhancements
                     <ul>
-                        <li>Improved code style for macro usages, distinguish <code>$config-</code> and reference to another macro (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420" target="_blank" rel="nofollow">#420</a>)</li>
+                        <li>Improved code style for macro usages, distinguish <code>$config-</code> and reference to another macro (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421" target="_blank" rel="nofollow">#421</a>)</li>
                         <li>Added code completion of all available languages for <code>lang</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
                         <li>Added reference support for <code>lang</code> modifier value (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420" target="_blank" rel="nofollow">#420</a>)</li>
                         <li>Added <code>env.properties</code> support for project properties code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419" target="_blank" rel="nofollow">#419</a>)</li>
