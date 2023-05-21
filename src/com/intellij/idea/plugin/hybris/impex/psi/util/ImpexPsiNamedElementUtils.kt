@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
@@ -42,6 +44,11 @@ fun setName(element: PsiElement, newName: String): PsiElement {
     }
     return element
 }
+
+fun getKey(node: ASTNode) = node.findChildByType(ImpexTypes.VALUE)
+    ?.text
+    // IMPORTANT: Convert embedded escaped spaces to simple spaces
+    ?.replace("\\\\ ", " ")
 
 fun createFile(project: Project, text: String): ImpexFile {
     val name = "dummy.impex"

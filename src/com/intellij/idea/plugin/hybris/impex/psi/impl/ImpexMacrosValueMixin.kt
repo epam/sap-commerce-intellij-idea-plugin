@@ -21,29 +21,30 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexPropertiesBaseReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil.prevLeaf
+import java.io.Serial
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
+
 abstract class ImpexMacrosValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexMacroValue {
 
     private var myReference: PsiReference? = null
+
+    override fun getReference() = references.firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
         val prevLeaf = prevLeaf(this)
         if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
             if (myReference == null) {
-                myReference = ImpexPropertiesBaseReference(prevLeaf, this)
+                myReference = ImpexMacroReference(this)
             }
             return arrayOf(myReference!!)
         }
         if (this.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) {
             if (myReference == null) {
-                myReference = ImpexPropertiesBaseReference(null, this)
+                myReference = ImpexMacroReference(this)
             }
             return arrayOf(myReference!!)
         }
@@ -55,5 +56,11 @@ abstract class ImpexMacrosValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(as
         val result = super.clone() as ImpexMacrosValueMixin
         result.myReference = null
         return result
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 1149742937457030180L
+
     }
 }

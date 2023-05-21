@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.idea.plugin.hybris.impex.psi.references.FunctionTSAttributeReference;
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosReferenceBase;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference;
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference;
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils;
 import com.intellij.lang.ASTNode;
@@ -79,7 +79,7 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
                                               .orElse(null);
 
         if (ImpexTypes.MACRO_USAGE.equals(leafType)) {
-            return new PsiReference[]{new ImpexMacrosReferenceBase(this)};
+            return new PsiReference[]{new ImpexMacroReference(this)};
         }
 
         if (ImpexTypes.DOCUMENT_ID.equals(leafType)) {

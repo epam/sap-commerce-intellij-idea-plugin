@@ -60,7 +60,6 @@ class FlexibleSearchRenameProcessor : RenamePsiElementProcessor() {
 
         allRenames.clear()
         allRenames.putAll(newRenames)
-
     }
 
     override fun findCollisions(element: PsiElement, newName: String, allRenames: MutableMap<out PsiElement, String>, result: MutableList<UsageInfo>) {

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.search;
 
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacrosReferenceBase;
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,7 +68,7 @@ public class ImpexReferenceSearcher extends QueryExecutorBase<PsiReference, Refe
                 element -> isMacroUsage(element) && element.textMatches(elementToSearch)
             );
             stream(results)
-                .map(ImpexMacrosReferenceBase::new)
+                .map(ImpexMacroReference::new)
                 .forEach(consumer::process);
         }
     }

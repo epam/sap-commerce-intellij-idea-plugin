@@ -159,16 +159,15 @@ value ::= (((  FIELD_VALUE
 macro_usage_dec::=MACRO_USAGE
 {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecMixin"
-//    implements="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
-//    methods=[getName setName toString]
-    methods=[getConfigPropertyKey]
+    implements="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
+    methods=[getName setName getNameIdentifier getConfigPropertyKey]
 }
 
 macro_name_dec ::= MACRO_NAME_DECLARATION
 {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl"
     implements="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
-    methods=[getName setName toString]
+    methods=[getName setName getNameIdentifier toString]
 }
 /*#################################################################################*/
 /*                                 Header Line                                     */

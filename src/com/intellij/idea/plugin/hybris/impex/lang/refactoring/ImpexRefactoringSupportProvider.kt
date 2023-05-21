@@ -15,27 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-package com.intellij.idea.plugin.hybris.impex.psi.impl
-
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
-import com.intellij.idea.plugin.hybris.impex.psi.util.getKey
-import com.intellij.idea.plugin.hybris.impex.psi.util.setName
-import com.intellij.lang.ASTNode
+import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
-import java.io.Serial
 
-open class ImpexPsiNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), ImpexPsiNamedElement {
+class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
 
-    override fun setName(newName: String): PsiElement = setName(this, newName)
-    override fun getNameIdentifier() = this
-    override fun getName() = getKey(node)
-    override fun toString() = text
-        ?: super.toString()
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -3034402626341816420L
-    }
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is ImpexPsiNamedElement
 }

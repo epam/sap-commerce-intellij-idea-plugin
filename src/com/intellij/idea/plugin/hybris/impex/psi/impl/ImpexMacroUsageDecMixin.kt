@@ -18,24 +18,33 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexPropertyReference
 import com.intellij.idea.plugin.hybris.impex.psi.util.getKey
 import com.intellij.idea.plugin.hybris.impex.psi.util.setName
+import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import java.io.Serial
 
-open class ImpexPsiNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), ImpexPsiNamedElement {
+abstract class ImpexMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexMacroUsageDec, ImpexPsiNamedElement {
 
-    override fun setName(newName: String): PsiElement = setName(this, newName)
-    override fun getNameIdentifier() = this
+    override fun createReference() = if (text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+        ImpexPropertyReference(this)
+    } else if (text.startsWith("$")) {
+        ImpexMacroReference(this)
+    } else {
+        null
+    }
+
+    override fun setName(newName: String) = setName(this, newName)
     override fun getName() = getKey(node)
-    override fun toString() = text
-        ?: super.toString()
+    override fun getNameIdentifier() = this
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -3034402626341816420L
+        private const val serialVersionUID: Long = -7539604143961775427L
     }
 }

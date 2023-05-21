@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi
 
+import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.PsiNamedElement
 
-interface ImpexPsiNamedElement : PsiNamedElement
+interface ImpexPsiNamedElement : PsiNamedElement, PsiNameIdentifierOwner

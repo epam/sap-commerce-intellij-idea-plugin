@@ -24,11 +24,8 @@ import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.psi.PsiElement;
@@ -81,7 +78,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         });
 
         // resolve local macro last
-        localMacroList.forEach(macroUsage->resolveLocalMacro(macroUsage, results));
+        localMacroList.forEach(macroUsage -> resolveLocalMacro(macroUsage, results));
 
         return results.toArray(FoldingDescriptor.EMPTY_ARRAY);
     }
@@ -146,7 +143,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         final StringBuilder sb = new StringBuilder();
         final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroLine.getContainingFile()).getValue();
         PsiElement anchor = macroLine;
-        for (PsiElement child: lineElements) {
+        for (PsiElement child : lineElements) {
             if (child instanceof LeafPsiElement) {
                 final LeafPsiElement leafPsiElement = (LeafPsiElement) child;
                 if (leafPsiElement.getElementType() == ImpexTypes.ASSIGN_VALUE) {
@@ -217,19 +214,13 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
         ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
-            final String propertyName = text.substring(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length());
-            final Module module = ModuleUtilCore.findModuleForPsiElement(macroUsage);
-            if (module == null) {
-                return;
-            }
-            final IProperty property = ProjectPropertiesUtils.INSTANCE.findMacroProperty(module.getProject(), propertyName);
-            if (property == null) {
-                return;
-            }
-            final String value = ProjectPropertiesUtils.INSTANCE.resolvePropertyValue(module.getProject(), property.getValue());
-            descriptor = new ImpexMacroDescriptor(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + property.getKey(), value, property.getPsiElement());
-            cache.put(text, descriptor);
-            cache.put(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + property.getKey(), descriptor);
+            final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
+            final var iProperty = ProjectPropertiesUtils.INSTANCE.findMacroProperty(macroUsage.getProject(), propertyName);
+            if (iProperty == null) return;
+            final var propertyKey = HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + iProperty.getKey();
+
+            descriptor = new ImpexMacroDescriptor(propertyKey, iProperty.getValue(), iProperty.getPsiElement());
+            cache.put(propertyKey, descriptor);
         }
         final int start = macroUsage.getTextRange().getStartOffset();
         final TextRange range = new TextRange(start, start + descriptor.macroName().length());
@@ -239,7 +230,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     private void resolveLocalMacro(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
         final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
         String currentKey = "";
-        for (String key: cache.keySet()) {
+        for (String key : cache.keySet()) {
             if (macroUsage.getText().startsWith(key)) {
                 if (key.length() > currentKey.length()) {
                     currentKey = key;
@@ -265,7 +256,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (impexMacroDescriptor != null) {
             return impexMacroDescriptor;
         }
-        for (ImpexMacroDescriptor md: cache.values()) {
+        for (ImpexMacroDescriptor md : cache.values()) {
             if (text.startsWith(md.macroName())) {
                 cache.put(text, md);
                 return md;

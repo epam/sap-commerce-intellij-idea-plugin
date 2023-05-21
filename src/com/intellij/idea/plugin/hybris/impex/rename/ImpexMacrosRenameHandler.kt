@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.rename
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.openapi.actionSystem.DataContext
@@ -29,18 +30,14 @@ import com.intellij.refactoring.rename.PsiElementRenameHandler
 import com.intellij.refactoring.rename.PsiElementRenameHandler.getElement
 import com.intellij.refactoring.rename.RenameHandler
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexMacrosRenameHandler : RenameHandler {
     private val psiRenameHandler = PsiElementRenameHandler()
 
     override fun isRenaming(dataContext: DataContext) = isAvailableOnDataContext(dataContext)
 
-    override fun isAvailableOnDataContext(dataContext: DataContext): Boolean {
-        val element = getElement(dataContext)
-        return element is ImpexMacroNameDec || element is ImpexMacroUsageDec
-    }
+    override fun isAvailableOnDataContext(dataContext: DataContext): Boolean = getElement(dataContext)
+        ?.let { it is ImpexMacroNameDec || (it is ImpexMacroUsageDec && !it.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) }
+        ?: false
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?, dataContext: DataContext) = psiRenameHandler.invoke(project, editor, file, dataContext)
 
