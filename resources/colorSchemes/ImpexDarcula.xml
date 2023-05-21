@@ -74,4 +74,9 @@
             <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
+    <option name="IMPEX_ATTRIBUTE_NAME">
+        <value>
+            <option name="FOREGROUND" value="757575"/>
+        </value>
+    </option>
 </list>

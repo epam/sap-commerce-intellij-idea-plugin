@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
+import com.intellij.codeInsight.template.impl.TemplateColors;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
@@ -41,7 +42,7 @@ public final class ImpexHighlighterColors {
     }
 
     public static final TextAttributesKey PROPERTY_COMMENT = key("LINE_COMMENT", LINE_COMMENT);
-    public static final TextAttributesKey MACRO_NAME_DECLARATION = key("MACRO_NAME_DECLARATION", INSTANCE_FIELD);
+    public static final TextAttributesKey MACRO_NAME_DECLARATION = key("MACRO_NAME_DECLARATION", TemplateColors.TEMPLATE_VARIABLE_ATTRIBUTES);
     public static final TextAttributesKey MACRO_VALUE = key("MACRO_VALUE", HighlighterColors.TEXT);
     public static final TextAttributesKey MACRO_USAGE = key("MACRO_USAGE", INSTANCE_FIELD);
     public static final TextAttributesKey ASSIGN_VALUE = key("ASSIGN_VALUE", HighlighterColors.TEXT);
@@ -61,7 +62,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey BEAN_SHELL_BODY = key("BEAN_SHELL_BODY", HighlighterColors.TEXT);
     public static final TextAttributesKey SQUARE_BRACKETS = key("SQUARE_BRACKETS", KEYWORD);
     public static final TextAttributesKey ROUND_BRACKETS = key("ROUND_BRACKETS", KEYWORD);
-    public static final TextAttributesKey ATTRIBUTE_NAME = key("ATTRIBUTE_NAME", HighlighterColors.TEXT);
+    public static final TextAttributesKey ATTRIBUTE_NAME = key("IMPEX_ATTRIBUTE_NAME", HighlighterColors.TEXT);
     public static final TextAttributesKey ATTRIBUTE_VALUE = key("ATTRIBUTE_VALUE", HighlighterColors.TEXT);
     public static final TextAttributesKey ATTRIBUTE_SEPARATOR = key("ATTRIBUTE_SEPARATOR", KEYWORD);
     public static final TextAttributesKey BOOLEAN = key("BOOLEAN", KEYWORD);
@@ -76,7 +77,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey ALTERNATIVE_PATTERN = key("ALTERNATIVE_PATTERN", KEYWORD);
     public static final TextAttributesKey DOCUMENT_ID = key("DOCUMENT_ID", STATIC_FIELD);
     public static final TextAttributesKey WARNINGS_ATTRIBUTES = key("IMPEX_WARNING_ATTRIBUTES", CodeInsightColors.WARNINGS_ATTRIBUTES);
-    public static final TextAttributesKey IMPEX_FUNCTION_CALL = key("IMPEX_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey FUNCTION_CALL = key("IMPEX_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
 
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,

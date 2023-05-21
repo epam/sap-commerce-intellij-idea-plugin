@@ -34,25 +34,26 @@ object ProjectPropertiesUtils {
         val configModule = obtainConfigModule(project) ?: return emptyList()
         val platformModule = obtainPlatformModule(project) ?: return emptyList()
         val scope = createSearchScope(project, configModule, platformModule)
-        val files = FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
         var advancedPropsFile: PropertiesFile? = null
         var localPropsFile: PropertiesFile? = null
-        for (virtualFile in files) {
-            val file = PsiManager.getInstance(project).findFile(virtualFile) as PropertiesFile?
-            if (file != null) {
-                if (file.name == "advanced.properties") {
-                    advancedPropsFile = file
-                } else if (file.name == "local.properties") {
-                    localPropsFile = file
-                } else {
-                    for (property in file.properties) {
-                        if (property.key != null) {
-                            result[property.key!!] = property
+
+        FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
+            .mapNotNull { PsiManager.getInstance(project).findFile(it) }
+            .mapNotNull { it as? PropertiesFile }
+            .forEach { file ->
+                when (file.name) {
+                    "env.properties" -> advancedPropsFile = file
+                    "advanced.properties" -> advancedPropsFile = file
+                    "local.properties" -> localPropsFile = file
+                    else -> {
+                        for (property in file.properties) {
+                            if (property.key != null) {
+                                result[property.key!!] = property
+                            }
                         }
                     }
                 }
             }
-        }
         addPropertyFile(result, advancedPropsFile)
         addPropertyFile(result, localPropsFile)
 
@@ -63,7 +64,7 @@ object ProjectPropertiesUtils {
     }
 
     fun findAutoCompleteProperties(project: Project, query: String): List<IProperty> =
-        findAllProperties(project).filter { it.key != null && it.key!!.contains(query) || query.isBlank()}
+        findAllProperties(project).filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
 
     fun findMacroProperty(project: Project, query: String): IProperty? {
         val allProps = findAllProperties(project)
@@ -155,10 +156,14 @@ object ProjectPropertiesUtils {
     private fun createSearchScope(project: Project, configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(project), PropertiesFileType.INSTANCE)
             .filter { it.name == "project.properties" }
+        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == "env.properties" }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == "advanced.properties" }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == "local.properties" }
 
-        return projectPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope)
+        return projectPropertiesScope
+            .or(envPropertiesScope)
+            .or(advancedPropertiesScope)
+            .or(localPropertiesScope)
     }
 
     private fun obtainConfigModule(project: Project) =
@@ -167,7 +172,7 @@ object ProjectPropertiesUtils {
     private fun obtainPlatformModule(project: Project) =
         ModuleManager.getInstance(project).modules.firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_PLATFORM }
 
-    fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean ) = object : DelegatingGlobalSearchScope(this) {
+    fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
             return filter(file) && super.contains(file)
         }

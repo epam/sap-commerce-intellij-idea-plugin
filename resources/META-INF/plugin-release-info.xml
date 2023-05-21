@@ -30,14 +30,14 @@
                 <li>Tight integration with <a href="https://github.com/mlytvyn/kotlinnature">kotlinnature</a> which will enhance SAP Commerce with <strong>Kotlin</strong> language support</li>
                 <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html?locale=en-US">Polyglot Query.</a></li>
                 <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc399c186691014b8fce25e96614547.html?locale=en-US">FlexibleSearch</a> queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
-                <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html?locale=en-US">Impex</a> files with automatic formatting, find usages and go to declaration actions, validation and import of impexes into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
+                <li>Custom editor for <a href="https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html?locale=en-US">ImpEx</a> files with automatic formatting, find usages and go to declaration actions, validation and import of ImpEx files into a remote SAP Commerce instance right from your IDE by a single click of a button.</li>
                 <li>Custom editor for <code>items.xml</code> with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.</li>
                 <li>Custom editor for <code>beans.xml</code> & <code>cockpitng</code> with custom automated Intellij refactorings actions.</li>
                 <li>Visualization of Business Process, <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md" target="_blank" rel="nofollow">Type System</a> and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).</li>
                 <li>Preview for Type and Bean Systems.</li>
                 <li>Enhanced Debugger for Model classes with lazy evaluation.</li>
                 <li>Enhanced project view tree.</li>
-                <li>Execution of FlexibleSearch queries, Groovy scripts, Impexes though IDE using HAC Integration tool.</li>
+                <li>Execution of FlexibleSearch queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.</li>
                 <li>Execution of queries on remote Solr instances.</li>
                 <li>And much more</li>
             </ul>
@@ -104,9 +104,10 @@
                         <li>Show different icon for <code>kotlinnature</code> extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408" target="_blank" rel="nofollow">#408</a>)</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> <strong>Impex</strong> enhancements
+                <li><i>Feature:</i> <strong>ImpEx</strong> enhancements
                     <ul>
                         <li>Added code completion of all available languages for <code>lang</code> column attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
+                        <li>Added <code>env.properties</code> support for project properties code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
                         <li>Inspection rule: validate that <code>lang</code> modifier value is present in the <code>lang.packs</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417" target="_blank" rel="nofollow">#417</a>)</li>
                         <li>Inspection rule: validate that <code>lang</code> modifier is used only for localized attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418" target="_blank" rel="nofollow">#418</a>)</li>
                     </ul>
@@ -211,16 +212,16 @@
                         <li>Dozens of other improvements</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Added injection of the Groovy Language into <code>Script.content</code> in the Impex files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361" target="_blank" rel="nofollow">#361</a>)</li>
+                <li><i>Feature:</i> Added injection of the Groovy Language into <code>Script.content</code> in the ImpEx files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361" target="_blank" rel="nofollow">#361</a>)</li>
                 <li><i>Feature:</i> Added injection of the Groovy Language into <code>script.type=groovy</code> in the Business Process files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/363" target="_blank" rel="nofollow">#363</a>)</li>
                 <li><i>Feature:</i> Added injection of the JavaScript Language into <code>script.type=javascript</code> in the Business Process files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/364" target="_blank" rel="nofollow">#364</a>)</li>
-                <li><i>Feature:</i> Added injection of the JavaScript Language into <code>Script.content</code> in the Impex files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/362" target="_blank" rel="nofollow">#362</a>)</li>
-                <li><i>Feature:</i> Improved support of the Impex nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
+                <li><i>Feature:</i> Added injection of the JavaScript Language into <code>Script.content</code> in the ImpEx files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/362" target="_blank" rel="nofollow">#362</a>)</li>
+                <li><i>Feature:</i> Improved support of the ImpEx nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339" target="_blank" rel="nofollow">#339</a>)</li>
                 <li><i>Feature:</i> Improved FlexibleSearch value parameters code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345" target="_blank" rel="nofollow">#345</a>)</li>
-                <li><i>Feature:</i> Improved FlexibleSearch & Impex code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
-                <li><i>Feature:</i> Improved FlexibleSearch & Impex Enum code completion and validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/346" target="_blank" rel="nofollow">#346</a>)</li>
-                <li><i>Feature:</i> Improved FlexibleSearch & Impex Relation code completion and validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/347" target="_blank" rel="nofollow">#347</a>)</li>
-                <li><i>Feature:</i> Impex folding
+                <li><i>Feature:</i> Improved FlexibleSearch & ImpEx code completion performance (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344" target="_blank" rel="nofollow">#344</a>)</li>
+                <li><i>Feature:</i> Improved FlexibleSearch & ImpEx Enum code completion and validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/346" target="_blank" rel="nofollow">#346</a>)</li>
+                <li><i>Feature:</i> Improved FlexibleSearch & ImpEx Relation code completion and validation (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/347" target="_blank" rel="nofollow">#347</a>)</li>
+                <li><i>Feature:</i> ImpEx folding
                     <ul>
                         <li>Improved support of the nested attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/340" target="_blank" rel="nofollow">#340</a>)</li>
                         <li>Added folding of the boolean <code>false</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/341" target="_blank" rel="nofollow">#341</a>)</li>
@@ -228,7 +229,7 @@
                         <li>Omit package name of the Class in case of the <code>jar:</code> property prefix (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/343" target="_blank" rel="nofollow">#343</a>)</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
+                <li><i>Feature:</i> Added new <strong>ImpEx</strong> inspection rules
                     <ul>
                         <li>Type attribute validation for complex header (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/338" target="_blank" rel="nofollow">#338</a>)</li>
                     </ul>
@@ -311,7 +312,7 @@
                 <li><i>Feature:</i> Improved performance of the Global Meta Model and TS Line Marker (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257" target="_blank" rel="nofollow">#257</a>)</li>
                 <li><i>Feature:</i> IDEA modules by default will be stored in the <code>/.idea/idea-modules</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259" target="_blank" rel="nofollow">#259</a>)</li>
                 <li><i>Feature:</i> Added "collapse all"/"expand all" actions for TS and BS views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/262" target="_blank" rel="nofollow">#262</a>)</li>
-                <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for Impex type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
+                <li><i>Feature:</i> Added <code>sld.enabled</code> modifier support for ImpEx type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/290" target="_blank" rel="nofollow">#290</a>)</li>
                 <li><i>Feature:</i> Added Line Marker Provider settings and unified API usage (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/294" target="_blank" rel="nofollow">#294</a>)</li>
                 <li><i>Feature:</i> Added navigation to Bean siblings in the <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/295" target="_blank" rel="nofollow">#295</a>)</li>
                 <li><i>Feature:</i> Added new <strong>FlexibleSearch</strong> inspection rules (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264" target="_blank" rel="nofollow">#264</a>)
@@ -320,7 +321,7 @@
                         <li>Attribute is not defined</li>
                     </ul>
                 </li>
-                <li><i>Feature:</i> Added new <strong>Impex</strong> inspection rules
+                <li><i>Feature:</i> Added new <strong>ImpEx</strong> inspection rules
                     <ul>
                         <li>Type modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/291" target="_blank" rel="nofollow">#291</a>)</li>
                         <li>Attribute modifier is unknown (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/292" target="_blank" rel="nofollow">#292</a>)</li>
@@ -386,7 +387,7 @@
                 <li><i>Feature:</i> Improved code completion within <code>items.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/221" target="_blank" rel="nofollow">#221</a>)</li>
                 <li><i>Feature:</i> Improved validation of properties within bean declaration to highlight duplicate properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/220" target="_blank" rel="nofollow">#220</a>)</li>
                 <li><i>Feature:</i> Disable spell check for properties with custom named values (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/228" target="_blank" rel="nofollow">#228</a>)</li>
-                <li><i>Bug Fix:</i> Impex & FlexibleSearch actions always visible (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/223" target="_blank" rel="nofollow">#223</a>)</li>
+                <li><i>Bug Fix:</i> ImpEx & FlexibleSearch actions always visible (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/223" target="_blank" rel="nofollow">#223</a>)</li>
                 <li><i>Bug Fix:</i> SAP Commerce Project specific Settings should be visible only for [y] projects (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/206" target="_blank" rel="nofollow">#206</a>)</li>
                 <li><i>Bug Fix:</i> Not all extension names shown in the code completion (project refresh required) (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/232" target="_blank" rel="nofollow">#232</a>)</li>
                 <li><i>Other:</i> Upgraded to Gradle 8 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/222" target="_blank" rel="nofollow">#222</a>)</li>
@@ -433,14 +434,14 @@
                 <li><i>Feature:</i> Added navigation to <code>beans.xml</code> Bean property declaration from generated classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/112" target="_blank" rel="nofollow">#112</a>)</li>
                 <li><i>Feature:</i> Added navigation to alternative declarations of the beans within <code>beans.xml</code> (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/78" target="_blank" rel="nofollow">#78</a>)</li>
                 <li><i>Feature:</i> Added navigation to <code>items.xml</code> for Types used in the Cockpitng configuration files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166" target="_blank" rel="nofollow">#166</a>)</li>
-                <li><i>Feature:</i> Added code completion for Impex <code>translator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158" target="_blank" rel="nofollow">#158</a>)</li>
-                <li><i>Feature:</i> Added code completion for Impex <code>cell-decorator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159" target="_blank" rel="nofollow">#159</a>)</li>
+                <li><i>Feature:</i> Added code completion for ImpEx <code>translator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158" target="_blank" rel="nofollow">#158</a>)</li>
+                <li><i>Feature:</i> Added code completion for ImpEx <code>cell-decorator</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159" target="_blank" rel="nofollow">#159</a>)</li>
                 <li><i>Feature:</i> Added code completion and enriched navigation within Business Process (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/171" target="_blank" rel="nofollow">#171</a>)</li>
-                <li><i>Feature:</i> Added code inspection for Impex: unknown type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/160" target="_blank" rel="nofollow">#160</a>)</li>
+                <li><i>Feature:</i> Added code inspection for ImpEx: unknown type (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/160" target="_blank" rel="nofollow">#160</a>)</li>
                 <li><i>Feature:</i> Added extra visibility filters for Type and Bean System views (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/99" target="_blank" rel="nofollow">#99</a>)</li>
                 <li><i>Feature:</i> Added <code>dynamic</code> prefix getters/setters in the Java classes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/74" target="_blank" rel="nofollow">#74</a>)</li>
                 <li><i>Feature:</i> Redesigned and improved performance of the Structure View for <code>items.xml</code> files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/114" target="_blank" rel="nofollow">#114</a>)</li>
-                <li><i>Feature:</i> Show label for dynamic attribute during Impex code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/110" target="_blank" rel="nofollow">#110</a>)</li>
+                <li><i>Feature:</i> Show label for dynamic attribute during ImpEx code completion (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/110" target="_blank" rel="nofollow">#110</a>)</li>
                 <li><i>Feature:</i> Inspection for <code>beans.xml</code> rely on whole Bean System, not only current file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88" target="_blank" rel="nofollow">#88</a>)</li>
                 <li><i>Feature:</i> Regrouped [y] Application settings into separate sections (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/130" target="_blank" rel="nofollow">#130</a>)</li>
                 <li><i>Feature:</i> New Remote Instance Wizard will prefill some data from [y] properties (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/143" target="_blank" rel="nofollow">#143</a>)</li>
@@ -467,13 +468,13 @@
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185" target="_blank" rel="nofollow">#185</a>,
                     <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/186" target="_blank" rel="nofollow">#186</a>)
                 </li>
-                <li><i>Bug Fix:</i> Wrong range in reference in Impex/FlexibleSearch files in case of header Type or Columns changes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/196" target="_blank" rel="nofollow">#196</a>)</li>
+                <li><i>Bug Fix:</i> Wrong range in reference in ImpEx/FlexibleSearch files in case of header Type or Columns changes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/196" target="_blank" rel="nofollow">#196</a>)</li>
                 <li><i>Bug Fix:</i> FlexibleSearch code completion should not be case-sensitive for attributes (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/167" target="_blank" rel="nofollow">#167</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window Logo too dark for New UI (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95" target="_blank" rel="nofollow">#95</a>)</li>
                 <li><i>Bug Fix:</i> [y] Tool Window is not available after project import (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/125" target="_blank" rel="nofollow">#125</a>)</li>
-                <li><i>Bug Fix:</i> Impex config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
+                <li><i>Bug Fix:</i> ImpEx config processor inspection does not work (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/100" target="_blank" rel="nofollow">#100</a>)</li>
                 <li><i>Bug Fix:</i> Process diagram layout shows actions in reverse order (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/151" target="_blank" rel="nofollow">#151</a>)</li>
-                <li><i>Bug Fix:</i> Focus is not propagated properly on Copy Impex/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
+                <li><i>Bug Fix:</i> Focus is not propagated properly on Copy ImpEx/FlexibleSearch to Console action (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/124" target="_blank" rel="nofollow">#124</a>)</li>
                 <li><i>Bug Fix:</i> Generate Business Process Diagram action is not available (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/96" target="_blank" rel="nofollow">#96</a>)</li>
                 <li><i>Bug Fix:</i> Platform module should not be identified as Gradle project (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/141" target="_blank" rel="nofollow">#141</a>)</li>
                 <li><i>Bug Fix:</i> Consoles are not disposable (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/142" target="_blank" rel="nofollow">#142</a>)</li>
@@ -514,8 +515,8 @@
                 <li><i>Feature:</i> Introduction the Type System Management - the powerful tool to observe SAP Commerce type system
                 (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62" target="_blank" rel="nofollow">#62</a>,
                  <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60" target="_blank" rel="nofollow">#60</a>)</li>
-                <li><i>Feature:</i> Added support of the Enum completion in Impex/FSQ</li>
-                <li><i>Feature:</i> Added support of the Relation completion in Impex/FSQ</li>
+                <li><i>Feature:</i> Added support of the Enum completion in ImpEx/FSQ</li>
+                <li><i>Feature:</i> Added support of the Relation completion in ImpEx/FSQ</li>
                 <li><i>Feature:</i> Added MapType support for <code>items.xml</code></li>
                 <li><i>Feature:</i> Added postgresql DB mapping</li>
                 <li><i>Feature:</i> Added next <code>typecode</code> suggestion via <code>items.xml</code> Inspection</li>
@@ -528,7 +529,7 @@
             <h3>2022.2</h3>
             <ul>
                 <li><i>Feature:</i> Added 2022.2 support</li>
-                <li><i>Feature:</i> Feature Add inline actions for Impex & FlexibleSearch files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53" target="_blank" rel="nofollow">#53</a>)</li>
+                <li><i>Feature:</i> Feature Add inline actions for ImpEx & FlexibleSearch files (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53" target="_blank" rel="nofollow">#53</a>)</li>
                 <li><i>Feature:</i> Do not index <code>node_modules</code> directories (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/52" target="_blank" rel="nofollow">#52</a>)</li>
             </ul>
           ]]>

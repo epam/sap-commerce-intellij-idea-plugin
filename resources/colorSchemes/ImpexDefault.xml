@@ -18,270 +18,135 @@
   -->
 
 <list>
-    <!--<option name="COMMENT_MARKER">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="COMMENT_BODY">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="MACRO_NAME_DECLARATION">
         <value>
             <option name="FOREGROUND" value="009FDA"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
-    <!--<option name="MACRO_VALUE">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="MACRO_USAGE">
         <value>
             <option name="FOREGROUND" value="009FDA"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
-    <!--<option name="ASSIGN_VALUE">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="HEADER_MODE_INSERT">
         <value>
             <option name="FOREGROUND" value="2222FF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="HEADER_MODE_UPDATE">
         <value>
             <option name="FOREGROUND" value="2222FF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="HEADER_MODE_INSERT_UPDATE">
         <value>
             <option name="FOREGROUND" value="2222FF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="HEADER_MODE_REMOVE">
         <value>
             <option name="FOREGROUND" value="2222FF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="HEADER_TYPE">
         <value>
             <option name="FOREGROUND" value="01A308"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
-    <!--<option name="VALUE_SUBTYPE">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="FIELD_VALUE_SEPARATOR">
         <value>
             <option name="FOREGROUND" value="EC7C1D"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="FIELD_LIST_ITEM_SEPARATOR">
         <value>
             <option name="FOREGROUND" value="EC7C1D"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
-    <!--<option name="FIELD_VALUE">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="SINGLE_STRING">
         <value>
             <option name="FOREGROUND" value="529C3D"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="DOUBLE_STRING">
         <value>
             <option name="FOREGROUND" value="529C3D"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="FIELD_VALUE_IGNORE">
         <value>
             <option name="FOREGROUND" value="009FDA"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="BEAN_SHELL_MARKER">
         <value>
             <option name="FOREGROUND" value="C7642F"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="BEAN_SHELL_BODY">
         <value>
             <option name="FOREGROUND" value="C7642F"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="SQUARE_BRACKETS">
         <value>
             <option name="FOREGROUND" value="000000"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="ROUND_BRACKETS">
         <value>
             <option name="FOREGROUND" value="000000"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        </value>
-    </option>
-    <option name="ATTRIBUTE_NAME">
-        <value>
-            <option name="FOREGROUND" value="8E20FF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="ATTRIBUTE_VALUE">
         <value>
             <option name="FOREGROUND" value="7C18EA"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
-    <!--<option name="ATTRIBUTE_SEPARATOR">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="BOOLEAN">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="DIGIT">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="CLASS_WITH_PACKAGE">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="ALTERNATIVE_MAP_DELIMITER">
         <value>
             <option name="FOREGROUND" value="FEA32E"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="DEFAULT_PATH_DELIMITER">
         <value>
             <option name="FOREGROUND" value="FEA32E"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
     <option name="HEADER_PARAMETER_NAME">
         <value>
             <option name="FOREGROUND" value="000000"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="HEADER_SPECIAL_PARAMETER_NAME">
         <value>
             <option name="FOREGROUND" value="000000"/>
-            <!--<option name="BACKGROUND" value=""/>-->
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>
-    <!--<option name="PARAMETERS_SEPARATOR">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="COMMA">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
-    <!--<option name="ALTERNATIVE_PATTERN">-->
-        <!--<value>-->
-            <!--<option name="FOREGROUND" value=""/>-->
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
-        <!--</value>-->
-    <!--</option>-->
     <option name="DOCUMENT_ID">
         <value>
             <option name="FOREGROUND" value="F59907"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="BRACES">
         <value>
             <option name="FOREGROUND" value="808080"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="TABLE NAME">
         <value>
             <option name="FOREGROUND" value="5C5CFF"/>
-            <!--<option name="BACKGROUND" value=""/>-->
-            <!--<option name="FONT_TYPE" value=""/>-->
         </value>
     </option>
     <option name="IMPEX_FUNCTION_CALL">
@@ -293,6 +158,11 @@
         <value>
             <option name="FOREGROUND" value="FFC800"/>
             <option name="EFFECT_TYPE" value="2" />
+        </value>
+    </option>
+    <option name="IMPEX_ATTRIBUTE_NAME">
+        <value>
+            <option name="FOREGROUND" value="757575"/>
         </value>
     </option>
 </list>
