@@ -104,6 +104,11 @@
                         <li>Show different icon for <code>kotlinnature</code> extension (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408" target="_blank" rel="nofollow">#408</a>)</li>
                     </ul>
                 </li>
+                <li><i>Feature:</i> <strong>Impex</strong> enhancements
+                    <ul>
+                        <li>Added code completion of all available languages for <code>lang</code> column attribute (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
+                    </ul>
+                </li>
                 <li><i>Feature:</i> Added Node.js version 18 to the CCv2 js-storefront manifest file (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/413" target="_blank" rel="nofollow">#413</a>)</li>
                 <li><i>Fix:</i> Check additional active plugin for java EE (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/406" target="_blank" rel="nofollow">#406</a>)</li>
                 <li><i>Fix:</i> IDEA 2023.2: the expensive method should not be called inside the Highlighting Pass (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/411" target="_blank" rel="nofollow">#411</a>)</li>

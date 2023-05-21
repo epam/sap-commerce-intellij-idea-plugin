@@ -15,26 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.constants.modifier
 
-package com.intellij.idea.plugin.hybris.impex.constants.modifier;
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+interface ImpexModifier {
 
-import java.util.Set;
-
-/**
- * Created 18:53 14 May 2016
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface ImpexModifier {
-
-    @NotNull
-    String getModifierName();
-
-    @NotNull
-    Set<LookupElement> getLookupElements(Project project);
-
+    val modifierName: String
+    fun getLookupElements(project: Project): Set<LookupElement>
 }
