@@ -4,7 +4,7 @@
 - Added 2023.2 Intellij IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
 - Improved code completion and reference resolution for Enum attributes in impex/fxs/pgq files [#414](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/414)
 - Added Node.js version 18 to the CCv2 js-storefront manifest file [#413](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/413)
-- Migrated change log to `gradle-changelog-plugin` 
+- Migrated change log to `gradle-changelog-plugin` [#429](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/429)
 
 ### `Kotlin` language support
 - Integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) extension
