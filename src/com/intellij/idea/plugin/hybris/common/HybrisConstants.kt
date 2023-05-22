@@ -250,6 +250,7 @@ object HybrisConstants {
     const val CLASS_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_ENUM_NAME = "HybrisEnumValue"
+    const val CLASS_FLEXIBLE_SEARCH_SERVICE_NAME = "FlexibleSearchService"
     const val CLASS_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val CLASS_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val CLASS_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
@@ -258,6 +259,8 @@ object HybrisConstants {
     const val CLASS_IMPEX_PROCESSOR = "de.hybris.platform.impex.jalo.imp.ImportProcessor"
     const val CLASS_IMPEX_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val CLASS_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+
+    const val METHOD_SEARCH_NAME = "search"
 
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"

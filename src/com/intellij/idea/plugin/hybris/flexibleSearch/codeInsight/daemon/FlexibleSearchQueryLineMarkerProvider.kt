@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInsight.daemon
+package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
@@ -24,6 +24,7 @@ import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
@@ -34,20 +35,16 @@ import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiLiteralExpression
+import com.intellij.psi.PsiPolyadicExpression
+import com.intellij.psi.PsiVariable
 import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.psi.impl.JavaConstantExpressionEvaluator
 import com.intellij.util.Function
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon
 
-private val topRegex = "(SELECT )|( UNION )|( DISTINCT )|( ORDER BY )|( LEFT JOIN )|( JOIN )|( FROM )|( WHERE )|( ASC )|( DESC )|( ON )".toRegex(RegexOption.IGNORE_CASE)
-private val regexFrom = " FROM ".toRegex(RegexOption.IGNORE_CASE)
-private val regexLeftJoin = " LEFT JOIN ".toRegex(RegexOption.IGNORE_CASE)
-private val regexWhere = " WHERE ".toRegex(RegexOption.IGNORE_CASE)
-private val regexUnit = " UNION ".toRegex(RegexOption.IGNORE_CASE)
-private val whitespaceRegex = "\\s+".toRegex()
 
 class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
@@ -55,8 +52,8 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     override fun getIcon(): Icon = HybrisIcons.FXS_FILE
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? = when (element) {
-        is PsiPolyadicExpression -> process(element) { computeExpression(element) }
-        is PsiLiteralExpression -> process(element) { computeExpression(element) }
+        is PsiPolyadicExpression -> process(element) { FxSUtils.computeExpression(element) }
+        is PsiLiteralExpression -> process(element) { FxSUtils.computeExpression(element) }
         else -> null
     }
 
@@ -69,7 +66,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         if (!CommonIdeaService.getInstance().isHybrisProject(element.project)) return null
 
         val expression = expressionProvider.invoke()
-        if (!(expression.contains(topRegex) && expression.contains('{') && expression.contains('}'))) return null
+        if (!FxSUtils.isFlexibleSearchQuery(expression)) return null
 
         val formattedExpression = formatExpression(element.project, expression)
 
@@ -84,43 +81,6 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         val fxsFile = FlexibleSearchElementFactory.createFile(project, expression)
 
         return CodeStyleManager.getInstance(project).reformat(fxsFile).text
-    }
-
-    private fun computeExpression(element: PsiLiteralExpression): String = if (element.isTextBlock) {
-        element.text
-            .replace("\"\"\"", "")
-    } else {
-        element.text
-            .replace("\"", "")
-    }
-
-    private fun computeExpression(literalExpression: PsiPolyadicExpression): String {
-        var computedValue = ""
-
-        literalExpression.operands
-            .forEach { operand ->
-                if (operand is PsiReference) {
-                    val probableDefinition = operand.resolve()
-                    if (probableDefinition is PsiVariable) {
-                        probableDefinition.initializer?.let { initializer ->
-                            val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true);
-                            if (value is String) {
-                                computedValue += value;
-                            }
-                        }
-                    }
-                } else {
-                    val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true);
-                    if (value is String) {
-                        computedValue += value;
-                    }
-                }
-            }
-        return computedValue
-            .trim()
-            .replace("\n", "")
-            .replace("\t", "")
-            .replace(whitespaceRegex, " ")
     }
 
     internal class CopyToClipboard(val content: String) : AnAction() {

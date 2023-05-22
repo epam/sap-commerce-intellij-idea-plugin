@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -33,7 +34,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
-        val type = FxSPsiUtils.getTableAliasName(element.text)
+        val type = FxSUtils.getTableAliasName(element.text)
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 

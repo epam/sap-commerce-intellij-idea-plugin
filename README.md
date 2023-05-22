@@ -33,7 +33,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 
 ## Contribution guidelines ##
 
-* Please read [Contributor License Agreement](http://developercertificate.org)
+* Please read [Contributor License Agreement](https://developercertificate.org)
 * Available tasks are in our [project board](https://github.com/epam/sap-commerce-intellij-idea-plugin/projects/1) 
 * [How to Configure Project Environment For Plugin Developers](https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html)
 * We are working with [Pull Requests](https://help.github.com/articles/about-pull-requests/). You need to fork this repository, implement a feature in a separate branch, then send us a pull request.
@@ -80,7 +80,7 @@ This project exists thanks to all the people who <a href="https://github.com/epa
 <img src="https://img.shields.io/badge/-Andrei%20Lisetskii-grey"/>
 
 ## Licence ##
-[GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
+[GNU Lesser General Public License 3.0](https://www.gnu.org/licenses/)
 
 Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
 

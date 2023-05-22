@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -38,7 +39,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
-        val type = FxSPsiUtils.getTableAliasName(element.text)
+        val type = FxSUtils.getTableAliasName(element.text)
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
@@ -54,7 +55,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.parent
         ?.let { fromClause ->
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
-            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
+            val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
             val aliases = findColumnAliasNames(fromClause) { true }
                 .map { FxSLookupElementFactory.build(it, addComma) }
@@ -124,7 +125,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
             val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
-            val addComma = FxSPsiUtils.shouldAddCommaAfterExpression(element, fxsSettings)
+            val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
             // only DOT allowed for non [y] columns
             val nonYColumnAliasSeparator = if (fxsSettings.completion.injectTableAliasSeparator) HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT
             else ""

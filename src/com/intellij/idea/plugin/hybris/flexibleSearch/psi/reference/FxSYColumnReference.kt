@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -43,7 +43,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
 
     override fun calculateDefaultRangeInElement(): TextRange {
         val originalType = element.text
-        val type = FxSPsiUtils.getColumnName(element.text)
+        val type = FxSUtils.getColumnName(element.text)
         return TextRange.from(originalType.indexOf(type), type.length)
     }
 
@@ -111,7 +111,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSYColumnReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
-            val featureName = FxSPsiUtils.getColumnName(ref.element.text)
+            val featureName = FxSUtils.getColumnName(ref.element.text)
             val result = ref.element.table
                 ?.tableName
                 ?.let { resolve(ref.element.project, it, featureName) }

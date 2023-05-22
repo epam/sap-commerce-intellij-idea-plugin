@@ -27,7 +27,8 @@
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
 
 ### `FlexibleSearch` enhancements
-- Added possibility to copy FlexibleSearch from the Java 15 text block [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)
+- Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)
+- Added FlexibleSearch language injection into Java 15 text block `"""SELECT * FROM {Product}"""` [#430](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/430)
 
 ### Fixes
 - Check additional active plugin for java EE [#406](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/406)

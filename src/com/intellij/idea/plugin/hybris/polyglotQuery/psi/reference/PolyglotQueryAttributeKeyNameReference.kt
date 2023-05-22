@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FxSPsiUtils
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -78,7 +78,7 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, PolyglotQueryAttributeKeyNameReference>>("HYBRIS_PGQ_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryAttributeKeyNameReference> { ref ->
-            val featureName = FxSPsiUtils.getColumnName(ref.element.text)
+            val featureName = FxSUtils.getColumnName(ref.element.text)
             val result = ref.element.typeName
                 ?.let { resolve(ref.element.project, it, featureName) }
                 ?: ResolveResult.EMPTY_ARRAY
