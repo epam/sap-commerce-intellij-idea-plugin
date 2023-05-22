@@ -94,4 +94,10 @@
             <option name="FOREGROUND" value="FC67E4"/>
         </value>
     </option>
+    <option name="IMPEX_VALUE_SUBTYPE_SAME">
+        <value>
+            <option name="FOREGROUND" value="6F737A"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
 </list>

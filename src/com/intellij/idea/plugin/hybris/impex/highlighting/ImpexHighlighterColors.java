@@ -18,11 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
+import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.template.impl.TemplateColors;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
+import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.options.colors.pages.GeneralColorsPage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,6 +58,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey HEADER_MODE_REMOVE = key("HEADER_MODE_REMOVE", KEYWORD);
     public static final TextAttributesKey HEADER_TYPE = key("HEADER_TYPE", FUNCTION_DECLARATION);
     public static final TextAttributesKey VALUE_SUBTYPE = key("VALUE_SUBTYPE", METADATA);
+    public static final TextAttributesKey VALUE_SUBTYPE_SAME = key("IMPEX_VALUE_SUBTYPE_SAME", CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES);
     public static final TextAttributesKey FIELD_VALUE_SEPARATOR = key("FIELD_VALUE_SEPARATOR", KEYWORD);
     public static final TextAttributesKey FIELD_LIST_ITEM_SEPARATOR = key("FIELD_LIST_ITEM_SEPARATOR", KEYWORD);
     public static final TextAttributesKey FIELD_VALUE = key("FIELD_VALUE", HighlighterColors.TEXT);

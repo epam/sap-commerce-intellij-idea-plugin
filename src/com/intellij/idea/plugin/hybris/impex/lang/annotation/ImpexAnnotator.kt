@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
@@ -33,7 +34,14 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
             ImpexTypes.VALUE_SUBTYPE -> {
-                highlightReference(ImpexTypes.VALUE_SUBTYPE, holder, element, "hybris.inspections.impex.unresolved.subType.key")
+                val subType = element.parent as? ImpexSubTypeName ?: return
+                val headerType = subType.headerTypeName ?: return
+
+                if (subType.textMatches(headerType)) {
+                    highlight(ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, element)
+                } else {
+                    highlightReference(ImpexTypes.VALUE_SUBTYPE, holder, element, "hybris.inspections.impex.unresolved.subType.key")
+                }
             }
 
             ImpexTypes.MACRO_USAGE -> {

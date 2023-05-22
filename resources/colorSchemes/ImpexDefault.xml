@@ -180,4 +180,10 @@
             <option name="FOREGROUND" value="006386"/>
         </value>
     </option>
+    <option name="IMPEX_VALUE_SUBTYPE_SAME">
+        <value>
+            <option name="FOREGROUND" value="808080"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
 </list>
