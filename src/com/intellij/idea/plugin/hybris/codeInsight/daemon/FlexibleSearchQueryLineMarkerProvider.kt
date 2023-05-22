@@ -34,10 +34,7 @@ import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyadicExpression
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiVariable
+import com.intellij.psi.*
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator
 import com.intellij.util.Function
@@ -57,16 +54,24 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     override fun getName() = message("hybris.editor.gutter.fsq.name")
     override fun getIcon(): Icon = HybrisIcons.FXS_FILE
 
-    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
-        if (element !is PsiPolyadicExpression) return null
+    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? = when (element) {
+        is PsiPolyadicExpression -> process(element) { computeExpression(element) }
+        is PsiLiteralExpression -> process(element) { computeExpression(element) }
+        else -> null
+    }
+
+    private fun process(
+        element: PsiElement,
+        expressionProvider: () -> String
+    ): FlexibleSearchQueryLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
         if (!CommonIdeaService.getInstance().isHybrisProject(element.project)) return null
 
-        val expression = computeExpression(element)
-        val formattedExpression = formatExpression(element.project, expression)
-
+        val expression = expressionProvider.invoke()
         if (!(expression.contains(topRegex) && expression.contains('{') && expression.contains('}'))) return null
+
+        val formattedExpression = formatExpression(element.project, expression)
 
         val tooltipProvider = Function { _: PsiElement? ->
             "${message("hybris.editor.gutter.fsq.tooltip")}<br><hr>$formattedExpression"
@@ -79,6 +84,14 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         val fxsFile = FlexibleSearchElementFactory.createFile(project, expression)
 
         return CodeStyleManager.getInstance(project).reformat(fxsFile).text
+    }
+
+    private fun computeExpression(element: PsiLiteralExpression): String = if (element.isTextBlock) {
+        element.text
+            .replace("\"\"\"", "")
+    } else {
+        element.text
+            .replace("\"", "")
     }
 
     private fun computeExpression(literalExpression: PsiPolyadicExpression): String {
