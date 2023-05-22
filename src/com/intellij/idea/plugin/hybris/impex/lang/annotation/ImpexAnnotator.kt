@@ -32,6 +32,10 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpexTypes.VALUE_SUBTYPE -> {
+                highlightReference(ImpexTypes.VALUE_SUBTYPE, holder, element, "hybris.inspections.impex.unresolved.subType.key")
+            }
+
             ImpexTypes.MACRO_USAGE -> {
                 if (element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
                     val macroUsageDec = element.parent as? ImpexMacroUsageDec ?: return
