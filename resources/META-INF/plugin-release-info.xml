@@ -106,6 +106,7 @@
                 </li>
                 <li><i>Feature:</i> <strong>ImpEx</strong> enhancements
                     <ul>
+                        <li>Added reference resolution for Item sub types declared for individual value line (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425" target="_blank" rel="nofollow">#425</a>)</li>
                         <li>Improved code style for macro usages, distinguish <code>$config-</code> and reference to another macro (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421" target="_blank" rel="nofollow">#421</a>)</li>
                         <li>Improved macro renaming, it will check for name collisions beforehand (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/422" target="_blank" rel="nofollow">#422</a>)</li>
                         <li>Improved macro usages (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/424" target="_blank" rel="nofollow">#424</a>)</li>

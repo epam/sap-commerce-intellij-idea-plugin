@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.openapi.project.DumbService
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 
@@ -46,11 +47,17 @@ fun getValueGroup(element: ImpexValueLine, columnNumber: Int): ImpexValueGroup? 
     .childrenOfType<ImpexValueGroup>()
     .getOrNull(columnNumber)
 
-fun getValueLine(element: ImpexValueGroup): ImpexValueLine? = PsiTreeUtil
+fun getValueLine(element: PsiElement): ImpexValueLine? = PsiTreeUtil
     .getParentOfType(element, ImpexValueLine::class.java)
 
 fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
     .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter
+
+fun getHeaderTypeName(element: ImpexSubTypeName): ImpexHeaderTypeName? = element
+    .valueLine
+    ?.headerLine
+    ?.fullHeaderType
+    ?.headerTypeName
 
 fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
     if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null

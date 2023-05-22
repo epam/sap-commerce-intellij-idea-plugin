@@ -111,6 +111,10 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitParameters(o);
   }
 
+  public void visitSubTypeName(@NotNull ImpexSubTypeName o) {
+    visitPsiElement(o);
+  }
+
   public void visitValue(@NotNull ImpexValue o) {
     visitPsiElement(o);
   }

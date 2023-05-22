@@ -27,6 +27,9 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexValueLine extends PsiElement {
 
+  @Nullable
+  ImpexSubTypeName getSubTypeName();
+
   @NotNull
   List<ImpexValueGroup> getValueGroupList();
 

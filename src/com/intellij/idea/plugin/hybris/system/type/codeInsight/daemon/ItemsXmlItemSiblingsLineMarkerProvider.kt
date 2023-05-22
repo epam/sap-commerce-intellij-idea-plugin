@@ -65,7 +65,7 @@ class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvide
                     .create(icon)
                     .setTargets(targets)
                     .setPopupTitle(message("hybris.editor.gutter.ts.items.item.siblings.popup.title"))
-                    .setTooltipText(message("hybris.editor.gutter.ts.items.item.siblings.tooltip.text"))
+                    .setTooltipText(message("hybris.editor.gutter.ts.items.item.siblings.tooltip.text", psi.value))
                     .setAlignment(GutterIconRenderer.Alignment.CENTER)
                     .createLineMarkerInfo(leaf)
             }

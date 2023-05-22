@@ -49,6 +49,7 @@ public interface ImpexTypes {
   IElementType ROOT_MACRO_USAGE = new ImpexElementType("ROOT_MACRO_USAGE");
   IElementType STRING = new ImpexElementType("STRING");
   IElementType SUB_PARAMETERS = new ImpexElementType("SUB_PARAMETERS");
+  IElementType SUB_TYPE_NAME = new ImpexElementType("SUB_TYPE_NAME");
   IElementType VALUE = new ImpexElementType("VALUE");
   IElementType VALUE_GROUP = new ImpexElementType("VALUE_GROUP");
   IElementType VALUE_LINE = new ImpexElementType("VALUE_LINE");
@@ -160,6 +161,9 @@ public interface ImpexTypes {
       }
       else if (type == SUB_PARAMETERS) {
         return new ImpexSubParametersImpl(node);
+      }
+      else if (type == SUB_TYPE_NAME) {
+        return new ImpexSubTypeNameImpl(node);
       }
       else if (type == VALUE) {
         return new ImpexValueImpl(node);

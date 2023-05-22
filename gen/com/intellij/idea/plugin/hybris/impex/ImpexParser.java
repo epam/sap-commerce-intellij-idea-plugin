@@ -805,7 +805,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //   |  HEADER_MODE_INSERT_UPDATE
   //   |  HEADER_MODE_REMOVE
   //   |  HEADER_MODE_UPDATE
-  //   |  VALUE_SUBTYPE
+  //   |  sub_type_name
   //   |  FIELD_VALUE_SEPARATOR
   //   |  LINE_COMMENT
   //   |  macro_name_dec
@@ -828,7 +828,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //   |  HEADER_MODE_INSERT_UPDATE
   //   |  HEADER_MODE_REMOVE
   //   |  HEADER_MODE_UPDATE
-  //   |  VALUE_SUBTYPE
+  //   |  sub_type_name
   //   |  FIELD_VALUE_SEPARATOR
   //   |  LINE_COMMENT
   //   |  macro_name_dec
@@ -844,7 +844,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, HEADER_MODE_INSERT_UPDATE);
     if (!r) r = consumeToken(b, HEADER_MODE_REMOVE);
     if (!r) r = consumeToken(b, HEADER_MODE_UPDATE);
-    if (!r) r = consumeToken(b, VALUE_SUBTYPE);
+    if (!r) r = sub_type_name(b, l + 1);
     if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     if (!r) r = consumeToken(b, LINE_COMMENT);
     if (!r) r = macro_name_dec(b, l + 1);
@@ -1053,6 +1053,18 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // VALUE_SUBTYPE
+  public static boolean sub_type_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "sub_type_name")) return false;
+    if (!nextTokenIs(b, VALUE_SUBTYPE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, VALUE_SUBTYPE);
+    exit_section_(b, m, SUB_TYPE_NAME, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ((  FIELD_VALUE
   //              | FIELD_VALUE_URL
   //              | BOOLEAN
@@ -1148,7 +1160,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (VALUE_SUBTYPE value_group*) | (value_group+)
+  // (sub_type_name value_group*) | (value_group+)
   public static boolean value_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_line")) return false;
     if (!nextTokenIs(b, "<value line>", FIELD_VALUE_SEPARATOR, VALUE_SUBTYPE)) return false;
@@ -1160,12 +1172,12 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // VALUE_SUBTYPE value_group*
+  // sub_type_name value_group*
   private static boolean value_line_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_line_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VALUE_SUBTYPE);
+    r = sub_type_name(b, l + 1);
     r = r && value_line_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;

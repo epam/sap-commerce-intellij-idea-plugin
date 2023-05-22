@@ -63,7 +63,7 @@ private recover_root ::= !(
   |  HEADER_MODE_INSERT_UPDATE
   |  HEADER_MODE_REMOVE
   |  HEADER_MODE_UPDATE
-  |  VALUE_SUBTYPE
+  |  sub_type_name
   |  FIELD_VALUE_SEPARATOR
   |  LINE_COMMENT
   |  macro_name_dec
@@ -131,7 +131,7 @@ string ::= SINGLE_STRING | DOUBLE_STRING
 
 
 // Value line rules
-value_line ::= (VALUE_SUBTYPE value_group*) | (value_group+) {
+value_line ::= (sub_type_name value_group*) | (value_group+) {
     methods=[getHeaderLine getValueGroup]
 }
 
@@ -233,3 +233,8 @@ any_attribute_value ::= (
   | macro_usage_dec
 )+
 {mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"}
+
+sub_type_name ::= VALUE_SUBTYPE {
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubTypeNameMixin"
+    methods=[getValueLine getHeaderTypeName]
+}

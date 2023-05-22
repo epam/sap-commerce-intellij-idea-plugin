@@ -28,17 +28,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexValueLine {
+public class ImpexSubTypeNameImpl extends ImpexSubTypeNameMixin implements ImpexSubTypeName {
 
-  public ImpexValueLineImpl(@NotNull ASTNode node) {
+  public ImpexSubTypeNameImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitValueLine(this);
+    visitor.visitSubTypeName(this);
   }
 
   @Override
@@ -49,26 +48,14 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
 
   @Override
   @Nullable
-  public ImpexSubTypeName getSubTypeName() {
-    return findChildByClass(ImpexSubTypeName.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexValueGroup> getValueGroupList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexValueGroup.class);
+  public ImpexValueLine getValueLine() {
+    return ImpexPsiUtil.getValueLine(this);
   }
 
   @Override
   @Nullable
-  public ImpexHeaderLine getHeaderLine() {
-    return ImpexPsiUtil.getHeaderLine(this);
-  }
-
-  @Override
-  @Nullable
-  public ImpexValueGroup getValueGroup(int columnNumber) {
-    return ImpexPsiUtil.getValueGroup(this, columnNumber);
+  public ImpexHeaderTypeName getHeaderTypeName() {
+    return ImpexPsiUtil.getHeaderTypeName(this);
   }
 
 }
