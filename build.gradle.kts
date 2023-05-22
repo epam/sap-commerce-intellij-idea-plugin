@@ -80,10 +80,6 @@ tasks {
         gradleVersion = properties("gradle.version").get()
     }
 
-    buildSearchableOptions {
-        enabled = false
-    }
-
     runIde {
         jvmArgs = listOf(properties("intellij.jvm.args").get())
         maxHeapSize = "3g"
