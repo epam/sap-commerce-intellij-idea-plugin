@@ -9,11 +9,27 @@
 
 ## SAP Commerce Developers Toolset ##
 
+<!-- Plugin description -->
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [Intellij IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
-## Documentation
+## Features
 
-* [Type System Diagram Legend](docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md)
+- Import of SAP Commerce extensions to Intellij IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.
+- Automatic configuration of Spring, Web, Ant, Database Connector Intellij IDEA plugins.
+- Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.
+- Tight integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) which will enhance SAP Commerce with **Kotlin** language support
+- Custom editor for [Polyglot Query.](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/651d603ed81247c2be1708f22baed11b.html)
+- Custom editor for [FlexibleSearch](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc399c186691014b8fce25e96614547.html) queries with an ability to execute them on a remote SAP Commerce instance right from your IDE by a single click of a button.
+- Custom editor for [ImpEx](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bee24e986691014b97bcd2c7e6ff732.html) files with automatic formatting, find usages and go to declaration actions, validation and import of ImpEx files into a remote SAP Commerce instance right from your IDE by a single click of a button.
+- Custom editor for `items.xml` with validation, best-practices analyses, quick-fix autosuggestion and easy navigation.
+- Custom editor for `beans.xml` & `cockpitng` with custom automated Intellij refactorings actions.
+- Visualization of Business Process, [Type System](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md) and Module Dependencies (use context menu of the file "Diagrams/Show Diagram", only Ultimate IDEA).
+- Preview for Type and Bean Systems.
+- Enhanced Debugger for Model classes with lazy evaluation.
+- Enhanced project view tree.
+- Execution of FlexibleSearch queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.
+- Execution of queries on remote Solr instances.
+- And much more
 
 ## Contribution guidelines ##
 
@@ -60,6 +76,8 @@ This project exists thanks to all the people who <a href="https://github.com/epa
 <img src="https://img.shields.io/badge/-Mykhailo%20Lytvyn-grey"/> <img src="https://img.shields.io/badge/-Viktors%20Jengovatovs-grey"/>
 <img src="https://img.shields.io/badge/-Rustam%20Burmenskyi-grey"/> <img src="https://img.shields.io/badge/-Oleksandr%20Dihtiar-grey"/>
 <img src="https://img.shields.io/badge/-Andrei%20Lisetskii-grey"/>
+
+<!-- Plugin description end -->
 
 ## Licence ##
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
