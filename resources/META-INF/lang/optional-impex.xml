@@ -90,18 +90,11 @@
 
         <!-- ####################################################################################################### -->
 
-<!--        <gotoDeclarationHandler-->
-<!--                implementation="com.intellij.idea.plugin.hybris.impex.psi.gotoHandler.ImpexMacrosGoToDeclarationHandler"/>-->
-
         <highlightUsagesHandlerFactory
                 implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
 
-<!--        <findUsagesHandlerFactory-->
-<!--                implementation="com.intellij.idea.plugin.hybris.impex.find.findUsages.MacrosFindUsagesHandlerFactory"/>-->
-
-<!--        <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>-->
-<!--        <lang.findUsagesProvider language="Impex"-->
-<!--                                 implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>-->
+        <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
+        <lang.findUsagesProvider language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
         <annotator language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.annotation.ImpexAnnotator"/>
 

@@ -108,6 +108,7 @@
                     <ul>
                         <li>Improved code style for macro usages, distinguish <code>$config-</code> and reference to another macro (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421" target="_blank" rel="nofollow">#421</a>)</li>
                         <li>Improved macro renaming, it will check for name collisions beforehand (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/422" target="_blank" rel="nofollow">#422</a>)</li>
+                        <li>Improved macro usages (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/424" target="_blank" rel="nofollow">#424</a>)</li>
                         <li>Implemented inplace renaming for macros (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/423" target="_blank" rel="nofollow">#423</a>)</li>
                         <li>Added code completion of all available languages for <code>lang</code> modifier (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416" target="_blank" rel="nofollow">#416</a>)</li>
                         <li>Added reference support for <code>lang</code> modifier value (<a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420" target="_blank" rel="nofollow">#420</a>)</li>

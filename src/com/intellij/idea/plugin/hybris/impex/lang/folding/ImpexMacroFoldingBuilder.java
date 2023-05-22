@@ -220,7 +220,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             final var propertyKey = HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + iProperty.getKey();
 
             descriptor = new ImpexMacroDescriptor(propertyKey, iProperty.getValue(), iProperty.getPsiElement());
-            cache.put(propertyKey, descriptor);
+            cache.put(text, descriptor);
         }
         final int start = macroUsage.getTextRange().getStartOffset();
         final TextRange range = new TextRange(start, start + descriptor.macroName().length());

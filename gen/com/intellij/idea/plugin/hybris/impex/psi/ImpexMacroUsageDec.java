@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecMixin;
 
 public interface ImpexMacroUsageDec extends ImpexPsiNamedElement {
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull

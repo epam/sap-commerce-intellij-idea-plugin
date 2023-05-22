@@ -95,7 +95,6 @@ comment ::= LINE_COMMENT
 {pin = 1}
 
 macro_value_dec ::= MACRO_VALUE
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacrosValueMixin"}
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
       macro_value_dec

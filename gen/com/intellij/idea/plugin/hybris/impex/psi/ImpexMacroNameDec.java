@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl;
 
 public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull

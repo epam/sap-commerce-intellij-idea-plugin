@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelected
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COLUMN_ALIAS_NAME
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.TABLE_ALIAS_NAME
 import com.intellij.openapi.application.QueryExecutorBase
-import com.intellij.openapi.application.ReadAction
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.searches.ReferencesSearch
@@ -30,21 +29,18 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.util.Processor
 
-class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>() {
+class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
-        ReadAction.run<Throwable> {
-            val elementToSearch = queryParameters.elementToSearch;
-            if (!elementToSearch.isValid) return@run
-            if (!FlexibleSearchFindUsagesProvider.SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return@run
+        val elementToSearch = queryParameters.elementToSearch;
+        if (!elementToSearch.isValid) return
+        if (!FlexibleSearchFindUsagesProvider.SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return
 
-            when (elementToSearch.elementType) {
-                TABLE_ALIAS_NAME -> processTableAlias(elementToSearch, consumer)
-                COLUMN_ALIAS_NAME -> processColumnAlias(elementToSearch, consumer)
-                else -> throw UnsupportedOperationException("Missing implementation for ${elementToSearch.elementType}")
-            }
+        when (elementToSearch.elementType) {
+            TABLE_ALIAS_NAME -> processTableAlias(elementToSearch, consumer)
+            COLUMN_ALIAS_NAME -> processColumnAlias(elementToSearch, consumer)
+            else -> throw UnsupportedOperationException("Missing implementation for ${elementToSearch.elementType}")
         }
-
     }
 
     private fun processTableAlias(elementToSearch: PsiElement, consumer: Processor<in PsiReference>) {

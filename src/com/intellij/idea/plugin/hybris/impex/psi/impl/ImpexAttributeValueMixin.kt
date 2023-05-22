@@ -21,12 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier.*
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassBaseReference
 import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import java.io.Serial
 import javax.lang.model.SourceVersion
 
@@ -38,14 +40,39 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
         ?.let { arrayOf(it) }
         ?: computeReference()
 
-    private fun computeReference(): Array<PsiReference> {
+    private fun computeReference() = if (getParentOfType<ImpexFullHeaderTypeImpl>(false) != null) {
+        computeTypeModifierReference()
+    } else {
+        computeAttributeModifierReference()
+    }
+        ?.also { myReference = it }
+        ?.let { arrayOf(it) }
+        ?: PsiReference.EMPTY_ARRAY
+
+    private fun computeTypeModifierReference(): PsiReference? {
+        val modifierName = (parent as? ImpexAttribute)
+            ?.anyAttributeName
+            ?.text
+            ?.let { TypeModifier.getByModifierName(it) }
+            ?: return null
+
+        return when (modifierName) {
+            TypeModifier.PROCESSOR -> if (SourceVersion.isName(text)) {
+                ImpexJavaClassBaseReference(this)
+            } else null
+
+            else -> null
+        }
+    }
+
+    private fun computeAttributeModifierReference(): PsiReference? {
         val modifierName = (parent as? ImpexAttribute)
             ?.anyAttributeName
             ?.text
             ?.let { AttributeModifier.getByModifierName(it) }
-            ?: return PsiReference.EMPTY_ARRAY
+            ?: return null
 
-        val reference = when (modifierName) {
+        return when (modifierName) {
             TRANSLATOR,
             CELL_DECORATOR -> if (SourceVersion.isName(text)) {
                 ImpexJavaClassBaseReference(this)
@@ -54,10 +81,6 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
             LANG -> LanguageReference(this)
             else -> null
         }
-        return reference
-            ?.also { myReference = it }
-            ?.let { arrayOf(it) }
-            ?: PsiReference.EMPTY_ARRAY
     }
 
     override fun clone(): Any {
