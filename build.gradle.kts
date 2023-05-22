@@ -71,7 +71,8 @@ idea {
 
 changelog {
     version = properties("intellij.plugin.version")
-    groups = listOf("Features", "Fixed", "Deprecated", "Other")
+    groups = listOf()
+    headerParserRegex = """(\d+\.\d+(.\d+)?)""".toRegex()
 }
 
 tasks {
@@ -79,7 +80,7 @@ tasks {
         gradleVersion = properties("gradle.version").get()
     }
 
-    buildSearchableOptions{
+    buildSearchableOptions {
         enabled = false
     }
 
@@ -105,7 +106,7 @@ tasks {
             val start = "<!-- Plugin description -->"
             val end = "<!-- Plugin description end -->"
 
-            with (it.lines()) {
+            with(it.lines()) {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
@@ -115,16 +116,17 @@ tasks {
 
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
-        changeNotes = properties("intellij.plugin.version").map { pluginVersion ->
-            with(changelog) {
-                renderItem(
-                    (getOrNull(pluginVersion) ?: getUnreleased())
-//                        .withHeader(false)
-                        .withLinks(true)
-                        .withEmptySections(false),
-                    Changelog.OutputType.HTML,
-                )
-            }
+        changeNotes = with(changelog) {
+            getAll().values
+                .take(3)
+                .joinToString("") {
+                    renderItem(
+                        it
+                            .withLinks(true)
+                            .withEmptySections(false),
+                        Changelog.OutputType.HTML,
+                    )
+                }
         }
     }
 

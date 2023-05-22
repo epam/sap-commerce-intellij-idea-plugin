@@ -44,7 +44,7 @@ abstract class ImpexHeaderTypeNameMixin(astNode: ASTNode) : ASTWrapperReferenceP
             .map { it.anyHeaderParameterName }
             .forEach { it.putUserData(ImpexTSAttributeReference.CACHE_KEY, null) }
 
-        // reset cache for sub types
+        // reset cache for subtypes
         val subTypesIterator = headerLine.siblings(withSelf = false).iterator()
         var proceed = true
 

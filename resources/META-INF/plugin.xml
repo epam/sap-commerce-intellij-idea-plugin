@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,13 @@
 
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
 
-    <xi:include href="/META-INF/plugin-release-info.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <id>com.intellij.idea.plugin.sap.commerce</id>
+    <name>SAP Commerce Developers Toolset</name>
+    <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
+
+    <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
+        EPAM Systems
+    </vendor>
 
     <depends optional="true" config-file="optional-junit-dependencies.xml">JUnit</depends>
     <depends optional="true" config-file="optional-support-ant-dependencies.xml">AntSupport</depends>

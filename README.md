@@ -29,7 +29,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 - Enhanced project view tree.
 - Execution of FlexibleSearch queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.
 - Execution of queries on remote Solr instances.
-- And much more
+- And much more, complete change log can be found [here](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md).
 
 ## Contribution guidelines ##
 
@@ -41,6 +41,8 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 * Start with official [JetBrains Plugin SDK](https://plugins.jetbrains.com/docs/intellij)
 * Checkout plugin development [community support](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development) for common question
 * For additional questions you can send an [email](mailto:hybrisideaplugin@epam.com).
+
+<!-- Plugin description end -->
 
 ### Quick start ##
 
@@ -76,8 +78,6 @@ This project exists thanks to all the people who <a href="https://github.com/epa
 <img src="https://img.shields.io/badge/-Mykhailo%20Lytvyn-grey"/> <img src="https://img.shields.io/badge/-Viktors%20Jengovatovs-grey"/>
 <img src="https://img.shields.io/badge/-Rustam%20Burmenskyi-grey"/> <img src="https://img.shields.io/badge/-Oleksandr%20Dihtiar-grey"/>
 <img src="https://img.shields.io/badge/-Andrei%20Lisetskii-grey"/>
-
-<!-- Plugin description end -->
 
 ## Licence ##
 [GNU Lesser General Public License 3.0](http://www.gnu.org/licenses/)
