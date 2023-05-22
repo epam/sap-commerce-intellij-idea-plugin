@@ -42,7 +42,10 @@ class FlexibleSearchInjector : LanguageInjector {
         } else {
             val hostParent = host.parent ?: return
             when (hostParent) {
-                is PsiMethodCallExpression -> inject(hostParent, injectionPlacesRegistrar, host)
+                is PsiExpressionList -> {
+                    val psiMethod = hostParent.parent as? PsiMethodCallExpression ?: return
+                    inject(psiMethod, injectionPlacesRegistrar, host)
+                }
                 else -> {
                     if (host is PsiLiteralExpression && hostParent !is PsiPolyadicExpression) {
                         inject(injectionPlacesRegistrar, host) { FxSUtils.computeExpression(host) }
