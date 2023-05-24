@@ -8,7 +8,7 @@
 
 ### `Kotlin` language support
 - Integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) extension
-- Inject FlexibleSearch language into not concatenated Strings and String Templates without params [#431](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/431)
+- Inject FlexibleSearch language into not concatenated Strings and String Templates without params [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/432)
 - Register Kotlin Facet for extensions with `kotlinsrc` / `kotlintestsrc` directories [#407](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/407)
 - Automatically adjust Kotlin Compiler based on `kotlinnature` settings and project JDK [#409](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/409)
 - Show different icon for `kotlinnature` extension [#408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408)
