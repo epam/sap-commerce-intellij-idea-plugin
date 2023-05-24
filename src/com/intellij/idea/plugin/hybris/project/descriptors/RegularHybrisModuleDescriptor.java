@@ -21,47 +21,26 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.RequiresExtensionType;
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_DEPRECATED;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_EXT_GEN;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_HAC_MODULE;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTENSION_META_KEY_MODULE_GEN;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_WEB_INF_CLASSES;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
-/**
- * Created 3:55 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
     @NotNull
@@ -77,7 +56,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
 
         this.extensionInfo = extensionInfo;
         this.metas = CollectionUtils.emptyListIfNull(extensionInfo.getExtension().getMeta()).stream()
-                                    .collect(Collectors.toMap(MetaType::getKey, MetaType::getValue));
+            .collect(Collectors.toMap(MetaType::getKey, MetaType::getValue));
     }
 
     @Nullable
@@ -109,8 +88,8 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         final Set<String> requiredExtensionNames = new HashSet<>(requiresExtensions.size());
 
         requiredExtensionNames.addAll(requiresExtensions.stream()
-                                                        .map(RequiresExtensionType::getName)
-                                                        .toList());
+            .map(RequiresExtensionType::getName)
+            .toList());
 
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames());
 
@@ -252,22 +231,9 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
                 });
         }
 
-        if (this.hasBackofficeModule()) {
-
-            libs.add(new DefaultJavaLibraryDescriptor(
-                new File(
-                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    CommonIdeaService.Companion.getInstance().getBackofficeWebInfLib(getRootProjectDescriptor().getProject())
-                ),
-                false, false
-            ));
-            libs.add(new DefaultJavaLibraryDescriptor(
-                new File(
-                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
-                    CommonIdeaService.Companion.getInstance().getBackofficeWebInfClasses(getRootProjectDescriptor().getProject())
-                ),
-                false, true
-            ));
+        final Project currentProject = getRootProjectDescriptor().getProject();
+        if (currentProject != null) {
+            addLibsForBackofficeModule(libs, currentProject);
         }
 
         if (this.isAddOn()) {
@@ -275,6 +241,25 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         }
 
         return Collections.unmodifiableList(libs);
+    }
+
+    private void addLibsForBackofficeModule(final List<JavaLibraryDescriptor> libs, final Project currentProject) {
+        if (this.hasBackofficeModule()) {
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(
+                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                    HybrisProjectSettingsComponent.getInstance(currentProject).getBackofficeWebInfLib()
+                ),
+                false, false
+            ));
+            libs.add(new DefaultJavaLibraryDescriptor(
+                new File(
+                    this.getRootProjectDescriptor().getHybrisDistributionDirectory(),
+                    HybrisProjectSettingsComponent.getInstance(currentProject).getBackofficeWebInfClasses()
+                ),
+                false, true
+            ));
+        }
     }
 
     private void addServerJar(final List<JavaLibraryDescriptor> libs) {

@@ -28,27 +28,19 @@ interface CommonIdeaService {
 
     fun isTypingActionInProgress(): Boolean
 
-    fun isOutDatedHybrisProject(project: Project): Boolean
-
     fun isPotentiallyHybrisProject(project: Project): Boolean
 
     fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformHybrisModuleDescriptor?
 
     fun getActiveHacUrl(project: Project): String
 
-    fun getHostHacUrl(project: Project, mySettings: HybrisRemoteConnectionSettings?): String
+    fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String
 
     fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String
-
-    fun getBackofficeWebInfLib(project: Project): String
-
-    fun getBackofficeWebInfClasses(project: Project): String
 
     fun fixRemoteConnectionSettings(project: Project)
 
     fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?): String
-
-    fun refreshProjectSettings(project: Project)
 
     companion object {
         val instance: CommonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
