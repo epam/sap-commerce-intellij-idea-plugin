@@ -793,6 +793,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // !(
   //      CRLF
+  //   |  user_rights_start
   //   |  HEADER_MODE_INSERT
   //   |  HEADER_MODE_INSERT_UPDATE
   //   |  HEADER_MODE_REMOVE
@@ -816,6 +817,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // CRLF
+  //   |  user_rights_start
   //   |  HEADER_MODE_INSERT
   //   |  HEADER_MODE_INSERT_UPDATE
   //   |  HEADER_MODE_REMOVE
@@ -832,6 +834,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "recover_root_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
+    if (!r) r = user_rights_start(b, l + 1);
     if (!r) r = consumeToken(b, HEADER_MODE_INSERT);
     if (!r) r = consumeToken(b, HEADER_MODE_INSERT_UPDATE);
     if (!r) r = consumeToken(b, HEADER_MODE_REMOVE);
@@ -893,7 +896,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // root_macro_usage
+  // user_rights
+  //     | root_macro_usage
   //     | header_line
   //     | value_line
   //     | comment
@@ -904,38 +908,39 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "root_group")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = root_macro_usage(b, l + 1);
+    r = user_rights(b, l + 1);
+    if (!r) r = root_macro_usage(b, l + 1);
     if (!r) r = header_line(b, l + 1);
     if (!r) r = value_line(b, l + 1);
     if (!r) r = comment(b, l + 1);
     if (!r) r = bean_shell(b, l + 1);
-    if (!r) r = root_group_5(b, l + 1);
+    if (!r) r = root_group_6(b, l + 1);
     if (!r) r = macro_declaration(b, l + 1);
     exit_section_(b, l, m, r, false, ImpexParser::not_line_break);
     return r;
   }
 
   // string (';')?
-  private static boolean root_group_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_5")) return false;
+  private static boolean root_group_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_6")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = string(b, l + 1);
-    r = r && root_group_5_1(b, l + 1);
+    r = r && root_group_6_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (';')?
-  private static boolean root_group_5_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_5_1")) return false;
-    root_group_5_1_0(b, l + 1);
+  private static boolean root_group_6_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_6_1")) return false;
+    root_group_6_1_0(b, l + 1);
     return true;
   }
 
   // (';')
-  private static boolean root_group_5_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_5_1_0")) return false;
+  private static boolean root_group_6_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_group_6_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, ";");
@@ -1053,6 +1058,285 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, VALUE_SUBTYPE);
     exit_section_(b, m, SUB_TYPE_NAME, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // user_rights_start CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end
+  public static boolean user_rights(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS, "<user rights>");
+    r = user_rights_start(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, consumeToken(b, CRLF));
+    r = p && report_error_(b, user_rights_2(b, l + 1)) && r;
+    r = p && report_error_(b, user_rights_3(b, l + 1)) && r;
+    r = p && user_rights_end(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, ImpexParser::recover_root);
+    return r || p;
+  }
+
+  // (user_rights_header_line CRLF)?
+  private static boolean user_rights_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_2")) return false;
+    user_rights_2_0(b, l + 1);
+    return true;
+  }
+
+  // user_rights_header_line CRLF
+  private static boolean user_rights_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_header_line(b, l + 1);
+    r = r && consumeToken(b, CRLF);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (user_rights_value_line CRLF)*
+  private static boolean user_rights_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!user_rights_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_3", c)) break;
+    }
+    return true;
+  }
+
+  // user_rights_value_line CRLF
+  private static boolean user_rights_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_value_line(b, l + 1);
+    r = r && consumeToken(b, CRLF);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // END_USERRIGHTS
+  public static boolean user_rights_end(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_end")) return false;
+    if (!nextTokenIs(b, END_USERRIGHTS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, END_USERRIGHTS);
+    exit_section_(b, m, USER_RIGHTS_END, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)*
+  public static boolean user_rights_header_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_line")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_LINE, "<user rights header line>");
+    r = user_rights_header_parameter(b, l + 1);
+    p = r; // pin = 1
+    r = r && user_rights_header_line_1(b, l + 1);
+    exit_section_(b, l, m, r, p, ImpexParser::user_rights_header_line_recover);
+    return r || p;
+  }
+
+  // (PARAMETERS_SEPARATOR user_rights_header_parameter)*
+  private static boolean user_rights_header_line_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_line_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!user_rights_header_line_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_header_line_1", c)) break;
+    }
+    return true;
+  }
+
+  // PARAMETERS_SEPARATOR user_rights_header_parameter
+  private static boolean user_rights_header_line_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_line_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PARAMETERS_SEPARATOR);
+    r = r && user_rights_header_parameter(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(CRLF | user_rights_end | user_rights_value_line )
+  static boolean user_rights_header_line_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_line_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !user_rights_header_line_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // CRLF | user_rights_end | user_rights_value_line
+  private static boolean user_rights_header_line_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_line_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CRLF);
+    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = user_rights_value_line(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // USER_RIGHTS_HEADER_PARAMETER_NAME
+  public static boolean user_rights_header_parameter(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_header_parameter")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER, "<user rights header parameter>");
+    r = consumeToken(b, USER_RIGHTS_HEADER_PARAMETER_NAME);
+    exit_section_(b, l, m, r, false, ImpexParser::not_line_break_or_parameters_separator);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // START_USERRIGHTS
+  public static boolean user_rights_start(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_start")) return false;
+    if (!nextTokenIs(b, START_USERRIGHTS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, START_USERRIGHTS);
+    exit_section_(b, m, USER_RIGHTS_START, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // USER_RIGHTS_VALUE DOT USER_RIGHTS_VALUE
+  static boolean user_rights_type_attribute(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_type_attribute")) return false;
+    if (!nextTokenIs(b, USER_RIGHTS_VALUE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeTokens(b, 2, USER_RIGHTS_VALUE, DOT, USER_RIGHTS_VALUE);
+    p = r; // pin = 2
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // PERMISSION_DENIED
+  //     | PERMISSION_ALLOWED
+  //     | user_rights_type_attribute
+  //     | USER_RIGHTS_VALUE
+  static boolean user_rights_value_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_dec")) return false;
+    boolean r;
+    r = consumeToken(b, PERMISSION_DENIED);
+    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
+    if (!r) r = user_rights_type_attribute(b, l + 1);
+    if (!r) r = consumeToken(b, USER_RIGHTS_VALUE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // user_rights_value_dec (COMMA user_rights_value_dec)*
+  public static boolean user_rights_value_group(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_group")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_GROUP, "<user rights value group>");
+    r = user_rights_value_dec(b, l + 1);
+    r = r && user_rights_value_group_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (COMMA user_rights_value_dec)*
+  private static boolean user_rights_value_group_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_group_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!user_rights_value_group_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_value_group_1", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA user_rights_value_dec
+  private static boolean user_rights_value_group_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_group_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && user_rights_value_dec(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // user_rights_value_group? (FIELD_VALUE_SEPARATOR user_rights_value_group?)*
+  public static boolean user_rights_value_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_LINE, "<user rights value line>");
+    r = user_rights_value_line_0(b, l + 1);
+    r = r && user_rights_value_line_1(b, l + 1);
+    exit_section_(b, l, m, r, false, ImpexParser::user_rights_value_line_recover);
+    return r;
+  }
+
+  // user_rights_value_group?
+  private static boolean user_rights_value_line_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_0")) return false;
+    user_rights_value_group(b, l + 1);
+    return true;
+  }
+
+  // (FIELD_VALUE_SEPARATOR user_rights_value_group?)*
+  private static boolean user_rights_value_line_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!user_rights_value_line_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_value_line_1", c)) break;
+    }
+    return true;
+  }
+
+  // FIELD_VALUE_SEPARATOR user_rights_value_group?
+  private static boolean user_rights_value_line_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FIELD_VALUE_SEPARATOR);
+    r = r && user_rights_value_line_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // user_rights_value_group?
+  private static boolean user_rights_value_line_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_1_0_1")) return false;
+    user_rights_value_group(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // !(CRLF | user_rights_end)
+  static boolean user_rights_value_line_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !user_rights_value_line_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // CRLF | user_rights_end
+  private static boolean user_rights_value_line_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_line_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, CRLF);
+    if (!r) r = user_rights_end(b, l + 1);
     return r;
   }
 

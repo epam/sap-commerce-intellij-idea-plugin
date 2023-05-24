@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,14 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.highlighting;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.codeInsight.template.impl.TemplateColors;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
-import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.options.colors.pages.GeneralColorsPage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,6 +82,10 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey DOCUMENT_ID = key("DOCUMENT_ID", STATIC_FIELD);
     public static final TextAttributesKey WARNINGS_ATTRIBUTES = key("IMPEX_WARNING_ATTRIBUTES", CodeInsightColors.WARNINGS_ATTRIBUTES);
     public static final TextAttributesKey FUNCTION_CALL = key("IMPEX_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey USER_RIGHTS = key("IMPEX_USER_RIGHTS", STATIC_FIELD);
+    public static final TextAttributesKey USER_RIGHTS_HEADER_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_PARAMETER", HEADER_PARAMETER_NAME);
+    public static final TextAttributesKey USER_RIGHTS_PERMISSION_ALLOWED = key("IMPEX_USER_RIGHTS_PERMISSION_ALLOWED", HighlighterColors.TEXT);
+    public static final TextAttributesKey USER_RIGHTS_PERMISSION_DENIED = key("IMPEX_USER_RIGHTS_PERMISSION_DENIED", HighlighterColors.TEXT);
 
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,

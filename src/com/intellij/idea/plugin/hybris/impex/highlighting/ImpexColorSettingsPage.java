@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.highlighting;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -33,43 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ALTERNATIVE_PATTERN;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ASSIGN_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ATTRIBUTE_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_BODY;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BEAN_SHELL_MARKER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.BOOLEAN;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.COMMA;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DEFAULT_PATH_DELIMITER;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DIGIT;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DOCUMENT_ID;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.DOUBLE_STRING;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE_IGNORE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FIELD_VALUE_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_INSERT;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_REMOVE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_MODE_UPDATE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_PARAMETER_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.HEADER_TYPE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.FUNCTION_CALL;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_NAME_DECLARATION;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_USAGE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.MACRO_VALUE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PARAMETERS_SEPARATOR;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.PROPERTY_COMMENT;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.ROUND_BRACKETS;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SINGLE_STRING;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.SQUARE_BRACKETS;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.VALUE_SUBTYPE;
-import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.WARNINGS_ATTRIBUTES;
+import static com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors.*;
 
 public class ImpexColorSettingsPage implements ColorSettingsPage {
 
@@ -111,7 +74,8 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Alternative pattern", ALTERNATIVE_PATTERN),
         new AttributesDescriptor("Document id", DOCUMENT_ID),
         new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
-        new AttributesDescriptor("Warnings", WARNINGS_ATTRIBUTES)
+        new AttributesDescriptor("Warnings", WARNINGS_ATTRIBUTES),
+        new AttributesDescriptor("User rights", USER_RIGHTS)
     };
 
     @Nullable
@@ -130,32 +94,40 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
         return "# Comment\n" +
-               "$lang = en\n" +
-               "$configProperty = $config-HYBRIS_BIN_DIR\n" +
-               "$contentCatalog = projectContentCatalog\n" +
-               "$contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = $contentCatalog]), CatalogVersion.version[default = 'Staged'])[default = $contentCatalog:Staged]\n" +
-               "$macro = qwe;qwe, qwe, ;qwe\n" +
-               "\n" +
-               "#% impex.setLocale( Locale.GERMAN );\n" +
-               "\n" +
-               "INSERT_UPDATE SomeType; $contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]; title[lang = $lang]\n" +
-               "Subtype ; ; account                ; \"Your Account\"\n" +
-               "        ; ; <ignore>               ; \"Add/Edit Address\"\n" +
-               "        ; ; key -> vaue | key ->\n" +
-               "vaue                               ; \"Address Book\"\n" +
-               "        ; ; value1, value2, value3 ; 12345 ; com.domain.Class ; qwe : asd\n" +
-               "\n" +
-               "INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin\n" +
-               "\n" +
-               "UPDATE Address; firstname; owner(Principal.uid | AbstractOrder.code); &docId\n" +
-               "; Hans ; admin ; id\n" +
-               "\n" +
-               "remove Address; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin\n" +
-               "\n" +
-               "INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslator]; mime[default = 'image/png']\n" +
-               "; ; $contentResource/images/logo .png\n" +
-               "\n" +
-               "@@@@@\n";
+            "   \n" +
+            "$START_USERRIGHTS\n" +
+            "Type      ; UID        ; MemberOfGroups ; Password ; Target  ; read ; change ; create ; delete ; change_perm\n" +
+            "UserGroup ; impexgroup ; employeegroup  ;\n" +
+            "          ;            ;                ;          ; Product ; +    ; +      ; +      ; +      ; -\n" +
+            "Customer  ; impex-demo ; impexgroup     ; 1234     ;\n" +
+            "$END_USERRIGHTS\n" +
+            "   \n" +
+            "$lang = en\n" +
+            "$configProperty = $config-HYBRIS_BIN_DIR\n" +
+            "$contentCatalog = projectContentCatalog\n" +
+            "$contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = $contentCatalog]), CatalogVersion.version[default = 'Staged'])[default = $contentCatalog:Staged]\n" +
+            "$macro = qwe;qwe, qwe, ;qwe\n" +
+            "\n" +
+            "#% impex.setLocale( Locale.GERMAN );\n" +
+            "\n" +
+            "INSERT_UPDATE SomeType; $contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]; title[lang = $lang]\n" +
+            "Subtype ; ; account                ; \"Your Account\"\n" +
+            "        ; ; <ignore>               ; \"Add/Edit Address\"\n" +
+            "        ; ; key -> vaue | key ->\n" +
+            "vaue                               ; \"Address Book\"\n" +
+            "        ; ; value1, value2, value3 ; 12345 ; com.domain.Class ; qwe : asd\n" +
+            "\n" +
+            "INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin\n" +
+            "\n" +
+            "UPDATE Address; firstname; owner(Principal.uid | AbstractOrder.code); &docId\n" +
+            "; Hans ; admin ; id\n" +
+            "\n" +
+            "remove Address; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin\n" +
+            "\n" +
+            "INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslator]; mime[default = 'image/png']\n" +
+            "; ; $contentResource/images/logo .png\n" +
+            "\n" +
+            "@@@@@\n";
     }
 
     @Nullable

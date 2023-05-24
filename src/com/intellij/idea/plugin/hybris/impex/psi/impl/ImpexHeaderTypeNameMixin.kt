@@ -19,14 +19,12 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSSubTypeItemReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.siblings
 import java.io.Serial
 
 abstract class ImpexHeaderTypeNameMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexHeaderTypeName {
@@ -45,16 +43,9 @@ abstract class ImpexHeaderTypeNameMixin(astNode: ASTNode) : ASTWrapperReferenceP
             .forEach { it.putUserData(ImpexTSAttributeReference.CACHE_KEY, null) }
 
         // reset cache for subtypes
-        val subTypesIterator = headerLine.siblings(withSelf = false).iterator()
-        var proceed = true
-
-        while (proceed && subTypesIterator.hasNext()) {
-            when (val psi = subTypesIterator.next()) {
-                is ImpexHeaderLine -> proceed = false
-                is ImpexValueLine -> psi.subTypeName
-                    ?.putUserData(ImpexTSSubTypeItemReference.CACHE_KEY, null)
-            }
-        }
+        headerLine.valueLines
+            .mapNotNull { it.subTypeName }
+            .forEach { it.putUserData(ImpexTSSubTypeItemReference.CACHE_KEY, null) }
     }
 
     companion object {

@@ -97,6 +97,11 @@ field_value        = ({not_crlf}|{identifier}+)
 field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 
+start_userrights                  = [$]START_USERRIGHTS
+end_userrights                    = [$]END_USERRIGHTS
+user_rights_header_parameter_name = (type)|(uid)|(MemberOfGroups)|(password)|(target)|(read)|(change)|(create)|(delete)|(remove)|(change_perm)
+user_rights_value                 = {identifier}+
+
 %state WAITING_MACRO_VALUE
 %state MACRO_DECLARATION
 %state HEADER_TYPE
@@ -109,10 +114,11 @@ field_value_ignore = "<ignore>"
 %state MACRO_USAGE
 %state MACRO_CONFIG_USAGE
 %state WAITING_MACRO_CONFIG_USAGE
+%state USER_RIGHTS
+%state USER_RIGHTS_HEADER_LINE
+%state USER_RIGHTS_VALUE_LINE
 
 %%
-
-{crlf}                                                      { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
@@ -122,6 +128,7 @@ field_value_ignore = "<ignore>"
 
     {line_comment}                                          { yybegin(YYINITIAL); return ImpexTypes.LINE_COMMENT; }
 
+    {start_userrights}                                      { yybegin(USER_RIGHTS); return ImpexTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {macro_name_declaration}                                {
@@ -140,16 +147,37 @@ field_value_ignore = "<ignore>"
 
     {value_subtype}                                         { yybegin(FIELD_VALUE); return ImpexTypes.VALUE_SUBTYPE; }
     {semicolon}                                             { yybegin(FIELD_VALUE); return ImpexTypes.FIELD_VALUE_SEPARATOR; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
-//<MACRO_USAGE> {
-    //$START_USERRIGHTS;;;;;;;;;
-    //$END_USERRIGHTS;;;;;
-//    {semicolon}                                             { return ImpexTypes.SEMICOLON; }
-//}
+<USER_RIGHTS> {
+    {crlf}                                                  { yybegin(USER_RIGHTS_HEADER_LINE); return ImpexTypes.CRLF; }
+}
+
+<USER_RIGHTS_HEADER_LINE> {
+    {user_rights_header_parameter_name}                     { return ImpexTypes.USER_RIGHTS_HEADER_PARAMETER_NAME; }
+    {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
+
+    {end_userrights}                                        { yybegin(YYINITIAL); return ImpexTypes.END_USERRIGHTS; }
+    {crlf}                                                  { yybegin(USER_RIGHTS_VALUE_LINE); return ImpexTypes.CRLF; }
+}
+
+<USER_RIGHTS_VALUE_LINE> {
+    "-"                                                     { return ImpexTypes.PERMISSION_DENIED; }
+    "+"                                                     { return ImpexTypes.PERMISSION_ALLOWED; }
+    {user_rights_value}                                     { return ImpexTypes.USER_RIGHTS_VALUE; }
+    {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
+    {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
+    {dot}                                                   { return ImpexTypes.DOT; }
+    {comma}                                                 { return ImpexTypes.COMMA; }
+
+    {end_userrights}                                        { yybegin(YYINITIAL); return ImpexTypes.END_USERRIGHTS; }
+    {crlf}                                                  { yybegin(USER_RIGHTS_VALUE_LINE); return ImpexTypes.CRLF; }
+}
 
 <BEAN_SHELL> {
     {bean_shell_body}                                       { return ImpexTypes.BEAN_SHELL_BODY; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <FIELD_VALUE> {
@@ -169,10 +197,12 @@ field_value_ignore = "<ignore>"
 
     {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
     {field_value}                                           { return ImpexTypes.FIELD_VALUE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <HEADER_TYPE> {
     {header_type}                                           { yybegin(HEADER_LINE); return ImpexTypes.HEADER_TYPE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <HEADER_LINE> {
@@ -197,6 +227,7 @@ field_value_ignore = "<ignore>"
 
     {left_square_bracket}                                   { yybegin(MODYFIERS_BLOCK); return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <MODYFIERS_BLOCK> {
@@ -213,6 +244,7 @@ field_value_ignore = "<ignore>"
 
     {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <WAITING_ATTR_OR_PARAM_VALUE> {
@@ -225,10 +257,12 @@ field_value_ignore = "<ignore>"
     {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.RIGHT_SQUARE_BRACKET; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <MACRO_DECLARATION> {
     {assign_value}                                          { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.ASSIGN_VALUE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <WAITING_MACRO_VALUE> {
@@ -258,15 +292,18 @@ field_value_ignore = "<ignore>"
     {header_mode_remove}                                    { return ImpexTypes.HEADER_MODE_REMOVE; }
 
     {macro_value}                                           { return ImpexTypes.MACRO_VALUE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <WAITING_MACRO_CONFIG_USAGE> {
-   {macro_config_usage}                                     { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
+    {macro_config_usage}                                     { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
    .                                                        { yypushback(yylength()); yybegin(MACRO_USAGE); }
 }
 
 <MACRO_USAGE> {
-   {macro_usage}                                            { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
+    {macro_usage}                                            { yybegin(WAITING_MACRO_VALUE); return ImpexTypes.MACRO_USAGE; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 // Fallback

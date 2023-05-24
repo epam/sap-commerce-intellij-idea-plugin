@@ -30,16 +30,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
-import java.util.Collection;
 
-public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
+public class ImpexUserRightsValueLineImpl extends ASTWrapperPsiElement implements ImpexUserRightsValueLine {
 
-  public ImpexHeaderLineImpl(@NotNull ASTNode node) {
+  public ImpexUserRightsValueLineImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitHeaderLine(this);
+    visitor.visitUserRightsValueLine(this);
   }
 
   @Override
@@ -50,32 +49,8 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
 
   @Override
   @NotNull
-  public ImpexAnyHeaderMode getAnyHeaderMode() {
-    return findNotNullChildByClass(ImpexAnyHeaderMode.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexFullHeaderParameter> getFullHeaderParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexFullHeaderParameter.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexFullHeaderType getFullHeaderType() {
-    return findChildByClass(ImpexFullHeaderType.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName) {
-    return ImpexPsiUtil.getFullHeaderParameter(this, parameterName);
-  }
-
-  @Override
-  @NotNull
-  public Collection<ImpexValueLine> getValueLines() {
-    return ImpexPsiUtil.getValueLines(this);
+  public List<ImpexUserRightsValueGroup> getUserRightsValueGroupList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexUserRightsValueGroup.class);
   }
 
 }

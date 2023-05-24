@@ -33,6 +33,8 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
   classHeader="generatedFilesHeader.txt"
+
+  generate=[java='17']
 }
 
 impexFile ::= root*
@@ -41,7 +43,8 @@ private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
 {recoverWhile = recover_root}
 
 private root_group ::= (
-      root_macro_usage
+      user_rights
+    | root_macro_usage
     | header_line
     | value_line
     | comment
@@ -59,6 +62,7 @@ private root_group ::= (
 
 private recover_root ::= !(
      CRLF
+  |  user_rights_start
   |  HEADER_MODE_INSERT
   |  HEADER_MODE_INSERT_UPDATE
   |  HEADER_MODE_REMOVE
@@ -81,16 +85,46 @@ private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARAT
 private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | RIGHT_ROUND_BRACKET | LEFT_ROUND_BRACKET)
 
 /*#################################################################################*/
+/*                                     User Rights                                 */
+/*#################################################################################*/
+user_rights ::= user_rights_start CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end {
+    pin=1
+    recoverWhile=recover_root
+}
+user_rights_header_line ::=  user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)* {
+    pin=1
+    recoverWhile=user_rights_header_line_recover
+}
+user_rights_start ::= START_USERRIGHTS
+user_rights_end ::= END_USERRIGHTS
+user_rights_header_parameter ::= USER_RIGHTS_HEADER_PARAMETER_NAME {
+    pin=1
+    recoverWhile=not_line_break_or_parameters_separator
+}
+user_rights_value_line ::= user_rights_value_group? (FIELD_VALUE_SEPARATOR user_rights_value_group?)* {
+    recoverWhile=user_rights_value_line_recover
+}
+user_rights_value_group ::= user_rights_value_dec (COMMA user_rights_value_dec)*
+private user_rights_value_dec ::= PERMISSION_DENIED
+    | PERMISSION_ALLOWED
+    | user_rights_type_attribute
+    | USER_RIGHTS_VALUE
+private user_rights_type_attribute ::= USER_RIGHTS_VALUE DOT USER_RIGHTS_VALUE {
+    pin=2
+}
+
+private user_rights_header_line_recover ::= !(CRLF | user_rights_end | user_rights_value_line )
+private user_rights_value_line_recover ::= !(CRLF | user_rights_end)
+/*#################################################################################*/
 /*                                     Root                                        */
 /*#################################################################################*/
 
 root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
-
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
 {
     pin = 1
-    methods=[getFullHeaderParameter]
+    methods=[getFullHeaderParameter getValueLines]
 }
 
 comment ::= LINE_COMMENT

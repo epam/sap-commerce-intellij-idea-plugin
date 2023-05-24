@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <!--
-  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -183,6 +183,23 @@
     <option name="IMPEX_VALUE_SUBTYPE_SAME">
         <value>
             <option name="FOREGROUND" value="808080"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+    <option name="IMPEX_USER_RIGHTS">
+        <value>
+            <option name="FOREGROUND" value="BD2D01"/>
+        </value>
+    </option>
+    <option name="IMPEX_USER_RIGHTS_PERMISSION_ALLOWED">
+        <value>
+            <option name="FOREGROUND" value="01A308"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+    <option name="IMPEX_USER_RIGHTS_PERMISSION_DENIED">
+        <value>
+            <option name="FOREGROUND" value="F556B5"/>
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>

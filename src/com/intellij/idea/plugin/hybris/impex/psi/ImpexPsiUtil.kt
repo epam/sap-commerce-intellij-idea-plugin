@@ -29,6 +29,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.siblings
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)
@@ -54,6 +55,20 @@ fun getValueLine(element: PsiElement): ImpexValueLine? = PsiTreeUtil
 
 fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
     .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter
+
+fun getValueLines(element: ImpexHeaderLine): Collection<ImpexValueLine> {
+    val subTypesIterator = element.siblings(withSelf = false).iterator()
+    var proceed = true
+    val valueLines = mutableListOf<ImpexValueLine>()
+
+    while (proceed && subTypesIterator.hasNext()) {
+        when (val psi = subTypesIterator.next()) {
+            is ImpexHeaderLine -> proceed = false
+            is ImpexValueLine -> valueLines.add(psi)
+        }
+    }
+    return valueLines
+}
 
 /**
  * This method will get value of the value group and if it's empty will check for value in default attribute

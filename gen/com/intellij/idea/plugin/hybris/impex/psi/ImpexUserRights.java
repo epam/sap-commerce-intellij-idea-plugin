@@ -24,23 +24,19 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import java.util.Collection;
 
-public interface ImpexHeaderLine extends PsiElement {
-
-  @NotNull
-  ImpexAnyHeaderMode getAnyHeaderMode();
-
-  @NotNull
-  List<ImpexFullHeaderParameter> getFullHeaderParameterList();
+public interface ImpexUserRights extends PsiElement {
 
   @Nullable
-  ImpexFullHeaderType getFullHeaderType();
+  ImpexUserRightsEnd getUserRightsEnd();
 
   @Nullable
-  ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
+  ImpexUserRightsHeaderLine getUserRightsHeaderLine();
 
   @NotNull
-  Collection<ImpexValueLine> getValueLines();
+  ImpexUserRightsStart getUserRightsStart();
+
+  @NotNull
+  List<ImpexUserRightsValueLine> getUserRightsValueLineList();
 
 }

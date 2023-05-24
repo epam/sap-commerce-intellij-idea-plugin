@@ -30,16 +30,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
-import java.util.Collection;
 
-public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
+public class ImpexUserRightsImpl extends ASTWrapperPsiElement implements ImpexUserRights {
 
-  public ImpexHeaderLineImpl(@NotNull ASTNode node) {
+  public ImpexUserRightsImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitHeaderLine(this);
+    visitor.visitUserRights(this);
   }
 
   @Override
@@ -49,33 +48,27 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
   }
 
   @Override
-  @NotNull
-  public ImpexAnyHeaderMode getAnyHeaderMode() {
-    return findNotNullChildByClass(ImpexAnyHeaderMode.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexFullHeaderParameter> getFullHeaderParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexFullHeaderParameter.class);
+  @Nullable
+  public ImpexUserRightsEnd getUserRightsEnd() {
+    return findChildByClass(ImpexUserRightsEnd.class);
   }
 
   @Override
   @Nullable
-  public ImpexFullHeaderType getFullHeaderType() {
-    return findChildByClass(ImpexFullHeaderType.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName) {
-    return ImpexPsiUtil.getFullHeaderParameter(this, parameterName);
+  public ImpexUserRightsHeaderLine getUserRightsHeaderLine() {
+    return findChildByClass(ImpexUserRightsHeaderLine.class);
   }
 
   @Override
   @NotNull
-  public Collection<ImpexValueLine> getValueLines() {
-    return ImpexPsiUtil.getValueLines(this);
+  public ImpexUserRightsStart getUserRightsStart() {
+    return findNotNullChildByClass(ImpexUserRightsStart.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ImpexUserRightsValueLine> getUserRightsValueLineList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexUserRightsValueLine.class);
   }
 
 }

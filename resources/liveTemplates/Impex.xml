@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "hybris integration" plugin for Intellij IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as 
@@ -18,10 +18,17 @@
 
 <templateSet group="Impex">
     <template name="userrights"
-              value="$START_USERRIGHTS&#10;Type;UID;MemberOfGroups;Password;Target;read;change;create;delete;change_perm&#10;UserGroup;$UID$;$MEMBER_OF_GROUPS$;&#10;$END_USERRIGHTS&#10;"
+              value="$START_USERRIGHTS&#10;Type;UID;MemberOfGroups;Password;Target;read;change;create;delete;change_perm&#10;UserGroup;$UID$;$MEMBER_OF_GROUPS$;$PASSWORD$;$TARGET$;$READ$;$CHANGE$;$CREATE$;$DELETE$;$CHANGE_PERM$&#10;$END_USERRIGHTS&#10;"
               description="Define user rights for object" toReformat="false" toShortenFQNames="false">
         <variable name="UID" expression="" defaultValue="" alwaysStopAt="true"/>
         <variable name="MEMBER_OF_GROUPS" expression="" defaultValue="" alwaysStopAt="true"/>
+        <variable name="PASSWORD" expression="" defaultValue="" alwaysStopAt="false"/>
+        <variable name="TARGET" expression="" defaultValue="" alwaysStopAt="true"/>
+        <variable name="READ" expression="" defaultValue="+" alwaysStopAt="true"/>
+        <variable name="CHANGE" expression="" defaultValue="+" alwaysStopAt="true"/>
+        <variable name="CREATE" expression="" defaultValue="+" alwaysStopAt="true"/>
+        <variable name="DELETE" expression="" defaultValue="+" alwaysStopAt="true"/>
+        <variable name="CHANGE_PERM" expression="" defaultValue="+" alwaysStopAt="true"/>
         <context>
             <option name="IMPEX" value="true"/>
         </context>

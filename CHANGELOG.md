@@ -29,6 +29,10 @@
 - Inspection rule: validate that `lang` modifier value is present in the `lang.packs` [#417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417)
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
 
+### `ImpEx` - `User Rights` 2.0
+- SAP Help Portal - [User Rights](https://help.sap.com/docs/SAP_COMMERCE/50c996852b32456c96d3161a95544cdb/e472718cafe840c39fbb5ceb00002e52.html?locale=en-US)
+- Re-implemented from the scratch Lexer and Parser for `$START_USERRIGHTS` block [#435](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/435)
+
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)
 - Added FlexibleSearch language injection into Java 15 text block `"""SELECT * FROM {Product}"""` [#430](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/430)
@@ -111,7 +115,7 @@
 - Added generate Diagram run line marker for `items.xml`
 - Added generate Diagram run line marker for `extensioninfo.xml` [#332](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/332)
 
-### FlexibleSearch 2.0
+### `FlexibleSearch` 2.0
 - Rewritten from the Scratch
 - Folding support
 - Brand-new possibility to Unify case of the reserved words, change to upper or lowercase with a single click
@@ -175,7 +179,7 @@
 - Enabled possibility to disable validation of the generated classes [#313](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/313)
 - Project import will respect extensions registered via `path` with `autoload=true` [#319](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/319)
 
-### New inspection rules for `items.xml`
+### `items.xml` inspection rules
 - Relation qualifier and modifiers must not be declared for `navigable='false'` end [#307](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/307)
 - Only one side of many-to-many relation must be `navigable='false'` [#315](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/315)
 - Qualifier must exist for `navigable='true'` part in many-to-many relation [#318](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/318)
