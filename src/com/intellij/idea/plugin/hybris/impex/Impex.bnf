@@ -98,8 +98,7 @@ macro_value_dec ::= MACRO_VALUE
 
 macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
       macro_value_dec
-    | SINGLE_STRING
-    | DOUBLE_STRING
+    | string
     | HEADER_SPECIAL_PARAMETER_NAME
     | macro_usage_dec
     | LEFT_ROUND_BRACKET

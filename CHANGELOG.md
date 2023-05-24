@@ -24,6 +24,7 @@
 - Added code completion of all available languages for `lang` modifier [#416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416)
 - Added reference support for `lang` modifier value [#420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420)
 - Added `env.properties` support for project properties code completion [#419](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419)
+- Inject FlexibleSearch language into suitable macro declaration values [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/433)
 - Inspection rule: validate that `lang` modifier value is present in the `lang.packs` [#417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417)
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
 

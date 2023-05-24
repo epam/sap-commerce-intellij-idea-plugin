@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjectorProvider
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
@@ -37,12 +37,12 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        if (host is ImpexString) {
-            val hostString = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
-            if (StringUtil.trim(hostString).startsWith(HybrisConstants.METHOD_SEARCH_NAME + ' ')) {
-                registerInjectionPlace(injectionPlacesRegistrar, host)
-            }
-        }
+        if (host !is ImpexString) return
+
+        val hostString = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
+        if (!FxSUtils.isFlexibleSearchQuery(hostString)) return
+
+        registerInjectionPlace(injectionPlacesRegistrar, host)
     }
 
     companion object {

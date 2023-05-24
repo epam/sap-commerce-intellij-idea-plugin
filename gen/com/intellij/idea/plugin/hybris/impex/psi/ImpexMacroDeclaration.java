@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -35,5 +31,8 @@ public interface ImpexMacroDeclaration extends PsiElement {
 
   @NotNull
   List<ImpexMacroValueDec> getMacroValueDecList();
+
+  @NotNull
+  List<ImpexString> getStringList();
 
 }

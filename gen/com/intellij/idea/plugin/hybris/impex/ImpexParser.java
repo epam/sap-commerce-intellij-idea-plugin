@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -339,8 +335,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // macro_name_dec ASSIGN_VALUE (
   //       macro_value_dec
-  //     | SINGLE_STRING
-  //     | DOUBLE_STRING
+  //     | string
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -372,8 +367,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   // (
   //       macro_value_dec
-  //     | SINGLE_STRING
-  //     | DOUBLE_STRING
+  //     | string
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -401,8 +395,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // macro_value_dec
-  //     | SINGLE_STRING
-  //     | DOUBLE_STRING
+  //     | string
   //     | HEADER_SPECIAL_PARAMETER_NAME
   //     | macro_usage_dec
   //     | LEFT_ROUND_BRACKET
@@ -422,8 +415,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "macro_declaration_2_0")) return false;
     boolean r;
     r = macro_value_dec(b, l + 1);
-    if (!r) r = consumeToken(b, SINGLE_STRING);
-    if (!r) r = consumeToken(b, DOUBLE_STRING);
+    if (!r) r = string(b, l + 1);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
     if (!r) r = consumeToken(b, LEFT_ROUND_BRACKET);
