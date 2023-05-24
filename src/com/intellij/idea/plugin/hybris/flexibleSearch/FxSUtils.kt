@@ -30,7 +30,9 @@ import com.intellij.psi.util.PsiTreeUtil
 
 object FxSUtils {
 
-    private val fxsRegex = "(SELECT )|( UNION )|( DISTINCT )|( ORDER BY )|( LEFT JOIN )|( JOIN )|( FROM )|( WHERE )|( ASC )|( DESC )|( ON )".toRegex(RegexOption.IGNORE_CASE)
+    private val fxsKeywordsRegex = "(SELECT )|( UNION )|( DISTINCT )|( ORDER BY )|( LEFT JOIN )|( JOIN )|( FROM )|( WHERE )|( ASC )|( DESC )|( ON )"
+        .toRegex(RegexOption.IGNORE_CASE)
+    private val fxsBracesRegex = ".*\\{.*}.*".toRegex()
     private val whitespaceRegex = "\\s+".toRegex()
 
     fun getColumnName(text: String) = text
@@ -61,7 +63,7 @@ object FxSUtils {
         return addComma
     }
 
-    fun isFlexibleSearchQuery(expression: String) = (expression.contains(fxsRegex) && expression.contains('{') && expression.contains('}'))
+    fun isFlexibleSearchQuery(expression: String) = expression.contains(fxsKeywordsRegex) && expression.contains(fxsBracesRegex)
 
     fun computeExpression(element: PsiLiteralExpression): String = if (element.isTextBlock) {
         element.text

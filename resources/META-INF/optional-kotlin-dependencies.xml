@@ -22,5 +22,6 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultKotlinCompilerConfigurator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.KotlinFacetConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider"/>
     </extensions>
 </idea-plugin>
