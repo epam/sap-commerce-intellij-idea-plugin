@@ -18,10 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjectorProvider
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
@@ -39,10 +42,49 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
     ) {
         if (host !is ImpexString) return
 
-        val hostString = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
-        if (!FxSUtils.isFlexibleSearchQuery(hostString)) return
+        val expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
 
-        registerInjectionPlace(injectionPlacesRegistrar, host)
+        val valueLine = host.valueGroup
+            ?.valueLine
+
+        valueLine
+            ?.headerLine
+            ?.takeIf {
+                it.fullHeaderType
+                    ?.headerTypeName
+                    ?.textMatches(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION)
+                    ?: false
+            }
+            ?.let { tryInjectSearchRestriction(valueLine, it, injectionPlacesRegistrar, host, expression) }
+            ?: injectSimple(injectionPlacesRegistrar, host, expression)
+    }
+
+    private fun injectSimple(
+        injectionPlacesRegistrar: InjectedLanguagePlaces,
+        host: PsiLanguageInjectionHost,
+        expression: String
+    ) {
+        if (FxSUtils.isFlexibleSearchQuery(expression)) {
+            registerInjectionPlace(injectionPlacesRegistrar, host)
+        }
+    }
+
+    private fun tryInjectSearchRestriction(
+        valueLine: ImpexValueLine,
+        headerLine: ImpexHeaderLine,
+        injectionPlacesRegistrar: InjectedLanguagePlaces,
+        host: PsiLanguageInjectionHost,
+        expression: String
+    ) {
+        val restrictedTypeParameter = headerLine.getFullHeaderParameter("restrictedType")
+            ?: return injectSimple(injectionPlacesRegistrar, host, expression)
+        val restrictedType = valueLine.getValueGroup(restrictedTypeParameter.columnNumber)
+            ?.computeValue()
+            ?: return injectSimple(injectionPlacesRegistrar, host, expression)
+
+        val prefix = "SELECT * FROM {${restrictedType}} WHERE "
+//        "item"
+        registerInjectionPlace(injectionPlacesRegistrar, host, prefix = prefix)
     }
 
     companion object {

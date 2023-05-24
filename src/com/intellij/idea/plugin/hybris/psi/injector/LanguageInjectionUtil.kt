@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
@@ -48,27 +49,13 @@ object LanguageInjectionUtil {
             }
             ?: return null
 
-        val scriptTypeColumn = header
-            .fullHeaderParameterList
-            .find { it.anyHeaderParameterName.textMatches("scriptType") }
+        val scriptTypeColumn = header.getFullHeaderParameter("scriptType")
             ?: return ScriptType.GROOVY
 
         return valueGroup.valueLine
             ?.getValueGroup(scriptTypeColumn.columnNumber)
-            ?.value
-            ?.text
-            ?.trim()
+            ?.computeValue()
             ?.let { ScriptType.byName(it) }
-            ?: scriptTypeColumn
-                .modifiersList
-                .flatMap { it.attributeList }
-                .find { it.anyAttributeName.textMatches("default") }
-                ?.anyAttributeValue
-                ?.stringList
-                ?.firstOrNull()
-                ?.text
-                ?.replace("\"", "")
-                ?.let { ScriptType.byName(it) }
     }
 
     fun tryInject(

@@ -21,9 +21,11 @@
 package com.intellij.idea.plugin.hybris.impex.psi
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -53,11 +55,38 @@ fun getValueLine(element: PsiElement): ImpexValueLine? = PsiTreeUtil
 fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
     .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter
 
+/**
+ * This method will get value of the value group and if it's empty will check for value in default attribute
+ */
+fun computeValue(element: ImpexValueGroup): String? {
+    val computedValue = element
+        .value
+        ?.text
+        ?: element.fullHeaderParameter
+            ?.getAttribute(AttributeModifier.DEFAULT)
+            ?.anyAttributeValue
+            ?.stringList
+            ?.firstOrNull()
+            ?.text
+    return computedValue
+        ?.let { StringUtil.unquoteString(it) }
+        ?.trim()
+}
+
+fun getAttribute(element: ImpexFullHeaderParameter, attributeModifier: AttributeModifier): ImpexAttribute? = element
+    .modifiersList
+    .flatMap { it.attributeList }
+    .find { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
+
 fun getHeaderTypeName(element: ImpexSubTypeName): ImpexHeaderTypeName? = element
     .valueLine
     ?.headerLine
     ?.fullHeaderType
     ?.headerTypeName
+
+fun getFullHeaderParameter(element: ImpexHeaderLine, parameterName: String): ImpexFullHeaderParameter? = element
+    .fullHeaderParameterList
+    .find { it.anyHeaderParameterName.text.equals(parameterName, true) }
 
 fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
     if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null

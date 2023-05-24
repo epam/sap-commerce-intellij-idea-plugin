@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -35,5 +31,8 @@ public interface ImpexHeaderLine extends PsiElement {
 
   @Nullable
   ImpexFullHeaderType getFullHeaderType();
+
+  @Nullable
+  ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
 
 }

@@ -211,6 +211,7 @@ object HybrisConstants {
     const val TS_TYPE_CRON_JOB = "CronJob"
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
+    const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_JAVA_LANG_PREFIX = "java.lang."

@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -63,6 +59,12 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
   @Nullable
   public ImpexFullHeaderType getFullHeaderType() {
     return findChildByClass(ImpexFullHeaderType.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName) {
+    return ImpexPsiUtil.getFullHeaderParameter(this, parameterName);
   }
 
 }

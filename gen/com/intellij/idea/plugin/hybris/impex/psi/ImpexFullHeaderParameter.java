@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -24,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier;
 
 public interface ImpexFullHeaderParameter extends PsiElement {
 
@@ -40,5 +37,8 @@ public interface ImpexFullHeaderParameter extends PsiElement {
   ImpexHeaderLine getHeaderLine();
 
   int getColumnNumber();
+
+  @Nullable
+  ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier);
 
 }

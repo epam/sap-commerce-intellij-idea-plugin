@@ -88,8 +88,10 @@ root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
 
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
-{pin = 1}
-
+{
+    pin = 1
+    methods=[getFullHeaderParameter]
+}
 
 comment ::= LINE_COMMENT
 {pin = 1}
@@ -137,7 +139,7 @@ value_line ::= (sub_type_name value_group*) | (value_group+) {
 value_group ::= FIELD_VALUE_SEPARATOR value?
 {
     pin=1
-    methods=[getFullHeaderParameter getColumnNumber getValueLine]
+    methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
 value ::= (((  FIELD_VALUE
@@ -188,7 +190,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
 {
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
-    methods=[getHeaderLine getColumnNumber]
+    methods=[getHeaderLine getColumnNumber getAttribute]
 }
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION

@@ -48,14 +48,16 @@ abstract class FlexibleSearchInjectorProvider {
         injectionPlacesRegistrar: InjectedLanguagePlaces,
         host: PsiElement,
         quoteLength: Int = 1,
+        prefix: String? = null,
+        suffix: String? = null,
         textRange: TextRange = TextRange.from(quoteLength, host.textLength - (quoteLength * 2))
     ) {
         try {
             injectionPlacesRegistrar.addPlace(
                 FlexibleSearchLanguage.INSTANCE,
                 textRange,
-                null,
-                null
+                prefix,
+                suffix
             )
         } catch (e: ProcessCanceledException) {
             // ignore

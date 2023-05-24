@@ -1,8 +1,4 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -68,6 +64,12 @@ public class ImpexValueGroupImpl extends ASTWrapperPsiElement implements ImpexVa
   @Nullable
   public ImpexValueLine getValueLine() {
     return ImpexPsiUtil.getValueLine(this);
+  }
+
+  @Override
+  @Nullable
+  public String computeValue() {
+    return ImpexPsiUtil.computeValue(this);
   }
 
 }
