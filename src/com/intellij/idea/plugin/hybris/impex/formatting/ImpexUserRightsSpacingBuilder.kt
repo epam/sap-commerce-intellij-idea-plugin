@@ -18,13 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting
 
+import com.intellij.formatting.ASTBlock
 import com.intellij.formatting.Block
 import com.intellij.formatting.Spacing
 import com.intellij.formatting.SpacingBuilder
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.PsiTreeUtil
 
 class ImpexUserRightsSpacingBuilder(
     settings: CodeStyleSettings
@@ -66,6 +70,23 @@ class ImpexUserRightsSpacingBuilder(
     }
 
     override fun getSpacing(parent: Block?, child1: Block?, child2: Block?): Spacing? {
+        val childNode1 = (child1 as? ASTBlock)?.node
+            ?: return super.getSpacing(null, null, child2)
+        val childNode2 = (child2 as? ASTBlock)?.node
+            ?: return super.getSpacing(null, null, child2)
+
+        // separator between "JOIN <table>"
+//        if (child1.node?.elementType == FlexibleSearchTypes.JOIN_OPERATOR && child2.node?.elementType == FlexibleSearchTypes.TABLE_OR_SUBQUERY) {
+//            val spaces = longestJoinOperatorSpaces(childNode2) - (child1.node?.textLength ?: 0)
+//            return Spacing.createSpacing(spaces, spaces, 0, true, 0)
+//        } else if (child1.node?.elementType == FlexibleSearchTypes.TABLE_OR_SUBQUERY && child2.node?.elementType == FlexibleSearchTypes.JOIN_CONSTRAINT) {
+//            val longestOffset = longestTableAliasName(childNode2)
+//            val currentJoinConstraintLength = PsiTreeUtil.findChildOfType(child1.node?.psi, FlexibleSearchTableAliasName::class.java)?.textLength ?: 0
+//
+//            val spaces = longestOffset - currentJoinConstraintLength + 1
+//            return Spacing.createSpacing(spaces, spaces, 0, true, 0)
+//        }
+
         return super.getSpacing(parent, child1, child2)
     }
 

@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.impex.formatting
 
 import com.intellij.formatting.*
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAwarePsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValueGroup
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -52,9 +54,9 @@ class ImpexUserRightsBlock(
             if (createBlock) {
                 val block = ImpexUserRightsBlock(
                     child,
-                    calculateAlignment(child),
-                    calculateIndent(child),
-                    calculateWrap(child),
+                    calculateAlignment(child) ?: Alignment.createAlignment(),
+                    calculateIndent(child) ?: Indent.getNoneIndent(),
+                    calculateWrap(child) ?: Wrap.createWrap(WrapType.NONE, false),
                     codeStyleSettings,
                     spacingBuilder
                 )
@@ -74,16 +76,11 @@ class ImpexUserRightsBlock(
     }
 
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
-        else -> Indent.getNoneIndent()
+        else -> null
     }
 
-    private fun calculateWrap(child: ASTNode) = when (child.elementType) {
-        else -> Wrap.createWrap(WrapType.NONE, false)
+    private fun calculateWrap(child: ASTNode): Wrap? = when (child.elementType) {
+        else -> null
     }
 
-    private fun wrapIf(enabled: Boolean) = if (enabled) {
-        Wrap.createWrap(WrapType.ALWAYS, true)
-    } else {
-        Wrap.createWrap(WrapType.NONE, false)
-    }
 }

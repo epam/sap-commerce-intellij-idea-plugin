@@ -123,6 +123,10 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitUserRightsAwarePsiElement(o);
   }
 
+  public void visitUserRightsFirstValueGroup(@NotNull ImpexUserRightsFirstValueGroup o) {
+    visitUserRightsAwarePsiElement(o);
+  }
+
   public void visitUserRightsHeaderLine(@NotNull ImpexUserRightsHeaderLine o) {
     visitUserRightsAwarePsiElement(o);
   }
@@ -132,6 +136,10 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitUserRightsStart(@NotNull ImpexUserRightsStart o) {
+    visitUserRightsAwarePsiElement(o);
+  }
+
+  public void visitUserRightsValue(@NotNull ImpexUserRightsValue o) {
     visitUserRightsAwarePsiElement(o);
   }
 

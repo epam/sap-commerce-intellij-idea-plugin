@@ -47,6 +47,12 @@ public class ImpexUserRightsValueLineImpl extends ImpexUserRightsAwarePsiElement
   }
 
   @Override
+  @Nullable
+  public ImpexUserRightsFirstValueGroup getUserRightsFirstValueGroup() {
+    return findChildByClass(ImpexUserRightsFirstValueGroup.class);
+  }
+
+  @Override
   @NotNull
   public List<ImpexUserRightsValueGroup> getUserRightsValueGroupList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexUserRightsValueGroup.class);

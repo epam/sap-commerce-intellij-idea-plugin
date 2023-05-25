@@ -48,6 +48,12 @@ public class ImpexUserRightsValueGroupImpl extends ImpexUserRightsAwarePsiElemen
 
   @Override
   @Nullable
+  public ImpexUserRightsValue getUserRightsValue() {
+    return findChildByClass(ImpexUserRightsValue.class);
+  }
+
+  @Override
+  @Nullable
   public ImpexUserRightsValueLine getValueLine() {
     return ImpexPsiUtil.getValueLine(this);
   }
@@ -56,6 +62,12 @@ public class ImpexUserRightsValueGroupImpl extends ImpexUserRightsAwarePsiElemen
   @Nullable
   public Integer getColumnNumber() {
     return ImpexPsiUtil.getColumnNumber(this);
+  }
+
+  @Override
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
+    return ImpexPsiUtil.getHeaderParameter(this);
   }
 
 }

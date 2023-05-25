@@ -27,6 +27,9 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexUserRightsValueLine extends ImpexUserRightsAwarePsiElement {
 
+  @Nullable
+  ImpexUserRightsFirstValueGroup getUserRightsFirstValueGroup();
+
   @NotNull
   List<ImpexUserRightsValueGroup> getUserRightsValueGroupList();
 

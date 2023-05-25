@@ -19,24 +19,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.psi;
+package com.intellij.idea.plugin.hybris.impex.psi.impl;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
+import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public interface ImpexUserRightsValueGroup extends ImpexUserRightsAwarePsiElement {
+public class ImpexUserRightsFirstValueGroupImpl extends ImpexUserRightsAwarePsiElementImpl implements ImpexUserRightsFirstValueGroup {
 
+  public ImpexUserRightsFirstValueGroupImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  public void accept(@NotNull ImpexVisitor visitor) {
+    visitor.visitUserRightsFirstValueGroup(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public ImpexUserRightsValue getUserRightsValue() {
+    return findNotNullChildByClass(ImpexUserRightsValue.class);
+  }
+
+  @Override
   @Nullable
-  ImpexUserRightsValue getUserRightsValue();
-
-  @Nullable
-  ImpexUserRightsValueLine getValueLine();
-
-  @Nullable
-  Integer getColumnNumber();
-
-  @Nullable
-  ImpexUserRightsHeaderParameter getHeaderParameter();
+  public ImpexValueLine getValueLine() {
+    return ImpexPsiUtil.getValueLine(this);
+  }
 
 }

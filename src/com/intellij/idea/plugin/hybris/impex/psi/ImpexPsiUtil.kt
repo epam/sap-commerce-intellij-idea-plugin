@@ -137,8 +137,25 @@ fun getValueLine(element: ImpexUserRightsValueGroup): ImpexUserRightsValueLine? 
 
 fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
     .valueLine
-    ?.userRightsValueGroupList
-    ?.indexOf(element)
+    ?.let { valueLine ->
+        valueLine.userRightsValueGroupList.indexOf(element)
+            .takeIf { it != -1 }
+            ?.let {
+                // if there is no first column we have to add +1 for column number
+                val withFirstGroup = valueLine.userRightsFirstValueGroup
+                    ?.let { 0 }
+                    ?: 1
+                it + withFirstGroup
+            }
+    }
+
+fun getHeaderParameter(element: ImpexUserRightsValueGroup): ImpexUserRightsHeaderParameter? = element
+    .columnNumber
+    ?.let {
+        element.getUserRights()
+            ?.userRightsHeaderLine
+            ?.getHeaderParameter(it)
+    }
 
 fun getHeaderLine(element: ImpexUserRightsHeaderParameter): ImpexUserRightsHeaderLine? = element
     .parentOfType<ImpexUserRightsHeaderLine>()
@@ -147,6 +164,7 @@ fun getColumnNumber(element: ImpexUserRightsHeaderParameter): Int? = element
     .headerLine
     ?.userRightsHeaderParameterList
     ?.indexOf(element)
+    ?.takeIf { it != -1 }
 
 fun getValueGroups(element: ImpexUserRightsHeaderParameter): Collection<ImpexUserRightsValueGroup> {
     val columnNumber = element.columnNumber ?: return emptyList()

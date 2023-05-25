@@ -52,9 +52,11 @@ public interface ImpexTypes {
   IElementType SUB_TYPE_NAME = new ImpexElementType("SUB_TYPE_NAME");
   IElementType USER_RIGHTS = new ImpexElementType("USER_RIGHTS");
   IElementType USER_RIGHTS_END = new ImpexElementType("USER_RIGHTS_END");
+  IElementType USER_RIGHTS_FIRST_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_FIRST_VALUE_GROUP");
   IElementType USER_RIGHTS_HEADER_LINE = new ImpexElementType("USER_RIGHTS_HEADER_LINE");
   IElementType USER_RIGHTS_HEADER_PARAMETER = new ImpexElementType("USER_RIGHTS_HEADER_PARAMETER");
   IElementType USER_RIGHTS_START = new ImpexElementType("USER_RIGHTS_START");
+  IElementType USER_RIGHTS_VALUE = new ImpexElementType("USER_RIGHTS_VALUE");
   IElementType USER_RIGHTS_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_VALUE_GROUP");
   IElementType USER_RIGHTS_VALUE_LINE = new ImpexElementType("USER_RIGHTS_VALUE_LINE");
   IElementType VALUE = new ImpexElementType("VALUE");
@@ -116,7 +118,6 @@ public interface ImpexTypes {
   IElementType TARGET = new ImpexTokenType("TARGET");
   IElementType TYPE = new ImpexTokenType("TYPE");
   IElementType UID = new ImpexTokenType("UID");
-  IElementType USER_RIGHTS_VALUE = new ImpexTokenType("USER_RIGHTS_VALUE");
   IElementType VALUE_SUBTYPE = new ImpexTokenType("VALUE_SUBTYPE");
 
   class Factory {
@@ -194,6 +195,9 @@ public interface ImpexTypes {
       else if (type == USER_RIGHTS_END) {
         return new ImpexUserRightsEndImpl(node);
       }
+      else if (type == USER_RIGHTS_FIRST_VALUE_GROUP) {
+        return new ImpexUserRightsFirstValueGroupImpl(node);
+      }
       else if (type == USER_RIGHTS_HEADER_LINE) {
         return new ImpexUserRightsHeaderLineImpl(node);
       }
@@ -202,6 +206,9 @@ public interface ImpexTypes {
       }
       else if (type == USER_RIGHTS_START) {
         return new ImpexUserRightsStartImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE) {
+        return new ImpexUserRightsValueImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_GROUP) {
         return new ImpexUserRightsValueGroupImpl(node);
