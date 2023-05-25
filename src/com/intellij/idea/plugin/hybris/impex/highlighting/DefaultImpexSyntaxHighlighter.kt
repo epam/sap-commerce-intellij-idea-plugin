@@ -76,10 +76,21 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.START_USERRIGHTS,
             ImpexTypes.END_USERRIGHTS -> USER_RIGHTS_KEYS
 
-            ImpexTypes.USER_RIGHTS_HEADER_PARAMETER_NAME -> USER_RIGHTS_HEADER_PARAMETER_KEYS
+            ImpexTypes.PASSWORD,
+            ImpexTypes.READ,
+            ImpexTypes.CHANGE,
+            ImpexTypes.CREATE,
+            ImpexTypes.DELETE,
+            ImpexTypes.REMOVE,
+            ImpexTypes.CHANGE_PERM, -> USER_RIGHTS_HEADER_PARAMETER_KEYS
+
+            ImpexTypes.TYPE,
+            ImpexTypes.UID,
+            ImpexTypes.MEMBEROFGROUPS,
+            ImpexTypes.TARGET, -> USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS
+
             ImpexTypes.PERMISSION_ALLOWED -> USER_RIGHTS_PERMISSION_ALLOWED_KEYS
             ImpexTypes.PERMISSION_DENIED -> USER_RIGHTS_PERMISSION_DENIED_KEYS
-
 
             TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
             else -> EMPTY_KEYS
@@ -128,6 +139,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val DOCUMENT_ID_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOCUMENT_ID)
         val USER_RIGHTS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS)
         val USER_RIGHTS_HEADER_PARAMETER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_PARAMETER)
+        val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
         val USER_RIGHTS_PERMISSION_ALLOWED_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED)
         val USER_RIGHTS_PERMISSION_DENIED_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_DENIED)
         private val EMPTY_KEYS = emptyArray<TextAttributesKey>()

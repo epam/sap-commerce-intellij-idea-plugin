@@ -29,6 +29,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
@@ -116,4 +117,39 @@ fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
         .findMacroProperty(element.project, propertyKey)
         ?.key
         ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+}
+
+// ------------------------------------------
+//              User Rights
+// ------------------------------------------
+fun getValueGroups(element: ImpexUserRights, index: Int): Collection<ImpexUserRightsValueGroup> = element
+    .userRightsValueLineList
+    .mapNotNull { it.getValueGroup(index) }
+
+fun getValueGroup(element: ImpexUserRightsValueLine, index: Int): ImpexUserRightsValueGroup? = element
+    .userRightsValueGroupList[index]
+
+fun getHeaderParameter(element: ImpexUserRightsHeaderLine, index: Int): ImpexUserRightsHeaderParameter? = element
+    .userRightsHeaderParameterList[index]
+
+fun getValueLine(element: ImpexUserRightsValueGroup): ImpexUserRightsValueLine? = element
+    .parentOfType<ImpexUserRightsValueLine>()
+
+fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
+    .valueLine
+    ?.userRightsValueGroupList
+    ?.indexOf(element)
+
+fun getHeaderLine(element: ImpexUserRightsHeaderParameter): ImpexUserRightsHeaderLine? = element
+    .parentOfType<ImpexUserRightsHeaderLine>()
+
+fun getColumnNumber(element: ImpexUserRightsHeaderParameter): Int? = element
+    .headerLine
+    ?.userRightsHeaderParameterList
+    ?.indexOf(element)
+
+fun getValueGroups(element: ImpexUserRightsHeaderParameter): Collection<ImpexUserRightsValueGroup> {
+    val columnNumber = element.columnNumber ?: return emptyList()
+    val userRights = element.getUserRights() ?: return emptyList()
+    return userRights.getValueGroups(columnNumber)
 }

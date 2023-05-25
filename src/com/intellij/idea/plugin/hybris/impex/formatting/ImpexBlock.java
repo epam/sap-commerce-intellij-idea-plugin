@@ -18,18 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.Alignment;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Spacing;
-import com.intellij.formatting.SpacingBuilder;
-import com.intellij.formatting.Wrap;
+import com.intellij.formatting.*;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAwarePsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +43,7 @@ import java.util.Objects;
 public class ImpexBlock extends AbstractBlock {
 
     private final SpacingBuilder spacingBuilder;
+    private final ImpexUserRightsSpacingBuilder userRightsSpacingBuilder;
     private final CodeStyleSettings codeStyleSettings;
 
     public ImpexBlock(
@@ -52,11 +51,13 @@ public class ImpexBlock extends AbstractBlock {
         @Nullable final Wrap wrap,
         @Nullable final Alignment alignment,
         @NotNull final SpacingBuilder spacingBuilder,
+        @NotNull final ImpexUserRightsSpacingBuilder userRightsSpacingBuilder,
         @NotNull final CodeStyleSettings codeStyleSettings
     ) {
         super(node, wrap, alignment);
 
         this.spacingBuilder = spacingBuilder;
+        this.userRightsSpacingBuilder = userRightsSpacingBuilder;
         this.codeStyleSettings = codeStyleSettings;
     }
 
@@ -70,21 +71,43 @@ public class ImpexBlock extends AbstractBlock {
         ASTNode currentNode = myNode.getFirstChildNode();
 
         while (null != currentNode) {
-            alignmentStrategy.processNode(currentNode);
-
-            if (isNotWhitespaceOrNewLine(currentNode)
-                && !isCurrentNodeHasParentValue(currentNode)) {
-
-                final Block block = new ImpexBlock(
+            final boolean isNotWhiteSpace = isNotWhitespaceOrNewLine(currentNode);
+            final boolean isUserRightsBlock;
+            if (isNotWhiteSpace &&
+                (currentNode.getPsi() instanceof ImpexUserRightsAwarePsiElement
+                    || currentNode.getPsi() instanceof ImpexUserRights
+                    || PsiTreeUtil.getParentOfType(currentNode.getPsi(), ImpexUserRights.class) != null
+                )) {
+                final var block = new ImpexUserRightsBlock(
                     currentNode,
                     null,
-                    alignmentStrategy.getAlignment(currentNode),
-                    spacingBuilder,
-                    codeStyleSettings
-
+                    Indent.getNoneIndent(),
+                    Wrap.createWrap(WrapType.NONE, false),
+                    codeStyleSettings,
+                    userRightsSpacingBuilder
                 );
 
                 blocks.add(block);
+                isUserRightsBlock = true;
+            } else {
+                isUserRightsBlock = false;
+            }
+
+            if (!isUserRightsBlock) {
+                alignmentStrategy.processNode(currentNode);
+
+                if (isNotWhiteSpace && !isCurrentNodeHasParentValue(currentNode)) {
+                    final var block = new ImpexBlock(
+                        currentNode,
+                        null,
+                        alignmentStrategy.getAlignment(currentNode),
+                        spacingBuilder,
+                        userRightsSpacingBuilder,
+                        codeStyleSettings
+                    );
+
+                    blocks.add(block);
+                }
             }
 
             currentNode = currentNode.getTreeNext();

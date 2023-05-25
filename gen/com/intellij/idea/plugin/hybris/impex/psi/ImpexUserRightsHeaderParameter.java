@@ -24,7 +24,17 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
-public interface ImpexUserRightsHeaderParameter extends PsiElement {
+public interface ImpexUserRightsHeaderParameter extends ImpexUserRightsAwarePsiElement {
+
+  @Nullable
+  ImpexUserRightsHeaderLine getHeaderLine();
+
+  @Nullable
+  Integer getColumnNumber();
+
+  @NotNull
+  Collection<ImpexUserRightsValueGroup> getValueGroups();
 
 }

@@ -84,6 +84,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey FUNCTION_CALL = key("IMPEX_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
     public static final TextAttributesKey USER_RIGHTS = key("IMPEX_USER_RIGHTS", STATIC_FIELD);
     public static final TextAttributesKey USER_RIGHTS_HEADER_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_PARAMETER", HEADER_PARAMETER_NAME);
+    public static final TextAttributesKey USER_RIGHTS_HEADER_MANDATORY_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_MANDATORY_PARAMETER", USER_RIGHTS_HEADER_PARAMETER);
     public static final TextAttributesKey USER_RIGHTS_PERMISSION_ALLOWED = key("IMPEX_USER_RIGHTS_PERMISSION_ALLOWED", HighlighterColors.TEXT);
     public static final TextAttributesKey USER_RIGHTS_PERMISSION_DENIED = key("IMPEX_USER_RIGHTS_PERMISSION_DENIED", HighlighterColors.TEXT);
 

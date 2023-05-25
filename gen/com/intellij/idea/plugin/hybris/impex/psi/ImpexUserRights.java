@@ -24,6 +24,7 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
 public interface ImpexUserRights extends PsiElement {
 
@@ -38,5 +39,8 @@ public interface ImpexUserRights extends PsiElement {
 
   @NotNull
   List<ImpexUserRightsValueLine> getUserRightsValueLineList();
+
+  @NotNull
+  Collection<ImpexUserRightsValueGroup> getValueGroups(int index);
 
 }

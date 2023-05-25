@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexUserRightsHeaderLineImpl extends ASTWrapperPsiElement implements ImpexUserRightsHeaderLine {
+public class ImpexUserRightsHeaderLineImpl extends ImpexUserRightsAwarePsiElementImpl implements ImpexUserRightsHeaderLine {
 
   public ImpexUserRightsHeaderLineImpl(@NotNull ASTNode node) {
     super(node);
@@ -51,6 +50,12 @@ public class ImpexUserRightsHeaderLineImpl extends ASTWrapperPsiElement implemen
   @NotNull
   public List<ImpexUserRightsHeaderParameter> getUserRightsHeaderParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexUserRightsHeaderParameter.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter(int index) {
+    return ImpexPsiUtil.getHeaderParameter(this, index);
   }
 
 }

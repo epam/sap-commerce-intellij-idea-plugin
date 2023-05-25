@@ -48,6 +48,7 @@ public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
             null,
             Alignment.createAlignment(),
             createSpaceBuilder(settings),
+            new ImpexUserRightsSpacingBuilder(settings),
             settings
         );
 

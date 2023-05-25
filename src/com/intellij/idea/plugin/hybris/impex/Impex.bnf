@@ -33,6 +33,8 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
   classHeader="generatedFilesHeader.txt"
+  implements("user_rights_.*")="com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAwarePsiElement"
+  extends("user_rights_.*")="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsAwarePsiElementImpl"
 
   generate=[java='17']
 }
@@ -87,24 +89,41 @@ private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE
 /*#################################################################################*/
 /*                                     User Rights                                 */
 /*#################################################################################*/
-user_rights ::= user_rights_start CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end {
+user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end {
     pin=1
     recoverWhile=recover_root
+    methods=[getValueGroups]
 }
 user_rights_header_line ::=  user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)* {
     pin=1
     recoverWhile=user_rights_header_line_recover
+    methods=[getHeaderParameter]
 }
 user_rights_start ::= START_USERRIGHTS
-user_rights_end ::= END_USERRIGHTS
-user_rights_header_parameter ::= USER_RIGHTS_HEADER_PARAMETER_NAME {
+user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
+user_rights_header_parameter ::= TYPE
+ | UID
+ | MEMBEROFGROUPS
+ | PASSWORD
+ | TARGET
+ | READ
+ | CHANGE
+ | CREATE
+ | DELETE
+ | REMOVE
+ | CHANGE_PERM
+{
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
+    methods=[getHeaderLine getColumnNumber getValueGroups]
 }
 user_rights_value_line ::= user_rights_value_group? (FIELD_VALUE_SEPARATOR user_rights_value_group?)* {
     recoverWhile=user_rights_value_line_recover
+    methods=[getValueGroup]
 }
-user_rights_value_group ::= user_rights_value_dec (COMMA user_rights_value_dec)*
+user_rights_value_group ::= user_rights_value_dec (COMMA user_rights_value_dec)* {
+    methods=[getValueLine getColumnNumber]
+}
 private user_rights_value_dec ::= PERMISSION_DENIED
     | PERMISSION_ALLOWED
     | user_rights_type_attribute

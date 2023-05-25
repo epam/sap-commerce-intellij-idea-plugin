@@ -1,4 +1,8 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
@@ -1062,31 +1066,43 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // user_rights_start CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end
+  // user_rights_start (PARAMETERS_SEPARATOR)* CRLF (user_rights_header_line CRLF)? (user_rights_value_line CRLF)* user_rights_end
   public static boolean user_rights(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS, "<user rights>");
     r = user_rights_start(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, consumeToken(b, CRLF));
-    r = p && report_error_(b, user_rights_2(b, l + 1)) && r;
+    r = r && report_error_(b, user_rights_1(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, CRLF)) && r;
     r = p && report_error_(b, user_rights_3(b, l + 1)) && r;
+    r = p && report_error_(b, user_rights_4(b, l + 1)) && r;
     r = p && user_rights_end(b, l + 1) && r;
     exit_section_(b, l, m, r, p, ImpexParser::recover_root);
     return r || p;
   }
 
+  // (PARAMETERS_SEPARATOR)*
+  private static boolean user_rights_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, PARAMETERS_SEPARATOR)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_1", c)) break;
+    }
+    return true;
+  }
+
   // (user_rights_header_line CRLF)?
-  private static boolean user_rights_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_2")) return false;
-    user_rights_2_0(b, l + 1);
+  private static boolean user_rights_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_3")) return false;
+    user_rights_3_0(b, l + 1);
     return true;
   }
 
   // user_rights_header_line CRLF
-  private static boolean user_rights_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_2_0")) return false;
+  private static boolean user_rights_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = user_rights_header_line(b, l + 1);
@@ -1096,19 +1112,19 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // (user_rights_value_line CRLF)*
-  private static boolean user_rights_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_3")) return false;
+  private static boolean user_rights_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_4")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!user_rights_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_3", c)) break;
+      if (!user_rights_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_4", c)) break;
     }
     return true;
   }
 
   // user_rights_value_line CRLF
-  private static boolean user_rights_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_3_0")) return false;
+  private static boolean user_rights_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = user_rights_value_line(b, l + 1);
@@ -1118,15 +1134,27 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_USERRIGHTS
+  // END_USERRIGHTS (PARAMETERS_SEPARATOR)*
   public static boolean user_rights_end(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_end")) return false;
     if (!nextTokenIs(b, END_USERRIGHTS)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, END_USERRIGHTS);
+    r = r && user_rights_end_1(b, l + 1);
     exit_section_(b, m, USER_RIGHTS_END, r);
     return r;
+  }
+
+  // (PARAMETERS_SEPARATOR)*
+  private static boolean user_rights_end_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_end_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, PARAMETERS_SEPARATOR)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_end_1", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1188,12 +1216,32 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // USER_RIGHTS_HEADER_PARAMETER_NAME
+  // TYPE
+  //  | UID
+  //  | MEMBEROFGROUPS
+  //  | PASSWORD
+  //  | TARGET
+  //  | READ
+  //  | CHANGE
+  //  | CREATE
+  //  | DELETE
+  //  | REMOVE
+  //  | CHANGE_PERM
   public static boolean user_rights_header_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_header_parameter")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER, "<user rights header parameter>");
-    r = consumeToken(b, USER_RIGHTS_HEADER_PARAMETER_NAME);
+    r = consumeToken(b, TYPE);
+    if (!r) r = consumeToken(b, UID);
+    if (!r) r = consumeToken(b, MEMBEROFGROUPS);
+    if (!r) r = consumeToken(b, PASSWORD);
+    if (!r) r = consumeToken(b, TARGET);
+    if (!r) r = consumeToken(b, READ);
+    if (!r) r = consumeToken(b, CHANGE);
+    if (!r) r = consumeToken(b, CREATE);
+    if (!r) r = consumeToken(b, DELETE);
+    if (!r) r = consumeToken(b, REMOVE);
+    if (!r) r = consumeToken(b, CHANGE_PERM);
     exit_section_(b, l, m, r, false, ImpexParser::not_line_break_or_parameters_separator);
     return r;
   }

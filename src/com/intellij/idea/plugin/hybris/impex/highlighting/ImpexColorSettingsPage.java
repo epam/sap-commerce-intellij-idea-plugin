@@ -75,7 +75,11 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         new AttributesDescriptor("Document id", DOCUMENT_ID),
         new AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
         new AttributesDescriptor("Warnings", WARNINGS_ATTRIBUTES),
-        new AttributesDescriptor("User rights", USER_RIGHTS)
+        new AttributesDescriptor("User rights", USER_RIGHTS),
+        new AttributesDescriptor("User rights//Parameter name", USER_RIGHTS_HEADER_PARAMETER),
+        new AttributesDescriptor("User rights//Mandatory parameter name", USER_RIGHTS_HEADER_MANDATORY_PARAMETER),
+        new AttributesDescriptor("User rights//Permission allowed", USER_RIGHTS_PERMISSION_ALLOWED),
+        new AttributesDescriptor("User rights//Permission denied", USER_RIGHTS_PERMISSION_DENIED),
     };
 
     @Nullable
@@ -96,12 +100,12 @@ public class ImpexColorSettingsPage implements ColorSettingsPage {
         return "# Comment\n" +
             "   \n" +
             "$START_USERRIGHTS\n" +
-            "Type      ; UID        ; MemberOfGroups ; Password ; Target  ; read ; change ; create ; delete ; change_perm\n" +
+            "Type      ; UID        ; MemberOfGroups ; Password ; Target       ; read ; change ; create ; delete ; change_perm\n" +
             "UserGroup ; impexgroup ; employeegroup  ;\n" +
-            "          ;            ;                ;          ; Product ; +    ; +      ; +      ; +      ; -\n" +
-            "Customer  ; impex-demo ; impexgroup     ; 1234     ;\n" +
+            "          ;            ;                ;          ; Product.code ; +    ; +      ; +      ; +      ; -\n" +
+            "Customer  ; impex-demo ; impexgroup     ; 1234     ;              ;      ; -      ;        ;        ;\n" +
             "$END_USERRIGHTS\n" +
-            "   \n" +
+            "\n" +
             "$lang = en\n" +
             "$configProperty = $config-HYBRIS_BIN_DIR\n" +
             "$contentCatalog = projectContentCatalog\n" +

@@ -99,7 +99,6 @@ field_value_ignore = "<ignore>"
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
-user_rights_header_parameter_name = (type)|(uid)|(MemberOfGroups)|(password)|(target)|(read)|(change)|(create)|(delete)|(remove)|(change_perm)
 user_rights_value                 = {identifier}+
 
 %state WAITING_MACRO_VALUE
@@ -114,7 +113,8 @@ user_rights_value                 = {identifier}+
 %state MACRO_USAGE
 %state MACRO_CONFIG_USAGE
 %state WAITING_MACRO_CONFIG_USAGE
-%state USER_RIGHTS
+%state USER_RIGHTS_START
+%state USER_RIGHTS_END
 %state USER_RIGHTS_HEADER_LINE
 %state USER_RIGHTS_VALUE_LINE
 
@@ -128,7 +128,7 @@ user_rights_value                 = {identifier}+
 
     {line_comment}                                          { yybegin(YYINITIAL); return ImpexTypes.LINE_COMMENT; }
 
-    {start_userrights}                                      { yybegin(USER_RIGHTS); return ImpexTypes.START_USERRIGHTS; }
+    {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpexTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {macro_name_declaration}                                {
@@ -150,12 +150,23 @@ user_rights_value                 = {identifier}+
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
-<USER_RIGHTS> {
+<USER_RIGHTS_START> {
+    {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
     {crlf}                                                  { yybegin(USER_RIGHTS_HEADER_LINE); return ImpexTypes.CRLF; }
 }
 
 <USER_RIGHTS_HEADER_LINE> {
-    {user_rights_header_parameter_name}                     { return ImpexTypes.USER_RIGHTS_HEADER_PARAMETER_NAME; }
+    "type"                                                  { return ImpexTypes.TYPE; }
+    "uid"                                                   { return ImpexTypes.UID; }
+    "MemberOfGroups"                                        { return ImpexTypes.MEMBEROFGROUPS; }
+    "password"                                              { return ImpexTypes.PASSWORD; }
+    "target"                                                { return ImpexTypes.TARGET; }
+    "read"                                                  { return ImpexTypes.READ; }
+    "change"                                                { return ImpexTypes.CHANGE; }
+    "create"                                                { return ImpexTypes.CREATE; }
+    "delete"                                                { return ImpexTypes.DELETE; }
+    "remove"                                                { return ImpexTypes.REMOVE; }
+    "change_perm"                                           { return ImpexTypes.CHANGE_PERM; }
     {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return ImpexTypes.END_USERRIGHTS; }
@@ -171,8 +182,13 @@ user_rights_value                 = {identifier}+
     {dot}                                                   { return ImpexTypes.DOT; }
     {comma}                                                 { return ImpexTypes.COMMA; }
 
-    {end_userrights}                                        { yybegin(YYINITIAL); return ImpexTypes.END_USERRIGHTS; }
+    {end_userrights}                                        { yybegin(USER_RIGHTS_END); return ImpexTypes.END_USERRIGHTS; }
     {crlf}                                                  { yybegin(USER_RIGHTS_VALUE_LINE); return ImpexTypes.CRLF; }
+}
+
+<USER_RIGHTS_END> {
+    {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
+    {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
 <BEAN_SHELL> {
