@@ -31,8 +31,8 @@
 
 ### `ImpEx` - `User Rights` 2.0
 - SAP Help Portal - [User Rights](https://help.sap.com/docs/SAP_COMMERCE/50c996852b32456c96d3161a95544cdb/e472718cafe840c39fbb5ceb00002e52.html?locale=en-US)
-- Re-implemented from the scratch Lexer and Parser for `$START_USERRIGHTS` block [#435](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/435)
-- Brand-new formatting model for User Rights block [#436](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/436)
+- Re-implemented from the scratch Lexer and Parser for `User Rights` block [#435](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/435)
+- Brand-new formatting model for `User Rights` block [#436](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/436)
 
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)

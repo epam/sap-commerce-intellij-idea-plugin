@@ -41,7 +41,6 @@ class ImpexUserRightsBlock(
     override fun getSpacing(child1: Block?, child2: Block) = spacingBuilder.getSpacing(this, child1, child2)
     override fun getIndent() = indent
 
-
     override fun buildChildren(): MutableList<Block> {
         var child = node.firstChildNode
         val blocks = mutableListOf<Block>()
