@@ -24,6 +24,7 @@ import com.intellij.formatting.SpacingBuilder
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.tree.TokenSet
 
 class ImpexUserRightsSpacingBuilder(
     settings: CodeStyleSettings
@@ -53,6 +54,9 @@ class ImpexUserRightsSpacingBuilder(
 
             .before(ImpexTypes.COMMA)
             .spaceIf(impexSettings.SPACE_BEFORE_COMMA)
+
+            .before(TokenSet.create(ImpexTypes.USER_RIGHTS_HEADER_LINE, ImpexTypes.USER_RIGHTS_VALUE_LINE))
+            .spaces(0)
 
             .before(ImpexTypes.DOT)
             .spaces(0)
