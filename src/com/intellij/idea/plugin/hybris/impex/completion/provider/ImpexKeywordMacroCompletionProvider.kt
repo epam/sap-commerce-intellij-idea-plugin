@@ -26,22 +26,22 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
-private val keywords = mutableListOf(
-    "\$START_USERRIGHTS",
-    "\$END_USERRIGHTS",
-    "\$config-"
-)
-
 class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        keywords
-            .map {
-                LookupElementBuilder.create(it)
-                    .withIcon(HybrisIcons.MACROS)
-            }
-            .forEach { result.addElement(it) }
-
+        val userRightsStart = "\$START_USERRIGHTS"
+        val userRightsEnd = "\$END_USERRIGHTS"
+        result.addElement(LookupElementBuilder.create(
+            """
+            $userRightsStart
+            Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+                ;   ;              ;        ;      ;    ;      ;      ;      ;
+            $userRightsEnd
+        """.trimIndent()
+        )
+            .withPresentableText("\$START_USERRIGHTS")
+            .withIcon(HybrisIcons.MACROS)
+        )
     }
 
     companion object {
