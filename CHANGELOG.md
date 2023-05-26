@@ -46,6 +46,7 @@
 - IDEA 2023.2: the expensive method should not be called inside the Highlighting Pass [#411](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/411)
 - Flaky ProcessCanceledException during TS/BS files modification [#412](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/412)
 - Incorrect resolution of the relation attributes in the `ImpEx` header line [#440](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/440)
+- Inject `FlexibleSearch` language only into `query` column of the `SearchRestriction` in `ImpEx` files [#441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/441)
 
 ### Deprecated
 - `TreeSpeedSearch` -> `TreeUIHelper` [#415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/415)

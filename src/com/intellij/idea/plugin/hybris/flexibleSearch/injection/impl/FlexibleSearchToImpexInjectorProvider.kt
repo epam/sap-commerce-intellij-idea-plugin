@@ -24,12 +24,14 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchIn
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.parentOfType
 import java.util.*
 
 class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
@@ -76,6 +78,13 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
         host: PsiLanguageInjectionHost,
         expression: String
     ) {
+        // inject only into `query` column
+        host.parentOfType<ImpexValueGroup>()
+            ?.fullHeaderParameter
+            ?.text
+            ?.takeIf { it.equals("query", true) }
+            ?: return
+
         val restrictedTypeParameter = headerLine.getFullHeaderParameter("restrictedType")
             ?: return injectSimple(injectionPlacesRegistrar, host, expression)
         val restrictedType = valueLine.getValueGroup(restrictedTypeParameter.columnNumber)
@@ -83,7 +92,6 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
             ?: return injectSimple(injectionPlacesRegistrar, host, expression)
 
         val prefix = "SELECT * FROM {${restrictedType}} WHERE "
-//        "item"
         registerInjectionPlace(injectionPlacesRegistrar, host, prefix = prefix)
     }
 
