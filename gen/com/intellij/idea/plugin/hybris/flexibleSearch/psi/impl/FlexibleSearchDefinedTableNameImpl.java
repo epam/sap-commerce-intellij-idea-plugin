@@ -52,4 +52,10 @@ public class FlexibleSearchDefinedTableNameImpl extends FlexibleSearchTableNameM
     return FlexibleSearchPsiUtil.getTableName(this);
   }
 
+  @Override
+  @Nullable
+  public FlexibleSearchTableAliasName getTableAlias() {
+    return FlexibleSearchPsiUtil.getTableAlias(this);
+  }
+
 }

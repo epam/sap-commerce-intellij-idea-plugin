@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import java.util.Collection;
 
 public class FlexibleSearchSelectedTableNameImpl extends FlexibleSearchSelectedTableNameMixin implements FlexibleSearchSelectedTableName {
 
@@ -62,6 +63,12 @@ public class FlexibleSearchSelectedTableNameImpl extends FlexibleSearchSelectedT
   @Nullable
   public PsiElement getNameIdentifier() {
     return FlexibleSearchPsiUtil.getNameIdentifier(this);
+  }
+
+  @Override
+  @NotNull
+  public Collection<FlexibleSearchTableAliasName> getTableAliases() {
+    return FlexibleSearchPsiUtil.getTableAliases(this);
   }
 
 }

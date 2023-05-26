@@ -312,16 +312,16 @@ table_alias_name ::= name {
 selected_table_name ::= IDENTIFIER | BACKTICK_LITERAL {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchSelectedTableNameMixin"
     implements="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchPsiNamedElement"
-    methods=[getName setName getNameIdentifier]
+    methods=[getName setName getNameIdentifier getTableAliases]
 }
 defined_table_name ::= (ORDER | IDENTIFIER) ('!' | '*')? {
     pin=1
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchTableNameMixin"
-    methods=[getTableName]
+    methods=[getTableName getTableAlias]
 }
 y_column_name ::= ORDER | IDENTIFIER {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchYColumnNameMixin"
-    methods=[getTable getTableAliases]
+    methods=[getTableToAlias getTableAliases]
 }
 column_name ::= ORDER | IDENTIFIER {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchColumnNameMixin"

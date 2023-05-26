@@ -29,26 +29,20 @@ import com.intellij.openapi.startup.ProjectActivity
 class PreLoadSystemsStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!CommonIdeaService.getInstance().isHybrisProject(project)) {
-            return
-        }
+        if (!CommonIdeaService.getInstance().isHybrisProject(project)) return
 
-        try {
-            TSMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        }
+        refreshSystem(project) { TSMetaModelAccess.getInstance(project).getMetaModel() }
+        refreshSystem(project) { BSMetaModelAccess.getInstance(project).getMetaModel() }
+        refreshSystem(project) { CngMetaModelAccess.getInstance(project).getMetaModel() }
+    }
 
-        try {
-            BSMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        }
-
-        try {
-            CngMetaModelAccess.getInstance(project).getMetaModel()
-        } catch (e: ProcessCanceledException) {
-            // ignore
+    private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {
+        ApplicationManager.getApplication().runReadAction {
+            try {
+                refresher.invoke(project)
+            } catch (e: ProcessCanceledException) {
+                // ignore
+            }
         }
     }
 }

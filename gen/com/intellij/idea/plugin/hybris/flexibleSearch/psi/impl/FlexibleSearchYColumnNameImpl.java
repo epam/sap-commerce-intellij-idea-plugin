@@ -29,6 +29,8 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*;
+import java.util.Collection;
+import kotlin.Pair;
 
 public class FlexibleSearchYColumnNameImpl extends FlexibleSearchYColumnNameMixin implements FlexibleSearchYColumnName {
 
@@ -48,13 +50,13 @@ public class FlexibleSearchYColumnNameImpl extends FlexibleSearchYColumnNameMixi
 
   @Override
   @Nullable
-  public FlexibleSearchDefinedTableName getTable() {
-    return FlexibleSearchPsiUtil.getTable(this);
+  public Pair<FlexibleSearchDefinedTableName, FlexibleSearchTableAliasName> getTableToAlias() {
+    return FlexibleSearchPsiUtil.getTableToAlias(this);
   }
 
   @Override
   @NotNull
-  public List<FlexibleSearchTableAliasName> getTableAliases() {
+  public Collection<FlexibleSearchTableAliasName> getTableAliases() {
     return FlexibleSearchPsiUtil.getTableAliases(this);
   }
 

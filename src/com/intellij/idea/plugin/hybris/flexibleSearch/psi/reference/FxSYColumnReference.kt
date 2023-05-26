@@ -22,10 +22,14 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -54,17 +58,38 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     /*
     By default, Lexer will create non-aliased Element, so we may extend variants with supported aliases first
      */
-    override fun getVariants() = getType()
-        ?.let { type ->
-            val variants = TSCompletionService.getInstance(element.project).getCompletions(type)
-                .toTypedArray()
+    override fun getVariants(): Array<out Any> {
+        val tableToAlias = getTableToAlias()
+            ?: return getSuitablePrefixes()
+        val type = tableToAlias.first.tableName
+        val hasTableAlias = tableToAlias.second != null
+        val hasColumnAlias = isAliasedReference()
+        val canFallback = canFallbackToTableName()
 
-            variants + getPostfixes(type)
+        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && hasTableAlias) {
+            return getSuitablePrefixes()
         }
-        ?: getSuitablePrefixes()
+
+        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
+            return getSuitablePrefixes() + getColumns(type)
+        }
+        if ((hasColumnAlias && hasTableAlias)
+            || (!hasColumnAlias && (!hasTableAlias || canFallback))) {
+            return getColumns(type)
+        }
+
+        return getSuitablePrefixes()
+    }
+
+    private fun getColumns(type: String): Array<LookupElementBuilder> {
+        val variants = TSCompletionService.getInstance(element.project).getCompletions(type)
+            .toTypedArray()
+
+        return variants + getPostfixes(type)
+    }
 
     // no need to add localized postfix if there is already one
-    private fun getPostfixes(type: String) = if (element.parent.text.contains("[")) {
+    private fun getPostfixes(type: String): Array<LookupElementBuilder> = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
         val text = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
@@ -84,7 +109,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     /*
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
-    private fun getSuitablePrefixes(): Array<out Any> {
+    private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
         val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
         val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
 
@@ -104,16 +129,36 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         return separators + tableAliases
     }
 
-    fun getType() = element.table
-        ?.tableName
+    fun getTableToAlias(): Pair<FlexibleSearchDefinedTableName, FlexibleSearchTableAliasName?>? = element.tableToAlias
+
+    fun isAliasedReference() = PsiTreeUtilExt
+        .getPrevSiblingOfElementType(element, FlexibleSearchTypes.SELECTED_TABLE_NAME) != null
+
+    fun canFallbackToTableName() = HybrisProjectSettingsComponent.getInstance(element.project)
+        .state
+        .flexibleSearchSettings
+        .fallbackToTableNameIfNoAliasProvided
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FxSYColumnReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
             val featureName = FxSUtils.getColumnName(ref.element.text)
-            val result = ref.element.table
-                ?.tableName
+
+
+            val type = ref.getTableToAlias()
+                ?.let {
+                    val isAliasedTable = it.second != null
+                    val isAliasedReference = ref.isAliasedReference()
+
+                    if (!isAliasedReference && isAliasedTable && !ref.canFallbackToTableName()) {
+                        return@let null
+                    } else {
+                        return@let it.first.tableName
+                    }
+                }
+
+            val result = type
                 ?.let { resolve(ref.element.project, it, featureName) }
                 ?: ResolveResult.EMPTY_ARRAY
 

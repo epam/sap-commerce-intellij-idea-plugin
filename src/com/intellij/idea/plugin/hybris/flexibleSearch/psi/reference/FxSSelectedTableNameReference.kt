@@ -44,7 +44,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants() = getTableAliases(element)
+    override fun getVariants() = element.tableAliases
         .map { tableAlias -> FxSLookupElementFactory.build(tableAlias) }
         .toTypedArray()
 
@@ -57,7 +57,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
                 .replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
                 .trim()
 
-            val result: Array<ResolveResult> = getTableAliases(ref.element)
+            val result: Array<ResolveResult> = ref.element.tableAliases
                 .firstOrNull { alias -> alias.text.trim() == lookingForName }
                 ?.let { arrayOf(FxSTableAliasNameResolveResult(it)) }
                 ?: ResolveResult.EMPTY_ARRAY
@@ -68,38 +68,38 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
             )
         }
 
-        private fun getTableAliases(element: FlexibleSearchSelectedTableName): Collection<FlexibleSearchTableAliasName> {
-            // Order clause is outside the select core
-            if (PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java) != null) {
-                return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
-                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                    ?: emptyList()
-            }
-
-            // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
-            val topWhereClauseTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
-                ?.let { topWhereClause ->
-                    PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
-                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                }
-                ?: emptyList()
-            // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
-            val topResultColumnsTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
-                ?.let { topResultColumns ->
-                    PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
-                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                }
-                ?: emptyList()
-
-            val tableAliases = topWhereClauseTableAliases + topResultColumnsTableAliases
-            if (tableAliases.isNotEmpty()) return tableAliases
-
-            // all other cases, like GROUP BY, HAVING, etc
-            return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
-                ?.fromClause
-                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
-                ?: emptyList()
-        }
+//        private fun getTableAliases(element: PsiElement): Collection<FlexibleSearchTableAliasName> {
+//            // Order clause is outside the select core
+//            if (PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java) != null) {
+//                return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
+//                    ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+//                    ?: emptyList()
+//            }
+//
+//            // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
+//            val topWhereClauseTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
+//                ?.let { topWhereClause ->
+//                    PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
+//                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+//                }
+//                ?: emptyList()
+//            // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
+//            val topResultColumnsTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
+//                ?.let { topResultColumns ->
+//                    PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
+//                        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+//                }
+//                ?: emptyList()
+//
+//            val tableAliases = topWhereClauseTableAliases + topResultColumnsTableAliases
+//            if (tableAliases.isNotEmpty()) return tableAliases
+//
+//            // all other cases, like GROUP BY, HAVING, etc
+//            return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+//                ?.fromClause
+//                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+//                ?: emptyList()
+//        }
 
     }
 

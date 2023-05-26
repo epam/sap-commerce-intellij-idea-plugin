@@ -24,6 +24,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import java.util.Collection;
 
 public interface FlexibleSearchSelectedTableName extends FlexibleSearchPsiNamedElement {
 
@@ -35,5 +36,8 @@ public interface FlexibleSearchSelectedTableName extends FlexibleSearchPsiNamedE
 
   @Nullable
   PsiElement getNameIdentifier();
+
+  @NotNull
+  Collection<FlexibleSearchTableAliasName> getTableAliases();
 
 }

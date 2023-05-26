@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
@@ -91,7 +92,15 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression)
 
-        val prefix = "SELECT * FROM {${restrictedType}} WHERE "
+        val alias = HybrisProjectSettingsComponent.getInstance(host.project)
+            .state
+            .flexibleSearchSettings
+            .fallbackToTableNameIfNoAliasProvided
+            .takeIf { it }
+            ?.let { "AS item" }
+            ?: ""
+
+        val prefix = "SELECT * FROM {${restrictedType} $alias} WHERE "
         registerInjectionPlace(injectionPlacesRegistrar, host, prefix = prefix)
     }
 

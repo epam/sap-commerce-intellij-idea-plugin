@@ -60,6 +60,11 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
         override fun createPanel() = panel {
             group("Language") {
                 row {
+                    checkBox("Resolve non-aliased [y] column by root aliased Type in the where clause")
+                        .bindSelected(state::fallbackToTableNameIfNoAliasProvided)
+                        .comment("When table has alias, [y] column can be resolved without corresponding alias. Such fallback will target only first Type specified in the where clause.")
+                }
+                row {
                     checkBox("Verify used table alias separator")
                         .bindSelected(state::verifyUsedTableAliasSeparator)
                         .comment("Usage of the default table alias separator will be verified when the file is being opened for the first time")

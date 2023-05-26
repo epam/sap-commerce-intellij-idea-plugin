@@ -73,48 +73,58 @@ fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement? = ele
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
 
-fun getTable(element: FlexibleSearchYColumnName): FlexibleSearchDefinedTableName? {
-    val tableAlias = element.backwardSiblings()
+fun getTableToAlias(element: FlexibleSearchYColumnName): Pair<FlexibleSearchDefinedTableName, FlexibleSearchTableAliasName?>? {
+    val tableAlias = element
+        .backwardSiblings()
         .firstOrNull { it is FlexibleSearchSelectedTableName }
         ?.reference
-        ?.resolve() as? FlexibleSearchTableAliasName
+        ?.resolve()
+        ?.let { it as? FlexibleSearchTableAliasName }
+
     return tableAlias
         ?.table
+        ?.let { it to tableAlias }
         ?: getSuitableTableContainerParent(element)
             .firstOrNull()
             ?.let { fromClause ->
                 val definedTableName = PsiTreeUtil.findChildOfType(fromClause, FlexibleSearchDefinedTableName::class.java)
+                    ?: return@let null
 
-                val definedTableAlias = definedTableName
-                    ?.siblings()
-                    ?.firstOrNull { it is FlexibleSearchTableAliasName }
-
-                if (definedTableAlias == null) {
-                    definedTableName
-                } else null
+                definedTableName to definedTableName.tableAlias
             }
 }
 
-fun getTableAliases(element: FlexibleSearchYColumnName): List<FlexibleSearchTableAliasName> {
-    val tableAliases = mutableListOf<FlexibleSearchTableAliasName>()
-    var fromClauses = getSuitableTableContainerParent(element)
-
-    fromClauses
-        .forEach { tableAliases.addAll(getAliases(it)) }
-
-    while (fromClauses.isNotEmpty()) {
-        val firstFromClause = fromClauses.first()
-        val subQueryParent = firstFromClause.parentOfType<FlexibleSearchSelectSubqueryCombined>()
-            ?: break
-
-        fromClauses = getSuitableTableContainerParent(subQueryParent)
-
-        fromClauses
-            .forEach { tableAliases.addAll(getAliases(it)) }
+fun getTableAliases(element: PsiElement): Collection<FlexibleSearchTableAliasName> {
+    // Order clause is outside the select core
+    if (PsiTreeUtil.getParentOfType(element, FlexibleSearchOrderClause::class.java) != null) {
+        return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectStatement::class.java)
+            ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+            ?: emptyList()
     }
-    return tableAliases
-        // allow only aliases with tables
-        .filter { it.table != null }
+
+    // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
+    val topWhereClauseTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
+        ?.let { topWhereClause ->
+            PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
+                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+        }
+        ?: emptyList()
+    // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
+    val topResultColumnsTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
+        ?.let { topResultColumns ->
+            PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
+                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+        }
+        ?: emptyList()
+
+    val tableAliases = topWhereClauseTableAliases + topResultColumnsTableAliases
+    if (tableAliases.isNotEmpty()) return tableAliases
+
+    // all other cases, like GROUP BY, HAVING, etc
+    return PsiTreeUtil.getParentOfType(element, FlexibleSearchSelectCoreSelect::class.java)
+        ?.fromClause
+        ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
+        ?: emptyList()
 }
 
 private fun getAliases(element: FlexibleSearchFromClause) = PsiTreeUtil
@@ -141,3 +151,8 @@ private fun getSuitableTableContainerParent(element: PsiElement) = PsiTreeUtil
     ?: emptyList()
 
 fun getTableName(element: FlexibleSearchDefinedTableName): String = element.firstChild.text
+
+fun getTableAlias(element: FlexibleSearchDefinedTableName): FlexibleSearchTableAliasName? = element
+    .siblings()
+    .firstOrNull { it is FlexibleSearchTableAliasName }
+    ?.let { it as? FlexibleSearchTableAliasName }
