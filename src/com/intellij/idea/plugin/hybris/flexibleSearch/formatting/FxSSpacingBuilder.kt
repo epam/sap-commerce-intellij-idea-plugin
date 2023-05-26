@@ -76,6 +76,9 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
             .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
             .before(RDBRACE)
             .spaceIf(FxSCodeStyleSettings.SPACES_INSIDE_DOUBLE_BRACES)
+
+            .around(COLUMN_SEPARATOR)
+            .spaces(0)
     }
 
     override fun getSpacing(parent: Block?, child1: Block?, child2: Block?): Spacing? {
