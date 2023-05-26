@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSSubTypeItemReference
@@ -29,17 +30,29 @@ import java.io.Serial
 abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexSubTypeName {
 
     override fun createReference() = if (
-        text.isNullOrBlank()
-        || headerTypeName
+        text.isNotBlank()
+        && headerTypeName
             ?.reference
             ?.let { it as? ImpexTSItemReference }
             ?.multiResolve(false)
             ?.firstOrNull()
-            ?.let { it as? ItemResolveResult } == null
+            ?.let { it as? ItemResolveResult }
+            ?.takeIf {
+                it.meta.name != HybrisConstants.TS_TYPE_GENERIC_ITEM
+                    &&
+                    this.valueLine
+                        ?.headerLine
+                        ?.fullHeaderType
+                        ?.modifiers
+                        ?.attributeList
+                        ?.firstOrNull()
+                        ?.anyAttributeValue
+                        ?.text != HybrisConstants.CLASS_CONFIG_IMPORT_PROCESSOR
+            } != null
     ) {
-        null
-    } else {
         ImpexTSSubTypeItemReference(this)
+    } else {
+        null
     }
 
     override fun subtreeChanged() {
