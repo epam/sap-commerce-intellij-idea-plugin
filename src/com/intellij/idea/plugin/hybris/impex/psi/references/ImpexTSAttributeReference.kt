@@ -87,10 +87,10 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             ?.let { metaModelService.findMetaItemByName(it) }
             ?.let { meta ->
                 meta.allAttributes
-                    .find { it.name == featureName }
+                    .find { it.name.equals(featureName, true) }
                     ?.let { AttributeResolveResult(it) }
                     ?: meta.allRelationEnds
-                        .find { it.name == featureName }
+                        .find { it.name.equals(featureName, true) }
                         ?.let { RelationEndResolveResult(it) }
             }
 

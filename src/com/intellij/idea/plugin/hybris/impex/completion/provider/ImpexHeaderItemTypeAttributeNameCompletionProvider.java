@@ -104,6 +104,7 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
     ) {
         final var typeCode = headerTypeName.getText();
 
-        resultSet.addAllElements(TSCompletionService.Companion.getInstance(project).getCompletions(typeCode));
+        resultSet.caseInsensitive()
+            .addAllElements(TSCompletionService.Companion.getInstance(project).getCompletions(typeCode));
     }
 }

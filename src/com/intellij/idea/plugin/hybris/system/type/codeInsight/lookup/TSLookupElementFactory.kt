@@ -57,6 +57,7 @@ object TSLookupElementFactory {
         .withStrikeoutness(meta.isDeprecated)
         .withTypeText(meta.flattenType, true)
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
+        .withCaseSensitivity(true)
 
     fun build(meta: TSMetaRelation.TSMetaRelationElement) = meta.qualifier
         ?.let {
@@ -78,23 +79,22 @@ object TSLookupElementFactory {
         })
         .withStrikeoutness(relationElement.isDeprecated)
         .withTypeText(relationElement.flattenType, true)
+        .withCaseSensitivity(true)
 
     fun build(meta: TSGlobalMetaEnum, lookupString: String?) = lookupString
         ?.let {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ENUM)
+                .withCaseSensitivity(true)
         }
-
-    fun buildAttribute(lookupString: String) = LookupElementBuilder.create(lookupString)
-        .withIcon(HybrisIcons.TS_ATTRIBUTE)
-        .withTypeText("String", true)
 
     fun build(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
         .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
         .withStrikeoutness(attribute.isDeprecated)
         .withTypeText(attribute.flattenType, true)
+        .withCaseSensitivity(true)
 
     fun build(dom: EnumType) = dom.code.stringValue
         ?.let {
@@ -117,5 +117,6 @@ object TSLookupElementFactory {
 
     fun buildCustomProperty(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
+        .withCaseSensitivity(true)
 
 }
