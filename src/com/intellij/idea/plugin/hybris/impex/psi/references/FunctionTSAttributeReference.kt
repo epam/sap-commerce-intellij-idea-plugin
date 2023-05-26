@@ -111,7 +111,7 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                     is EnumResolveResult -> it.meta.name
                     is ItemResolveResult -> it.meta.name
                     is RelationResolveResult -> it.meta.name
-                    is RelationEndResolveResult -> it.meta.name
+                    is RelationEndResolveResult -> it.meta.type
                     else -> null
                 }
             }
