@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.psi.util
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 
 object PsiTreeUtilExt {
@@ -35,4 +37,13 @@ object PsiTreeUtilExt {
             }
             null
         }
+
+    fun getLeafsOfAnyElementType(element: PsiElement, vararg elementTypes: IElementType): List<PsiElement> = PsiTreeUtil
+        .collectElementsOfType(element, LeafPsiElement::class.java)
+        .filter { elementTypes.contains(it.elementType) }
+
+    fun getLeafsOfElementType(
+        element: PsiElement,
+        elementType: IElementType
+    ) = getLeafsOfAnyElementType(element, elementType)
 }

@@ -143,11 +143,8 @@ fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
         valueLine.userRightsValueGroupList.indexOf(element)
             .takeIf { it != -1 }
             ?.let {
-                // if there is no first column we have to add +1 for column number
-                val withFirstGroup = valueLine.userRightsFirstValueGroup
-                    ?.let { 0 }
-                    ?: 1
-                it + withFirstGroup
+                // we always have to plus one column, because first value group is not part of the list
+                it + 1
             }
     }
 
@@ -158,6 +155,27 @@ fun getHeaderParameter(element: ImpexUserRightsValueGroup): ImpexUserRightsHeade
             ?.userRightsHeaderLine
             ?.getHeaderParameter(it)
     }
+
+fun getHeaderParameter(element: ImpexUserRightsValue): ImpexUserRightsHeaderParameter? = when (val parent = element.parent) {
+    is ImpexUserRightsFirstValueGroup -> {
+        parent.getUserRights()
+            ?.userRightsHeaderLine
+            ?.getHeaderParameter(0)
+    }
+
+    is ImpexUserRightsValueGroup -> {
+        parent
+            .columnNumber
+            ?.let {
+                element.getUserRights()
+                    ?.userRightsHeaderLine
+                    ?.getHeaderParameter(it)
+
+            }
+    }
+
+    else -> null
+}
 
 fun getHeaderLine(element: ImpexUserRightsHeaderParameter): ImpexUserRightsHeaderLine? = element
     .parentOfType<ImpexUserRightsHeaderLine>()

@@ -46,4 +46,10 @@ public class ImpexUserRightsValueImpl extends ImpexUserRightsAwarePsiElementImpl
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
+    return ImpexPsiUtil.getHeaderParameter(this);
+  }
+
 }

@@ -23,7 +23,9 @@ import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -33,6 +35,19 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpexTypes.USER_RIGHTS_VALUE -> {
+                val value = element as? ImpexUserRightsValue ?: return
+                val headerParameter = value.headerParameter ?: return
+
+                when (headerParameter.firstChild.elementType) {
+                    ImpexTypes.TYPE -> highlight(ImpexTypes.HEADER_TYPE, holder, element)
+                    ImpexTypes.TARGET -> with(PsiTreeUtilExt.getLeafsOfElementType(element, ImpexTypes.FIELD_VALUE)) {
+                        getOrNull(0)?.let { highlight(ImpexTypes.HEADER_TYPE, holder, it) }
+                        getOrNull(1)?.let { highlight(ImpexTypes.HEADER_PARAMETER_NAME, holder, it) }
+                    }
+                }
+            }
+
             ImpexTypes.VALUE_SUBTYPE -> {
                 val subType = element.parent as? ImpexSubTypeName ?: return
                 val headerType = subType.headerTypeName ?: return

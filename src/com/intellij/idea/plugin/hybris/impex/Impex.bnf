@@ -137,6 +137,7 @@ user_rights_value ::= PERMISSION_DENIED
     | PERMISSION_ALLOWED
     | user_rights_type_attribute
     | FIELD_VALUE (COMMA FIELD_VALUE)* {
+    methods=[getHeaderParameter]
     recoverWhile=user_rights_value_dec_recover
 }
 private user_rights_type_attribute ::= FIELD_VALUE DOT FIELD_VALUE {

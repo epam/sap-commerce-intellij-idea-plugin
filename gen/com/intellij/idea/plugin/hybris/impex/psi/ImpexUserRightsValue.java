@@ -27,4 +27,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexUserRightsValue extends ImpexUserRightsAwarePsiElement {
 
+  @Nullable
+  ImpexUserRightsHeaderParameter getHeaderParameter();
+
 }
