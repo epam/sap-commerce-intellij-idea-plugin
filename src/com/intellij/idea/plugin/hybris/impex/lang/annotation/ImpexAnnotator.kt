@@ -40,7 +40,11 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                 val headerParameter = value.headerParameter ?: return
                 if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
 
-                highlight(ImpexTypes.HEADER_TYPE, holder, element)
+                highlightReference(
+                    ImpexTypes.HEADER_TYPE, holder, element,
+                    "hybris.inspections.impex.unresolved.type.key",
+                    referenceHolder = element
+                )
             }
 
             ImpexTypes.USER_RIGHTS_ATTRIBUTE_VALUE -> {
@@ -48,7 +52,11 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                 val headerParameter = value.headerParameter ?: return
                 if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
 
-                highlight(ImpexTypes.HEADER_PARAMETER_NAME, holder, element)
+                highlightReference(
+                    ImpexTypes.HEADER_PARAMETER_NAME, holder, element,
+                    "hybris.inspections.impex.unresolved.type.key",
+                    referenceHolder = element
+                )
             }
 
             ImpexTypes.VALUE_SUBTYPE -> {

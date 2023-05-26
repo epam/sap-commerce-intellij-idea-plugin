@@ -22,11 +22,16 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import java.io.Serial
 
-abstract class ImpexUserRightsValueAttributeMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsAttributeValue {
+abstract class ImpexUserRightsAttributeValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsAttributeValue {
 
     override fun createReference() = ImpexUserRightsTSAttributeReference(this)
+
+    override fun subtreeChanged() {
+        removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
+    }
 
     companion object {
         @Serial

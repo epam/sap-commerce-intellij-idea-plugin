@@ -153,7 +153,7 @@ user_rights_single_value ::= FIELD_VALUE {
 }
 user_rights_attribute_value ::= FIELD_VALUE {
     methods=[getHeaderParameter]
-    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsValueAttributeMixin"
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsAttributeValueMixin"
 }
 
 private user_rights_value_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)

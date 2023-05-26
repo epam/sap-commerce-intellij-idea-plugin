@@ -48,9 +48,10 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         tokenType: IElementType,
         holder: AnnotationHolder,
         element: PsiElement,
-        messageKey: String
+        messageKey: String,
+        referenceHolder: PsiElement = element.parent
     ) {
-        val resolved = (element.parent.reference as? PsiReferenceBase.Poly<*>)
+        val resolved = (referenceHolder.reference as? PsiReferenceBase.Poly<*>)
             ?.multiResolve(true)
             ?.isNotEmpty()
             ?: true

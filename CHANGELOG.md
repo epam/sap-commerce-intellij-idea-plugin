@@ -35,6 +35,7 @@
 - Brand-new formatting model for `User Rights` block [#436](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/436)
 - Added `Type System` related code completion and reference support for `Type` column [#437](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/437)
 - Added `Type System` related code completion and reference support for `Target` column [#438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/438)
+- Added validation of the references to `Type System` [#439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/439)
 
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)

@@ -53,7 +53,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
         var isExist = false
         PsiSearchHelper.getInstance(macroValue.project)
             .processElementsWithWord({ element, _ ->
-                if (element.node.elementType != ImpexParserDefinition.FILE
+                if (element.node.elementType != ImpexParserDefinition.FILE_NODE_TYPE
                     && element.node.elementType != ImpexTypes.LINE_COMMENT) {
                     isExist = true
                 }

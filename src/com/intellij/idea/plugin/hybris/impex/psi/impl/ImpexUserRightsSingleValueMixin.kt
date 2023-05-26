@@ -18,15 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsSingleValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.util.PsiTreeUtil
 import java.io.Serial
 
 abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsSingleValue {
 
     override fun createReference() = ImpexTSItemReference(this)
+
+    override fun subtreeChanged() {
+        removeUserData(ImpexTSItemReference.CACHE_KEY)
+        PsiTreeUtil.getNextSiblingOfType(this, ImpexUserRightsAttributeValue::class.java)
+            ?.removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
+    }
 
     companion object {
         @Serial
