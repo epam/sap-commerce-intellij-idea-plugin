@@ -28,9 +28,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexUserRightsValueLineImpl extends ImpexUserRightsAwarePsiElementImpl implements ImpexUserRightsValueLine {
+public class ImpexUserRightsValueLineImpl extends ASTWrapperPsiElement implements ImpexUserRightsValueLine {
 
   public ImpexUserRightsValueLineImpl(@NotNull ASTNode node) {
     super(node);

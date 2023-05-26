@@ -25,7 +25,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexUserRightsHeaderLine extends ImpexUserRightsAwarePsiElement {
+public interface ImpexUserRightsHeaderLine extends PsiElement {
 
   @NotNull
   List<ImpexUserRightsHeaderParameter> getUserRightsHeaderParameterList();

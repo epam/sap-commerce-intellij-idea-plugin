@@ -17,22 +17,29 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-class ImpexTSItemReference(owner: ImpexHeaderTypeName) : TSReferenceBase<ImpexHeaderTypeName>(owner) {
+class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner) {
+
+    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
+        .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+        .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator

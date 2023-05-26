@@ -25,7 +25,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexUserRightsFirstValueGroup extends ImpexUserRightsAwarePsiElement {
+public interface ImpexUserRightsFirstValueGroup extends PsiElement {
 
   @NotNull
   ImpexUserRightsValue getUserRightsValue();
