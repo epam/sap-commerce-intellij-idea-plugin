@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -21,9 +21,11 @@ package com.intellij.idea.plugin.hybris.impex.formatting;
 import com.intellij.formatting.Alignment;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValueGroup;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup;
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
@@ -82,7 +84,7 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
             if (isHeaderLine(currentNode)) {
                 alignments.clear();
             }
-            
+
             if (ImpexPsiUtils.isUserRightsMacros(currentNode.getPsi())) {
                 alignments.clear();
             }
@@ -97,8 +99,9 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
     @Contract(pure = true)
     protected boolean isNewLine(@Nullable final ASTNode currentNode) {
         return null != currentNode
-               && ImpexTypes.VALUE_GROUP == currentNode.getElementType()
-               && isStartOfValueLine(currentNode);
+            && (ImpexTypes.VALUE_GROUP == currentNode.getElementType()
+            || ImpexTypes.USER_RIGHTS_VALUE_GROUP == currentNode.getElementType())
+            && isStartOfValueLine(currentNode);
     }
 
     @Contract(pure = true)
@@ -107,9 +110,9 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
             return false;
         }
 
-        final ImpexValueGroup child = PsiTreeUtil.findChildOfType(
+        final PsiElement child = PsiTreeUtil.findChildOfAnyType(
             currentNode.getTreeParent().getPsi(),
-            ImpexValueGroup.class
+            ImpexValueGroup.class, ImpexUserRightsValueGroup.class
         );
 
         return child == currentNode.getPsi();
@@ -117,11 +120,15 @@ public class ColumnsAlignmentStrategy implements AlignmentStrategy {
 
     @Contract(pure = true)
     protected boolean isNewColumn(@Nullable final ASTNode currentNode) {
-        return null != currentNode && ImpexTypes.VALUE_GROUP == currentNode.getElementType();
+        return null != currentNode &&
+            (ImpexTypes.VALUE_GROUP == currentNode.getElementType()
+                || ImpexTypes.USER_RIGHTS_VALUE_GROUP == currentNode.getElementType());
     }
 
     @Contract(pure = true)
     protected boolean isHeaderLine(@Nullable final ASTNode currentNode) {
-        return null != currentNode && ImpexTypes.HEADER_LINE == currentNode.getElementType();
+        return null != currentNode &&
+            (ImpexTypes.HEADER_LINE == currentNode.getElementType()
+                || ImpexTypes.USER_RIGHTS_HEADER_LINE == currentNode.getElementType());
     }
 }

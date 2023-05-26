@@ -127,10 +127,12 @@ fun getValueGroups(element: ImpexUserRights, index: Int): Collection<ImpexUserRi
     .mapNotNull { it.getValueGroup(index) }
 
 fun getValueGroup(element: ImpexUserRightsValueLine, index: Int): ImpexUserRightsValueGroup? = element
-    .userRightsValueGroupList[index]
+    .userRightsValueGroupList
+    .getOrNull(index)
 
 fun getHeaderParameter(element: ImpexUserRightsHeaderLine, index: Int): ImpexUserRightsHeaderParameter? = element
-    .userRightsHeaderParameterList[index]
+    .userRightsHeaderParameterList
+    .getOrNull(index)
 
 fun getValueLine(element: ImpexUserRightsValueGroup): ImpexUserRightsValueLine? = element
     .parentOfType<ImpexUserRightsValueLine>()
