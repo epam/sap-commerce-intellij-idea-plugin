@@ -28,7 +28,16 @@ import com.intellij.psi.PsiElement;
 public interface ImpexUserRightsValueGroup extends PsiElement {
 
   @Nullable
-  ImpexUserRightsValue getUserRightsValue();
+  ImpexUserRightsAttributeValue getUserRightsAttributeValue();
+
+  @Nullable
+  ImpexUserRightsMultiValue getUserRightsMultiValue();
+
+  @Nullable
+  ImpexUserRightsPermissionValue getUserRightsPermissionValue();
+
+  @Nullable
+  ImpexUserRightsSingleValue getUserRightsSingleValue();
 
   @Nullable
   ImpexUserRightsValueLine getValueLine();

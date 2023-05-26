@@ -51,12 +51,15 @@ public interface ImpexTypes {
   IElementType SUB_PARAMETERS = new ImpexElementType("SUB_PARAMETERS");
   IElementType SUB_TYPE_NAME = new ImpexElementType("SUB_TYPE_NAME");
   IElementType USER_RIGHTS = new ImpexElementType("USER_RIGHTS");
+  IElementType USER_RIGHTS_ATTRIBUTE_VALUE = new ImpexElementType("USER_RIGHTS_ATTRIBUTE_VALUE");
   IElementType USER_RIGHTS_END = new ImpexElementType("USER_RIGHTS_END");
   IElementType USER_RIGHTS_FIRST_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_FIRST_VALUE_GROUP");
   IElementType USER_RIGHTS_HEADER_LINE = new ImpexElementType("USER_RIGHTS_HEADER_LINE");
   IElementType USER_RIGHTS_HEADER_PARAMETER = new ImpexElementType("USER_RIGHTS_HEADER_PARAMETER");
+  IElementType USER_RIGHTS_MULTI_VALUE = new ImpexElementType("USER_RIGHTS_MULTI_VALUE");
+  IElementType USER_RIGHTS_PERMISSION_VALUE = new ImpexElementType("USER_RIGHTS_PERMISSION_VALUE");
+  IElementType USER_RIGHTS_SINGLE_VALUE = new ImpexElementType("USER_RIGHTS_SINGLE_VALUE");
   IElementType USER_RIGHTS_START = new ImpexElementType("USER_RIGHTS_START");
-  IElementType USER_RIGHTS_VALUE = new ImpexElementType("USER_RIGHTS_VALUE");
   IElementType USER_RIGHTS_VALUE_GROUP = new ImpexElementType("USER_RIGHTS_VALUE_GROUP");
   IElementType USER_RIGHTS_VALUE_LINE = new ImpexElementType("USER_RIGHTS_VALUE_LINE");
   IElementType VALUE = new ImpexElementType("VALUE");
@@ -192,6 +195,9 @@ public interface ImpexTypes {
       else if (type == USER_RIGHTS) {
         return new ImpexUserRightsImpl(node);
       }
+      else if (type == USER_RIGHTS_ATTRIBUTE_VALUE) {
+        return new ImpexUserRightsAttributeValueImpl(node);
+      }
       else if (type == USER_RIGHTS_END) {
         return new ImpexUserRightsEndImpl(node);
       }
@@ -204,11 +210,17 @@ public interface ImpexTypes {
       else if (type == USER_RIGHTS_HEADER_PARAMETER) {
         return new ImpexUserRightsHeaderParameterImpl(node);
       }
+      else if (type == USER_RIGHTS_MULTI_VALUE) {
+        return new ImpexUserRightsMultiValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_PERMISSION_VALUE) {
+        return new ImpexUserRightsPermissionValueImpl(node);
+      }
+      else if (type == USER_RIGHTS_SINGLE_VALUE) {
+        return new ImpexUserRightsSingleValueImpl(node);
+      }
       else if (type == USER_RIGHTS_START) {
         return new ImpexUserRightsStartImpl(node);
-      }
-      else if (type == USER_RIGHTS_VALUE) {
-        return new ImpexUserRightsValueImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_GROUP) {
         return new ImpexUserRightsValueGroupImpl(node);

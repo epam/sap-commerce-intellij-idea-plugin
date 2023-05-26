@@ -33,6 +33,7 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexTokenType"
 
   classHeader="generatedFilesHeader.txt"
+  implements("user\_rights\_.*_value")="com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue"
 
   generate=[java='17']
 }
@@ -131,19 +132,31 @@ user_rights_value_group ::= FIELD_VALUE_SEPARATOR user_rights_value? {
     recoverWhile=user_rights_value_group_recover
     methods=[getValueLine getColumnNumber getHeaderParameter]
 }
-user_rights_value ::= PERMISSION_DENIED
-    | PERMISSION_ALLOWED
-    | user_rights_type_attribute
-    | FIELD_VALUE (COMMA FIELD_VALUE)* {
-    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsValueMixin"
-    recoverWhile=user_rights_value_dec_recover
-    methods=[getHeaderParameter]
+private user_rights_value ::= user_rights_permission_value
+    | user_rights_type_attribute_value
+    | user_rights_multi_value
+    | user_rights_single_value {
+    recoverWhile=user_rights_value_recover
 }
-private user_rights_type_attribute ::= FIELD_VALUE DOT FIELD_VALUE {
+private user_rights_type_attribute_value ::= user_rights_single_value DOT user_rights_attribute_value {
     pin=2
 }
+user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED {
+    methods=[getHeaderParameter]
+}
+user_rights_multi_value ::= FIELD_VALUE (COMMA FIELD_VALUE)+ {
+    methods=[getHeaderParameter]
+}
+user_rights_single_value ::= FIELD_VALUE {
+    methods=[getHeaderParameter]
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsSingleValueMixin"
+}
+user_rights_attribute_value ::= FIELD_VALUE {
+    methods=[getHeaderParameter]
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsValueAttributeMixin"
+}
 
-private user_rights_value_dec_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+private user_rights_value_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
 private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
 /*#################################################################################*/
 /*                                     Root                                        */

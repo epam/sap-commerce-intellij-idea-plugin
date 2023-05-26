@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -35,7 +36,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner) {
+open class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)

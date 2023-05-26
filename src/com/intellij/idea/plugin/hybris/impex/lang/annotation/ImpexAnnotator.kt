@@ -25,27 +25,30 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
-import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
+    private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
-            ImpexTypes.USER_RIGHTS_VALUE -> {
+            ImpexTypes.USER_RIGHTS_SINGLE_VALUE -> {
                 val value = element as? ImpexUserRightsValue ?: return
                 val headerParameter = value.headerParameter ?: return
+                if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
 
-                when (headerParameter.firstChild.elementType) {
-                    ImpexTypes.TYPE -> highlight(ImpexTypes.HEADER_TYPE, holder, element)
-                    ImpexTypes.TARGET -> with(PsiTreeUtilExt.getLeafsOfElementType(element, ImpexTypes.FIELD_VALUE)) {
-                        getOrNull(0)?.let { highlight(ImpexTypes.HEADER_TYPE, holder, it) }
-                        getOrNull(1)?.let { highlight(ImpexTypes.HEADER_PARAMETER_NAME, holder, it) }
-                    }
-                }
+                highlight(ImpexTypes.HEADER_TYPE, holder, element)
+            }
+
+            ImpexTypes.USER_RIGHTS_ATTRIBUTE_VALUE -> {
+                val value = element as? ImpexUserRightsValue ?: return
+                val headerParameter = value.headerParameter ?: return
+                if (!tsElementTypes.contains(headerParameter.firstChild.elementType)) return
+
+                highlight(ImpexTypes.HEADER_PARAMETER_NAME, holder, element)
             }
 
             ImpexTypes.VALUE_SUBTYPE -> {

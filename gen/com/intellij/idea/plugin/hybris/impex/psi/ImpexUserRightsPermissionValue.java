@@ -25,21 +25,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexUserRightsFirstValueGroup extends PsiElement {
+public interface ImpexUserRightsPermissionValue extends ImpexUserRightsValue {
 
   @Nullable
-  ImpexUserRightsAttributeValue getUserRightsAttributeValue();
-
-  @Nullable
-  ImpexUserRightsMultiValue getUserRightsMultiValue();
-
-  @Nullable
-  ImpexUserRightsPermissionValue getUserRightsPermissionValue();
-
-  @Nullable
-  ImpexUserRightsSingleValue getUserRightsSingleValue();
-
-  @Nullable
-  ImpexValueLine getValueLine();
+  ImpexUserRightsHeaderParameter getHeaderParameter();
 
 }

@@ -49,8 +49,26 @@ public class ImpexUserRightsValueGroupImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @Nullable
-  public ImpexUserRightsValue getUserRightsValue() {
-    return findChildByClass(ImpexUserRightsValue.class);
+  public ImpexUserRightsAttributeValue getUserRightsAttributeValue() {
+    return findChildByClass(ImpexUserRightsAttributeValue.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexUserRightsMultiValue getUserRightsMultiValue() {
+    return findChildByClass(ImpexUserRightsMultiValue.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexUserRightsPermissionValue getUserRightsPermissionValue() {
+    return findChildByClass(ImpexUserRightsPermissionValue.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexUserRightsSingleValue getUserRightsSingleValue() {
+    return findChildByClass(ImpexUserRightsSingleValue.class);
   }
 
   @Override

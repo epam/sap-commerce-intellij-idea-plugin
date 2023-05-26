@@ -1172,6 +1172,18 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // FIELD_VALUE
+  public static boolean user_rights_attribute_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_attribute_value")) return false;
+    if (!nextTokenIs(b, FIELD_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FIELD_VALUE);
+    exit_section_(b, m, USER_RIGHTS_ATTRIBUTE_VALUE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // END_USERRIGHTS (PARAMETERS_SEPARATOR)*
   public static boolean user_rights_end(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_end")) return false;
@@ -1273,6 +1285,69 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // FIELD_VALUE (COMMA FIELD_VALUE)+
+  public static boolean user_rights_multi_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_multi_value")) return false;
+    if (!nextTokenIs(b, FIELD_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FIELD_VALUE);
+    r = r && user_rights_multi_value_1(b, l + 1);
+    exit_section_(b, m, USER_RIGHTS_MULTI_VALUE, r);
+    return r;
+  }
+
+  // (COMMA FIELD_VALUE)+
+  private static boolean user_rights_multi_value_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_multi_value_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_multi_value_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!user_rights_multi_value_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_multi_value_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COMMA FIELD_VALUE
+  private static boolean user_rights_multi_value_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_multi_value_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, FIELD_VALUE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PERMISSION_DENIED | PERMISSION_ALLOWED
+  public static boolean user_rights_permission_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_permission_value")) return false;
+    if (!nextTokenIs(b, "<user rights permission value>", PERMISSION_ALLOWED, PERMISSION_DENIED)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_PERMISSION_VALUE, "<user rights permission value>");
+    r = consumeToken(b, PERMISSION_DENIED);
+    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // FIELD_VALUE
+  public static boolean user_rights_single_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_single_value")) return false;
+    if (!nextTokenIs(b, FIELD_VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FIELD_VALUE);
+    exit_section_(b, m, USER_RIGHTS_SINGLE_VALUE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // START_USERRIGHTS
   public static boolean user_rights_start(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_start")) return false;
@@ -1285,84 +1360,34 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE DOT FIELD_VALUE
-  static boolean user_rights_type_attribute(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_type_attribute")) return false;
+  // user_rights_single_value DOT user_rights_attribute_value
+  static boolean user_rights_type_attribute_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_type_attribute_value")) return false;
     if (!nextTokenIs(b, FIELD_VALUE)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
-    r = consumeTokens(b, 2, FIELD_VALUE, DOT, FIELD_VALUE);
+    r = user_rights_single_value(b, l + 1);
+    r = r && consumeToken(b, DOT);
     p = r; // pin = 2
+    r = r && user_rights_attribute_value(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   /* ********************************************************** */
-  // PERMISSION_DENIED
-  //     | PERMISSION_ALLOWED
-  //     | user_rights_type_attribute
-  //     | FIELD_VALUE (COMMA FIELD_VALUE)*
-  public static boolean user_rights_value(PsiBuilder b, int l) {
+  // user_rights_permission_value
+  //     | user_rights_type_attribute_value
+  //     | user_rights_multi_value
+  //     | user_rights_single_value
+  static boolean user_rights_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE, "<user rights value>");
-    r = consumeToken(b, PERMISSION_DENIED);
-    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
-    if (!r) r = user_rights_type_attribute(b, l + 1);
-    if (!r) r = user_rights_value_3(b, l + 1);
-    exit_section_(b, l, m, r, false, ImpexParser::user_rights_value_dec_recover);
-    return r;
-  }
-
-  // FIELD_VALUE (COMMA FIELD_VALUE)*
-  private static boolean user_rights_value_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, FIELD_VALUE);
-    r = r && user_rights_value_3_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (COMMA FIELD_VALUE)*
-  private static boolean user_rights_value_3_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_3_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!user_rights_value_3_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_value_3_1", c)) break;
-    }
-    return true;
-  }
-
-  // COMMA FIELD_VALUE
-  private static boolean user_rights_value_3_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_3_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, COMMA, FIELD_VALUE);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(CRLF | FIELD_VALUE_SEPARATOR)
-  static boolean user_rights_value_dec_recover(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_dec_recover")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !user_rights_value_dec_recover_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // CRLF | FIELD_VALUE_SEPARATOR
-  private static boolean user_rights_value_dec_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_dec_recover_0")) return false;
-    boolean r;
-    r = consumeToken(b, CRLF);
-    if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
+    Marker m = enter_section_(b, l, _NONE_);
+    r = user_rights_permission_value(b, l + 1);
+    if (!r) r = user_rights_type_attribute_value(b, l + 1);
+    if (!r) r = user_rights_multi_value(b, l + 1);
+    if (!r) r = user_rights_single_value(b, l + 1);
+    exit_section_(b, l, m, r, false, ImpexParser::user_rights_value_recover);
     return r;
   }
 
@@ -1437,6 +1462,26 @@ public class ImpexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "user_rights_value_line_1", c)) break;
     }
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(CRLF | FIELD_VALUE_SEPARATOR)
+  static boolean user_rights_value_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !user_rights_value_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // CRLF | FIELD_VALUE_SEPARATOR
+  private static boolean user_rights_value_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_recover_0")) return false;
+    boolean r;
+    r = consumeToken(b, CRLF);
+    if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     return r;
   }
 

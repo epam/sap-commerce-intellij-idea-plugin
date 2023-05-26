@@ -119,6 +119,10 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitUserRightsAttributeValue(@NotNull ImpexUserRightsAttributeValue o) {
+    visitUserRightsValue(o);
+  }
+
   public void visitUserRightsEnd(@NotNull ImpexUserRightsEnd o) {
     visitPsiElement(o);
   }
@@ -135,11 +139,19 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsStart(@NotNull ImpexUserRightsStart o) {
-    visitPsiElement(o);
+  public void visitUserRightsMultiValue(@NotNull ImpexUserRightsMultiValue o) {
+    visitUserRightsValue(o);
   }
 
-  public void visitUserRightsValue(@NotNull ImpexUserRightsValue o) {
+  public void visitUserRightsPermissionValue(@NotNull ImpexUserRightsPermissionValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsSingleValue(@NotNull ImpexUserRightsSingleValue o) {
+    visitUserRightsValue(o);
+  }
+
+  public void visitUserRightsStart(@NotNull ImpexUserRightsStart o) {
     visitPsiElement(o);
   }
 
@@ -164,6 +176,10 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiNamedElement(@NotNull ImpexPsiNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValue(@NotNull ImpexUserRightsValue o) {
     visitPsiElement(o);
   }
 

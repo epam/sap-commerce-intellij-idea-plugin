@@ -28,16 +28,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexUserRightsValueImpl extends ImpexUserRightsValueMixin implements ImpexUserRightsValue {
+public class ImpexUserRightsPermissionValueImpl extends ASTWrapperPsiElement implements ImpexUserRightsPermissionValue {
 
-  public ImpexUserRightsValueImpl(@NotNull ASTNode node) {
+  public ImpexUserRightsPermissionValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitUserRightsValue(this);
+    visitor.visitUserRightsPermissionValue(this);
   }
 
   @Override

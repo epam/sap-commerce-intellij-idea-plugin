@@ -31,14 +31,14 @@ import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexUserRightsFirstValueGroupImpl extends ASTWrapperPsiElement implements ImpexUserRightsFirstValueGroup {
+public class ImpexUserRightsMultiValueImpl extends ASTWrapperPsiElement implements ImpexUserRightsMultiValue {
 
-  public ImpexUserRightsFirstValueGroupImpl(@NotNull ASTNode node) {
+  public ImpexUserRightsMultiValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitUserRightsFirstValueGroup(this);
+    visitor.visitUserRightsMultiValue(this);
   }
 
   @Override
@@ -49,32 +49,8 @@ public class ImpexUserRightsFirstValueGroupImpl extends ASTWrapperPsiElement imp
 
   @Override
   @Nullable
-  public ImpexUserRightsAttributeValue getUserRightsAttributeValue() {
-    return findChildByClass(ImpexUserRightsAttributeValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexUserRightsMultiValue getUserRightsMultiValue() {
-    return findChildByClass(ImpexUserRightsMultiValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexUserRightsPermissionValue getUserRightsPermissionValue() {
-    return findChildByClass(ImpexUserRightsPermissionValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexUserRightsSingleValue getUserRightsSingleValue() {
-    return findChildByClass(ImpexUserRightsSingleValue.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexValueLine getValueLine() {
-    return ImpexPsiUtil.getValueLine(this);
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
+    return ImpexPsiUtil.getHeaderParameter(this);
   }
 
 }

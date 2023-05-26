@@ -18,34 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsSingleValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.util.elementType
 import java.io.Serial
 
-abstract class ImpexUserRightsValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsValue {
+abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsSingleValue {
 
-    override fun createReference(): PsiReferenceBase<out PsiElement>? {
-        val headerParameter = this.headerParameter ?: return null
-
-        return when (headerParameter.firstChild.elementType) {
-            ImpexTypes.TYPE -> ImpexTSItemReference(this)
-//            ImpexTypes.TARGET -> with(PsiTreeUtilExt.getLeafsOfElementType(it, ImpexTypes.FIELD_VALUE)) {
-//                getOrNull(0)?.let { highlight(ImpexTypes.HEADER_TYPE, holder, it) }
-//                getOrNull(1)?.let { highlight(ImpexTypes.HEADER_PARAMETER_NAME, holder, it) }
-//            }
-            else -> null
-        }
-    }
+    override fun createReference() = ImpexTSItemReference(this)
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -1657911985932608306L
+        private const val serialVersionUID: Long = -7538536745431644864L
     }
-
 }
