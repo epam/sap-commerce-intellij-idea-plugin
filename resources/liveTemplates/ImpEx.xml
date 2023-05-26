@@ -16,9 +16,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<templateSet group="Impex">
+<templateSet group="ImpEx">
     <template name="userrights"
-              value="$START_USERRIGHTS&#10;Type;UID;MemberOfGroups;Password;Target;read;change;create;delete;change_perm&#10;UserGroup;$UID$;$MEMBER_OF_GROUPS$;$PASSWORD$;$TARGET$;$READ$;$CHANGE$;$CREATE$;$DELETE$;$CHANGE_PERM$&#10;$END_USERRIGHTS&#10;"
+              value="$START_USERRIGHTS&#10;Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm&#10;UserGroup;$UID$;$MEMBER_OF_GROUPS$;$PASSWORD$;$TARGET$;$READ$;$CHANGE$;$CREATE$;$REMOVE;$CHANGE_PERM$&#10;$END_USERRIGHTS&#10;"
               description="Define user rights for object" toReformat="false" toShortenFQNames="false">
         <variable name="UID" expression="" defaultValue="" alwaysStopAt="true"/>
         <variable name="MEMBER_OF_GROUPS" expression="" defaultValue="" alwaysStopAt="true"/>
@@ -27,7 +27,7 @@
         <variable name="READ" expression="" defaultValue="+" alwaysStopAt="true"/>
         <variable name="CHANGE" expression="" defaultValue="+" alwaysStopAt="true"/>
         <variable name="CREATE" expression="" defaultValue="+" alwaysStopAt="true"/>
-        <variable name="DELETE" expression="" defaultValue="+" alwaysStopAt="true"/>
+        <variable name="REMOVE" expression="" defaultValue="+" alwaysStopAt="true"/>
         <variable name="CHANGE_PERM" expression="" defaultValue="+" alwaysStopAt="true"/>
         <context>
             <option name="IMPEX" value="true"/>

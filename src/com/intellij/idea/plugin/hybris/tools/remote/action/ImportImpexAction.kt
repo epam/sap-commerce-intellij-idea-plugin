@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,15 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.impl.ActionButton
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 
-class ImpexActionsGroup : DefaultActionGroup({ "ImpEx" }, true) {
+class ImportImpexAction : AbstractExecuteAction() {
 
-    init {
-        templatePresentation.icon = HybrisIcons.IMPEX
-        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
-        templatePresentation.isHideGroupIfEmpty = true
-    }
+    override fun getExtension() = ImpexFileType.INSTANCE.defaultExtension
+    override fun getConsoleName() = HybrisConstants.IMPEX_CONSOLE_TITLE
 }

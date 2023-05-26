@@ -30,7 +30,7 @@
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.ItemsXmlReferenceContributor"/>
 
         <internalFileTemplate name="FlexibleSearch File"/>
-        <internalFileTemplate name="Impex File"/>
+        <internalFileTemplate name="ImpEx File"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.impl.HybrisToolWindowServiceImpl"/>

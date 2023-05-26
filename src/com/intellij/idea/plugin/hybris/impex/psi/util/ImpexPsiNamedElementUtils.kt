@@ -54,7 +54,7 @@ fun getKey(node: ASTNode) = node.findChildByType(ImpexTypes.VALUE)
 fun createFile(project: Project, text: String): ImpexFile {
     val name = "dummy.impex"
     return PsiFileFactory.getInstance(project)
-            .createFileFromText(name, ImpexFileType.getInstance(), text) as ImpexFile
+            .createFileFromText(name, ImpexFileType.INSTANCE, text) as ImpexFile
 }
 
 fun createMacrosUsageElement(project: Project, text: String): PsiElement? {

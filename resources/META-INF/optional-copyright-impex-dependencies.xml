@@ -1,5 +1,5 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij.copyright">
-        <updater filetype="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.copyright.UpdateImpexCopyrightsProvider"/>
+        <updater filetype="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.copyright.UpdateImpexCopyrightsProvider"/>
     </extensions>
 </idea-plugin>

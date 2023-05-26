@@ -15,32 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.tools.remote.action
 
-package com.intellij.idea.plugin.hybris.tools.remote.action;
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
 
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel;
+class ValidateImpexAction : AbstractExecuteAction() {
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSOLE_TITLE;
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-public class ValidateImpexAction extends AbstractExecuteAction  {
-
-    @Override
-    protected void doExecute(final HybrisConsolesPanel consolePanel) {
-        consolePanel.validateImpex();
+    override fun getExtension() = ImpexFileType.INSTANCE.defaultExtension
+    override fun getConsoleName() = HybrisConstants.IMPEX_CONSOLE_TITLE
+    override fun doExecute(consolePanel: HybrisConsolesPanel) {
+        consolePanel.validateImpex()
     }
-
-    @Override
-    protected String getExtension() {
-        return ImpexFileType.getInstance().getDefaultExtension();
-    }
-
-    @Override
-    protected String getConsoleName() {
-        return IMPEX_CONSOLE_TITLE;
-    }
-
 }

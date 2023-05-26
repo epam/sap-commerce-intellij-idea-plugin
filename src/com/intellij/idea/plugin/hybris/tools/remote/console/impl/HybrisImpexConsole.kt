@@ -104,9 +104,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     }
 
     override fun title(): String = HybrisConstants.IMPEX
-
-    override fun tip(): String = "Impex Console"
-
+    override fun tip(): String = "ImpEx Console"
     override fun icon(): Icon = HybrisIcons.IMPEX_FILE
 
     fun validate(text: String): HybrisHttpResult {

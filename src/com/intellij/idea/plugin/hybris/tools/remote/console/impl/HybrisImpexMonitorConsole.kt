@@ -57,7 +57,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
             TimeOption("in the last 1 hour", 1, TimeUnit.HOURS)
     ))
     private val workingDirLabel = JBLabel("Hybris Data Folder: ${obtainDataFolder(project)}")
-    private val timeOptionLabel = JBLabel("Imported Impex")
+    private val timeOptionLabel = JBLabel("Imported ImpEx")
 
     init {
         createUI()
@@ -87,17 +87,11 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
     }
 
     private fun timeOption() = (timeComboBox.selectedItem as TimeOption)
-
     private fun workingDir() = obtainDataFolder(project)
+    override fun execute(query: String) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
 
-    override fun execute(query: String): HybrisHttpResult {
-        return monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
-    }
-
-    override fun title(): String = "Impex Monitor"
-
-    override fun tip(): String = "Last imported Impex files"
-
+    override fun title(): String = "ImpEx Monitor"
+    override fun tip(): String = "Last imported ImpEx files"
     override fun icon(): Icon = HybrisIcons.MONITORING
 
     companion object {

@@ -15,26 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.liveTemplates
 
-package com.intellij.idea.plugin.hybris.tools.remote.action;
+import com.intellij.codeInsight.template.FileTypeBasedContextType
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
+import com.intellij.psi.PsiFile
 
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
+class ImpexContextType : FileTypeBasedContextType("ImpEx", ImpexFileType.INSTANCE) {
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_CONSOLE_TITLE;
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
-public class ImportImpexAction extends AbstractExecuteAction {
-
-
-    @Override
-    protected String getExtension() {
-        return ImpexFileType.getInstance().getDefaultExtension();
-    }
-
-    @Override
-    protected String getConsoleName() {
-        return IMPEX_CONSOLE_TITLE;
-    }
+    override fun isInContext(file: PsiFile, offset: Int) = file is ImpexFile
 }

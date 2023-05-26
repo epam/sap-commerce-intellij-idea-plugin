@@ -84,7 +84,7 @@ class HybrisConsoleExecuteValidateActionHandler(private val project: Project,
         val output = result.output
 
         console.clear()
-        ConsoleViewUtil.printAsFileType(console, output, ImpexFileType.getInstance())
+        ConsoleViewUtil.printAsFileType(console, output, ImpexFileType.INSTANCE)
 
     }
 

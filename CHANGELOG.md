@@ -14,6 +14,7 @@
 - Show different icon for `kotlinnature` extension [#408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408)
 
 ### `ImpEx` enhancements
+- Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/429)
 - Added reference resolution/code completion for Item subtypes declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
 - Added reference validation for Item subtypes declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
 - If Type equal to Item subtype it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)

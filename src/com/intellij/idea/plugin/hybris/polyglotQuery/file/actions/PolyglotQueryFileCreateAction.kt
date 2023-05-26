@@ -44,6 +44,6 @@ class PolyglotQueryFileCreateAction : CreateFileFromTemplateAction(
 
     companion object {
         const val FILE_TEMPLATE = "Polyglot Query File"
-        private const val NEW_FILE = "New Polyglot Query File"
+        private const val NEW_FILE = "Polyglot Query File"
     }
 }

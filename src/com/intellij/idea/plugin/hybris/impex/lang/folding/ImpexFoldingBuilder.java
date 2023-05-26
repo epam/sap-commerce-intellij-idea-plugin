@@ -48,7 +48,7 @@ import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBr
  */
 public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
-    private static final String GROUP_NAME = "impex";
+    private static final String GROUP_NAME = "ImpEx";
 
     private static final FoldingDescriptor[] EMPTY_ARRAY = new FoldingDescriptor[0];
 

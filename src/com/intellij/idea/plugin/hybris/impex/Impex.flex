@@ -126,7 +126,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {bean_shell_marker}                                     { yybegin(BEAN_SHELL); return ImpexTypes.BEAN_SHELL_MARKER; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {line_comment}                                          { yybegin(YYINITIAL); return ImpexTypes.LINE_COMMENT; }
+    {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
 
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpexTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }

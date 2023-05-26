@@ -46,7 +46,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                         when (console) {
                             is HybrisImpexMonitorConsole -> {
                                 console.clear()
-                                printSyntaxText(console, httpResult.output, ImpexFileType.getInstance())
+                                printSyntaxText(console, httpResult.output, ImpexFileType.INSTANCE)
                             }
                             is HybrisSolrSearchConsole -> {
                                 console.clear()

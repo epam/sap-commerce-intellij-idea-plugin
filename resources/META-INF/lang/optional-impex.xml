@@ -19,25 +19,25 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <fileType name="Impex" language="Impex" extensions="impex" fieldName="INSTANCE"
+        <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
 
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
 
-        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpexDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpexDarcula.xml"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
         <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
-        <lang.parserDefinition language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-        <lang.commenter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
-        <lang.formatter language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingLinesBuilder"/>
-        <lang.foldingBuilder language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
-        <lang.psiStructureViewFactory language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
-        <lang.refactoringSupport language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
+        <lang.parserDefinition language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
+        <lang.formatter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
+        <lang.psiStructureViewFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
+        <lang.refactoringSupport language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
 
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
@@ -59,7 +59,7 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
                         serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
 
-        <defaultLiveTemplates file="liveTemplates/Impex.xml"/>
+        <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
 
         <vetoRenameCondition implementation="com.intellij.idea.plugin.hybris.impex.rename.ImpexVetoRenameCondition"/>
@@ -73,7 +73,7 @@
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
 
-        <completion.contributor language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+        <completion.contributor language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"/>
@@ -94,9 +94,9 @@
                 implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
 
         <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
-        <lang.findUsagesProvider language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
+        <lang.findUsagesProvider language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
-        <annotator language="Impex" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.annotation.ImpexAnnotator"/>
+        <annotator language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.annotation.ImpexAnnotator"/>
 
         <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector"/>
 
@@ -109,7 +109,7 @@
 
 
     <actions>
-        <action id="Impex.NewImpexFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
+        <action id="ImpEx.NewImpExFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
                 text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
@@ -124,32 +124,32 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
 
-        <group id="ImpexTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
+        <group id="ImpExTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
             <!-- This feature not ready for production. Temporary disabled.  -->
-            <!--<action id="ImpexTableFormatter.FormatAllTables"-->
+            <!--<action id="ImpExTableFormatter.FormatAllTables"-->
             <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
             <!--text="Format All"-->
             <!--description="Formats table with pipe delimiters">-->
             <!--</action>-->
-            <!--<action id="ImpexTableFormatter.AddColumnBefore"-->
+            <!--<action id="ImpExTableFormatter.AddColumnBefore"-->
             <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
             <!--text="Add Column Before"-->
             <!--description="Add Column Before">-->
             <!--</action>-->
-            <action id="ImpexTableFormatter.SelectTable"
+            <action id="ImpExTableFormatter.SelectTable"
                     class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
-                    text="Select Impex"
+                    text="Select ImpEx"
                     icon="/icons/hybrisIcon.svg"
-                    description="Select Impex">
+                    description="Select ImpEx">
                 <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
             </action>
 
-            <action id="ImpexRemoteControl.Validate"
+            <action id="ImpExRemoteControl.Validate"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ValidateImpexAction"
                     icon="/icons/hybrisIcon.svg">
             </action>
 
-            <action id="ImpexRemoteControl.Import"
+            <action id="ImpExRemoteControl.Import"
                     class="com.intellij.idea.plugin.hybris.tools.remote.action.ImportImpexAction"
                     icon="/icons/hybrisIcon.svg">
             </action>

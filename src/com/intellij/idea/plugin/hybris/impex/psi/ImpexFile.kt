@@ -15,26 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.psi
 
-package com.intellij.idea.plugin.hybris.impex.liveTemplates;
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.psi.FileViewProvider
+import java.io.Serial
 
-import com.intellij.codeInsight.template.FileTypeBasedContextType;
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
-import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
+class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpexLanguage.getInstance()) {
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
-public class ImpexContextType extends FileTypeBasedContextType {
+    override fun getFileType() = ImpexFileType.INSTANCE
+    override fun toString() = "ImpEx File"
+    override fun getIcon(flags: Int) = super.getIcon(flags)
 
-    protected ImpexContextType() {
-        super("Impex", ImpexFileType.getInstance());
-    }
-
-    @Override
-    public boolean isInContext(@NotNull final PsiFile file, final int offset) {
-        return file instanceof ImpexFile;
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 5112646813557523662L
     }
 }

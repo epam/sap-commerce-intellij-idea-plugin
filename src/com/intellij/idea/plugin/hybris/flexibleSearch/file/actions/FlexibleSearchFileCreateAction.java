@@ -40,7 +40,7 @@ public class FlexibleSearchFileCreateAction extends CreateFileFromTemplateAction
     public static final String FILE_TEMPLATE = "FlexibleSearch File";
 
 
-    private static final String NEW_FS_FILE = "New FlexibleSearch File";
+    private static final String NEW_FS_FILE = "FlexibleSearch File";
 
     public FlexibleSearchFileCreateAction() {
         super(NEW_FS_FILE, "", HybrisIcons.FXS_FILE);
