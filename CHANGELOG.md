@@ -27,6 +27,7 @@
 - Inject FlexibleSearch language into suitable macro declaration values [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/433)
 - Inject FlexibleSearch language into `SearchRestriction :: query` respecting `restrictedType` [#434](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/434)
 - Inject complete `User Rights` block on code completion for `$START_USERRIGHTS` [#446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/446)
+- Inject space after mode keyword [#448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/448)
 - Inspection rule: validate that `lang` modifier value is present in the `lang.packs` [#417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417)
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
 

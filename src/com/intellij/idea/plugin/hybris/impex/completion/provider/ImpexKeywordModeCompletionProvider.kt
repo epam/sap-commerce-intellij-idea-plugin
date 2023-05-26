@@ -27,10 +27,10 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
 private val keywords = mutableListOf(
-    "INSERT",
-    "UPDATE",
-    "INSERT_UPDATE",
-    "REMOVE"
+    "INSERT ",
+    "UPDATE ",
+    "INSERT_UPDATE ",
+    "REMOVE "
 )
 
 class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -39,6 +39,7 @@ class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParamete
         keywords
             .map {
                 LookupElementBuilder.create(it)
+                    .withPresentableText(it.trim())
                     .withIcon(AllIcons.Nodes.Function)
             }
             .forEach { result.addElement(it) }
