@@ -106,12 +106,7 @@ user_rights_header_parameter ::= TYPE
  | MEMBEROFGROUPS
  | PASSWORD
  | TARGET
- | READ
- | CHANGE
- | CREATE
- | DELETE
- | REMOVE
- | CHANGE_PERM
+ | PERMISSION
 {
     recoverWhile=not_line_break_or_parameters_separator
     methods=[getHeaderLine getColumnNumber getValueGroups]

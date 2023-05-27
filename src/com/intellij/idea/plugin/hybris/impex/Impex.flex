@@ -161,12 +161,7 @@ end_userrights                    = [$]END_USERRIGHTS
     "MemberOfGroups"                                        { return ImpexTypes.MEMBEROFGROUPS; }
     "password"                                              { return ImpexTypes.PASSWORD; }
     "target"                                                { return ImpexTypes.TARGET; }
-    "read"                                                  { return ImpexTypes.READ; }
-    "change"                                                { return ImpexTypes.CHANGE; }
-    "create"                                                { return ImpexTypes.CREATE; }
-    "delete"                                                { return ImpexTypes.DELETE; }
-    "remove"                                                { return ImpexTypes.REMOVE; }
-    "change_perm"                                           { return ImpexTypes.CHANGE_PERM; }
+    {identifier}+                                           { return ImpexTypes.PERMISSION; }
     {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
     {semicolon}                                             { yybegin(USER_RIGHTS_WAIT_FOR_VALUE_LINE); return ImpexTypes.PARAMETERS_SEPARATOR; }
 
@@ -175,17 +170,12 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <USER_RIGHTS_WAIT_FOR_VALUE_LINE> {
-    "type"                                                  { return ImpexTypes.TYPE; }
-    "uid"                                                   { return ImpexTypes.UID; }
+    "Type"                                                  { return ImpexTypes.TYPE; }
+    "UID"                                                   { return ImpexTypes.UID; }
     "MemberOfGroups"                                        { return ImpexTypes.MEMBEROFGROUPS; }
-    "password"                                              { return ImpexTypes.PASSWORD; }
-    "target"                                                { return ImpexTypes.TARGET; }
-    "read"                                                  { return ImpexTypes.READ; }
-    "change"                                                { return ImpexTypes.CHANGE; }
-    "create"                                                { return ImpexTypes.CREATE; }
-    "delete"                                                { return ImpexTypes.DELETE; }
-    "remove"                                                { return ImpexTypes.REMOVE; }
-    "change_perm"                                           { return ImpexTypes.CHANGE_PERM; }
+    "Password"                                              { return ImpexTypes.PASSWORD; }
+    "Target"                                                { return ImpexTypes.TARGET; }
+    {identifier}+                                           { return ImpexTypes.PERMISSION; }
     {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return ImpexTypes.END_USERRIGHTS; }

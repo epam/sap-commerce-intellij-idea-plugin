@@ -18,24 +18,66 @@
 package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValue
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.parentOfType
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
+
     private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
+    private val userRightsParameters = mapOf(
+        ImpexTypes.TYPE to 0,
+        ImpexTypes.UID to 1,
+        ImpexTypes.MEMBEROFGROUPS to 2,
+        ImpexTypes.PASSWORD to 3,
+        ImpexTypes.TARGET to 4
+    )
+    private val userRightsParametersNames = mapOf(
+        0 to "Type",
+        1 to "UID",
+        2 to "MemberOfGroups",
+        3 to "Password",
+        4 to "Target"
+    )
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpexTypes.USER_RIGHTS_HEADER_PARAMETER -> {
+                val headerParameter = element as? ImpexUserRightsHeaderParameter ?: return
+                val actualColumnNumber = headerParameter.columnNumber ?: return
+                val elementType = headerParameter.firstChild.elementType ?: return
+
+                if (elementType == ImpexTypes.PERMISSION) {
+                    if (actualColumnNumber < userRightsParameters.size) {
+                        val expectedColumnName = userRightsParametersNames[actualColumnNumber] ?: return
+
+                        highlightError(holder, element, message(
+                            "hybris.inspections.impex.userRights.header.mandatory.expected",
+                            expectedColumnName,
+                            actualColumnNumber + 1,
+                            headerParameter.text,
+                        ))
+                    }
+                } else {
+                    val expectedColumnNumber = userRightsParameters[elementType] ?: return
+                    if (actualColumnNumber != expectedColumnNumber) {
+                        highlightError(holder, element, message(
+                            "hybris.inspections.impex.userRights.header.mandatory.order",
+                            headerParameter.text,
+                            actualColumnNumber + 1,
+                        ))
+                    }
+                }
+
+            }
+
             ImpexTypes.USER_RIGHTS_SINGLE_VALUE -> {
                 val value = element as? ImpexUserRightsValue ?: return
                 val headerParameter = value.headerParameter ?: return

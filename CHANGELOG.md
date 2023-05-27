@@ -41,6 +41,7 @@
 - Added validation of the references to `Type System` [#439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/439)
 - Ignore case for header line parameters [#445](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/445)
 - Added support of the inherited `.` permission identifier [#450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/450)
+- Added validation of the header parameter order [#451](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/451)
 
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)

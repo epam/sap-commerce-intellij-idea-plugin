@@ -75,14 +75,10 @@ public interface ImpexTypes {
   IElementType BEAN_SHELL_BODY = new ImpexTokenType("BEAN_SHELL_BODY");
   IElementType BEAN_SHELL_MARKER = new ImpexTokenType("BEAN_SHELL_MARKER");
   IElementType BOOLEAN = new ImpexTokenType("BOOLEAN");
-  IElementType CHANGE = new ImpexTokenType("CHANGE");
-  IElementType CHANGE_PERM = new ImpexTokenType("CHANGE_PERM");
   IElementType COMMA = new ImpexTokenType("COMMA");
-  IElementType CREATE = new ImpexTokenType("CREATE");
   IElementType CRLF = new ImpexTokenType("CRLF");
   IElementType DEFAULT_KEY_VALUE_DELIMITER = new ImpexTokenType("DEFAULT_KEY_VALUE_DELIMITER");
   IElementType DEFAULT_PATH_DELIMITER = new ImpexTokenType("DEFAULT_PATH_DELIMITER");
-  IElementType DELETE = new ImpexTokenType("DELETE");
   IElementType DIGIT = new ImpexTokenType("DIGIT");
   IElementType DOCUMENT_ID = new ImpexTokenType("DOCUMENT_ID");
   IElementType DOT = new ImpexTokenType("DOT");
@@ -110,10 +106,9 @@ public interface ImpexTypes {
   IElementType MEMBEROFGROUPS = new ImpexTokenType("MEMBEROFGROUPS");
   IElementType PARAMETERS_SEPARATOR = new ImpexTokenType("PARAMETERS_SEPARATOR");
   IElementType PASSWORD = new ImpexTokenType("PASSWORD");
+  IElementType PERMISSION = new ImpexTokenType("PERMISSION");
   IElementType PERMISSION_ALLOWED = new ImpexTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new ImpexTokenType("PERMISSION_DENIED");
-  IElementType READ = new ImpexTokenType("READ");
-  IElementType REMOVE = new ImpexTokenType("REMOVE");
   IElementType RIGHT_ROUND_BRACKET = new ImpexTokenType("RIGHT_ROUND_BRACKET");
   IElementType RIGHT_SQUARE_BRACKET = new ImpexTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SINGLE_STRING = new ImpexTokenType("SINGLE_STRING");

@@ -1259,12 +1259,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //  | MEMBEROFGROUPS
   //  | PASSWORD
   //  | TARGET
-  //  | READ
-  //  | CHANGE
-  //  | CREATE
-  //  | DELETE
-  //  | REMOVE
-  //  | CHANGE_PERM
+  //  | PERMISSION
   public static boolean user_rights_header_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_header_parameter")) return false;
     boolean r;
@@ -1274,12 +1269,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, MEMBEROFGROUPS);
     if (!r) r = consumeToken(b, PASSWORD);
     if (!r) r = consumeToken(b, TARGET);
-    if (!r) r = consumeToken(b, READ);
-    if (!r) r = consumeToken(b, CHANGE);
-    if (!r) r = consumeToken(b, CREATE);
-    if (!r) r = consumeToken(b, DELETE);
-    if (!r) r = consumeToken(b, REMOVE);
-    if (!r) r = consumeToken(b, CHANGE_PERM);
+    if (!r) r = consumeToken(b, PERMISSION);
     exit_section_(b, l, m, r, false, ImpexParser::not_line_break_or_parameters_separator);
     return r;
   }
