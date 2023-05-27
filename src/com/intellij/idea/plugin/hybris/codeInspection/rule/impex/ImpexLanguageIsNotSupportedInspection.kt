@@ -23,9 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.psi.util.PsiTreeUtil
 
@@ -39,7 +37,16 @@ class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
                 ?.takeIf { AttributeModifier.LANG.modifierName == it.text }
                 ?: return
 
-            val language = psi.text
+            val language = if (psi.firstChild is ImpexMacroUsageDec) {
+                PsiTreeUtil.getNextSiblingOfType(psi.firstChild.reference
+                    ?.resolve(), ImpexMacroValueDec::class.java)
+                    ?.text
+                    ?: psi.text
+            } else {
+                psi.text
+            }
+                .trim()
+
             val supportedLanguages = PropertiesService.getInstance(psi.project).getLanguages()
 
             if (supportedLanguages.contains(language)) return
