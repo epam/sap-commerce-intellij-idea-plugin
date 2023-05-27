@@ -113,6 +113,11 @@
     </option>
     <option name="IMPEX_USER_RIGHTS_PERMISSION_DENIED">
         <value>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_USER_RIGHTS_PERMISSION_INHERITED">
+        <value>
             <option name="FOREGROUND" value="FF1BA6"/>
             <option name="FONT_TYPE" value="1"/>
         </value>

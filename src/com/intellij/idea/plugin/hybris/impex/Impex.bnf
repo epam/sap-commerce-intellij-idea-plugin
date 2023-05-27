@@ -141,7 +141,7 @@ private user_rights_value ::= user_rights_permission_value
 private user_rights_type_attribute_value ::= user_rights_single_value DOT user_rights_attribute_value {
     pin=2
 }
-user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED {
+user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED | DOT {
     methods=[getHeaderParameter]
 }
 user_rights_multi_value ::= FIELD_VALUE (COMMA FIELD_VALUE)+ {

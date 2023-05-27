@@ -87,6 +87,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey USER_RIGHTS_HEADER_MANDATORY_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_MANDATORY_PARAMETER", USER_RIGHTS_HEADER_PARAMETER);
     public static final TextAttributesKey USER_RIGHTS_PERMISSION_ALLOWED = key("IMPEX_USER_RIGHTS_PERMISSION_ALLOWED", HighlighterColors.TEXT);
     public static final TextAttributesKey USER_RIGHTS_PERMISSION_DENIED = key("IMPEX_USER_RIGHTS_PERMISSION_DENIED", HighlighterColors.TEXT);
+    public static final TextAttributesKey USER_RIGHTS_PERMISSION_INHERITED = key("IMPEX_USER_RIGHTS_PERMISSION_INHERITED", HighlighterColors.TEXT);
 
     private static TextAttributesKey key(
         @NonNls @NotNull final String externalName,

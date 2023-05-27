@@ -1323,14 +1323,14 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PERMISSION_DENIED | PERMISSION_ALLOWED
+  // PERMISSION_DENIED | PERMISSION_ALLOWED | DOT
   public static boolean user_rights_permission_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_permission_value")) return false;
-    if (!nextTokenIs(b, "<user rights permission value>", PERMISSION_ALLOWED, PERMISSION_DENIED)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_PERMISSION_VALUE, "<user rights permission value>");
     r = consumeToken(b, PERMISSION_DENIED);
     if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
+    if (!r) r = consumeToken(b, DOT);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

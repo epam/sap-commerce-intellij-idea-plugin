@@ -40,6 +40,7 @@
 - Added `Type System` related code completion and reference support for `Target` column [#438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/438)
 - Added validation of the references to `Type System` [#439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/439)
 - Ignore case for header line parameters [#445](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/445)
+- Added support of the inherited `.` permission identifier [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
 
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)

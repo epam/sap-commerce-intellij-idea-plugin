@@ -29,6 +29,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
     private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
@@ -57,6 +58,12 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                     "hybris.inspections.impex.unresolved.type.key",
                     referenceHolder = element
                 )
+            }
+
+            ImpexTypes.DOT -> {
+                if (element.parent.elementType == ImpexTypes.USER_RIGHTS_PERMISSION_VALUE) {
+                    highlight(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED, holder, element)
+                }
             }
 
             ImpexTypes.VALUE_SUBTYPE -> {
