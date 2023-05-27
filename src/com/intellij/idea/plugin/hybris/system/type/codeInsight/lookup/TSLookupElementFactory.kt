@@ -96,6 +96,11 @@ object TSLookupElementFactory {
         .withTypeText(attribute.flattenType, true)
         .withCaseSensitivity(true)
 
+    fun build(map: TSGlobalMetaMap, type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
+        .withTypeText(type, true)
+        .withIcon(HybrisIcons.TS_MAP)
+        .withCaseSensitivity(true)
+
     fun build(dom: EnumType) = dom.code.stringValue
         ?.let {
             LookupElementBuilder.create(it)

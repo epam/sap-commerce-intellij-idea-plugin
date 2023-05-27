@@ -15,9 +15,9 @@
 
 ### `ImpEx` enhancements
 - Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
-- Added reference resolution/code completion for Item subtypes declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
-- Added reference validation for Item subtypes declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
-- If Type equal to Item subtype it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)
+- Added reference resolution/code completion for Item sub-types declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
+- Added reference validation for Item sub-types declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
+- If Type equal to Item sub-type it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)
 - Improved code style for macro usages, distinguish `$config-` and reference to another macro [#421](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421)
 - Improved macro renaming, it will check for name collisions beforehand [#422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/422)
 - Improved macro usages [#424](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/424)
@@ -25,6 +25,7 @@
 - Added code completion of all available languages for `lang` modifier [#416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416)
 - Added reference support for `lang` modifier value [#420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420)
 - Added code completion and reference support for parameters of the `Collection` type [#453](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/453)
+- Added code completion and reference support for parameters of the `Map` type [#455](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/455)
 - Added `env.properties` support for project properties code completion [#419](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419)
 - Inject FlexibleSearch language into suitable macro declaration values [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/433)
 - Inject FlexibleSearch language into `SearchRestriction :: query` respecting `restrictedType` [#434](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/434)

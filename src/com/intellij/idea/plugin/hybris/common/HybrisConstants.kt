@@ -268,6 +268,8 @@ object HybrisConstants {
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
     const val ATTRIBUTE_SOURCE = "source"
     const val ATTRIBUTE_TARGET = "target"
+    const val ATTRIBUTE_KEY = "key"
+    const val ATTRIBUTE_VALUE = "value"
     const val ATTRIBUTE_CODE = "code"
     const val ATTRIBUTE_NAME = "name"
     const val ATTRIBUTE_PK = "pk"

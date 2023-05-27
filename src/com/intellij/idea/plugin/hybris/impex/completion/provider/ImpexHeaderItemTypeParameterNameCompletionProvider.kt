@@ -53,7 +53,7 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         TSCompletionService.getInstance(project)
             .getCompletions(
                 typeName,
-                TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION, TSMetaType.META_COLLECTION
+                TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION, TSMetaType.META_COLLECTION, TSMetaType.META_MAP
             )
             .let { result.addAllElements(it) }
     }

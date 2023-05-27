@@ -19,8 +19,10 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -60,6 +62,9 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
                     TSMetaType.META_COLLECTION -> metaService.findMetaCollectionByName(typeCode)
                         ?.let { getCompletions(it.elementType, recursionLevel + 1, *types) }
+
+                    TSMetaType.META_MAP -> metaService.findMetaMapByName(typeCode)
+                        ?.let { getCompletions(it) }
 
                     else -> null
                 }
@@ -109,6 +114,11 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
         completions.add(TSLookupElementFactory.build(metaRelation.target, ATTRIBUTE_TARGET))
         return completions
     }
+
+    private fun getCompletions(metaMap: TSGlobalMetaMap) = listOf(
+        TSLookupElementFactory.build(metaMap, metaMap.argumentType, ATTRIBUTE_KEY),
+        TSLookupElementFactory.build(metaMap, metaMap.returnType, ATTRIBUTE_VALUE),
+    )
 
     private fun getCompletions(metaItem: TSGlobalMetaItem) = getCompletions(metaItem, emptySet())
 

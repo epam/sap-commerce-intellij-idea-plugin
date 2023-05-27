@@ -22,12 +22,16 @@ import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
+import com.intellij.idea.plugin.hybris.system.type.model.MapType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
@@ -69,7 +73,7 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                 .trim()
             val typeName = findItemTypeName(ref.element)
 
-            val result: Array<ResolveResult> = resolveType(typeName, featureName, metaService)
+            val result: Array<ResolveResult> = resolveType(ref.element, typeName, featureName, metaService)
                 ?.let { arrayOf(it) }
                 ?: ResolveResult.EMPTY_ARRAY
 
@@ -81,6 +85,7 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
         }
 
         private fun resolveType(
+            element: PsiElement,
             typeName: String?,
             featureName: String,
             metaService: TSMetaModelAccess,
@@ -104,11 +109,20 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                                 ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
 
                         is TSGlobalMetaCollection -> resolveType(
+                            element,
                             meta.elementType,
                             featureName,
                             metaService,
                             recursionLevel + 1
                         )
+
+                        is TSGlobalMetaMap -> {
+                            if (PsiTreeUtilExt.getPrevSiblingOfElementType(element, ImpexTypes.COMMA) == null) {
+                                MapResolveResult(meta, MapType.ARGUMENTTYPE)
+                            } else {
+                                MapResolveResult(meta, MapType.RETURNTYPE)
+                            }
+                        }
 
                         else -> null
                     }

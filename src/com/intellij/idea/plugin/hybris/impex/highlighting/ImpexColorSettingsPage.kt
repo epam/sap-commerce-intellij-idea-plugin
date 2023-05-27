@@ -92,7 +92,7 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
             AttributesDescriptor("Remove", ImpexHighlighterColors.HEADER_MODE_REMOVE),
             AttributesDescriptor("Function call", ImpexHighlighterColors.FUNCTION_CALL),
             AttributesDescriptor("Header type", ImpexHighlighterColors.HEADER_TYPE),
-            AttributesDescriptor("Value subtype", ImpexHighlighterColors.VALUE_SUBTYPE),
+            AttributesDescriptor("Value sub-type", ImpexHighlighterColors.VALUE_SUBTYPE),
             AttributesDescriptor("Field value separator", ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
             AttributesDescriptor("List item separator", ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
             AttributesDescriptor("Field value", ImpexHighlighterColors.FIELD_VALUE),
