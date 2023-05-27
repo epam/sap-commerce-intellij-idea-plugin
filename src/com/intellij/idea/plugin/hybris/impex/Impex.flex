@@ -96,6 +96,7 @@ value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
 field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
+//user_rights_type   = [^]{white_space}*TYPE{white_space}*;
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -156,11 +157,11 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <USER_RIGHTS_HEADER_LINE> {
-    "type"                                                  { return ImpexTypes.TYPE; }
-    "uid"                                                   { return ImpexTypes.UID; }
+    "Type"                                                  { return ImpexTypes.TYPE; }
+    "UID"                                                   { return ImpexTypes.UID; }
     "MemberOfGroups"                                        { return ImpexTypes.MEMBEROFGROUPS; }
-    "password"                                              { return ImpexTypes.PASSWORD; }
-    "target"                                                { return ImpexTypes.TARGET; }
+    "Password"                                              { return ImpexTypes.PASSWORD; }
+    "Target"                                                { return ImpexTypes.TARGET; }
     {identifier}+                                           { return ImpexTypes.PERMISSION; }
     {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
     {semicolon}                                             { yybegin(USER_RIGHTS_WAIT_FOR_VALUE_LINE); return ImpexTypes.PARAMETERS_SEPARATOR; }
@@ -183,6 +184,8 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <USER_RIGHTS_VALUE_LINE> {
+// even if we may have one more Header line in the body of the user rights, it will be ignored by ImportExportUserRightsHelper
+//    {user_rights_type}                                      { yybegin(USER_RIGHTS_HEADER_LINE); yypushback(yylength()); }
     "-"                                                     { return ImpexTypes.PERMISSION_DENIED; }
     "+"                                                     { return ImpexTypes.PERMISSION_ALLOWED; }
     {identifier}+                                           { return ImpexTypes.FIELD_VALUE; }

@@ -1066,7 +1066,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)* user_rights_end
+  // user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end
   public static boolean user_rights(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights")) return false;
     boolean r, p;
@@ -1075,8 +1075,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, user_rights_1(b, l + 1));
     r = p && report_error_(b, user_rights_2(b, l + 1)) && r;
-    r = p && report_error_(b, user_rights_3(b, l + 1)) && r;
-    r = p && report_error_(b, user_rights_4(b, l + 1)) && r;
+    r = p && report_error_(b, user_rights_body(b, l + 1)) && r;
     r = p && user_rights_end(b, l + 1) && r;
     exit_section_(b, l, m, r, p, ImpexParser::recover_root);
     return r || p;
@@ -1108,69 +1107,6 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // user_rights_header_line CRLF+
-  private static boolean user_rights_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = user_rights_header_line(b, l + 1);
-    r = r && user_rights_3_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // CRLF+
-  private static boolean user_rights_3_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_3_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, CRLF);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, CRLF)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_3_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (user_rights_value_line CRLF+)*
-  private static boolean user_rights_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_4")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!user_rights_4_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_4", c)) break;
-    }
-    return true;
-  }
-
-  // user_rights_value_line CRLF+
-  private static boolean user_rights_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_4_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = user_rights_value_line(b, l + 1);
-    r = r && user_rights_4_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // CRLF+
-  private static boolean user_rights_4_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_4_0_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, CRLF);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, CRLF)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_4_0_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
   /* ********************************************************** */
   // FIELD_VALUE
   public static boolean user_rights_attribute_value(PsiBuilder b, int l) {
@@ -1180,6 +1116,102 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, FIELD_VALUE);
     exit_section_(b, m, USER_RIGHTS_ATTRIBUTE_VALUE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
+  static boolean user_rights_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = user_rights_body_0(b, l + 1);
+    r = r && user_rights_body_1(b, l + 1);
+    exit_section_(b, l, m, r, false, ImpexParser::user_rights_body_recover);
+    return r;
+  }
+
+  // user_rights_header_line CRLF+
+  private static boolean user_rights_body_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_header_line(b, l + 1);
+    r = r && user_rights_body_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CRLF+
+  private static boolean user_rights_body_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CRLF);
+    while (r) {
+      int c = current_position_(b);
+      if (!consumeToken(b, CRLF)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_body_0_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (user_rights_value_line CRLF+)*
+  private static boolean user_rights_body_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!user_rights_body_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_body_1", c)) break;
+    }
+    return true;
+  }
+
+  // user_rights_value_line CRLF+
+  private static boolean user_rights_body_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_value_line(b, l + 1);
+    r = r && user_rights_body_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CRLF+
+  private static boolean user_rights_body_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_1_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CRLF);
+    while (r) {
+      int c = current_position_(b);
+      if (!consumeToken(b, CRLF)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_body_1_0_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(user_rights_end)
+  static boolean user_rights_body_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !user_rights_body_recover_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (user_rights_end)
+  private static boolean user_rights_body_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_body_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = user_rights_end(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1365,16 +1397,16 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // user_rights_permission_value
-  //     | user_rights_type_attribute_value
+  // user_rights_type_attribute_value
+  //     | user_rights_permission_value
   //     | user_rights_multi_value
   //     | user_rights_single_value
   static boolean user_rights_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = user_rights_permission_value(b, l + 1);
-    if (!r) r = user_rights_type_attribute_value(b, l + 1);
+    r = user_rights_type_attribute_value(b, l + 1);
+    if (!r) r = user_rights_permission_value(b, l + 1);
     if (!r) r = user_rights_multi_value(b, l + 1);
     if (!r) r = user_rights_single_value(b, l + 1);
     exit_section_(b, l, m, r, false, ImpexParser::user_rights_value_recover);

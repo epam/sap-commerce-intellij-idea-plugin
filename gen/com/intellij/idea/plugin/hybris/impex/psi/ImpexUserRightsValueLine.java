@@ -36,4 +36,7 @@ public interface ImpexUserRightsValueLine extends PsiElement {
   @Nullable
   ImpexUserRightsValueGroup getValueGroup(int index);
 
+  @Nullable
+  ImpexUserRightsHeaderLine getHeaderLine();
+
 }

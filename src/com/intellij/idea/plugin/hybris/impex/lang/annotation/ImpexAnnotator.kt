@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
@@ -51,31 +50,44 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
         when (element.elementType) {
             ImpexTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpexUserRightsHeaderParameter ?: return
-                val actualColumnNumber = headerParameter.columnNumber ?: return
                 val elementType = headerParameter.firstChild.elementType ?: return
+                val noPasswordColumn = headerParameter.headerLine
+                    ?.userRightsHeaderParameterList
+                    ?.none { it.firstChild.elementType == ImpexTypes.PASSWORD }
+                    ?.takeIf { it }
+                    ?.takeIf { elementType == ImpexTypes.TARGET }
+                    ?.let { 1 }
+                    ?: 0
+                val actualColumnNumber = headerParameter.columnNumber ?: return
 
-                if (elementType == ImpexTypes.PERMISSION) {
-                    if (actualColumnNumber < userRightsParameters.size) {
+                when (elementType) {
+                    ImpexTypes.PERMISSION -> {
+                        if (actualColumnNumber >= userRightsParameters.size - noPasswordColumn) return
                         val expectedColumnName = userRightsParametersNames[actualColumnNumber] ?: return
 
-                        highlightError(holder, element, message(
-                            "hybris.inspections.impex.userRights.header.mandatory.expected",
-                            expectedColumnName,
-                            actualColumnNumber + 1,
-                            headerParameter.text,
-                        ))
+                        highlightError(
+                            holder, element, message(
+                                "hybris.inspections.impex.userRights.header.mandatory.expected",
+                                expectedColumnName,
+                                actualColumnNumber + 1 - noPasswordColumn,
+                                headerParameter.text,
+                            )
+                        )
                     }
-                } else {
-                    val expectedColumnNumber = userRightsParameters[elementType] ?: return
-                    if (actualColumnNumber != expectedColumnNumber) {
-                        highlightError(holder, element, message(
-                            "hybris.inspections.impex.userRights.header.mandatory.order",
-                            headerParameter.text,
-                            actualColumnNumber + 1,
-                        ))
+
+                    else -> {
+                        val expectedColumnNumber = userRightsParameters[elementType] ?: return
+
+                        if (actualColumnNumber == expectedColumnNumber - noPasswordColumn) return
+                        highlightError(
+                            holder, element, message(
+                                "hybris.inspections.impex.userRights.header.mandatory.order",
+                                headerParameter.text,
+                                expectedColumnNumber + 1 - noPasswordColumn,
+                            )
+                        )
                     }
                 }
-
             }
 
             ImpexTypes.USER_RIGHTS_SINGLE_VALUE -> {

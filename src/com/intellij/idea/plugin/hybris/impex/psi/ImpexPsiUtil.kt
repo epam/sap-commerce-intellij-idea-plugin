@@ -134,7 +134,13 @@ fun getHeaderParameter(element: ImpexUserRightsHeaderLine, index: Int): ImpexUse
     .userRightsHeaderParameterList
     .getOrNull(index)
 
+fun getHeaderLine(element: ImpexUserRightsValueLine): ImpexUserRightsHeaderLine? = PsiTreeUtil
+    .getPrevSiblingOfType(element, ImpexUserRightsHeaderLine::class.java)
+
 fun getValueLine(element: ImpexUserRightsValueGroup): ImpexUserRightsValueLine? = element
+    .parentOfType<ImpexUserRightsValueLine>()
+
+fun getValueLine(element: ImpexUserRightsValue): ImpexUserRightsValueLine? = element
     .parentOfType<ImpexUserRightsValueLine>()
 
 fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
@@ -151,15 +157,15 @@ fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
 fun getHeaderParameter(element: ImpexUserRightsValueGroup): ImpexUserRightsHeaderParameter? = element
     .columnNumber
     ?.let {
-        getUserRights(element)
-            ?.userRightsHeaderLine
+        getValueLine(element)
+            ?.headerLine
             ?.getHeaderParameter(it)
     }
 
 fun getHeaderParameter(element: ImpexUserRightsValue): ImpexUserRightsHeaderParameter? = when (val parent = element.parent) {
     is ImpexUserRightsFirstValueGroup -> {
-        getUserRights(parent)
-            ?.userRightsHeaderLine
+        getValueLine(element)
+            ?.headerLine
             ?.getHeaderParameter(0)
     }
 
@@ -167,10 +173,9 @@ fun getHeaderParameter(element: ImpexUserRightsValue): ImpexUserRightsHeaderPara
         parent
             .columnNumber
             ?.let {
-                getUserRights(element)
-                    ?.userRightsHeaderLine
+                getValueLine(element)
+                    ?.headerLine
                     ?.getHeaderParameter(it)
-
             }
     }
 

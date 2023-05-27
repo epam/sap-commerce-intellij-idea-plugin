@@ -88,11 +88,19 @@ private recover_modifiers ::= !(ALTERNATIVE_PATTERN | COMMA | CRLF | LEFT_SQUARE
 /*#################################################################################*/
 /*                                     User Rights                                 */
 /*#################################################################################*/
-user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)* user_rights_end {
+user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
     pin=1
     recoverWhile=recover_root
     methods=[getValueGroups]
 }
+
+private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
+// this mapping may enable multiple Header lines
+// ((user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*)*
+{
+    recoverWhile=user_rights_body_recover
+}
+private user_rights_body_recover ::= !(user_rights_end)
 
 user_rights_header_line ::= user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)*  {
     pin=1
@@ -114,7 +122,7 @@ user_rights_header_parameter ::= TYPE
 
 user_rights_value_line ::= user_rights_first_value_group? user_rights_value_group+ {
     recoverWhile=not_line_break
-    methods=[getValueGroup]
+    methods=[getValueGroup getHeaderLine]
 }
 
 user_rights_first_value_group ::= user_rights_value {
@@ -127,8 +135,8 @@ user_rights_value_group ::= FIELD_VALUE_SEPARATOR user_rights_value? {
     recoverWhile=user_rights_value_group_recover
     methods=[getValueLine getColumnNumber getHeaderParameter]
 }
-private user_rights_value ::= user_rights_permission_value
-    | user_rights_type_attribute_value
+private user_rights_value ::= user_rights_type_attribute_value
+    | user_rights_permission_value
     | user_rights_multi_value
     | user_rights_single_value {
     recoverWhile=user_rights_value_recover
