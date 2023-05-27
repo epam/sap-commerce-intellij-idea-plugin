@@ -14,7 +14,7 @@
 - Show different icon for `kotlinnature` extension [#408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/408)
 
 ### `ImpEx` enhancements
-- Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/429)
+- Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
 - Added reference resolution/code completion for Item subtypes declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
 - Added reference validation for Item subtypes declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
 - If Type equal to Item subtype it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)
@@ -40,7 +40,7 @@
 - Added `Type System` related code completion and reference support for `Target` column [#438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/438)
 - Added validation of the references to `Type System` [#439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/439)
 - Ignore case for header line parameters [#445](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/445)
-- Added support of the inherited `.` permission identifier [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
+- Added support of the inherited `.` permission identifier [#450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/450)
 
 ### `FlexibleSearch` enhancements
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)
