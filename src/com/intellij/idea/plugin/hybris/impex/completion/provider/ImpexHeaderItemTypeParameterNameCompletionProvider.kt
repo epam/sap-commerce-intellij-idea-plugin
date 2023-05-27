@@ -24,6 +24,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
@@ -50,7 +51,10 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         val typeName = findItemTypeName(psiElementUnderCaret) ?: return
 
         TSCompletionService.getInstance(project)
-            .getCompletions(typeName)
+            .getCompletions(
+                typeName,
+                TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION, TSMetaType.META_COLLECTION
+            )
             .let { result.addAllElements(it) }
     }
 

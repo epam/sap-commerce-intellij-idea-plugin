@@ -33,14 +33,20 @@ import com.intellij.psi.tree.IElementType
 
 abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : Annotator {
 
-    fun highlightError(holder: AnnotationHolder, element: PsiElement, message: String) {
+    fun highlightError(
+        holder: AnnotationHolder,
+        element: PsiElement,
+        message: String,
+        severity: HighlightSeverity = HighlightSeverity.ERROR,
+        type: ProblemHighlightType = ProblemHighlightType.ERROR,
+    ) {
         annotation(
             message,
             holder,
-            HighlightSeverity.ERROR
+            severity
         )
             .range(element.textRange)
-            .highlightType(ProblemHighlightType.ERROR)
+            .highlightType(type)
             .create()
     }
 

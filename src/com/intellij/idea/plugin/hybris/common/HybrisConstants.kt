@@ -202,6 +202,7 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
+    const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"
     const val TS_TYPE_ITEM = "Item"
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"

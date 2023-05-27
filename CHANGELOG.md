@@ -24,6 +24,7 @@
 - Implemented inplace renaming for macros [#423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/423)
 - Added code completion of all available languages for `lang` modifier [#416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/416)
 - Added reference support for `lang` modifier value [#420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/420)
+- Added code completion and reference support for parameters of the `Collection` type [#453](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/453)
 - Added `env.properties` support for project properties code completion [#419](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/419)
 - Inject FlexibleSearch language into suitable macro declaration values [#433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/433)
 - Inject FlexibleSearch language into `SearchRestriction :: query` respecting `restrictedType` [#434](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/434)

@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
@@ -68,7 +69,26 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                 .trim()
             val typeName = findItemTypeName(ref.element)
 
-            val result: Array<ResolveResult> = metaService.findMetaClassifierByName(typeName)
+            val result: Array<ResolveResult> = resolveType(typeName, featureName, metaService)
+                ?.let { arrayOf(it) }
+                ?: ResolveResult.EMPTY_ARRAY
+
+            // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
+            CachedValueProvider.Result.create(
+                result,
+                metaService.getMetaModel()
+            )
+        }
+
+        private fun resolveType(
+            typeName: String?,
+            featureName: String,
+            metaService: TSMetaModelAccess,
+            recursionLevel: Int = 0
+        ): ResolveResult? {
+            // If we've entered this method 2+ times it may sound like a bi-directional relation, return right away
+            if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return null
+            return metaService.findMetaClassifierByName(typeName)
                 ?.let { meta ->
                     when (meta) {
                         is TSGlobalMetaEnum -> metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
@@ -83,17 +103,16 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
                                 .find { relationEnd -> relationEnd.name.equals(featureName, true) }
                                 ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
 
+                        is TSGlobalMetaCollection -> resolveType(
+                            meta.elementType,
+                            featureName,
+                            metaService,
+                            recursionLevel + 1
+                        )
+
                         else -> null
                     }
                 }
-                ?.let { arrayOf(it) }
-                ?: ResolveResult.EMPTY_ARRAY
-
-            // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
-            CachedValueProvider.Result.create(
-                result,
-                metaService.getMetaModel()
-            )
         }
 
         private fun findItemTypeName(element: PsiElement) = (

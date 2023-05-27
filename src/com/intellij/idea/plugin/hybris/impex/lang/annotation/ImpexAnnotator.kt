@@ -38,7 +38,7 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
         ImpexTypes.PASSWORD to 3,
         ImpexTypes.TARGET to 4
     )
-    private val userRightsParametersNames = mapOf(
+    private val userRightsParameterNames = mapOf(
         0 to "Type",
         1 to "UID",
         2 to "MemberOfGroups",
@@ -63,7 +63,7 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                 when (elementType) {
                     ImpexTypes.PERMISSION -> {
                         if (actualColumnNumber >= userRightsParameters.size - noPasswordColumn) return
-                        val expectedColumnName = userRightsParametersNames[actualColumnNumber] ?: return
+                        val expectedColumnName = userRightsParameterNames[actualColumnNumber] ?: return
 
                         highlightError(
                             holder, element, message(
