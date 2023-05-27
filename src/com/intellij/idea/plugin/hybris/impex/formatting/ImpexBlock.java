@@ -41,25 +41,26 @@ public class ImpexBlock extends AbstractBlock {
 
     private final SpacingBuilder spacingBuilder;
     private final CodeStyleSettings codeStyleSettings;
+    private final AlignmentStrategy alignmentStrategy;
 
     public ImpexBlock(
         @NotNull final ASTNode node,
         @Nullable final Wrap wrap,
         @Nullable final Alignment alignment,
         @NotNull final SpacingBuilder spacingBuilder,
-        @NotNull final CodeStyleSettings codeStyleSettings
-    ) {
+        @NotNull final CodeStyleSettings codeStyleSettings,
+        @NotNull final AlignmentStrategy alignmentStrategy) {
         super(node, wrap, alignment);
 
         this.spacingBuilder = spacingBuilder;
         this.codeStyleSettings = codeStyleSettings;
+        this.alignmentStrategy = alignmentStrategy;
     }
 
     @Override
     protected List<Block> buildChildren() {
         final List<Block> blocks = new ArrayList<Block>();
 
-        final AlignmentStrategy alignmentStrategy = getAlignmentStrategy();
         alignmentStrategy.processNode(myNode);
 
         ASTNode currentNode = myNode.getFirstChildNode();
@@ -73,7 +74,8 @@ public class ImpexBlock extends AbstractBlock {
                     null,
                     alignmentStrategy.getAlignment(currentNode),
                     spacingBuilder,
-                    codeStyleSettings
+                    codeStyleSettings,
+                    alignmentStrategy
                 );
 
                 blocks.add(block);
@@ -83,20 +85,6 @@ public class ImpexBlock extends AbstractBlock {
         }
 
         return blocks;
-    }
-
-    @NotNull
-    private AlignmentStrategy getAlignmentStrategy() {
-        final ImpexCodeStyleSettings impexCodeStyleSettings = this.codeStyleSettings.getCustomSettings(
-            ImpexCodeStyleSettings.class
-        );
-
-        if (impexCodeStyleSettings.TABLIFY) {
-
-            return ApplicationManager.getApplication().getService(TableAlignmentStrategy.class);
-        }
-
-        return ApplicationManager.getApplication().getService(ColumnsAlignmentStrategy.class);
     }
 
     private boolean isNotWhitespaceOrNewLine(final ASTNode currentNode) {

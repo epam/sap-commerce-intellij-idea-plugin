@@ -36,28 +36,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
 
-    @Override
-    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
-        return createModelInternally(formattingContext.getPsiElement(), formattingContext.getCodeStyleSettings());
-    }
-
-    @NotNull
-    private FormattingModel createModelInternally(final PsiElement element, final CodeStyleSettings settings) {
-        final Block impexBlock = new ImpexBlock(
-            element.getNode(),
-            null,
-            Alignment.createAlignment(),
-            createSpaceBuilder(settings),
-            settings
-        );
-
-        return FormattingModelProvider.createFormattingModelForPsiFile(
-            element.getContainingFile(),
-            impexBlock,
-            settings
-        );
-    }
-
     private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
         final ImpexCodeStyleSettings impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
 
@@ -128,6 +106,37 @@ public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
             .before(ImpexTypes.ALTERNATIVE_PATTERN)
             .spaceIf(impexSettings.SPACE_BEFORE_ALTERNATIVE_PATTERN)
             ;
+    }
+
+    @Override
+    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
+        return createModelInternally(formattingContext.getPsiElement(), formattingContext.getCodeStyleSettings());
+    }
+
+    @NotNull
+    private FormattingModel createModelInternally(final PsiElement element, final CodeStyleSettings settings) {
+        final Block impexBlock = new ImpexBlock(
+            element.getNode(),
+            null,
+            Alignment.createAlignment(),
+            createSpaceBuilder(settings),
+            settings,
+            getAlignmentStrategy(settings)
+        );
+
+        return FormattingModelProvider.createFormattingModelForPsiFile(
+            element.getContainingFile(),
+            impexBlock,
+            settings
+        );
+    }
+
+    @NotNull
+    private AlignmentStrategy getAlignmentStrategy(final CodeStyleSettings settings) {
+        final ImpexCodeStyleSettings impexCodeStyleSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
+        return impexCodeStyleSettings.TABLIFY
+            ? new TableAlignmentStrategy()
+            : new ColumnsAlignmentStrategy();
     }
 
     @Nullable
