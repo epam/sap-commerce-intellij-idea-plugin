@@ -65,6 +65,7 @@
 - Improved code completion for ImpEx sub-types [#447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/447)
 - `ImpEx` Inspection rule for `lang` attribute will resolve value if it is a macro usage [#456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/456)
 - `ImpEx` alignment strategy is not file specific and fails in multithreading environment [#454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/454)
+- `ImpEx` inline type reference is not correctly validated [#461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/461)
 - Inject `FlexibleSearch` language only into `query` column of the `SearchRestriction` in `ImpEx` files [#441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/441)
 
 ### Deprecated

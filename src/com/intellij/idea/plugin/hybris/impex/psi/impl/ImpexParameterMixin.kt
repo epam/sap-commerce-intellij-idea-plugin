@@ -54,7 +54,7 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
         }
 
         if (myReferences.isEmpty() || previousText == null) {
-            if (textContains('.')) {
+            if (inlineTypeName != null) {
                 myReferences.add(ImpexFunctionTSAttributeReference(this))
                 myReferences.add(ImpexFunctionTSItemReference(this))
             } else {
