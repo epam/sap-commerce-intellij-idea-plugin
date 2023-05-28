@@ -53,8 +53,6 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.ColumnsAlignmentStrategy"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.formatting.TableAlignmentStrategy"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
                         serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
