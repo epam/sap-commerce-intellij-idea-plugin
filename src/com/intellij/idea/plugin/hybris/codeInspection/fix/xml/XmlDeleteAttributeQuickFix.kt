@@ -16,24 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.fix;
+package com.intellij.idea.plugin.hybris.codeInspection.fix.xml;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
+import com.intellij.psi.xml.XmlAttribute
+import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 
-class XmlDeleteSubTagQuickFix(private val tagName: String) : LocalQuickFix {
+class XmlDeleteAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteSubTag", tagName)
+    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        val xmlTag = descriptor.psiElement as? XmlTag ?: return
-        val subTag = xmlTag.findFirstSubTag(tagName) ?: return
+        when (val currentElement = descriptor.psiElement) {
+            is XmlTag -> {
+                currentElement.getAttribute(attributeName)?.delete()
+                PsiNavigateUtil.navigate(descriptor, currentElement)
+            }
 
-        subTag.delete()
-        PsiNavigateUtil.navigate(descriptor, subTag)
+            is XmlAttribute -> {
+                PsiNavigateUtil.navigate(descriptor, currentElement.parent)
+                currentElement.delete()
+            }
+
+            is XmlAttributeValue -> {
+                (currentElement.parent as? XmlAttribute)
+                    ?.also { PsiNavigateUtil.navigate(descriptor, currentElement.parent) }
+                    ?.delete()
+            }
+        }
     }
 }

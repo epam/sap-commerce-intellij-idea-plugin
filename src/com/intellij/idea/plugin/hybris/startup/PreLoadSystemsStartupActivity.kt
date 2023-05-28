@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity

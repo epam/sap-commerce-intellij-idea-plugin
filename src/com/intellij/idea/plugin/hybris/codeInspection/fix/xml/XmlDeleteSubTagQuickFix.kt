@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.codeInspection.fix;
+package com.intellij.idea.plugin.hybris.codeInspection.fix.xml;
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
@@ -25,14 +25,15 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlTag
 
-class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
+class XmlDeleteSubTagQuickFix(private val tagName: String) : LocalQuickFix {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.AddAttribute", attributeName)
+    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteSubTag", tagName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        (descriptor.psiElement as? XmlTag)
-            ?.setAttribute(attributeName, "")
-            ?.valueElement
-            ?.let { PsiNavigateUtil.navigate(descriptor, it) }
+        val xmlTag = descriptor.psiElement as? XmlTag ?: return
+        val subTag = xmlTag.findFirstSubTag(tagName) ?: return
+
+        subTag.delete()
+        PsiNavigateUtil.navigate(descriptor, subTag)
     }
 }
