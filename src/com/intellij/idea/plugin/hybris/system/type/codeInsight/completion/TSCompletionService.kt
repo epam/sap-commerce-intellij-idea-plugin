@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.project.Project
 
@@ -31,6 +32,8 @@ interface TSCompletionService {
     fun getCompletions(typeCode: String, vararg types: TSMetaType): List<LookupElementBuilder>
 
     fun getCompletions(vararg types: TSMetaType): List<LookupElementBuilder>
+
+    fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder>
 
     companion object {
         fun getInstance(project: Project): TSCompletionService = project.getService(TSCompletionService::class.java)

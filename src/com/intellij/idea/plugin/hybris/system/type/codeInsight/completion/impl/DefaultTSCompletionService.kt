@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -72,6 +74,32 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
                 }
             }
             .flatten()
+    }
+
+    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder> {
+        val completion = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings.completion
+        if (!completion.showInlineTypes) return emptyList()
+
+        val referenceItemTypeName = element.referenceItemTypeName ?: return emptyList()
+        val suffix = if (element.inlineTypeName == null && completion.addCommaAfterInlineType) {
+            "."
+        } else {
+            ""
+        }
+
+        val metaModelAccess = TSMetaModelAccess.getInstance(project)
+        metaModelAccess.findMetaItemByName(referenceItemTypeName)
+            ?: return emptyList()
+
+        return metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+            .filter { meta ->
+                meta.allExtends.find { it.name == referenceItemTypeName } != null
+                    // or itself, it will be highlighted as unnecessary via Inspection
+                    || meta.name == referenceItemTypeName
+            }
+            .mapNotNull {
+                TSLookupElementFactory.build(it, suffix)
+            }
     }
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {

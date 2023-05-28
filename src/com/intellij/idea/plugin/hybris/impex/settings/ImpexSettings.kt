@@ -18,8 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.settings
 
+import com.intellij.openapi.components.BaseState
+
 data class ImpexSettings(
     var folding: ImpexFoldingSettings = ImpexFoldingSettings(),
+    var completion: ImpexCompletionSettings = ImpexCompletionSettings(),
 )
 
 data class ImpexFoldingSettings(
@@ -27,3 +30,7 @@ data class ImpexFoldingSettings(
     var useSmartFolding: Boolean = true,
 )
 
+class ImpexCompletionSettings : BaseState() {
+    var showInlineTypes by property(true)
+    var addCommaAfterInlineType by property(true)
+}
