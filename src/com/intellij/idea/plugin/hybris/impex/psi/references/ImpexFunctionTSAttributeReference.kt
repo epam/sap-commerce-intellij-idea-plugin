@@ -41,14 +41,11 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
+class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
-        val alias = element.text
-            .substringBefore("(")
-            .substringBefore("[")
-            .trim()
-        return TextRange.from(element.text.indexOf(alias), alias.length)
+        val attributeName = element.attributeName
+        return TextRange.from(element.text.indexOf(attributeName), attributeName.length)
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
@@ -62,16 +59,12 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
 
     companion object {
         @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexFunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FunctionTSAttributeReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexFunctionTSAttributeReference> { ref ->
             val metaService = TSMetaModelAccess.getInstance(ref.project)
-            val featureName = ref.element.text
-                .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                .substringBefore("(")
-                .substringBefore("[")
-                .trim()
-            val typeName = findItemTypeName(ref.element)
+            val featureName = ref.element.attributeName
+            val typeName = ref.element.itemTypeName
 
             val result: Array<ResolveResult> = resolveType(ref.element, typeName, featureName, metaService)
                 ?.let { arrayOf(it) }

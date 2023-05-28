@@ -52,4 +52,10 @@ public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterName
     return findChildByClass(ImpexMacroUsageDec.class);
   }
 
+  @Override
+  @Nullable
+  public ImpexHeaderTypeName getHeaderItemTypeName() {
+    return ImpexPsiUtil.getHeaderItemTypeName(this);
+  }
+
 }

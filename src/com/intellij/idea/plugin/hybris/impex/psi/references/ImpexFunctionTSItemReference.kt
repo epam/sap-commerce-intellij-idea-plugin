@@ -18,27 +18,26 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-class ImpexTSSubTypeItemReference(owner: ImpexSubTypeName) : TSReferenceBase<ImpexSubTypeName>(owner), HighlightedReference {
+class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner), HighlightedReference {
 
-    override fun getVariants() = getAllowedVariants(element)
-        .mapNotNull { TSLookupElementFactory.build(it) }
-        .toTypedArray()
+    override fun calculateDefaultRangeInElement(): TextRange = element.inlineTypeName
+        ?.let { TextRange.from(0, it.length) }
+        ?: super.calculateDefaultRangeInElement()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
@@ -51,16 +50,24 @@ class ImpexTSSubTypeItemReference(owner: ImpexSubTypeName) : TSReferenceBase<Imp
 
     companion object {
         @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexTSSubTypeItemReference>>("HYBRIS_TS_SUB_TYPE_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexFunctionTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexTSSubTypeItemReference> { ref ->
-            val lookingForName = ref.value
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexFunctionTSItemReference> { ref ->
+            val lookingForName = ref.value.trim()
             val metaService = TSMetaModelAccess.getInstance(ref.project)
 
-            val result: Array<ResolveResult> = metaService.findMetaItemByName(lookingForName)
-                ?.takeIf { getAllowedVariants(ref.element).contains(it) }
+            val result: Array<ResolveResult> = TSMetaModelAccess.getInstance(ref.project).findMetaClassifierByName(lookingForName)
                 ?.declarations
-                ?.map { ItemResolveResult(it) }
+                ?.mapNotNull {
+                    when (it) {
+                        is TSMetaItem -> ItemResolveResult(it)
+                        is TSMetaEnum -> EnumResolveResult(it)
+                        is TSMetaRelation -> RelationResolveResult(it)
+                        is TSMetaMap -> MapResolveResult(it)
+                        is TSMetaCollection -> CollectionResolveResult(it)
+                        else -> null
+                    }
+                }
                 ?.toTypedArray()
                 ?: ResolveResult.EMPTY_ARRAY
 
@@ -69,19 +76,6 @@ class ImpexTSSubTypeItemReference(owner: ImpexSubTypeName) : TSReferenceBase<Imp
                 result,
                 metaService.getMetaModel()
             )
-        }
-
-        private fun getAllowedVariants(element: ImpexSubTypeName): List<TSGlobalMetaItem> {
-            val headerTypeName = element.headerTypeName
-                ?.text
-                ?: return emptyList()
-
-            return TSMetaModelAccess.getInstance(element.project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-                .filter {meta ->
-                    meta.allExtends.find { it.name == headerTypeName } != null
-                        // or itself, it will be highlighted as unnecessary via Inspection
-                        || meta.name == headerTypeName
-                }
         }
     }
 }

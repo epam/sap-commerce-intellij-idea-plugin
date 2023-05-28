@@ -24,13 +24,16 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
+import org.jetbrains.kotlin.utils.addToStdlib.indexOfOrNull
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)
@@ -118,6 +121,61 @@ fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
         ?.key
         ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 }
+
+fun getInlineTypeName(element: ImpexParameter): String? = element.text
+//    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
+    .substringBefore("(")
+    .substringBefore("[")
+    .trim()
+    .indexOfOrNull('.')
+    ?.let { element.text.substring(0, it).trim() }
+
+fun getAttributeName(element: ImpexParameter): String = element.text
+//    .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
+    .substringBefore("(")
+    .substringBefore("[")
+    .substringAfter(".")
+    .trim()
+
+/**
+ * 1. Try to get inline `MyType` type: referenceAttr(MyType.attr)
+ * 2. If not present fallback to type of the `referenceAttr`: referenceAttr(attr)
+ */
+fun getItemTypeName(element: ImpexParameter): String? = element
+    .inlineTypeName
+    ?: element.referenceItemTypeName
+
+fun getReferenceName(element: ImpexParameter): String? = (PsiTreeUtil
+    .getParentOfType(element, ImpexParameter::class.java)
+    ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
+        ?.anyHeaderParameterName)
+    ?.text
+
+fun getReferenceItemTypeName(element: ImpexParameter): String? = (
+    PsiTreeUtil
+        .getParentOfType(element, ImpexParameter::class.java)
+        ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
+            ?.anyHeaderParameterName
+    )
+    ?.reference
+    ?.let { it as PsiPolyVariantReference }
+    ?.multiResolve(false)
+    ?.firstOrNull()
+    ?.let {
+        when (it) {
+            is AttributeResolveResult -> it.meta.type
+            is EnumResolveResult -> it.meta.name
+            is ItemResolveResult -> it.meta.name
+            is RelationResolveResult -> it.meta.name
+            is RelationEndResolveResult -> it.meta.type
+            else -> null
+        }
+    }
+
+fun getHeaderItemTypeName(element: ImpexAnyHeaderParameterName): ImpexHeaderTypeName? = PsiTreeUtil
+    .getParentOfType(element, ImpexHeaderLine::class.java)
+    ?.fullHeaderType
+    ?.headerTypeName
 
 // ------------------------------------------
 //              User Rights

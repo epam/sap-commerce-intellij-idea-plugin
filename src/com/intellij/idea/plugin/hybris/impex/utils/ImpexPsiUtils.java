@@ -581,15 +581,6 @@ public final class ImpexPsiUtils {
         return -1;
     }
 
-    public static @Nullable ImpexHeaderTypeName findHeaderItemTypeName(final ImpexAnyHeaderParameterName parameter) {
-        final var parent = PsiTreeUtil.getParentOfType(parameter, ImpexHeaderLine.class);
-        if (parent == null) return null;
-        final var fullHeader = parent.getFullHeaderType();
-        if (fullHeader == null) return null;
-
-        return fullHeader.getHeaderTypeName();
-    }
-
     @Nullable
     @Contract(pure = true)
     public static ImpexFullHeaderParameter getImpexFullHeaderParameterFromHeaderLineByNumber(

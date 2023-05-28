@@ -34,7 +34,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
+internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
@@ -53,7 +53,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
             val featureName = ref.value
             val result = (
-                tryResolveForItemType(metaModelAccess, featureName, ImpexPsiUtils.findHeaderItemTypeName(ref.element)?.text)
+                tryResolveForItemType(metaModelAccess, featureName, ref.element.headerItemTypeName?.text)
                     ?: tryResolveForRelationType(ref.element, metaModelAccess, featureName)
                     ?: tryResolveByEnumType(ref.element, metaModelAccess, featureName)
                 )
@@ -71,7 +71,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
             refName: String
-        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
+        ): ResolveResult? = element.headerItemTypeName
             ?.text
             ?.let { metaService.findMetaEnumByName(it) }
             ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
@@ -98,7 +98,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterNameMixin
             element: ImpexAnyHeaderParameterName,
             metaService: TSMetaModelAccess,
             featureName: String
-        ): ResolveResult? = ImpexPsiUtils.findHeaderItemTypeName(element)
+        ): ResolveResult? = element.headerItemTypeName
             ?.text
             ?.let { metaService.findMetaRelationByName(it) }
             ?.let {

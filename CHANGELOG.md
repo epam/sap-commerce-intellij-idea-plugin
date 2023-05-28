@@ -16,6 +16,7 @@
 ### `ImpEx` enhancements
 - Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
 - Added reference resolution/code completion for Item sub-types declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
+- Respect inline sub-type for header line parameters, see [ImpEx Header](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US) [#457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/457)
 - Added reference validation for Item sub-types declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
 - If Type equal to Item sub-type it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)
 - Improved code style for macro usages, distinguish `$config-` and reference to another macro [#421](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421)

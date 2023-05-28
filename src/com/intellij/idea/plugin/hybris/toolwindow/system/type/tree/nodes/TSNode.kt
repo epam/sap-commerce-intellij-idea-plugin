@@ -44,6 +44,7 @@ abstract class TSNode : PresentableNodeDescriptor<TSNode>, Supplier, Disposable 
 
     override fun dispose() {
         myChildren.clear()
+        globalMetaModel = null
     }
 
     fun getChildren(globalMetaModel: TSGlobalMetaModel?): Collection<TSNode> {

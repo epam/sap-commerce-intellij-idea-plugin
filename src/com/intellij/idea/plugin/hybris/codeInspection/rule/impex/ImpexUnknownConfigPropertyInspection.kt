@@ -84,7 +84,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                 if (properties.isEmpty()) {
                     problemsHolder.registerProblem(
                         macroValue,
-                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key"),
+                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key", key),
                         ProblemHighlightType.ERROR
                     )
                 }
