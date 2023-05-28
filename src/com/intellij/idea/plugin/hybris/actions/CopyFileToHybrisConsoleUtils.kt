@@ -65,11 +65,8 @@ object CopyFileToHybrisConsoleUtils {
         return text
     }
 
-    private fun getFileExtensions(project: Project) = with(getSelectedFiles(project)) {
-        if (this.any { it.isDirectory }) return@with emptyList()
-
-        return@with this.mapNotNull { it.extension }
-    }
+    private fun getFileExtensions(project: Project) = getSelectedFiles(project)
+        .mapNotNull { it.extension }
 
     private fun getQueryFromSelectedFiles(project: Project) = getSelectedFiles(project)
         .mapNotNull { getPsiFileNode(project, it) }
@@ -82,12 +79,12 @@ object CopyFileToHybrisConsoleUtils {
         ?.mapNotNull { getVirtualFile(it) }
         ?: emptyList()
 
-    private fun getVirtualFile(treePath: TreePath): VirtualFile? {
-        val treeNode = treePath.lastPathComponent as? DefaultMutableTreeNode ?: return null
-        val projectViewNode = treeNode.userObject as? ProjectViewNode<*> ?: return null
-
-        return projectViewNode.virtualFile
-    }
+    private fun getVirtualFile(treePath: TreePath) = treePath.lastPathComponent
+        ?.let { it as? DefaultMutableTreeNode }
+        ?.userObject
+        ?.let { it as? ProjectViewNode<*> }
+        ?.virtualFile
+        ?.takeUnless { it.isDirectory }
 
     private fun getSelectedTreePaths(project: Project) = ProjectView.getInstance(project)
         .currentProjectViewPane

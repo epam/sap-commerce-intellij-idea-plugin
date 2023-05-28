@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_VERSION_1905_0
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
@@ -31,8 +32,6 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
 import com.intellij.util.xmlb.XmlSerializerUtil
-
-private const val PLATFORM_VERSION_1905_0 = "1905.0"
 
 @State(name = "HybrisProjectSettings", storages = [Storage(STORAGE_HYBRIS_PROJECT_SETTINGS)])
 class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSettings> {
@@ -59,7 +58,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
                 state.availableExtensions.clear()
 
                 val availableExtensions = state.completeSetOfAvailableExtensionsInHybris
-                        .map { Pair(it, ExtensionDescriptor(name = it)) }
+                    .map { Pair(it, ExtensionDescriptor(name = it)) }
                 state.availableExtensions.putAll(availableExtensions)
                 registerCloudExtensions()
             }
@@ -70,17 +69,19 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
     fun setAvailableExtensions(descriptors: Set<HybrisModuleDescriptor>) {
         state.availableExtensions.clear()
         descriptors
-                .map { it.extensionDescriptor }
-                .forEach { state.availableExtensions[it.name] = it }
+            .map { it.extensionDescriptor }
+            .forEach { state.availableExtensions[it.name] = it }
         registerCloudExtensions()
     }
 
     fun registerCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
-            .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, HybrisModuleDescriptorType.CCV2) }
+        .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, HybrisModuleDescriptorType.CCV2) }
 
-    fun getBackofficeWebInfLib() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019 else HybrisConstants.BACKOFFICE_WEB_INF_LIB
+    fun getBackofficeWebInfLib() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019
+    else HybrisConstants.BACKOFFICE_WEB_INF_LIB
 
-    fun getBackofficeWebInfClasses() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019 else HybrisConstants.BACKOFFICE_WEB_INF_CLASSES
+    fun getBackofficeWebInfClasses() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_CLASSES_2019
+    else HybrisConstants.BACKOFFICE_WEB_INF_CLASSES
 
     private fun is2019VersionOrHigher(): Boolean {
         val hybrisVersion = state.hybrisVersion
@@ -91,7 +92,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
     }
 
     private fun getModuleSettings(moduleName: String) = state.moduleSettings
-            .computeIfAbsent(moduleName) { _ -> ModuleSettings() }
+        .computeIfAbsent(moduleName) { _ -> ModuleSettings() }
 
     companion object {
         @JvmStatic

@@ -20,12 +20,9 @@ package com.intellij.idea.plugin.hybris.common
 import com.intellij.openapi.util.io.FileUtilRt
 import java.io.File
 
-/**
- * Created 10:30 PM 07 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash></AlexanderBartash>@gmail.com>
- */
 object HybrisConstants {
+
+    const val PLATFORM_VERSION_1905_0 = "1905.0"
 
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"

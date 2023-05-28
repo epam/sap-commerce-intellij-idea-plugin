@@ -30,7 +30,8 @@ class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix
     override fun getFamilyName() = message("hybris.inspections.fix.xml.AddAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
-        (descriptor.psiElement as? XmlTag)
+        descriptor.psiElement
+            .let { it as? XmlTag }
             ?.setAttribute(attributeName, "")
             ?.valueElement
             ?.let { PsiNavigateUtil.navigate(descriptor, it) }

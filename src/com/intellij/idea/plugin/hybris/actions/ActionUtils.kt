@@ -29,7 +29,7 @@ object ActionUtils {
     fun isHybrisContext(event: AnActionEvent) = isHybrisContext(event.dataContext)
 
     fun isHybrisContext(dataContext: DataContext) = CommonDataKeys.PROJECT.getData(dataContext)
-        ?.let { HybrisProjectSettingsComponent.getInstance(it).isHybrisProject() }
+        ?.let { isHybrisContext(it) }
         ?: false
 
     fun isHybrisContext(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()

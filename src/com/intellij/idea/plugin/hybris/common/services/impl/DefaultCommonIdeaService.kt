@@ -82,7 +82,6 @@ class DefaultCommonIdeaService : CommonIdeaService {
         HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
             .getActiveHacRemoteConnectionSettings(project)
 
-    //TODO: with enabling kotlin DSL 2.0 settings shouldn't be required anymore
     override fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
         val currentSettings = settings ?: HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
             .getActiveSolrRemoteConnectionSettings(project)
@@ -127,7 +126,6 @@ class DefaultCommonIdeaService : CommonIdeaService {
     }
 
     private fun cleanUpRemoteConnectionSettingsHostIp(connectionSettings: HybrisRemoteConnectionSettings) {
-        val regex = Regex("https?://")
         connectionSettings.hostIP = connectionSettings.hostIP
             ?.replace(regex, "")
     }
@@ -152,4 +150,8 @@ class DefaultCommonIdeaService : CommonIdeaService {
                     )
                 }
         }
+
+    companion object {
+        private val regex = Regex("https?://")
+    }
 }
