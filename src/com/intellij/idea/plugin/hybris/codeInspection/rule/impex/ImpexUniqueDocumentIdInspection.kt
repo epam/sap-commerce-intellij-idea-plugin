@@ -26,19 +26,18 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getColumnForHeader
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel {
         return HighlightDisplayLevel.ERROR
     }
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexDocumentIdVisitor(holder)
 }
 
@@ -47,17 +46,21 @@ private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder)
         if (!isDocumentId(parameter.firstChild)) return
 
         val set = HashSet<String>()
-        val column = getColumnForHeader(parameter.parent as ImpexFullHeaderParameter)
-        column.forEach { value ->
-            if (!set.add(value.text)) {
+        val impexFullHeaderParameter = parameter.parent as? ImpexFullHeaderParameter ?: return
+        getColumnForHeader(impexFullHeaderParameter)
+            .forEach {
+                if (!set.add(it.text)) {
+                    val qualifier = (it as ImpexValueGroup)
+                        .value?.text
+                        ?: it.text
 
-
-                problemsHolder.registerProblem(
-                    value,
-                    message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", parameter.text),
-                    ProblemHighlightType.ERROR)
+                    problemsHolder.registerProblem(
+                        it,
+                        message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", qualifier, parameter.text),
+                        ProblemHighlightType.ERROR
+                    )
+                }
             }
-        }
     }
 
     private fun isDocumentId(element: PsiElement) = element is LeafPsiElement && element.elementType == DOCUMENT_ID
