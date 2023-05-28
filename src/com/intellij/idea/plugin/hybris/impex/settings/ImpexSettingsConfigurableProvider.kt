@@ -60,7 +60,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                         .comment("""
                             When enabled, parameter Type and all its extends will be available as suggestions.<br>
                             Sample: <code>principal(<strong>Principal.</strong>uid)</code>
-                            """".trimIndent()
+                            """.trimIndent()
                         )
                         .bindSelected(state.completion::showInlineTypes)
                 }
@@ -68,7 +68,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                     checkBox("Automatically add '.' char after inline type")
                         .comment("""
                             When enabled and there is '.' char is not present, it will be injected automatically
-                            """".trimIndent()
+                            """.trimIndent()
                         )
                         .bindSelected(state.completion::addCommaAfterInlineType)
                 }
