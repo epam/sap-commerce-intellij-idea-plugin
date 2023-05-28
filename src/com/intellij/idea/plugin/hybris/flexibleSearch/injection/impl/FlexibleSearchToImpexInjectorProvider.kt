@@ -47,6 +47,9 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
 
         val expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
 
+        // do not inject executable statement
+        if (expression.startsWith("#%")) return
+
         val valueLine = host.valueGroup
             ?.valueLine
 

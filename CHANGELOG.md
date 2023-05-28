@@ -67,6 +67,7 @@
 - `ImpEx` alignment strategy is not file specific and fails in multithreading environment [#454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/454)
 - `ImpEx` inline type reference is not correctly validated [#461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/461)
 - Inject `FlexibleSearch` language only into `query` column of the `SearchRestriction` in `ImpEx` files [#441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/441)
+- Do not inject `FlexibleSearch` language into strings starting with `#%`  in `ImpEx` files [#462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/462)
 
 ### Deprecated
 - `TreeSpeedSearch` -> `TreeUIHelper` [#415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/415)
