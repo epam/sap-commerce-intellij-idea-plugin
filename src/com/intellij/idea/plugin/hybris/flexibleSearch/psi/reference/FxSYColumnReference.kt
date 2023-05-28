@@ -203,10 +203,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
                 return arrayOf(RelationEndResolveResult(meta.target))
             }
 
-            return metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                ?.allAttributes
-                ?.find { refName.equals(it.name, true) }
-                ?.let { arrayOf(AttributeResolveResult(it)) }
+            return tryResolveByItemType(HybrisConstants.TS_TYPE_LINK, refName, metaService)
         }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
