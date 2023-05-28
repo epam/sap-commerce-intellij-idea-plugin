@@ -22,10 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.idea.plugin.hybris.impex.psi.references.FunctionTSAttributeReference;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference;
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference;
+import com.intellij.idea.plugin.hybris.impex.psi.references.*;
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -58,7 +55,10 @@ public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElem
             header.getParametersList().stream()
                   .map(ImpexParameters::getParameterList)
                   .flatMap(Collection::stream)
-                  .forEach(it -> it.putUserData(FunctionTSAttributeReference.getCACHE_KEY(), null));
+                  .forEach(it -> {
+                      it.putUserData(ImpexFunctionTSItemReference.getCACHE_KEY(), null);
+                      it.putUserData(ImpexFunctionTSAttributeReference.getCACHE_KEY(), null);
+                  });
         }
     }
 

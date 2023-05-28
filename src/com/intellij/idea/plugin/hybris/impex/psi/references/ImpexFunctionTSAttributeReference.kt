@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.codeInsight.completion.CompletionUtilCore
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
@@ -41,14 +42,19 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
+class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
     override fun calculateDefaultRangeInElement(): TextRange {
-        val alias = element.text
-            .substringBefore("(")
-            .substringBefore("[")
-            .trim()
-        return TextRange.from(element.text.indexOf(alias), alias.length)
+        val attributeName = element.attributeName
+        return TextRange.from(element.text.indexOf(attributeName), attributeName.length)
+    }
+
+    override fun getVariants(): Array<LookupElementBuilder> {
+        // if inline type already present we should not suggest any other types
+        if (element.inlineTypeName != null) return emptyArray()
+        return TSCompletionService.getInstance(element.project)
+            .getImpexInlineTypeCompletions(element.project, element)
+            .toTypedArray()
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
@@ -62,16 +68,12 @@ class FunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<Impe
 
     companion object {
         @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, FunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexFunctionTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FunctionTSAttributeReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexFunctionTSAttributeReference> { ref ->
             val metaService = TSMetaModelAccess.getInstance(ref.project)
-            val featureName = ref.element.text
-                .replace(CompletionUtilCore.DUMMY_IDENTIFIER, "")
-                .substringBefore("(")
-                .substringBefore("[")
-                .trim()
-            val typeName = findItemTypeName(ref.element)
+            val featureName = ref.element.attributeName
+            val typeName = ref.element.itemTypeName
 
             val result: Array<ResolveResult> = resolveType(ref.element, typeName, featureName, metaService)
                 ?.let { arrayOf(it) }

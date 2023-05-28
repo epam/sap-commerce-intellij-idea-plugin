@@ -22,49 +22,59 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.psi.references.FunctionTSAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemReference
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
 
-    private var myReference: PsiReferenceBase.Poly<out PsiElement>? = null
+    private val myReferences = mutableListOf<PsiReferenceBase<out PsiElement>>()
+    private var previousText: String? = null
 
     override fun getReference() = references.firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
+        if (previousText != text) {
+            myReferences.clear()
+        }
+
         val leafType = firstChild
             ?.node
             ?.elementType
 
         if (ImpexTypes.DOCUMENT_ID == leafType) {
-            if (myReference == null) {
-                myReference = ImpexDocumentIdReference(this)
+            if (myReferences.isEmpty()) {
+                myReferences.add(ImpexDocumentIdReference(this))
             }
-            return arrayOf(myReference!!)
+            return myReferences.toTypedArray()
         }
 
-        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
-            myReference = FunctionTSAttributeReference(this)
+        if (myReferences.isEmpty() || previousText == null) {
+            if (inlineTypeName != null) {
+                myReferences.add(ImpexFunctionTSAttributeReference(this))
+                myReferences.add(ImpexFunctionTSItemReference(this))
+            } else {
+                myReferences.add(ImpexFunctionTSAttributeReference(this))
+            }
         }
-        return arrayOf(myReference!!)
+
+        return myReferences.toTypedArray()
     }
 
     override fun clone(): Any {
         val result = super.clone() as ImpexParameterMixin
-        result.myReference = null
+        result.previousText = null
+        result.myReferences.clear()
         return result
     }
 
     override fun subtreeChanged() {
-        putUserData(FunctionTSAttributeReference.CACHE_KEY, null)
+        putUserData(ImpexFunctionTSItemReference.CACHE_KEY, null)
+        putUserData(ImpexFunctionTSAttributeReference.CACHE_KEY, null)
     }
 
     companion object {

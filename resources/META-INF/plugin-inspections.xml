@@ -68,9 +68,18 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownFunctionTypeInspection" displayName="[y] Unknown type"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownFunctionTypeInspection"/>
+
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexConfigProcessorInspection" displayName="[y] Incorrect use of $config macros"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpexFunctionReferenceTypeMismatchInspection" displayName="[y] Mismatch reference attribute inline type"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexFunctionReferenceTypeMismatchInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueAttributeWithoutIndex" displayName="[y] Unique attribute without an index"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"

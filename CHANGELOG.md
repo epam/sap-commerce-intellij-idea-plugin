@@ -17,6 +17,8 @@
 - Rename `Impex` to its official name - `ImpEx` [#449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/449)
 - Added reference resolution/code completion for Item sub-types declared for individual value line [#425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/425)
 - Added reference validation for Item sub-types declared for individual value line [#426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/426)
+- Respect inline sub-type for header line parameters, see [ImpEx Header](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US) [#457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/457)
+- Improved code completion for inline types and added new project-level settings [#460](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/460)
 - If Type equal to Item sub-type it will be highlighted differently [#427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/427)
 - Improved code style for macro usages, distinguish `$config-` and reference to another macro [#421](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/421)
 - Improved macro renaming, it will check for name collisions beforehand [#422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/422)
@@ -31,8 +33,11 @@
 - Inject FlexibleSearch language into `SearchRestriction :: query` respecting `restrictedType` [#434](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/434)
 - Inject complete `User Rights` block on code completion for `$START_USERRIGHTS` [#446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/446)
 - Inject space after mode keyword [#448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/448)
+- Inspection rule: validate that inline type for reference parameter extends its type [#458](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/458)
+- Inspection rule: validate that inline type for reference parameter exists [#459](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/459)
 - Inspection rule: validate that `lang` modifier value is present in the `lang.packs` [#417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417)
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
+- Inspection rule: unique document id rule will report both DocId and reference qualifier [#463](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/463)
 
 ### `ImpEx` - `User Rights` 2.0
 - SAP Help Portal - [User Rights](https://help.sap.com/docs/SAP_COMMERCE/50c996852b32456c96d3161a95544cdb/e472718cafe840c39fbb5ceb00002e52.html?locale=en-US)
@@ -50,6 +55,7 @@
 - Added possibility to copy FlexibleSearch from the Java 15 text block `"""SELECT * FROM {Product}"""` [#428](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/428)
 - Added FlexibleSearch language injection into Java 15 text block `"""SELECT * FROM {Product}"""` [#430](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/430)
 - Resolve [y] column by table name if alias is not provided (enabled by default) [#444](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/444)
+- Resolve `Link` relation ends for relation references [#464](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/464)
 - Remove spaces around `.` and `:` characters [#442](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/442)
 - Remove spaces before `,` character [#443](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/443)
 
@@ -61,7 +67,9 @@
 - Improved code completion for ImpEx sub-types [#447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/447)
 - `ImpEx` Inspection rule for `lang` attribute will resolve value if it is a macro usage [#456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/456)
 - `ImpEx` alignment strategy is not file specific and fails in multithreading environment [#454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/454)
+- `ImpEx` inline type reference is not correctly validated [#461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/461)
 - Inject `FlexibleSearch` language only into `query` column of the `SearchRestriction` in `ImpEx` files [#441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/441)
+- Do not inject `FlexibleSearch` language into strings starting with `#%`  in `ImpEx` files [#462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/462)
 
 ### Deprecated
 - `TreeSpeedSearch` -> `TreeUIHelper` [#415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/415)

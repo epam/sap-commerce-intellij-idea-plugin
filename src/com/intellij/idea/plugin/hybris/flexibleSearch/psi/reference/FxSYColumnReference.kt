@@ -34,6 +34,7 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.project.Project
@@ -82,7 +83,10 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     }
 
     private fun getColumns(type: String): Array<LookupElementBuilder> {
-        val variants = TSCompletionService.getInstance(element.project).getCompletions(type)
+        val variants = TSCompletionService.getInstance(element.project).getCompletions(
+            type,
+            TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
+        )
             .toTypedArray()
 
         return variants + getPostfixes(type)
@@ -199,10 +203,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
                 return arrayOf(RelationEndResolveResult(meta.target))
             }
 
-            return metaService.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                ?.allAttributes
-                ?.find { refName.equals(it.name, true) }
-                ?.let { arrayOf(AttributeResolveResult(it)) }
+            return tryResolveByItemType(HybrisConstants.TS_TYPE_LINK, refName, metaService)
         }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)

@@ -54,6 +54,25 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
             }
+            group("Code Completion") {
+                row {
+                    checkBox("Show inline type for reference header parameter")
+                        .comment("""
+                            When enabled, parameter Type and all its extends will be available as suggestions.<br>
+                            Sample: <code>principal(<strong>Principal.</strong>uid)</code>
+                            """".trimIndent()
+                        )
+                        .bindSelected(state.completion::showInlineTypes)
+                }
+                row {
+                    checkBox("Automatically add '.' char after inline type")
+                        .comment("""
+                            When enabled and there is '.' char is not present, it will be injected automatically
+                            """".trimIndent()
+                        )
+                        .bindSelected(state.completion::addCommaAfterInlineType)
+                }
+            }
         }
     }
 }

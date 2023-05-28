@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName;
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService;
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -104,7 +105,11 @@ public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends Completi
     ) {
         final var typeCode = headerTypeName.getText();
 
-        resultSet.caseInsensitive()
-            .addAllElements(TSCompletionService.Companion.getInstance(project).getCompletions(typeCode));
+        resultSet.caseInsensitive().addAllElements(
+            TSCompletionService.Companion.getInstance(project).getCompletions(
+                typeCode,
+                TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
+            )
+        );
     }
 }

@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -36,41 +38,13 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
     override fun getCompletions(typeCode: String) = getCompletions(
         typeCode,
-        TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
+        TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION, TSMetaType.META_COLLECTION, TSMetaType.META_MAP
     )
 
     override fun getCompletions(typeCode: String, vararg types: TSMetaType) = getCompletions(
         typeCode,
         0, *types
     )
-
-    fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
-        if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()
-
-        val metaService = TSMetaModelAccess.getInstance(project)
-        return types
-            .firstNotNullOfOrNull { metaType ->
-                when (metaType) {
-                    TSMetaType.META_ITEM -> metaService.findMetaItemByName(typeCode)
-                        ?.let { getCompletions(it) }
-
-                    TSMetaType.META_ENUM -> metaService.findMetaEnumByName(typeCode)
-                        ?.let { getCompletionsForEnum(metaService) }
-
-                    TSMetaType.META_RELATION -> metaService.findMetaRelationByName(typeCode)
-                        ?.let { getCompletions(it, metaService) }
-
-                    TSMetaType.META_COLLECTION -> metaService.findMetaCollectionByName(typeCode)
-                        ?.let { getCompletions(it.elementType, recursionLevel + 1, *types) }
-
-                    TSMetaType.META_MAP -> metaService.findMetaMapByName(typeCode)
-                        ?.let { getCompletions(it) }
-
-                    else -> null
-                }
-            }
-            ?: emptyList()
-    }
 
     override fun getCompletions(vararg types: TSMetaType) = with(TSMetaModelAccess.getInstance(project)) {
         types
@@ -100,6 +74,60 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
                 }
             }
             .flatten()
+    }
+
+    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder> {
+        val completion = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings.completion
+        if (!completion.showInlineTypes) return emptyList()
+
+        val referenceItemTypeName = element.referenceItemTypeName ?: return emptyList()
+        val suffix = if (element.inlineTypeName == null && completion.addCommaAfterInlineType) {
+            "."
+        } else {
+            ""
+        }
+
+        val metaModelAccess = TSMetaModelAccess.getInstance(project)
+        metaModelAccess.findMetaItemByName(referenceItemTypeName)
+            ?: return emptyList()
+
+        return metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+            .filter { meta ->
+                meta.allExtends.find { it.name == referenceItemTypeName } != null
+                    // or itself, it will be highlighted as unnecessary via Inspection
+                    || meta.name == referenceItemTypeName
+            }
+            .mapNotNull {
+                TSLookupElementFactory.build(it, suffix)
+            }
+    }
+
+    private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
+        if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()
+
+        val metaService = TSMetaModelAccess.getInstance(project)
+        return types
+            .firstNotNullOfOrNull { metaType ->
+                when (metaType) {
+                    TSMetaType.META_ITEM -> metaService.findMetaItemByName(typeCode)
+                        ?.let { getCompletions(it) }
+
+                    TSMetaType.META_ENUM -> metaService.findMetaEnumByName(typeCode)
+                        ?.let { getCompletionsForEnum(metaService) }
+
+                    TSMetaType.META_RELATION -> metaService.findMetaRelationByName(typeCode)
+                        ?.let { getCompletions(it, metaService) }
+
+                    TSMetaType.META_COLLECTION -> metaService.findMetaCollectionByName(typeCode)
+                        ?.let { getCompletions(it.elementType, recursionLevel + 1, *types) }
+
+                    TSMetaType.META_MAP -> metaService.findMetaMapByName(typeCode)
+                        ?.let { getCompletions(it) }
+
+                    else -> null
+                }
+            }
+            ?: emptyList()
     }
 
     private fun getCompletionsForEnum(metaModelAccess: TSMetaModelAccess) = metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)

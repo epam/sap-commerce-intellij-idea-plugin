@@ -23,20 +23,15 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.psi.PsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemReference
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 
-class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
-
+class ImpexUnknownFunctionTypeInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
 
@@ -46,37 +41,16 @@ class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
             if (parameter.firstChild is ImpexMacroUsageDec || (parameter.firstChild as? LeafPsiElement)?.elementType == DOCUMENT_ID) return
 
             parameter.references
-                .find { it is ImpexFunctionTSAttributeReference }
-                ?.let { it as? ImpexFunctionTSAttributeReference }
-                ?.takeIf { it.multiResolve(false).isEmpty() }
-                ?.let { ref ->
-                    parameter.itemTypeName
-                        ?.let { registerProblem(ref, it) }
+                .find { it is ImpexFunctionTSItemReference }
+                ?.let { it as? ImpexFunctionTSItemReference }
+                ?.takeIf { it.multiResolve(true).isEmpty() }
+                ?.let {
+                    problemsHolder.registerProblemForReference(
+                        it,
+                        ProblemHighlightType.ERROR,
+                        message("hybris.inspections.UnknownTypeNameInspection.key", it.value),
+                    )
                 }
-                ?: return
-        }
-
-        override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-            if (parameter.firstChild is ImpexMacroUsageDec || (parameter.firstChild as? LeafPsiElement)?.elementType == DOCUMENT_ID) return
-
-            parameter.references
-                .find { it is ImpexTSAttributeReference }
-                ?.let { it as? ImpexTSAttributeReference }
-                ?.takeIf { it.multiResolve(false).isEmpty() }
-                ?.let { ref ->
-                    parameter.headerItemTypeName
-                        ?.text
-                        ?.let { registerProblem(ref, it) }
-                }
-                ?: return
-        }
-
-        private fun registerProblem(reference: TSReferenceBase<out PsiElement>, typeName: String) {
-            problemsHolder.registerProblemForReference(
-                reference,
-                ProblemHighlightType.ERROR,
-                message("hybris.inspections.UnknownTypeAttributeInspection.key", reference.value, typeName),
-            )
         }
     }
 }

@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
@@ -43,7 +44,10 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
     override fun getVariants() = getType()
         ?.let {
             TSCompletionService.getInstance(element.project)
-                .getCompletions(it)
+                .getCompletions(
+                    it,
+                    TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
+                )
                 .toTypedArray()
         }
         ?: emptyArray()

@@ -48,35 +48,13 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
             parameters.position.parent
         else parameters.position
-        val typeName = findItemTypeName(psiElementUnderCaret) ?: return
+        val parameter = psiElementUnderCaret as? ImpexParameter ?: return
+        val typeName = parameter.itemTypeName ?: return
 
         TSCompletionService.getInstance(project)
-            .getCompletions(
-                typeName,
-                TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION, TSMetaType.META_COLLECTION, TSMetaType.META_MAP
-            )
+            .getCompletions(typeName)
             .let { result.addAllElements(it) }
     }
-
-    private fun findItemTypeName(element: PsiElement) = (
-        PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
-            ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
-                ?.anyHeaderParameterName
-        )
-        ?.reference
-        ?.let { it as PsiPolyVariantReference }
-        ?.multiResolve(false)
-        ?.firstOrNull()
-        ?.let {
-            when (it) {
-                is AttributeResolveResult -> it.meta.type
-                is EnumResolveResult -> it.meta.name
-                is ItemResolveResult -> it.meta.name
-                is RelationResolveResult -> it.meta.name
-                is RelationEndResolveResult -> it.meta.type
-                else -> null
-            }
-        }
 
     companion object {
 
