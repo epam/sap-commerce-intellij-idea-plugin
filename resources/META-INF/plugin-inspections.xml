@@ -72,6 +72,10 @@
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpexFunctionReferenceTypeMismatchInspection" displayName="[y] Mismatch reference attribute inline type"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexFunctionReferenceTypeMismatchInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueAttributeWithoutIndex" displayName="[y] Unique attribute without an index"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
