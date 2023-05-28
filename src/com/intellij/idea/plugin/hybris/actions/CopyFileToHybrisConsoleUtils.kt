@@ -54,7 +54,9 @@ object CopyFileToHybrisConsoleUtils {
         ?: false
 
     fun isRequiredMultipleFileExtension(project: Project, fileExtension: String) = getFileExtensions(project)
-        .all { it == fileExtension }
+        .takeUnless { it.isEmpty() }
+        ?.all { it == fileExtension }
+        ?: false
 
     private fun getTextFromHybrisConsole(project: Project, console: HybrisConsole): String {
         val helper = LanguageConsoleImpl.Helper(project, console.virtualFile)
