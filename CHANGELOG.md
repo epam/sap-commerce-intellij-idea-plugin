@@ -66,6 +66,9 @@
 ### Deprecated
 - `TreeSpeedSearch` -> `TreeUIHelper` [#415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/415)
 
+### Other
+- Migration: Java to Kotlin [#466](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/466)
+
 ## [2023.1.6]
 
 ### Features
