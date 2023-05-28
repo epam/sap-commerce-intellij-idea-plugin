@@ -33,6 +33,7 @@
 - Inject complete `User Rights` block on code completion for `$START_USERRIGHTS` [#446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/446)
 - Inject space after mode keyword [#448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/448)
 - Inspection rule: validate that inline type for reference parameter extends its type [#458](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/458)
+- Inspection rule: validate that inline type for reference parameter exists [#459](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/459)
 - Inspection rule: validate that `lang` modifier value is present in the `lang.packs` [#417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/417)
 - Inspection rule: validate that `lang` modifier is used only for localized attributes [#418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/418)
 
