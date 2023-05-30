@@ -1,3 +1,15 @@
+## [2023.2.1]
+
+### Other
+- [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
+- [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
+- [Apache commons-io](https://commons.apache.org/proper/commons-io/): 2.11.0 -> 2.12.0
+- [Apache Maven model](https://maven.apache.org/): 3.8.7 -> 3.9.2
+- [Jakarta XML Binding](https://eclipse-ee4j.github.io/jaxb-ri/): 4.0.1 -> 4.0.2
+- [Apache Solr Java client](https://solr.apache.org/): 8.8.2 -> 8.11.2
+- [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
+- added links for quick check of new versions availability
+
 ## [2023.2.0]
 
 ### Features
