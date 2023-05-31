@@ -1,5 +1,8 @@
 ## [2023.2.1]
 
+### Fixes
+- NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
+
 ### Other
 - [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
 - [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
