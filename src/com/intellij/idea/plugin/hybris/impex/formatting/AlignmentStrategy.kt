@@ -18,18 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.formatting.Alignment;
-import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.formatting.Alignment
+import com.intellij.lang.ASTNode
 
-/**
- * Created 12:57 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface AlignmentStrategy {
+interface AlignmentStrategy {
 
-    Alignment getAlignment(@NotNull ASTNode currentNode);
+    fun getAlignment(currentNode: ASTNode): Alignment
 
-    void processNode(@NotNull ASTNode currentNode);
+    fun processNode(currentNode: ASTNode)
 }

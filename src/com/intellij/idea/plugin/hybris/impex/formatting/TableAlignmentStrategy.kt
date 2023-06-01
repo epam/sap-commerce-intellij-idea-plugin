@@ -18,30 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.lang.ASTNode
+import org.jetbrains.annotations.Contract
 
-/**
- * Created 12:55 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public class TableAlignmentStrategy extends ColumnsAlignmentStrategy {
+class TableAlignmentStrategy : ColumnsAlignmentStrategy() {
 
-    @Override
     @Contract(pure = true)
-    protected boolean isNewLine(@Nullable final ASTNode currentNode) {
-        return this.isHeaderLine(currentNode) || super.isNewLine(currentNode);
-    }
+    override fun isNewLine(currentNode: ASTNode) = super.isNewLine(currentNode)
+        || isHeaderLine(currentNode)
 
-    @Override
     @Contract(pure = true)
-    protected boolean isNewColumn(@Nullable final ASTNode currentNode) {
-        return null != currentNode && (
-            ImpexTypes.PARAMETERS_SEPARATOR == currentNode.getElementType() ||
-            super.isNewColumn(currentNode)
-        );
-    }
+    override fun isNewColumn(currentNode: ASTNode) = super.isNewColumn(currentNode)
+        || ImpexTypes.PARAMETERS_SEPARATOR.equals(currentNode.elementType)
 }
