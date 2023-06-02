@@ -69,9 +69,9 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
         requiredHybrisModuleDescriptorList = new HashSet<>();
         for (HybrisModuleDescriptor hybrisModuleDescriptor : modulesChosenForImport) {
-            if (hybrisModuleDescriptor.isPreselected()) {
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
                 requiredHybrisModuleDescriptorList.add(hybrisModuleDescriptor);
-                requiredHybrisModuleDescriptorList.addAll(hybrisModuleDescriptor.getDependenciesPlainList());
+                requiredHybrisModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(hybrisModuleDescriptor));
             }
         }
     }

@@ -267,7 +267,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
-            moduleDescriptor.getIdeaModuleFile().getAbsolutePath(), StdModuleTypes.JAVA.getId()
+            YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor).getAbsolutePath(), StdModuleTypes.JAVA.getId()
         );
 
         configuratorFactory.getModuleSettingsConfigurator().configure(moduleDescriptor, javaModule);
@@ -533,7 +533,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .getFoundModules().stream()
             .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))
             .filter(e -> toBeImportedNames.contains(e.getName()))
-            .map(HybrisModuleDescriptor::getRelativePath)
+            .map(YModuleDescriptorUtil.INSTANCE::getRelativePath)
             .collect(Collectors.toSet());
     }
 
@@ -557,7 +557,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private boolean shouldBeTreatedAsReadOnly(final HybrisModuleDescriptor moduleDescriptor) {
-        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
+        if (YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM) {
             return false;
         }
         return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();

@@ -72,7 +72,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     ) {
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
-        for (JavaLibraryDescriptor javaLibraryDescriptor : moduleDescriptor.getLibraryDescriptors()) {
+        for (JavaLibraryDescriptor javaLibraryDescriptor : YModuleLibDescriptorUtil.INSTANCE.getLibraryDescriptors(moduleDescriptor)) {
             if (!javaLibraryDescriptor.isValid() && javaLibraryDescriptor.getScope() == DependencyScope.COMPILE) {
                 continue;
             }

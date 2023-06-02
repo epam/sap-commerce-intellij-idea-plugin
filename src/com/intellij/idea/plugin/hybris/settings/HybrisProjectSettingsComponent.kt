@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PRO
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
@@ -69,7 +70,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
     fun setAvailableExtensions(descriptors: Set<HybrisModuleDescriptor>) {
         state.availableExtensions.clear()
         descriptors
-            .map { it.extensionDescriptor }
+            .map { YModuleDescriptorUtil.getExtensionDescriptor(it) }
             .forEach { state.availableExtensions[it.name] = it }
         registerCloudExtensions()
     }

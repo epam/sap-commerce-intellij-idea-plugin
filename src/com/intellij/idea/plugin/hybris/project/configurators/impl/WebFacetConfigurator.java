@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.openapi.application.WriteAction;
@@ -40,11 +41,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 8:33 PM 13 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class WebFacetConfigurator implements FacetConfigurator {
 
 
@@ -55,7 +51,7 @@ public class WebFacetConfigurator implements FacetConfigurator {
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel
     ) {
-        final File webRoot = moduleDescriptor.getWebRoot();
+        final File webRoot = YModuleDescriptorUtil.INSTANCE.getWebRoot(moduleDescriptor);
         if (null == webRoot) {
             return;
         }

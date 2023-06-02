@@ -21,6 +21,7 @@ import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
@@ -38,12 +39,13 @@ class KotlinFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
+        val hasKotlinDirectories = YModuleDescriptorUtil.hasKotlinDirectories(moduleDescriptor)
         // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
         modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-            ?.takeUnless { moduleDescriptor.hasKotlinSourceDirectories() }
+            ?.takeUnless { hasKotlinDirectories }
             ?.let { modifiableFacetModel.removeFacet(it) }
 
-        if (!moduleDescriptor.hasKotlinSourceDirectories()) return
+        if (!hasKotlinDirectories) return
         if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return
 
         val facet = KotlinFacet.get(javaModule)

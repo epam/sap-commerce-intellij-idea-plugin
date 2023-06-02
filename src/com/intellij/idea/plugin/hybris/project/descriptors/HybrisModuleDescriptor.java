@@ -37,40 +37,12 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     File getRootDirectory();
 
     @NotNull
-    default String getRelativePath() {
-        return YModuleDescriptorUtil.INSTANCE.getRelativePath(this);
-    }
-
-    @NotNull
     HybrisProjectDescriptor getRootProjectDescriptor();
-
-    @NotNull
-    default File getIdeaModuleFile() {
-        return YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(this);
-    }
-
-    @NotNull
-    default Set<String> getRequiredExtensionNames() {
-        return YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(this);
-    }
 
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesTree();
 
     void setDependenciesTree(@NotNull Set<HybrisModuleDescriptor> moduleDescriptors);
-
-    @NotNull
-    default Set<HybrisModuleDescriptor> getDependenciesPlainList() {
-        return YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(this);
-    }
-
-    default List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return YModuleLibDescriptorUtil.INSTANCE.getLibraryDescriptors(this);
-    }
-
-    default boolean isPreselected() {
-        return YModuleDescriptorUtil.INSTANCE.isPreselected(this);
-    }
 
     boolean isInLocalExtensions();
 
@@ -81,27 +53,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean addSpringFile(@NotNull String springFile);
 
-    @Nullable
-    default File getWebRoot() {
-        return YModuleDescriptorUtil.INSTANCE.getWebRoot(this);
-    }
-
-    /**
-     * This method will return true if module has `kotlinsrc` or `kotlintestsrc` directories
-     */
-    default boolean hasKotlinSourceDirectories() {
-        return YModuleDescriptorUtil.INSTANCE.hasKotlinDirectories(this);
-    }
-
-    default HybrisModuleDescriptorType getDescriptorType() {
-        return YModuleDescriptorUtil.INSTANCE.getDescriptorType(this);
-    }
-
     void setImportStatus(IMPORT_STATUS importStatus);
 
     IMPORT_STATUS getImportStatus();
 
-    @NotNull default ExtensionDescriptor getExtensionDescriptor() {
-        return YModuleDescriptorUtil.INSTANCE.getExtensionDescriptor(this);
-    }
 }

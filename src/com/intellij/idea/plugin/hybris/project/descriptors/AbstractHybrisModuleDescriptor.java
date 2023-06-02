@@ -158,7 +158,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " {");
         sb.append("name='").append(this.getName()).append('\'');
         sb.append(", moduleRootDirectory=").append(moduleRootDirectory);
-        sb.append(", moduleFile=").append(this.getIdeaModuleFile());
+        sb.append(", moduleFile=").append(YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(this));
         sb.append('}');
         return sb.toString();
     }

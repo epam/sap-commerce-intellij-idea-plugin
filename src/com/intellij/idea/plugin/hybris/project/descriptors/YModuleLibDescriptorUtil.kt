@@ -126,7 +126,7 @@ object YModuleLibDescriptorUtil {
 
     private fun getLibraryDescriptors(descriptor: RegularHybrisModuleDescriptor): List<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
-        val descriptorType = descriptor.descriptorType
+        val descriptorType = YModuleDescriptorUtil.getDescriptorType(descriptor)
 
         addLibrariesToNonCustomModule(descriptor, descriptorType, libs)
         addHacLibs(descriptor, libs)
@@ -320,7 +320,7 @@ object YModuleLibDescriptorUtil {
         if (!descriptor.rootProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn) return
 
         val backwardDependencies = descriptor.dependenciesTree
-            .filter { it.requiredExtensionNames.contains(descriptor.name) }
+            .filter { YModuleDescriptorUtil.getRequiredExtensionNames(it).contains(descriptor.name) }
             .map {
                 DefaultJavaLibraryDescriptor(
                     File(it.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),

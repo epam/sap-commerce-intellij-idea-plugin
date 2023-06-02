@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -103,7 +104,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             .collect(Collectors.toList());
 
         this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        if (moduleDescriptor.getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_HMC)) {
+        if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(HybrisConstants.EXTENSION_NAME_HMC)) {
             this.configureAdditionalRoots(
                 moduleDescriptor,
                 HMC_MODULE_DIRECTORY,
@@ -198,7 +199,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         ));
 
         if (
-            moduleDescriptor.getDescriptorType() == CUSTOM ||
+            YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM ||
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY));
@@ -471,7 +472,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         final File rootDirectory = moduleDescriptor.getRootDirectory();
 
-        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
+        if (YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         } else if (
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() &&

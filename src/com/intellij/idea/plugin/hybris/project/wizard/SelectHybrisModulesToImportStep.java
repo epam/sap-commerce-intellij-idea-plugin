@@ -22,11 +22,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.table.JBTable;
@@ -53,7 +49,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     protected void init() {
         this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>) (element, isMarked) -> {
             if (isMarked) {
-                for (HybrisModuleDescriptor moduleDescriptor : element.getDependenciesPlainList()) {
+                for (HybrisModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(element)) {
                     if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                         continue;
                     }
@@ -75,7 +71,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         selectionMode = MANDATORY;
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
-            if (hybrisModuleDescriptor.isPreselected()) {
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
                 fileChooser.setElementMarked(hybrisModuleDescriptor, true);
                 hybrisModuleDescriptor.setImportStatus(MANDATORY);
             }
@@ -103,8 +99,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 return o1custom ? -1 : 1;
             }
 
-            final boolean o1selected = o1.getImportStatus() == MANDATORY || o1.isPreselected();
-            final boolean o2selected = o2.getImportStatus() == MANDATORY || o2.isPreselected();
+            final boolean o1selected = o1.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o1);
+            final boolean o2selected = o2.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o2);
             if (o1selected ^ o2selected) {
                 return o1selected ? -1 : 1;
             }
@@ -139,7 +135,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     protected boolean isElementEnabled(final HybrisModuleDescriptor hybrisModuleDescriptor) {
-        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor && hybrisModuleDescriptor.isPreselected()) {
+        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
             return false;
         }
         if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {

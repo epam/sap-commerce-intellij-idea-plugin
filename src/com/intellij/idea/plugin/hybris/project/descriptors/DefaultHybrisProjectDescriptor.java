@@ -676,7 +676,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
 
-            Set<String> requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
+            Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
 
             if (isEmpty(requiredExtensionNames)) {
                 continue;
@@ -732,7 +732,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (isCreateBackwardCyclicDependenciesForAddOn()) {
             for (HybrisModuleDescriptor moduleDescriptor : moduleDescriptors) {
-                if (moduleDescriptor.getRequiredExtensionNames().contains(addOn.getName())) {
+                if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(addOn.getName())) {
                     addOnDependencies.add(moduleDescriptor);
                 }
             }
