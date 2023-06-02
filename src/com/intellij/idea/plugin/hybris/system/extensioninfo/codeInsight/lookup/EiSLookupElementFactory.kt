@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 
 object EiSLookupElementFactory {
@@ -30,11 +30,11 @@ object EiSLookupElementFactory {
         .withTypeText(it.type.name, true)
         .withIcon(
             when (it.type) {
-                HybrisModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
-                HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                HybrisModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                HybrisModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                HybrisModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
+                ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
+                ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
                 else -> null
             }
         )

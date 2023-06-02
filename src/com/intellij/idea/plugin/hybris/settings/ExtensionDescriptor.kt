@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
 data class ExtensionDescriptor(
     var name: String = "",
-    var type: HybrisModuleDescriptorType = HybrisModuleDescriptorType.NONE,
+    var type: ModuleDescriptorType = ModuleDescriptorType.NONE,
     var backofficeModule: Boolean = false,
     var hacModule: Boolean = false,
     var deprecated: Boolean = false,

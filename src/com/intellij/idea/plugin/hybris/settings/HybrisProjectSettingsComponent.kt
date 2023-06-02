@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_VERSION_1
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.Version
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -76,7 +76,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
     }
 
     fun registerCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
-        .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, HybrisModuleDescriptorType.CCV2) }
+        .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, ModuleDescriptorType.CCV2) }
 
     fun getBackofficeWebInfLib() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019
     else HybrisConstants.BACKOFFICE_WEB_INF_LIB

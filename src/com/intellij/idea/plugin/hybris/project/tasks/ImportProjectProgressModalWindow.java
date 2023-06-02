@@ -94,7 +94,7 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_WEB_PLUGIN_ID;
 

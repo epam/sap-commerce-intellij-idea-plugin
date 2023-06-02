@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.ModuleSettings;
@@ -86,7 +86,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
 
         final ModuleSettings moduleSettings = HybrisProjectSettingsComponent.getInstance(project)
                                                                             .getModuleSettings(gradleModule);
-        moduleSettings.setDescriptorType(HybrisModuleDescriptorType.GRADLE);
+        moduleSettings.setDescriptorType(ModuleDescriptorType.GRADLE);
 
         ApplicationManager.getApplication().runWriteAction(modifiableModuleModel::commit);
     }

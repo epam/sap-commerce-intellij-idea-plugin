@@ -15,24 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.descriptors
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
-
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.openapi.application.ApplicationManager;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-
-public interface HybrisModuleDescriptorFactory {
-
-    @NotNull
-    ModuleDescriptor createDescriptor(
-        @NotNull File file,
-        @NotNull HybrisProjectDescriptor rootProjectDescriptor
-    ) throws HybrisConfigurationException;
-
-    static HybrisModuleDescriptorFactory getInstance() {
-        return ApplicationManager.getApplication().getService(HybrisModuleDescriptorFactory.class);
-    }
+enum class ModuleDescriptorType {
+    CONFIG,
+    CUSTOM,
+    EXT,
+    NONE,
+    OOTB,
+    PLATFORM,
+    ECLIPSE,
+    MAVEN,
+    GRADLE,
+    CCV2
 }

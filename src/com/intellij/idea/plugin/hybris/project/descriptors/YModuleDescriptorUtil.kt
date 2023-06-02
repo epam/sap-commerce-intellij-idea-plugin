@@ -67,19 +67,19 @@ object YModuleDescriptorUtil {
     }
 
     fun getDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
-        is CCv2ModuleDescriptor -> HybrisModuleDescriptorType.CCV2
-        is YCustomRegularModuleDescriptor -> HybrisModuleDescriptorType.CUSTOM
-        is EclipseModuleDescriptor -> HybrisModuleDescriptorType.ECLIPSE
-        is YExtRegularModuleDescriptor -> HybrisModuleDescriptorType.EXT
-        is GradleModuleDescriptor -> HybrisModuleDescriptorType.GRADLE
-        is YOotbRegularModuleDescriptor -> HybrisModuleDescriptorType.OOTB
-        is MavenModuleDescriptor -> HybrisModuleDescriptorType.MAVEN
-        is YPlatformModuleDescriptor -> HybrisModuleDescriptorType.PLATFORM
-        is YConfigModuleDescriptor -> if (descriptor.isMainConfig) HybrisModuleDescriptorType.CONFIG
-        else HybrisModuleDescriptorType.CUSTOM
+        is CCv2ModuleDescriptor -> ModuleDescriptorType.CCV2
+        is YCustomRegularModuleDescriptor -> ModuleDescriptorType.CUSTOM
+        is EclipseModuleDescriptor -> ModuleDescriptorType.ECLIPSE
+        is YExtRegularModuleDescriptor -> ModuleDescriptorType.EXT
+        is GradleModuleDescriptor -> ModuleDescriptorType.GRADLE
+        is YOotbRegularModuleDescriptor -> ModuleDescriptorType.OOTB
+        is MavenModuleDescriptor -> ModuleDescriptorType.MAVEN
+        is YPlatformModuleDescriptor -> ModuleDescriptorType.PLATFORM
+        is YConfigModuleDescriptor -> if (descriptor.isMainConfig) ModuleDescriptorType.CONFIG
+        else ModuleDescriptorType.CUSTOM
 
-        is RootModuleDescriptor -> HybrisModuleDescriptorType.NONE
-        else -> HybrisModuleDescriptorType.NONE
+        is RootModuleDescriptor -> ModuleDescriptorType.NONE
+        else -> ModuleDescriptorType.NONE
     }
 
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()

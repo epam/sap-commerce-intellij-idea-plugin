@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.utils
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
@@ -29,8 +29,8 @@ object ModuleUtils {
         val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
         val descriptorType = HybrisProjectSettingsComponent.getInstance(psi.project)
             .getModuleSettings(module).descriptorType
-        return descriptorType == HybrisModuleDescriptorType.PLATFORM
-            || descriptorType == HybrisModuleDescriptorType.EXT
+        return descriptorType == ModuleDescriptorType.PLATFORM
+            || descriptorType == ModuleDescriptorType.EXT
     }
 
     fun getShortName(module: Module) = module.name.substringAfterLast(".")

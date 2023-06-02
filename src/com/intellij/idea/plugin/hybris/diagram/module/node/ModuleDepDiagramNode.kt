@@ -22,7 +22,7 @@ import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.Serial
 import javax.swing.Icon
 
@@ -35,10 +35,10 @@ class ModuleDepDiagramNode(private val graphNode: ModuleDepGraphNode, provider: 
         ?.let { (it as ModuleDepGraphNodeModule).type }
         ?.let {
             when (it) {
-                HybrisModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                HybrisModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                HybrisModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
-                HybrisModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
+                ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
                 else -> null
             }
         }

@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
@@ -76,7 +76,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
 
         eclipseModules.forEach(module -> {
-            settingsComponent.getModuleSettings(module).setDescriptorType(HybrisModuleDescriptorType.ECLIPSE);
+            settingsComponent.getModuleSettings(module).setDescriptorType(ModuleDescriptorType.ECLIPSE);
             try {
                 final String[] groups = eclipseGroupMapping.get(module.getName());
 

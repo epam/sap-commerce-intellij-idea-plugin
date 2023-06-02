@@ -262,11 +262,11 @@ object YModuleLibDescriptorUtil {
 
     private fun addLibrariesToNonCustomModule(
         descriptor: YRegularModuleDescriptor,
-        descriptorType: HybrisModuleDescriptorType?,
+        descriptorType: ModuleDescriptorType?,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
-        if (descriptorType == HybrisModuleDescriptorType.CUSTOM) return
+        if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
         libs.add(
             DefaultJavaLibraryDescriptor(

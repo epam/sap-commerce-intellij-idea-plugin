@@ -425,11 +425,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.getGroupModules());
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = HybrisModuleDescriptorFactory.getInstance();
+        final ModuleDescriptorFactory moduleDescriptorFactory = ModuleDescriptorFactory.getInstance();
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                final ModuleDescriptor moduleDescriptor = hybrisModuleDescriptorFactory.createDescriptor(
+                final ModuleDescriptor moduleDescriptor = moduleDescriptorFactory.createDescriptor(
                     moduleRootDirectory, this
                 );
                 moduleDescriptors.add(moduleDescriptor);
@@ -1061,7 +1061,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected Set<ModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final HybrisModuleDescriptorFactory hybrisModuleDescriptorFactory = HybrisModuleDescriptorFactory.getInstance();
+        final ModuleDescriptorFactory moduleDescriptorFactory = ModuleDescriptorFactory.getInstance();
 
         final Set<ModuleDescriptor> existingModules = new HashSet<>();
 
@@ -1070,7 +1070,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
 
                 if (!ArrayUtils.isEmpty(contentRoots)) {
-                    existingModules.add(hybrisModuleDescriptorFactory.createDescriptor(
+                    existingModules.add(moduleDescriptorFactory.createDescriptor(
                         VfsUtil.virtualToIoFile(contentRoots[0]), this
                     ));
                 }

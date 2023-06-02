@@ -31,7 +31,7 @@ import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -144,7 +144,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                     if (module == null) {
                         return;
                     }
-                    final HybrisModuleDescriptorType type = settingsComponent.getModuleSettings(module).getDescriptorType();
+                    final ModuleDescriptorType type = settingsComponent.getModuleSettings(module).getDescriptorType();
                     if (type == null) {
                         return;
                     }

@@ -71,7 +71,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DI
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 
 /**
  * Created 2:07 AM 15 June 2015.

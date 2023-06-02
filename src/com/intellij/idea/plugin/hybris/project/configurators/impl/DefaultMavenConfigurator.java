@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -241,7 +241,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                     .filter(ModuleEx.class::isInstance)
                     .map(ModuleEx.class::cast)
                     .map(settingsComponent::getModuleSettings)
-                    .forEach(descriptor -> descriptor.setDescriptorType(HybrisModuleDescriptorType.MAVEN));
+                    .forEach(descriptor -> descriptor.setDescriptorType(ModuleDescriptorType.MAVEN));
         return model;
     }
 

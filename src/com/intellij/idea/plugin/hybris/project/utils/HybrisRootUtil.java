@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -26,7 +26,7 @@ public class HybrisRootUtil {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         final Module platformModule =
             Arrays.stream(ModuleManager.getInstance(project).getModules())
-                  .filter(module -> settingsComponent.getModuleSettings(module).getDescriptorType() == HybrisModuleDescriptorType.PLATFORM)
+                  .filter(module -> settingsComponent.getModuleSettings(module).getDescriptorType() == ModuleDescriptorType.PLATFORM)
                   .findAny()
                   .orElse(null);
 

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.psi.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -68,14 +68,14 @@ public final class PsiUtils {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         final var descriptorType = settingsComponent.getModuleSettings(module).getDescriptorType();
 
-        if (descriptorType == HybrisModuleDescriptorType.NONE) {
+        if (descriptorType == ModuleDescriptorType.NONE) {
             if (shouldCheckFilesWithoutHybrisSettings(project)) {
-                return estimateIsCustomExtension(module, file) == HybrisModuleDescriptorType.CUSTOM;
+                return estimateIsCustomExtension(module, file) == ModuleDescriptorType.CUSTOM;
             }
             return false;
         }
 
-        return descriptorType == HybrisModuleDescriptorType.CUSTOM;
+        return descriptorType == ModuleDescriptorType.CUSTOM;
     }
 
     private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
@@ -83,20 +83,20 @@ public final class PsiUtils {
         return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject();
     }
 
-    private static HybrisModuleDescriptorType estimateIsCustomExtension(final Module module, @NotNull final VirtualFile file) {
+    private static ModuleDescriptorType estimateIsCustomExtension(final Module module, @NotNull final VirtualFile file) {
         final File itemsFile = VfsUtilCore.virtualToIoFile(file);
         final String filePath = normalize(itemsFile.getAbsolutePath());
 
         if (filePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX))) {
-            return HybrisModuleDescriptorType.OOTB;
+            return ModuleDescriptorType.OOTB;
         }
         if (filePath.contains(normalize(HybrisConstants.HYBRIS_OOTB_MODULE_PREFIX_2019))) {
-            return HybrisModuleDescriptorType.OOTB;
+            return ModuleDescriptorType.OOTB;
         }
         if (filePath.contains(normalize(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX))) {
-            return HybrisModuleDescriptorType.EXT;
+            return ModuleDescriptorType.EXT;
         }
-        return HybrisModuleDescriptorType.CUSTOM;
+        return ModuleDescriptorType.CUSTOM;
     }
 
     public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase<? extends PsiElement> reference, final String text) {

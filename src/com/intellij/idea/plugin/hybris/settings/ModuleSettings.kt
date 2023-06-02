@@ -17,9 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
 data class ModuleSettings(
     var isReadonly: Boolean = false,
-    var descriptorType: HybrisModuleDescriptorType = HybrisModuleDescriptorType.NONE
+    var descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE
 )

@@ -31,8 +31,8 @@
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToJavaInjectorProvider"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorFactory"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisModuleDescriptorFactory"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorFactory"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.descriptors.DefaultModuleDescriptorFactory"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.services.HybrisProjectService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.services.impl.DefaultHybrisProjectService"/>

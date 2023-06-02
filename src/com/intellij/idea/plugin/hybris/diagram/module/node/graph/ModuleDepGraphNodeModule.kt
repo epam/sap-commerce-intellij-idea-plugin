@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.openapi.module.Module
 
 data class ModuleDepGraphNodeModule(
     val module: Module,
-    val type: HybrisModuleDescriptorType,
+    val type: ModuleDescriptorType,
     override val name: String
 ) : ModuleDepGraphNode
