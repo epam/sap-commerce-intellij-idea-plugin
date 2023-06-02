@@ -25,7 +25,7 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.javaee.DeploymentDescriptorsConstants;
@@ -47,7 +47,7 @@ public class WebFacetConfigurator implements FacetConfigurator {
     @Override
     public void configure(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final ModifiableFacetModel modifiableFacetModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel
     ) {
@@ -82,7 +82,7 @@ public class WebFacetConfigurator implements FacetConfigurator {
         writeFacetData(moduleDescriptor, modifiableRootModel, webRoot, webFacet);
     }
 
-    private void writeFacetData(HybrisModuleDescriptor moduleDescriptor, ModifiableRootModel modifiableRootModel, File webRoot, WebFacet webFacet) {
+    private void writeFacetData(ModuleDescriptor moduleDescriptor, ModifiableRootModel modifiableRootModel, File webRoot, WebFacet webFacet) {
         WriteAction.runAndWait(() -> {
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false));
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot.getAbsolutePath())), "/");
@@ -92,7 +92,7 @@ public class WebFacetConfigurator implements FacetConfigurator {
 
     private void setupFacetDeploymentDescriptor(
         @NotNull final WebFacet webFacet,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         final VirtualFile fileByIoFile = VfsUtil.findFileByIoFile(
             new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.module.Module
@@ -35,7 +35,7 @@ class KotlinFacetConfigurator : FacetConfigurator {
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
-        moduleDescriptor: HybrisModuleDescriptor,
+        moduleDescriptor: ModuleDescriptor,
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {

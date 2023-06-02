@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class DefaultModuleSettingsConfigurator implements ModuleSettingsConfigurator {
 
     @Override
-    public void configure(@NotNull final HybrisModuleDescriptor moduleDescriptor, @NotNull final Module javaModule) {
+    public void configure(@NotNull final ModuleDescriptor moduleDescriptor, @NotNull final Module javaModule) {
         final HybrisModuleDescriptorType descriptorType = YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor);
 
         final boolean hasReadOnlySettings = moduleDescriptor.getRootProjectDescriptor()

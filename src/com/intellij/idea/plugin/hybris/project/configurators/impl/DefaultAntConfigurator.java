@@ -134,10 +134,10 @@ public class DefaultAntConfigurator implements AntConfigurator {
     };
 
     private HybrisProjectDescriptor hybrisProjectDescriptor;
-    private PlatformHybrisModuleDescriptor platformDescriptor;
-    private ConfigHybrisModuleDescriptor configDescriptor;
-    private List<ExtHybrisModuleDescriptor> extHybrisModuleDescriptorList;
-    private List<CustomHybrisModuleDescriptor> customHybrisModuleDescriptorList;
+    private YPlatformModuleDescriptor platformDescriptor;
+    private YConfigModuleDescriptor configDescriptor;
+    private List<YExtRegularModuleDescriptor> extHybrisModuleDescriptorList;
+    private List<YCustomRegularModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
     private AntConfigurationBase antConfiguration;
     private List<AntClasspathEntry> classPaths;
@@ -145,7 +145,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
     @Override
     public void configure(
         @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final List<HybrisModuleDescriptor> allModules,
+        @NotNull final List<ModuleDescriptor> allModules,
         @NotNull final Project project
     ) {
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
@@ -179,23 +179,23 @@ public class DefaultAntConfigurator implements AntConfigurator {
         });
     }
 
-    private void parseModules(final List<HybrisModuleDescriptor> allModules) {
+    private void parseModules(final List<ModuleDescriptor> allModules) {
         platformDescriptor = null;
         configDescriptor = null;
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
-        for (HybrisModuleDescriptor descriptor : allModules) {
-            if (descriptor instanceof PlatformHybrisModuleDescriptor) {
-                platformDescriptor = (PlatformHybrisModuleDescriptor) descriptor;
+        for (ModuleDescriptor descriptor : allModules) {
+            if (descriptor instanceof YPlatformModuleDescriptor) {
+                platformDescriptor = (YPlatformModuleDescriptor) descriptor;
             }
-            if (descriptor instanceof ExtHybrisModuleDescriptor) {
-                extHybrisModuleDescriptorList.add((ExtHybrisModuleDescriptor) descriptor);
+            if (descriptor instanceof YExtRegularModuleDescriptor) {
+                extHybrisModuleDescriptorList.add((YExtRegularModuleDescriptor) descriptor);
             }
-            if (descriptor instanceof CustomHybrisModuleDescriptor) {
-                customHybrisModuleDescriptorList.add((CustomHybrisModuleDescriptor) descriptor);
+            if (descriptor instanceof YCustomRegularModuleDescriptor) {
+                customHybrisModuleDescriptorList.add((YCustomRegularModuleDescriptor) descriptor);
             }
-            if (descriptor instanceof ConfigHybrisModuleDescriptor) {
-                configDescriptor = (ConfigHybrisModuleDescriptor) descriptor;
+            if (descriptor instanceof YConfigModuleDescriptor) {
+                configDescriptor = (YConfigModuleDescriptor) descriptor;
             }
         }
     }

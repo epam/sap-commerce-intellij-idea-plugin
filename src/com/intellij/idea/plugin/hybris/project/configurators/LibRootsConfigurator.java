@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -34,7 +34,7 @@ public interface LibRootsConfigurator {
 
     void configure(
         @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor,
+        @NotNull ModuleDescriptor moduleDescriptor,
         @NotNull IdeModifiableModelsProvider modifiableModelsProvider,
         @NotNull ProgressIndicator indicator
     );

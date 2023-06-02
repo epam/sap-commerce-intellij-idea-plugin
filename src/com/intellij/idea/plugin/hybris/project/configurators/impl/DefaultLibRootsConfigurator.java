@@ -21,12 +21,12 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.CoreHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YCoreExtRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultJavaLibraryDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YOotbRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YPlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
@@ -66,7 +66,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull IdeModifiableModelsProvider modifiableModelsProvider,
         @NotNull final ProgressIndicator indicator
     ) {
@@ -98,11 +98,11 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             }
         }
 
-        if (moduleDescriptor instanceof final PlatformHybrisModuleDescriptor hybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof final YPlatformModuleDescriptor hybrisModuleDescriptor) {
             YModuleLibDescriptorUtil.INSTANCE.createBootstrapLib(hybrisModuleDescriptor, sourceCodeRoot, modifiableModelsProvider);
         }
 
-        if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YCoreExtRegularModuleDescriptor) {
             addLibsToModule(
                 modifiableRootModel,
                 modifiableModelsProvider,
@@ -111,7 +111,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             );
         }
 
-        if (moduleDescriptor instanceof final OotbHybrisModuleDescriptor hybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof final YOotbRegularModuleDescriptor hybrisModuleDescriptor) {
             if (YModuleDescriptorUtil.INSTANCE.hasBackofficeModule(hybrisModuleDescriptor)) {
                 final File backofficeJarDirectory = new File(
                     hybrisModuleDescriptor.getRootDirectory(),
@@ -137,7 +137,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     }
 
     @Nullable
-    private VirtualFile getSourceCodeRoot(final @NotNull HybrisModuleDescriptor moduleDescriptor) {
+    private VirtualFile getSourceCodeRoot(final @NotNull ModuleDescriptor moduleDescriptor) {
         final VirtualFile sourceCodeRoot;
         final File sourceCodeFile = moduleDescriptor.getRootProjectDescriptor().getSourceCodeFile();
 
@@ -162,7 +162,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
         @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ProgressIndicator progressIndicator
     ) {
         final Library library = modifiableRootModel.getModuleLibraryTable().createLibrary();
@@ -198,7 +198,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
         @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ProgressIndicator progressIndicator
     ) {
         final LibraryTable projectLibraryTable = modifiableRootModel.getModuleLibraryTable();
@@ -246,7 +246,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     public static List<String> resolveMavenSources(
         final @NotNull ModifiableRootModel modifiableRootModel,
         final @NotNull JavaLibraryDescriptor javaLibraryDescriptor,
-        final @NotNull HybrisModuleDescriptor moduleDescriptor,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator progressIndicator
     ) {
         if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
@@ -260,7 +260,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
     public static List<String> resolveStandardProvidedSources(
         final @NotNull JavaLibraryDescriptor javaLibraryDescriptor,
-        final @NotNull HybrisModuleDescriptor moduleDescriptor
+        final @NotNull ModuleDescriptor moduleDescriptor
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         if (!appSettings.getWithStandardProvidedSources()) {

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -188,7 +188,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     protected static class DummySpringConfigurator implements SpringConfigurator {
 
         @Override
-        public void findSpringConfiguration(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
+        public void findSpringConfiguration(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
 
         }
 

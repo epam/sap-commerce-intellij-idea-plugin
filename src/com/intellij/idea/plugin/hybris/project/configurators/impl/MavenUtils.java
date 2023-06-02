@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -61,7 +61,7 @@ public interface MavenUtils {
     @NotNull
      static List<String> resolveMavenJavadocs(
         final @NotNull ModifiableRootModel modifiableRootModel,
-        final @NotNull HybrisModuleDescriptor moduleDescriptor,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator progressIndicator
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
@@ -73,7 +73,7 @@ public interface MavenUtils {
 
      static List<String> resolveMavenSources(
         final @NotNull ModifiableRootModel modifiableRootModel,
-        final @NotNull HybrisModuleDescriptor moduleDescriptor,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator progressIndicator
     ) {
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
@@ -86,7 +86,7 @@ public interface MavenUtils {
     @NotNull
     private static List<String> resolveMavenDependencies(
         final @NotNull ModifiableRootModel modifiableRootModel,
-        final @NotNull HybrisModuleDescriptor moduleDescriptor,
+        final @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator progressIndicator, final boolean downloadSources, final boolean downloadDocs
     ) {
         final List<String> resultPathList = new ArrayList<>();

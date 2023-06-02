@@ -42,7 +42,7 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
 
     @NotNull
     @Override
-    public HybrisModuleDescriptor createDescriptor(
+    public ModuleDescriptor createDescriptor(
         @NotNull final File file,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException {
@@ -64,37 +64,37 @@ public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescrip
         }
         if (hybrisProjectService.isConfigModule(resolvedFile)) {
             LOG.info("Creating Config module for " + path);
-            return new ConfigHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
+            return new YConfigModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
         }
 
         if (hybrisProjectService.isCCv2Module(resolvedFile)) {
             LOG.info("Creating CCv2 module for " + path);
-            return new CCv2HybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
+            return new CCv2ModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.getName());
         }
 
         if (hybrisProjectService.isPlatformModule(resolvedFile)) {
             LOG.info("Creating Platform module for " + path);
-            return new PlatformHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, HybrisConstants.EXTENSION_NAME_PLATFORM);
+            return new YPlatformModuleDescriptor(resolvedFile, rootProjectDescriptor, HybrisConstants.EXTENSION_NAME_PLATFORM);
         }
 
         if (hybrisProjectService.isCoreExtModule(resolvedFile)) {
             LOG.info("Creating Core EXT module for " + path);
-            return new CoreHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
+            return new YCoreExtRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isPlatformExtModule(resolvedFile)) {
             LOG.info("Creating Platform EXT module for " + path);
-            return new ExtHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
+            return new YExtRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isOutOfTheBoxModule(resolvedFile, rootProjectDescriptor)) {
             LOG.info("Creating OOTB module for " + path);
-            return new OotbHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
+            return new YOotbRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isHybrisModule(resolvedFile)) {
             LOG.info("Creating Custom hybris module for " + path);
-            return new CustomHybrisModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
+            return new YCustomRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile));
         }
 
         if (hybrisProjectService.isGradleModule(resolvedFile)) {

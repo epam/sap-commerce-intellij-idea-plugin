@@ -19,17 +19,19 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class PlatformHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public class YExtRegularModuleDescriptor extends YRegularModuleDescriptor {
 
-    public PlatformHybrisModuleDescriptor(
+    public YExtRegularModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
-        @NotNull final String name
+        @NotNull final ExtensionInfo extensionInfo
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor, name);
+        super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
     }
+
 }

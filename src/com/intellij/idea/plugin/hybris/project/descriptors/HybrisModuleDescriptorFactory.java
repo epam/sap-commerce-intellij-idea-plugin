@@ -27,7 +27,7 @@ import java.io.File;
 public interface HybrisModuleDescriptorFactory {
 
     @NotNull
-    HybrisModuleDescriptor createDescriptor(
+    ModuleDescriptor createDescriptor(
         @NotNull File file,
         @NotNull HybrisProjectDescriptor rootProjectDescriptor
     ) throws HybrisConfigurationException;

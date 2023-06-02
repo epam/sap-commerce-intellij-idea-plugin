@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
@@ -36,10 +36,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
-public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
+public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<ModuleDescriptor> {
 
     final static int COLUMN_WIDTH = 300;
 
@@ -56,27 +56,27 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         return (AbstractHybrisProjectImportBuilder) this.getBuilder();
     }
 
-    protected boolean isInConflict(@NotNull final HybrisModuleDescriptor item) {
+    protected boolean isInConflict(@NotNull final ModuleDescriptor item) {
         Validate.notNull(item);
 
         return (this.fileChooser.getMarkedElements().contains(item) || getAdditionalFixedElements().contains(item))
                && this.calculateSelectedModuleDuplicates().contains(item);
     }
 
-    protected List<HybrisModuleDescriptor> getAdditionalFixedElements() {
+    protected List<ModuleDescriptor> getAdditionalFixedElements() {
         return Collections.emptyList();
     }
 
     @NotNull
-    protected Set<HybrisModuleDescriptor> calculateSelectedModuleDuplicates() {
-        final Set<HybrisModuleDescriptor> duplicateModules = new HashSet<>();
-        final Map<String, HybrisModuleDescriptor> uniqueModules = new HashMap<>();
+    protected Set<ModuleDescriptor> calculateSelectedModuleDuplicates() {
+        final Set<ModuleDescriptor> duplicateModules = new HashSet<>();
+        final Map<String, ModuleDescriptor> uniqueModules = new HashMap<>();
 
         getAdditionalFixedElements().forEach(e -> uniqueModules.put(e.getName(), e));
 
-        for (HybrisModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
+        for (ModuleDescriptor moduleDescriptor : this.fileChooser.getMarkedElements()) {
 
-            final HybrisModuleDescriptor alreadySelected = uniqueModules.get(moduleDescriptor.getName());
+            final ModuleDescriptor alreadySelected = uniqueModules.get(moduleDescriptor.getName());
 
             if (null == alreadySelected) {
                 uniqueModules.put(moduleDescriptor.getName(), moduleDescriptor);
@@ -90,7 +90,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     }
 
     @Override
-    protected String getElementText(final HybrisModuleDescriptor item) {
+    protected String getElementText(final ModuleDescriptor item) {
         return getModuleNameAndPath(item);
     }
 
@@ -111,11 +111,11 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
     @Override
     public void onStepLeaving() {
         super.onStepLeaving();
-        final List<HybrisModuleDescriptor> markedElements = new ArrayList<>(this.fileChooser.getMarkedElements());
-        final List<HybrisModuleDescriptor> allElements = new ArrayList<>(markedElements);
+        final List<ModuleDescriptor> markedElements = new ArrayList<>(this.fileChooser.getMarkedElements());
+        final List<ModuleDescriptor> allElements = new ArrayList<>(markedElements);
 
         for (int index = 0; index < this.fileChooser.getElementCount(); index++) {
-            final HybrisModuleDescriptor element = fileChooser.getElementAt(index);
+            final ModuleDescriptor element = fileChooser.getElementAt(index);
             if (markedElements.contains(element)) {
                 if (element.getImportStatus() != MANDATORY) {
                     element.setImportStatus(UNUSED);
@@ -127,13 +127,13 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
     }
 
-    protected abstract void setList(final List<HybrisModuleDescriptor> allElements);
+    protected abstract void setList(final List<ModuleDescriptor> allElements);
 
     protected boolean validateCommon() throws ConfigurationException {
-        final Set<HybrisModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
+        final Set<ModuleDescriptor> moduleDuplicates = this.calculateSelectedModuleDuplicates();
         final Collection<String> moduleDuplicateNames = new HashSet<>(moduleDuplicates.size());
 
-        for (HybrisModuleDescriptor moduleDuplicate : moduleDuplicates) {
+        for (ModuleDescriptor moduleDuplicate : moduleDuplicates) {
             moduleDuplicateNames.add(this.getModuleNameAndPath(moduleDuplicate));
         }
 
@@ -154,7 +154,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
      * Aligned text to COLUMN_WIDTH. It is not precise by space pixel width (4pixels)
      */
     @NotNull
-    protected String getModuleNameAndPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
+    protected String getModuleNameAndPath(@NotNull final ModuleDescriptor moduleDescriptor) {
         Validate.notNull(moduleDescriptor);
 
         final StringBuilder builder = new StringBuilder();

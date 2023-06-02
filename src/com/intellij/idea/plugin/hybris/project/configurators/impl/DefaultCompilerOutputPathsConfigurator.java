@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.roots.CompilerModuleExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -39,7 +39,7 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);

@@ -6,9 +6,9 @@ import com.intellij.compiler.impl.javaCompiler.BackendCompiler;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YPlatformModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
@@ -61,12 +61,12 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
         @NotNull final HybrisConfiguratorCache cache
     ) {
         final List<File> propertyFiles = new ArrayList<>();
-        final ConfigHybrisModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
+        final YConfigModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
 
         if (configDescriptor != null) {
             propertyFiles.add(new File(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES));
         }
-        final PlatformHybrisModuleDescriptor platformDescriptor = descriptor.getPlatformHybrisModuleDescriptor();
+        final YPlatformModuleDescriptor platformDescriptor = descriptor.getPlatformHybrisModuleDescriptor();
         propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES));
         propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES));
 

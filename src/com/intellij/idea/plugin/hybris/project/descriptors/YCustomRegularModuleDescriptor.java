@@ -18,20 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.google.common.collect.Sets;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 
-public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
+public class YCustomRegularModuleDescriptor extends YRegularModuleDescriptor {
 
-    public ExtHybrisModuleDescriptor(
+    public YCustomRegularModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
         @NotNull final ExtensionInfo extensionInfo

@@ -56,8 +56,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -74,8 +74,8 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @GuardedBy("lock")
     protected volatile HybrisProjectDescriptor hybrisProjectDescriptor;
     protected volatile boolean refresh;
-    private List<HybrisModuleDescriptor> moduleList;
-    private List<HybrisModuleDescriptor> hybrisModulesToImport;
+    private List<ModuleDescriptor> moduleList;
+    private List<ModuleDescriptor> hybrisModulesToImport;
 
     @Override
     @Nullable
@@ -156,7 +156,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final List<Module> modules = new ArrayList<>();
 
         final HybrisProjectDescriptor hybrisProjectDescriptor = getHybrisProjectDescriptor();
-        final List<HybrisModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
+        final List<ModuleDescriptor> allModules = hybrisProjectDescriptor.getModulesChosenForImport();
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
@@ -188,7 +188,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
                      .notify(project);
     }
 
-    protected void performProjectsCleanup(@NotNull final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
+    protected void performProjectsCleanup(@NotNull final Iterable<ModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
         final List<File> alreadyExistingModuleFiles;
         final File dir = hybrisProjectDescriptor.getModulesFilesDirectory();
@@ -213,9 +213,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         return imlFiles;
     }
 
-    private List<File> getModulesChosenForImportFiles(final Iterable<HybrisModuleDescriptor> modulesChosenForImport) {
+    private List<File> getModulesChosenForImportFiles(final Iterable<ModuleDescriptor> modulesChosenForImport) {
         List<File> alreadyExistingModuleFiles = new ArrayList<>();
-        for (HybrisModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+        for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             final File ideaModuleFile = YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor);
             if (ideaModuleFile.exists()) {
                 alreadyExistingModuleFiles.add(ideaModuleFile);
@@ -240,15 +240,15 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public List<HybrisModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable HybrisProjectSettings settings) {
-        final List<HybrisModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
-        final List<HybrisModuleDescriptor> moduleToImport = new ArrayList<>();
-        final Set<HybrisModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor : allModules) {
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
-                moduleToImport.add(hybrisModuleDescriptor);
-                hybrisModuleDescriptor.setImportStatus(MANDATORY);
-                moduleToCheck.add(hybrisModuleDescriptor);
+    public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable HybrisProjectSettings settings) {
+        final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
+        final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
+        final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
+        for (ModuleDescriptor yModuleDescriptor : allModules) {
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+                moduleToImport.add(yModuleDescriptor);
+                yModuleDescriptor.setImportStatus(MANDATORY);
+                moduleToCheck.add(yModuleDescriptor);
             }
         }
         resolveDependency(moduleToImport, moduleToCheck, MANDATORY);
@@ -272,7 +272,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
         return moduleToImport.stream()
                              .filter(e -> !modulesOnBlackList.contains(YModuleDescriptorUtil.INSTANCE.getRelativePath(e)))
-                             .sorted(Comparator.nullsLast(Comparator.comparing(HybrisModuleDescriptor::getName)))
+                             .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
                              .collect(Collectors.toList());
     }
 
@@ -295,7 +295,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public void setHybrisModulesToImport(final List<HybrisModuleDescriptor> hybrisModules) {
+    public void setHybrisModulesToImport(final List<ModuleDescriptor> hybrisModules) {
         hybrisModulesToImport = hybrisModules;
         try {
             setList(hybrisModules);
@@ -306,12 +306,12 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public List<HybrisModuleDescriptor> getHybrisModulesToImport() {
+    public List<ModuleDescriptor> getHybrisModulesToImport() {
         return hybrisModulesToImport;
     }
 
     @Override
-    public List<HybrisModuleDescriptor> getList() {
+    public List<ModuleDescriptor> getList() {
         if (moduleList == null) {
             setAllModuleList();
         }
@@ -319,9 +319,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public void setList(final List<HybrisModuleDescriptor> list) throws ConfigurationException {
+    public void setList(final List<ModuleDescriptor> list) throws ConfigurationException {
 
-        final List<HybrisModuleDescriptor> chosenForImport = new ArrayList<HybrisModuleDescriptor>(list);
+        final List<ModuleDescriptor> chosenForImport = new ArrayList<ModuleDescriptor>(list);
 
         chosenForImport.removeAll(this.getHybrisProjectDescriptor().getAlreadyOpenedModules());
 
@@ -329,7 +329,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public boolean isMarked(final HybrisModuleDescriptor element) {
+    public boolean isMarked(final ModuleDescriptor element) {
         return false;
     }
 
@@ -339,13 +339,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private void resolveDependency(
-        final List<HybrisModuleDescriptor> moduleToImport,
-        final Set<HybrisModuleDescriptor> moduleToCheck,
-        final YModuleDescriptorImportStatus selectionMode
+        final List<ModuleDescriptor> moduleToImport,
+        final Set<ModuleDescriptor> moduleToCheck,
+        final ModuleDescriptorImportStatus selectionMode
     ) {
         while (!moduleToCheck.isEmpty()) {
-            final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();
-            for (HybrisModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(currentModule)) {
+            final ModuleDescriptor currentModule = moduleToCheck.iterator().next();
+            for (ModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(currentModule)) {
                 if (!moduleToImport.contains(moduleDescriptor)) {
                     moduleToImport.add(moduleDescriptor);
                     moduleDescriptor.setImportStatus(selectionMode);

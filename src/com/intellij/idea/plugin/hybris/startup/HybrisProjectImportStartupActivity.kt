@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -69,6 +69,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
     companion object {
         val syncProjectSettingsKey: Key<Boolean> = Key.create(SYNC_PROJECT_SETTINGS);
-        val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<HybrisModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
+        val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
     }
 }

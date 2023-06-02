@@ -37,25 +37,25 @@ public interface HybrisProjectDescriptor {
     Project getProject();
 
     @NotNull
-    List<HybrisModuleDescriptor> getFoundModules();
+    List<ModuleDescriptor> getFoundModules();
 
     @NotNull
-    List<HybrisModuleDescriptor> getModulesChosenForImport();
+    List<ModuleDescriptor> getModulesChosenForImport();
 
-    void setModulesChosenForImport(@NotNull List<HybrisModuleDescriptor> moduleDescriptors);
+    void setModulesChosenForImport(@NotNull List<ModuleDescriptor> moduleDescriptors);
 
     // convenience method for configurators
     @Nullable
-    ConfigHybrisModuleDescriptor getConfigHybrisModuleDescriptor();
+    YConfigModuleDescriptor getConfigHybrisModuleDescriptor();
 
     // convenience method for configurators
     @NotNull
-    PlatformHybrisModuleDescriptor getPlatformHybrisModuleDescriptor();
+    YPlatformModuleDescriptor getPlatformHybrisModuleDescriptor();
 
-    @Nullable HybrisModuleDescriptor getKotlinNatureModuleDescriptor();
+    @Nullable ModuleDescriptor getKotlinNatureModuleDescriptor();
 
     @NotNull
-    Set<HybrisModuleDescriptor> getAlreadyOpenedModules();
+    Set<ModuleDescriptor> getAlreadyOpenedModules();
 
     @Nullable
     File getRootDirectory();

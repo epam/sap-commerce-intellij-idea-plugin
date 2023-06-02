@@ -28,13 +28,14 @@ import java.io.File;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public abstract class YRegularModuleDescriptor extends AbstractYModuleDescriptor {
 
     @NotNull
     public final ExtensionInfo extensionInfo;
     public final Map<String, String> metas;
+    private boolean inLocalExtensions;
 
-    protected RegularHybrisModuleDescriptor(
+    protected YRegularModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
         @NotNull final ExtensionInfo extensionInfo
@@ -44,6 +45,14 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         this.extensionInfo = extensionInfo;
         this.metas = CollectionUtils.emptyListIfNull(extensionInfo.getExtension().getMeta()).stream()
             .collect(Collectors.toMap(MetaType::getKey, MetaType::getValue));
+    }
+
+    public boolean isInLocalExtensions() {
+        return inLocalExtensions;
+    }
+
+    public void setInLocalExtensions(final boolean inLocalExtensions) {
+        this.inLocalExtensions = inLocalExtensions;
     }
 
 }

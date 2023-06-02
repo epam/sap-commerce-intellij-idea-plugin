@@ -18,10 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
-import com.intellij.openapi.module.ModifiableModuleModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,7 +30,7 @@ import java.util.List;
  */
 public interface SpringConfigurator {
 
-    void findSpringConfiguration(@NotNull List<HybrisModuleDescriptor> modulesChosenForImport);
+    void findSpringConfiguration(@NotNull List<ModuleDescriptor> modulesChosenForImport);
 
     void configureDependencies(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,

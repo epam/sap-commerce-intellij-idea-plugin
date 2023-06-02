@@ -33,10 +33,10 @@ import java.io.FileFilter
 
 object YModuleLibDescriptorUtil {
 
-    fun getLibraryDescriptors(descriptor: HybrisModuleDescriptor): List<JavaLibraryDescriptor> = when (descriptor) {
-        is RegularHybrisModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is PlatformHybrisModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is ConfigHybrisModuleDescriptor -> getLibraryDescriptors(descriptor)
+    fun getLibraryDescriptors(descriptor: ModuleDescriptor): List<JavaLibraryDescriptor> = when (descriptor) {
+        is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YPlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
         is RootModuleDescriptor -> emptyList()
         else -> emptyList()
     }
@@ -62,7 +62,7 @@ object YModuleLibDescriptorUtil {
     }
 
     fun createBootstrapLib(
-        descriptor: PlatformHybrisModuleDescriptor,
+        descriptor: YPlatformModuleDescriptor,
         sourceCodeRoot: VirtualFile?,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
@@ -98,7 +98,7 @@ object YModuleLibDescriptorUtil {
         }
     }
 
-    private fun getLibraryDirectories(descriptor: PlatformHybrisModuleDescriptor): Collection<File> {
+    private fun getLibraryDirectories(descriptor: YPlatformModuleDescriptor): Collection<File> {
         val libraryDirectories = mutableListOf<File>()
         File(descriptor.rootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
             .takeIf { it.exists() }
@@ -124,7 +124,7 @@ object YModuleLibDescriptorUtil {
         }
     }
 
-    private fun getLibraryDescriptors(descriptor: RegularHybrisModuleDescriptor): List<JavaLibraryDescriptor> {
+    private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
         val descriptorType = YModuleDescriptorUtil.getDescriptorType(descriptor)
 
@@ -144,7 +144,7 @@ object YModuleLibDescriptorUtil {
 
     private fun addRootLib(
         libs: MutableList<JavaLibraryDescriptor>,
-        descriptor: RegularHybrisModuleDescriptor
+        descriptor: YRegularModuleDescriptor
     ) {
         libs.add(
             DefaultJavaLibraryDescriptor(
@@ -157,7 +157,7 @@ object YModuleLibDescriptorUtil {
 
     private fun addBackofficeLibs(
         libs: MutableList<JavaLibraryDescriptor>,
-        descriptor: RegularHybrisModuleDescriptor
+        descriptor: YRegularModuleDescriptor
     ) {
         libs.add(
             DefaultJavaLibraryDescriptor(
@@ -191,7 +191,7 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun addHmcLibs(
-        descriptor: RegularHybrisModuleDescriptor,
+        descriptor: YRegularModuleDescriptor,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         libs.add(
@@ -216,7 +216,7 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun addWebLibs(
-        descriptor: RegularHybrisModuleDescriptor,
+        descriptor: YRegularModuleDescriptor,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY)
@@ -247,7 +247,7 @@ object YModuleLibDescriptorUtil {
      * as a dependency for HAC addons.
      */
     private fun addHacLibs(
-        descriptor: RegularHybrisModuleDescriptor,
+        descriptor: YRegularModuleDescriptor,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         if (YModuleDescriptorUtil.isHacAddon(descriptor)) {
@@ -261,7 +261,7 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun addLibrariesToNonCustomModule(
-        descriptor: RegularHybrisModuleDescriptor,
+        descriptor: YRegularModuleDescriptor,
         descriptorType: HybrisModuleDescriptorType?,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
@@ -299,7 +299,7 @@ object YModuleLibDescriptorUtil {
         )
     }
 
-    private fun addServerLibs(descriptor: RegularHybrisModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
+    private fun addServerLibs(descriptor: YRegularModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
         val binDir = File(descriptor.rootDirectory, HybrisConstants.BIN_DIRECTORY)
             .takeIf { it.isDirectory }
             ?: return
@@ -316,7 +316,7 @@ object YModuleLibDescriptorUtil {
         }
     }
 
-    private fun processAddOnBackwardDependencies(descriptor: RegularHybrisModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
+    private fun processAddOnBackwardDependencies(descriptor: YRegularModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
         if (!descriptor.rootProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn) return
 
         val backwardDependencies = descriptor.dependenciesTree
@@ -331,14 +331,14 @@ object YModuleLibDescriptorUtil {
     }
 
 
-    private fun getLibraryDescriptors(descriptor: ConfigHybrisModuleDescriptor) = listOf(
+    private fun getLibraryDescriptors(descriptor: YConfigModuleDescriptor) = listOf(
         DefaultJavaLibraryDescriptor(File(descriptor.rootDirectory, HybrisConstants.CONFIG_LICENCE_DIRECTORY), true)
     )
 
-    private fun getLibraryDescriptors(descriptor: PlatformHybrisModuleDescriptor) = listOf(
+    private fun getLibraryDescriptors(descriptor: YPlatformModuleDescriptor) = listOf(
         DefaultJavaLibraryDescriptor(getDbDriversDirectory(descriptor), true, false)
     )
 
-    private fun getDbDriversDirectory(descriptor: PlatformHybrisModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
+    private fun getDbDriversDirectory(descriptor: YPlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
         ?: File(descriptor.rootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 }

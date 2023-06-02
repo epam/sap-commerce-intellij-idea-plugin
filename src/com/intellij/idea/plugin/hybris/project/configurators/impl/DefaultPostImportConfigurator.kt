@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
@@ -35,7 +35,7 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allHybrisModules: List<HybrisModuleDescriptor>,
+        allHybrisModules: List<ModuleDescriptor>,
         refresh: Boolean,
     ) {
         DumbService.getInstance(project).runWhenSmart {
@@ -50,7 +50,7 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     private fun finishImport(
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allHybrisModules: List<HybrisModuleDescriptor>,
+        allHybrisModules: List<ModuleDescriptor>,
         callback: Runnable
     ) {
         val configuratorFactory = ConfiguratorFactoryProvider.get()

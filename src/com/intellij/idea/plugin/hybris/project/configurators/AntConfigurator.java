@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public interface AntConfigurator {
 
     void configure(
         final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull List<HybrisModuleDescriptor> allModules,
+        @NotNull List<ModuleDescriptor> allModules,
         @NotNull Project project
     );
 }

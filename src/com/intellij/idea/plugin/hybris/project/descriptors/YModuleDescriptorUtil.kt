@@ -32,8 +32,8 @@ import java.util.*
 object YModuleDescriptorUtil {
 
     // TODO: migrate it to new [y] Facet
-    fun getExtensionDescriptor(descriptor: HybrisModuleDescriptor) = when (descriptor) {
-        is RegularHybrisModuleDescriptor -> ExtensionDescriptor(
+    fun getExtensionDescriptor(descriptor: ModuleDescriptor) = when (descriptor) {
+        is YRegularModuleDescriptor -> ExtensionDescriptor(
             descriptor.getName(),
             getDescriptorType(descriptor),
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
@@ -57,49 +57,49 @@ object YModuleDescriptorUtil {
         )
     }
 
-    fun isPreselected(descriptor: HybrisModuleDescriptor) = when (descriptor) {
-        is CCv2HybrisModuleDescriptor,
-        is PlatformHybrisModuleDescriptor -> true
+    fun isPreselected(descriptor: ModuleDescriptor) = when (descriptor) {
+        is CCv2ModuleDescriptor,
+        is YPlatformModuleDescriptor -> true
 
-        is ConfigHybrisModuleDescriptor -> descriptor.isPreselected
-        is RegularHybrisModuleDescriptor -> descriptor.isInLocalExtensions
+        is YConfigModuleDescriptor -> descriptor.isPreselected
+        is YRegularModuleDescriptor -> descriptor.isInLocalExtensions
         else -> false
     }
 
-    fun getDescriptorType(descriptor: HybrisModuleDescriptor) = when (descriptor) {
-        is CCv2HybrisModuleDescriptor -> HybrisModuleDescriptorType.CCV2
-        is CustomHybrisModuleDescriptor -> HybrisModuleDescriptorType.CUSTOM
+    fun getDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
+        is CCv2ModuleDescriptor -> HybrisModuleDescriptorType.CCV2
+        is YCustomRegularModuleDescriptor -> HybrisModuleDescriptorType.CUSTOM
         is EclipseModuleDescriptor -> HybrisModuleDescriptorType.ECLIPSE
-        is ExtHybrisModuleDescriptor -> HybrisModuleDescriptorType.EXT
+        is YExtRegularModuleDescriptor -> HybrisModuleDescriptorType.EXT
         is GradleModuleDescriptor -> HybrisModuleDescriptorType.GRADLE
-        is OotbHybrisModuleDescriptor -> HybrisModuleDescriptorType.OOTB
+        is YOotbRegularModuleDescriptor -> HybrisModuleDescriptorType.OOTB
         is MavenModuleDescriptor -> HybrisModuleDescriptorType.MAVEN
-        is PlatformHybrisModuleDescriptor -> HybrisModuleDescriptorType.PLATFORM
-        is ConfigHybrisModuleDescriptor -> if (descriptor.isMainConfig) HybrisModuleDescriptorType.CONFIG
+        is YPlatformModuleDescriptor -> HybrisModuleDescriptorType.PLATFORM
+        is YConfigModuleDescriptor -> if (descriptor.isMainConfig) HybrisModuleDescriptorType.CONFIG
         else HybrisModuleDescriptorType.CUSTOM
 
         is RootModuleDescriptor -> HybrisModuleDescriptorType.NONE
         else -> HybrisModuleDescriptorType.NONE
     }
 
-    fun hasKotlinDirectories(descriptor: HybrisModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
+    fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
         || File(descriptor.rootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
-    fun isAcceleratorAddOnModuleRoot(descriptor: HybrisModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY)
+    fun isAcceleratorAddOnModuleRoot(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY)
         .isDirectory
 
-    fun getWebRoot(descriptor: HybrisModuleDescriptor): File? = when (descriptor) {
-        is RegularHybrisModuleDescriptor -> File(descriptor.rootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH)
+    fun getWebRoot(descriptor: ModuleDescriptor): File? = when (descriptor) {
+        is YRegularModuleDescriptor -> File(descriptor.rootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH)
             .takeIf { it.exists() }
 
         else -> null
     }
 
-    fun getIdeaModuleFile(descriptor: HybrisModuleDescriptor) = descriptor.rootProjectDescriptor.modulesFilesDirectory
+    fun getIdeaModuleFile(descriptor: ModuleDescriptor) = descriptor.rootProjectDescriptor.modulesFilesDirectory
         ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
         ?: File(descriptor.rootDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
-    fun getRelativePath(descriptor: HybrisModuleDescriptor): String {
+    fun getRelativePath(descriptor: ModuleDescriptor): String {
         val moduleRootDir: File = descriptor.rootDirectory
         val projectRootDir: File = descriptor.rootProjectDescriptor.rootDirectory ?: return moduleRootDir.path
         val virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService::class.java)
@@ -109,20 +109,20 @@ object YModuleDescriptorUtil {
         } else moduleRootDir.path
     }
 
-    fun getRequiredExtensionNames(descriptor: HybrisModuleDescriptor) = when (descriptor) {
-        is PlatformHybrisModuleDescriptor -> getRequiredExtensionNames(descriptor)
-        is RegularHybrisModuleDescriptor -> getRequiredExtensionNames(descriptor)
+    fun getRequiredExtensionNames(descriptor: ModuleDescriptor) = when (descriptor) {
+        is YPlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
     }
 
-    private fun getRequiredExtensionNames(descriptor: PlatformHybrisModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME)
+    private fun getRequiredExtensionNames(descriptor: YPlatformModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME)
         .takeIf { it.isDirectory }
         ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
         ?.map { it.name }
         ?.toSet()
         ?: emptySet()
 
-    private fun getRequiredExtensionNames(descriptor: RegularHybrisModuleDescriptor): Set<String> {
+    private fun getRequiredExtensionNames(descriptor: YRegularModuleDescriptor): Set<String> {
         val extension = descriptor.extensionInfo.extension ?: return getDefaultRequiredExtensionNames(descriptor)
         val requiresExtension = extension.requiresExtension
             .takeIf { it.isNotEmpty() } ?: return getDefaultRequiredExtensionNames(descriptor)
@@ -143,24 +143,24 @@ object YModuleDescriptorUtil {
         return requiredExtensionNames.unmodifiable()
     }
 
-    private fun getDefaultRequiredExtensionNames(descriptor: RegularHybrisModuleDescriptor) = when (descriptor) {
-        is CoreHybrisModuleDescriptor -> emptySet()
-        is ExtHybrisModuleDescriptor -> setOf(HybrisConstants.EXTENSION_NAME_CORE)
+    private fun getDefaultRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
+        is YCoreExtRegularModuleDescriptor -> emptySet()
+        is YExtRegularModuleDescriptor -> setOf(HybrisConstants.EXTENSION_NAME_CORE)
         else -> setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
     }
 
-    private fun getAdditionalRequiredExtensionNames(descriptor: RegularHybrisModuleDescriptor) = when (descriptor) {
-        is CustomHybrisModuleDescriptor,
-        is ExtHybrisModuleDescriptor -> emptySet()
+    private fun getAdditionalRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
+        is YCustomRegularModuleDescriptor,
+        is YExtRegularModuleDescriptor -> emptySet()
 
         else -> setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
     }
 
 
-    fun getDependenciesPlainList(moduleDescriptor: HybrisModuleDescriptor) = recursivelyCollectDependenciesPlainSet(moduleDescriptor, TreeSet())
+    fun getDependenciesPlainList(moduleDescriptor: ModuleDescriptor) = recursivelyCollectDependenciesPlainSet(moduleDescriptor, TreeSet())
         .unmodifiable()
 
-    private fun recursivelyCollectDependenciesPlainSet(descriptor: HybrisModuleDescriptor, dependenciesSet: MutableSet<HybrisModuleDescriptor>): Set<HybrisModuleDescriptor> {
+    private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
         val dependenciesTree = descriptor.dependenciesTree
 
         if (CollectionUtils.isEmpty(dependenciesTree)) return dependenciesSet
@@ -175,18 +175,18 @@ object YModuleDescriptorUtil {
         return dependenciesSet
     }
 
-    fun hasHmcModule(descriptor: RegularHybrisModuleDescriptor) = descriptor
+    fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor
         .extensionInfo.extension.hmcmodule != null
 
-    fun isHacAddon(descriptor: RegularHybrisModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
+    fun isHacAddon(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
-    fun hasBackofficeModule(descriptor: RegularHybrisModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
+    fun hasBackofficeModule(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
         && doesBackofficeDirectoryExist(descriptor)
 
-    private fun isMetaKeySetToTrue(descriptor: RegularHybrisModuleDescriptor, metaKeyName: String) = descriptor.metas[metaKeyName]
+    private fun isMetaKeySetToTrue(descriptor: YRegularModuleDescriptor, metaKeyName: String) = descriptor.metas[metaKeyName]
         ?.let { it == java.lang.Boolean.TRUE.toString() }
         ?: false
 
-    private fun doesBackofficeDirectoryExist(descriptor: RegularHybrisModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY)
+    private fun doesBackofficeDirectoryExist(descriptor: YRegularModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY)
         .isDirectory
 }

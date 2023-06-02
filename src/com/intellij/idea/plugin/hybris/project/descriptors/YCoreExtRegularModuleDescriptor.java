@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class CoreHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
+public class YCoreExtRegularModuleDescriptor extends YExtRegularModuleDescriptor {
 
-    public CoreHybrisModuleDescriptor(
+    public YCoreExtRegularModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
         @NotNull final ExtensionInfo extensionInfo

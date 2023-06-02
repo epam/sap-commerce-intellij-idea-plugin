@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,5 +27,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ModuleSettingsConfigurator {
 
-    void configure(@NotNull final HybrisModuleDescriptor moduleDescriptor, @NotNull final Module javaModule);
+    void configure(@NotNull final ModuleDescriptor moduleDescriptor, @NotNull final Module javaModule);
 }

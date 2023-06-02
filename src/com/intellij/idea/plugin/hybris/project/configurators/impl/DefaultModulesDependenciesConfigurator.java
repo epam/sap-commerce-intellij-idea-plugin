@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ExtHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YExtRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YOotbRegularModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.DependencyScope;
@@ -50,13 +50,13 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
         final List<Module> modules = Arrays.asList(modifiableModelsProvider.getModules());
-        final Set<HybrisModuleDescriptor> extModules = hybrisProjectDescriptor
+        final Set<ModuleDescriptor> extModules = hybrisProjectDescriptor
             .getModulesChosenForImport()
             .stream()
-            .filter(moduleDescriptor -> moduleDescriptor instanceof ExtHybrisModuleDescriptor)
+            .filter(moduleDescriptor -> moduleDescriptor instanceof YExtRegularModuleDescriptor)
             .collect(Collectors.toSet());
 
-        for (final HybrisModuleDescriptor nextDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
+        for (final ModuleDescriptor nextDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
             findModuleByNameIgnoreCase(modules, nextDescriptor.getName())
                 .ifPresent(nextModule -> configureModuleDependencies(
                     nextDescriptor,
@@ -69,16 +69,16 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
     }
 
     private void configureModuleDependencies(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final Module module,
         @NotNull final Collection<Module> allModules,
-        @NotNull final Set<HybrisModuleDescriptor> extModules,
+        @NotNull final Set<ModuleDescriptor> extModules,
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
         final ModifiableRootModel rootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
-        for (HybrisModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
-            if (moduleDescriptor instanceof OotbHybrisModuleDescriptor && extModules.contains(dependency)) {
+        for (ModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
+            if (moduleDescriptor instanceof YOotbRegularModuleDescriptor && extModules.contains(dependency)) {
                 continue;
             }
 

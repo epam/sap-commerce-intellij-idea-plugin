@@ -22,11 +22,8 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
-public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public class RootModuleDescriptor extends AbstractYModuleDescriptor {
 
     public RootModuleDescriptor(
         @NotNull final File moduleRootDirectory,

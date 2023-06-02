@@ -27,22 +27,21 @@ import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDescriptor {
+public abstract class AbstractYModuleDescriptor implements ModuleDescriptor {
 
     @NotNull
     protected final File moduleRootDirectory;
     @NotNull
     protected final HybrisProjectDescriptor rootProjectDescriptor;
     @NotNull
-    protected final Set<HybrisModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
+    protected final Set<ModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
     @NotNull
     private final String name;
     @NotNull
     protected Set<String> springFileSet = new LinkedHashSet<>();
-    private boolean inLocalExtensions;
-    private YModuleDescriptorImportStatus importStatus = YModuleDescriptorImportStatus.UNUSED;
+    private ModuleDescriptorImportStatus importStatus = ModuleDescriptorImportStatus.UNUSED;
 
-    public AbstractHybrisModuleDescriptor(
+    public AbstractYModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
         @NotNull final String name
@@ -66,7 +65,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public int compareTo(@NotNull final HybrisModuleDescriptor o) {
+    public int compareTo(@NotNull final ModuleDescriptor o) {
         return this.getName().compareToIgnoreCase(o.getName());
     }
 
@@ -84,12 +83,12 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @NotNull
     @Override
-    public Set<HybrisModuleDescriptor> getDependenciesTree() {
+    public Set<ModuleDescriptor> getDependenciesTree() {
         return dependenciesTree;
     }
 
     @Override
-    public void setDependenciesTree(@NotNull final Set<HybrisModuleDescriptor> moduleDescriptors) {
+    public void setDependenciesTree(@NotNull final Set<ModuleDescriptor> moduleDescriptors) {
         Validate.notNull(moduleDescriptors);
 
         this.dependenciesTree.clear();
@@ -107,21 +106,13 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return this.springFileSet.add(springFile);
     }
 
-    public boolean isInLocalExtensions() {
-        return inLocalExtensions;
-    }
-
-    public void setInLocalExtensions(final boolean inLocalExtensions) {
-        this.inLocalExtensions = inLocalExtensions;
-    }
-
     @Override
-    public YModuleDescriptorImportStatus getImportStatus() {
+    public ModuleDescriptorImportStatus getImportStatus() {
         return importStatus;
     }
 
     @Override
-    public void setImportStatus(final YModuleDescriptorImportStatus importStatus) {
+    public void setImportStatus(final ModuleDescriptorImportStatus importStatus) {
         this.importStatus = importStatus;
     }
 
@@ -143,7 +134,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
             return false;
         }
 
-        final AbstractHybrisModuleDescriptor other = (AbstractHybrisModuleDescriptor) obj;
+        final AbstractYModuleDescriptor other = (AbstractYModuleDescriptor) obj;
 
         return new org.apache.commons.lang3.builder.EqualsBuilder()
             .append(this.getName(), other.getName())

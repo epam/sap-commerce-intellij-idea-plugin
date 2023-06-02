@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_VERSION_1905_0
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.Version
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.components.PersistentStateComponent
@@ -67,7 +67,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         return state.availableExtensions
     }
 
-    fun setAvailableExtensions(descriptors: Set<HybrisModuleDescriptor>) {
+    fun setAvailableExtensions(descriptors: Set<ModuleDescriptor>) {
         state.availableExtensions.clear()
         descriptors
             .map { YModuleDescriptorUtil.getExtensionDescriptor(it) }

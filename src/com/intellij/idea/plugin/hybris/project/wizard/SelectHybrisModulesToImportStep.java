@@ -34,12 +34,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
 public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements OpenSupport, RefreshSupport {
 
-    private YModuleDescriptorImportStatus selectionMode = MANDATORY;
+    private ModuleDescriptorImportStatus selectionMode = MANDATORY;
 
     public SelectHybrisModulesToImportStep(final WizardContext context) {
         super(context);
@@ -47,9 +47,9 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     protected void init() {
-        this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<HybrisModuleDescriptor>) (element, isMarked) -> {
+        this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<ModuleDescriptor>) (element, isMarked) -> {
             if (isMarked) {
-                for (HybrisModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(element)) {
+                for (ModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(element)) {
                     if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                         continue;
                     }
@@ -70,10 +70,10 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         super.updateStep();
         selectionMode = MANDATORY;
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
-            final HybrisModuleDescriptor hybrisModuleDescriptor = fileChooser.getElementAt(index);
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
-                fileChooser.setElementMarked(hybrisModuleDescriptor, true);
-                hybrisModuleDescriptor.setImportStatus(MANDATORY);
+            final ModuleDescriptor yModuleDescriptor = fileChooser.getElementAt(index);
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+                fileChooser.setElementMarked(yModuleDescriptor, true);
+                yModuleDescriptor.setImportStatus(MANDATORY);
             }
         }
         selectionMode = UNUSED;
@@ -93,8 +93,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 return o1dup ? -1 : 1;
             }
 
-            final boolean o1custom = o1 instanceof CustomHybrisModuleDescriptor || o1 instanceof ConfigHybrisModuleDescriptor;
-            final boolean o2custom = o2 instanceof CustomHybrisModuleDescriptor || o2 instanceof ConfigHybrisModuleDescriptor;
+            final boolean o1custom = o1 instanceof YCustomRegularModuleDescriptor || o1 instanceof YConfigModuleDescriptor;
+            final boolean o2custom = o2 instanceof YCustomRegularModuleDescriptor || o2 instanceof YConfigModuleDescriptor;
             if (o1custom ^ o2custom) {
                 return o1custom ? -1 : 1;
             }
@@ -114,7 +114,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     }
 
     @Override
-    protected void setList(final List<HybrisModuleDescriptor> allElements) {
+    protected void setList(final List<ModuleDescriptor> allElements) {
         getContext().setHybrisModulesToImport(allElements);
     }
 
@@ -134,30 +134,30 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     }
 
     @Override
-    protected boolean isElementEnabled(final HybrisModuleDescriptor hybrisModuleDescriptor) {
-        if (hybrisModuleDescriptor instanceof ConfigHybrisModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
+    protected boolean isElementEnabled(final ModuleDescriptor yModuleDescriptor) {
+        if (yModuleDescriptor instanceof YConfigModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
             return false;
         }
-        if (hybrisModuleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+        if (yModuleDescriptor instanceof YPlatformModuleDescriptor) {
             return false;
         }
-        if (hybrisModuleDescriptor instanceof ExtHybrisModuleDescriptor) {
+        if (yModuleDescriptor instanceof YExtRegularModuleDescriptor) {
             return false;
         }
 
-        return super.isElementEnabled(hybrisModuleDescriptor);
+        return super.isElementEnabled(yModuleDescriptor);
     }
 
     @Override
     @Nullable
-    protected Icon getElementIcon(final HybrisModuleDescriptor item) {
+    protected Icon getElementIcon(final ModuleDescriptor item) {
         if (this.isInConflict(item)) {
             return AllIcons.Actions.Cancel;
         }
-        if (item instanceof CustomHybrisModuleDescriptor) {
+        if (item instanceof YCustomRegularModuleDescriptor) {
             return AllIcons.Nodes.JavaModule;
         }
-        if (item instanceof ConfigHybrisModuleDescriptor) {
+        if (item instanceof YConfigModuleDescriptor) {
             return AllIcons.Nodes.Module;
         }
 

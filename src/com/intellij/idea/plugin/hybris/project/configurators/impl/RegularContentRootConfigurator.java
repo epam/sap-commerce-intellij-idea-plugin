@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.CustomHybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YCustomRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.roots.ContentEntry;
@@ -90,7 +90,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         Validate.notNull(modifiableRootModel);
         Validate.notNull(moduleDescriptor);
@@ -126,7 +126,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureRegularWebRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -134,7 +134,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureCommonRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -158,7 +158,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             dirsToIgnore
         );
 
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
                                                                                          .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
         } else {
@@ -172,7 +172,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected void configureResourceDirectory(
         @NotNull final ContentEntry contentEntry,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final List<File> dirsToIgnore
     ) {
         final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
@@ -186,7 +186,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected void excludeCommonNeedlessDirs(
         final ContentEntry contentEntry,
-        final HybrisModuleDescriptor moduleDescriptor
+        final ModuleDescriptor moduleDescriptor
     ) {
         excludeSubDirectories(contentEntry, moduleDescriptor.getRootDirectory(), Arrays.asList(
             EXTERNAL_TOOL_BUILDERS_DIRECTORY,
@@ -221,7 +221,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureAdditionalRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final String directoryName,
         @NotNull final ContentEntry contentEntry,
         @NotNull final File parentDirectory
@@ -253,7 +253,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureWebRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final File parentDirectory,
         @NotNull final List<File> dirsToIgnore
@@ -263,7 +263,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureCommonWebRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -278,7 +278,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureAcceleratorAddonRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -293,7 +293,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureBackOfficeRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -312,7 +312,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             );
         }
 
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
                                                                                          .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
         } else {
@@ -328,7 +328,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configurePlatformRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
         Validate.notNull(moduleDescriptor);
@@ -361,7 +361,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureWebModuleRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final File webModuleDirectory,
         @NotNull final List<File> dirsToIgnore
@@ -383,7 +383,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true)
         );
 
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
+        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
                                                                                          .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
         } else {
@@ -467,7 +467,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected void configureWebInf(
         final ContentEntry contentEntry,
-        final HybrisModuleDescriptor moduleDescriptor,
+        final ModuleDescriptor moduleDescriptor,
         final File webModuleDirectory
     ) {
         final File rootDirectory = moduleDescriptor.getRootDirectory();

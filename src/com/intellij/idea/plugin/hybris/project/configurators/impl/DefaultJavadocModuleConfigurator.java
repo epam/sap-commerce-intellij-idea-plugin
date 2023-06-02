@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.JavaModuleExternalPaths;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -37,7 +37,7 @@ public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurat
     @Override
     public void configure(
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ProgressIndicator progressIndicator
     ) {
         Validate.notNull(modifiableRootModel);

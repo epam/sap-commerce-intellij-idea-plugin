@@ -28,7 +28,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +46,7 @@ import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
 
-    private Set<HybrisModuleDescriptor> requiredHybrisModuleDescriptorList;
+    private Set<ModuleDescriptor> requiredYModuleDescriptorList;
     private boolean groupModules;
     private String[] groupCustom;
     private String[] groupNonHybris;
@@ -62,16 +61,16 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     @Override
-    public void findDependencyModules(@NotNull final List<HybrisModuleDescriptor> modulesChosenForImport) {
+    public void findDependencyModules(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
         readSettings();
         if (!groupModules) {
             return;
         }
-        requiredHybrisModuleDescriptorList = new HashSet<>();
-        for (HybrisModuleDescriptor hybrisModuleDescriptor : modulesChosenForImport) {
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(hybrisModuleDescriptor)) {
-                requiredHybrisModuleDescriptorList.add(hybrisModuleDescriptor);
-                requiredHybrisModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(hybrisModuleDescriptor));
+        requiredYModuleDescriptorList = new HashSet<>();
+        for (ModuleDescriptor yModuleDescriptor : modulesChosenForImport) {
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+                requiredYModuleDescriptorList.add(yModuleDescriptor);
+                requiredYModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor));
             }
         }
     }
@@ -80,7 +79,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     public void configure(
         @NotNull final ModifiableModuleModel modifiableModuleModel,
         @NotNull final Module module,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         if (!groupModules) {
             return;
@@ -91,8 +90,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
     @Nullable
     @Override
-    public String[] getGroupName(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        if (!(moduleDescriptor instanceof ConfigHybrisModuleDescriptor)) {
+    public String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor) {
+        if (!(moduleDescriptor instanceof YConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
                 return groupPathOverride.clone();
@@ -111,8 +110,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return groupPath.clone();
     }
 
-    private String[] getGlobalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
-        final ConfigHybrisModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+    private String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
+        final YConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
         if (configDescriptor == null) {
             return null;
         }
@@ -124,7 +123,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
 
-    private String[] getLocalGroupPathOverride(final HybrisModuleDescriptor moduleDescriptor) {
+    private String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
         final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
         if (groupFile.exists() && pathOverride == null) {
@@ -164,20 +163,20 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return HybrisApplicationSettingsComponent.toIdeaGroup(rawGroupText);
     }
 
-    private String[] getGroupPath(@NotNull final HybrisModuleDescriptor moduleDescriptor) {
-        if (moduleDescriptor instanceof CCv2HybrisModuleDescriptor) {
+    private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor instanceof CCv2ModuleDescriptor) {
             return groupCCv2;
         }
 
-        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YPlatformModuleDescriptor) {
             return groupPlatform;
         }
 
-        if (moduleDescriptor instanceof ExtHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YExtRegularModuleDescriptor) {
             return groupPlatform;
         }
 
-        if (moduleDescriptor instanceof ConfigHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YConfigModuleDescriptor) {
             return groupCustom;
         }
 
@@ -185,7 +184,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupNonHybris;
         }
 
-        if (moduleDescriptor instanceof CustomHybrisModuleDescriptor) {
+        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
             File customDirectory = moduleDescriptor.getRootProjectDescriptor().getExternalExtensionsDirectory();
 
             if (null == customDirectory) {
@@ -208,7 +207,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 return this.groupCustom;
             }
 
-            final boolean isCustomModuleInLocalExtensionsXml = this.requiredHybrisModuleDescriptorList.contains(
+            final boolean isCustomModuleInLocalExtensionsXml = this.requiredYModuleDescriptorList.contains(
                 moduleDescriptor
             );
 
@@ -218,7 +217,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             );
         }
 
-        if (this.requiredHybrisModuleDescriptorList.contains(moduleDescriptor)) {
+        if (this.requiredYModuleDescriptorList.contains(moduleDescriptor)) {
             final File hybrisBinDirectory = new File(
                 moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(),
                 HybrisConstants.BIN_DIRECTORY

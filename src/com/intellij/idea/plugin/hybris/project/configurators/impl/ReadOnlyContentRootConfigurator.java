@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.lang3.Validate;
@@ -42,7 +42,7 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_
 public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigurator {
 
     protected void configureCommonRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -52,7 +52,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     }
 
     protected void configureAdditionalRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final String directoryName,
         @NotNull final ContentEntry contentEntry,
         @NotNull final File parentDirectory
@@ -80,7 +80,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     }
 
     protected void configureBackOfficeRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
@@ -105,7 +105,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
 
     @Override
     protected void configureRegularWebRoots(
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {

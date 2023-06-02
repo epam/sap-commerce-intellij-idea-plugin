@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.facet.ModifiableFacetModel;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -32,7 +32,7 @@ public interface FacetConfigurator {
 
     void configure(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull ModifiableFacetModel modifiableFacetModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor,
+        @NotNull ModuleDescriptor moduleDescriptor,
         @NotNull Module javaModule,
         @NotNull ModifiableRootModel modifiableRootModel
     );

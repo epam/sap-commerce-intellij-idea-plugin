@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.Set;
 
-public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
+public interface ModuleDescriptor extends Comparable<ModuleDescriptor> {
 
     @NotNull
     String getName();
@@ -35,17 +35,17 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     HybrisProjectDescriptor getRootProjectDescriptor();
 
     @NotNull
-    Set<HybrisModuleDescriptor> getDependenciesTree();
+    Set<ModuleDescriptor> getDependenciesTree();
 
-    void setDependenciesTree(@NotNull Set<HybrisModuleDescriptor> moduleDescriptors);
+    void setDependenciesTree(@NotNull Set<ModuleDescriptor> moduleDescriptors);
 
     @NotNull
     Set<String> getSpringFileSet();
 
     boolean addSpringFile(@NotNull String springFile);
 
-    void setImportStatus(YModuleDescriptorImportStatus importStatus);
+    void setImportStatus(ModuleDescriptorImportStatus importStatus);
 
-    YModuleDescriptorImportStatus getImportStatus();
+    ModuleDescriptorImportStatus getImportStatus();
 
 }

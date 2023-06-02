@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.project.Project
 
@@ -26,7 +26,7 @@ interface PostImportConfigurator {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allHybrisModules: List<HybrisModuleDescriptor>,
+        allHybrisModules: List<ModuleDescriptor>,
         refresh: Boolean,
     )
 

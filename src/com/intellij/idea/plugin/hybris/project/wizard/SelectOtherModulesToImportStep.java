@@ -21,10 +21,10 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.CCv2ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
 import icons.GradleIcons;
@@ -47,7 +47,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         super.updateStep();
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final var descriptor = fileChooser.getElementAt(index);
-            if (descriptor instanceof EclipseModuleDescriptor || descriptor instanceof CCv2HybrisModuleDescriptor) {
+            if (descriptor instanceof EclipseModuleDescriptor || descriptor instanceof CCv2ModuleDescriptor) {
                 fileChooser.setElementMarked(descriptor, true);
             }
         }
@@ -55,7 +55,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
 
     @Override
     @Nullable
-    protected Icon getElementIcon(final HybrisModuleDescriptor module) {
+    protected Icon getElementIcon(final ModuleDescriptor module) {
         if (this.isInConflict(module)) {
             return AllIcons.Actions.Cancel;
         }
@@ -68,7 +68,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
         if (module instanceof GradleModuleDescriptor) {
             return GradleIcons.Gradle;
         }
-        if (module instanceof CCv2HybrisModuleDescriptor) {
+        if (module instanceof CCv2ModuleDescriptor) {
             return HybrisIcons.MODULE_CCV2;
         }
 
@@ -76,9 +76,9 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     }
 
     @Override
-    protected void setList(final List<HybrisModuleDescriptor> otherElements) {
-        final Stream<HybrisModuleDescriptor> hybrisModuleStream = getContext().getHybrisModulesToImport().stream();
-        final List<HybrisModuleDescriptor> allModules =
+    protected void setList(final List<ModuleDescriptor> otherElements) {
+        final Stream<ModuleDescriptor> hybrisModuleStream = getContext().getHybrisModulesToImport().stream();
+        final List<ModuleDescriptor> allModules =
             Stream.concat(hybrisModuleStream, otherElements.stream()).collect(Collectors.toList());
         try {
             this.getContext().setList(allModules);
@@ -88,7 +88,7 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     }
 
     @Override
-    protected List<HybrisModuleDescriptor> getAdditionalFixedElements() {
+    protected List<ModuleDescriptor> getAdditionalFixedElements() {
         return getContext().getHybrisModulesToImport();
     }
 

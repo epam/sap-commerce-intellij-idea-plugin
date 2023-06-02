@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.google.common.base.Predicate;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Alexander Bartash <AlexanderBartash@gmail.com>
  */
-public class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleDescriptor> {
+public class FindHybrisModuleDescriptorByName implements Predicate<ModuleDescriptor> {
 
     private final String name;
 
@@ -40,7 +40,7 @@ public class FindHybrisModuleDescriptorByName implements Predicate<HybrisModuleD
     }
 
     @Override
-    public boolean apply(@Nullable final HybrisModuleDescriptor t) {
+    public boolean apply(@Nullable final ModuleDescriptor t) {
         return null != t && name.equalsIgnoreCase(t.getName());
     }
 }

@@ -132,7 +132,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
-        final List<HybrisModuleDescriptor> allModules = getHybrisModuleDescriptors();
+        final List<ModuleDescriptor> allModules = getHybrisModuleDescriptors();
 
         final var springConfigurator = configuratorFactory.getSpringConfigurator();
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
@@ -157,7 +157,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         groupModuleConfigurator.findDependencyModules(allModules);
         int counter = 0;
 
-        for (HybrisModuleDescriptor moduleDescriptor : allModules) {
+        for (ModuleDescriptor moduleDescriptor : allModules) {
             final Module javaModule = createJavaModule(indicator, rootProjectModifiableModel, moduleDescriptor, groupModuleConfigurator);
             modules.add(javaModule);
             counter++;
@@ -262,7 +262,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Module createJavaModule(
         final @NotNull ProgressIndicator indicator,
         final ModifiableModuleModel rootProjectModifiableModel,
-        final HybrisModuleDescriptor moduleDescriptor,
+        final ModuleDescriptor moduleDescriptor,
         final GroupModuleConfigurator groupModuleConfigurator) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
@@ -303,7 +303,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         return javaModule;
     }
 
-    private List<HybrisModuleDescriptor> getHybrisModuleDescriptors() {
+    private List<ModuleDescriptor> getHybrisModuleDescriptors() {
         return hybrisProjectDescriptor
             .getModulesChosenForImport().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)
@@ -379,7 +379,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private void updateProjectDictionary(
         final Project project,
-        final List<HybrisModuleDescriptor> modules
+        final List<ModuleDescriptor> modules
     ) {
         final ProjectDictionaryState dictionaryState = project.getService(ProjectDictionaryState.class);
         final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
@@ -393,7 +393,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
         hybrisDictionary.addToDictionary(project.getName().toLowerCase());
         final Set<String> moduleNames = modules.stream()
-            .map(HybrisModuleDescriptor::getName)
+            .map(ModuleDescriptor::getName)
             .map(String::toLowerCase)
             .collect(Collectors.toSet());
         hybrisDictionary.addToDictionary(moduleNames);
@@ -468,7 +468,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (configDir != null && configDir.isDirectory()) {
             hybrisProjectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
         }
-        final ConfigHybrisModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
+        final YConfigModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         if (configModule != null) {
             configDir = configModule.getRootDirectory();
             if (configDir.isDirectory()) {
@@ -510,12 +510,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
-                && !(e instanceof ConfigHybrisModuleDescriptor)
+                && !(e instanceof YConfigModuleDescriptor)
             )
             .collect(Collectors.toSet());
         hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()
-            .map(HybrisModuleDescriptor::getName)
+            .map(ModuleDescriptor::getName)
             .collect(Collectors.toSet()));
         hybrisProjectSettings.setExcludeTestSources(hybrisProjectDescriptor.isExcludeTestSources());
 
@@ -527,7 +527,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Set<String> createModulesOnBlackList() {
         final List<String> toBeImportedNames = hybrisProjectDescriptor
             .getModulesChosenForImport().stream()
-            .map(HybrisModuleDescriptor::getName)
+            .map(ModuleDescriptor::getName)
             .toList();
         return hybrisProjectDescriptor
             .getFoundModules().stream()
@@ -556,7 +556,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private boolean shouldBeTreatedAsReadOnly(final HybrisModuleDescriptor moduleDescriptor) {
+    private boolean shouldBeTreatedAsReadOnly(final ModuleDescriptor moduleDescriptor) {
         if (YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM) {
             return false;
         }

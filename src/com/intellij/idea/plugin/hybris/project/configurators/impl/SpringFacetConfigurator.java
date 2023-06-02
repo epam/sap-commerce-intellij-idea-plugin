@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.CCv2HybrisModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.CCv2ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
@@ -47,7 +47,7 @@ public class SpringFacetConfigurator implements FacetConfigurator {
     @Override
     public void configure(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, @NotNull final ModifiableFacetModel modifiableFacetModel,
-        @NotNull final HybrisModuleDescriptor moduleDescriptor,
+        @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel
     ) {
@@ -56,7 +56,7 @@ public class SpringFacetConfigurator implements FacetConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(modifiableFacetModel);
 
-        if (moduleDescriptor instanceof CCv2HybrisModuleDescriptor) return;
+        if (moduleDescriptor instanceof CCv2ModuleDescriptor) return;
 
 
         SpringFacet springFacet = SpringFacet.getInstance(javaModule);

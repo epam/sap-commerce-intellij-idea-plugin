@@ -19,36 +19,19 @@
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
+public class YOotbRegularModuleDescriptor extends YRegularModuleDescriptor {
 
-    private boolean preselected;
-    private boolean mainConfig;
-
-    public ConfigHybrisModuleDescriptor(
+    public YOotbRegularModuleDescriptor(
         @NotNull final File moduleRootDirectory,
         @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
-        @NotNull final String name
+        @NotNull final ExtensionInfo extensionInfo
     ) throws HybrisConfigurationException {
-        super(moduleRootDirectory, rootProjectDescriptor, name);
+        super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
     }
 
-    public boolean isPreselected() {
-        return preselected;
-    }
-
-    public void setPreselected(final boolean preselected) {
-        this.preselected = preselected;
-    }
-
-    public boolean isMainConfig() {
-        return mainConfig;
-    }
-
-    public void setMainConfig(final boolean mainConfig) {
-        this.mainConfig = mainConfig;
-    }
 }

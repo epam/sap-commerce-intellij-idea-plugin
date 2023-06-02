@@ -15,7 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.descriptors
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+import java.io.File
 
-public enum YModuleDescriptorImportStatus {MANDATORY, UNUSED}
+class CCv2ModuleDescriptor(
+        moduleRootDirectory: File,
+        rootProjectDescriptor: HybrisProjectDescriptor,
+        name: String
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +31,6 @@ public interface CompilerOutputPathsConfigurator {
 
     void configure(
         @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull HybrisModuleDescriptor moduleDescriptor
+        @NotNull ModuleDescriptor moduleDescriptor
     );
 }
