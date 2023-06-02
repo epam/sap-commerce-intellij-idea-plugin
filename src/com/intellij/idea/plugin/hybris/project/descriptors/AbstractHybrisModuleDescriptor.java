@@ -107,12 +107,10 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
         return this.springFileSet.add(springFile);
     }
 
-    @Override
     public boolean isInLocalExtensions() {
         return inLocalExtensions;
     }
 
-    @Override
     public void setInLocalExtensions(final boolean inLocalExtensions) {
         this.inLocalExtensions = inLocalExtensions;
     }

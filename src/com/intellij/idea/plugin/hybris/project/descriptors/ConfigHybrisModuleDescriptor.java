@@ -36,7 +36,6 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
         super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
-    @Override
     public boolean isPreselected() {
         return preselected;
     }

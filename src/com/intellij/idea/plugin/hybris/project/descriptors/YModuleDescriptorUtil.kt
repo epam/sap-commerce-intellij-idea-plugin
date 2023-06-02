@@ -61,6 +61,7 @@ object YModuleDescriptorUtil {
         is CCv2HybrisModuleDescriptor,
         is PlatformHybrisModuleDescriptor -> true
 
+        is ConfigHybrisModuleDescriptor -> descriptor.isPreselected
         is RegularHybrisModuleDescriptor -> descriptor.isInLocalExtensions
         else -> false
     }

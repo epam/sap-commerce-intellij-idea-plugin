@@ -134,8 +134,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void preselectModules(@NotNull final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor, final Set<String> explicitlyDefinedModules) {
         Validate.notNull(configHybrisModuleDescriptor);
         for (HybrisModuleDescriptor hybrisModuleDescriptor : foundModules) {
-            if (explicitlyDefinedModules.contains(hybrisModuleDescriptor.getName())) {
-                hybrisModuleDescriptor.setInLocalExtensions(true);
+            if (explicitlyDefinedModules.contains(hybrisModuleDescriptor.getName())
+                && hybrisModuleDescriptor instanceof final AbstractHybrisModuleDescriptor abstractHybrisModuleDescriptor
+            ) {
+                abstractHybrisModuleDescriptor.setInLocalExtensions(true);
             }
             if (hybrisModuleDescriptor instanceof final PlatformHybrisModuleDescriptor platformDescriptor) {
                 final Set<HybrisModuleDescriptor> dependenciesTree = Sets.newLinkedHashSet(platformDescriptor.getDependenciesTree());
