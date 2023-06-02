@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 

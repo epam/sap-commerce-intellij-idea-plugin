@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.MavenModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager

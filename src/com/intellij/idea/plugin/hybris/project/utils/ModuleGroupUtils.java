@@ -1,7 +1,7 @@
 package com.intellij.idea.plugin.hybris.project.utils;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.RootModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

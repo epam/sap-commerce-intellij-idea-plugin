@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;

@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
 import com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;

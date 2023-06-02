@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.YCustomRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;

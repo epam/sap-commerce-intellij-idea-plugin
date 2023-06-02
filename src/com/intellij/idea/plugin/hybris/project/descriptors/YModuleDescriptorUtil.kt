@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import io.ktor.util.*

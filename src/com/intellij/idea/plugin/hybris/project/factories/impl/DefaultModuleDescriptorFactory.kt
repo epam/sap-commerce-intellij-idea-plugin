@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,10 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.descriptors
+package com.intellij.idea.plugin.hybris.project.factories.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.*
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
+import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory
@@ -51,17 +54,17 @@ class DefaultModuleDescriptorFactory : ModuleDescriptorFactory {
         return when {
             hybrisProjectService.isConfigModule(resolvedFile) -> {
                 LOG.info("Creating Config module for $path")
-                YConfigModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.name)
+                YConfigModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCCv2Module(resolvedFile) -> {
                 LOG.info("Creating CCv2 module for $path")
-                CCv2ModuleDescriptor(resolvedFile, rootProjectDescriptor, resolvedFile.name)
+                CCv2ModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isPlatformModule(resolvedFile) -> {
                 LOG.info("Creating Platform module for $path")
-                YPlatformModuleDescriptor(resolvedFile, rootProjectDescriptor, HybrisConstants.EXTENSION_NAME_PLATFORM)
+                YPlatformModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCoreExtModule(resolvedFile) -> {

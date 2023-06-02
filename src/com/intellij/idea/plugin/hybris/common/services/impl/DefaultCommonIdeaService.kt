@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.common.services.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YPlatformModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.command.CommandProcessor

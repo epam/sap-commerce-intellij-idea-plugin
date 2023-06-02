@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.GradleModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;

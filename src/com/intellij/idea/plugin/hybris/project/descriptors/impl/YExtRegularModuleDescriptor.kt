@@ -15,12 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.descriptors
+package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
-class CCv2ModuleDescriptor(
-        moduleRootDirectory: File,
-        rootProjectDescriptor: HybrisProjectDescriptor,
-        name: String
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+open class YExtRegularModuleDescriptor(
+    moduleRootDirectory: File,
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    extensionInfo: ExtensionInfo
+) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)

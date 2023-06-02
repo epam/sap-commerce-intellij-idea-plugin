@@ -20,6 +20,10 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType

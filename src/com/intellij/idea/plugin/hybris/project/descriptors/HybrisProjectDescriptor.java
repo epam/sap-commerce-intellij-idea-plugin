@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
