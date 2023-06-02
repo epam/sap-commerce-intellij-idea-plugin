@@ -20,75 +20,35 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public abstract class AbstractYModuleDescriptor implements ModuleDescriptor {
+public abstract class AbstractYModuleDescriptor extends AbstractModuleDescriptor implements YModuleDescriptor {
 
     @NotNull
-    protected final File moduleRootDirectory;
-    @NotNull
-    protected final HybrisProjectDescriptor rootProjectDescriptor;
-    @NotNull
-    protected final Set<ModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
-    @NotNull
-    private final String name;
+    protected final Set<YModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
     @NotNull
     protected Set<String> springFileSet = new LinkedHashSet<>();
-    private ModuleDescriptorImportStatus importStatus = ModuleDescriptorImportStatus.UNUSED;
 
     public AbstractYModuleDescriptor(
-        @NotNull final File moduleRootDirectory,
-        @NotNull final HybrisProjectDescriptor rootProjectDescriptor,
-        @NotNull final String name
+        final @NotNull File moduleRootDirectory,
+        final @NotNull HybrisProjectDescriptor rootProjectDescriptor,
+        final @NotNull String name
     ) throws HybrisConfigurationException {
-        Validate.notNull(moduleRootDirectory);
-        Validate.notNull(rootProjectDescriptor);
-
-        this.moduleRootDirectory = moduleRootDirectory;
-        this.rootProjectDescriptor = rootProjectDescriptor;
-        this.name = name;
-
-        if (!this.moduleRootDirectory.isDirectory()) {
-            throw new HybrisConfigurationException("Can not find module directory using path: " + moduleRootDirectory);
-        }
+        super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
     @NotNull
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int compareTo(@NotNull final ModuleDescriptor o) {
-        return this.getName().compareToIgnoreCase(o.getName());
-    }
-
-    @NotNull
-    @Override
-    public File getRootDirectory() {
-        return moduleRootDirectory;
-    }
-
-    @NotNull
-    @Override
-    public HybrisProjectDescriptor getRootProjectDescriptor() {
-        return rootProjectDescriptor;
-    }
-
-    @NotNull
-    @Override
-    public Set<ModuleDescriptor> getDependenciesTree() {
+    public Set<YModuleDescriptor> getDependenciesTree() {
         return dependenciesTree;
     }
 
     @Override
-    public void setDependenciesTree(@NotNull final Set<ModuleDescriptor> moduleDescriptors) {
+    public void setDependenciesTree(@NotNull final Set<YModuleDescriptor> moduleDescriptors) {
         Validate.notNull(moduleDescriptors);
 
         this.dependenciesTree.clear();
@@ -104,51 +64,5 @@ public abstract class AbstractYModuleDescriptor implements ModuleDescriptor {
     @Override
     public boolean addSpringFile(@NotNull final String springFile) {
         return this.springFileSet.add(springFile);
-    }
-
-    @Override
-    public ModuleDescriptorImportStatus getImportStatus() {
-        return importStatus;
-    }
-
-    @Override
-    public void setImportStatus(final ModuleDescriptorImportStatus importStatus) {
-        this.importStatus = importStatus;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-            .append(this.getName())
-            .append(moduleRootDirectory)
-            .toHashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (null == obj || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final AbstractYModuleDescriptor other = (AbstractYModuleDescriptor) obj;
-
-        return new org.apache.commons.lang3.builder.EqualsBuilder()
-            .append(this.getName(), other.getName())
-            .append(moduleRootDirectory, other.moduleRootDirectory)
-            .isEquals();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " {");
-        sb.append("name='").append(this.getName()).append('\'');
-        sb.append(", moduleRootDirectory=").append(moduleRootDirectory);
-        sb.append(", moduleFile=").append(YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(this));
-        sb.append('}');
-        return sb.toString();
     }
 }

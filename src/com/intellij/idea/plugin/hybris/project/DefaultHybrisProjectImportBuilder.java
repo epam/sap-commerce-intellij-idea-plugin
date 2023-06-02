@@ -59,11 +59,6 @@ import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
 import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
-/**
- * Created 8:58 PM 07 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectImportBuilder.class);
@@ -345,11 +340,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     ) {
         while (!moduleToCheck.isEmpty()) {
             final ModuleDescriptor currentModule = moduleToCheck.iterator().next();
-            for (ModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(currentModule)) {
-                if (!moduleToImport.contains(moduleDescriptor)) {
-                    moduleToImport.add(moduleDescriptor);
-                    moduleDescriptor.setImportStatus(selectionMode);
-                    moduleToCheck.add(moduleDescriptor);
+            if (currentModule instanceof final YModuleDescriptor yModuleDescriptor) {
+                for (YModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor)) {
+                    if (!moduleToImport.contains(moduleDescriptor)) {
+                        moduleToImport.add(moduleDescriptor);
+                        moduleDescriptor.setImportStatus(selectionMode);
+                        moduleToCheck.add(moduleDescriptor);
+                    }
                 }
             }
             moduleToCheck.remove(currentModule);

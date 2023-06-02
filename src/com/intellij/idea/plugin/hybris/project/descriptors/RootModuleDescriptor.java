@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class RootModuleDescriptor extends AbstractYModuleDescriptor {
+public class RootModuleDescriptor extends AbstractModuleDescriptor {
 
     public RootModuleDescriptor(
         @NotNull final File moduleRootDirectory,

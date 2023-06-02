@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractYModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YPlatformModuleDescriptor;
@@ -41,9 +41,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
- */
 public class DebugRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
@@ -113,7 +110,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
 
     private String findPortProperty(
-        final AbstractYModuleDescriptor moduleDescriptor,
+        final AbstractModuleDescriptor moduleDescriptor,
         final String fileName,
         HybrisConfiguratorCache cache
     ) {

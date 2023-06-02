@@ -21,11 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YCoreExtRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
@@ -53,9 +49,6 @@ import java.util.regex.Pattern;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
- */
 public class DefaultSpringConfigurator implements SpringConfigurator {
 
     private static final Logger LOG = Logger.getInstance(DefaultSpringConfigurator.class);
@@ -65,10 +58,15 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     public void findSpringConfiguration(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
         Validate.notNull(modulesChosenForImport);
 
-        final Map<String, ModuleDescriptor> moduleDescriptorMap = new HashMap<>();
+        final var yModuleDescriptors = modulesChosenForImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .toList();
+
+        final Map<String, YModuleDescriptor> moduleDescriptorMap = new HashMap<>();
         File localProperties = null;
         File advancedProperties = null;
-        for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
             moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
             if (moduleDescriptor instanceof final YConfigModuleDescriptor configModule) {
                 localProperties = new File(configModule.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
@@ -77,7 +75,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                 advancedProperties = new File(platformModule.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
             }
         }
-        for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
             processHybrisModule(moduleDescriptorMap, moduleDescriptor);
             if (moduleDescriptor instanceof YCoreExtRegularModuleDescriptor) {
                 if (advancedProperties != null) {
@@ -102,13 +100,14 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             modifiableFacetModelMap.put(module.getName(), modifiableFacetModel);
         }
 
-        for (ModuleDescriptor moduleDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
-            configureFacetDependencies(moduleDescriptor, modifiableFacetModelMap);
-        }
+        hybrisProjectDescriptor.getModulesChosenForImport().stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .forEach(it ->  configureFacetDependencies(it, modifiableFacetModelMap));
     }
 
     private void configureFacetDependencies(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        @NotNull final YModuleDescriptor moduleDescriptor,
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
     ) {
         Validate.notNull(moduleDescriptor);
@@ -119,9 +118,11 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
 
-        final Set<ModuleDescriptor> dependenciesTree = moduleDescriptor.getDependenciesTree();
-        final List<ModuleDescriptor> sortedDependenciesTree = dependenciesTree.stream().sorted().toList();
-        for (ModuleDescriptor dependsOnModule : sortedDependenciesTree) {
+        final Set<YModuleDescriptor> dependenciesTree = moduleDescriptor.getDependenciesTree();
+        final List<YModuleDescriptor> sortedDependenciesTree = dependenciesTree.stream()
+            .sorted()
+            .toList();
+        for (YModuleDescriptor dependsOnModule : sortedDependenciesTree) {
             final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule.getName());
             if (parentFileSet == null) {
                 continue;
@@ -149,8 +150,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void processHybrisModule(
-        @NotNull final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        @NotNull final ModuleDescriptor moduleDescriptor
+        @NotNull final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        @NotNull final YModuleDescriptor moduleDescriptor
     ) {
         Validate.notNull(moduleDescriptorMap);
         Validate.notNull(moduleDescriptor);
@@ -169,8 +170,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void processPropertiesFile(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor
     ) {
         final Properties projectProperties = new Properties();
 
@@ -192,7 +193,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                 || key.endsWith(HybrisConstants.GLOBAL_CONTEXT_SPRING_FILES)) {
                 final String moduleName = key.substring(0, key.indexOf('.'));
                 // relevantModule can be different to a moduleDescriptor. e.g. addon concept
-                final ModuleDescriptor relevantModule = moduleDescriptorMap.get(moduleName);
+                final YModuleDescriptor relevantModule = moduleDescriptorMap.get(moduleName);
                 if (relevantModule != null) {
                     final String rawFile = projectProperties.getProperty(key);
                     if (rawFile == null) {
@@ -211,13 +212,13 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
     // This is not a nice practice but the platform has a bug in acceleratorstorefrontcommons/project.properties.
     // See https://jira.hybris.com/browse/ECP-3167
-    private File hackGuessLocation(final ModuleDescriptor moduleDescriptor) {
+    private File hackGuessLocation(final YModuleDescriptor moduleDescriptor) {
         return new File(getResourceDir(moduleDescriptor), toSystemDependentName(moduleDescriptor.getName() + "/web/spring"));
     }
 
     private void processBackofficeXml(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor
     ) {
         final var files = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
             .listFiles((dir, name) -> name.endsWith("-backoffice-spring.xml"));
@@ -229,8 +230,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void processWebXml(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor
     ) throws IOException, JDOMException {
         final File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
         if (!webXml.exists()) {
@@ -255,8 +256,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void processContextParam(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor,
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor,
         final String contextConfigLocation
     ) {
         final File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
@@ -281,8 +282,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         return !root.isEmpty() && root.getName().equals("beans");
     }
 
-    private boolean processSpringFile(final Map<String, ModuleDescriptor> moduleDescriptorMap,
-                                      final ModuleDescriptor relevantModule,
+    private boolean processSpringFile(final Map<String, YModuleDescriptor> moduleDescriptorMap,
+                                      final YModuleDescriptor relevantModule,
                                       final File springFile) {
         try {
             if (!hasSpringContent(springFile)) {
@@ -299,8 +300,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void scanForSpringImport(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor,
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor,
         final File springFile
     ) throws IOException, JDOMException {
         final Element root = getDocumentRoot(springFile);
@@ -311,8 +312,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private void processImportNodeList(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor moduleDescriptor,
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor moduleDescriptor,
         final List<Element> importList,
         final File springFile
     ) {
@@ -326,8 +327,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
     }
     private void addSpringOnClasspath(
-        final Map<String, ModuleDescriptor> moduleDescriptorMap,
-        final ModuleDescriptor relevantModule,
+        final Map<String, YModuleDescriptor> moduleDescriptorMap,
+        final YModuleDescriptor relevantModule,
         final String fileOnClasspath
     ) {
         if (addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), fileOnClasspath)) {
@@ -337,7 +338,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final int index = file.indexOf("/");
         if (index != -1) {
             final String moduleName = file.substring(0, index);
-            final ModuleDescriptor module = moduleDescriptorMap.get(moduleName);
+            final YModuleDescriptor module = moduleDescriptorMap.get(moduleName);
             if (module != null && addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath)) {
                 return;
             }
@@ -345,8 +346,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         moduleDescriptorMap.values().stream().anyMatch(module->addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath));
     }
 
-    private boolean addSpringXmlFile(final Map<String, ModuleDescriptor> moduleDescriptorMap,
-                                     final ModuleDescriptor moduleDescriptor,
+    private boolean addSpringXmlFile(final Map<String, YModuleDescriptor> moduleDescriptorMap,
+                                     final YModuleDescriptor moduleDescriptor,
                                      final File resourceDirectory,
                                      final String file) {
         if (StringUtils.startsWith(file, "/")) {
@@ -355,12 +356,12 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         return addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file);
     }
 
-    private File getResourceDir(final ModuleDescriptor moduleToSearch) {
+    private File getResourceDir(final YModuleDescriptor moduleToSearch) {
         return new File(moduleToSearch.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
     }
 
-    private boolean addSpringExternalXmlFile(final Map<String, ModuleDescriptor> moduleDescriptorMap,
-                                             final ModuleDescriptor moduleDescriptor,
+    private boolean addSpringExternalXmlFile(final Map<String, YModuleDescriptor> moduleDescriptorMap,
+                                             final YModuleDescriptor moduleDescriptor,
                                              final File resourcesDir,
                                              final String file) {
         final File springFile = new File(resourcesDir, file);

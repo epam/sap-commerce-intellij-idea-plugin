@@ -25,9 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 10/08/15.
- */
 public interface SpringConfigurator {
 
     void findSpringConfiguration(@NotNull List<ModuleDescriptor> modulesChosenForImport);

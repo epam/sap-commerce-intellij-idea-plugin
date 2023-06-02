@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.CCv2ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -34,14 +34,10 @@ import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFacetConfiguration;
 import com.intellij.spring.facet.SpringFileSet;
 import com.intellij.spring.facet.beans.CustomSetting;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 7/08/15.
- */
 public class SpringFacetConfigurator implements FacetConfigurator {
 
     @Override
@@ -51,14 +47,12 @@ public class SpringFacetConfigurator implements FacetConfigurator {
         @NotNull final Module javaModule,
         @NotNull final ModifiableRootModel modifiableRootModel
     ) {
-        Validate.notNull(javaModule);
-        Validate.notNull(modifiableFacetModel);
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(modifiableFacetModel);
+        if (moduleDescriptor instanceof final YModuleDescriptor yModuleDescriptor) {
+            configure(modifiableFacetModel, javaModule, yModuleDescriptor);
+        }
+    }
 
-        if (moduleDescriptor instanceof CCv2ModuleDescriptor) return;
-
-
+    private void configure(final @NotNull ModifiableFacetModel modifiableFacetModel, final @NotNull Module javaModule, final YModuleDescriptor yModuleDescriptor) {
         SpringFacet springFacet = SpringFacet.getInstance(javaModule);
 
         if (springFacet == null) {
@@ -73,10 +67,10 @@ public class SpringFacetConfigurator implements FacetConfigurator {
             springFacet.removeFileSets();
         }
 
-        final String facetId = moduleDescriptor.getName() + SpringFacet.FACET_TYPE_ID;
+        final String facetId = yModuleDescriptor.getName() + SpringFacet.FACET_TYPE_ID;
         final SpringFileSet springFileSet = springFacet.addFileSet(facetId, facetId);
 
-        for (String springFile : moduleDescriptor.getSpringFileSet()) {
+        for (String springFile : yModuleDescriptor.getSpringFileSet()) {
             final VirtualFile vf = VfsUtil.findFileByIoFile(new File(springFile), true);
 
             if (null != vf) {

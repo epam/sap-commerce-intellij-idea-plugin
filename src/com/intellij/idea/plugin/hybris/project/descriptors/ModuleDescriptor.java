@@ -34,16 +34,6 @@ public interface ModuleDescriptor extends Comparable<ModuleDescriptor> {
     @NotNull
     HybrisProjectDescriptor getRootProjectDescriptor();
 
-    @NotNull
-    Set<ModuleDescriptor> getDependenciesTree();
-
-    void setDependenciesTree(@NotNull Set<ModuleDescriptor> moduleDescriptors);
-
-    @NotNull
-    Set<String> getSpringFileSet();
-
-    boolean addSpringFile(@NotNull String springFile);
-
     void setImportStatus(ModuleDescriptorImportStatus importStatus);
 
     ModuleDescriptorImportStatus getImportStatus();

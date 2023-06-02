@@ -19,10 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.YExtRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YOotbRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.DependencyScope;
@@ -37,11 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created 12:22 AM 25 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultModulesDependenciesConfigurator implements ModulesDependenciesConfigurator {
 
     @Override
@@ -49,27 +41,29 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        final List<Module> modules = Arrays.asList(modifiableModelsProvider.getModules());
-        final Set<ModuleDescriptor> extModules = hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(moduleDescriptor -> moduleDescriptor instanceof YExtRegularModuleDescriptor)
+        final var modules = Arrays.asList(modifiableModelsProvider.getModules());
+        final var modulesChosenForImport = hybrisProjectDescriptor.getModulesChosenForImport();
+        final var extModules = modulesChosenForImport.stream()
+            .filter(YExtRegularModuleDescriptor.class::isInstance)
             .collect(Collectors.toSet());
 
-        for (final ModuleDescriptor nextDescriptor : hybrisProjectDescriptor.getModulesChosenForImport()) {
-            findModuleByNameIgnoreCase(modules, nextDescriptor.getName())
-                .ifPresent(nextModule -> configureModuleDependencies(
-                    nextDescriptor,
-                    nextModule,
-                    modules,
-                    extModules,
-                    modifiableModelsProvider
-                ));
-        }
+        modulesChosenForImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .forEach(it -> {
+                findModuleByNameIgnoreCase(modules, it.getName())
+                    .ifPresent(nextModule -> configureModuleDependencies(
+                        it,
+                        nextModule,
+                        modules,
+                        extModules,
+                        modifiableModelsProvider
+                    ));
+            });
     }
 
     private void configureModuleDependencies(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        @NotNull final YModuleDescriptor moduleDescriptor,
         @NotNull final Module module,
         @NotNull final Collection<Module> allModules,
         @NotNull final Set<ModuleDescriptor> extModules,
@@ -77,7 +71,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
     ) {
         final ModifiableRootModel rootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
-        for (ModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
+        for (YModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
             if (moduleDescriptor instanceof YOotbRegularModuleDescriptor && extModules.contains(dependency)) {
                 continue;
             }

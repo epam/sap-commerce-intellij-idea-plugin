@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Obj
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ScanType;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.project.utils.FindHybrisModuleDescriptorByName;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
@@ -66,7 +65,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -140,7 +138,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
             }
             if (yModuleDescriptor instanceof final YPlatformModuleDescriptor platformDescriptor) {
-                final Set<ModuleDescriptor> dependenciesTree = Sets.newLinkedHashSet(platformDescriptor.getDependenciesTree());
+                final Set<YModuleDescriptor> dependenciesTree = Sets.newLinkedHashSet(platformDescriptor.getDependenciesTree());
                 dependenciesTree.add(configHybrisModuleDescriptor);
                 platformDescriptor.setDependenciesTree(dependenciesTree);
             }
@@ -673,10 +671,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                path.contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY);
     }
 
-    protected void buildDependencies(@NotNull final Iterable<ModuleDescriptor> moduleDescriptors) {
+    protected void buildDependencies(@NotNull final Collection<ModuleDescriptor> moduleDescriptors) {
         Validate.notNull(moduleDescriptors);
 
-        for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
+        final var yModuleDescriptors = moduleDescriptors.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .toList();
+        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
 
             Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
 
@@ -687,14 +689,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                                                            .sorted()
                                                            .collect(Collectors.toCollection(LinkedHashSet::new));
 
-            final Set<ModuleDescriptor> dependencies = new LinkedHashSet<>(
+            final Set<YModuleDescriptor> dependencies = new LinkedHashSet<>(
                 requiredExtensionNames.size()
             );
 
             for (String requiresExtensionName : requiredExtensionNames) {
 
-                final Iterable<ModuleDescriptor> dependsOn = this.findHybrisModuleDescriptorsByName(
-                    moduleDescriptors, requiresExtensionName
+                final Collection<YModuleDescriptor> dependsOn = this.findHybrisModuleDescriptorsByName(
+                    yModuleDescriptors, requiresExtensionName
                 );
 
                 if (Iterables.isEmpty(dependsOn)) {
@@ -703,14 +705,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                         moduleDescriptor.getName(), requiresExtensionName
                     ));
                 } else {
-                    for (ModuleDescriptor yModuleDescriptor : dependsOn) {
-                        dependencies.add(yModuleDescriptor);
-                    }
+                    dependencies.addAll(dependsOn);
                 }
             }
 
             if (YModuleDescriptorUtil.INSTANCE.isAcceleratorAddOnModuleRoot(moduleDescriptor)) {
-                this.processAddOnBackwardDependencies(moduleDescriptors, moduleDescriptor, dependencies);
+                this.processAddOnBackwardDependencies(yModuleDescriptors, moduleDescriptor, dependencies);
             }
 
             moduleDescriptor.setDependenciesTree(dependencies);
@@ -724,16 +724,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     protected void processAddOnBackwardDependencies(
-        @NotNull final Iterable<ModuleDescriptor> moduleDescriptors,
+        @NotNull final Iterable<YModuleDescriptor> moduleDescriptors,
         @NotNull final ModuleDescriptor addOn,
-        @NotNull final Set<ModuleDescriptor> addOnDependencies
+        @NotNull final Set<YModuleDescriptor> addOnDependencies
     ) {
         Validate.notNull(moduleDescriptors);
         Validate.notNull(addOn);
         Validate.notNull(addOnDependencies);
 
         if (isCreateBackwardCyclicDependenciesForAddOn()) {
-            for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
+            for (YModuleDescriptor moduleDescriptor : moduleDescriptors) {
                 if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(addOn.getName())) {
                     addOnDependencies.add(moduleDescriptor);
                 }
@@ -742,16 +742,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @NotNull
-    protected Iterable<ModuleDescriptor> findHybrisModuleDescriptorsByName(
-        @NotNull final Iterable<ModuleDescriptor> moduleDescriptors,
+    protected Collection<YModuleDescriptor> findHybrisModuleDescriptorsByName(
+        @NotNull final Collection<YModuleDescriptor> moduleDescriptors,
         @NotNull final String requiresExtensionName
     ) {
         Validate.notNull(moduleDescriptors);
         Validate.notEmpty(requiresExtensionName);
 
-        return emptyIfNull(Iterables.filter(
-            moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
-        ));
+        return moduleDescriptors.stream()
+            .filter(it -> requiresExtensionName.equalsIgnoreCase(it.getName()))
+            .toList();
     }
 
     protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}

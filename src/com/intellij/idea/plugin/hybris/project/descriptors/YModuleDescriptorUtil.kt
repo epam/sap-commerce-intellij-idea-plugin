@@ -157,10 +157,10 @@ object YModuleDescriptorUtil {
     }
 
 
-    fun getDependenciesPlainList(moduleDescriptor: ModuleDescriptor) = recursivelyCollectDependenciesPlainSet(moduleDescriptor, TreeSet())
+    fun getDependenciesPlainList(moduleDescriptor: YModuleDescriptor) = recursivelyCollectDependenciesPlainSet(moduleDescriptor, TreeSet())
         .unmodifiable()
 
-    private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
+    private fun recursivelyCollectDependenciesPlainSet(descriptor: YModuleDescriptor, dependenciesSet: MutableSet<YModuleDescriptor>): Set<YModuleDescriptor> {
         val dependenciesTree = descriptor.dependenciesTree
 
         if (CollectionUtils.isEmpty(dependenciesTree)) return dependenciesSet

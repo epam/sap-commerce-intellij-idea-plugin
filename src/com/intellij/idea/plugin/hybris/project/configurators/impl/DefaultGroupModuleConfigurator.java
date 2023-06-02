@@ -40,9 +40,6 @@ import java.util.Set;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
- */
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
 
@@ -67,12 +64,15 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return;
         }
         requiredYModuleDescriptorList = new HashSet<>();
-        for (ModuleDescriptor yModuleDescriptor : modulesChosenForImport) {
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
-                requiredYModuleDescriptorList.add(yModuleDescriptor);
-                requiredYModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor));
-            }
-        }
+
+        modulesChosenForImport.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .filter(YModuleDescriptorUtil.INSTANCE::isPreselected)
+            .forEach(it -> {
+                requiredYModuleDescriptorList.add(it);
+                requiredYModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(it));
+            });
     }
 
     @Override
@@ -201,7 +201,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for a custom module '%s' because its root directory '%s' is not under" +
-                    " custom directory  '%s'.",
+                        " custom directory  '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), customDirectory
                 ));
                 return this.groupCustom;
@@ -229,7 +229,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under" +
-                    "under Hybris bin directory  '%s'.",
+                        "under Hybris bin directory  '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), hybrisBinDirectory
                 ));
                 return this.groupHybris;
@@ -246,7 +246,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
     private void readSettings() {
         final HybrisApplicationSettings hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance()
-                                                                                                      .getState();
+            .getState();
         groupModules = hybrisApplicationSettings.getGroupModules();
         groupCustom = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCustom());
         groupNonHybris = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupNonHybris());

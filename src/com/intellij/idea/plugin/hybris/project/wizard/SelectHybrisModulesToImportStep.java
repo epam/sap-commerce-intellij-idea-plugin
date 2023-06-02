@@ -48,8 +48,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     @Override
     protected void init() {
         this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<ModuleDescriptor>) (element, isMarked) -> {
-            if (isMarked) {
-                for (ModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(element)) {
+            if (isMarked && element instanceof final YModuleDescriptor yModuleDescriptor) {
+                for (YModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor)) {
                     if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                         continue;
                     }

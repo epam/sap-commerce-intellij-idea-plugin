@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractYModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
@@ -37,9 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/11/16.
- */
 public class DefaultEclipseConfigurator implements EclipseConfigurator {
 
     @Override
@@ -55,7 +52,7 @@ public class DefaultEclipseConfigurator implements EclipseConfigurator {
         final EclipseImportBuilder eclipseImportBuilder = new EclipseImportBuilder();
         final List<String> projectList = eclipseModules
             .stream()
-            .map(AbstractYModuleDescriptor::getRootDirectory)
+            .map(AbstractModuleDescriptor::getRootDirectory)
             .map(File::getPath)
             .collect(Collectors.toList());
         if (hybrisProjectDescriptor.getModulesFilesDirectory() != null) {

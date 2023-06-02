@@ -16,31 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.utils;
+package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.google.common.base.Predicate;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 8:31 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public class FindHybrisModuleDescriptorByName implements Predicate<ModuleDescriptor> {
+import java.util.Set;
 
-    private final String name;
+public interface YModuleDescriptor extends ModuleDescriptor {
 
-    public FindHybrisModuleDescriptorByName(@NotNull final String name) {
-        Validate.notEmpty(name);
+    @NotNull
+    Set<YModuleDescriptor> getDependenciesTree();
 
-        this.name = name;
-    }
+    void setDependenciesTree(@NotNull Set<YModuleDescriptor> moduleDescriptors);
 
-    @Override
-    public boolean apply(@Nullable final ModuleDescriptor t) {
-        return null != t && name.equalsIgnoreCase(t.getName());
-    }
+    @NotNull
+    Set<String> getSpringFileSet();
+
+    boolean addSpringFile(@NotNull String springFile);
+
 }
