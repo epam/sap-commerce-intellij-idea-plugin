@@ -150,7 +150,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final ConfigHybrisModuleDescriptor configHybrisModuleDescriptor,
         final List<HybrisModuleDescriptor> foundModules
     ) {
-        configHybrisModuleDescriptor.setImportStatus(HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY);
+        configHybrisModuleDescriptor.setImportStatus(YModuleDescriptorImportStatus.MANDATORY);
         configHybrisModuleDescriptor.setMainConfig(true);
         configHybrisModuleDescriptor.setPreselected(true);
         final List<String> preselectedNames = new ArrayList<>();

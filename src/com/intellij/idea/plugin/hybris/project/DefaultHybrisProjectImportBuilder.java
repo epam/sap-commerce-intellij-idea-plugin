@@ -56,8 +56,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
 
 /**
  * Created 8:58 PM 07 June 2015
@@ -341,7 +341,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private void resolveDependency(
         final List<HybrisModuleDescriptor> moduleToImport,
         final Set<HybrisModuleDescriptor> moduleToCheck,
-        final HybrisModuleDescriptor.IMPORT_STATUS selectionMode
+        final YModuleDescriptorImportStatus selectionMode
     ) {
         while (!moduleToCheck.isEmpty()) {
             final HybrisModuleDescriptor currentModule = moduleToCheck.iterator().next();

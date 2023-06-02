@@ -18,17 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
-
-    enum IMPORT_STATUS {MANDATORY, UNUSED}
 
     @NotNull
     String getName();
@@ -53,8 +48,8 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
 
     boolean addSpringFile(@NotNull String springFile);
 
-    void setImportStatus(IMPORT_STATUS importStatus);
+    void setImportStatus(YModuleDescriptorImportStatus importStatus);
 
-    IMPORT_STATUS getImportStatus();
+    YModuleDescriptorImportStatus getImportStatus();
 
 }

@@ -40,7 +40,7 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected Set<String> springFileSet = new LinkedHashSet<>();
     private boolean inLocalExtensions;
-    private IMPORT_STATUS importStatus = IMPORT_STATUS.UNUSED;
+    private YModuleDescriptorImportStatus importStatus = YModuleDescriptorImportStatus.UNUSED;
 
     public AbstractHybrisModuleDescriptor(
         @NotNull final File moduleRootDirectory,
@@ -118,12 +118,12 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     }
 
     @Override
-    public IMPORT_STATUS getImportStatus() {
+    public YModuleDescriptorImportStatus getImportStatus() {
         return importStatus;
     }
 
     @Override
-    public void setImportStatus(final IMPORT_STATUS importStatus) {
+    public void setImportStatus(final YModuleDescriptorImportStatus importStatus) {
         this.importStatus = importStatus;
     }
 

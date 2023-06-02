@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.LoadedConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -37,7 +38,7 @@ public class DefaultLoadedConfigurator implements LoadedConfigurator {
     ) {
         final Set<String> unusedModuleNames = allModules
             .stream()
-            .filter(e -> e.getImportStatus() == HybrisModuleDescriptor.IMPORT_STATUS.UNUSED)
+            .filter(e -> e.getImportStatus() == YModuleDescriptorImportStatus.UNUSED)
             .map(HybrisModuleDescriptor::getName)
             .collect(Collectors.toSet());
 

@@ -36,8 +36,8 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
 
 public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<HybrisModuleDescriptor> {
 

@@ -34,12 +34,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptor.IMPORT_STATUS.UNUSED;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.MANDATORY;
+import static com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorImportStatus.UNUSED;
 
 public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImportStep implements OpenSupport, RefreshSupport {
 
-    private HybrisModuleDescriptor.IMPORT_STATUS selectionMode = MANDATORY;
+    private YModuleDescriptorImportStatus selectionMode = MANDATORY;
 
     public SelectHybrisModulesToImportStep(final WizardContext context) {
         super(context);
