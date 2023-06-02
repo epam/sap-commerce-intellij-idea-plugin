@@ -212,9 +212,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isConfigModule(configDir)) {
             try {
-                final YConfigModuleDescriptor configHybrisModuleDescriptor = new YConfigModuleDescriptor(
-                    configDir,
-                    platformHybrisModuleDescriptor.getRootProjectDescriptor(), configDir.getName()
+                final var configHybrisModuleDescriptor = ModuleDescriptorFactory.getInstance().createConfigDescriptor(
+                    configDir, platformHybrisModuleDescriptor.rootProjectDescriptor, configDir.getName()
                 );
                 LOG.info("Creating Overridden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
@@ -534,8 +533,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (groupModules) {
             return;
         }
+
         try {
-            moduleDescriptors.add(new RootModuleDescriptor(rootDirectory, this, rootDirectory.getName()));
+            final var rootDescriptor = ModuleDescriptorFactory.getInstance()
+                .createRootDescriptor(rootDirectory, this, rootDirectory.getName());
+            moduleDescriptors.add(rootDescriptor);
         } catch (HybrisConfigurationException e) {
             LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
             pathsFailedToImport.add(rootDirectory);

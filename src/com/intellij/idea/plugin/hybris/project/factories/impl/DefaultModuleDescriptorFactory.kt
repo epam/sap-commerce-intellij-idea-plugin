@@ -43,6 +43,8 @@ class DefaultModuleDescriptorFactory : ModuleDescriptorFactory {
         } catch (e: IOException) {
             throw HybrisConfigurationException(e)
         }
+        validateModuleDirectory(resolvedFile)
+
         val originalPath = file.absolutePath
         val newPath = resolvedFile.absolutePath
         val path = if (originalPath != newPath) {
@@ -102,7 +104,35 @@ class DefaultModuleDescriptorFactory : ModuleDescriptorFactory {
                 EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor, getEclipseModuleDescriptorName(resolvedFile))
             }
         }
+    }
 
+    override fun createRootDescriptor(
+        rootDirectory: File,
+        rootProjectDescriptor: HybrisProjectDescriptor,
+        name: String
+    ): RootModuleDescriptor {
+        validateModuleDirectory(rootDirectory)
+
+        return RootModuleDescriptor(rootDirectory, rootProjectDescriptor, name)
+    }
+
+    override fun createConfigDescriptor(
+        rootDirectory: File,
+        rootProjectDescriptor: HybrisProjectDescriptor,
+        name: String
+    ): YConfigModuleDescriptor {
+        validateModuleDirectory(rootDirectory)
+
+        return YConfigModuleDescriptor(
+            rootDirectory,
+            rootProjectDescriptor, name
+        );
+    }
+
+    private fun validateModuleDirectory(resolvedFile: File) {
+        if (!resolvedFile.isDirectory) {
+            throw HybrisConfigurationException("Can not find module directory using path: $resolvedFile")
+        }
     }
 
     private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)

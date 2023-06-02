@@ -19,6 +19,8 @@ package com.intellij.idea.plugin.hybris.project.factories
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
 import com.intellij.openapi.application.ApplicationManager
 import java.io.File
@@ -27,6 +29,16 @@ interface ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
     fun createDescriptor(file: File, rootProjectDescriptor: HybrisProjectDescriptor): ModuleDescriptor
+
+    @Throws(HybrisConfigurationException::class)
+    fun createRootDescriptor(
+        rootDirectory: File,
+        rootProjectDescriptor: HybrisProjectDescriptor,
+        name: String
+    ): RootModuleDescriptor
+
+    @Throws(HybrisConfigurationException::class)
+    fun createConfigDescriptor(rootDirectory: File, rootProjectDescriptor: HybrisProjectDescriptor, name: String): YConfigModuleDescriptor
 
     companion object {
         @JvmStatic
