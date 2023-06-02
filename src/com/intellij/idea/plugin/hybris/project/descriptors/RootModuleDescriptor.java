@@ -26,9 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by Martin Zdarsky-Jones on 1/09/2016.
- */
 public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
     public RootModuleDescriptor(
@@ -39,25 +36,4 @@ public class RootModuleDescriptor extends AbstractHybrisModuleDescriptor {
         super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
-    @NotNull
-    @Override
-    public Set<String> getRequiredExtensionNames() {
-        return Collections.emptySet();
-    }
-
-    @NotNull
-    @Override
-    public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isPreselected() {
-        return false;
-    }
-
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.NONE;
-    }
 }

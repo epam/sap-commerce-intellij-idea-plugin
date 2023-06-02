@@ -23,19 +23,4 @@ class CCv2HybrisModuleDescriptor(
         moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,
         name: String
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
-
-    private var preselected = true
-
-    override fun getRequiredExtensionNames() = emptySet<String>()
-
-    override fun getLibraryDescriptors() = emptyList<JavaLibraryDescriptor>()
-
-    override fun isPreselected() = preselected
-
-    fun setPreselected(preselected: Boolean) {
-        this.preselected = preselected
-    }
-
-    override fun getDescriptorType() = HybrisModuleDescriptorType.CCV2
-}
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)

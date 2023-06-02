@@ -23,9 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created by Martin Zdarsky-Jones on 10/11/16.
- */
 public class MavenModuleDescriptor extends RootModuleDescriptor {
 
     public MavenModuleDescriptor(
@@ -35,8 +32,4 @@ public class MavenModuleDescriptor extends RootModuleDescriptor {
         super(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.getName());
     }
 
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.MAVEN;
-    }
 }

@@ -23,12 +23,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.Exten
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Set;
 
-/**
- * Created by Martin Zdarsky-Jones on 18/08/2016.
- */
 public class CoreHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
 
     public CoreHybrisModuleDescriptor(
@@ -37,11 +32,6 @@ public class CoreHybrisModuleDescriptor extends ExtHybrisModuleDescriptor {
         @NotNull final ExtensionInfo extensionInfo
     ) throws HybrisConfigurationException {
         super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
-    }
-
-    @Override
-    protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.emptySet();
     }
 
 }

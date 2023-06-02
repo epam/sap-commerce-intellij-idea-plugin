@@ -23,9 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created by Martin Zdarsky-Jones on 10/11/16.
- */
 public class EclipseModuleDescriptor extends RootModuleDescriptor {
 
     public EclipseModuleDescriptor(
@@ -36,8 +33,4 @@ public class EclipseModuleDescriptor extends RootModuleDescriptor {
         super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.ECLIPSE;
-    }
 }

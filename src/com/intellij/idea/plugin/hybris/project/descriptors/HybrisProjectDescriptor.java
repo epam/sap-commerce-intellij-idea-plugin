@@ -27,11 +27,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created 1:48 PM 14 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface HybrisProjectDescriptor {
 
     void setProject(@Nullable Project project);

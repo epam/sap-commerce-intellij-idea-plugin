@@ -33,12 +33,6 @@ public class GradleModuleDescriptor extends RootModuleDescriptor {
         super(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.getName());
     }
 
-    @NotNull
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.GRADLE;
-    }
-
     public File getGradleFile() {
         return new File(moduleRootDirectory, HybrisConstants.BUILD_GRADLE);
     }

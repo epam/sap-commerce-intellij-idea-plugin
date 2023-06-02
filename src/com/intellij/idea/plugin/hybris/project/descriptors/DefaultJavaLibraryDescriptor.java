@@ -29,11 +29,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-/**
- * Created 11:05 PM 24 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
 
     @NotNull
@@ -73,22 +68,6 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
         this.isDirectoryWithClasses = false;
         this.scope = DependencyScope.COMPILE;
         this.descriptorType = descriptorType;
-    }
-
-    public DefaultJavaLibraryDescriptor(
-        @NotNull final File libraryFile,
-        @NotNull final File sourcesFile,
-        final boolean isExported
-    ) {
-        Validate.notNull(libraryFile);
-        Validate.notNull(sourcesFile);
-
-        this.libraryFile = libraryFile;
-        this.sourcesFile = sourcesFile;
-        this.isExported = isExported;
-        this.isDirectoryWithClasses = false;
-        this.scope = DependencyScope.COMPILE;
-        descriptorType = LibraryDescriptorType.UNKNOWN;
     }
 
     public DefaultJavaLibraryDescriptor(

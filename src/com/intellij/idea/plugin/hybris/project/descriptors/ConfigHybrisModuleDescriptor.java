@@ -18,23 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CONFIG;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
-
-/**
- * Created 3:55 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor {
 
     private boolean preselected;
@@ -48,20 +36,6 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
         super(moduleRootDirectory, rootProjectDescriptor, name);
     }
 
-    @NotNull
-    @Override
-    public Set<String> getRequiredExtensionNames() {
-        return Collections.emptySet();
-    }
-
-    @NotNull
-    @Override
-    public List<JavaLibraryDescriptor> getLibraryDescriptors() {
-        return Collections.singletonList(new DefaultJavaLibraryDescriptor(
-            new File(this.getRootDirectory(), HybrisConstants.CONFIG_LICENCE_DIRECTORY), true
-        ));
-    }
-
     @Override
     public boolean isPreselected() {
         return preselected;
@@ -71,16 +45,11 @@ public class ConfigHybrisModuleDescriptor extends AbstractHybrisModuleDescriptor
         this.preselected = preselected;
     }
 
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return isMainConfig() ? CONFIG : CUSTOM;
+    public boolean isMainConfig() {
+        return mainConfig;
     }
 
     public void setMainConfig(final boolean mainConfig) {
         this.mainConfig = mainConfig;
-    }
-
-    public boolean isMainConfig() {
-        return mainConfig;
     }
 }

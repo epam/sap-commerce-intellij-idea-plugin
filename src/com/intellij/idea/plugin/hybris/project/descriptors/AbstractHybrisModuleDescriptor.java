@@ -18,28 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.HybrisUtil;
-import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
-import com.intellij.openapi.application.ApplicationManager;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
-/**
- * Created 12:46 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDescriptor {
 
     @NotNull
@@ -49,10 +36,9 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @NotNull
     protected final Set<HybrisModuleDescriptor> dependenciesTree = new LinkedHashSet<>(0);
     @NotNull
-    protected Set<String> springFileSet = new LinkedHashSet<>();
-
-    @NotNull
     private final String name;
+    @NotNull
+    protected Set<String> springFileSet = new LinkedHashSet<>();
     private boolean inLocalExtensions;
     private IMPORT_STATUS importStatus = IMPORT_STATUS.UNUSED;
 
@@ -92,36 +78,8 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
     @NotNull
     @Override
-    public String getRelativePath() {
-        final VirtualFileSystemService virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService.class);
-
-        final File projectRootDir = this.getRootProjectDescriptor().getRootDirectory();
-        final File moduleRootDir = this.getRootDirectory();
-
-        if (null != projectRootDir && virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDir)) {
-            return virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDir);
-        }
-
-        return moduleRootDir.getPath();
-    }
-
-    @NotNull
-    @Override
     public HybrisProjectDescriptor getRootProjectDescriptor() {
         return rootProjectDescriptor;
-    }
-
-    @NotNull
-    @Override
-    public File getIdeaModuleFile() {
-        if (null != this.rootProjectDescriptor.getModulesFilesDirectory()) {
-            return new File(
-                this.rootProjectDescriptor.getModulesFilesDirectory(),
-                this.getName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION
-            );
-        }
-
-        return new File(this.moduleRootDirectory, this.getName() + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
     }
 
     @NotNull
@@ -136,38 +94,6 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
 
         this.dependenciesTree.clear();
         this.dependenciesTree.addAll(moduleDescriptors);
-    }
-
-    @NotNull
-    @Override
-    public Set<HybrisModuleDescriptor> getDependenciesPlainList() {
-        return Collections.unmodifiableSet(this.recursivelyCollectDependenciesPlainSet(
-            this, new TreeSet<>()
-        ));
-    }
-
-    @NotNull
-    protected Set<HybrisModuleDescriptor> recursivelyCollectDependenciesPlainSet(
-        @NotNull final HybrisModuleDescriptor descriptor,
-        @NotNull final Set<HybrisModuleDescriptor> dependenciesSet
-    ) {
-        Validate.notNull(descriptor);
-        Validate.notNull(dependenciesSet);
-
-        if (CollectionUtils.isEmpty(descriptor.getDependenciesTree())) {
-            return dependenciesSet;
-        }
-
-        for (HybrisModuleDescriptor moduleDescriptor : descriptor.getDependenciesTree()) {
-            if (dependenciesSet.contains(moduleDescriptor)) {
-                continue;
-            }
-
-            dependenciesSet.add(moduleDescriptor);
-            dependenciesSet.addAll(recursivelyCollectDependenciesPlainSet(moduleDescriptor, dependenciesSet));
-        }
-
-        return dependenciesSet;
     }
 
     @NotNull
@@ -199,23 +125,6 @@ public abstract class AbstractHybrisModuleDescriptor implements HybrisModuleDesc
     @Override
     public void setImportStatus(final IMPORT_STATUS importStatus) {
         this.importStatus = importStatus;
-    }
-
-    @Nullable
-    @Override
-    public File getWebRoot() {
-        return null;
-    }
-
-    @Override
-    public boolean hasKotlinSourceDirectories() {
-        return new File(getRootDirectory(), HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
-            || new File(getRootDirectory(), HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists();
-    }
-
-    @Override
-    public boolean isAddOn() {
-        return HybrisUtil.isAcceleratorAddOnModuleRoot(getRootDirectory());
     }
 
     @Override

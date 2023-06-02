@@ -27,6 +27,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescripto
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.OotbHybrisModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -96,9 +98,8 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             }
         }
 
-        if (moduleDescriptor instanceof PlatformHybrisModuleDescriptor) {
-            final PlatformHybrisModuleDescriptor hybrisModuleDescriptor = (PlatformHybrisModuleDescriptor) moduleDescriptor;
-            hybrisModuleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider);
+        if (moduleDescriptor instanceof final PlatformHybrisModuleDescriptor hybrisModuleDescriptor) {
+            YModuleLibDescriptorUtil.INSTANCE.createBootstrapLib(hybrisModuleDescriptor, sourceCodeRoot, modifiableModelsProvider);
         }
 
         if (moduleDescriptor instanceof CoreHybrisModuleDescriptor) {
@@ -110,15 +111,14 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             );
         }
 
-        if (moduleDescriptor instanceof OotbHybrisModuleDescriptor) {
-            final OotbHybrisModuleDescriptor hybrisModuleDescriptor = (OotbHybrisModuleDescriptor) moduleDescriptor;
-            if (hybrisModuleDescriptor.hasBackofficeModule()) {
+        if (moduleDescriptor instanceof final OotbHybrisModuleDescriptor hybrisModuleDescriptor) {
+            if (YModuleDescriptorUtil.INSTANCE.hasBackofficeModule(hybrisModuleDescriptor)) {
                 final File backofficeJarDirectory = new File(
                     hybrisModuleDescriptor.getRootDirectory(),
                     HybrisConstants.BACKOFFICE_JAR_DIRECTORY
                 );
                 if (backofficeJarDirectory.exists()) {
-                    hybrisModuleDescriptor.createGlobalLibrary(
+                    YModuleLibDescriptorUtil.INSTANCE.createGlobalLibrary(
                         modifiableModelsProvider,
                         backofficeJarDirectory,
                         HybrisConstants.BACKOFFICE_LIBRARY_GROUP

@@ -26,9 +26,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Created by Martin Zdarsky-Jones on 19/08/2016.
- */
 public class CustomHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
     public CustomHybrisModuleDescriptor(
@@ -39,13 +36,4 @@ public class CustomHybrisModuleDescriptor extends RegularHybrisModuleDescriptor 
         super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
     }
 
-    @Override
-    protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.CUSTOM;
-    }
 }

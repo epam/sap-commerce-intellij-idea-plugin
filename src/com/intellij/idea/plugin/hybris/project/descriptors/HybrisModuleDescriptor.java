@@ -26,11 +26,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created 1:20 PM 14 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescriptor> {
 
     enum IMPORT_STATUS {MANDATORY, UNUSED}
@@ -42,16 +37,22 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     File getRootDirectory();
 
     @NotNull
-    String getRelativePath();
+    default String getRelativePath() {
+        return YModuleDescriptorUtil.INSTANCE.getRelativePath(this);
+    }
 
     @NotNull
     HybrisProjectDescriptor getRootProjectDescriptor();
 
     @NotNull
-    File getIdeaModuleFile();
+    default File getIdeaModuleFile() {
+        return YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(this);
+    }
 
     @NotNull
-    Set<String> getRequiredExtensionNames();
+    default Set<String> getRequiredExtensionNames() {
+        return YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(this);
+    }
 
     @NotNull
     Set<HybrisModuleDescriptor> getDependenciesTree();
@@ -59,12 +60,17 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     void setDependenciesTree(@NotNull Set<HybrisModuleDescriptor> moduleDescriptors);
 
     @NotNull
-    Set<HybrisModuleDescriptor> getDependenciesPlainList();
+    default Set<HybrisModuleDescriptor> getDependenciesPlainList() {
+        return YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(this);
+    }
 
-    @NotNull
-    List<JavaLibraryDescriptor> getLibraryDescriptors();
+    default List<JavaLibraryDescriptor> getLibraryDescriptors() {
+        return YModuleLibDescriptorUtil.INSTANCE.getLibraryDescriptors(this);
+    }
 
-    boolean isPreselected();
+    default boolean isPreselected() {
+        return YModuleDescriptorUtil.INSTANCE.isPreselected(this);
+    }
 
     boolean isInLocalExtensions();
 
@@ -76,28 +82,26 @@ public interface HybrisModuleDescriptor extends Comparable<HybrisModuleDescripto
     boolean addSpringFile(@NotNull String springFile);
 
     @Nullable
-    File getWebRoot();
-
-    boolean isAddOn();
+    default File getWebRoot() {
+        return YModuleDescriptorUtil.INSTANCE.getWebRoot(this);
+    }
 
     /**
      * This method will return true if module has `kotlinsrc` or `kotlintestsrc` directories
      */
-    boolean hasKotlinSourceDirectories();
+    default boolean hasKotlinSourceDirectories() {
+        return YModuleDescriptorUtil.INSTANCE.hasKotlinDirectories(this);
+    }
 
-    @NotNull
-    HybrisModuleDescriptorType getDescriptorType();
+    default HybrisModuleDescriptorType getDescriptorType() {
+        return YModuleDescriptorUtil.INSTANCE.getDescriptorType(this);
+    }
 
     void setImportStatus(IMPORT_STATUS importStatus);
 
     IMPORT_STATUS getImportStatus();
 
     @NotNull default ExtensionDescriptor getExtensionDescriptor() {
-        return new ExtensionDescriptor(
-            getName(),
-            getDescriptorType(),
-            false, false, false, false, false,
-            null, null
-        );
+        return YModuleDescriptorUtil.INSTANCE.getExtensionDescriptor(this);
     }
 }

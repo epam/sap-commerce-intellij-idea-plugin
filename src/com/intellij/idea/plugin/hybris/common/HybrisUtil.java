@@ -64,7 +64,4 @@ public final class HybrisUtil {
         return Boolean.TRUE.equals(file.getUserData(key));
     }
 
-    public static boolean isAcceleratorAddOnModuleRoot(@NotNull final File file) {
-        return new File(file, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY).isDirectory();
-    }
 }

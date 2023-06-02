@@ -440,7 +440,7 @@ object HybrisConstants {
     @JvmField
     val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$COMMON_WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
     @JvmField
-    val HMC_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
+    val HMC_BIN_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
     @JvmField
     val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
 

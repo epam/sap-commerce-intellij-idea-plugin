@@ -24,11 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-/**
- * Created 10:59 PM 24 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface JavaLibraryDescriptor extends Comparable<JavaLibraryDescriptor> {
 
     @NotNull

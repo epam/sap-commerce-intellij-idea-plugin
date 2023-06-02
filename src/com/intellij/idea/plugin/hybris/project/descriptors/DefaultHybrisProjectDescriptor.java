@@ -72,11 +72,6 @@ import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisP
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
-/**
- * Created 3:55 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectDescriptor.class);
@@ -712,7 +707,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 }
             }
 
-            if (moduleDescriptor.isAddOn()) {
+            if (YModuleDescriptorUtil.INSTANCE.isAcceleratorAddOnModuleRoot(moduleDescriptor)) {
                 this.processAddOnBackwardDependencies(moduleDescriptors, moduleDescriptor, dependencies);
             }
 

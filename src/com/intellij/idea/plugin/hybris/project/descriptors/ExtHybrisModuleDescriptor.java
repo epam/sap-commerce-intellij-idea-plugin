@@ -29,9 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Created by Martin Zdarsky-Jones on 18/08/2016.
- */
 public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
 
     public ExtHybrisModuleDescriptor(
@@ -42,17 +39,4 @@ public class ExtHybrisModuleDescriptor extends RegularHybrisModuleDescriptor {
         super(moduleRootDirectory, rootProjectDescriptor, extensionInfo);
     }
 
-    @Override
-    protected Set<String> getDefaultRequiredExtensionNames() {
-        return Collections.unmodifiableSet(Sets.newHashSet(HybrisConstants.EXTENSION_NAME_CORE));
-    }
-
-    protected Collection<? extends String> getAdditionalRequiredExtensionNames() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public HybrisModuleDescriptorType getDescriptorType() {
-        return HybrisModuleDescriptorType.EXT;
-    }
 }

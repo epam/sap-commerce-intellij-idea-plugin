@@ -36,11 +36,6 @@ import java.io.IOException;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-/**
- * Created 1:58 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultHybrisModuleDescriptorFactory implements HybrisModuleDescriptorFactory {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisModuleDescriptorFactory.class);
