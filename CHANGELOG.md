@@ -15,8 +15,9 @@
 - [Jakarta XML Binding](https://eclipse-ee4j.github.io/jaxb-ri/): 4.0.1 -> 4.0.2
 - [Apache Solr Java client](https://solr.apache.org/): 8.8.2 -> 8.11.2
 - [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
-- Added priority for project root tag [#473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/473)
 - Added links for quick check of new versions availability
+- Add locale to JAVADOC_URL [#472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
+- Added priority for project root tag [#473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/473)
 
 ## [2023.2.0]
 
