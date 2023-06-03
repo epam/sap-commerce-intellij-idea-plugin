@@ -72,6 +72,7 @@ object YModuleDescriptorUtil {
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
         || File(descriptor.rootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
+    // TODO: review usage of this method
     fun isAcceleratorAddOnModuleRoot(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY)
         .isDirectory
 
