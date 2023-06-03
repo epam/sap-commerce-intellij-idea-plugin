@@ -31,6 +31,8 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 
+private const val HEADER_MODE_UPDATE = "UPDATE"
+
 class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexOnlyUpdateAllowedForNonDynamicEnumVisitor(holder)
@@ -54,14 +56,16 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
 
             val modeName = mode.text
                 ?.uppercase()
-                ?.takeUnless { it == "UPDATE" }
+                ?.takeUnless { it == HEADER_MODE_UPDATE }
                 ?: return
+
+            val enumName = meta.name ?: typeName
 
             problemsHolder.registerProblem(
                 mode,
-                message("hybris.inspections.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, meta.name ?: typeName),
+                message("hybris.inspections.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, enumName, HEADER_MODE_UPDATE),
                 ProblemHighlightType.ERROR,
-                ImpexUpdateHeaderModeQuickFix(mode)
+                ImpexUpdateHeaderModeQuickFix(mode, enumName)
             )
         }
     }
