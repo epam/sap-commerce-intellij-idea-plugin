@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YExtRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
@@ -137,7 +137,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
     private HybrisProjectDescriptor hybrisProjectDescriptor;
     private YPlatformModuleDescriptor platformDescriptor;
     private YConfigModuleDescriptor configDescriptor;
-    private List<YExtRegularModuleDescriptor> extHybrisModuleDescriptorList;
+    private List<YPlatformExtModuleDescriptor> extHybrisModuleDescriptorList;
     private List<YCustomRegularModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
     private AntConfigurationBase antConfiguration;
@@ -189,8 +189,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
             if (descriptor instanceof YPlatformModuleDescriptor) {
                 platformDescriptor = (YPlatformModuleDescriptor) descriptor;
             }
-            if (descriptor instanceof YExtRegularModuleDescriptor) {
-                extHybrisModuleDescriptorList.add((YExtRegularModuleDescriptor) descriptor);
+            if (descriptor instanceof YPlatformExtModuleDescriptor) {
+                extHybrisModuleDescriptorList.add((YPlatformExtModuleDescriptor) descriptor);
             }
             if (descriptor instanceof YCustomRegularModuleDescriptor) {
                 customHybrisModuleDescriptorList.add((YCustomRegularModuleDescriptor) descriptor);

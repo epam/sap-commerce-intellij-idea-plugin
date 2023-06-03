@@ -173,7 +173,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupPlatform;
         }
 
-        if (moduleDescriptor instanceof YExtRegularModuleDescriptor) {
+        if (moduleDescriptor instanceof YPlatformExtModuleDescriptor) {
             return groupPlatform;
         }
 

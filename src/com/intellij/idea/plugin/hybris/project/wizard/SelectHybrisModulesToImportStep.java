@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YExtRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
@@ -145,7 +145,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (yModuleDescriptor instanceof YPlatformModuleDescriptor) {
             return false;
         }
-        if (yModuleDescriptor instanceof YExtRegularModuleDescriptor) {
+        if (yModuleDescriptor instanceof YPlatformExtModuleDescriptor) {
             return false;
         }
 

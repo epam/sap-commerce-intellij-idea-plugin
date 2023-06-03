@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -80,7 +80,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         }
         for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
             processHybrisModule(moduleDescriptorMap, moduleDescriptor);
-            if (moduleDescriptor instanceof YCoreExtRegularModuleDescriptor) {
+            if (moduleDescriptor instanceof YCoreExtModuleDescriptor) {
                 if (advancedProperties != null) {
                     moduleDescriptor.getSpringFileSet().add(advancedProperties.getAbsolutePath());
                 }

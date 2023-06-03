@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType
@@ -41,6 +38,11 @@ object YModuleLibDescriptorUtil {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YPlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YWebSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YHmcSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YHacSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is RootModuleDescriptor -> emptyList()
         else -> emptyList()
     }
@@ -132,22 +134,15 @@ object YModuleLibDescriptorUtil {
         val libs = mutableListOf<JavaLibraryDescriptor>()
 
         addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
-        addHacLibs(descriptor, libs)
-        addHmcLibs(descriptor, libs)
-        addWebLibs(descriptor, libs)
         addServerLibs(descriptor, libs)
-        addBackofficeLibs(libs, descriptor)
-        addRootLib(libs, descriptor)
+        addRootLib(descriptor, libs)
 
-        if (YModuleDescriptorUtil.isAcceleratorAddOnModuleRoot(descriptor)) {
-            processAddOnBackwardDependencies(descriptor, libs)
-        }
         return libs
     }
 
     private fun addRootLib(
-        libs: MutableList<JavaLibraryDescriptor>,
-        descriptor: YRegularModuleDescriptor
+        descriptor: YModuleDescriptor,
+        libs: MutableList<JavaLibraryDescriptor>
     ) {
         libs.add(
             JavaLibraryDescriptor(
@@ -159,8 +154,8 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun addBackofficeLibs(
-        libs: MutableList<JavaLibraryDescriptor>,
-        descriptor: YRegularModuleDescriptor
+        descriptor: YBackofficeSubModuleDescriptor,
+        libs: MutableList<JavaLibraryDescriptor>
     ) {
         libs.add(
             JavaLibraryDescriptor(
@@ -169,114 +164,58 @@ object YModuleLibDescriptorUtil {
             )
         )
 
-        descriptor.rootProjectDescriptor.project
-            ?.takeIf { YModuleDescriptorUtil.hasBackofficeModule(descriptor) }
-            ?.let {
-                libs.add(
-                    JavaLibraryDescriptor(
-                        libraryFile = File(
-                            descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
-                            HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfLib()
-                        )
-                    )
+        val project = descriptor.rootProjectDescriptor.project ?: return
+
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(
+                    descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
+                    HybrisProjectSettingsComponent.getInstance(project).getBackofficeWebInfLib()
                 )
-                libs.add(
-                    JavaLibraryDescriptor(
-                        libraryFile = File(
-                            descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
-                            HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfClasses()
-                        ),
-                        directoryWithClasses = true
-                    )
-                )
-            }
+            )
+        )
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(
+                    descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
+                    HybrisProjectSettingsComponent.getInstance(project).getBackofficeWebInfClasses()
+                ),
+                directoryWithClasses = true
+            )
+        )
     }
 
     private fun addHmcLibs(
-        descriptor: YRegularModuleDescriptor,
+        descriptor: YHmcSubModuleDescriptor,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         libs.add(
             JavaLibraryDescriptor(
-                libraryFile = File(descriptor.rootDirectory, HybrisConstants.HMC_BIN_LIB_DIRECTORY),
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.BIN_DIRECTORY),
                 exported = true
             )
         )
 
-        if (YModuleDescriptorUtil.hasHmcModule(descriptor)) {
-            descriptor.rootProjectDescriptor.modulesChosenForImport
-                .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_HMC }
-                ?.let {
-                    libs.add(
-                        JavaLibraryDescriptor(
-                            libraryFile = File(it.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                            directoryWithClasses = true
-                        )
-                    )
-                }
-        }
-    }
-
-    private fun addWebLibs(
-        descriptor: YRegularModuleDescriptor,
-        libs: MutableList<JavaLibraryDescriptor>
-    ) {
-        File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY)
-            .takeUnless { it.exists() }
-            .takeUnless { descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode }
+        descriptor.rootProjectDescriptor.modulesChosenForImport
+            .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_HMC }
             ?.let {
                 libs.add(
                     JavaLibraryDescriptor(
-                        libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                        libraryFile = File(it.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
                         directoryWithClasses = true
                     )
                 )
             }
-
-        libs.add(
-            JavaLibraryDescriptor(
-                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
-                descriptorType = LibraryDescriptorType.WEB_INF_LIB
-            )
-        )
-
-    }
-
-    /**
-     * https://hybris-integration.atlassian.net/browse/IIP-355
-     * HAC addons can not be compiled correctly by Intellij build because
-     * "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
-     * as a dependency for HAC addons.
-     */
-    private fun addHacLibs(
-        descriptor: YRegularModuleDescriptor,
-        libs: MutableList<JavaLibraryDescriptor>
-    ) {
-        if (YModuleDescriptorUtil.isHacAddon(descriptor)) {
-            libs.add(
-                JavaLibraryDescriptor(
-                    libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
-                    directoryWithClasses = true
-                )
-            )
-        }
     }
 
     private fun addLibrariesToNonCustomModule(
-        descriptor: YRegularModuleDescriptor,
+        descriptor: YModuleDescriptor,
         descriptorType: ModuleDescriptorType?,
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-        libs.add(
-            JavaLibraryDescriptor(
-                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                sourcesFile = File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY),
-                directoryWithClasses = true
-            )
-        )
         for (srcDirName in HybrisConstants.SRC_DIR_NAMES) {
             libs.add(
                 JavaLibraryDescriptor(
@@ -294,17 +233,9 @@ object YModuleLibDescriptorUtil {
                 directoryWithClasses = true
             )
         )
-        val hmcModuleDirectory = File(descriptor.rootDirectory, HybrisConstants.HMC_MODULE_DIRECTORY)
-        libs.add(
-            JavaLibraryDescriptor(
-                libraryFile = File(hmcModuleDirectory, HybrisConstants.RESOURCES_DIRECTORY),
-                exported = true,
-                directoryWithClasses = true
-            )
-        )
     }
 
-    private fun addServerLibs(descriptor: YRegularModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
+    private fun addServerLibs(descriptor: YModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
         val binDir = File(descriptor.rootDirectory, HybrisConstants.BIN_DIRECTORY)
             .takeIf { it.isDirectory }
             ?: return
@@ -328,7 +259,10 @@ object YModuleLibDescriptorUtil {
         }
     }
 
-    private fun processAddOnBackwardDependencies(descriptor: YRegularModuleDescriptor, libs: MutableList<JavaLibraryDescriptor>) {
+    private fun processAddOnBackwardDependencies(
+        descriptor: YModuleDescriptor,
+        libs: MutableList<JavaLibraryDescriptor>
+    ) {
         if (!descriptor.rootProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn) return
 
         val backwardDependencies = descriptor.dependenciesTree
@@ -341,6 +275,89 @@ object YModuleLibDescriptorUtil {
         libs.addAll(backwardDependencies)
     }
 
+    private fun getLibraryDescriptors(descriptor: YBackofficeSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+        val libs = mutableListOf<JavaLibraryDescriptor>()
+
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+        addServerLibs(descriptor, libs)
+        addBackofficeLibs(descriptor, libs)
+        addRootLib(descriptor, libs)
+
+        return libs
+    }
+
+    /**
+     * https://hybris-integration.atlassian.net/browse/IIP-355
+     * HAC addons can not be compiled correctly by Intellij build because
+     * "hybris/bin/platform/ext/hac/web/webroot/WEB-INF/classes" from "hac" extension is not registered
+     * as a dependency for HAC addons.
+     */
+    private fun getLibraryDescriptors(descriptor: YHacSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+        val libs = mutableListOf<JavaLibraryDescriptor>()
+
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+        addServerLibs(descriptor, libs)
+        addRootLib(descriptor, libs)
+
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
+                directoryWithClasses = true
+            )
+        )
+
+        return libs
+    }
+
+    private fun getLibraryDescriptors(descriptor: YHmcSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+        val libs = mutableListOf<JavaLibraryDescriptor>()
+
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+        addHmcLibs(descriptor, libs)
+        addServerLibs(descriptor, libs)
+        addRootLib(descriptor, libs)
+
+        return libs
+    }
+
+    private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+        val libs = mutableListOf<JavaLibraryDescriptor>()
+
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+        addServerLibs(descriptor, libs)
+        addRootLib(descriptor, libs)
+
+        // TODO: add module dependency, not lib dependency
+        processAddOnBackwardDependencies(descriptor, libs)
+        return libs
+    }
+
+    private fun getLibraryDescriptors(descriptor: YWebSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+        val libs = mutableListOf<JavaLibraryDescriptor>()
+
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
+        addServerLibs(descriptor, libs)
+        addRootLib(descriptor, libs)
+
+        val attachSources = descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                sourcesFile = if (attachSources) File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY)
+                else null,
+                directoryWithClasses = true
+            )
+        )
+
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                descriptorType = LibraryDescriptorType.WEB_INF_LIB
+            )
+        )
+
+        return libs
+    }
 
     private fun getLibraryDescriptors(descriptor: YConfigModuleDescriptor) = listOf(
         JavaLibraryDescriptor(

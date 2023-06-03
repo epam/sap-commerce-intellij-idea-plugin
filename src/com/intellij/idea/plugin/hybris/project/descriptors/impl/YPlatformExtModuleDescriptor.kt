@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
-open class YExtRegularModuleDescriptor(
+open class YPlatformExtModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
 ) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)

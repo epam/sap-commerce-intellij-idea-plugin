@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YExtRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
@@ -45,7 +45,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final var modules = Arrays.asList(modifiableModelsProvider.getModules());
         final var modulesChosenForImport = hybrisProjectDescriptor.getModulesChosenForImport();
         final var extModules = modulesChosenForImport.stream()
-            .filter(YExtRegularModuleDescriptor.class::isInstance)
+            .filter(YPlatformExtModuleDescriptor.class::isInstance)
             .collect(Collectors.toSet());
 
         modulesChosenForImport.stream()

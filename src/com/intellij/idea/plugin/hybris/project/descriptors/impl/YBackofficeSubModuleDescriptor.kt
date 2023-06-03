@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractYSubModuleDescriptor
 import java.io.File
 
-class YAddonWebSubModuleDescriptor(
+class YBackofficeSubModuleDescriptor(
     owner: YModuleDescriptor,
     rootDirectory: File,
 ) : AbstractYSubModuleDescriptor(owner, rootDirectory)

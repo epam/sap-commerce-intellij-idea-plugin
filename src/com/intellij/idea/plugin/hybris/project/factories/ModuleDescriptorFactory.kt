@@ -73,12 +73,12 @@ object ModuleDescriptorFactory {
 
             hybrisProjectService.isCoreExtModule(resolvedFile) -> {
                 LOG.info("Creating Core EXT module for $path")
-                YCoreExtRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))
+                YCoreExtModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))
             }
 
             hybrisProjectService.isPlatformExtModule(resolvedFile) -> {
                 LOG.info("Creating Platform EXT module for $path")
-                with(YExtRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
+                with(YPlatformExtModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
                     this.subModules.addAll(SubModuleDescriptorFactory.buildAll(this))
                     LOG.info("Created sub-modules: ${this.subModules}")
                     this

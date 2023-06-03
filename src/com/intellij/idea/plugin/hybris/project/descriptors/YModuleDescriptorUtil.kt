@@ -60,7 +60,9 @@ object YModuleDescriptorUtil {
 
     fun isPreselected(descriptor: ModuleDescriptor) = when (descriptor) {
         is CCv2ModuleDescriptor,
-        is YPlatformModuleDescriptor -> true
+        is YPlatformModuleDescriptor,
+        is YPlatformExtModuleDescriptor,
+        is YSubModuleDescriptor -> true
 
         is YConfigModuleDescriptor -> descriptor.isPreselected
         is YRegularModuleDescriptor -> descriptor.isInLocalExtensions
@@ -122,14 +124,14 @@ object YModuleDescriptorUtil {
     }
 
     private fun getDefaultRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
-        is YCoreExtRegularModuleDescriptor -> emptySet()
-        is YExtRegularModuleDescriptor -> setOf(HybrisConstants.EXTENSION_NAME_CORE)
+        is YCoreExtModuleDescriptor -> emptySet()
+        is YPlatformExtModuleDescriptor -> setOf(HybrisConstants.EXTENSION_NAME_CORE)
         else -> setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
     }
 
     private fun getAdditionalRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
         is YCustomRegularModuleDescriptor,
-        is YExtRegularModuleDescriptor -> emptySet()
+        is YPlatformExtModuleDescriptor -> emptySet()
 
         else -> setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
     }

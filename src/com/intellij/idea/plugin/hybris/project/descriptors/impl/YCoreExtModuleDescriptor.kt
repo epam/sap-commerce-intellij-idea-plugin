@@ -17,14 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
-class YPlatformModuleDescriptor(
+class YCoreExtModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+    extensionInfo: ExtensionInfo,
+) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)

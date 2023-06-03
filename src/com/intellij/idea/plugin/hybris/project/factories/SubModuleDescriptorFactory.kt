@@ -21,8 +21,7 @@ package com.intellij.idea.plugin.hybris.project.factories
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import io.ktor.util.*
 import java.io.File
 
@@ -34,17 +33,17 @@ object SubModuleDescriptorFactory {
         if (YModuleDescriptorUtil.hasWebModule(owner)) {
             build(owner, HybrisConstants.WEB_MODULE_DIRECTORY, subModules) { YWebSubModuleDescriptor(owner, it) }
         }
-//        if (YModuleDescriptorUtil.hasHmcModule(owner)) {
-//            build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHmcSubModuleDescriptor(owner, it) }
-//        }
-//        if (YModuleDescriptorUtil.isHacAddon(owner)) {
-//            build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHacSubModuleDescriptor(owner, it) }
-//        }
-//        if (YModuleDescriptorUtil.hasBackofficeModule(owner)) {
-//            build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { YBackofficeSubModuleDescriptor(owner, it) }
-//        }
-//        build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
-//        build(owner, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY, subModules) { YAddonWebSubModuleDescriptor(owner, it) }
+        if (YModuleDescriptorUtil.hasHmcModule(owner)) {
+            build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHmcSubModuleDescriptor(owner, it) }
+        }
+        if (YModuleDescriptorUtil.isHacAddon(owner)) {
+            build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHacSubModuleDescriptor(owner, it) }
+        }
+        if (YModuleDescriptorUtil.hasBackofficeModule(owner)) {
+            build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { YBackofficeSubModuleDescriptor(owner, it) }
+        }
+        build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
+        build(owner, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
 
         return subModules.unmodifiable()
     }

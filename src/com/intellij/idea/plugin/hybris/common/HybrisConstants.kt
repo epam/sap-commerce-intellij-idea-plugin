@@ -118,8 +118,9 @@ object HybrisConstants {
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
-
     const val WEB_MODULE_DIRECTORY = "web"
+    const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
+
     const val ADDON_SRC_DIRECTORY = "addonsrc"
     const val TEST_CLASSES_DIRECTORY = "testclasses"
     const val CLASSES_DIRECTORY = "classes"
@@ -130,7 +131,6 @@ object HybrisConstants {
     const val ACCELERATOR_ADDON_DIRECTORY = "acceleratoraddon"
 
     const val COMMON_WEB_SRC_DIRECTORY = "commonwebsrc"
-    const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
 
     const val PLATFORM_HOME_PLACEHOLDER = "\${platformhome}"
     const val PLATFORM_EXTENSIONS_DIRECTORY_NAME = "ext"
@@ -424,7 +424,7 @@ object HybrisConstants {
     @JvmField
     val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/web.xml")
     @JvmField
-    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/classes")
+    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
     @JvmField
     val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")
     @JvmField
@@ -432,8 +432,6 @@ object HybrisConstants {
 
     @JvmField
     val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
-    @JvmField
-    val HMC_BIN_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/bin")
     @JvmField
     val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
 

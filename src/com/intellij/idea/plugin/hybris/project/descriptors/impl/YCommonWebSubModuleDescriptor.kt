@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractYSubModuleDescriptor
 import java.io.File
 
-class YCoreExtRegularModuleDescriptor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    extensionInfo: ExtensionInfo
-) : YExtRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+class YCommonWebSubModuleDescriptor(
+    owner: YModuleDescriptor,
+    rootDirectory: File,
+) : AbstractYSubModuleDescriptor(owner, rootDirectory)

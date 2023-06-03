@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtRegularModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
@@ -62,7 +62,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         if (moduleDescriptor is YPlatformModuleDescriptor) {
             YModuleLibDescriptorUtil.createBootstrapLib(moduleDescriptor, sourceCodeRoot, modifiableModelsProvider)
         }
-        if (moduleDescriptor is YCoreExtRegularModuleDescriptor) {
+        if (moduleDescriptor is YCoreExtModuleDescriptor) {
             addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
         }
         if (moduleDescriptor is YOotbRegularModuleDescriptor) {

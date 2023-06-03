@@ -19,55 +19,45 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.vfs.VfsUtil;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import java.io.File;
 import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigurator {
 
+    @Override
     protected void configureCommonRoots(
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
         configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore);
-        
+
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
+    @Override
     protected void configureAdditionalRoots(
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final String directoryName,
         @NotNull final ContentEntry contentEntry,
         @NotNull final File parentDirectory
     ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(directoryName);
-        Validate.notNull(contentEntry);
-        Validate.notNull(parentDirectory);
-
         final File additionalModuleDirectory = new File(parentDirectory, directoryName);
         if (!additionalModuleDirectory.exists() || additionalModuleDirectory.isFile()) {
             return;
         }
 
         final File additionalClassesDirectory = new File(additionalModuleDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath())
-        );
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath()));
 
         final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
@@ -76,51 +66,35 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         );
     }
 
+    @Override
     protected void configureBackOfficeRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+        @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(contentEntry);
+        final File classesDirectory = new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY);
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(classesDirectory.getAbsolutePath()));
 
-        final File backOfficeModuleDirectory = new File(
-            moduleDescriptor.getRootDirectory(), BACKOFFICE_MODULE_DIRECTORY
-        );
-
-        final File hmcClassesDirectory = new File(backOfficeModuleDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(hmcClassesDirectory.getAbsolutePath())
-        );
-
-        final File hmcResourcesDirectory = new File(backOfficeModuleDirectory, RESOURCES_DIRECTORY);
+        final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(hmcResourcesDirectory.getAbsolutePath()),
+            VfsUtil.pathToUrl(resourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
         );
     }
 
     @Override
-    protected void configureRegularWebRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
+    protected void configureRoots(
+        @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File webModuleDirectory = new File(moduleDescriptor.getRootDirectory(), WEB_MODULE_DIRECTORY);
+        final File webAddonSrcDirectory = new File(moduleDescriptor.getRootDirectory(), ADDON_SRC_DIRECTORY);
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath()));
 
-        final File webAddonSrcDirectory = new File(webModuleDirectory, ADDON_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath())
-        );
+        final File webTestClassesDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_CLASSES_DIRECTORY);
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath()));
 
-        final File webTestClassesDirectory = new File(webModuleDirectory, TEST_CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath())
-        );
-
-        final File commonWebSrcDirectory = new File(webModuleDirectory, COMMON_WEB_SRC_DIRECTORY);
-        contentEntry.addExcludeFolder(
-            VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath())
-        );
+        final File commonWebSrcDirectory = new File(moduleDescriptor.getRootDirectory(), COMMON_WEB_SRC_DIRECTORY);
+        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath()));
     }
 }
