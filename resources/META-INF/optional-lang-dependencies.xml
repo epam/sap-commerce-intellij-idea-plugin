@@ -99,6 +99,12 @@
                                         implementationClass="com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
 
         <!-- ####################################################################################################### -->
+        <!--                                            External Dependencies                                        -->
+        <!-- ####################################################################################################### -->
+        <dom.fileMetaData rootTagName="project" stubVersion="1"
+                          implementation="com.intellij.idea.plugin.hybris.system.externalDependencies.EDDomFileDescription"/>
+
+        <!-- ####################################################################################################### -->
         <!--                                            LocalExtensions                                              -->
         <!-- ####################################################################################################### -->
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
