@@ -3,7 +3,7 @@
 ### `External Dependencies` enhancements
 - Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)
 
-### ImpEx
+### `ImpEx` enhancements
 - Only update allowed for non-dynamic enum inspection [#474](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/474)
 
 ### Fixes
