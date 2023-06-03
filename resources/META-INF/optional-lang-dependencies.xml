@@ -101,7 +101,7 @@
         <!-- ####################################################################################################### -->
         <!--                                            External Dependencies                                        -->
         <!-- ####################################################################################################### -->
-        <dom.fileMetaData rootTagName="project" stubVersion="1"
+        <dom.fileMetaData rootTagName="project" stubVersion="1" order="first"
                           implementation="com.intellij.idea.plugin.hybris.system.externalDependencies.EDDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
