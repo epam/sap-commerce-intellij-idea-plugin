@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
 class YWebSubModuleDescriptor(
     owner: YModuleDescriptor,
     rootDirectory: File,
+    val webRoot: File = File(rootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY)
 ) : AbstractYSubModuleDescriptor(owner, rootDirectory)

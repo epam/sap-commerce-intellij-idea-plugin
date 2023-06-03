@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
 import com.intellij.openapi.application.WriteAction
@@ -38,12 +38,14 @@ import java.io.File
 class WebFacetConfigurator : FacetConfigurator {
 
     override fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor, modifiableFacetModel: ModifiableFacetModel,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        val webRoot = YModuleDescriptorUtil.getWebRoot(moduleDescriptor) ?: return
+        val yWebSubModuleDescriptor = moduleDescriptor as? YWebSubModuleDescriptor ?: return
+
         val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
             ?.also {
                 it.removeAllWebRoots()
@@ -57,9 +59,9 @@ class WebFacetConfigurator : FacetConfigurator {
 
         WriteAction.runAndWait<RuntimeException> {
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
-            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot.absolutePath)), "/")
+            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(yWebSubModuleDescriptor.webRoot.absolutePath)), "/")
 
-            VfsUtil.findFileByIoFile(File(moduleDescriptor.rootDirectory, HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true)
+            VfsUtil.findFileByIoFile(File(yWebSubModuleDescriptor.rootDirectory, HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }

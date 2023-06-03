@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+interface VersionControlSystemConfigurator {
 
-public interface RunConfigurationConfigurator {
+    fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, project: Project)
 
-    void configure(
-        final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Project project,
-        final HybrisConfiguratorCache cache
-    );
+    companion object {
+        val instance: VersionControlSystemConfigurator = ApplicationManager.getApplication().getService(VersionControlSystemConfigurator::class.java)
+    }
 }

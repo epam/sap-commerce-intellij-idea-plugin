@@ -67,19 +67,26 @@ object YModuleDescriptorUtil {
         else -> false
     }
 
+    /**
+     * Descriptor type for sub-modules will be taken from the owner module descriptor
+     */
     fun getDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
-        is CCv2ModuleDescriptor -> ModuleDescriptorType.CCV2
-        is YCustomRegularModuleDescriptor -> ModuleDescriptorType.CUSTOM
+        is YSubModuleDescriptor -> getModuleDescriptorType(descriptor.owner)
+        else -> getModuleDescriptorType(descriptor)
+    }
+
+    private fun getModuleDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
         is EclipseModuleDescriptor -> ModuleDescriptorType.ECLIPSE
-        is YExtRegularModuleDescriptor -> ModuleDescriptorType.EXT
         is GradleModuleDescriptor -> ModuleDescriptorType.GRADLE
-        is YOotbRegularModuleDescriptor -> ModuleDescriptorType.OOTB
         is MavenModuleDescriptor -> ModuleDescriptorType.MAVEN
+        is CCv2ModuleDescriptor -> ModuleDescriptorType.CCV2
+        is YExtRegularModuleDescriptor -> ModuleDescriptorType.EXT
+        is YCustomRegularModuleDescriptor -> ModuleDescriptorType.CUSTOM
+        is YOotbRegularModuleDescriptor -> ModuleDescriptorType.OOTB
         is YPlatformModuleDescriptor -> ModuleDescriptorType.PLATFORM
         is YConfigModuleDescriptor -> if (descriptor.isMainConfig) ModuleDescriptorType.CONFIG
         else ModuleDescriptorType.CUSTOM
 
-        is RootModuleDescriptor -> ModuleDescriptorType.NONE
         else -> ModuleDescriptorType.NONE
     }
 
@@ -88,13 +95,6 @@ object YModuleDescriptorUtil {
 
     fun isAcceleratorAddOnModuleRoot(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY)
         .isDirectory
-
-    fun getWebRoot(descriptor: ModuleDescriptor): File? = when (descriptor) {
-        is YRegularModuleDescriptor -> File(descriptor.rootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH)
-            .takeIf { it.exists() }
-
-        else -> null
-    }
 
     fun getIdeaModuleFile(descriptor: ModuleDescriptor) = descriptor.rootProjectDescriptor.modulesFilesDirectory
         ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }

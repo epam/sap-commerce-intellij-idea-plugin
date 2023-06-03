@@ -32,11 +32,10 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -90,10 +89,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
@@ -308,13 +304,23 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private List<ModuleDescriptor> getHybrisModuleDescriptors() {
-        return hybrisProjectDescriptor
-            .getModulesChosenForImport().stream()
+        final var rootModules = hybrisProjectDescriptor.getModulesChosenForImport().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
             )
-            .collect(Collectors.toList());
+            .toList();
+
+        final var subModules = rootModules.stream()
+            .filter(YRegularModuleDescriptor.class::isInstance)
+            .map(YRegularModuleDescriptor.class::cast)
+            .map(YRegularModuleDescriptor::getSubModules)
+            .flatMap(Collection::stream)
+            .toList();
+        final var allModules = new ArrayList<ModuleDescriptor>();
+        allModules.addAll(rootModules);
+        allModules.addAll(subModules);
+        return allModules;
     }
 
     private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {

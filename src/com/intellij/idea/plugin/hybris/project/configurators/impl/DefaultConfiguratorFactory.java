@@ -108,25 +108,25 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public ModuleSettingsConfigurator getModuleSettingsConfigurator() {
-        return ApplicationManager.getApplication().getService(ModuleSettingsConfigurator.class);
+        return ModuleSettingsConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public VersionControlSystemConfigurator getVersionControlSystemConfigurator() {
-        return ApplicationManager.getApplication().getService(VersionControlSystemConfigurator.class);
+        return VersionControlSystemConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public RunConfigurationConfigurator getDebugRunConfigurationConfigurator() {
-        return ApplicationManager.getApplication().getService(DebugRunConfigurationConfigurator.class);
+        return RunConfigurationConfigurator.Companion.getDebugInstance();
     }
 
     @Nullable
     @Override
     public RunConfigurationConfigurator getTestRunConfigurationConfigurator() {
-        return ApplicationManager.getApplication().getService(TestRunConfigurationConfigurator.class);
+        return RunConfigurationConfigurator.Companion.getTestInstance();
     }
 
     @Nullable

@@ -15,14 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.Module
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.openapi.module.Module;
-import org.jetbrains.annotations.NotNull;
+interface ModuleSettingsConfigurator {
 
-public interface ModuleSettingsConfigurator {
+    fun configure(moduleDescriptor: ModuleDescriptor, javaModule: Module)
 
-    void configure(@NotNull final ModuleDescriptor moduleDescriptor, @NotNull final Module javaModule);
+    companion object {
+        val instance: ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
+    }
 }
