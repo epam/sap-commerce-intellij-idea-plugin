@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.spring
+package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.navigation.DomGotoRelatedItem
 import com.intellij.idea.plugin.hybris.common.HybrisConstants

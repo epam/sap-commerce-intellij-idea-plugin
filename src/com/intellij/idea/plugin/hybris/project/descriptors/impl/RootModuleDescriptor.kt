@@ -17,9 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
 import java.io.File
 
 open class RootModuleDescriptor(

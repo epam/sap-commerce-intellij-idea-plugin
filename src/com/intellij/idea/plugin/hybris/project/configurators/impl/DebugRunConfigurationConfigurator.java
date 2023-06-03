@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;

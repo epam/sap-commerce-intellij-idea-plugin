@@ -82,10 +82,10 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             processHybrisModule(moduleDescriptorMap, moduleDescriptor);
             if (moduleDescriptor instanceof YCoreExtRegularModuleDescriptor) {
                 if (advancedProperties != null) {
-                    moduleDescriptor.addSpringFile(advancedProperties.getAbsolutePath());
+                    moduleDescriptor.getSpringFileSet().add(advancedProperties.getAbsolutePath());
                 }
                 if (localProperties != null) {
-                    moduleDescriptor.addSpringFile(localProperties.getAbsolutePath());
+                    moduleDescriptor.getSpringFileSet().add(localProperties.getAbsolutePath());
                 }
             }
         }
@@ -179,7 +179,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Properties projectProperties = new Properties();
 
         final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
-        moduleDescriptor.addSpringFile(propFile.getAbsolutePath());
+        moduleDescriptor.getSpringFileSet().add(propFile.getAbsolutePath());
 
         try (final FileInputStream fis = new FileInputStream(propFile)) {
             projectProperties.load(fis);
@@ -292,7 +292,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             if (!hasSpringContent(springFile)) {
                 return false;
             }
-            if (relevantModule.addSpringFile(springFile.getAbsolutePath())) {
+            if (relevantModule.getSpringFileSet().add(springFile.getAbsolutePath())) {
                 scanForSpringImport(moduleDescriptorMap, relevantModule, springFile);
             }
             return true;

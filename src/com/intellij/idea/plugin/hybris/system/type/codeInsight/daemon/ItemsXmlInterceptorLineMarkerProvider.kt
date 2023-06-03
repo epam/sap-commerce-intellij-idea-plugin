@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.spring.TSInterceptorSpringBuilderFactory
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorSpringBuilderFactory
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childrenOfType

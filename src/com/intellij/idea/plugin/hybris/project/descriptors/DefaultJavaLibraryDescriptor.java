@@ -33,11 +33,12 @@ public class DefaultJavaLibraryDescriptor implements JavaLibraryDescriptor {
 
     @NotNull
     private final File libraryFile;
+    @Nullable
     private final File sourcesFile;
     private final boolean isExported;
     private final boolean isDirectoryWithClasses;
+    @NotNull
     private final LibraryDescriptorType descriptorType;
-
     @NotNull
     private final DependencyScope scope;
 

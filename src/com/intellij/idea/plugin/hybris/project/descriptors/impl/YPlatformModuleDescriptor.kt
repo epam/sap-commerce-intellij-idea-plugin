@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.descriptors.AbstractYModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import java.io.File
 

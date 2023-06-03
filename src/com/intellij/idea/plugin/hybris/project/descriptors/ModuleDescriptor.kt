@@ -19,23 +19,9 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 import java.io.File
 
-abstract class AbstractYModuleDescriptor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
-
-    private val dependenciesTree = mutableSetOf<YModuleDescriptor>()
-    private var springFileSet = mutableSetOf<String>()
-
-    override fun getDependenciesTree() = dependenciesTree
-    override fun getSpringFileSet() = springFileSet
-    override fun addSpringFile(springFile: String) = springFileSet.add(springFile)
-
-    override fun setDependenciesTree(moduleDescriptors: Set<YModuleDescriptor>) {
-        with(dependenciesTree) {
-            clear()
-            addAll(moduleDescriptors)
-        }
-    }
+interface ModuleDescriptor : Comparable<ModuleDescriptor?> {
+    val name: String
+    val rootDirectory: File
+    val rootProjectDescriptor: HybrisProjectDescriptor
+    var importStatus: ModuleDescriptorImportStatus
 }

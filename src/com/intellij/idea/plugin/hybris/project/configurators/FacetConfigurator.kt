@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.ModifiableRootModel
 
-import org.jetbrains.annotations.NotNull;
+interface FacetConfigurator {
 
-import java.util.Set;
-
-public interface YModuleDescriptor extends ModuleDescriptor {
-
-    @NotNull
-    Set<YModuleDescriptor> getDependenciesTree();
-
-    void setDependenciesTree(@NotNull Set<YModuleDescriptor> moduleDescriptors);
-
-    @NotNull
-    Set<String> getSpringFileSet();
-
-    boolean addSpringFile(@NotNull String springFile);
-
+    fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        modifiableFacetModel: ModifiableFacetModel,
+        moduleDescriptor: ModuleDescriptor,
+        javaModule: Module,
+        modifiableRootModel: ModifiableRootModel
+    )
 }

@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
@@ -143,9 +142,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
             }
             if (yModuleDescriptor instanceof final YPlatformModuleDescriptor platformDescriptor) {
-                final Set<YModuleDescriptor> dependenciesTree = Sets.newLinkedHashSet(platformDescriptor.getDependenciesTree());
-                dependenciesTree.add(configHybrisModuleDescriptor);
-                platformDescriptor.setDependenciesTree(dependenciesTree);
+                platformDescriptor.getDependenciesTree().clear();
+                platformDescriptor.getDependenciesTree().addAll(platformDescriptor.getDependenciesTree());
+                platformDescriptor.getDependenciesTree().add(configHybrisModuleDescriptor);
             }
         }
         preselectConfigModules(configHybrisModuleDescriptor, foundModules);
@@ -213,7 +212,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (hybrisProjectService.isConfigModule(configDir)) {
             try {
                 final var configHybrisModuleDescriptor = ModuleDescriptorFactory.getInstance().createConfigDescriptor(
-                    configDir, platformHybrisModuleDescriptor.rootProjectDescriptor, configDir.getName()
+                    configDir, platformHybrisModuleDescriptor.getRootProjectDescriptor(), configDir.getName()
                 );
                 LOG.info("Creating Overridden Config module in local.properties for " + configDir.getAbsolutePath());
                 foundModules.add(configHybrisModuleDescriptor);
@@ -720,7 +719,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 this.processAddOnBackwardDependencies(yModuleDescriptors, moduleDescriptor, dependencies);
             }
 
-            moduleDescriptor.setDependenciesTree(dependencies);
+            moduleDescriptor.getDependenciesTree().clear();
+            moduleDescriptor.getDependenciesTree().addAll(dependencies);
         }
     }
 

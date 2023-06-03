@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLin
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.spring.TSInterceptorSpringBuilderFactory
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorSpringBuilderFactory
 import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement

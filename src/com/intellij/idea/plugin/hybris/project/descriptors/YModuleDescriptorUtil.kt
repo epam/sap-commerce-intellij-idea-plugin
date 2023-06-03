@@ -35,7 +35,7 @@ object YModuleDescriptorUtil {
     // TODO: migrate it to new [y] Facet
     fun getExtensionDescriptor(descriptor: ModuleDescriptor) = when (descriptor) {
         is YRegularModuleDescriptor -> ExtensionDescriptor(
-            descriptor.getName(),
+            descriptor.name,
             getDescriptorType(descriptor),
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
@@ -156,7 +156,6 @@ object YModuleDescriptorUtil {
 
         else -> setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
     }
-
 
     fun getDependenciesPlainList(moduleDescriptor: YModuleDescriptor) = recursivelyCollectDependenciesPlainSet(moduleDescriptor, TreeSet())
         .unmodifiable()

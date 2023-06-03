@@ -18,16 +18,15 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
-abstract class YRegularModuleDescriptor protected constructor(
+abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    val extensionInfo: ExtensionInfo,
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo.extension.name) {
+    name: String
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
 
-    var isInLocalExtensions = false
-    val metas = extensionInfo.extension.meta
-        .associate { it.key to it.value }
+    override var springFileSet = mutableSetOf<String>()
+    override val dependenciesTree = mutableSetOf<YModuleDescriptor>()
 }

@@ -15,27 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.descriptors
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+interface YModuleDescriptor : ModuleDescriptor {
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.Set;
-
-public interface ModuleDescriptor extends Comparable<ModuleDescriptor> {
-
-    @NotNull
-    String getName();
-
-    @NotNull
-    File getRootDirectory();
-
-    @NotNull
-    HybrisProjectDescriptor getRootProjectDescriptor();
-
-    void setImportStatus(ModuleDescriptorImportStatus importStatus);
-
-    ModuleDescriptorImportStatus getImportStatus();
-
+    val springFileSet: Set<String>
+    val dependenciesTree: Set<YModuleDescriptor>
 }
