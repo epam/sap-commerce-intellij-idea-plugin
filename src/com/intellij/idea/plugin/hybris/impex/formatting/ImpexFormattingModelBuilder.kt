@@ -16,30 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting;
+package com.intellij.idea.plugin.hybris.impex.formatting
 
-import com.intellij.formatting.*;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.formatting.*
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.codeStyle.CodeStyleSettings
 
-/**
- * Created 22:33 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
+class ImpexFormattingModelBuilder : FormattingModelBuilder {
 
-    private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {
-        final ImpexCodeStyleSettings impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
+    private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
+        val impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings::class.java)
 
-        return new SpacingBuilder(settings, ImpexLanguage.getInstance())
+        return SpacingBuilder(settings, ImpexLanguage.getInstance())
             .before(ImpexTypes.VALUE_GROUP)
             .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
 
@@ -79,23 +71,11 @@ public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
             .after(ImpexTypes.LEFT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_ROUND_BRACKET)
 
-//                .before(ImpexTypes.LEFT_ROUND_BRACKET)
-//                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_ROUND_BRACKET)
-
-//                .after(ImpexTypes.RIGHT_ROUND_BRACKET)
-//                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_ROUND_BRACKET)
-
             .before(ImpexTypes.RIGHT_ROUND_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_ROUND_BRACKET)
 
             .after(ImpexTypes.LEFT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_AFTER_LEFT_SQUARE_BRACKET)
-
-//                .before(ImpexTypes.LEFT_SQUARE_BRACKET)
-//                .spaceIf(impexSettings.SPACE_BEFORE_LEFT_SQUARE_BRACKET)
-
-//                .after(ImpexTypes.RIGHT_SQUARE_BRACKET)
-//                .spaceIf(impexSettings.SPACE_AFTER_RIGHT_SQUARE_BRACKET)
 
             .before(ImpexTypes.RIGHT_SQUARE_BRACKET)
             .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_SQUARE_BRACKET)
@@ -105,43 +85,29 @@ public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
 
             .before(ImpexTypes.ALTERNATIVE_PATTERN)
             .spaceIf(impexSettings.SPACE_BEFORE_ALTERNATIVE_PATTERN)
-            ;
     }
 
-    @Override
-    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
-        return createModelInternally(formattingContext.getPsiElement(), formattingContext.getCodeStyleSettings());
+    override fun createModel(formattingContext: FormattingContext) = createModelInternally(
+        formattingContext.psiElement, formattingContext.codeStyleSettings)
+
+    private fun createModelInternally(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
+        val impexBlock = ImpexBlock(
+            node =  element.node,
+            alignment = Alignment.createAlignment(),
+            spacingBuilder = createSpaceBuilder(settings),
+            codeStyleSettings = settings,
+            alignmentStrategy = getAlignmentStrategy(settings)
+        )
+
+        return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, impexBlock, settings)
     }
 
-    @NotNull
-    private FormattingModel createModelInternally(final PsiElement element, final CodeStyleSettings settings) {
-        final Block impexBlock = new ImpexBlock(
-            element.getNode(),
-            null,
-            Alignment.createAlignment(),
-            createSpaceBuilder(settings),
-            settings,
-            getAlignmentStrategy(settings)
-        );
+    private fun getAlignmentStrategy(settings: CodeStyleSettings): AlignmentStrategy {
+        val impexCodeStyleSettings = settings.getCustomSettings(ImpexCodeStyleSettings::class.java)
 
-        return FormattingModelProvider.createFormattingModelForPsiFile(
-            element.getContainingFile(),
-            impexBlock,
-            settings
-        );
+        return if (impexCodeStyleSettings.TABLIFY) TableAlignmentStrategy()
+        else ColumnsAlignmentStrategy()
     }
 
-    @NotNull
-    private AlignmentStrategy getAlignmentStrategy(final CodeStyleSettings settings) {
-        final ImpexCodeStyleSettings impexCodeStyleSettings = settings.getCustomSettings(ImpexCodeStyleSettings.class);
-        return impexCodeStyleSettings.TABLIFY
-            ? new TableAlignmentStrategy()
-            : new ColumnsAlignmentStrategy();
-    }
-
-    @Nullable
-    @Override
-    public TextRange getRangeAffectingIndent(final PsiFile file, final int offset, final ASTNode elementAtOffset) {
-        return null;
-    }
+    override fun getRangeAffectingIndent(file: PsiFile, offset: Int, elementAtOffset: ASTNode?) = null
 }
