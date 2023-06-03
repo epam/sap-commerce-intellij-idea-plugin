@@ -26,9 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * @author Eugene.Kudelevsky
- */
 public final class HybrisUtil {
 
     private HybrisUtil() {

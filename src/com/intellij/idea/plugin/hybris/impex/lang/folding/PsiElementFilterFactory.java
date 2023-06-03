@@ -26,11 +26,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiElementFilter;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 22:32 29 March 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class PsiElementFilterFactory {
 
     private PsiElementFilterFactory() throws IllegalAccessException {

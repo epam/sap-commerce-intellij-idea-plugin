@@ -10,9 +10,6 @@ import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
 
     init {

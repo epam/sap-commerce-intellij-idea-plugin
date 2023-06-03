@@ -29,9 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Sergey Aksenenko <serg.aksenenko@gmail.com> on 4/6/2016.
- */
 public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurator {
 
     @Override

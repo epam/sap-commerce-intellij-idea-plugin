@@ -23,9 +23,6 @@ import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.IncorrectOperationException
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexJavaClassBaseReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY

@@ -25,9 +25,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IncorrectOperationException
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY

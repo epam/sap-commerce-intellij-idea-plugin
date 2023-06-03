@@ -22,11 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 12:19 AM 25 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface CompilerOutputPathsConfigurator {
 
     void configure(

@@ -23,9 +23,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Sergey Aksenenko <serg.aksenenko@gmail.com> on 4/6/2016.
- */
 public interface JavadocModuleConfigurator {
 
     void configure(

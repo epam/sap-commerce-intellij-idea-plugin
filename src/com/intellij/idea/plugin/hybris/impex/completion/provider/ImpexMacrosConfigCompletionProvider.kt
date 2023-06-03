@@ -30,10 +30,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

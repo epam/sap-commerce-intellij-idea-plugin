@@ -58,9 +58,6 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ANT_OPTS;
 import static java.util.Arrays.asList;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/10/16.
- */
 public class DefaultAntConfigurator implements AntConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultAntConfigurator.class);
 

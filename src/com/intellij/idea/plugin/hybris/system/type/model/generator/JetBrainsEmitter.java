@@ -41,10 +41,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class JetBrainsEmitter implements Emitter {
 
     static final boolean NOT_COMPARE_MODE = true; // compare mode: skip package decl & all comments/javadoc

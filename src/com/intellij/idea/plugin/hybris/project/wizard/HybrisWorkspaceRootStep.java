@@ -61,9 +61,6 @@ import static java.lang.Character.getNumericValue;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 
-/**
- * @author Vlad Bozhenok <VladBozhenok@gmail.com>
- */
 public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements OpenSupport, RefreshSupport {
 
     private static final Logger LOG = Logger.getInstance(HybrisWorkspaceRootStep.class);

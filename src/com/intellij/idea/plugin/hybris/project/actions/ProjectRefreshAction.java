@@ -54,10 +54,6 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 
-
-/**
- * Created by Martin Zdarsky-Jones on 8/2/17.
- */
 public class ProjectRefreshAction extends AnAction {
 
     public static void triggerAction() {

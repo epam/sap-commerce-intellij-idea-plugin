@@ -34,9 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
 public abstract class ImpexAnyHeaderParameterNameMixin extends ASTWrapperPsiElement implements
                                                                                     ImpexAnyHeaderParameterName {
 

@@ -26,9 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 4/8/17.
- */
 public interface GradleConfigurator {
 
     void configure(

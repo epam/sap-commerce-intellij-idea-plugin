@@ -21,9 +21,6 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 14/2/17.
- */
 public interface RefreshSupport {
 
     void refresh(HybrisProjectSettings settings) throws ConfigurationException;

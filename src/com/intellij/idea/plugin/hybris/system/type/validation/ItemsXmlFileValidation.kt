@@ -20,9 +20,6 @@ package com.intellij.idea.plugin.hybris.system.type.validation
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
-/**
- * @author Vlad Bozhenok <vladbozhenok></vladbozhenok>@gmail.com>
- */
 interface ItemsXmlFileValidation {
 
     fun isFileOutOfDate(file: VirtualFile): Boolean

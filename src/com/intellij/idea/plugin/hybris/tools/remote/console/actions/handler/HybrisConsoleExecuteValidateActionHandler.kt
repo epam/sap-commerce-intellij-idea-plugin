@@ -19,10 +19,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class HybrisConsoleExecuteValidateActionHandler(private val project: Project,
                                                 private val preserveMarkup: Boolean) {
 

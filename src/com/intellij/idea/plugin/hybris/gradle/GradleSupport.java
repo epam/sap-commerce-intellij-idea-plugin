@@ -8,9 +8,6 @@ import org.jetbrains.plugins.gradle.settings.GradleSettings;
 
 import java.util.Collections;
 
-/**
- * @author Eugene.Kudelevsky
- */
 public class GradleSupport {
 
     @Nullable

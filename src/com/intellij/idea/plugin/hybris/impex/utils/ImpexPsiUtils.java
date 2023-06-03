@@ -35,11 +35,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-/**
- * Created 22:43 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class ImpexPsiUtils {
 
     private ImpexPsiUtils() throws IllegalAccessException {

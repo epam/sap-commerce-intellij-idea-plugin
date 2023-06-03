@@ -25,9 +25,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 fun monitorImpexFiles(value: Int, unit: TimeUnit, pathToData: String): HybrisHttpResult {
     val resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
     val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(value.toLong()))

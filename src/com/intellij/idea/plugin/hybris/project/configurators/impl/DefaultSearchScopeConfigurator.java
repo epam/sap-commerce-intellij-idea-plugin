@@ -37,9 +37,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
-/**
- * Created by Martin Zdarsky-Jones on 04/07/2017.
- */
 public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     @Override

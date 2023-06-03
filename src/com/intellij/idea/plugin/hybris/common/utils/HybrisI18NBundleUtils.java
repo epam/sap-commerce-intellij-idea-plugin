@@ -25,11 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 
-/**
- * Created 1:43 AM 08 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class HybrisI18NBundleUtils extends AbstractBundle {
 
     public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";

@@ -24,11 +24,6 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 23:16 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultImpexFoldingPlaceholderBuilder implements ImpexFoldingPlaceholderBuilder {
 
     @NotNull

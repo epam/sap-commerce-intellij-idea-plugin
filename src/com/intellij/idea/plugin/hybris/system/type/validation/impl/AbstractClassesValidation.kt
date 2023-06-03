@@ -22,9 +22,6 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiField
 import com.intellij.util.xml.DomElement
 
-/**
- * @author Vlad Bozhenok vladbozhenok@gmail.com>
- */
 abstract class AbstractClassesValidation<T : DomElement, M : DomElement> : ItemsXmlDomValidator<T> {
 
     abstract fun buildGeneratedClassName(itemType: T): String

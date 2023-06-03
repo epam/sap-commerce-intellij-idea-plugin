@@ -27,11 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.psi.util.PsiTreeUtil.findSiblingBackward;
 
-/**
- * Created 4:23 PM 31 May 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class CommonAstUtils {
 
     private CommonAstUtils() throws IllegalAccessException {

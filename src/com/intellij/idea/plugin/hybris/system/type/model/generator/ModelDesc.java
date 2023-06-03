@@ -34,10 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class ModelDesc {
 
     final Map<String, String> name2replaceMap = new HashMap<>();

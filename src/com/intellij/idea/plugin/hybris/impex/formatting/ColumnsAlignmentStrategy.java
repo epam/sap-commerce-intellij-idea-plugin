@@ -35,11 +35,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created 12:55 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ColumnsAlignmentStrategy implements AlignmentStrategy {
 
     protected final List<Alignment> alignments = new ArrayList<>();

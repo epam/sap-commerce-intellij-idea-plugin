@@ -26,9 +26,6 @@ import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import org.jetbrains.annotations.Nullable;
 
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
 public abstract class ImpexTableActionHandler extends EditorActionHandler {
 
     @Override

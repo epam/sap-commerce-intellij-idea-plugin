@@ -28,9 +28,6 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 6/3/17.
- */
 public class ImpexStructureViewBuilder extends TemplateLanguageStructureViewBuilder implements StructureViewBuilder {
 
     public ImpexStructureViewBuilder(final ImpexFile psiFile) {

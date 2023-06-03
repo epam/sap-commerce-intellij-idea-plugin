@@ -23,9 +23,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexMacrosManipulator : AbstractElementManipulator<PsiElement>() {
 
     override fun handleContentChange(element: PsiElement, range: TextRange, newName: String): PsiElement = setName(element, newName)

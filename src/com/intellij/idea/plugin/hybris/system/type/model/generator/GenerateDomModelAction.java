@@ -23,9 +23,6 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class GenerateDomModelAction extends AnAction implements DumbAware {
 
     @Override

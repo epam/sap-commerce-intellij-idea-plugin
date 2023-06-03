@@ -36,10 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class MergingFileManager implements FileManager {
 
     public File getOutputFile(File target) {

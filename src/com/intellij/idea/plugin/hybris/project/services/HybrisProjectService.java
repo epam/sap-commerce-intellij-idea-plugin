@@ -23,11 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 1:51 AM 11 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface HybrisProjectService {
 
     boolean isConfigModule(@NotNull File file);

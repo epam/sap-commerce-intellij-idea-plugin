@@ -25,9 +25,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.openapi.editor.Editor;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 7/3/17.
- */
 public class ImpexStructureViewModel extends TextEditorBasedStructureViewModel
     implements StructureViewModel.ElementInfoProvider {
 

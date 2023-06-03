@@ -36,9 +36,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.apache.commons.lang3.StringUtils
 import java.io.File
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class ImpexUnknownMacrosInspection : LocalInspectionTool() {
     private val cachedMacros = HashMap<String, Boolean>()
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR

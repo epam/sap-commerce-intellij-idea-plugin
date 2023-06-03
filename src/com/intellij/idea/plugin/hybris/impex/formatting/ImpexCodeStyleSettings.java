@@ -21,11 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.formatting;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
-/**
- * Created 23:42 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexCodeStyleSettings extends CustomCodeStyleSettings {
 
     public boolean SPACE_AFTER_FIELD_VALUE_SEPARATOR = true;

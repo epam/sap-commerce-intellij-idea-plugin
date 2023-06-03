@@ -28,11 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.List;
 
-/**
- * Created 5:20 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public abstract class AbstractHybrisProjectImportBuilder extends ProjectImportBuilder<ModuleDescriptor> {
 
     public abstract void setRootProjectDirectory(@NotNull final File directory);

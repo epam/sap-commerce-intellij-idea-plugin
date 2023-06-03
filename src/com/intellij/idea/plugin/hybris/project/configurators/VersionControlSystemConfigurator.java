@@ -22,9 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
- */
 public interface VersionControlSystemConfigurator {
 
     void

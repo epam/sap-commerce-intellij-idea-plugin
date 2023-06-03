@@ -29,11 +29,6 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 22:33 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexFormattingModelBuilder implements FormattingModelBuilder {
 
     private static SpacingBuilder createSpaceBuilder(final CodeStyleSettings settings) {

@@ -30,11 +30,6 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 23:42 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
 
     @Override

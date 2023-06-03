@@ -26,9 +26,6 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.project.DumbAwareAction
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class HybrisClearAllAction(val hybrisTabs: HybrisTabs) :
         DumbAwareAction(ExecutionBundle.message("clear.all.from.console.action.name"),
                 "Clear the contents of the console", AllIcons.Actions.GC) {

@@ -18,11 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.common;
 
-/**
- * Created 17:48 15 May 2016
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface JavaConstants {
 
     String SETTER_PREFIX = "set";

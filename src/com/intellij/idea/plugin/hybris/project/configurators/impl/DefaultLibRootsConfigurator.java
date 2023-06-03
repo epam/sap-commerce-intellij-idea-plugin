@@ -21,14 +21,10 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.DefaultJavaLibraryDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -55,12 +51,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX;
 
-/**
- * Created 11:45 PM 24 June 2015.
- *
- * @author Vlad Bozhenok <VladBozhenok@gmail.com>
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
 
     @Override
@@ -73,7 +63,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final VirtualFile sourceCodeRoot = this.getSourceCodeRoot(moduleDescriptor);
 
         for (JavaLibraryDescriptor javaLibraryDescriptor : YModuleLibDescriptorUtil.INSTANCE.getLibraryDescriptors(moduleDescriptor)) {
-            if (!javaLibraryDescriptor.isValid() && javaLibraryDescriptor.getScope() == DependencyScope.COMPILE) {
+            if (!javaLibraryDescriptor.getLibraryFile().exists() && javaLibraryDescriptor.getScope() == DependencyScope.COMPILE) {
                 continue;
             }
             if (javaLibraryDescriptor.isDirectoryWithClasses()) {
@@ -81,15 +71,12 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
                     modifiableRootModel,
                     modifiableModelsProvider,
                     sourceCodeRoot,
-                    javaLibraryDescriptor,
-                    moduleDescriptor,
-                    indicator
+                    javaLibraryDescriptor
                 );
             } else {
                 this.addJarFolderToModuleLibs(
                     modifiableRootModel,
                     modifiableModelsProvider,
-                    sourceCodeRoot,
                     javaLibraryDescriptor,
                     moduleDescriptor,
                     indicator
@@ -161,9 +148,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
         @Nullable final VirtualFile sourceCodeRoot,
-        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
-        @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final ProgressIndicator progressIndicator
+        @NotNull final JavaLibraryDescriptor javaLibraryDescriptor
     ) {
         final Library library = modifiableRootModel.getModuleLibraryTable().createLibrary();
         final Library.ModifiableModel libraryModifiableModel = modifiableModelsProvider
@@ -196,7 +181,6 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
     private void addJarFolderToModuleLibs(
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final IdeModifiableModelsProvider modifiableModelsProvider,
-        @Nullable final VirtualFile sourceCodeRoot,
         @NotNull final JavaLibraryDescriptor javaLibraryDescriptor,
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ProgressIndicator progressIndicator
@@ -249,11 +233,8 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         final @NotNull ModuleDescriptor moduleDescriptor,
         final @NotNull ProgressIndicator progressIndicator
     ) {
-        if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
-            final var defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
-            if (LibraryDescriptorType.LIB == defaultJavaLibraryDescriptor.getDescriptorType()) {
-                return MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator);
-            }
+        if (LibraryDescriptorType.LIB == javaLibraryDescriptor.getDescriptorType()) {
+            return MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator);
         }
         return Collections.emptyList();
     }
@@ -267,22 +248,19 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             return Collections.emptyList();
         }
 
-        if (javaLibraryDescriptor instanceof DefaultJavaLibraryDescriptor) {
-            final var defaultJavaLibraryDescriptor = (DefaultJavaLibraryDescriptor) javaLibraryDescriptor;
-            if (LibraryDescriptorType.WEB_INF_LIB == defaultJavaLibraryDescriptor.getDescriptorType()) {
-                var sourcesDirectory = new File(
-                    moduleDescriptor.getRootDirectory(),
-                    HybrisConstants.DOC_SOURCES_JAR_DIRECTORY
-                );
+        if (LibraryDescriptorType.WEB_INF_LIB == javaLibraryDescriptor.getDescriptorType()) {
+            var sourcesDirectory = new File(
+                moduleDescriptor.getRootDirectory(),
+                HybrisConstants.DOC_SOURCES_JAR_DIRECTORY
+            );
 
-                final String[] filesArray = sourcesDirectory.list((file, name) -> name.endsWith("-sources.jar"));
-                if (filesArray == null) {
-                    return Collections.emptyList();
-                }
-                return Arrays.stream(filesArray)
-                             .map(fileName -> new File(sourcesDirectory,fileName).getAbsolutePath())
-                             .collect(Collectors.toList());
+            final String[] filesArray = sourcesDirectory.list((file, name) -> name.endsWith("-sources.jar"));
+            if (filesArray == null) {
+                return Collections.emptyList();
             }
+            return Arrays.stream(filesArray)
+                         .map(fileName -> new File(sourcesDirectory,fileName).getAbsolutePath())
+                         .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

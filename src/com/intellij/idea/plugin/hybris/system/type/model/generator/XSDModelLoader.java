@@ -68,10 +68,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class XSDModelLoader implements ModelLoader {
 
     private static final boolean TEXT_ELEMENTS_ARE_COMPLEX = false;

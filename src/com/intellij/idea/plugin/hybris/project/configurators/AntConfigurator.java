@@ -25,9 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 20/10/16.
- */
 public interface AntConfigurator {
 
     void configure(

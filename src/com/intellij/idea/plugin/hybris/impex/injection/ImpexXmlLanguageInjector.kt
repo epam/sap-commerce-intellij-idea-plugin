@@ -28,9 +28,6 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 
 
-/**
- * @author Nosov Aleksandr <nosovae.dev></nosovae.dev>@gmail.com>
- */
 class ImpexXmlLanguageInjector : LanguageInjector {
 
     private val XML_MARKER = "<"

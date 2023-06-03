@@ -26,9 +26,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Martin Zdarsky-Jones on 29/09/2016.
- */
 public class DefaultModuleSettingsConfigurator implements ModuleSettingsConfigurator {
 
     @Override

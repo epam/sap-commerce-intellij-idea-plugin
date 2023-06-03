@@ -22,9 +22,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 interface SolrHttpClient {
     @Throws(Exception::class)
     fun listOfCores(project: Project, solrConnectionSettings: HybrisRemoteConnectionSettings): Array<String>

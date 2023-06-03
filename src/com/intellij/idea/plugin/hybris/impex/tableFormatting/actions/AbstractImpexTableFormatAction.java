@@ -29,9 +29,6 @@ import com.intellij.openapi.editor.actionSystem.EditorAction;
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import com.intellij.openapi.vfs.VirtualFile;
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
 public abstract class AbstractImpexTableFormatAction extends EditorAction {
 
     AbstractImpexTableFormatAction(EditorActionHandler defaultHandler) {

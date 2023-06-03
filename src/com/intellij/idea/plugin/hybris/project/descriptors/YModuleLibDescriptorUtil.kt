@@ -151,10 +151,10 @@ object YModuleLibDescriptorUtil {
         descriptor: YRegularModuleDescriptor
     ) {
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.LIB_DIRECTORY),
-                true,
-                LibraryDescriptorType.LIB
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.LIB_DIRECTORY),
+                isExported = true,
+                descriptorType = LibraryDescriptorType.LIB
             )
         )
     }
@@ -164,9 +164,9 @@ object YModuleLibDescriptorUtil {
         descriptor: YRegularModuleDescriptor
     ) {
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_LIB_DIRECTORY),
-                true
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_LIB_DIRECTORY),
+                isExported = true
             )
         )
 
@@ -174,21 +174,23 @@ object YModuleLibDescriptorUtil {
             ?.takeIf { YModuleDescriptorUtil.hasBackofficeModule(descriptor) }
             ?.let {
                 libs.add(
-                    DefaultJavaLibraryDescriptor(
-                        File(
+                    JavaLibraryDescriptor(
+                        libraryFile = File(
                             descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
                             HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfLib()
                         ),
-                        false, false
+                        isExported = false,
+                        isDirectoryWithClasses = false
                     )
                 )
                 libs.add(
-                    DefaultJavaLibraryDescriptor(
-                        File(
+                    JavaLibraryDescriptor(
+                        libraryFile = File(
                             descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
                             HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfClasses()
                         ),
-                        false, true
+                        isExported = false,
+                        isDirectoryWithClasses = true
                     )
                 )
             }
@@ -199,9 +201,9 @@ object YModuleLibDescriptorUtil {
         libs: MutableList<JavaLibraryDescriptor>
     ) {
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.HMC_BIN_LIB_DIRECTORY),
-                true
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.HMC_BIN_LIB_DIRECTORY),
+                isExported = true
             )
         )
 
@@ -210,9 +212,10 @@ object YModuleLibDescriptorUtil {
                 .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_HMC }
                 ?.let {
                     libs.add(
-                        DefaultJavaLibraryDescriptor(
-                            File(it.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                            false, true
+                        JavaLibraryDescriptor(
+                            libraryFile = File(it.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                            isExported = false,
+                            isDirectoryWithClasses = true
                         )
                     )
                 }
@@ -228,17 +231,19 @@ object YModuleLibDescriptorUtil {
             .takeUnless { descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode }
             ?.let {
                 libs.add(
-                    DefaultJavaLibraryDescriptor(
-                        File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY), false, true
+                    JavaLibraryDescriptor(
+                        libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                        isExported = false,
+                        isDirectoryWithClasses = true
                     )
                 )
             }
 
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
-                false,
-                LibraryDescriptorType.WEB_INF_LIB
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                isExported = false,
+                descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )
         )
 
@@ -256,9 +261,10 @@ object YModuleLibDescriptorUtil {
     ) {
         if (YModuleDescriptorUtil.isHacAddon(descriptor)) {
             libs.add(
-                DefaultJavaLibraryDescriptor(
-                    File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
-                    false, true
+                JavaLibraryDescriptor(
+                    libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
+                    isExported = false,
+                    isDirectoryWithClasses = true
                 )
             )
         }
@@ -273,32 +279,36 @@ object YModuleLibDescriptorUtil {
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY),
-                false, true
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                sourcesFile = File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY),
+                isExported = false,
+                isDirectoryWithClasses = true
             )
         )
         for (srcDirName in HybrisConstants.SRC_DIR_NAMES) {
             libs.add(
-                DefaultJavaLibraryDescriptor(
-                    File(descriptor.rootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
-                    File(descriptor.rootDirectory, srcDirName),
-                    true, true
+                JavaLibraryDescriptor(
+                    libraryFile = File(descriptor.rootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                    sourcesFile = File(descriptor.rootDirectory, srcDirName),
+                    isExported = true,
+                    isDirectoryWithClasses = true
                 )
             )
         }
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(descriptor.rootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
-                true, true
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                isExported = true,
+                isDirectoryWithClasses = true
             )
         )
         val hmcModuleDirectory = File(descriptor.rootDirectory, HybrisConstants.HMC_MODULE_DIRECTORY)
         libs.add(
-            DefaultJavaLibraryDescriptor(
-                File(hmcModuleDirectory, HybrisConstants.RESOURCES_DIRECTORY),
-                true, true
+            JavaLibraryDescriptor(
+                libraryFile = File(hmcModuleDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                isExported = true,
+                isDirectoryWithClasses = true
             )
         )
     }
@@ -315,7 +325,14 @@ object YModuleLibDescriptorUtil {
         for (srcDirName in HybrisConstants.SRC_DIR_NAMES) {
             val srcDir = File(descriptor.rootDirectory, srcDirName)
             for (serverJar in serverJars) {
-                libs.add(DefaultJavaLibraryDescriptor(serverJar, if (srcDir.isDirectory) srcDir else null, true, true))
+                libs.add(
+                    JavaLibraryDescriptor(
+                        libraryFile = serverJar,
+                        sourcesFile = if (srcDir.isDirectory) srcDir else null,
+                        isExported = true,
+                        isDirectoryWithClasses = true
+                    )
+                )
             }
         }
     }
@@ -326,9 +343,10 @@ object YModuleLibDescriptorUtil {
         val backwardDependencies = descriptor.dependenciesTree
             .filter { YModuleDescriptorUtil.getRequiredExtensionNames(it).contains(descriptor.name) }
             .map {
-                DefaultJavaLibraryDescriptor(
-                    File(it.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
-                    false, false
+                JavaLibraryDescriptor(
+                    libraryFile = File(it.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                    isExported = false,
+                    isDirectoryWithClasses = false
                 )
             }
         libs.addAll(backwardDependencies)
@@ -336,11 +354,18 @@ object YModuleLibDescriptorUtil {
 
 
     private fun getLibraryDescriptors(descriptor: YConfigModuleDescriptor) = listOf(
-        DefaultJavaLibraryDescriptor(File(descriptor.rootDirectory, HybrisConstants.CONFIG_LICENCE_DIRECTORY), true)
+        JavaLibraryDescriptor(
+            libraryFile = File(descriptor.rootDirectory, HybrisConstants.CONFIG_LICENCE_DIRECTORY),
+            isExported = true
+        )
     )
 
     private fun getLibraryDescriptors(descriptor: YPlatformModuleDescriptor) = listOf(
-        DefaultJavaLibraryDescriptor(getDbDriversDirectory(descriptor), true, false)
+        JavaLibraryDescriptor(
+            libraryFile = getDbDriversDirectory(descriptor),
+            isExported = true,
+            isDirectoryWithClasses = false
+        )
     )
 
     private fun getDbDriversDirectory(descriptor: YPlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory

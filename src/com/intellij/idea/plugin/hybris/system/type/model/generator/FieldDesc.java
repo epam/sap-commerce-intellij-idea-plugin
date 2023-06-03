@@ -24,9 +24,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class FieldDesc implements Comparable<FieldDesc> {
 
     final static int STR = 1;

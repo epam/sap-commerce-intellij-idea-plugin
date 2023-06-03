@@ -36,9 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIR_ENV;
 
-/**
- * @author Eugene.Kudelevsky
- */
 public class HybrisJUnitExtension extends RunConfigurationExtension {
 
     @Override

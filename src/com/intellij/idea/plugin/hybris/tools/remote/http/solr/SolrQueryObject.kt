@@ -18,7 +18,4 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.solr
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 data class SolrQueryObject(val query: String, val core: String, val rows: Int)

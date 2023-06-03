@@ -29,12 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS;
 
-
-/**
- * Created 19:39 29 March 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 @State(name = "[y] Global Settings",
        category = SettingsCategory.PLUGINS,
        storages = {@Storage(value = STORAGE_HYBRIS_INTEGRATION_SETTINGS)})

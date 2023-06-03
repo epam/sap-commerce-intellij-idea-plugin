@@ -31,10 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-
-/**
- * @author Konstantin Bulenkov
- */
 public class Util {
 
     public static final String ANONYMOUS_ELEM_TYPE_SUFFIX = "ElemType";

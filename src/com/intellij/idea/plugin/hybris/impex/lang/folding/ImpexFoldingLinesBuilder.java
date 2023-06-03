@@ -47,9 +47,6 @@ import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRi
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsHeaderLine;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.nextElementIsUserRightsMacros;
 
-/**
- * @author
- */
 public class ImpexFoldingLinesBuilder extends FoldingBuilderEx {
 
     private static final String LINE_GROUP_NAME = "impex_fold_line";

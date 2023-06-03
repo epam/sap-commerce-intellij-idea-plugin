@@ -27,9 +27,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 6/5/17.
- */
 public class InformationStep extends ProjectImportWizardStep {
 
     private JPanel rootPanel;

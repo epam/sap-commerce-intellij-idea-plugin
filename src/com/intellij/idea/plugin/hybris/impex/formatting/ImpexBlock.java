@@ -32,11 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created 22:21 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexBlock extends AbstractBlock {
 
     private final SpacingBuilder spacingBuilder;

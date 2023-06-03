@@ -34,11 +34,6 @@ import com.intellij.projectImport.ProjectOpenProcessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 12:31 AM 10 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class HybrisProjectImportProvider extends ProjectImportProvider {
 
     @Override

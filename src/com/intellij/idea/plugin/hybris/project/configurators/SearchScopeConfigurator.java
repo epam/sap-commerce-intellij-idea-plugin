@@ -22,9 +22,6 @@ import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Martin Zdarsky-Jones on 04/07/2017.
- */
 public interface SearchScopeConfigurator {
 
     void configure(

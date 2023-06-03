@@ -39,9 +39,6 @@ import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
 import static com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType;
 import static com.intellij.psi.util.PsiUtilBase.getElementAtCaret;
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
 public abstract class AbstractOperation implements Runnable {
 
     protected final ImpexTableEditor editor;

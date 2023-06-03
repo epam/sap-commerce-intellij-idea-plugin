@@ -24,12 +24,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 2:05 AM 15 June 2015.
- *
- * @author Vlad Bozhenok <VladBozhenok@gmail.com>
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface LibRootsConfigurator {
 
     void configure(

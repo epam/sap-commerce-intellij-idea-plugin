@@ -19,10 +19,6 @@ import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.SwingConstants.TOP
 
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {

@@ -23,9 +23,6 @@ import com.intellij.openapi.ui.DialogWrapper;
 import javax.swing.*;
 import java.io.File;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class DomGenDialog extends DialogWrapper {
 
     final DomGenPanel panel;

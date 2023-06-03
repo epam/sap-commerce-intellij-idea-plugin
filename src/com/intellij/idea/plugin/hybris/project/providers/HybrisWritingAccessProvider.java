@@ -33,9 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Created by Martin Zdarsky-Jones on 30/09/2016.
- */
 public class HybrisWritingAccessProvider extends WritingAccessProvider {
 
     /**

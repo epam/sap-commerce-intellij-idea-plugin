@@ -43,9 +43,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class DomGenPanel {
 
     private JPanel mainPanel;

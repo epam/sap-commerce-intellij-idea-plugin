@@ -53,10 +53,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class DTDModelLoader implements ModelLoader {
 
     private ModelDesc model;

@@ -18,11 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-/**
- * Created 7:09 PM 20 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface TaskProgressProcessor<T> {
 
     boolean shouldContinue(T t);

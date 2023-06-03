@@ -23,9 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
- */
 public interface ConfiguratorFactory {
 
     @NotNull

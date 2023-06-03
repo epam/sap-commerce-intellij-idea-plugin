@@ -36,11 +36,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 22:13 14 May 2016
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexHeaderItemTypeAttributeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     @NotNull

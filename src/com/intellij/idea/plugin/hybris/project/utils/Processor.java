@@ -18,11 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.utils;
 
-/**
- * Created 3:54 PM 08 January 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface Processor<T> {
 
     void process(T parameter);

@@ -33,10 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class ModelGen {
 
     private final ModelDesc model = new ModelDesc();

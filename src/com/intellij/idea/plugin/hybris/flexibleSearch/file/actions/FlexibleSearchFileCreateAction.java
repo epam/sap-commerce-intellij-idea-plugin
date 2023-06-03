@@ -32,9 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 public class FlexibleSearchFileCreateAction extends CreateFileFromTemplateAction implements DumbAware {
 
     public static final String FILE_TEMPLATE = "FlexibleSearch File";

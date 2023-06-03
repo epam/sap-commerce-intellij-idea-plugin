@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+package com.intellij.idea.plugin.hybris.project.descriptors
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
+import com.intellij.openapi.roots.DependencyScope
+import java.io.File
 
-public interface ContentRootConfigurator {
-
-    void configure(
-        @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull ModuleDescriptor moduleDescriptor
-    );
-
-}
+data class JavaLibraryDescriptor(
+    var libraryFile: File,
+    var sourcesFile: File? = null,
+    var isExported: Boolean = false,
+    var isDirectoryWithClasses: Boolean = false,
+    var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
+    var scope: DependencyScope = DependencyScope.COMPILE
+)

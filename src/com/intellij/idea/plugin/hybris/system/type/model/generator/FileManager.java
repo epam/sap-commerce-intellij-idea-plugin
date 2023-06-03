@@ -26,9 +26,6 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
 import java.io.File;
 
-/**
- * @author Konstantin Bulenkov
- */
 public interface FileManager {
 
     public File releaseOutputFile(File outFile);

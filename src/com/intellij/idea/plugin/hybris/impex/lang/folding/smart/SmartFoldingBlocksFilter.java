@@ -29,11 +29,6 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
-/**
- * Created 22:40 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class SmartFoldingBlocksFilter implements PsiElementFilter {
 
     @Override

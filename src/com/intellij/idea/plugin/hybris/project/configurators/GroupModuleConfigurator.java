@@ -26,9 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 24/08/15.
- */
 public interface GroupModuleConfigurator {
 
     void findDependencyModules(@NotNull List<ModuleDescriptor> modulesChosenForImport);

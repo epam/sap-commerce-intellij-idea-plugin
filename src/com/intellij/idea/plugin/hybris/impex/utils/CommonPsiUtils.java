@@ -35,11 +35,6 @@ import static com.intellij.idea.plugin.hybris.common.JavaConstants.SETTER_PREFIX
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.startsWith;
 
-/**
- * Created 4:20 PM 31 May 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class CommonPsiUtils {
 
     private CommonPsiUtils() throws IllegalAccessException {

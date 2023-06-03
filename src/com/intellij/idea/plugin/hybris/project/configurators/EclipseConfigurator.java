@@ -27,9 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/11/16.
- */
 public interface EclipseConfigurator {
 
     void configure(

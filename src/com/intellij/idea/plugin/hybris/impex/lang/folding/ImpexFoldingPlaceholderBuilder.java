@@ -21,11 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 23:16 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface ImpexFoldingPlaceholderBuilder {
 
     @NotNull

@@ -31,11 +31,6 @@ import com.intellij.util.xml.DomManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 6:46 PM 18 September 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class TSUtils {
 
     private TSUtils() {

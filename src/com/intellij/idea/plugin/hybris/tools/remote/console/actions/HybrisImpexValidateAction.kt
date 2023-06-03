@@ -9,9 +9,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 class HybrisImpexValidateAction(private val tabbedPane: HybrisTabs,
                                 private val executeValidationActionHandler: HybrisConsoleExecuteValidateActionHandler) : AnAction(
         HybrisI18NBundleUtils.message("action.console.hybris.impex.validate.message.text"),

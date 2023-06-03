@@ -41,11 +41,6 @@ import java.util.Map;
 
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 
-/**
- * Created 14:28 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexFoldingBuilder extends FoldingBuilderEx {
 
     private static final String GROUP_NAME = "ImpEx";

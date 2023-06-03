@@ -28,11 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 6:07 PM 13 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
     protected final File rootProjectDirectory;

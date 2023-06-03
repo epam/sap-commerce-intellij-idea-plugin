@@ -36,9 +36,6 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_D
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
 
-/**
- * Created by Martin Zdarsky-Jones <zdary@zdary.cz> on 12/4/17.
- */
 public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigurator {
 
     protected void configureCommonRoots(

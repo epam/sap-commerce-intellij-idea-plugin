@@ -27,9 +27,6 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class TypeDesc {
 
     public enum TypeEnum {

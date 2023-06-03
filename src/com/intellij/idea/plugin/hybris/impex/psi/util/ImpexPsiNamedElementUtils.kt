@@ -28,9 +28,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 fun setName(element: PsiElement, newName: String): PsiElement {
     val keyNode = element.node.firstChildNode
     if (keyNode != null) {

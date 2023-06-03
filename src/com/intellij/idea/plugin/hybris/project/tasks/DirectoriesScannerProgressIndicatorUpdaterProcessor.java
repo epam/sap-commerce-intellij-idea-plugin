@@ -24,11 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 8:59 PM 07 January 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DirectoriesScannerProgressIndicatorUpdaterProcessor implements TaskProgressProcessor<File> {
 
     protected final ProgressIndicator progressIndicator;

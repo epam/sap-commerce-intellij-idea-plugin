@@ -32,11 +32,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created 2:12 PM 28 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode<?>>> {
 
     public JunkProjectViewNode(

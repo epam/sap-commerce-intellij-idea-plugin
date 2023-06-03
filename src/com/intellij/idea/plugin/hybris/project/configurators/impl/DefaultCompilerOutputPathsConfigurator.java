@@ -29,11 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-/**
- * Created 12:18 AM 25 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPathsConfigurator {
 
     @Override

@@ -31,9 +31,6 @@ import javax.swing.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 7/3/17.
- */
 public class ImpexHeaderTreeElement extends PsiTreeElementBase<ImpexHeaderLine> implements ItemPresentation {
 
     protected ImpexHeaderTreeElement(final ImpexHeaderLine psiElement) {

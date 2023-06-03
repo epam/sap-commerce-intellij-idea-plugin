@@ -26,9 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE;
 
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 public class ExecuteFlexibleSearchAction extends AbstractExecuteAction {
 
     @Override

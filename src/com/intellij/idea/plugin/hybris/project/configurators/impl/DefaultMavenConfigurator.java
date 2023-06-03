@@ -54,9 +54,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 13/11/16.
- */
 public class DefaultMavenConfigurator implements MavenConfigurator {
 
     private HybrisMavenImportListener mavenImportListener;

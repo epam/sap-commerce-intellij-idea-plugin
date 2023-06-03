@@ -10,10 +10,6 @@ import com.intellij.openapi.actionSystem.EmptyAction
 import com.intellij.openapi.project.DumbAwareAction
 import javax.swing.Icon
 
-
-/**
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 abstract class HybrisExecuteActionBase(val executeActionHandler: HybrisConsoleExecuteActionHandler,
                                        icon: Icon) : AnAction(null, null, icon) {
 

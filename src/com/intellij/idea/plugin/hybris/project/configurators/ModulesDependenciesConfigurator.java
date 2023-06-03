@@ -22,11 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 12:24 AM 25 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public interface ModulesDependenciesConfigurator {
 
     void configure(

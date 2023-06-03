@@ -26,11 +26,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 22:45 29 March 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public final class ImpexFoldingPlaceholderBuilderFactory {
 
     private ImpexFoldingPlaceholderBuilderFactory() throws IllegalAccessException {

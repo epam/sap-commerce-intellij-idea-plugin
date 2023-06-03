@@ -22,9 +22,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by Martin Zdarsky-Jones on 29/09/2016.
- */
 public interface ModuleSettingsConfigurator {
 
     void configure(@NotNull final ModuleDescriptor moduleDescriptor, @NotNull final Module javaModule);

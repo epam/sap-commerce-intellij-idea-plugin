@@ -23,11 +23,6 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created 12:55 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class TableAlignmentStrategy extends ColumnsAlignmentStrategy {
 
     @Override

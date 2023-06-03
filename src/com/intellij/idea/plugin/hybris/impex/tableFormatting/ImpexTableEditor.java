@@ -22,9 +22,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
 public class ImpexTableEditor {
 
     protected final Editor editor;

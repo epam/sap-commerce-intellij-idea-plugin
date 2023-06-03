@@ -73,11 +73,6 @@ import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_
 import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 
-/**
- * Created 2:07 AM 15 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     // module name -> relative paths

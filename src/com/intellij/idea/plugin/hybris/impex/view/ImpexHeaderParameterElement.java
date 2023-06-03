@@ -29,9 +29,6 @@ import javax.swing.*;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 7/3/17.
- */
 public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHeaderParameter>
     implements ItemPresentation {
 

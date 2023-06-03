@@ -27,9 +27,6 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Konstantin Bulenkov
- */
 public class NamespaceDesc {
 
     public NamespaceDesc(

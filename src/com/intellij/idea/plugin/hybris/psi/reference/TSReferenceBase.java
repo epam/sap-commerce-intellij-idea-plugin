@@ -29,9 +29,6 @@ import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 15/06/2016.
- */
 public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferenceBase.Poly<PSI> {
 
     public TSReferenceBase(@NotNull final PSI owner) {

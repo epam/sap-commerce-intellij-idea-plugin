@@ -27,11 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-/**
- * Created 22:34 01 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexFoldingDescriptor extends FoldingDescriptor {
 
     private final String placeholder;

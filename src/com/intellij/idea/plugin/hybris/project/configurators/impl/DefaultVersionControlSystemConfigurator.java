@@ -34,9 +34,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Created by Martin Zdarsky-Jones (martin.zdarsky@hybris.com) on 17/10/2016.
- */
 public class DefaultVersionControlSystemConfigurator implements VersionControlSystemConfigurator {
 
     @Override

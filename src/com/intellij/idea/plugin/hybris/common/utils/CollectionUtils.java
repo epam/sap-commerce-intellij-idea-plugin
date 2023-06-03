@@ -27,11 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created 11:23 PM 03 February 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class CollectionUtils {
 
     @Nullable

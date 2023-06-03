@@ -54,11 +54,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created 10:14 PM 27 June 2015.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
     protected final Project project;

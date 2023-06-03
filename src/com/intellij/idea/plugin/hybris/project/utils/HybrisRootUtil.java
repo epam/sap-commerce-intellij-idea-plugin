@@ -13,9 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-/**
- * @author Eugene.Kudelevsky
- */
 public class HybrisRootUtil {
 
     private HybrisRootUtil() {

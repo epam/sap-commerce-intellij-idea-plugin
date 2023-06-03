@@ -25,11 +25,6 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created 23:46 21 December 2014
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class ImpexLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
 
     @NotNull

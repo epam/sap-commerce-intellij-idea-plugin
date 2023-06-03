@@ -29,9 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Martin Zdarsky (martin.zdarsky@hybris.com) on 18/08/15.
- */
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull

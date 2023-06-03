@@ -22,9 +22,6 @@ import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.http.HttpStatus.SC_OK;
 
-/**
- * Created by alexander on 07.03.17.
- */
 public class HybrisHttpResult {
 
     private boolean hasError;

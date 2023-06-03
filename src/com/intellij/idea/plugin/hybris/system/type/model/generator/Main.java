@@ -26,10 +26,6 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
 import java.io.File;
 
-/**
- * @author Gregory.Shrago
- * @author Konstantin Bulenkov
- */
 public class Main {
 
 

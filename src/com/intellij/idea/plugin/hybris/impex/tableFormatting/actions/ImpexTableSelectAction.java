@@ -23,9 +23,6 @@ import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.handler.Imp
 import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation.SelectImpexTableOperation;
 import com.intellij.openapi.editor.Editor;
 
-/**
- * @author Aleksandr Nosov <nosovae.dev@gmail.com>
- */
 public class ImpexTableSelectAction extends AbstractImpexTableFormatAction {
 
     public ImpexTableSelectAction() {

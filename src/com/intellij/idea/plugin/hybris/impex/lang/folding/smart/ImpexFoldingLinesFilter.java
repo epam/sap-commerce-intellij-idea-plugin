@@ -44,11 +44,6 @@ import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isHeader
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isLineBreak;
 import static com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.isUserRightsMacros;
 
-/**
- * Elements filter for folding by lines.
- *
- * @author Nosov Aleksandr <nosovae.dev@gmail.com>
- */
 public class ImpexFoldingLinesFilter implements PsiElementFilter {
 
     @Override

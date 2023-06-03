@@ -25,11 +25,6 @@ import com.intellij.openapi.ui.Messages;
 import java.io.File;
 import java.util.List;
 
-/**
- * Created 9:00 PM 07 January 2016.
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<List<File>> {
 
     @Override

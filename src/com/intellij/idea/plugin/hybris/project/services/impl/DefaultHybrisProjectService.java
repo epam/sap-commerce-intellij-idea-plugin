@@ -31,11 +31,6 @@ import org.jetbrains.idea.maven.model.MavenConstants;
 
 import java.io.File;
 
-/**
- * Created 10:39 PM 11 June 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
 public class DefaultHybrisProjectService implements HybrisProjectService {
 
     private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectService.class);
