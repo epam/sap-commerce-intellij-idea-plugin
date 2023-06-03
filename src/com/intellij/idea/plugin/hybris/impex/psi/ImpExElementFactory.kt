@@ -27,6 +27,6 @@ object ImpExElementFactory {
 
     fun createIdentifier(project: Project, name: String): PsiElement = createFile(project, name).firstChild
 
-    fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
-        .createFileFromText("dummy.imx", ImpexFileType.INSTANCE, text) as ImpexFile
+    private fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
+        .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
 }

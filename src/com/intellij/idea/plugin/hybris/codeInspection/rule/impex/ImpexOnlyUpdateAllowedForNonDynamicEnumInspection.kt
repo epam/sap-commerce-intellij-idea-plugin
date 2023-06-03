@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexUpdateHeaderModeQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
@@ -58,7 +58,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
 
             problemsHolder.registerProblem(
                 mode,
-                HybrisI18NBundleUtils.message("hybris.inspections.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, meta.name ?: "?"),
+                message("hybris.inspections.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, meta.name ?: typeName!!),
                 ProblemHighlightType.ERROR,
                 ImpexUpdateHeaderModeQuickFix(mode)
             )
