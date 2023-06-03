@@ -72,10 +72,6 @@ object YModuleDescriptorUtil {
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
         || File(descriptor.rootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
-    // TODO: review usage of this method
-    fun isAcceleratorAddOnModuleRoot(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.ACCELERATOR_ADDON_DIRECTORY)
-        .isDirectory
-
     fun getIdeaModuleFile(descriptor: ModuleDescriptor) = descriptor.rootProjectDescriptor.modulesFilesDirectory
         ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
         ?: File(descriptor.rootDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
@@ -93,6 +89,7 @@ object YModuleDescriptorUtil {
     fun getRequiredExtensionNames(descriptor: ModuleDescriptor) = when (descriptor) {
         is YPlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
     }
 
@@ -122,6 +119,10 @@ object YModuleDescriptorUtil {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
         }
         return requiredExtensionNames.unmodifiable()
+    }
+
+    private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String> {
+        return getRequiredExtensionNames(descriptor.owner)
     }
 
     private fun getDefaultRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
@@ -155,11 +156,13 @@ object YModuleDescriptorUtil {
         return dependenciesSet
     }
 
+    // TODO: validate usage
     fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension
         .hmcmodule != null
 
     fun isHacAddon(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
+    // TODO: validate usage
     fun hasBackofficeModule(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
         && File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
 

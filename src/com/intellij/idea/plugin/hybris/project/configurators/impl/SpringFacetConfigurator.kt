@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -41,27 +42,27 @@ class SpringFacetConfigurator : FacetConfigurator {
     ) {
         val yModuleDescriptor = moduleDescriptor as? YModuleDescriptor ?: return
 
-        val springFacet = SpringFacet.getInstance(javaModule)
-            // TODO: this step make no sense as we're removing iml file of the module during refresh action
-            ?.also { it.removeFileSets() }
-            ?: SpringFacet.getSpringFacetType()
-                .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-                ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
-            ?: return
+        WriteAction.runAndWait<RuntimeException> {
+            val springFacet = SpringFacet.getInstance(javaModule)
+                ?.also { it.removeFileSets() }
+                ?: SpringFacet.getSpringFacetType()
+                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+                    ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
+                ?: return@runAndWait
 
-        val facetId = yModuleDescriptor.name + SpringFacet.FACET_TYPE_ID
-        val springFileSet = springFacet.addFileSet(facetId, facetId)
+            val facetId = yModuleDescriptor.name + SpringFacet.FACET_TYPE_ID
+            val springFileSet = springFacet.addFileSet(facetId, facetId)
 
-        yModuleDescriptor.springFileSet
-            .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
-            .forEach { springFileSet.addFile(it) }
+            yModuleDescriptor.springFileSet
+                .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
+                .forEach { springFileSet.addFile(it) }
 
-        val setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)
-        if (setting != null) {
-            setting.booleanValue = false
-            setting.apply()
+            val setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)
+            if (setting != null) {
+                setting.booleanValue = false
+                setting.apply()
+            }
+            modifiableFacetModel.addFacet(springFacet)
         }
-        modifiableFacetModel.addFacet(springFacet)
-
     }
 }

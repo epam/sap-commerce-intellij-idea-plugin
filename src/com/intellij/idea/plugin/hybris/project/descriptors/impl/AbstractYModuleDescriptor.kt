@@ -19,12 +19,14 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import java.io.File
 
 abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String
+    name: String,
+    override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
 
     override var springFileSet = mutableSetOf<String>()

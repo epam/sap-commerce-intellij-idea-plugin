@@ -46,18 +46,18 @@ class WebFacetConfigurator : FacetConfigurator {
     ) {
         val yWebSubModuleDescriptor = moduleDescriptor as? YWebSubModuleDescriptor ?: return
 
-        val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
-            ?.also {
-                it.removeAllWebRoots()
-                it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
-            }
-            ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-                ?.let { FacetManager.getInstance(javaModule).createFacet(it, it.defaultFacetName, null) }
-                ?.also { modifiableFacetModel.addFacet(it) }
-            ?: return
-
         WriteAction.runAndWait<RuntimeException> {
+            val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
+                ?.also {
+                    it.removeAllWebRoots()
+                    it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
+                }
+                ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
+                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
+                    ?.let { FacetManager.getInstance(javaModule).createFacet(it, it.defaultFacetName, null) }
+                    ?.also { modifiableFacetModel.addFacet(it) }
+                ?: return@runAndWait
+
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(yWebSubModuleDescriptor.webRoot.absolutePath)), "/")
 

@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
@@ -26,7 +25,6 @@ abstract class YRegularModuleDescriptor protected constructor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     val extensionInfo: ExtensionInfo,
-    var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
 ) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo.extension.name) {
 
     var isInLocalExtensions = false

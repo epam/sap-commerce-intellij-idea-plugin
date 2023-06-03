@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
@@ -432,6 +433,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                     moduleRootDirectory, this
                 );
                 moduleDescriptors.add(moduleDescriptor);
+                if (moduleDescriptor instanceof final YModuleDescriptor yModuleDescriptor) {
+                    moduleDescriptors.addAll(yModuleDescriptor.getSubModules());
+                }
             } catch (HybrisConfigurationException e) {
                 LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
 
@@ -681,43 +685,46 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             .map(YModuleDescriptor.class::cast)
             .toList();
         for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
+            buildDependencies(moduleDescriptor, yModuleDescriptors);
+        }
+    }
 
-            Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
+    private void buildDependencies(final YModuleDescriptor moduleDescriptor, final List<YModuleDescriptor> yModuleDescriptors) {
+        Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
 
-            if (isEmpty(requiredExtensionNames)) {
-                continue;
-            }
-            requiredExtensionNames = requiredExtensionNames.stream()
-                                                           .sorted()
-                                                           .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (isEmpty(requiredExtensionNames)) {
+            return;
+        }
+        requiredExtensionNames = requiredExtensionNames.stream()
+                                                       .sorted()
+                                                       .collect(Collectors.toCollection(LinkedHashSet::new));
 
-            final Set<YModuleDescriptor> dependencies = new LinkedHashSet<>(
-                requiredExtensionNames.size()
+        final Set<YModuleDescriptor> dependencies = new LinkedHashSet<>(
+            requiredExtensionNames.size()
+        );
+
+        for (String requiresExtensionName : requiredExtensionNames) {
+
+            final Collection<YModuleDescriptor> dependsOn = this.findHybrisModuleDescriptorsByName(
+                yModuleDescriptors, requiresExtensionName
             );
 
-            for (String requiresExtensionName : requiredExtensionNames) {
-
-                final Collection<YModuleDescriptor> dependsOn = this.findHybrisModuleDescriptorsByName(
-                    yModuleDescriptors, requiresExtensionName
-                );
-
-                if (Iterables.isEmpty(dependsOn)) {
-                    LOG.warn(String.format(
-                        "Module '%s' contains unsatisfied dependency '%s'.",
-                        moduleDescriptor.getName(), requiresExtensionName
-                    ));
-                } else {
-                    dependencies.addAll(dependsOn);
-                }
+            if (Iterables.isEmpty(dependsOn)) {
+                LOG.warn(String.format(
+                    "Module '%s' contains unsatisfied dependency '%s'.",
+                    moduleDescriptor.getName(), requiresExtensionName
+                ));
+            } else {
+                dependencies.addAll(dependsOn);
             }
-
-            if (YModuleDescriptorUtil.INSTANCE.isAcceleratorAddOnModuleRoot(moduleDescriptor)) {
-                this.processAddOnBackwardDependencies(yModuleDescriptors, moduleDescriptor, dependencies);
-            }
-
-            moduleDescriptor.getDependenciesTree().clear();
-            moduleDescriptor.getDependenciesTree().addAll(dependencies);
         }
+
+        if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
+            processAddOnBackwardDependencies(yModuleDescriptors, ySubModuleDescriptor, dependencies);
+        }
+
+        moduleDescriptor.getDependenciesTree().clear();
+        moduleDescriptor.getDependenciesTree().addAll(dependencies);
     }
 
     @Nullable
@@ -728,16 +735,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     protected void processAddOnBackwardDependencies(
         @NotNull final Iterable<YModuleDescriptor> moduleDescriptors,
-        @NotNull final ModuleDescriptor addOn,
+        @NotNull final YAcceleratorAddonSubModuleDescriptor addOn,
         @NotNull final Set<YModuleDescriptor> addOnDependencies
     ) {
-        Validate.notNull(moduleDescriptors);
-        Validate.notNull(addOn);
-        Validate.notNull(addOnDependencies);
-
         if (isCreateBackwardCyclicDependenciesForAddOn()) {
             for (YModuleDescriptor moduleDescriptor : moduleDescriptors) {
-                if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(addOn.getName())) {
+                final var addonName = addOn.getName();
+                final var requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
+                if (requiredExtensionNames.contains(addonName)) {
                     addOnDependencies.add(moduleDescriptor);
                 }
             }
