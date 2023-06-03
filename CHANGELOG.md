@@ -7,6 +7,7 @@
 - NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
 
 ### Other
+- Updated Gradle plugin to 1.14.0 [#471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/471)
 - [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
 - [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
 - [Apache commons-io](https://commons.apache.org/proper/commons-io/): 2.11.0 -> 2.12.0
