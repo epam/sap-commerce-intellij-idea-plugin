@@ -567,7 +567,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private boolean shouldBeTreatedAsReadOnly(final ModuleDescriptor moduleDescriptor) {
-        if (YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
             return false;
         }
         return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();

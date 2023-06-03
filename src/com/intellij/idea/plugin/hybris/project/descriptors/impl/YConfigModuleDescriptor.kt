@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 class YConfigModuleDescriptor(
@@ -28,4 +29,7 @@ class YConfigModuleDescriptor(
 
     var isPreselected = false
     var isMainConfig = false
+    override val descriptorType: ModuleDescriptorType
+        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
+        else ModuleDescriptorType.CUSTOM
 }

@@ -36,7 +36,7 @@ object YModuleDescriptorUtil {
     fun getExtensionDescriptor(descriptor: ModuleDescriptor) = when (descriptor) {
         is YRegularModuleDescriptor -> ExtensionDescriptor(
             descriptor.name,
-            getDescriptorType(descriptor),
+            descriptor.descriptorType,
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
             isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
@@ -47,7 +47,7 @@ object YModuleDescriptorUtil {
         );
         else -> ExtensionDescriptor(
             descriptor.name,
-            getDescriptorType(descriptor),
+            descriptor.descriptorType,
             backofficeModule = false,
             hacModule = false,
             deprecated = false,
@@ -65,29 +65,6 @@ object YModuleDescriptorUtil {
         is YConfigModuleDescriptor -> descriptor.isPreselected
         is YRegularModuleDescriptor -> descriptor.isInLocalExtensions
         else -> false
-    }
-
-    /**
-     * Descriptor type for sub-modules will be taken from the owner module descriptor
-     */
-    fun getDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
-        is YSubModuleDescriptor -> getModuleDescriptorType(descriptor.owner)
-        else -> getModuleDescriptorType(descriptor)
-    }
-
-    private fun getModuleDescriptorType(descriptor: ModuleDescriptor) = when (descriptor) {
-        is EclipseModuleDescriptor -> ModuleDescriptorType.ECLIPSE
-        is GradleModuleDescriptor -> ModuleDescriptorType.GRADLE
-        is MavenModuleDescriptor -> ModuleDescriptorType.MAVEN
-        is CCv2ModuleDescriptor -> ModuleDescriptorType.CCV2
-        is YExtRegularModuleDescriptor -> ModuleDescriptorType.EXT
-        is YCustomRegularModuleDescriptor -> ModuleDescriptorType.CUSTOM
-        is YOotbRegularModuleDescriptor -> ModuleDescriptorType.OOTB
-        is YPlatformModuleDescriptor -> ModuleDescriptorType.PLATFORM
-        is YConfigModuleDescriptor -> if (descriptor.isMainConfig) ModuleDescriptorType.CONFIG
-        else ModuleDescriptorType.CUSTOM
-
-        else -> ModuleDescriptorType.NONE
     }
 
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()

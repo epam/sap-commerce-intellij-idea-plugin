@@ -194,7 +194,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         ));
 
         if (
-            YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM ||
+            moduleDescriptor.getDescriptorType() == CUSTOM ||
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY));
@@ -467,7 +467,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         final File rootDirectory = moduleDescriptor.getRootDirectory();
 
-        if (YModuleDescriptorUtil.INSTANCE.getDescriptorType(moduleDescriptor) == CUSTOM) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         } else if (
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() &&

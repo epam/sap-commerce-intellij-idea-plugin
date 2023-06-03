@@ -24,4 +24,5 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val rootDirectory: File
     val rootProjectDescriptor: HybrisProjectDescriptor
     var importStatus: ModuleDescriptorImportStatus
+    val descriptorType: ModuleDescriptorType
 }

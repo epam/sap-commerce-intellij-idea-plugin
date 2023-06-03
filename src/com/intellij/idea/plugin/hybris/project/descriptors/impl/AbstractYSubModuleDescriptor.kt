@@ -28,6 +28,7 @@ abstract class AbstractYSubModuleDescriptor(
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
     override val springFileSet: Set<String> = mutableSetOf(),
     override val dependenciesTree: Set<YModuleDescriptor> = mutableSetOf(),
+    override val descriptorType: ModuleDescriptorType = owner.descriptorType
 ) : YSubModuleDescriptor {
 
     override fun compareTo(other: ModuleDescriptor) = other

@@ -130,9 +130,8 @@ object YModuleLibDescriptorUtil {
 
     private fun getLibraryDescriptors(descriptor: YRegularModuleDescriptor): List<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
-        val descriptorType = YModuleDescriptorUtil.getDescriptorType(descriptor)
 
-        addLibrariesToNonCustomModule(descriptor, descriptorType, libs)
+        addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
         addHacLibs(descriptor, libs)
         addHmcLibs(descriptor, libs)
         addWebLibs(descriptor, libs)

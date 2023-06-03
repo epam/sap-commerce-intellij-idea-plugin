@@ -18,10 +18,12 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 class CCv2ModuleDescriptor(
-        moduleRootDirectory: File,
-        rootProjectDescriptor: HybrisProjectDescriptor,
-        name: String = moduleRootDirectory.name
+    moduleRootDirectory: File,
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    name: String = moduleRootDirectory.name,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2
 ) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)

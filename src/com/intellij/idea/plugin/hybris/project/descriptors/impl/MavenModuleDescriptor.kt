@@ -18,9 +18,11 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 class MavenModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
 ) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)

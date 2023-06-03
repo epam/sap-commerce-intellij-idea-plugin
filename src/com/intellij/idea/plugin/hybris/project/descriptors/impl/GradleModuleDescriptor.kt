@@ -19,11 +19,13 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 class GradleModuleDescriptor(
     moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
 ) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
 
     val gradleFile = File(moduleRootDirectory, HybrisConstants.BUILD_GRADLE)

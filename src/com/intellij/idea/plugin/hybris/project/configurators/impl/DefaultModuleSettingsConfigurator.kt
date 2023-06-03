@@ -20,14 +20,13 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 
 class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
 
     override fun configure(moduleDescriptor: ModuleDescriptor, javaModule: Module) {
-        val descriptorType = YModuleDescriptorUtil.getDescriptorType(moduleDescriptor)
+        val descriptorType = moduleDescriptor.descriptorType
         val hasReadOnlySettings = moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
         val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
             || descriptorType === ModuleDescriptorType.PLATFORM

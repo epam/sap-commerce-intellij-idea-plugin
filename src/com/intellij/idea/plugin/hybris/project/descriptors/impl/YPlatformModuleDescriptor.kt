@@ -19,10 +19,12 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 class YPlatformModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM
+    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM
 ) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
