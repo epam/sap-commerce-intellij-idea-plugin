@@ -16,6 +16,7 @@
 - [Apache Solr Java client](https://solr.apache.org/): 8.8.2 -> 8.11.2
 - [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
 - added links for quick check of new versions availability
+- [Add locale to JAVADOC_URL](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
 
 ## [2023.2.0]
 
