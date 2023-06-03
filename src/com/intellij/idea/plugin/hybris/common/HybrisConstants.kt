@@ -73,6 +73,7 @@ object HybrisConstants {
     const val BUILD_GRADLE = "build.gradle"
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
+    const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
     const val EXTENSIONS_XML = "extensions.xml"
     const val COCKPIT_NG_CONFIG_XML = "-config.xml"
     const val COCKPIT_NG_WIDGETS_XML = "widgets.xml"

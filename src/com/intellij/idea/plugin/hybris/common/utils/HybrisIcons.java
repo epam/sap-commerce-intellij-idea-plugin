@@ -56,6 +56,7 @@ public final class HybrisIcons {
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
     public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
+    public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
 
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
