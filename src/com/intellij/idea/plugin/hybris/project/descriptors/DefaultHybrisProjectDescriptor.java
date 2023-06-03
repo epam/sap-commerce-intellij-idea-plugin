@@ -470,7 +470,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for higher priority modules");
             for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
                 final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-                this.scanSubrirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
+                this.scanSubdirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
                 final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
@@ -618,7 +618,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        scanSubrirectories(
+        scanSubdirectories(
             moduleRootMap,
             acceptOnlyHybrisModules,
             rootProjectDirectory.toPath(),
@@ -627,7 +627,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     }
 
-    private void scanSubrirectories(
+    private void scanSubdirectories(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
         final boolean acceptOnlyHybrisModules, @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
@@ -674,7 +674,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                path.endsWith(HybrisConstants.EXCLUDE_TOMCAT_6_DIRECTORY) ||
                path.endsWith(HybrisConstants.EXCLUDE_TCSERVER_DIRECTORY) ||
                path.endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY) ||
-               path.contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY);
+               path.contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY) ||
+               path.contains(HybrisConstants.NODE_MODULES_DIRECTORY);
     }
 
     protected void buildDependencies(@NotNull final Collection<ModuleDescriptor> moduleDescriptors) {

@@ -74,7 +74,6 @@ object HybrisConstants {
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
-    const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
     const val EXTENSIONS_XML = "extensions.xml"
     const val COCKPIT_NG_CONFIG_XML = "-config.xml"
     const val COCKPIT_NG_WIDGETS_XML = "widgets.xml"
@@ -339,8 +338,6 @@ object HybrisConstants {
     private const val SRC_DIRECTORY = "src"
     private const val GROOVY_SRC_DIRECTORY = "groovysrc"
     private const val SCALA_SRC_DIRECTORY = "scalasrc"
-    private const val WEB_XML_FILE_NAME = "web.xml"
-    private const val WEB_INF_DIRECTORY = "WEB-INF"
 
     // kotlinnature extension integration
     const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
@@ -354,8 +351,6 @@ object HybrisConstants {
     @JvmField
     val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")
 
-    @JvmField
-    val FLEXIBLE_SEARCH_KEYWORDS = hashSetOf("SELECT", "FROM", "WHERE", "ORDER", "LEFT", "JOIN", "ON", "BY", "ASC", "DESC")
     @JvmField
     val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
     @JvmField
@@ -375,27 +370,27 @@ object HybrisConstants {
     val PLATFORM_DB_DRIVER = FileUtilRt.toSystemDependentName("lib/dbdriver")
 
     @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/$PLATFORM_OOTB_MODULE_PREFIX")
+    val HYBRIS_OOTB_MODULE_PREFIX = FileUtilRt.toSystemDependentName("hybris/bin/ext-")
     @JvmField
-    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/$PLATFORM_OOTB_MODULE_PREFIX_2019")
+    val HYBRIS_OOTB_MODULE_PREFIX_2019 = FileUtilRt.toSystemDependentName("hybris/bin/modules/")
 
     @JvmField
     val EXCLUDE_TMP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tmp")
     @JvmField
     val EXCLUDE_TCSERVER_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tcServer")
     @JvmField
-    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_TOMCAT_DIRECTORY")
+    val EXCLUDE_TOMCAT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat")
     @JvmField
-    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_TOMCAT_6_DIRECTORY")
+    val EXCLUDE_TOMCAT_6_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/tomcat-6")
     @JvmField
     val EXCLUDE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/lib")
     @JvmField
     val EXCLUDE_RESOURCES_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/resources")
     @JvmField
-    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$ECLIPSE_BIN_DIRECTORY")
+    val EXCLUDE_ECLIPSEBIN_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/eclipsebin")
 
     @JvmField
-    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/$PLATFORM_BOOTSTRAP_DIRECTORY")
+    val EXCLUDE_BOOTSTRAP_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/bootstrap")
     @JvmField
     val EXCLUDE_ANT_DIRECTORY = FileUtilRt.toSystemDependentName("/platform/apache-ant-")
     @JvmField
@@ -418,46 +413,44 @@ object HybrisConstants {
     @JvmField
     val CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("bin/custom")
     @JvmField
-    val CONFIG_RELATIVE_PATH = FileUtilRt.toSystemDependentName("/../../$EXTENSION_NAME_CONFIG")
+    val CONFIG_RELATIVE_PATH = FileUtilRt.toSystemDependentName("/../../config")
     @JvmField
-    val ADVANCED_PROPERTIES = FileUtilRt.toSystemDependentName("$RESOURCES_DIRECTORY/advanced.properties")
+    val ADVANCED_PROPERTIES = FileUtilRt.toSystemDependentName("resources/advanced.properties")
     @JvmField
     val BUILD_NUMBER_FILE_PATH = FileUtilRt.toSystemDependentName("/bin/platform/build.number")
 
     @JvmField
-    val WEB_ROOT_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_ROOT_DIRECTORY")
+    val WEB_ROOT_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("web/webroot")
     @JvmField
-    val WEB_INF_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_ROOT_DIRECTORY_RELATIVE_PATH/$WEB_INF_DIRECTORY")
-    @JvmField
-    val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("$WEB_INF_DIRECTORY_RELATIVE_PATH/$WEB_XML_FILE_NAME")
+    val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/web.xml")
     @JvmField
     val WEB_INF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
     @JvmField
-    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/webroot/WEB-INF/classes")
+    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/classes")
     @JvmField
     val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")
     @JvmField
-    val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
+    val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/lib")
 
     @JvmField
-    val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("$COMMON_WEB_MODULE_DIRECTORY/$WEB_INF_LIB_DIRECTORY")
+    val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
     @JvmField
-    val HMC_BIN_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/$BIN_DIRECTORY")
+    val HMC_BIN_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("hmc/bin")
     @JvmField
     val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
 
     @JvmField
-    val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$BIN_DIRECTORY")
+    val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/bin")
     @JvmField
-    val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/$GEN_SRC_DIRECTORY")
+    val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/gensrc")
     @JvmField
     val PL_TOMCAT_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/lib")
     @JvmField
-    val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/$BIN_DIRECTORY")
+    val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/bin")
     @JvmField
     val PL_TOMCAT_6_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/lib")
     @JvmField
-    val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/$BIN_DIRECTORY")
+    val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/bin")
     @JvmField
     val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
 
@@ -465,7 +458,7 @@ object HybrisConstants {
     val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
     @JvmField
-    val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/$BIN_DIRECTORY")
+    val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/bin")
     @JvmField
     val BACKOFFICE_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("resources/backoffice")
     @JvmField

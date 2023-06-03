@@ -66,7 +66,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             if (!javaLibraryDescriptor.getLibraryFile().exists() && javaLibraryDescriptor.getScope() == DependencyScope.COMPILE) {
                 continue;
             }
-            if (javaLibraryDescriptor.isDirectoryWithClasses()) {
+            if (javaLibraryDescriptor.getDirectoryWithClasses()) {
                 this.addClassesToModuleLibs(
                     modifiableRootModel,
                     modifiableModelsProvider,
@@ -172,7 +172,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
         }
 
 
-        if (javaLibraryDescriptor.isExported()) {
+        if (javaLibraryDescriptor.getExported()) {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());
@@ -202,7 +202,7 @@ public class DefaultLibRootsConfigurator implements LibRootsConfigurator {
             }
         }
 
-        if (javaLibraryDescriptor.isExported()) {
+        if (javaLibraryDescriptor.getExported()) {
             this.setLibraryEntryExported(modifiableRootModel, library);
         }
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.getScope());

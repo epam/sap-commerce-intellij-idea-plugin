@@ -25,8 +25,8 @@ import java.io.File
 data class JavaLibraryDescriptor(
     var libraryFile: File,
     var sourcesFile: File? = null,
-    var isExported: Boolean = false,
-    var isDirectoryWithClasses: Boolean = false,
+    var exported: Boolean = false,
+    var directoryWithClasses: Boolean = false,
     var descriptorType: LibraryDescriptorType = LibraryDescriptorType.UNKNOWN,
     var scope: DependencyScope = DependencyScope.COMPILE
 )
