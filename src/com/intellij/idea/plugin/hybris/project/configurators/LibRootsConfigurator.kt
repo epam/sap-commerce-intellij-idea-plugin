@@ -15,18 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.roots.ModifiableRootModel
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import org.jetbrains.annotations.NotNull;
+interface LibRootsConfigurator {
 
-public interface ContentRootConfigurator {
+    fun configure(
+        modifiableRootModel: ModifiableRootModel,
+        moduleDescriptor: ModuleDescriptor,
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        indicator: ProgressIndicator
+    )
 
-    void configure(
-        @NotNull ModifiableRootModel modifiableRootModel,
-        @NotNull ModuleDescriptor moduleDescriptor
-    );
-
+    companion object {
+        val instance: LibRootsConfigurator = ApplicationManager.getApplication().getService(LibRootsConfigurator::class.java)
+    }
 }

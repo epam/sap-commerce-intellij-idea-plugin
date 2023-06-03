@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +39,7 @@ public interface ConfiguratorFactory {
     CompilerOutputPathsConfigurator getCompilerOutputPathsConfigurator();
 
     @NotNull
-    ContentRootConfigurator getRegularContentRootConfigurator();
-
-    @NotNull
-    ContentRootConfigurator getReadOnlyContentRootConfigurator();
+    ContentRootConfigurator getContentRootConfigurator(final ModuleDescriptor moduleDescriptor);
 
     @NotNull
     LibRootsConfigurator getLibRootsConfigurator();

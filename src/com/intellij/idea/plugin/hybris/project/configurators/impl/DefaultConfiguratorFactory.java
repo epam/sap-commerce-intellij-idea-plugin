@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 
 public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
@@ -77,20 +79,16 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
 
     @NotNull
     @Override
-    public ContentRootConfigurator getRegularContentRootConfigurator() {
-        return ApplicationManager.getApplication().getService(RegularContentRootConfigurator.class);
-    }
-
-    @NotNull
-    @Override
-    public ContentRootConfigurator getReadOnlyContentRootConfigurator() {
-        return ApplicationManager.getApplication().getService(ReadOnlyContentRootConfigurator.class);
+    public ContentRootConfigurator getContentRootConfigurator(final ModuleDescriptor moduleDescriptor) {
+        return shouldBeTreatedAsReadOnly(moduleDescriptor)
+            ? ContentRootConfigurator.Companion.getReadOnlyInstance()
+            : ContentRootConfigurator.Companion.getInstance();
     }
 
     @NotNull
     @Override
     public LibRootsConfigurator getLibRootsConfigurator() {
-        return ApplicationManager.getApplication().getService(LibRootsConfigurator.class);
+        return LibRootsConfigurator.Companion.getInstance();
     }
 
     @NotNull
@@ -180,6 +178,13 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @Override
     public LoadedConfigurator getLoadedConfigurator() {
         return ApplicationManager.getApplication().getService(LoadedConfigurator.class);
+    }
+
+    private boolean shouldBeTreatedAsReadOnly(final ModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
+            return false;
+        }
+        return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
     }
 
     protected static class DummySpringConfigurator implements SpringConfigurator {

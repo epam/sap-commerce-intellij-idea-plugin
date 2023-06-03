@@ -94,7 +94,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
 import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_WEB_PLUGIN_ID;
 
@@ -267,7 +266,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
-            YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor).getAbsolutePath(), StdModuleTypes.JAVA.getId()
+            YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor).getAbsolutePath(),
+            StdModuleTypes.JAVA.getId()
         );
 
         configuratorFactory.getModuleSettingsConfigurator().configure(moduleDescriptor, javaModule);
@@ -282,17 +282,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText2(message("hybris.project.import.module.libs"));
         configuratorFactory.getLibRootsConfigurator().configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        indicator.setText2(message("hybris.project.import.module.content"));
 
-        if (shouldBeTreatedAsReadOnly(moduleDescriptor)) {
-            configuratorFactory.getReadOnlyContentRootConfigurator().configure(modifiableRootModel, moduleDescriptor);
-        } else {
-            configuratorFactory.getRegularContentRootConfigurator().configure(modifiableRootModel, moduleDescriptor);
-        }
+        indicator.setText2(message("hybris.project.import.module.content"));
+        configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(modifiableRootModel, moduleDescriptor);
+
         indicator.setText2(message("hybris.project.import.module.outputpath"));
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(modifiableRootModel, moduleDescriptor);
+
         indicator.setText2(message("hybris.project.import.module.javadoc"));
         configuratorFactory.getJavadocModuleConfigurator().configure(modifiableRootModel, moduleDescriptor, indicator);
+
         indicator.setText2(message("hybris.project.import.module.groups"));
         groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
@@ -566,10 +565,4 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private boolean shouldBeTreatedAsReadOnly(final ModuleDescriptor moduleDescriptor) {
-        if (moduleDescriptor.getDescriptorType() == CUSTOM) {
-            return false;
-        }
-        return moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode();
-    }
 }

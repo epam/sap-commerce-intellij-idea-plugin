@@ -100,24 +100,14 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
         if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(HybrisConstants.EXTENSION_NAME_HMC)) {
-            this.configureAdditionalRoots(
-                moduleDescriptor,
-                HMC_MODULE_DIRECTORY,
-                contentEntry,
-                moduleDescriptor.getRootDirectory()
-            );
+            this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
         }
-        this.configureAdditionalRoots(
-            moduleDescriptor,
-            HAC_MODULE_DIRECTORY,
-            contentEntry,
-            moduleDescriptor.getRootDirectory()
-        );
-        configureRegularWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        this.configureCommonWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        this.configureAcceleratorAddonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        this.configureBackOfficeRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-        this.configurePlatformRoots(moduleDescriptor, contentEntry);
+        this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+//        configureRegularWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        configureCommonWebRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        configureAcceleratorAddonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        configureBackOfficeRoots(moduleDescriptor, contentEntry, dirsToIgnore);
+        configurePlatformRoots(moduleDescriptor, contentEntry);
     }
 
     protected void configureRegularWebRoots(

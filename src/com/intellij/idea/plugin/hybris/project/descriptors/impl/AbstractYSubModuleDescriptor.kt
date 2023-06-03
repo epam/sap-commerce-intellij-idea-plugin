@@ -36,4 +36,7 @@ abstract class AbstractYSubModuleDescriptor(
         ?.owner
         ?.compareTo(this.owner)
         ?: -1
+
+    override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$rootDirectory)"
+
 }
