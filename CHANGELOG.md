@@ -1,9 +1,13 @@
 ## [2023.2.1]
 
+### `External Dependencies` enhancements
+- Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)
+
 ### Fixes
 - NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
 
 ### Other
+- Updated Gradle plugin to 1.14.0 [#471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/471)
 - [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
 - [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
 - [Apache commons-io](https://commons.apache.org/proper/commons-io/): 2.11.0 -> 2.12.0
@@ -239,7 +243,7 @@
 ### Other
 - Added Project icon for Plugin repository [#302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/302)
 - Replaced Caffeine cache with IDEA user data [#304](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/304)
-- Updated to Gradle plugin to 1.13.3
+- Updated Gradle plugin to 1.13.3
 - Improved default XML values handling
 
 ## [2023.1.3]
@@ -308,7 +312,7 @@
 - Migrated Business Process Diagram generation to Kotlin
 - Migrated Module Dependencies Diagram generation to Kotlin
 - Updated to Kotlin 1.8
-- Updated to Gradle plugin to 1.13.2
+- Updated Gradle plugin to 1.13.2
 - Removed custom `rt-ant` support, it did not work at all
 
 ## [2023.1.1]
