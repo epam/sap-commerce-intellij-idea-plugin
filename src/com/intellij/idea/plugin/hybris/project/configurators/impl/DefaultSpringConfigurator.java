@@ -22,9 +22,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
@@ -156,9 +154,6 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         @NotNull final Map<String, YModuleDescriptor> moduleDescriptorMap,
         @NotNull final YModuleDescriptor moduleDescriptor
     ) {
-        Validate.notNull(moduleDescriptorMap);
-        Validate.notNull(moduleDescriptor);
-
         processPropertiesFile(moduleDescriptorMap, moduleDescriptor);
         try {
             processWebXml(moduleDescriptorMap, moduleDescriptor);
@@ -223,7 +218,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Map<String, YModuleDescriptor> moduleDescriptorMap,
         final YModuleDescriptor moduleDescriptor
     ) {
-        final var files = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
+        if (!(moduleDescriptor instanceof final YBackofficeSubModuleDescriptor ySubModuleDescriptor)) return;
+        final var files = new File(ySubModuleDescriptor.getOwner().getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
             .listFiles((dir, name) -> name.endsWith("-backoffice-spring.xml"));
 
         if (files == null || files.length == 0) return;
@@ -236,6 +232,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final Map<String, YModuleDescriptor> moduleDescriptorMap,
         final YModuleDescriptor moduleDescriptor
     ) throws IOException, JDOMException {
+        if (!(moduleDescriptor instanceof YWebSubModuleDescriptor)) return;
         final File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
         if (!webXml.exists()) {
             return;
