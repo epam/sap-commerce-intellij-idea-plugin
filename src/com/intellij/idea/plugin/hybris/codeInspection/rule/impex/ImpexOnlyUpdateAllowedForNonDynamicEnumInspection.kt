@@ -42,6 +42,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 ?.fullHeaderType
                 ?.headerTypeName
                 ?.text
+                ?: return
 
             val meta = TSMetaModelAccess.getInstance(parameter.firstChild.project).findMetaEnumByName(typeName)
                 ?.takeUnless { it.isDynamic }
@@ -58,7 +59,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
 
             problemsHolder.registerProblem(
                 mode,
-                message("hybris.inspections.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, meta.name ?: typeName!!),
+                message("hybris.inspections.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, meta.name ?: typeName),
                 ProblemHighlightType.ERROR,
                 ImpexUpdateHeaderModeQuickFix(mode)
             )
