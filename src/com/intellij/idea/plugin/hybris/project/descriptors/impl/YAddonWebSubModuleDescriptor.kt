@@ -16,6 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.descriptors;
+package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-public enum ModuleDescriptorImportStatus {MANDATORY, UNUSED}
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractYSubModuleDescriptor
+import java.io.File
+
+class YAddonWebSubModuleDescriptor(
+    owner: YModuleDescriptor,
+    rootDirectory: File,
+) : AbstractYSubModuleDescriptor(owner, rootDirectory)

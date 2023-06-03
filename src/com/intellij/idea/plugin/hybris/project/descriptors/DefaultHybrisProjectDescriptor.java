@@ -211,7 +211,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isConfigModule(configDir)) {
             try {
-                final var configHybrisModuleDescriptor = ModuleDescriptorFactory.getInstance().createConfigDescriptor(
+                final var configHybrisModuleDescriptor = ModuleDescriptorFactory.INSTANCE.createConfigDescriptor(
                     configDir, platformHybrisModuleDescriptor.getRootProjectDescriptor(), configDir.getName()
                 );
                 LOG.info("Creating Overridden Config module in local.properties for " + configDir.getAbsolutePath());
@@ -428,11 +428,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.getGroupModules());
 
-        final ModuleDescriptorFactory moduleDescriptorFactory = ModuleDescriptorFactory.getInstance();
-
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                final ModuleDescriptor moduleDescriptor = moduleDescriptorFactory.createDescriptor(
+                final ModuleDescriptor moduleDescriptor = ModuleDescriptorFactory.INSTANCE.createDescriptor(
                     moduleRootDirectory, this
                 );
                 moduleDescriptors.add(moduleDescriptor);
@@ -534,8 +532,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         try {
-            final var rootDescriptor = ModuleDescriptorFactory.getInstance()
-                .createRootDescriptor(rootDirectory, this, rootDirectory.getName());
+            final var rootDescriptor = ModuleDescriptorFactory.INSTANCE.createRootDescriptor(rootDirectory, this, rootDirectory.getName());
             moduleDescriptors.add(rootDescriptor);
         } catch (HybrisConfigurationException e) {
             LOG.error("Can not import a module using path: " + pathsFailedToImport, e);
@@ -1069,8 +1066,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected Set<ModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
         Validate.notNull(project);
 
-        final ModuleDescriptorFactory moduleDescriptorFactory = ModuleDescriptorFactory.getInstance();
-
         final Set<ModuleDescriptor> existingModules = new HashSet<>();
 
         for (Module module : ModuleManager.getInstance(project).getModules()) {
@@ -1078,7 +1073,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 final VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
 
                 if (!ArrayUtils.isEmpty(contentRoots)) {
-                    existingModules.add(moduleDescriptorFactory.createDescriptor(
+                    existingModules.add(ModuleDescriptorFactory.INSTANCE.createDescriptor(
                         VfsUtil.virtualToIoFile(contentRoots[0]), this
                     ));
                 }

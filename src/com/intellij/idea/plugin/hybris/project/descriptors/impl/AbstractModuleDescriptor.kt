@@ -32,10 +32,9 @@ abstract class AbstractModuleDescriptor(
 ) : ModuleDescriptor {
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
 
-    override fun compareTo(other: ModuleDescriptor?) = other
-        ?.name
-        ?.compareTo(this.name, true)
-        ?: -1
+    override fun compareTo(other: ModuleDescriptor) = other
+        .name
+        .compareTo(this.name, true)
 
     override fun hashCode() = HashCodeBuilder(17, 37)
         .append(this.name)

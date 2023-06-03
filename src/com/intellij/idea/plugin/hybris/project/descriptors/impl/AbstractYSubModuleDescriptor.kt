@@ -17,19 +17,22 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
+import com.intellij.idea.plugin.hybris.project.descriptors.*
 import java.io.File
 
-abstract class YRegularModuleDescriptor protected constructor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    val extensionInfo: ExtensionInfo,
-    var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo.extension.name) {
+abstract class AbstractYSubModuleDescriptor(
+    override val owner: YModuleDescriptor,
+    override val rootDirectory: File,
+    override val name: String = owner.name + "." + rootDirectory.name,
+    override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
+    override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
+    override val springFileSet: Set<String> = mutableSetOf(),
+    override val dependenciesTree: Set<YModuleDescriptor> = mutableSetOf(),
+) : YSubModuleDescriptor {
 
-    var isInLocalExtensions = false
-    val metas = extensionInfo.extension.meta
-        .associate { it.key to it.value }
+    override fun compareTo(other: ModuleDescriptor) = other
+        .let { it as? YSubModuleDescriptor }
+        ?.owner
+        ?.compareTo(this.owner)
+        ?: -1
 }

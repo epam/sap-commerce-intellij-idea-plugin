@@ -424,8 +424,6 @@ object HybrisConstants {
     @JvmField
     val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/web.xml")
     @JvmField
-    val WEB_INF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
-    @JvmField
     val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/classes")
     @JvmField
     val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")

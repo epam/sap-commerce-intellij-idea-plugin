@@ -15,21 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
-import java.io.File
+package com.intellij.idea.plugin.hybris.project.descriptors
 
-abstract class YRegularModuleDescriptor protected constructor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    val extensionInfo: ExtensionInfo,
-    var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo.extension.name) {
+interface YSubModuleDescriptor : YModuleDescriptor {
 
-    var isInLocalExtensions = false
-    val metas = extensionInfo.extension.meta
-        .associate { it.key to it.value }
+    val owner: YModuleDescriptor
 }

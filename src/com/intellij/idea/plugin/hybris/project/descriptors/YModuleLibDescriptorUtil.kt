@@ -178,9 +178,7 @@ object YModuleLibDescriptorUtil {
                         libraryFile = File(
                             descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
                             HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfLib()
-                        ),
-                        exported = false,
-                        directoryWithClasses = false
+                        )
                     )
                 )
                 libs.add(
@@ -189,7 +187,6 @@ object YModuleLibDescriptorUtil {
                             descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
                             HybrisProjectSettingsComponent.getInstance(it).getBackofficeWebInfClasses()
                         ),
-                        exported = false,
                         directoryWithClasses = true
                     )
                 )
@@ -214,7 +211,6 @@ object YModuleLibDescriptorUtil {
                     libs.add(
                         JavaLibraryDescriptor(
                             libraryFile = File(it.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                            exported = false,
                             directoryWithClasses = true
                         )
                     )
@@ -233,7 +229,6 @@ object YModuleLibDescriptorUtil {
                 libs.add(
                     JavaLibraryDescriptor(
                         libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                        exported = false,
                         directoryWithClasses = true
                     )
                 )
@@ -242,7 +237,6 @@ object YModuleLibDescriptorUtil {
         libs.add(
             JavaLibraryDescriptor(
                 libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
-                exported = false,
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )
         )
@@ -263,7 +257,6 @@ object YModuleLibDescriptorUtil {
             libs.add(
                 JavaLibraryDescriptor(
                     libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
-                    exported = false,
                     directoryWithClasses = true
                 )
             )
@@ -282,7 +275,6 @@ object YModuleLibDescriptorUtil {
             JavaLibraryDescriptor(
                 libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
                 sourcesFile = File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY),
-                exported = false,
                 directoryWithClasses = true
             )
         )
@@ -345,8 +337,6 @@ object YModuleLibDescriptorUtil {
             .map {
                 JavaLibraryDescriptor(
                     libraryFile = File(it.rootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
-                    exported = false,
-                    directoryWithClasses = false
                 )
             }
         libs.addAll(backwardDependencies)
@@ -364,7 +354,6 @@ object YModuleLibDescriptorUtil {
         JavaLibraryDescriptor(
             libraryFile = getDbDriversDirectory(descriptor),
             exported = true,
-            directoryWithClasses = false
         )
     )
 

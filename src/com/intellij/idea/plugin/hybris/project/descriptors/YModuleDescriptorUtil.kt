@@ -175,18 +175,19 @@ object YModuleDescriptorUtil {
         return dependenciesSet
     }
 
-    fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor
-        .extensionInfo.extension.hmcmodule != null
+    fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension
+        .hmcmodule != null
 
     fun isHacAddon(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
 
     fun hasBackofficeModule(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && doesBackofficeDirectoryExist(descriptor)
+        && File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
+
+    fun hasWebModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension.webmodule != null
+        && File(descriptor.rootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
 
     private fun isMetaKeySetToTrue(descriptor: YRegularModuleDescriptor, metaKeyName: String) = descriptor.metas[metaKeyName]
-        ?.let { it == java.lang.Boolean.TRUE.toString() }
+        ?.let { "true".equals(it, true) }
         ?: false
 
-    private fun doesBackofficeDirectoryExist(descriptor: YRegularModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY)
-        .isDirectory
 }

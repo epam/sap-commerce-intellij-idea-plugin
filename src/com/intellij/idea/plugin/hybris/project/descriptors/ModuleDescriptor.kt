@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 import java.io.File
 
-interface ModuleDescriptor : Comparable<ModuleDescriptor?> {
+interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
     val rootDirectory: File
     val rootProjectDescriptor: HybrisProjectDescriptor
