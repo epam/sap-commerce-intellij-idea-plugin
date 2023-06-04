@@ -49,6 +49,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +73,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
@@ -692,7 +692,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private void buildDependencies(final YModuleDescriptor moduleDescriptor, final Map<String, YModuleDescriptor> yModuleDescriptors) {
         Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
 
-        if (isEmpty(requiredExtensionNames)) {
+        if (CollectionUtils.isEmpty(requiredExtensionNames)) {
             return;
         }
         requiredExtensionNames = requiredExtensionNames.stream()

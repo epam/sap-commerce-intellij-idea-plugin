@@ -61,12 +61,17 @@ object YModuleDescriptorUtil {
     fun isPreselected(descriptor: ModuleDescriptor) = when (descriptor) {
         is CCv2ModuleDescriptor,
         is YPlatformModuleDescriptor,
-        is YPlatformExtModuleDescriptor,
-        is YSubModuleDescriptor -> true
+        is YPlatformExtModuleDescriptor -> true
+
+        is YSubModuleDescriptor -> isPreselected(descriptor)
 
         is YConfigModuleDescriptor -> descriptor.isPreselected
         is YRegularModuleDescriptor -> descriptor.isInLocalExtensions
         else -> false
+    }
+
+    private fun isPreselected(descriptor: YSubModuleDescriptor): Boolean {
+        return isPreselected(descriptor.owner)
     }
 
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
