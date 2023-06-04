@@ -216,7 +216,7 @@ object YModuleLibDescriptorUtil {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-        val sourceFiles = HybrisConstants.SRC_DIR_NAMES
+        val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.rootDirectory, it) }
             .filter { it.isDirectory }
 
@@ -246,7 +246,8 @@ object YModuleLibDescriptorUtil {
             ?.takeIf { it.isNotEmpty() }
             ?: return
 
-        val sourceFiles = HybrisConstants.SRC_DIR_NAMES
+        val sourceDirNames = HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES
+        val sourceFiles = sourceDirNames
             .map { File(descriptor.rootDirectory, it) }
             .filter { it.isDirectory }
 
