@@ -26,17 +26,13 @@ abstract class AbstractYSubModuleDescriptor(
     override val name: String = owner.name + "." + rootDirectory.name,
     override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
-    override val springFileSet: Set<String> = mutableSetOf(),
-    override val dependenciesTree: Set<YModuleDescriptor> = mutableSetOf(),
     override val descriptorType: ModuleDescriptorType = owner.descriptorType,
     override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf()
-) : YSubModuleDescriptor {
-
-    override fun compareTo(other: ModuleDescriptor) = other
-        .let { it as? YSubModuleDescriptor }
-        ?.owner
-        ?.compareTo(this.owner)
-        ?: -1
+) : AbstractYModuleDescriptor(
+    moduleRootDirectory = rootDirectory,
+    rootProjectDescriptor = rootProjectDescriptor,
+    name = name
+), YSubModuleDescriptor {
 
     override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$rootDirectory)"
 

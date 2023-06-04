@@ -148,6 +148,9 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (yModuleDescriptor instanceof YPlatformExtModuleDescriptor) {
             return false;
         }
+        if (yModuleDescriptor instanceof YSubModuleDescriptor) {
+            return false;
+        }
 
         return super.isElementEnabled(yModuleDescriptor);
     }
