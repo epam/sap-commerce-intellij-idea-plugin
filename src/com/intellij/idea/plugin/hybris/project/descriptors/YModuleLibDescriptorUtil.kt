@@ -216,16 +216,18 @@ object YModuleLibDescriptorUtil {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-        for (srcDirName in HybrisConstants.SRC_DIR_NAMES) {
-            libs.add(
-                JavaLibraryDescriptor(
-                    libraryFile = File(descriptor.rootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
-                    sourcesFile = File(descriptor.rootDirectory, srcDirName),
-                    exported = true,
-                    directoryWithClasses = true
-                )
+        val sourceFiles = HybrisConstants.SRC_DIR_NAMES
+            .map { File(descriptor.rootDirectory, it) }
+            .filter { it.isDirectory }
+
+        libs.add(
+            JavaLibraryDescriptor(
+                libraryFile = File(descriptor.rootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                sourceFiles = sourceFiles,
+                exported = true,
+                directoryWithClasses = true
             )
-        }
+        )
         libs.add(
             JavaLibraryDescriptor(
                 libraryFile = File(descriptor.rootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
@@ -244,18 +246,19 @@ object YModuleLibDescriptorUtil {
             ?.takeIf { it.isNotEmpty() }
             ?: return
 
-        for (srcDirName in HybrisConstants.SRC_DIR_NAMES) {
-            val srcDir = File(descriptor.rootDirectory, srcDirName)
-            for (serverJar in serverJars) {
-                libs.add(
-                    JavaLibraryDescriptor(
-                        libraryFile = serverJar,
-                        sourcesFile = if (srcDir.isDirectory) srcDir else null,
-                        exported = true,
-                        directoryWithClasses = true
-                    )
+        val sourceFiles = HybrisConstants.SRC_DIR_NAMES
+            .map { File(descriptor.rootDirectory, it) }
+            .filter { it.isDirectory }
+
+        for (serverJar in serverJars) {
+            libs.add(
+                JavaLibraryDescriptor(
+                    libraryFile = serverJar,
+                    sourceFiles = sourceFiles,
+                    exported = true,
+                    directoryWithClasses = true
                 )
-            }
+            )
         }
     }
 

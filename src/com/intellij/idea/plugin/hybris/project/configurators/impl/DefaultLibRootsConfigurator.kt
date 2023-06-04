@@ -98,14 +98,10 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), OrderRootType.CLASSES)
 
-        var sourceDirAttached = false
-
-        javaLibraryDescriptor.sourcesFile
-            ?.let { VfsUtil.findFileByIoFile(it, true) }
-            ?.let {
-                libraryModifiableModel.addRoot(it, OrderRootType.SOURCES)
-                sourceDirAttached = true
-            }
+        val vfsSourceFiles = javaLibraryDescriptor.sourceFiles
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+        val sourceDirAttached = vfsSourceFiles.isNotEmpty()
+        vfsSourceFiles.forEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
         if (sourceCodeRoot != null
             && !sourceDirAttached
@@ -133,9 +129,9 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
 
-        javaLibraryDescriptor.sourcesFile
-            ?.let { VfsUtil.findFileByIoFile(it, true) }
-            ?.let { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
+        javaLibraryDescriptor.sourceFiles
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .forEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
         if (javaLibraryDescriptor.exported) {
             setLibraryEntryExported(modifiableRootModel, library)
