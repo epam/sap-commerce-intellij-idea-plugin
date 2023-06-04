@@ -53,8 +53,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         val extensionInfoName = psi.project.modules
             .find { it.name == psi.value }
             ?.let { EiSModelAccess.getExtensionInfo(it) }
-            ?.name
-            ?.xmlAttributeValue
+            ?.xmlTag
             ?: return emptyList()
 
         val marker = NavigationGutterIconBuilder
