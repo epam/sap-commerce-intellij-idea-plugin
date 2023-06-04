@@ -170,27 +170,27 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (item instanceof YPlatformExtModuleDescriptor) {
             return HybrisIcons.EXTENSION_EXT;
         }
-        if (item instanceof YOotbRegularModuleDescriptor) {
-            return HybrisIcons.EXTENSION_OOTB;
-        }
-        if (item instanceof YWebSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_WEB;
-        }
-        if (item instanceof YAcceleratorAddonSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_ADDON;
-        }
-        if (item instanceof YBackofficeSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_BACKOFFICE;
-        }
-        if (item instanceof YBackofficeSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_BACKOFFICE;
-        }
-        if (item instanceof YHacSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_HAC;
-        }
-        if (item instanceof YHmcSubModuleDescriptor) {
-            return HybrisIcons.EXTENSION_HMC;
-        }
+//        if (item instanceof YOotbRegularModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_OOTB;
+//        }
+//        if (item instanceof YWebSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_WEB;
+//        }
+//        if (item instanceof YAcceleratorAddonSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_ADDON;
+//        }
+//        if (item instanceof YBackofficeSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_BACKOFFICE;
+//        }
+//        if (item instanceof YBackofficeSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_BACKOFFICE;
+//        }
+//        if (item instanceof YHacSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_HAC;
+//        }
+//        if (item instanceof YHmcSubModuleDescriptor) {
+//            return HybrisIcons.EXTENSION_HMC;
+//        }
 
         return HybrisIcons.HYBRIS;
     }
