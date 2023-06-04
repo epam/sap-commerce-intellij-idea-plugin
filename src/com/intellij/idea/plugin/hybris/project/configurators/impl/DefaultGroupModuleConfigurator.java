@@ -165,6 +165,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor) {
+        if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
+            return getGroupPath(ySubModuleDescriptor.getOwner());
+        }
+
         if (moduleDescriptor instanceof CCv2ModuleDescriptor) {
             return groupCCv2;
         }
