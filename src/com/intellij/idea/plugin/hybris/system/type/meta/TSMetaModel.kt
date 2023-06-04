@@ -17,8 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
-import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.module.Module
 import com.intellij.psi.PsiFile
@@ -54,5 +57,5 @@ class TSMetaModel(
         myRelationsBySourceTypeName.clear()
     }
 
-    override fun toString() = "Module: ${module.name} | psi file: ${psiFile.name}"
+    override fun toString() = "Module: ${module.shortName()} | psi file: ${psiFile.name}"
 }

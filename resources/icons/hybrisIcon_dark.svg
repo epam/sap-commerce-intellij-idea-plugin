@@ -6,8 +6,8 @@
 		stroke-width:0px;
 		}
 		.y{
-		fill: rgb(225, 166, 63);
-		stroke: rgb(225, 166, 63);
+		fill: #389FD6;
+		stroke: #389FD6;
 		stroke-width:5px;
 		}
 	</style>

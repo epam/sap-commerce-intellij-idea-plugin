@@ -18,4 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.kotlin
 
+import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils
+import com.intellij.openapi.module.Module
+
 infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
+
+fun Module.shortName():String = ModuleUtils.getShortName(this)

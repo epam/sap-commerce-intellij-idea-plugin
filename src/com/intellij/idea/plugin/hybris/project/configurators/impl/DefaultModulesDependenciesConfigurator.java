@@ -91,6 +91,7 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final @NotNull Collection<Module> all,
         final @NotNull String name
     ) {
+        // TODO: use MAP instead...
         return all.stream()
                   .filter(module -> name.equalsIgnoreCase(module.getName()))
                   .findAny();

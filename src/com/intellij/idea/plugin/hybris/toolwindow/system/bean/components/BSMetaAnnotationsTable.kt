@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
@@ -58,7 +58,7 @@ class BSMetaAnnotationsTable private constructor(myProject: Project) :
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
+                valueProvider = { attr -> attr.module.shortName() }
             ),
             createColumn(
                 name = COLUMN_VALUE,

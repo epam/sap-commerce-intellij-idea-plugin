@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.view;
 import com.google.common.collect.Iterables;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode;
@@ -31,12 +30,10 @@ import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
@@ -50,7 +47,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -96,9 +92,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : children;
         }
 
-//        if (parent instanceof ProjectViewModuleGroupNode) {
-//            modifyIcons((ProjectViewModuleGroupNode) parent, children);
-//        }
+        if (parent instanceof ProjectViewModuleGroupNode) {
+            modifyIcons((ProjectViewModuleGroupNode) parent, children);
+        }
 
         if (parent instanceof ExternalLibrariesNode) {
             return this.modifyExternalLibrariesNodes(children);
@@ -115,55 +111,41 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         final ProjectViewModuleGroupNode parent,
         final Collection<AbstractTreeNode<?>> children
     ) {
-        if (parent.getValue() != null) {
-            final ModuleGroup moduleGroup = parent.getValue();
-            if (Arrays.equals(moduleGroup.getGroupPath(), commerceGroupName) ||
-                Arrays.equals(moduleGroup.getGroupPath(), platformGroupName)) {
+        final var moduleGroup = parent.getValue();
+        if (moduleGroup == null) return;
+
+        final var groupPath = moduleGroup.getGroupPath();
+        if (groupPath.length > 0) {
+            final var rootGroup = groupPath[0];
+
+            // TODO: improve
+            final var commerceGroupRootName = commerceGroupName.length > 0
+                ? commerceGroupName[0]
+                : "";
+            final var platformGroupRootName = platformGroupName.length > 0
+                ? platformGroupName[0]
+                : "";
+            final var ccv2GroupRootName = ccv2GroupName.length > 0
+                ? ccv2GroupName[0]
+                : "";
+
+            if (rootGroup.equalsIgnoreCase(platformGroupRootName)) {
+                parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ALTERNATIVE);
+            }
+
+            if (rootGroup.equalsIgnoreCase(commerceGroupRootName)) {
                 parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
             }
-            if (Arrays.equals(moduleGroup.getGroupPath(), ccv2GroupName)) {
+            if (rootGroup.equalsIgnoreCase(ccv2GroupRootName)) {
                 parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
             }
         }
-        final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-        children.stream()
-                .filter(PsiDirectoryNode.class::isInstance)
-                .filter(child -> child.getParent() == null)
-                .map(PsiDirectoryNode.class::cast)
-                .forEach(child -> {
-                    final VirtualFile vf = child.getVirtualFile();
-                    if (vf == null) {
-                        return;
-                    }
-                    final Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(vf);
-                    if (module == null) {
-                        return;
-                    }
-                    final ModuleDescriptorType type = settingsComponent.getModuleSettings(module).getDescriptorType();
-                    if (type == null) {
-                        return;
-                    }
-                    switch (type) {
-                        case PLATFORM:
-                        case EXT:
-                        case OOTB:
-                            parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
-                            final AbstractTreeNode superParent = parent.getParent();
-                            if (superParent != null) {
-                                superParent.getPresentation().setIcon(HybrisIcons.HYBRIS);
-                            }
-                            break;
-                        case CCV2:
-                            child.getPresentation().setIcon(HybrisIcons.MODULE_CCV2);
-                            break;
-                    }
-                });
     }
 
     protected boolean isCompactEmptyMiddleFoldersEnabled(@Nullable final NodeOptions settings) {
         return this.hybrisApplicationSettings.getHideEmptyMiddleFolders()
-               && (null != settings)
-               && settings.isHideEmptyMiddlePackages();
+            && (null != settings)
+            && settings.isHideEmptyMiddlePackages();
     }
 
     @NotNull
@@ -360,8 +342,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         Validate.notNull(file);
 
         return HybrisConstants.ADDON_SRC_DIRECTORY.equals(file.getName())
-               || HybrisConstants.CLASSES_DIRECTORY.equals(file.getName())
-               || HybrisConstants.TEST_CLASSES_DIRECTORY.equals(file.getName());
+            || HybrisConstants.CLASSES_DIRECTORY.equals(file.getName())
+            || HybrisConstants.TEST_CLASSES_DIRECTORY.equals(file.getName());
     }
 
     protected boolean isNotHybrisProject() {

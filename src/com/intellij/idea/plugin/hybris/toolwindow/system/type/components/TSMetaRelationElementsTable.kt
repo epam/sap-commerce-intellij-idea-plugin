@@ -18,13 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 private const val COLUMN_CUSTOM = "C"
 private const val COLUMN_ORDERED = "O"
@@ -72,7 +73,7 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
+                valueProvider = { attr -> attr.module.shortName() }
             ),
             createColumn(
                 name = COLUMN_OWNER,
@@ -104,6 +105,9 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
     }
 
     companion object {
+
+        @Serial
+        private const val serialVersionUID: Long = -3549248270797403106L
 
         fun getInstance(project: Project): TSMetaRelationElementsTable = with(TSMetaRelationElementsTable(project)) {
             init()

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.common.services.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -44,7 +45,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         if (modules.isEmpty()) return false
 
         val moduleNames = modules
-            .map { it.name }
+            .map { it.shortName() }
 
         val acceleratorNames = listOf("*cockpits", "*core", "*facades", "*storefront")
         if (matchAllModuleNames(acceleratorNames, moduleNames)) return true

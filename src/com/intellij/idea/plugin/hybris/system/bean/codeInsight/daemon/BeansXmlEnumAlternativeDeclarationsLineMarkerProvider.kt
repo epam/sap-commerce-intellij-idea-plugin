@@ -21,6 +21,7 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -58,7 +59,7 @@ class BeansXmlEnumAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLi
             ?.retrieveAllDoms()
             ?.filter { it != dom }
             ?.map { it.clazz }
-            ?.sortedBy { it.module?.name }
+            ?.sortedBy { it.module?.shortName() }
             ?.mapNotNull { it.xmlAttributeValue }
             ?.takeIf { it.isNotEmpty() }
             ?.let {

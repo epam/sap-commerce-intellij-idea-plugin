@@ -43,12 +43,6 @@ public final class PsiUtils {
     private PsiUtils() {
     }
 
-    public static String getModuleName(final Module module) {
-        final String name = module.getName();
-        final String[] names = name.split("\\.");
-        return names[names.length - 1];
-    }
-
     public static Module getModule(final @NotNull PsiFile file) {
         final VirtualFile vFile = file.getVirtualFile();
 

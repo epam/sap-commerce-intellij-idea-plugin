@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
@@ -52,7 +52,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> PsiUtils.getModuleName(attr.module) }
+                valueProvider = { attr -> attr.module.shortName() }
             ),
             createColumn(
                 name = COLUMN_VALUE,

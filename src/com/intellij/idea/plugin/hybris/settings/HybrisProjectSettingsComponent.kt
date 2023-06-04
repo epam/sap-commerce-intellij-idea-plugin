@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_VERSION_1905_0
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.Version
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
@@ -52,7 +53,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
-    fun getModuleSettings(module: Module): ModuleSettings = getModuleSettings(module.name)
+    fun getModuleSettings(module: Module): ModuleSettings = getModuleSettings(module.shortName())
     fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
         if (state.availableExtensions.isEmpty()) {
             synchronized(hybrisProjectSettings) {

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.execution.lineMarker
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.kotlin.shortName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
@@ -48,7 +49,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 
         val domManager = DomManager.getDomManager(xmlFile.project)
         val module = xmlFile.project.modules
-            .find { it.name == xmlAttributeValue.value }
+            .find { it.shortName() == xmlAttributeValue.value }
 
         if (module != null) return null
 
