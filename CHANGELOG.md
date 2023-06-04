@@ -5,9 +5,12 @@
 
 ### Fixes
 - NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
+- Add locale to JAVADOC_URL [#472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
 
 ### Other
+- Navigate to the extension tag, not `name` attribute [#475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/475)
 - Updated Gradle plugin to 1.14.0 [#471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/471)
+- Added priority for project root tag [#473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/473)
 - [Gradle](https://gradle.org/releases/): 8.1 -> 8.1.1
 - [jsoup](https://jsoup.org/): 1.15.4 -> 1.16.1
 - [Apache commons-io](https://commons.apache.org/proper/commons-io/): 2.11.0 -> 2.12.0
@@ -16,8 +19,6 @@
 - [Apache Solr Java client](https://solr.apache.org/): 8.8.2 -> 8.11.2
 - [Kotlin plugins for Gradle](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm): 1.8.20 -> 1.8.21
 - Added links for quick check of new versions availability
-- Add locale to JAVADOC_URL [#472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
-- Added priority for project root tag [#473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/473)
 
 ## [2023.2.0]
 
