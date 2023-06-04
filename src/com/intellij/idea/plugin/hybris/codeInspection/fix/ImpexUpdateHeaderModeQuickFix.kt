@@ -30,12 +30,12 @@ const val HEADER_MODE_UPDATE = "UPDATE"
 class ImpexUpdateHeaderModeQuickFix(
     private val headerMode: PsiElement,
     private val elementName: String,
-    private val text: String = message("hybris.inspections.fix.impex.UpdateHeaderMode.text", headerMode.firstChild.text, HEADER_MODE_UPDATE, elementName)
+    private val message: String = message("hybris.inspections.fix.impex.UpdateHeaderMode.text", headerMode.firstChild.text, HEADER_MODE_UPDATE, elementName)
 ) : LocalQuickFixOnPsiElement(headerMode) {
 
     override fun getFamilyName() = message("hybris.inspections.fix.impex.UpdateHeaderMode")
 
-    override fun getText() = text
+    override fun getText() = message
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
 
