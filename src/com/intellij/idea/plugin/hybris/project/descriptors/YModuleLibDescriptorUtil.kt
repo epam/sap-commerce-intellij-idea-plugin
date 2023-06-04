@@ -346,8 +346,8 @@ object YModuleLibDescriptorUtil {
         libs.add(
             JavaLibraryDescriptor(
                 libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                sourcesFile = if (attachSources) File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY)
-                else null,
+                sourceFiles = if (attachSources) listOf(File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY))
+                else emptyList(),
                 directoryWithClasses = true
             )
         )
