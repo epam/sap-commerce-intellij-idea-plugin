@@ -19,6 +19,8 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
+        <internalFileTemplate name="ImpEx File"/>
+
         <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
 
