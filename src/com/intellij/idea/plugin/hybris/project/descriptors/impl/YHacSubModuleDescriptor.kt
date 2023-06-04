@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractYSubModuleDescriptor
 import java.io.File
 
 class YHacSubModuleDescriptor(
     owner: YModuleDescriptor,
     rootDirectory: File,
+    override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
 ) : AbstractYSubModuleDescriptor(owner, rootDirectory)

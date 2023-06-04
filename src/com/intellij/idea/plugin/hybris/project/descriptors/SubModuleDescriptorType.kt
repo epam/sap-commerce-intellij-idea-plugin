@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 enum class SubModuleDescriptorType {
     WEB,
+    COMMON_WEB,
     ADDON,
     BACKOFFICE,
     HAC,

@@ -17,21 +17,21 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
+import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.facet.YFacetState
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
-import com.intellij.openapi.application.WriteAction
+import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
-import org.jetbrains.kotlin.idea.facet.KotlinFacet
-import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 
 /**
- * Kotlin Facets will be configured only if `kotlinnature` extension is available and
+ * Main [y] SAP Commerce Facet, acts as a holder for all Module specific configurations and settings.
  */
-class KotlinFacetConfigurator : FacetConfigurator {
+class YFacetConfigurator : FacetConfigurator {
 
     override fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
@@ -40,25 +40,23 @@ class KotlinFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        val hasKotlinDirectories = YModuleDescriptorUtil.hasKotlinDirectories(moduleDescriptor)
+        modifiableFacetModel.getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
+            ?.let { modifiableFacetModel.removeFacet(it) }
 
-        WriteAction.runAndWait<RuntimeException> {
-            // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
-            modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-                ?.takeUnless { hasKotlinDirectories }
-                ?.let { modifiableFacetModel.removeFacet(it) }
+        val facet = createFacet(javaModule)
+        val state = YFacetState(
+            name = moduleDescriptor.name,
+            readonly = moduleDescriptor.readonly,
+            moduleDescriptorType = moduleDescriptor.descriptorType,
+            subModuleDescriptorType = (moduleDescriptor as? YSubModuleDescriptor)?.subModuleDescriptorType
+        )
 
-            if (!hasKotlinDirectories) return@runAndWait
-            if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return@runAndWait
+        facet.configuration.loadState(state)
 
-            val facet = KotlinFacet.get(javaModule)
-                ?: createFacet(javaModule)
-
-            modifiableFacetModel.addFacet(facet)
-        }
+        modifiableFacetModel.addFacet(facet)
     }
 
-    private fun createFacet(javaModule: Module) = with(KotlinFacetType.INSTANCE) {
+    private fun createFacet(javaModule: Module) = with(FacetTypeRegistry.getInstance().findFacetType(HybrisConstants.Y_FACET_TYPE_ID)) {
         createFacet(
             javaModule,
             defaultFacetName,

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
+@Deprecated("Replaced with [y] Facet")
 data class ModuleSettings(
     var isReadonly: Boolean = false,
     var descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE

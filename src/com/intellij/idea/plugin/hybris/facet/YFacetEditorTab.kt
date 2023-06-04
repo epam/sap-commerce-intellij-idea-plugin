@@ -18,18 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.facet
 
-import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetEditorTab
-import com.intellij.facet.ui.FacetValidatorsManager
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
 
-class YFacetEditorTab(
-    val state: YFacetState,
-    editorContext: FacetEditorContext,
-    validatorsManager: FacetValidatorsManager
-) : FacetEditorTab() {
+class YFacetEditorTab(val state: YFacetState) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
     override fun isModified() = dialogPanel.isModified()
@@ -41,7 +35,7 @@ class YFacetEditorTab(
             row {
                 textField()
                     .enabled(false)
-                    .text(state.name ?: "")
+                    .text(state.name)
             }
             row {
                 checkBox("Readonly")

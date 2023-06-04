@@ -30,7 +30,8 @@ abstract class AbstractModuleDescriptor(
     override val rootProjectDescriptor: HybrisProjectDescriptor,
     override val name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
-    override var groupNames: Array<String> = emptyArray()
+    override var groupNames: Array<String> = emptyArray(),
+    override var readonly: Boolean = false,
 ) : ModuleDescriptor {
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
 

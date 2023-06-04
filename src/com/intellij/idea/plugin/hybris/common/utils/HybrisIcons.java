@@ -46,6 +46,7 @@ public final class HybrisIcons {
 
     public static final Icon HYBRIS = getIcon("/icons/hybrisIcon.svg");
     public static final Icon HYBRIS_ALTERNATIVE = getIcon("/icons/hybrisIconAlternative.svg");
+    public static final Icon HYBRIS_FACET = getIcon("/icons/yFacet.svg");
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg");
     public static final Icon COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitNG/widgets.svg");

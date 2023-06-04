@@ -21,4 +21,5 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 interface YSubModuleDescriptor : YModuleDescriptor {
 
     val owner: YModuleDescriptor
+    val subModuleDescriptorType: SubModuleDescriptorType
 }

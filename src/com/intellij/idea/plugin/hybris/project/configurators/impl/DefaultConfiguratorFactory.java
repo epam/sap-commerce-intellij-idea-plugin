@@ -36,11 +36,13 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public List<FacetConfigurator> getFacetConfigurators() {
+        final FacetConfigurator yFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator.class);
         final FacetConfigurator springFacetConfigurator = ApplicationManager.getApplication().getService(SpringFacetConfigurator.class);
         final FacetConfigurator kotlinFacetConfigurator = ApplicationManager.getApplication().getService(KotlinFacetConfigurator.class);
         final FacetConfigurator webFacetConfigurator = ApplicationManager.getApplication().getService(WebFacetConfigurator.class);
 
-        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(3);
+        final List<FacetConfigurator> facetConfigurators = new ArrayList<FacetConfigurator>(4);
+        facetConfigurators.add(yFacetConfigurator);
 
         if (null != springFacetConfigurator) {
             facetConfigurators.add(springFacetConfigurator);

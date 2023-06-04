@@ -33,6 +33,9 @@ class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
             || descriptorType === ModuleDescriptorType.EXT
         val readOnly = hasReadOnlySettings && isReadOnlyType
 
+        moduleDescriptor.readonly = readOnly
+
+        // TODO: drop this, will be replaced by Facet
         val moduleSettings = HybrisProjectSettingsComponent.getInstance(javaModule.project).getModuleSettings(javaModule)
         moduleSettings.descriptorType = descriptorType
         moduleSettings.isReadonly = readOnly

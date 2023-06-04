@@ -35,5 +35,8 @@ object ModuleUtils {
     }
 
     fun getShortName(module: Module) = module.name.substringAfterLast(".")
+    fun getSubmoduleShortName(module: Module) = module.name.split(".")
+        .takeLast(2)
+        .joinToString(".")
 
 }

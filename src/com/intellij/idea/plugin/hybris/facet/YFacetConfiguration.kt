@@ -25,14 +25,10 @@ import com.intellij.openapi.components.PersistentStateComponent
 
 class YFacetConfiguration : FacetConfiguration, PersistentStateComponent<YFacetState> {
 
-    private var state: YFacetState? = null
+    private var state: YFacetState = YFacetState()
 
-    override fun createEditorTabs(editorContext: FacetEditorContext, validatorsManager: FacetValidatorsManager) = getState()
-        ?.let { arrayOf(YFacetEditorTab(it, editorContext, validatorsManager)) }
-        ?: emptyArray()
-
+    override fun createEditorTabs(editorContext: FacetEditorContext, validatorsManager: FacetValidatorsManager) = arrayOf(YFacetEditorTab(getState()))
     override fun getState() = state
-
     override fun loadState(state: YFacetState) {
         this.state = state
     }

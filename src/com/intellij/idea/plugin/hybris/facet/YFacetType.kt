@@ -19,16 +19,17 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.Facet
 import com.intellij.facet.FacetType
-import com.intellij.facet.FacetTypeId
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import javax.swing.Icon
 
-class YFacetType : FacetType<YFacet, YFacetConfiguration>(FacetTypeId(FACET_ID), FACET_ID, FACET_NAME) {
+class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
 
-    override fun getIcon(): Icon = HybrisIcons.HYBRIS
-    override fun isSuitableModuleType(type: ModuleType<*>?) = true
+    override fun getIcon(): Icon = HybrisIcons.HYBRIS_FACET
+    override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType
     override fun createDefaultConfiguration() = YFacetConfiguration()
 
     override fun createFacet(
@@ -40,6 +41,6 @@ class YFacetType : FacetType<YFacet, YFacetConfiguration>(FacetTypeId(FACET_ID),
 
     companion object {
         const val FACET_ID = "SAP_COMMERCE_Y_FACET_ID"
-        const val FACET_NAME = "[y] Facet"
+        const val FACET_NAME = "SAP Commerce Cloud"
     }
 }

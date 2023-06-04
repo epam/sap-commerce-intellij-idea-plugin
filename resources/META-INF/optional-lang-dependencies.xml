@@ -67,6 +67,7 @@
         <!-- ####################################################################################################### -->
         
         <facetType implementation="com.intellij.idea.plugin.hybris.facet.YFacetType"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.YFacetConfigurator"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            CCv2 manifest.json                                           -->

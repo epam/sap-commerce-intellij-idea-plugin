@@ -53,6 +53,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
+    @Deprecated("Replaced with [y] Facet")
     fun getModuleSettings(module: Module): ModuleSettings = getModuleSettings(module.shortName())
     fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
         if (state.availableExtensions.isEmpty()) {

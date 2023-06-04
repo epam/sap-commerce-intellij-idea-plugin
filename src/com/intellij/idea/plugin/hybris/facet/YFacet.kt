@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.Facet
+import com.intellij.facet.FacetManager
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.module.Module
 import java.io.Serial
 
@@ -33,5 +35,10 @@ class YFacet(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -112372831447187023L
+
+        fun get(module: Module): YFacet? {
+            if (module.isDisposed) return null
+            return FacetManager.getInstance(module).getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
+        }
     }
 }

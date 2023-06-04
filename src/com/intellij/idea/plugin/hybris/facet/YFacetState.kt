@@ -20,11 +20,10 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
-import com.intellij.openapi.components.BaseState
 
-class YFacetState : BaseState() {
-    val name by string()
-    val readonly by property(false)
-    val moduleDescriptorType by enum(ModuleDescriptorType.NONE)
-    val subModuleDescriptorType by enum<SubModuleDescriptorType>()
-}
+class YFacetState(
+    val name: String = "",
+    val readonly: Boolean = false,
+    val moduleDescriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    val subModuleDescriptorType: SubModuleDescriptorType? = null,
+)

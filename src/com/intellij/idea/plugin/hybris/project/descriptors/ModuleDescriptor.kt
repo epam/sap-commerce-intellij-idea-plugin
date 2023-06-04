@@ -26,4 +26,5 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val rootProjectDescriptor: HybrisProjectDescriptor
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
+    var readonly: Boolean
 }

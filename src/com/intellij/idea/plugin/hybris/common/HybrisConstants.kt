@@ -17,6 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
+import com.intellij.facet.FacetTypeId
+import com.intellij.idea.plugin.hybris.facet.YFacet
+import com.intellij.idea.plugin.hybris.facet.YFacetType
 import com.intellij.openapi.util.io.FileUtilRt
 import java.io.File
 
@@ -45,6 +48,8 @@ object HybrisConstants {
             "cx-commerce-crm-integrations",
             "media-telco"
     )
+
+    val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
 

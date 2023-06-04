@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.view;
 
 import com.google.common.collect.Iterables;
+import com.intellij.facet.Facet;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
@@ -30,6 +31,9 @@ import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.facet.YFacet;
+import com.intellij.idea.plugin.hybris.facet.YFacetConfiguration;
+import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -49,6 +53,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
@@ -86,25 +92,50 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             return children;
         }
 
+        final var newChildren = removeSubmodules(parent, children);
+
         if (parent instanceof JunkProjectViewNode) {
             return this.isCompactEmptyMiddleFoldersEnabled(settings)
-                ? this.compactEmptyMiddlePackages(parent, children)
-                : children;
+                ? this.compactEmptyMiddlePackages(parent, newChildren)
+                : newChildren;
         }
 
         if (parent instanceof ProjectViewModuleGroupNode) {
-            modifyIcons((ProjectViewModuleGroupNode) parent, children);
+            modifyIcons((ProjectViewModuleGroupNode) parent, newChildren);
         }
 
         if (parent instanceof ExternalLibrariesNode) {
-            return this.modifyExternalLibrariesNodes(children);
+            return this.modifyExternalLibrariesNodes(newChildren);
         }
 
-        final Collection<AbstractTreeNode<?>> childrenWithProcessedJunkFiles = this.processJunkFiles(children, settings);
+        final Collection<AbstractTreeNode<?>> childrenWithProcessedJunkFiles = this.processJunkFiles(newChildren, settings);
 
         return this.isCompactEmptyMiddleFoldersEnabled(settings)
             ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
             : childrenWithProcessedJunkFiles;
+    }
+
+    private Collection<AbstractTreeNode<?>> removeSubmodules(final AbstractTreeNode<?> parent, final Collection<AbstractTreeNode<?>> children) {
+        return children.stream()
+            .filter(it -> isNodeVisible(parent, it))
+            .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private boolean isNodeVisible(final AbstractTreeNode<?> parent, final AbstractTreeNode<?> node) {
+        if (node instanceof final PsiDirectoryNode directoryNode) {
+            final var vf = directoryNode.getVirtualFile();
+            if (vf == null) return true;
+            final var module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(vf);
+            if (module == null) return true;
+
+            return Optional.ofNullable(YFacet.Companion.get(module))
+                .map(Facet::getConfiguration)
+                .map(YFacetConfiguration::getState)
+                .filter(it -> it.getSubModuleDescriptorType() == null || ModuleUtils.INSTANCE.getSubmoduleShortName(module).startsWith(parent.getName() + '.'))
+                .isPresent();
+        } else {
+            return true;
+        }
     }
 
     private void modifyIcons(
@@ -118,7 +149,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         if (groupPath.length > 0) {
             final var rootGroup = groupPath[0];
 
-            // TODO: improve
+            // TODO: improve with Kotlin...
             final var commerceGroupRootName = commerceGroupName.length > 0
                 ? commerceGroupName[0]
                 : "";

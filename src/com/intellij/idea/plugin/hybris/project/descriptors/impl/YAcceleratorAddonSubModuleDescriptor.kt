@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
@@ -26,4 +27,5 @@ class YAcceleratorAddonSubModuleDescriptor(
     owner: YModuleDescriptor,
     rootDirectory: File,
     override val name: String = owner.name + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY,
+    override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, rootDirectory)
