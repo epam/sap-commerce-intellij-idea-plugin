@@ -349,6 +349,7 @@ object YModuleLibDescriptorUtil {
                 libraryFile = File(descriptor.rootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
                 sourceFiles = if (attachSources) listOf(File(descriptor.rootDirectory, HybrisConstants.WEB_SRC_DIRECTORY))
                 else emptyList(),
+                exported = true,
                 directoryWithClasses = true
             )
         )

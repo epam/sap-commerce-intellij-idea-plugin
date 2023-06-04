@@ -67,8 +67,8 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_PLATFORM = getIcon("/icons/extension/platform.svg");
     public static final Icon EXTENSION_EXT = getIcon("/icons/extension/ext.svg");
     public static final Icon EXTENSION_OOTB = getIcon("/icons/extension/ootb.svg");
-    public static final Icon EXTENSION_WEB = HYBRIS;
-    public static final Icon EXTENSION_ADDON = HYBRIS;
+    public static final Icon EXTENSION_WEB = AllIcons.Nodes.WebFolder;
+    public static final Icon EXTENSION_ADDON = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_BACKOFFICE = HYBRIS;
     public static final Icon EXTENSION_HMC = HYBRIS;
     public static final Icon EXTENSION_HAC = HYBRIS;

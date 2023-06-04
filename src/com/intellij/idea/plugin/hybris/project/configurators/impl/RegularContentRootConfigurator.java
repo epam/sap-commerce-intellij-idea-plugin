@@ -84,7 +84,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             configureRoots(ySubModuleDescriptor, contentEntry);
         }
         if (moduleDescriptor instanceof final YBackofficeSubModuleDescriptor ySubModuleDescriptor) {
-            configureBackOfficeRoots(ySubModuleDescriptor, contentEntry, dirsToIgnore);
+            configureRoots(ySubModuleDescriptor, contentEntry, dirsToIgnore);
         }
 
         configurePlatformRoots(moduleDescriptor, contentEntry);
@@ -231,7 +231,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 //        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
     }
 
-    protected void configureBackOfficeRoots(
+    protected void configureRoots(
         @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore

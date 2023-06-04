@@ -67,7 +67,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     }
 
     @Override
-    protected void configureBackOfficeRoots(
+    protected void configureRoots(
         @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
