@@ -19,23 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface GroupModuleConfigurator {
 
-    void findDependencyModules(@NotNull List<ModuleDescriptor> modulesChosenForImport);
+    void processDependencyModules(@NotNull List<ModuleDescriptor> modulesChosenForImport);
 
-    void configure(
-        @NotNull final ModifiableModuleModel modifiableModuleModel,
-        @NotNull final Module module,
-        @NotNull final ModuleDescriptor moduleDescriptor
-    );
-
-    @Nullable
-    String[] getGroupName(@NotNull ModuleDescriptor moduleDescriptor);
 }

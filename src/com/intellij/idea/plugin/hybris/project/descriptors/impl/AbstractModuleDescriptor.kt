@@ -17,7 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.*
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import java.io.File
@@ -26,7 +29,8 @@ abstract class AbstractModuleDescriptor(
     override val rootDirectory: File,
     override val rootProjectDescriptor: HybrisProjectDescriptor,
     override val name: String,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    override var groupNames: Array<String> = emptyArray()
 ) : ModuleDescriptor {
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
 
@@ -61,6 +65,5 @@ abstract class AbstractModuleDescriptor(
         "{" +
         "name=$name, " +
         "moduleRootDirectory=$rootDirectory, " +
-        "moduleFile=${YModuleDescriptorUtil.getIdeaModuleFile(this)}" +
         "}"
 }

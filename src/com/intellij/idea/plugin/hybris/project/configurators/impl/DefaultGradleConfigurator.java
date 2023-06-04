@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.ModuleSettings;
 import com.intellij.openapi.application.ApplicationManager;
@@ -33,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.gradle.service.project.open.GradleProjectImportUtil;
 
 import java.util.List;
-import java.util.Map;
 
 public class DefaultGradleConfigurator implements GradleConfigurator {
 
@@ -41,8 +40,7 @@ public class DefaultGradleConfigurator implements GradleConfigurator {
     public void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<GradleModuleDescriptor> gradleModules,
-        @NotNull final Map<String, String[]> gradleRootGroupMapping
+        @NotNull final List<GradleModuleDescriptor> gradleModules
     ) {
         if (gradleModules.isEmpty()) {
             return;

@@ -39,7 +39,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDes
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils;
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -92,7 +91,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
@@ -156,11 +157,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText(message("hybris.project.import.spring"));
         springConfigurator.findSpringConfiguration(allModules);
-        groupModuleConfigurator.findDependencyModules(allModules);
+        indicator.setText2(message("hybris.project.import.module.groups"));
+        groupModuleConfigurator.processDependencyModules(allModules);
+        indicator.setText2("");
         int counter = 0;
 
         for (ModuleDescriptor moduleDescriptor : allModules) {
-            final Module javaModule = createJavaModule(indicator, rootProjectModifiableModel, moduleDescriptor, groupModuleConfigurator);
+            final Module javaModule = createJavaModule(indicator, rootProjectModifiableModel, moduleDescriptor);
             modules.add(javaModule);
             counter++;
 
@@ -205,7 +208,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         configureJavaCompiler(indicator, cache);
         configureKotlinCompiler(indicator, cache);
-        configureEclipseModules(indicator, groupModuleConfigurator);
+        configureEclipseModules(indicator);
         configureGradleModules(indicator, groupModuleConfigurator);
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
@@ -264,8 +267,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Module createJavaModule(
         final @NotNull ProgressIndicator indicator,
         final ModifiableModuleModel rootProjectModifiableModel,
-        final ModuleDescriptor moduleDescriptor,
-        final GroupModuleConfigurator groupModuleConfigurator) {
+        final ModuleDescriptor moduleDescriptor) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
@@ -294,9 +296,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText2(message("hybris.project.import.module.javadoc"));
         configuratorFactory.getJavadocModuleConfigurator().configure(modifiableRootModel, moduleDescriptor, indicator);
-
-        indicator.setText2(message("hybris.project.import.module.groups"));
-        groupModuleConfigurator.configure(rootProjectModifiableModel, javaModule, moduleDescriptor);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
@@ -332,7 +331,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
     }
 
-    private void configureEclipseModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
+    private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {
         final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
 
         if (eclipseConfigurator == null) return;
@@ -347,8 +346,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 .map(EclipseModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!eclipseModules.isEmpty()) {
-                Map<String, String[]> eclipseGroupMapping = ModuleGroupUtils.fetchGroupMapping(groupModuleConfigurator, eclipseModules);
-                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules, eclipseGroupMapping);
+                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules);
             }
         } catch (Exception e) {
             LOG.error("Can not import Eclipse modules due to an error.", e);
@@ -370,8 +368,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 .map(GradleModuleDescriptor.class::cast)
                 .collect(Collectors.toList());
             if (!gradleModules.isEmpty()) {
-                final Map<String, String[]> gradleRootGroupMapping = ModuleGroupUtils.fetchGroupMapping(groupModuleConfigurator, gradleModules);
-                gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules, gradleRootGroupMapping);
+                gradleConfigurator.configure(hybrisProjectDescriptor, project, gradleModules);
             }
         } catch (Exception e) {
             LOG.error("Can not import Gradle modules due to an error.", e);

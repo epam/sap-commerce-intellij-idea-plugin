@@ -18,21 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 
 public interface EclipseConfigurator {
 
     void configure(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules,
-        @Nullable final Map<String,String[]> eclipseGroupMapping
+        @NotNull final List<EclipseModuleDescriptor> eclipseModules
     );
 }

@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
@@ -47,12 +47,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static com.intellij.idea.plugin.hybris.project.utils.ModuleGroupUtils.fetchGroupMapping;
 
 public class DefaultMavenConfigurator implements MavenConfigurator {
 
@@ -138,8 +135,6 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
                 if (!project.isDisposed()) {
                     moveMavenModulesToCorrectGroup(
                         getProject(),
-                        getMavenModules(),
-                        getConfiguratorFactory(),
                         getPomList(),
                         importedProjects,
                         newModules
@@ -179,8 +174,6 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
 
     private static void moveMavenModulesToCorrectGroup(
         final @NotNull Project project,
-        final @NotNull List<MavenModuleDescriptor> mavenModules,
-        final @NotNull ConfiguratorFactory configuratorFactory,
         final List<VirtualFile> pomList,
         final Collection<MavenProject> importedProjects,
         final List<Module> newModules
@@ -207,20 +200,15 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             )
             .collect(Collectors.toList());
 
-        final Map<String, String[]> mavenGroupMapping = fetchGroupMapping(
-            configuratorFactory.getGroupModuleConfigurator(),
-            mavenModules
-        );
-        updateModuleSettings(project, newRootModules, mavenGroupMapping);
+        updateModuleSettings(project, newRootModules);
     }
 
     private static void updateModuleSettings(
         final @NotNull Project project,
-        final @NotNull List<Module> mavenModules,
-        final @NotNull Map<String, String[]> mavenGroupMapping
+        final @NotNull List<Module> mavenModules
     ) {
         final ModifiableModuleModel modifiableModuleModel = ReadAction.compute(
-            () -> getModifiableModuleModel(project, mavenModules, mavenGroupMapping)
+            () -> getModifiableModuleModel(project, mavenModules)
         );
         ApplicationManager.getApplication().invokeAndWait(() -> WriteAction.run(modifiableModuleModel::commit));
     }
@@ -228,8 +216,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     @NotNull
     private static ModifiableModuleModel getModifiableModuleModel(
         final Project project,
-        final List<Module> mavenModules,
-        final Map<String, String[]> mavenGroupMapping
+        final List<Module> mavenModules
     ) {
         final var model = ModuleManager.getInstance(project).getModifiableModel();
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);

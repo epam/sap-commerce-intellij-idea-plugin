@@ -96,9 +96,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : children;
         }
 
-        if (parent instanceof ProjectViewModuleGroupNode) {
-            modifyIcons((ProjectViewModuleGroupNode) parent, children);
-        }
+//        if (parent instanceof ProjectViewModuleGroupNode) {
+//            modifyIcons((ProjectViewModuleGroupNode) parent, children);
+//        }
 
         if (parent instanceof ExternalLibrariesNode) {
             return this.modifyExternalLibrariesNodes(children);

@@ -48,6 +48,10 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         when (descriptorType) {
             ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
             ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.EXTENSION_CONFIG)
+            ModuleDescriptorType.CUSTOM -> data.setIcon(HybrisIcons.EXTENSION_CUSTOM)
+            ModuleDescriptorType.EXT -> data.setIcon(HybrisIcons.EXTENSION_EXT)
+            ModuleDescriptorType.OOTB -> data.setIcon(HybrisIcons.EXTENSION_OOTB)
+            ModuleDescriptorType.PLATFORM -> data.setIcon(HybrisIcons.EXTENSION_PLATFORM)
             else -> if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.name && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
                 data.setIcon(KotlinIcons.SMALL_LOGO)
             }

@@ -25,6 +25,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.extensions.ExtensionPoint;
 import com.intellij.openapi.extensions.ExtensionsArea;
 
+// TODO: remove this, free-Plugin is NOT extendible
 public final class ConfiguratorFactoryProvider {
 
     private ConfiguratorFactoryProvider() {

@@ -21,6 +21,7 @@ import java.io.File
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val name: String
+    var groupNames: Array<String>
     val rootDirectory: File
     val rootProjectDescriptor: HybrisProjectDescriptor
     var importStatus: ModuleDescriptorImportStatus

@@ -77,9 +77,12 @@ object YModuleDescriptorUtil {
     fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
         || File(descriptor.rootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
-    fun getIdeaModuleFile(descriptor: ModuleDescriptor) = descriptor.rootProjectDescriptor.modulesFilesDirectory
-        ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-        ?: File(descriptor.rootDirectory, descriptor.name + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+    fun getIdeaModuleFile(descriptor: ModuleDescriptor): File {
+        val futureModuleName = descriptor.groupNames.joinToString(separator = ".", postfix = ".") + descriptor.name
+        return descriptor.rootProjectDescriptor.modulesFilesDirectory
+            ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+            ?: File(descriptor.rootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+    }
 
     fun getRelativePath(descriptor: ModuleDescriptor): String {
         val moduleRootDir: File = descriptor.rootDirectory
@@ -156,7 +159,7 @@ object YModuleDescriptorUtil {
         return setOf(descriptor.owner.name) + webNames
     }
 
-    private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String>{
+    private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String> {
 //        return getRequiredExtensionNames(descriptor.owner)
         return setOf(descriptor.owner.name)
     }
