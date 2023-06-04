@@ -100,6 +100,13 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 return o1custom ? -1 : 1;
             }
 
+            // de-boost mandatory Platform extensions
+            final boolean o1ext = o1 instanceof YPlatformExtModuleDescriptor || o1 instanceof YPlatformModuleDescriptor;
+            final boolean o2ext = o2 instanceof YPlatformExtModuleDescriptor || o2 instanceof YPlatformModuleDescriptor;
+            if (o1ext ^ o2ext) {
+                return o2ext ? -1 : 1;
+            }
+
             final boolean o1selected = o1.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o1);
             final boolean o2selected = o2.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o2);
             if (o1selected ^ o2selected) {
