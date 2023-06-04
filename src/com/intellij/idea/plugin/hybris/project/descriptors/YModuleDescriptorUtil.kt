@@ -95,7 +95,7 @@ object YModuleDescriptorUtil {
         is YPlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
 //        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
-//        is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
 //        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
@@ -135,7 +135,7 @@ object YModuleDescriptorUtil {
 
         val webNames = ownerRequiredExtensionNames
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
-        return ownerRequiredExtensionNames + webNames
+        return setOf(descriptor.owner.name) + webNames
     }
 
     private fun getRequiredExtensionNames(descriptor: YBackofficeSubModuleDescriptor): Set<String> {
@@ -151,9 +151,9 @@ object YModuleDescriptorUtil {
 
         val webNames = ownerRequiredExtensionNames
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
-        val addonsNames = ownerRequiredExtensionNames
-            .map { it + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY }
-        return ownerRequiredExtensionNames + webNames + addonsNames
+//        val addonsNames = ownerRequiredExtensionNames
+//            .map { it + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY }
+        return setOf(descriptor.owner.name) + webNames
     }
 
     private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String>{
