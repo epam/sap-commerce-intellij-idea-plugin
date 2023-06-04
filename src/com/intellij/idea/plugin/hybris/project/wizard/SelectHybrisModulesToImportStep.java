@@ -23,10 +23,7 @@ import com.intellij.ide.util.ElementsChooser;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.ui.table.JBTable;
@@ -162,10 +159,37 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
             return AllIcons.Actions.Cancel;
         }
         if (item instanceof YCustomRegularModuleDescriptor) {
-            return AllIcons.Nodes.JavaModule;
+            return HybrisIcons.EXTENSION_CUSTOM;
         }
         if (item instanceof YConfigModuleDescriptor) {
-            return AllIcons.Nodes.Module;
+            return HybrisIcons.EXTENSION_CONFIG;
+        }
+        if (item instanceof YPlatformModuleDescriptor) {
+            return HybrisIcons.EXTENSION_PLATFORM;
+        }
+        if (item instanceof YPlatformExtModuleDescriptor) {
+            return HybrisIcons.EXTENSION_EXT;
+        }
+        if (item instanceof YOotbRegularModuleDescriptor) {
+            return HybrisIcons.EXTENSION_OOTB;
+        }
+        if (item instanceof YWebSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_WEB;
+        }
+        if (item instanceof YAcceleratorAddonSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_ADDON;
+        }
+        if (item instanceof YBackofficeSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_BACKOFFICE;
+        }
+        if (item instanceof YBackofficeSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_BACKOFFICE;
+        }
+        if (item instanceof YHacSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_HAC;
+        }
+        if (item instanceof YHmcSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_HMC;
         }
 
         return HybrisIcons.HYBRIS;

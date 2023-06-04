@@ -89,9 +89,9 @@ object YModuleDescriptorUtil {
     fun getRequiredExtensionNames(descriptor: ModuleDescriptor) = when (descriptor) {
         is YPlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
-        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
-        is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
-        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+//        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+//        is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+//        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
     }
@@ -116,11 +116,9 @@ object YModuleDescriptorUtil {
 
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames(descriptor))
 
-        // TODO why here...
         if (hasHmcModule(descriptor)) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
         }
-        // TODO why here...
         if (hasBackofficeModule(descriptor)) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
         }
@@ -153,7 +151,10 @@ object YModuleDescriptorUtil {
         return ownerRequiredExtensionNames + webNames + addonsNames
     }
 
-    private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String> = getRequiredExtensionNames(descriptor.owner)
+    private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String>{
+//        return getRequiredExtensionNames(descriptor.owner)
+        return setOf(descriptor.owner.name)
+    }
 
     private fun getDefaultRequiredExtensionNames(descriptor: YRegularModuleDescriptor) = when (descriptor) {
         is YCoreExtModuleDescriptor -> emptySet()
