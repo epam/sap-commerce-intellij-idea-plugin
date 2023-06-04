@@ -94,21 +94,21 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 return o1dup ? -1 : 1;
             }
 
-            final boolean o1custom = o1 instanceof YCustomRegularModuleDescriptor || o1 instanceof YConfigModuleDescriptor;
-            final boolean o2custom = o2 instanceof YCustomRegularModuleDescriptor || o2 instanceof YConfigModuleDescriptor;
+            final boolean o1custom = isCustomDescriptor(o1);
+            final boolean o2custom = isCustomDescriptor(o2);
             if (o1custom ^ o2custom) {
                 return o1custom ? -1 : 1;
             }
 
             // de-boost mandatory Platform extensions
-            final boolean o1ext = o1 instanceof YPlatformExtModuleDescriptor || o1 instanceof YPlatformModuleDescriptor;
-            final boolean o2ext = o2 instanceof YPlatformExtModuleDescriptor || o2 instanceof YPlatformModuleDescriptor;
+            final boolean o1ext = isPlatformExtDescriptor(o1);
+            final boolean o2ext = isPlatformExtDescriptor(o2);
             if (o1ext ^ o2ext) {
                 return o2ext ? -1 : 1;
             }
 
-            final boolean o1selected = o1.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o1);
-            final boolean o2selected = o2.getImportStatus() == MANDATORY || YModuleDescriptorUtil.INSTANCE.isPreselected(o2);
+            final boolean o1selected = isMandatoryOrPreselected(o1);
+            final boolean o2selected = isMandatoryOrPreselected(o2);
             if (o1selected ^ o2selected) {
                 return o1selected ? -1 : 1;
             }
@@ -119,6 +119,22 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (fileChooser.getComponent() instanceof final JBTable table) {
             table.changeSelection(0, 0, false, false);
         }
+    }
+
+    private static boolean isMandatoryOrPreselected(final ModuleDescriptor descriptor) {
+        return descriptor.getImportStatus() == MANDATORY
+            || YModuleDescriptorUtil.INSTANCE.isPreselected(descriptor);
+    }
+
+    private static boolean isPlatformExtDescriptor(final ModuleDescriptor descriptor) {
+        return descriptor instanceof YPlatformExtModuleDescriptor
+            || descriptor instanceof YPlatformModuleDescriptor;
+    }
+
+    private static boolean isCustomDescriptor(final ModuleDescriptor descriptor) {
+        return descriptor instanceof YCustomRegularModuleDescriptor
+            || descriptor instanceof YConfigModuleDescriptor
+            || (descriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor && ySubModuleDescriptor.getOwner() instanceof YCustomRegularModuleDescriptor);
     }
 
     @Override
