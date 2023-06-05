@@ -23,13 +23,16 @@ import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetValidatorsManager
 import com.intellij.openapi.components.PersistentStateComponent
 
-class YFacetConfiguration : FacetConfiguration, PersistentStateComponent<YFacetState> {
+class YFacetConfiguration : FacetConfiguration, PersistentStateComponent<YFacetState?> {
 
-    private var state: YFacetState = YFacetState()
+    private var yState: YFacetState? = null
 
-    override fun createEditorTabs(editorContext: FacetEditorContext, validatorsManager: FacetValidatorsManager) = arrayOf(YFacetEditorTab(getState()))
-    override fun getState() = state
+    override fun createEditorTabs(editorContext: FacetEditorContext, validatorsManager: FacetValidatorsManager) = getState()
+        ?.let { arrayOf(YFacetEditorTab(it)) }
+        ?: emptyArray()
+
+    override fun getState() = yState
     override fun loadState(state: YFacetState) {
-        this.state = state
+        this.yState = state
     }
 }

@@ -22,8 +22,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 
 class YFacetState(
-    val name: String = "",
-    val readonly: Boolean = false,
-    val moduleDescriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
-    val subModuleDescriptorType: SubModuleDescriptorType? = null,
+    var name: String = "",
+    var readonly: Boolean = false,
+    var moduleDescriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    var subModuleDescriptorType: SubModuleDescriptorType? = null,
 )

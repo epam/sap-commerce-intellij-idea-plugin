@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -40,29 +41,27 @@ class YFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        modifiableFacetModel.getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
-            ?.let { modifiableFacetModel.removeFacet(it) }
+        WriteAction.runAndWait<RuntimeException> {
+            modifiableFacetModel.getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
+                ?.let { modifiableFacetModel.removeFacet(it) }
 
-        val facet = createFacet(javaModule)
-        val state = YFacetState(
-            name = moduleDescriptor.name,
-            readonly = moduleDescriptor.readonly,
-            moduleDescriptorType = moduleDescriptor.descriptorType,
-            subModuleDescriptorType = (moduleDescriptor as? YSubModuleDescriptor)?.subModuleDescriptorType
-        )
+            val facetType = FacetTypeRegistry.getInstance().findFacetType(HybrisConstants.Y_FACET_TYPE_ID)
+            val facet = facetType.createFacet(
+                javaModule,
+                facetType.defaultFacetName,
+                facetType.createDefaultConfiguration(),
+                null
+            )
+            val state = YFacetState(
+                name = moduleDescriptor.name,
+                readonly = moduleDescriptor.readonly,
+                moduleDescriptorType = moduleDescriptor.descriptorType,
+                subModuleDescriptorType = (moduleDescriptor as? YSubModuleDescriptor)?.subModuleDescriptorType,
+            )
+            facet.configuration.loadState(state)
 
-        facet.configuration.loadState(state)
-
-        modifiableFacetModel.addFacet(facet)
-    }
-
-    private fun createFacet(javaModule: Module) = with(FacetTypeRegistry.getInstance().findFacetType(HybrisConstants.Y_FACET_TYPE_ID)) {
-        createFacet(
-            javaModule,
-            defaultFacetName,
-            createDefaultConfiguration(),
-            null
-        )
+            modifiableFacetModel.addFacet(facet)
+        }
     }
 
 }
