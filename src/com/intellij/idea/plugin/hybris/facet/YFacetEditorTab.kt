@@ -32,7 +32,7 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
     override fun createComponent() = dialogPanel
 
     private val dialogPanel = panel {
-        group("[y] SAP Commerce Module") {
+        group("SAP Commerce descriptor") {
             row("Extension name:") {
                 label(state.name)
                     .bold()

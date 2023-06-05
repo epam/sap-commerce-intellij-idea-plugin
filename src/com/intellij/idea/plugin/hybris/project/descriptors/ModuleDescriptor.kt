@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors
 
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import java.io.File
 
 interface ModuleDescriptor : Comparable<ModuleDescriptor> {
@@ -27,4 +28,6 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
+
+    fun extensionDescriptor(): ExtensionDescriptor
 }

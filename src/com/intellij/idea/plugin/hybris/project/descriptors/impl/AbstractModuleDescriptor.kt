@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
@@ -61,6 +62,11 @@ abstract class AbstractModuleDescriptor(
             }
             ?: false
     }
+
+    override fun extensionDescriptor() = ExtensionDescriptor(
+        name = name,
+        type = descriptorType
+    )
 
     override fun toString() = javaClass.simpleName +
         "{" +

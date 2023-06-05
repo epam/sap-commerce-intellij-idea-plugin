@@ -5,7 +5,7 @@
 - Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`
 - Introduced new **SAP Commerce** module facet, which will contains all extension settings 
 - Module-type specific icons in the Project View 
-- Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard  
+- Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
 
 ### `External Dependencies` enhancements
 - Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)

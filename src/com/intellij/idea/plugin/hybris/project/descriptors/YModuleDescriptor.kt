@@ -24,6 +24,4 @@ interface YModuleDescriptor : ModuleDescriptor {
     val springFileSet: Set<String>
     val dependenciesTree: Set<YModuleDescriptor>
     var subModules: MutableSet<YSubModuleDescriptor>
-
-    fun extensionDescriptor(): ExtensionDescriptor
 }
