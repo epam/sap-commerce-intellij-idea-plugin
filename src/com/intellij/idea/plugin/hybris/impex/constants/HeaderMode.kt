@@ -15,23 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.constants
 
-package com.intellij.idea.plugin.hybris.impex.psi
-
-import com.intellij.idea.plugin.hybris.impex.constants.HeaderMode
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFileFactory
-import com.intellij.psi.util.childrenOfType
-
-object ImpExElementFactory {
-
-    fun createHeaderMode(project: Project, mode: HeaderMode) = createFile(project, "$mode Product;")
-        .childrenOfType<ImpexHeaderLine>()
-        .firstOrNull()
-        ?.anyHeaderMode
-        ?.firstChild
-
-    private fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
-        .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
+enum class HeaderMode {
+    INSERT,
+    INSERT_UPDATE,
+    UPDATE,
+    REMOVE
 }

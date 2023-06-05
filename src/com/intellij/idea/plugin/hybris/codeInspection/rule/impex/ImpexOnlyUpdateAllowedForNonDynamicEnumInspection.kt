@@ -25,6 +25,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexChangeHeaderModeQuickFix
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.constants.HeaderMode
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
@@ -53,7 +54,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 ?.anyHeaderMode
                 ?: return
 
-            val impexModeUpdate = HybrisConstants.IMPEX_MODE_UPDATE
+            val impexModeUpdate = HeaderMode.UPDATE.name
 
             val modeName = mode.text
                 ?.uppercase()
@@ -69,7 +70,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 ImpexChangeHeaderModeQuickFix(
                     headerMode = mode,
                     elementName = enumName,
-                    headerModeReplacement = impexModeUpdate)
+                    headerModeReplacement = HeaderMode.UPDATE)
             )
         }
     }
