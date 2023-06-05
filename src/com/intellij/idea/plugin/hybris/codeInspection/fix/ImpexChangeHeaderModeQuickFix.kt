@@ -31,10 +31,10 @@ class ImpexChangeHeaderModeQuickFix(
     headerMode: ImpexAnyHeaderMode,
     private val elementName: String,
     private val headerModeReplacement: HeaderMode,
-    private val message: String = message("hybris.inspections.fix.impex.UpdateHeaderMode.text", headerMode.firstChild, headerModeReplacement, elementName)
+    private val message: String = message("hybris.inspections.fix.impex.ChangeHeaderMode.text", headerMode.firstChild, headerModeReplacement, elementName)
 ) : LocalQuickFixOnPsiElement(headerMode) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.impex.UpdateHeaderMode")
+    override fun getFamilyName() = message("hybris.inspections.fix.impex.ChangeHeaderMode")
 
     override fun getText() = message
 
