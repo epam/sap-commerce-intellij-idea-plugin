@@ -65,6 +65,7 @@ object HybrisConstants {
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
+
     const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
     const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"
     const val SOLR_SEARCH_CONSOLE_TITLE = "[y] Solr search"
