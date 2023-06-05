@@ -41,6 +41,6 @@ class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACE
 
     companion object {
         const val FACET_ID = "SAP_COMMERCE_Y_FACET_ID"
-        const val FACET_NAME = "SAP Commerce Cloud"
+        const val FACET_NAME = "SAP Commerce"
     }
 }

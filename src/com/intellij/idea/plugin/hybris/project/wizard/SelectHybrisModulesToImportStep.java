@@ -187,6 +187,9 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (item instanceof YWebSubModuleDescriptor) {
             return HybrisIcons.EXTENSION_WEB;
         }
+        if (item instanceof YCommonWebSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_COMMON_WEB;
+        }
         if (item instanceof YAcceleratorAddonSubModuleDescriptor) {
             return HybrisIcons.EXTENSION_ADDON;
         }

@@ -19,42 +19,58 @@
 package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.ui.FacetEditorTab
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
-import com.intellij.ui.dsl.builder.text
 
 class YFacetEditorTab(val state: YFacetState) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
     override fun isModified() = dialogPanel.isModified()
-
     override fun createComponent() = dialogPanel
 
     private val dialogPanel = panel {
-        group {
-            row {
-                textField()
-                    .enabled(false)
-                    .text(state.name)
+        group("[y] SAP Commerce Module") {
+            row("Extension name:") {
+                label(state.name)
             }
-            row {
-                checkBox("Readonly")
-                    .enabled(false)
-                    .selected(state.readonly)
-            }
-            row {
-                textField()
-                    .enabled(false)
-                    .text(state.moduleDescriptorType.name)
+            row("Descriptor type:") {
+                icon(
+                    when (state.moduleDescriptorType) {
+                        ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                        ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
+                        ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                        ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                        ModuleDescriptorType.CONFIG -> HybrisIcons.EXTENSION_CONFIG
+                        else -> HybrisIcons.HYBRIS
+                    }
+                )
+                label(state.moduleDescriptorType.name)
+                    .bold()
             }
             state.subModuleDescriptorType
                 ?.let {
-                    row {
-                        textField()
-                            .enabled(false)
-                            .text(it.name)
+                    row("Sub-module type:") {
+                        icon(
+                            when (it) {
+                                SubModuleDescriptorType.HAC -> HybrisIcons.EXTENSION_HAC
+                                SubModuleDescriptorType.HMC -> HybrisIcons.EXTENSION_HMC
+                                SubModuleDescriptorType.BACKOFFICE -> HybrisIcons.EXTENSION_BACKOFFICE
+                                SubModuleDescriptorType.ADDON -> HybrisIcons.EXTENSION_ADDON
+                                SubModuleDescriptorType.COMMON_WEB -> HybrisIcons.EXTENSION_COMMON_WEB
+                                SubModuleDescriptorType.WEB -> HybrisIcons.EXTENSION_WEB
+                            }
+                        )
+                        label(it.name)
                     }
                 }
+            row("Read only:") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.readonly)
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ class ManifestCommerceJsonSchemaFileProvider(val project: Project) : JsonSchemaF
             && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == file.parent?.name
             && HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 
-    override fun getName() = "SAP Commerce Cloud Manifest"
+    override fun getName() = "SAP Commerce Manifest"
     override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-commerce.schema.json")
     override fun getSchemaType() = SchemaType.embeddedSchema
 
