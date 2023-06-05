@@ -21,16 +21,16 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpExElementFactory
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderMode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
-const val HEADER_MODE_UPDATE = "UPDATE"
-
 class ImpexUpdateHeaderModeQuickFix(
-    private val headerMode: PsiElement,
+    private val headerMode: ImpexAnyHeaderMode,
     private val elementName: String,
-    private val message: String = message("hybris.inspections.fix.impex.UpdateHeaderMode.text", headerMode.firstChild.text, HEADER_MODE_UPDATE, elementName)
+    private val headerModeToUpdateWith: String,
+    private val message: String = message("hybris.inspections.fix.impex.UpdateHeaderMode.text", headerMode.firstChild.text, headerModeToUpdateWith, elementName)
 ) : LocalQuickFixOnPsiElement(headerMode) {
 
     override fun getFamilyName() = message("hybris.inspections.fix.impex.UpdateHeaderMode")
@@ -39,7 +39,7 @@ class ImpexUpdateHeaderModeQuickFix(
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
 
-        val headerModeUpdate = ImpExElementFactory.createIdentifier(project, HEADER_MODE_UPDATE)
+        val headerModeUpdate = ImpExElementFactory.createElement(project, headerModeToUpdateWith)
 
         headerMode.firstChild.replace(headerModeUpdate)
     }

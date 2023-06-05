@@ -59,6 +59,8 @@ object HybrisConstants {
     const val IMPEX_MONITOR_CONSOLE_TITLE = "[y] Monitor Console"
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
+    const val IMPEX_MODE_UPDATE = "UPDATE"
+
 
     const val GROOVY_CONSOLE_TITLE = "[y] Groovy Console"
     const val FLEXIBLE_SEARCH_CONSOLE_TITLE = "[y] FS Console"

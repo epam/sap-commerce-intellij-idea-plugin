@@ -23,6 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexUpdateHeaderModeQuickFix
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
@@ -30,8 +31,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-
-private const val HEADER_MODE_UPDATE = "UPDATE"
 
 class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -54,18 +53,23 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 ?.anyHeaderMode
                 ?: return
 
+            val impexModeUpdate = HybrisConstants.IMPEX_MODE_UPDATE
+
             val modeName = mode.text
                 ?.uppercase()
-                ?.takeUnless { it == HEADER_MODE_UPDATE }
+                ?.takeUnless { it == impexModeUpdate }
                 ?: return
 
             val enumName = meta.name ?: typeName
 
             problemsHolder.registerProblem(
                 mode,
-                message("hybris.inspections.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, enumName, HEADER_MODE_UPDATE),
+                message("hybris.inspections.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, enumName, impexModeUpdate),
                 ProblemHighlightType.ERROR,
-                ImpexUpdateHeaderModeQuickFix(mode, enumName)
+                ImpexUpdateHeaderModeQuickFix(
+                    headerMode = mode,
+                    elementName = enumName,
+                    headerModeToUpdateWith = impexModeUpdate)
             )
         }
     }
