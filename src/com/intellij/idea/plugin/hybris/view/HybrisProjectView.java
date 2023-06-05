@@ -132,8 +132,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 .map(Facet::getConfiguration)
                 .map(YFacetConfiguration::getState)
                 .filter(it -> it.getSubModuleType() != null
-                    || it.getName().endsWith('.' + vf.getName())
-                    || !ModuleUtils.INSTANCE.getSubmoduleShortName(module).startsWith(parent.getName() + '.')
+                    && it.getName().endsWith('.' + vf.getName())
+                    && !ModuleUtils.INSTANCE.getSubmoduleShortName(module).startsWith(parent.getName() + '.')
                 )
                 .isEmpty();
         } else {

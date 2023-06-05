@@ -240,11 +240,11 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
         final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
-        for (ModuleDescriptor yModuleDescriptor : allModules) {
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
-                moduleToImport.add(yModuleDescriptor);
-                yModuleDescriptor.setImportStatus(MANDATORY);
-                moduleToCheck.add(yModuleDescriptor);
+        for (ModuleDescriptor moduleDescriptor : allModules) {
+            if (YModuleDescriptorUtil.INSTANCE.isPreselected(moduleDescriptor)) {
+                moduleToImport.add(moduleDescriptor);
+                moduleDescriptor.setImportStatus(MANDATORY);
+                moduleToCheck.add(moduleDescriptor);
             }
         }
         resolveDependency(moduleToImport, moduleToCheck, MANDATORY);

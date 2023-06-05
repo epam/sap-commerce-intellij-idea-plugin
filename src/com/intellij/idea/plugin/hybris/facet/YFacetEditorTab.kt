@@ -32,27 +32,33 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
     override fun createComponent() = dialogPanel
 
     private val dialogPanel = panel {
-        group("SAP Commerce descriptor") {
-            row("Extension name:") {
-                label(state.name)
+        group("", false) {
+            row {
+                label("SAP Commerce descriptor")
                     .bold()
-            }
-            row("Descriptor type:") {
                 icon(
                     when (state.type) {
-                        ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
                         ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
+                        ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
                         ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
                         ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
                         ModuleDescriptorType.CONFIG -> HybrisIcons.EXTENSION_CONFIG
                         else -> HybrisIcons.HYBRIS
                     }
                 )
+            }
+        }
+        group("Extension details") {
+            row("Name:") {
+                label(state.name)
+                    .bold()
+            }
+            row("Type:") {
                 label(state.type.name)
             }
             state.subModuleType
                 ?.let {
-                    row("Sub-module type:") {
+                    row("Sub-type:") {
                         icon(
                             when (it) {
                                 SubModuleDescriptorType.HAC -> HybrisIcons.EXTENSION_HAC
@@ -66,11 +72,76 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                         label(it.name)
                     }
                 }
+        }
+        group("Settings") {
             row("Read only:") {
                 checkBox("")
                     .enabled(false)
                     .selected(state.readonly)
             }
+            row("Deprecated:") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.deprecated)
+            }
+            row("External dependencies:") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.useMaven)
+            }
+                .comment(
+                    """Represents <strong>usemaven</strong> flag of the <strong>extensioninfo.xml</strong> file.</br>
+                        If enabled, dependencies declared in the <strong>external-dependencies.xml</strong> will be retrieved during the build.
+                        """.trimIndent()
+                )
+            row("Template extension") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.extGenTemplateExtension)
+            }
+            row("ModuleGen name") {
+                label(state.moduleGenName ?: "")
+            }
+        }
+        group("Extensibility") {
+            row("Core module") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.coreModule)
+            }
+                .comment(
+                    """
+                        Configures a core module for the extension.<br>
+                        A core module consists of an items.xml file (and therefore allows to add new types to the system), a manager class, classes for the JaLo Layer and the ServiceLayer and JUnit test classes.<br>
+                        The following directories are required: /src, /resources, /testsrc.
+                    """.trimIndent()
+                )
+            row("Backoffice module") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.backofficeModule)
+            }
+                .comment(
+                    "If <strong>extensioninfo.xml</strong> has enabled meta <strong>backoffice-module</strong> " +
+                        "Backoffice will be available for customization via sub-module."
+                )
+            row("Web module") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.webModule)
+            }
+                .comment("Configures a web module for the extension. Required directory: <code>/web</code>.")
+            row("HAC module") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.hacModule)
+            }
+            row("HMC module") {
+                checkBox("")
+                    .enabled(false)
+                    .selected(state.hmcModule)
+            }
+                .comment("Configures an hMC module for the extension. Required directory: <code>/hmc</code>.")
         }
     }
 }
