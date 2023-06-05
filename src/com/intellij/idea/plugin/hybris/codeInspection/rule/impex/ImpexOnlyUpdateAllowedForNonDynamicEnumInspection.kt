@@ -22,7 +22,7 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexUpdateHeaderModeQuickFix
+import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexChangeHeaderModeQuickFix
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
@@ -66,10 +66,10 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 mode,
                 message("hybris.inspections.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, enumName, impexModeUpdate),
                 ProblemHighlightType.ERROR,
-                ImpexUpdateHeaderModeQuickFix(
+                ImpexChangeHeaderModeQuickFix(
                     headerMode = mode,
                     elementName = enumName,
-                    headerModeToUpdateWith = impexModeUpdate)
+                    headerModeReplacement = impexModeUpdate)
             )
         }
     }

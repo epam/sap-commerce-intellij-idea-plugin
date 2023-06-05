@@ -25,7 +25,7 @@ import com.intellij.psi.PsiFileFactory
 
 object ImpExElementFactory {
 
-    fun createElement(project: Project, name: String): PsiElement = createFile(project, name).firstChild
+    fun createHeaderMode(project: Project, name: String): PsiElement = createFile(project, name).firstChild
 
     private fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
