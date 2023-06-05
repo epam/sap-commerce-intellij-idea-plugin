@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
-import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import io.ktor.util.*
 import org.apache.commons.collections4.CollectionUtils
@@ -32,40 +31,14 @@ import java.util.*
 
 object YModuleDescriptorUtil {
 
-    // TODO: migrate it to new [y] Facet
-    fun getExtensionDescriptor(descriptor: ModuleDescriptor) = when (descriptor) {
-        is YRegularModuleDescriptor -> ExtensionDescriptor(
-            descriptor.name,
-            descriptor.descriptorType,
-            isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
-            isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
-            isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
-            isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
-            getRequiredExtensionNames(descriptor).contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT),
-            descriptor.metas.get(HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN),
-            descriptor.metas.get(HybrisConstants.EXTENSION_META_KEY_MODULE_GEN)
-        );
-        else -> ExtensionDescriptor(
-            descriptor.name,
-            descriptor.descriptorType,
-            backofficeModule = false,
-            hacModule = false,
-            deprecated = false,
-            extGenTemplateExtension = false,
-            addon = false,
-            classPathGen = null,
-            moduleGenName = null
-        )
-    }
-
     fun isPreselected(descriptor: ModuleDescriptor) = when (descriptor) {
         is CCv2ModuleDescriptor,
-        is YPlatformModuleDescriptor,
+        is PlatformModuleDescriptor,
         is YPlatformExtModuleDescriptor -> true
 
         is YSubModuleDescriptor -> isPreselected(descriptor)
 
-        is YConfigModuleDescriptor -> descriptor.isPreselected
+        is ConfigModuleDescriptor -> descriptor.isPreselected
         is YRegularModuleDescriptor -> descriptor.isInLocalExtensions
         else -> false
     }
@@ -74,18 +47,18 @@ object YModuleDescriptorUtil {
         return isPreselected(descriptor.owner)
     }
 
-    fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
-        || File(descriptor.rootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
+    fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
+        || File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
     fun getIdeaModuleFile(descriptor: ModuleDescriptor): File {
         val futureModuleName = descriptor.groupNames.joinToString(separator = ".", postfix = ".") + descriptor.name
         return descriptor.rootProjectDescriptor.modulesFilesDirectory
             ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
-            ?: File(descriptor.rootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+            ?: File(descriptor.moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
     fun getRelativePath(descriptor: ModuleDescriptor): String {
-        val moduleRootDir: File = descriptor.rootDirectory
+        val moduleRootDir: File = descriptor.moduleRootDirectory
         val projectRootDir: File = descriptor.rootProjectDescriptor.rootDirectory ?: return moduleRootDir.path
         val virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService::class.java)
 
@@ -94,8 +67,9 @@ object YModuleDescriptorUtil {
         } else moduleRootDir.path
     }
 
-    fun getRequiredExtensionNames(descriptor: ModuleDescriptor) = when (descriptor) {
-        is YPlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
+    fun getRequiredExtensionNames(descriptor: YModuleDescriptor) = when (descriptor) {
+        // TODO: build dependencies separately
+//        is PlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
 //        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
@@ -104,7 +78,7 @@ object YModuleDescriptorUtil {
         else -> emptySet()
     }
 
-    private fun getRequiredExtensionNames(descriptor: YPlatformModuleDescriptor) = File(descriptor.rootDirectory, HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME)
+    private fun getRequiredExtensionNames(descriptor: PlatformModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME)
         .takeIf { it.isDirectory }
         ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
         ?.map { it.name }
@@ -124,10 +98,10 @@ object YModuleDescriptorUtil {
 
         requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames(descriptor))
 
-        if (hasHmcModule(descriptor)) {
+        if (descriptor.hasHmcModule) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
         }
-        if (hasBackofficeModule(descriptor)) {
+        if (descriptor.hasBackofficeModule) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
         }
         return requiredExtensionNames.unmodifiable()
@@ -196,20 +170,20 @@ object YModuleDescriptorUtil {
     }
 
     // TODO: validate usage
-    fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension
-        .hmcmodule != null
+//    fun hasHmcModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension
+//        .hmcmodule != null
+//
+//    fun isHacAddon(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
+//
+//    // TODO: validate usage
+//    fun hasBackofficeModule(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
+//        && File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
 
-    fun isHacAddon(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
+//    fun hasWebModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension.webmodule != null
+//        && File(descriptor.rootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
 
-    // TODO: validate usage
-    fun hasBackofficeModule(descriptor: YRegularModuleDescriptor) = isMetaKeySetToTrue(descriptor, HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
-        && File(descriptor.rootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
-
-    fun hasWebModule(descriptor: YRegularModuleDescriptor) = descriptor.extensionInfo.extension.webmodule != null
-        && File(descriptor.rootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
-
-    private fun isMetaKeySetToTrue(descriptor: YRegularModuleDescriptor, metaKeyName: String) = descriptor.metas[metaKeyName]
-        ?.let { "true".equals(it, true) }
-        ?: false
+//    fun isMetaKeySetToTrue(descriptor: YRegularModuleDescriptor, metaKeyName: String) = descriptor.metas[metaKeyName]
+//        ?.let { "true".equals(it, true) }
+//        ?: false
 
 }

@@ -17,14 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
-class YPlatformModuleDescriptor(
+class ConfigModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+    name: String = moduleRootDirectory.name
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    var isPreselected = false
+    var isMainConfig = false
+    override val descriptorType: ModuleDescriptorType
+        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
+        else ModuleDescriptorType.CUSTOM
+}

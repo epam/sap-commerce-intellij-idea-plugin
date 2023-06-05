@@ -46,7 +46,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
@@ -62,22 +64,20 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final var yModuleDescriptors = modulesChosenForImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
-            .toList();
+            .collect(Collectors.toMap(it -> it.getName(), Function.identity()));
 
-        final Map<String, YModuleDescriptor> moduleDescriptorMap = new HashMap<>();
         File localProperties = null;
         File advancedProperties = null;
-        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
-            moduleDescriptorMap.put(moduleDescriptor.getName(), moduleDescriptor);
-            if (moduleDescriptor instanceof final YConfigModuleDescriptor configModule) {
-                localProperties = new File(configModule.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
+        for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
+            if (moduleDescriptor instanceof final ConfigModuleDescriptor configModule) {
+                localProperties = new File(configModule.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
             }
-            if (moduleDescriptor instanceof final YPlatformModuleDescriptor platformModule) {
-                advancedProperties = new File(platformModule.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
+            if (moduleDescriptor instanceof final PlatformModuleDescriptor platformModule) {
+                advancedProperties = new File(platformModule.getModuleRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
             }
         }
-        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors) {
-            processHybrisModule(moduleDescriptorMap, moduleDescriptor);
+        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors.values()) {
+            processHybrisModule(yModuleDescriptors, moduleDescriptor);
             if (moduleDescriptor instanceof YCoreExtModuleDescriptor) {
                 if (advancedProperties != null) {
                     moduleDescriptor.getSpringFileSet().add(advancedProperties.getAbsolutePath());
@@ -173,7 +173,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     ) {
         final Properties projectProperties = new Properties();
 
-        final File propFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
+        final File propFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.PROJECT_PROPERTIES);
         moduleDescriptor.getSpringFileSet().add(propFile.getAbsolutePath());
 
         try (final FileInputStream fis = new FileInputStream(propFile)) {
@@ -219,7 +219,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final YModuleDescriptor moduleDescriptor
     ) {
         if (!(moduleDescriptor instanceof final YBackofficeSubModuleDescriptor ySubModuleDescriptor)) return;
-        final var files = new File(ySubModuleDescriptor.getOwner().getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
+        final var files = new File(ySubModuleDescriptor.getOwner().getModuleRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY)
             .listFiles((dir, name) -> name.endsWith("-backoffice-spring.xml"));
 
         if (files == null || files.length == 0) return;
@@ -233,7 +233,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final YModuleDescriptor moduleDescriptor
     ) throws IOException, JDOMException {
         if (!(moduleDescriptor instanceof YWebSubModuleDescriptor)) return;
-        final File webXml = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
+        final File webXml = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
         if (!webXml.exists()) {
             return;
         }
@@ -260,7 +260,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final YModuleDescriptor moduleDescriptor,
         final String contextConfigLocation
     ) {
-        final File webModuleDir = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
+        final File webModuleDir = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
         for (String xml: SPLIT_PATTERN.split(contextConfigLocation)) {
             if (!xml.endsWith(".xml")) {
                 continue;
@@ -357,7 +357,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     }
 
     private File getResourceDir(final YModuleDescriptor moduleToSearch) {
-        return new File(moduleToSearch.getRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
+        return new File(moduleToSearch.getModuleRootDirectory(), HybrisConstants.RESOURCES_DIRECTORY);
     }
 
     private boolean addSpringExternalXmlFile(final Map<String, YModuleDescriptor> moduleDescriptorMap,

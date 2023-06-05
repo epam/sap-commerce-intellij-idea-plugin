@@ -49,8 +49,8 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val descriptorType = YFacet.get(module)
             ?.configuration
             ?.state
-            ?.moduleDescriptorType
-            ?: HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType
+            ?.type
+            ?: HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
             data.setIcon(KotlinIcons.SMALL_LOGO)

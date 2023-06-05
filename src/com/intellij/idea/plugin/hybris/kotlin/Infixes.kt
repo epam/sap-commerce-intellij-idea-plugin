@@ -18,9 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.kotlin
 
-import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils
+import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.openapi.module.Module
 
 infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
 
-fun Module.yExtensionName():String = ModuleUtils.getShortName(this)
+fun Module.yExtensionName(): String = YFacet.get(this)
+    ?.configuration
+    ?.state
+    ?.name
+    ?: this.name.substringAfterLast(".")

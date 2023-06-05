@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
@@ -51,7 +52,4 @@ data class HybrisProjectSettings(
     var availableExtensions: MutableMap<String, ExtensionDescriptor> = TreeMap<String, ExtensionDescriptor> { a, b ->
         a.compareTo(b, true)
     },
-    var moduleSettings: MutableMap<String, ModuleSettings> = TreeMap<String, ModuleSettings> { a, b ->
-        a.compareTo(b, true)
-    }
 )

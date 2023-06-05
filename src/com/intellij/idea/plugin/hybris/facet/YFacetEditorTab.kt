@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorTy
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 
-class YFacetEditorTab(val state: YFacetState) : FacetEditorTab() {
+class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
     override fun isModified() = dialogPanel.isModified()
@@ -35,10 +35,11 @@ class YFacetEditorTab(val state: YFacetState) : FacetEditorTab() {
         group("[y] SAP Commerce Module") {
             row("Extension name:") {
                 label(state.name)
+                    .bold()
             }
             row("Descriptor type:") {
                 icon(
-                    when (state.moduleDescriptorType) {
+                    when (state.type) {
                         ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
                         ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
                         ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
@@ -47,10 +48,9 @@ class YFacetEditorTab(val state: YFacetState) : FacetEditorTab() {
                         else -> HybrisIcons.HYBRIS
                     }
                 )
-                label(state.moduleDescriptorType.name)
-                    .bold()
+                label(state.type.name)
             }
-            state.subModuleDescriptorType
+            state.subModuleType
                 ?.let {
                     row("Sub-module type:") {
                         icon(

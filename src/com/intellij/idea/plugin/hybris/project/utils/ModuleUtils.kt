@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.utils
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
@@ -30,16 +29,11 @@ object ModuleUtils {
     fun isHybrisModule(psi: PsiElement): Boolean {
         val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
         val descriptorType = HybrisProjectSettingsComponent.getInstance(psi.project)
-            .getModuleSettings(module).descriptorType
+            .getModuleSettings(module).type
         return descriptorType == ModuleDescriptorType.PLATFORM
             || descriptorType == ModuleDescriptorType.EXT
     }
 
-    fun getShortName(module: Module) = YFacet.get(module)
-        ?.configuration
-        ?.state
-        ?.name
-        ?: module.name.substringAfterLast(".")
     fun getSubmoduleShortName(module: Module) = module.name.split(".")
         .takeLast(2)
         .joinToString(".")

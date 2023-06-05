@@ -100,7 +100,7 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
         return Optional.ofNullable(ModuleUtilCore.findModuleForFile(file, myProject))
                        .map(module -> HybrisProjectSettingsComponent.getInstance(myProject)
                                                                 .getModuleSettings(module)
-                                                                .isReadonly())
+                                                                .getReadonly())
 
                        .orElse(false);
     }

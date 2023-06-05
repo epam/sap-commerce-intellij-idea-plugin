@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
 
 object EiSLookupElementFactory {
 

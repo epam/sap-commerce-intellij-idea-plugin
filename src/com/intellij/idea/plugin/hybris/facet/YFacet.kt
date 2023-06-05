@@ -40,5 +40,9 @@ class YFacet(
             if (module.isDisposed) return null
             return FacetManager.getInstance(module).getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
         }
+
+        fun getState(module: Module) = get(module)
+            ?.configuration
+            ?.state
     }
 }

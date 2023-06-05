@@ -21,6 +21,7 @@ import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
@@ -40,6 +41,8 @@ class KotlinFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
+        if (moduleDescriptor !is YModuleDescriptor) return
+
         val hasKotlinDirectories = YModuleDescriptorUtil.hasKotlinDirectories(moduleDescriptor)
 
         WriteAction.runAndWait<RuntimeException> {

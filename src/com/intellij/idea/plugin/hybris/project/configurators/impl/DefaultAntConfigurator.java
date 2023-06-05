@@ -26,10 +26,10 @@ import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntConfigurationBase;
@@ -135,8 +135,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
     };
 
     private HybrisProjectDescriptor hybrisProjectDescriptor;
-    private YPlatformModuleDescriptor platformDescriptor;
-    private YConfigModuleDescriptor configDescriptor;
+    private PlatformModuleDescriptor platformDescriptor;
+    private ConfigModuleDescriptor configDescriptor;
     private List<YPlatformExtModuleDescriptor> extHybrisModuleDescriptorList;
     private List<YCustomRegularModuleDescriptor> customHybrisModuleDescriptorList;
     private AntInstallation antInstallation;
@@ -154,7 +154,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         if (platformDescriptor == null) {
             return;
         }
-        final File platformDir = platformDescriptor.getRootDirectory();
+        final File platformDir = platformDescriptor.getModuleRootDirectory();
         createAntInstallation(platformDir);
         if (antInstallation == null) {
             return;
@@ -164,7 +164,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         antConfiguration = AntConfigurationBase.getInstance(project);
         final AntBuildFileBase buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
         customHybrisModuleDescriptorList.forEach(
-            e -> registerAntInstallation(platformDir, e.getRootDirectory(), desirableCustomTargets)
+            e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
         );
         saveAntInstallation(antInstallation);
         removeMake(project);
@@ -186,8 +186,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
         for (ModuleDescriptor descriptor : allModules) {
-            if (descriptor instanceof YPlatformModuleDescriptor) {
-                platformDescriptor = (YPlatformModuleDescriptor) descriptor;
+            if (descriptor instanceof PlatformModuleDescriptor) {
+                platformDescriptor = (PlatformModuleDescriptor) descriptor;
             }
             if (descriptor instanceof YPlatformExtModuleDescriptor) {
                 extHybrisModuleDescriptorList.add((YPlatformExtModuleDescriptor) descriptor);
@@ -195,8 +195,8 @@ public class DefaultAntConfigurator implements AntConfigurator {
             if (descriptor instanceof YCustomRegularModuleDescriptor) {
                 customHybrisModuleDescriptorList.add((YCustomRegularModuleDescriptor) descriptor);
             }
-            if (descriptor instanceof YConfigModuleDescriptor) {
-                configDescriptor = (YConfigModuleDescriptor) descriptor;
+            if (descriptor instanceof ConfigModuleDescriptor) {
+                configDescriptor = (ConfigModuleDescriptor) descriptor;
             }
         }
     }
@@ -276,7 +276,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     private String getAntOpts() {
         if (configDescriptor != null) {
-            final File propertiesFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+            final File propertiesFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
             if (propertiesFile.exists()) {
                 final Properties properties = new Properties();
                 try (final InputStream in = new FileInputStream(propertiesFile)) {
@@ -300,7 +300,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         classPaths.addAll(
             extHybrisModuleDescriptorList
                 .parallelStream()
-                .map(e -> new AllJarsUnderDirEntry(new File(e.getRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
+                .map(e -> new AllJarsUnderDirEntry(new File(e.getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
                 .toList()
         );
         final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);

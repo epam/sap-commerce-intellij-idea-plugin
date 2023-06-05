@@ -34,10 +34,10 @@ class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACE
 
     override fun createFacet(
         module: Module,
-        name: String?,
+        name: String,
         configuration: YFacetConfiguration,
         underlyingFacet: Facet<*>?
-    ) = YFacet(this, module, name!!, configuration, underlyingFacet)
+    ) = YFacet(this, module, name, configuration, underlyingFacet)
 
     companion object {
         const val FACET_ID = "SAP_COMMERCE_Y_FACET_ID"

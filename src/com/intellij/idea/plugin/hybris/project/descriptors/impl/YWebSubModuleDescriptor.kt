@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
 class YWebSubModuleDescriptor(
-    owner: YModuleDescriptor,
-    rootDirectory: File,
-    val webRoot: File = File(rootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
+    owner: YRegularModuleDescriptor,
+    moduleRootDirectory: File,
+    val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB,
-) : AbstractYSubModuleDescriptor(owner, rootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)

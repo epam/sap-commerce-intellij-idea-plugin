@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 
 class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
@@ -34,10 +33,5 @@ class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
         val readOnly = hasReadOnlySettings && isReadOnlyType
 
         moduleDescriptor.readonly = readOnly
-
-        // TODO: drop this, will be replaced by Facet
-        val moduleSettings = HybrisProjectSettingsComponent.getInstance(javaModule.project).getModuleSettings(javaModule)
-        moduleSettings.descriptorType = descriptorType
-        moduleSettings.isReadonly = readOnly
     }
 }

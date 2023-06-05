@@ -72,10 +72,10 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File classesDirectory = new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY);
+        final File classesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(classesDirectory.getAbsolutePath()));
 
-        final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
+        final File resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
             VfsUtil.pathToUrl(resourcesDirectory.getAbsolutePath()),
             JavaResourceRootType.RESOURCE
@@ -88,13 +88,13 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File webAddonSrcDirectory = new File(moduleDescriptor.getRootDirectory(), ADDON_SRC_DIRECTORY);
+        final File webAddonSrcDirectory = new File(moduleDescriptor.getModuleRootDirectory(), ADDON_SRC_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(webAddonSrcDirectory.getAbsolutePath()));
 
-        final File webTestClassesDirectory = new File(moduleDescriptor.getRootDirectory(), TEST_CLASSES_DIRECTORY);
+        final File webTestClassesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), TEST_CLASSES_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(webTestClassesDirectory.getAbsolutePath()));
 
-        final File commonWebSrcDirectory = new File(moduleDescriptor.getRootDirectory(), COMMON_WEB_SRC_DIRECTORY);
+        final File commonWebSrcDirectory = new File(moduleDescriptor.getModuleRootDirectory(), COMMON_WEB_SRC_DIRECTORY);
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(commonWebSrcDirectory.getAbsolutePath()));
     }
 }

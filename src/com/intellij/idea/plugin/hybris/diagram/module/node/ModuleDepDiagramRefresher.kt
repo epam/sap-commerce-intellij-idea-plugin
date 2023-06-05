@@ -51,24 +51,24 @@ object ModuleDepDiagramRefresher {
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
-                    val descriptor = projectSettings.getModuleSettings(it).descriptorType
+                    val descriptor = projectSettings.getModuleSettings(it).type
                     isCustomExtension(descriptor) || isOotbOrPlatformExtension(descriptor)
                 }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isCustomExtension(projectSettings.getModuleSettings(it).type) }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).descriptorType) }
+                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).type) }
             }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).descriptorType) }
+            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
         return customExtModules + dependencies + backwardDependencies
     }
 

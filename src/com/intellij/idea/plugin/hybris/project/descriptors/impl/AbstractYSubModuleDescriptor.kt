@@ -17,23 +17,27 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.*
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import java.io.File
 
 abstract class AbstractYSubModuleDescriptor(
-    override val owner: YModuleDescriptor,
-    override val rootDirectory: File,
-    override val name: String = owner.name + "." + rootDirectory.name,
+    override val owner: YRegularModuleDescriptor,
+    override val moduleRootDirectory: File,
+    override val name: String = owner.name + "." + moduleRootDirectory.name,
     override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
     override val descriptorType: ModuleDescriptorType = owner.descriptorType,
     override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf()
 ) : AbstractYModuleDescriptor(
-    moduleRootDirectory = rootDirectory,
+    moduleRootDirectory = moduleRootDirectory,
     rootProjectDescriptor = rootProjectDescriptor,
-    name = name
+    name = name,
+    extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 
-    override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$rootDirectory)"
+    override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$moduleRootDirectory)"
 
 }

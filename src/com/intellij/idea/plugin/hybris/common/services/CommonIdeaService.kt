@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.services;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -30,7 +30,7 @@ interface CommonIdeaService {
 
     fun isPotentiallyHybrisProject(project: Project): Boolean
 
-    fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): YPlatformModuleDescriptor?
+    fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformModuleDescriptor?
 
     fun getActiveHacUrl(project: Project): String
 

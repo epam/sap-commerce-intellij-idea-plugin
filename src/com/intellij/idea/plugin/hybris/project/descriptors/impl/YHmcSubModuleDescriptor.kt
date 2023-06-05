@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
 class YHmcSubModuleDescriptor(
-    owner: YModuleDescriptor,
-    rootDirectory: File,
+    owner: YRegularModuleDescriptor,
+    moduleRootDirectory: File,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HMC,
-) : AbstractYSubModuleDescriptor(owner, rootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)

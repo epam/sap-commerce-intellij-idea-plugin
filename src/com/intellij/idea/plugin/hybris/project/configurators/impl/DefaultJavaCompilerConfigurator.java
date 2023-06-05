@@ -6,9 +6,9 @@ import com.intellij.compiler.impl.javaCompiler.BackendCompiler;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
@@ -61,14 +61,14 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
         @NotNull final HybrisConfiguratorCache cache
     ) {
         final List<File> propertyFiles = new ArrayList<>();
-        final YConfigModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
 
         if (configDescriptor != null) {
-            propertyFiles.add(new File(configDescriptor.getRootDirectory(), HybrisConstants.LOCAL_PROPERTIES));
+            propertyFiles.add(new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES));
         }
-        final YPlatformModuleDescriptor platformDescriptor = descriptor.getPlatformHybrisModuleDescriptor();
-        propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES));
-        propertyFiles.add(new File(platformDescriptor.getRootDirectory(), HybrisConstants.PROJECT_PROPERTIES));
+        final PlatformModuleDescriptor platformDescriptor = descriptor.getPlatformHybrisModuleDescriptor();
+        propertyFiles.add(new File(platformDescriptor.getModuleRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES));
+        propertyFiles.add(new File(platformDescriptor.getModuleRootDirectory(), HybrisConstants.PROJECT_PROPERTIES));
 
         return cache.findPropertyInFiles(propertyFiles, HybrisConstants.PROPERTY_BUILD_COMPILER);
     }

@@ -34,11 +34,12 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -466,9 +467,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (configDir != null && configDir.isDirectory()) {
             hybrisProjectSettings.setExternalConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
         }
-        final YConfigModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configModule = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         if (configModule != null) {
-            configDir = configModule.getRootDirectory();
+            configDir = configModule.getModuleRootDirectory();
             if (configDir.isDirectory()) {
                 hybrisProjectSettings.setConfigDirectory(FileUtil.toSystemIndependentName(configDir.getPath()));
             }
@@ -508,8 +509,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
-                && !(e instanceof YConfigModuleDescriptor)
+                && !(e instanceof ConfigModuleDescriptor)
             )
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
             .collect(Collectors.toSet());
         hybrisSettingsComponent.setAvailableExtensions(completeSetOfHybrisModules);
         hybrisProjectSettings.setCompleteSetOfAvailableExtensionsInHybris(completeSetOfHybrisModules.stream()

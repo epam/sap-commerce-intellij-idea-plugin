@@ -59,20 +59,20 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ModuleDescriptor moduleDescriptor
     ) {
         final ContentEntry contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
-            moduleDescriptor.getRootDirectory().getAbsolutePath()
+            moduleDescriptor.getModuleRootDirectory().getAbsolutePath()
         ));
 
         final List<File> dirsToIgnore = emptyListIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
-            .map(relPath -> new File(moduleDescriptor.getRootDirectory(), relPath))
+            .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
         this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
 //        if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(HybrisConstants.EXTENSION_NAME_HMC)) {
         if (moduleDescriptor instanceof final YHmcSubModuleDescriptor ySubModuleDescriptor) {
-            configureAdditionalRoots(ySubModuleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+            configureAdditionalRoots(ySubModuleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getModuleRootDirectory());
         }
 //        }
-        this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getRootDirectory());
+        this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getModuleRootDirectory());
 
         if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
             configureRoots(ySubModuleDescriptor, contentEntry, dirsToIgnore);
@@ -106,7 +106,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         for (String srcDirName : SRC_DIR_NAMES) {
             addSourceFolderIfNotIgnored(
                 contentEntry,
-                new File(moduleDescriptor.getRootDirectory(), srcDirName),
+                new File(moduleDescriptor.getModuleRootDirectory(), srcDirName),
                 JavaSourceRootType.SOURCE,
                 dirsToIgnore
             );
@@ -114,7 +114,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         addSourceFolderIfNotIgnored(
             contentEntry,
-            new File(moduleDescriptor.getRootDirectory(), GEN_SRC_DIRECTORY),
+            new File(moduleDescriptor.getModuleRootDirectory(), GEN_SRC_DIRECTORY),
             JavaSourceRootType.SOURCE,
             JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
             dirsToIgnore
@@ -122,9 +122,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor
             || !moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
-            addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
+            addTestSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore);
         } else {
-            excludeTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
+            excludeTestSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory());
         }
 
         configureResourceDirectory(contentEntry, moduleDescriptor, dirsToIgnore);
@@ -137,7 +137,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File resourcesDirectory = new File(moduleDescriptor.getRootDirectory(), RESOURCES_DIRECTORY);
+        final File resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), RESOURCES_DIRECTORY);
 
         if (!isResourceDirExcluded(moduleDescriptor.getName())) {
             addSourceFolderIfNotIgnored(contentEntry, resourcesDirectory, JavaResourceRootType.RESOURCE, dirsToIgnore);
@@ -150,7 +150,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         final ContentEntry contentEntry,
         final ModuleDescriptor moduleDescriptor
     ) {
-        excludeSubDirectories(contentEntry, moduleDescriptor.getRootDirectory(), Arrays.asList(
+        excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), Arrays.asList(
             EXTERNAL_TOOL_BUILDERS_DIRECTORY,
             SETTINGS_DIRECTORY,
             TEST_CLASSES_DIRECTORY,
@@ -164,7 +164,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getDescriptorType() == CUSTOM ||
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
-            excludeDirectory(contentEntry, new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY));
+            excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY));
         }
     }
 
@@ -236,7 +236,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
-        final File backOfficeModuleDirectory = moduleDescriptor.getRootDirectory();
+        final File backOfficeModuleDirectory = moduleDescriptor.getModuleRootDirectory();
 
         for (String srcDirName : SRC_DIR_NAMES) {
             final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, srcDirName);
@@ -267,7 +267,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         if (!HybrisConstants.EXTENSION_NAME_PLATFORM.equalsIgnoreCase(moduleDescriptor.getName())) {
             return;
         }
-        final File rootDirectory = moduleDescriptor.getRootDirectory();
+        final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
         final File platformBootstrapDirectory = new File(rootDirectory, PLATFORM_BOOTSTRAP_DIRECTORY);
 
         if (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()) {
@@ -296,7 +296,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         excludeSubDirectories(
             contentEntry,
-            moduleDescriptor.getRootDirectory(),
+            moduleDescriptor.getModuleRootDirectory(),
             Arrays.asList(ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY)
         );
         configureWebInf(contentEntry, moduleDescriptor);
@@ -374,7 +374,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         final ContentEntry contentEntry,
         final YSubModuleDescriptor moduleDescriptor
     ) {
-        final File rootDirectory = moduleDescriptor.getRootDirectory();
+        final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
         if (moduleDescriptor.getDescriptorType() == CUSTOM
             || (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()

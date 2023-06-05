@@ -74,7 +74,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
     @Nullable
     private String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
-        if (!(moduleDescriptor instanceof YConfigModuleDescriptor)) {
+        if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
                 return groupPathOverride.clone();
@@ -94,11 +94,11 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     private String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final YConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
+        final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
         if (configDescriptor == null) {
             return null;
         }
-        final File groupFile = new File(configDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+        final File groupFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
@@ -107,7 +107,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
 
     private String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
-        final File groupFile = new File(moduleDescriptor.getRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
+        final File groupFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
         if (groupFile.exists() && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
@@ -155,7 +155,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groups.get("groupCCv2");
         }
 
-        if (moduleDescriptor instanceof YPlatformModuleDescriptor) {
+        if (moduleDescriptor instanceof PlatformModuleDescriptor) {
             return groups.get("groupPlatform");
         }
 
@@ -163,7 +163,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groups.get("groupPlatform");
         }
 
-        if (moduleDescriptor instanceof YConfigModuleDescriptor) {
+        if (moduleDescriptor instanceof ConfigModuleDescriptor) {
             return groups.get("groupCustom");
         }
 
@@ -184,12 +184,12 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), customDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), customDirectory);
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for a custom module '%s' because its root directory '%s' is not under" +
                         " custom directory  '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), customDirectory
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), customDirectory
                 ));
                 return groups.get("groupCustom");
             }
@@ -212,11 +212,11 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
             final List<String> path;
             try {
-                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getRootDirectory(), hybrisBinDirectory);
+                path = FileUtils.getPathToParentDirectoryFrom(moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory);
             } catch (IOException e) {
                 LOG.warn(String.format(
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
-                    moduleDescriptor.getName(), moduleDescriptor.getRootDirectory(), hybrisBinDirectory
+                    moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory
                 ));
                 return groups.get("groupHybris");
             }

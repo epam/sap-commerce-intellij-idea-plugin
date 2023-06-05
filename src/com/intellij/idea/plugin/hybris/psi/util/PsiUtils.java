@@ -60,7 +60,7 @@ public final class PsiUtils {
             return false;
         }
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-        final var descriptorType = settingsComponent.getModuleSettings(module).getDescriptorType();
+        final var descriptorType = settingsComponent.getModuleSettings(module).getType();
 
         if (descriptorType == ModuleDescriptorType.NONE) {
             if (shouldCheckFilesWithoutHybrisSettings(project)) {

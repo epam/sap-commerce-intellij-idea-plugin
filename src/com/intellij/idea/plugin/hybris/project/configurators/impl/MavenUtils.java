@@ -91,7 +91,7 @@ public interface MavenUtils {
     ) {
         final List<String> resultPathList = new ArrayList<>();
 
-        final File moduleDir = moduleDescriptor.getRootDirectory();
+        final File moduleDir = moduleDescriptor.getModuleRootDirectory();
         final File mavenDescriptorFile = new File(moduleDir, "external-dependencies.xml");
         if (mavenDescriptorFile.exists()) {
             final MavenProjectReader mavenProjectReader = new MavenProjectReader(modifiableRootModel.getProject());

@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors
 
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
+
 interface YSubModuleDescriptor : YModuleDescriptor {
 
-    val owner: YModuleDescriptor
+    val owner: YRegularModuleDescriptor
     val subModuleDescriptorType: SubModuleDescriptorType
 }

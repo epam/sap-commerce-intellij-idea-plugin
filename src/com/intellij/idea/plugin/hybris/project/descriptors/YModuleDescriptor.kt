@@ -17,9 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors
 
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
+
 interface YModuleDescriptor : ModuleDescriptor {
 
     val springFileSet: Set<String>
     val dependenciesTree: Set<YModuleDescriptor>
     var subModules: MutableSet<YSubModuleDescriptor>
+
+    fun extensionDescriptor(): ExtensionDescriptor
 }

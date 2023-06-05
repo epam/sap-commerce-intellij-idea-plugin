@@ -44,7 +44,7 @@ public class DefaultCompilerOutputPathsConfigurator implements CompilerOutputPat
         );
 
         final File outputDirectory = new File(
-            moduleDescriptor.getRootDirectory(),
+            moduleDescriptor.getModuleRootDirectory(),
             HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH
         );
 

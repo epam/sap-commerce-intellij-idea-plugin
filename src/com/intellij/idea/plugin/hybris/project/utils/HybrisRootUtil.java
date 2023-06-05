@@ -23,7 +23,7 @@ public class HybrisRootUtil {
         final var settingsComponent = HybrisProjectSettingsComponent.getInstance(project);
         final Module platformModule =
             Arrays.stream(ModuleManager.getInstance(project).getModules())
-                  .filter(module -> settingsComponent.getModuleSettings(module).getDescriptorType() == ModuleDescriptorType.PLATFORM)
+                  .filter(module -> settingsComponent.getModuleSettings(module).getType() == ModuleDescriptorType.PLATFORM)
                   .findAny()
                   .orElse(null);
 

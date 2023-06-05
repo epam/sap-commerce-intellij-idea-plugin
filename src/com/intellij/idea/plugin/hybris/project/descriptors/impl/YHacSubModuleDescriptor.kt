@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
 class YHacSubModuleDescriptor(
-    owner: YModuleDescriptor,
-    rootDirectory: File,
+    owner: YRegularModuleDescriptor,
+    moduleRootDirectory: File,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
-) : AbstractYSubModuleDescriptor(owner, rootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)

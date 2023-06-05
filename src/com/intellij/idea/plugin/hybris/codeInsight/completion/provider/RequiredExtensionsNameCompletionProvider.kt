@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.application.ApplicationManager

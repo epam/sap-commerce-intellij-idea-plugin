@@ -19,11 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
 
 class YCommonWebSubModuleDescriptor(
-    owner: YModuleDescriptor,
-    rootDirectory: File,
+    owner: YRegularModuleDescriptor,
+    moduleRootDirectory: File,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
-) : AbstractYSubModuleDescriptor(owner, rootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)

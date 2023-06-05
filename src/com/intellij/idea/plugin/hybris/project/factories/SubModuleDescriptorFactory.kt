@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.factories
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import io.ktor.util.*
@@ -30,16 +29,16 @@ object SubModuleDescriptorFactory {
     fun buildAll(owner: YRegularModuleDescriptor): Set<YSubModuleDescriptor> {
         val subModules = mutableSetOf<YSubModuleDescriptor>()
 
-        if (YModuleDescriptorUtil.hasWebModule(owner)) {
+        if (owner.hasWebModule) {
             build(owner, HybrisConstants.WEB_MODULE_DIRECTORY, subModules) { YWebSubModuleDescriptor(owner, it) }
         }
-        if (YModuleDescriptorUtil.hasHmcModule(owner)) {
-            build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHmcSubModuleDescriptor(owner, it) }
+        if (owner.hasHmcModule) {
+            build(owner, HybrisConstants.HMC_MODULE_DIRECTORY, subModules) { YHmcSubModuleDescriptor(owner, it) }
         }
-        if (YModuleDescriptorUtil.isHacAddon(owner)) {
+        if (owner.isHacAddon) {
             build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHacSubModuleDescriptor(owner, it) }
         }
-        if (YModuleDescriptorUtil.hasBackofficeModule(owner)) {
+        if (owner.hasBackofficeModule) {
             build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { YBackofficeSubModuleDescriptor(owner, it) }
         }
         build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
@@ -53,7 +52,7 @@ object SubModuleDescriptorFactory {
         subModuleDirectory: String,
         subModules: MutableSet<YSubModuleDescriptor>,
         builder: (File) -> (YSubModuleDescriptor)
-    ) = File(owner.rootDirectory, subModuleDirectory)
+    ) = File(owner.moduleRootDirectory, subModuleDirectory)
         .takeIf { it.exists() }
         ?.let { builder.invoke(it) }
         ?.let { subModules.add(it) }

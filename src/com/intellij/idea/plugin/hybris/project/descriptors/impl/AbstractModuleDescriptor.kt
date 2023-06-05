@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder
 import java.io.File
 
 abstract class AbstractModuleDescriptor(
-    override val rootDirectory: File,
+    override val moduleRootDirectory: File,
     override val rootProjectDescriptor: HybrisProjectDescriptor,
     override val name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
@@ -40,7 +40,7 @@ abstract class AbstractModuleDescriptor(
 
     override fun hashCode() = HashCodeBuilder(17, 37)
         .append(this.name)
-        .append(rootDirectory)
+        .append(moduleRootDirectory)
         .toHashCode()
 
     override fun equals(other: Any?): Boolean {
@@ -56,7 +56,7 @@ abstract class AbstractModuleDescriptor(
             ?.let {
                 EqualsBuilder()
                     .append(this.name, it.name)
-                    .append(rootDirectory, it.rootDirectory)
+                    .append(moduleRootDirectory, it.moduleRootDirectory)
                     .isEquals
             }
             ?: false
@@ -65,6 +65,6 @@ abstract class AbstractModuleDescriptor(
     override fun toString() = javaClass.simpleName +
         "{" +
         "name=$name, " +
-        "moduleRootDirectory=$rootDirectory, " +
+        "moduleRootDirectory=$moduleRootDirectory, " +
         "}"
 }

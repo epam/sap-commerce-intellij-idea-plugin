@@ -58,7 +58,7 @@ object ModuleDescriptorFactory {
         return when {
             hybrisProjectService.isConfigModule(resolvedFile) -> {
                 LOG.info("Creating Config module for $path")
-                YConfigModuleDescriptor(resolvedFile, rootProjectDescriptor)
+                ConfigModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCCv2Module(resolvedFile) -> {
@@ -68,7 +68,7 @@ object ModuleDescriptorFactory {
 
             hybrisProjectService.isPlatformModule(resolvedFile) -> {
                 LOG.info("Creating Platform module for $path")
-                YPlatformModuleDescriptor(resolvedFile, rootProjectDescriptor)
+                PlatformModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCoreExtModule(resolvedFile) -> {
@@ -123,25 +123,25 @@ object ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
     fun createRootDescriptor(
-        rootDirectory: File,
+        moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,
         name: String
     ): RootModuleDescriptor {
-        validateModuleDirectory(rootDirectory)
+        validateModuleDirectory(moduleRootDirectory)
 
-        return RootModuleDescriptor(rootDirectory, rootProjectDescriptor, name)
+        return RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
     }
 
     @Throws(HybrisConfigurationException::class)
     fun createConfigDescriptor(
-        rootDirectory: File,
+        moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,
         name: String
-    ): YConfigModuleDescriptor {
-        validateModuleDirectory(rootDirectory)
+    ): ConfigModuleDescriptor {
+        validateModuleDirectory(moduleRootDirectory)
 
-        return YConfigModuleDescriptor(
-            rootDirectory,
+        return ConfigModuleDescriptor(
+            moduleRootDirectory,
             rootProjectDescriptor, name
         );
     }

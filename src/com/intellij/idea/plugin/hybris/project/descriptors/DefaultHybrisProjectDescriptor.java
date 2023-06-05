@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
@@ -118,15 +118,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean excludeTestSources;
     protected boolean scanThroughExternalModule;
     @NotNull
-    private YConfigModuleDescriptor configHybrisModuleDescriptor;
+    private ConfigModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
-    private YPlatformModuleDescriptor platformHybrisModuleDescriptor;
+    private PlatformModuleDescriptor platformHybrisModuleDescriptor;
     @Nullable
     private ModuleDescriptor kotlinNatureModuleDescriptor;
     private final Set<File> vcs = new HashSet<>();
 
     private void processLocalExtensions() {
-        final YConfigModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
+        final ConfigModuleDescriptor configHybrisModuleDescriptor = findConfigDir();
         if (configHybrisModuleDescriptor == null) {
             return;
         }
@@ -134,7 +134,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         preselectModules(configHybrisModuleDescriptor, explicitlyDefinedModules);
     }
 
-    private void preselectModules(@NotNull final YConfigModuleDescriptor configHybrisModuleDescriptor, final Set<String> explicitlyDefinedModules) {
+    private void preselectModules(@NotNull final ConfigModuleDescriptor configHybrisModuleDescriptor, final Set<String> explicitlyDefinedModules) {
         Validate.notNull(configHybrisModuleDescriptor);
         for (ModuleDescriptor yModuleDescriptor : foundModules) {
             if (explicitlyDefinedModules.contains(yModuleDescriptor.getName())
@@ -142,15 +142,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
             }
-            if (yModuleDescriptor instanceof final YPlatformModuleDescriptor platformDescriptor) {
-                platformDescriptor.getDependenciesTree().add(configHybrisModuleDescriptor);
-            }
+            // TODO: remove?
+//            if (yModuleDescriptor instanceof final YPlatformModuleDescriptor platformDescriptor) {
+//                platformDescriptor.getDependenciesTree().add(configHybrisModuleDescriptor);
+//            }
         }
         preselectConfigModules(configHybrisModuleDescriptor, foundModules);
     }
 
     private void preselectConfigModules(
-        final YConfigModuleDescriptor configHybrisModuleDescriptor,
+        final ConfigModuleDescriptor configHybrisModuleDescriptor,
         final List<ModuleDescriptor> foundModules
     ) {
         configHybrisModuleDescriptor.setImportStatus(ModuleDescriptorImportStatus.MANDATORY);
@@ -159,8 +160,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final List<String> preselectedNames = new ArrayList<>();
         preselectedNames.add(configHybrisModuleDescriptor.getName());
         foundModules.stream()
-            .filter(YConfigModuleDescriptor.class::isInstance)
-            .map(YConfigModuleDescriptor.class::cast)
+            .filter(ConfigModuleDescriptor.class::isInstance)
+            .map(ConfigModuleDescriptor.class::cast)
             .filter(Predicate.not(it -> preselectedNames.contains(it.getName())))
             .forEach(e -> {
                 e.setPreselected(true);
@@ -169,14 +170,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Nullable
-    private YConfigModuleDescriptor findConfigDir() {
-        final List<YConfigModuleDescriptor> foundConfigModules = new ArrayList<>();
-        YPlatformModuleDescriptor platformHybrisModuleDescriptor = null;
+    private ConfigModuleDescriptor findConfigDir() {
+        final List<ConfigModuleDescriptor> foundConfigModules = new ArrayList<>();
+        PlatformModuleDescriptor platformHybrisModuleDescriptor = null;
         for (ModuleDescriptor moduleDescriptor : foundModules) {
-            if (moduleDescriptor instanceof final YConfigModuleDescriptor descriptor) {
+            if (moduleDescriptor instanceof final ConfigModuleDescriptor descriptor) {
                 foundConfigModules.add(descriptor);
             }
-            if (moduleDescriptor instanceof final YPlatformModuleDescriptor descriptor) {
+            if (moduleDescriptor instanceof final PlatformModuleDescriptor descriptor) {
                 platformHybrisModuleDescriptor = descriptor;
             }
         }
@@ -201,8 +202,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 return null;
             }
         }
-        for (final YConfigModuleDescriptor configHybrisModuleDescriptor : foundConfigModules) {
-            if (FileUtil.filesEqual(configHybrisModuleDescriptor.getRootDirectory(), configDir)) {
+        for (final ConfigModuleDescriptor configHybrisModuleDescriptor : foundConfigModules) {
+            if (FileUtil.filesEqual(configHybrisModuleDescriptor.getModuleRootDirectory(), configDir)) {
                 return configHybrisModuleDescriptor;
             }
         }
@@ -224,8 +225,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         return null;
     }
 
-    private File getExpectedConfigDir(final YPlatformModuleDescriptor platformHybrisModuleDescriptor) {
-        final File platformDir = platformHybrisModuleDescriptor.getRootDirectory();
+    private File getExpectedConfigDir(final PlatformModuleDescriptor platformHybrisModuleDescriptor) {
+        final File platformDir = platformHybrisModuleDescriptor.getModuleRootDirectory();
         final File expectedConfigDir = new File(platformDir + HybrisConstants.CONFIG_RELATIVE_PATH);
         if (!expectedConfigDir.isDirectory()) {
             return null;
@@ -249,7 +250,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         hybrisConfig = hybrisConfig.replace(
             HybrisConstants.PLATFORM_HOME_PLACEHOLDER,
-            platformHybrisModuleDescriptor.getRootDirectory().getPath()
+            platformHybrisModuleDescriptor.getModuleRootDirectory().getPath()
         );
         hybrisConfig = separatorsToSystem(hybrisConfig);
 
@@ -344,7 +345,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             foundModules.forEach(it -> {
                 for (final var entry : normalizedPaths.entrySet()) {
-                    final var moduleDir = it.getRootDirectory().getPath();
+                    final var moduleDir = it.getModuleRootDirectory().getPath();
                     if (moduleDir.startsWith(entry.getKey())
                         && Paths.get(moduleDir.substring(entry.getKey().length())).getNameCount() <= entry.getValue()
                     ) {
@@ -360,7 +361,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     private Hybrisconfig unmarshalLocalExtensions(@NotNull final ModuleDescriptor yConfigModuleDescriptor) {
-        final File file = new File(yConfigModuleDescriptor.getRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
+        final File file = new File(yConfigModuleDescriptor.getModuleRootDirectory(), HybrisConstants.LOCAL_EXTENSIONS_XML);
         if (!file.exists()) return null;
 
         try {
@@ -769,11 +770,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
         moduleDescriptors.forEach(module -> {
-            if (module instanceof YConfigModuleDescriptor) {
-                configHybrisModuleDescriptor = (YConfigModuleDescriptor) module;
+            if (module instanceof ConfigModuleDescriptor) {
+                configHybrisModuleDescriptor = (ConfigModuleDescriptor) module;
             }
-            if (module instanceof YPlatformModuleDescriptor) {
-                platformHybrisModuleDescriptor = (YPlatformModuleDescriptor) module;
+            if (module instanceof PlatformModuleDescriptor) {
+                platformHybrisModuleDescriptor = (PlatformModuleDescriptor) module;
             }
             if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE.equals(module.getName())) {
                 kotlinNatureModuleDescriptor = module;
@@ -783,13 +784,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Nullable
     @Override
-    public YConfigModuleDescriptor getConfigHybrisModuleDescriptor() {
+    public ConfigModuleDescriptor getConfigHybrisModuleDescriptor() {
         return configHybrisModuleDescriptor;
     }
 
     @NotNull
     @Override
-    public YPlatformModuleDescriptor getPlatformHybrisModuleDescriptor() {
+    public PlatformModuleDescriptor getPlatformHybrisModuleDescriptor() {
         return platformHybrisModuleDescriptor;
     }
 

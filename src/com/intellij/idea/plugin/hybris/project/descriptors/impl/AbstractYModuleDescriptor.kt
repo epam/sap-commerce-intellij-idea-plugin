@@ -17,9 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
 abstract class AbstractYModuleDescriptor(
@@ -27,8 +31,31 @@ abstract class AbstractYModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
     override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
+    internal val extensionInfo: ExtensionInfo,
+    private val metas: Map<String, String> = extensionInfo.extension.meta
+        .associate { it.key to it.value }
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
 
     override var springFileSet = mutableSetOf<String>()
     override val dependenciesTree = mutableSetOf<YModuleDescriptor>()
+
+    // Must be called at the end of the module import
+    override fun extensionDescriptor() = ExtensionDescriptor(
+        name = name,
+        readonly = readonly,
+        useMaven = "true".equals(extensionInfo.extension.usemaven, true),
+        type = descriptorType,
+        subModuleType = (this as? YSubModuleDescriptor)?.subModuleDescriptorType,
+        backofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE),
+        hacModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
+        deprecated = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
+        extGenTemplateExtension = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
+        classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
+        moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
+        addon = YModuleDescriptorUtil.getRequiredExtensionNames(this).contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)
+    )
+
+    internal fun isMetaKeySetToTrue(metaKeyName: String) = metas[metaKeyName]
+        ?.let { "true".equals(it, true) }
+        ?: false
 }

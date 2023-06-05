@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
@@ -24,10 +25,20 @@ import java.io.File
 abstract class YRegularModuleDescriptor protected constructor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    val extensionInfo: ExtensionInfo,
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo.extension.name) {
+    extensionInfo: ExtensionInfo,
+) : AbstractYModuleDescriptor(
+    moduleRootDirectory, rootProjectDescriptor,
+    extensionInfo.extension.name, extensionInfo = extensionInfo
+) {
 
     var isInLocalExtensions = false
-    val metas = extensionInfo.extension.meta
-        .associate { it.key to it.value }
+
+    val hasHmcModule = extensionInfo.extension.hmcmodule != null
+    val isHacAddon = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE)
+
+    val hasBackofficeModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_BACKOFFICE_MODULE)
+        && File(moduleRootDirectory, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY).isDirectory
+
+    val hasWebModule = extensionInfo.extension.webmodule != null
+        && File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
 }

@@ -147,10 +147,10 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     protected boolean isElementEnabled(final ModuleDescriptor yModuleDescriptor) {
-        if (yModuleDescriptor instanceof YConfigModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+        if (yModuleDescriptor instanceof ConfigModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
             return false;
         }
-        if (yModuleDescriptor instanceof YPlatformModuleDescriptor) {
+        if (yModuleDescriptor instanceof PlatformModuleDescriptor) {
             return false;
         }
         if (yModuleDescriptor instanceof YPlatformExtModuleDescriptor) {
@@ -172,10 +172,10 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (item instanceof YCustomRegularModuleDescriptor) {
             return HybrisIcons.EXTENSION_CUSTOM;
         }
-        if (item instanceof YConfigModuleDescriptor) {
+        if (item instanceof ConfigModuleDescriptor) {
             return HybrisIcons.EXTENSION_CONFIG;
         }
-        if (item instanceof YPlatformModuleDescriptor) {
+        if (item instanceof PlatformModuleDescriptor) {
             return HybrisIcons.EXTENSION_PLATFORM;
         }
         if (item instanceof YPlatformExtModuleDescriptor) {
@@ -216,12 +216,12 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     private boolean isPlatformExtDescriptor(final ModuleDescriptor descriptor) {
         return descriptor instanceof YPlatformExtModuleDescriptor
-            || descriptor instanceof YPlatformModuleDescriptor;
+            || descriptor instanceof PlatformModuleDescriptor;
     }
 
     private boolean isCustomDescriptor(final ModuleDescriptor descriptor) {
         return descriptor instanceof YCustomRegularModuleDescriptor
-            || descriptor instanceof YConfigModuleDescriptor
+            || descriptor instanceof ConfigModuleDescriptor
             || (descriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor && ySubModuleDescriptor.getOwner() instanceof YCustomRegularModuleDescriptor);
     }
 

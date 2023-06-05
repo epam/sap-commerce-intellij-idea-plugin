@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -48,11 +48,11 @@ public interface HybrisProjectDescriptor {
 
     // convenience method for configurators
     @Nullable
-    YConfigModuleDescriptor getConfigHybrisModuleDescriptor();
+    ConfigModuleDescriptor getConfigHybrisModuleDescriptor();
 
     // convenience method for configurators
     @NotNull
-    YPlatformModuleDescriptor getPlatformHybrisModuleDescriptor();
+    PlatformModuleDescriptor getPlatformHybrisModuleDescriptor();
 
     @Nullable ModuleDescriptor getKotlinNatureModuleDescriptor();
 

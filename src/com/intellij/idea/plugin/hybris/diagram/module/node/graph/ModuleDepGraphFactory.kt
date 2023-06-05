@@ -26,7 +26,7 @@ object ModuleDepGraphFactory {
 
     fun buildNode(module: Module) = ModuleDepGraphNodeModule(
         module,
-        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType,
+        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type,
         module.yExtensionName()
     )
 }

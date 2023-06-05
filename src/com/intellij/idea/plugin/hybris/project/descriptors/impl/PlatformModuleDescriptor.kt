@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-package com.intellij.idea.plugin.hybris.facet
-
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
+import java.io.File
 
-class YFacetState(
-    var name: String = "",
-    var readonly: Boolean = false,
-    var moduleDescriptorType: ModuleDescriptorType = ModuleDescriptorType.NONE,
-    var subModuleDescriptorType: SubModuleDescriptorType? = null,
-)
+class PlatformModuleDescriptor(
+    moduleRootDirectory: File,
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)

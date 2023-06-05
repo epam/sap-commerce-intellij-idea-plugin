@@ -40,7 +40,7 @@ class SpringFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        val yModuleDescriptor = moduleDescriptor as? YModuleDescriptor ?: return
+        if (moduleDescriptor !is YModuleDescriptor) return
 
         WriteAction.runAndWait<RuntimeException> {
             val springFacet = SpringFacet.getInstance(javaModule)
@@ -50,10 +50,10 @@ class SpringFacetConfigurator : FacetConfigurator {
                     ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
                 ?: return@runAndWait
 
-            val facetId = yModuleDescriptor.name + SpringFacet.FACET_TYPE_ID
+            val facetId = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
             val springFileSet = springFacet.addFileSet(facetId, facetId)
 
-            yModuleDescriptor.springFileSet
+            moduleDescriptor.springFileSet
                 .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
                 .forEach { springFileSet.addFile(it) }
 

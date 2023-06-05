@@ -22,10 +22,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_VERSION_1905_0
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.Version
+import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
+import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
@@ -42,6 +43,7 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
     override fun getState() = hybrisProjectSettings
     override fun loadState(state: HybrisProjectSettings) = XmlSerializerUtil.copyBean(state, hybrisProjectSettings)
 
+    // TODO: improve this logic for initially non-hybris projects
     fun isHybrisProject() = state.hybrisProject
 
     fun isOutdatedHybrisProject(): Boolean {
@@ -53,15 +55,16 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
-    @Deprecated("Replaced with [y] Facet")
-    fun getModuleSettings(module: Module): ModuleSettings = getModuleSettings(module.yExtensionName())
+    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
+        ?: ExtensionDescriptor(module.yExtensionName())
+
     fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
         if (state.availableExtensions.isEmpty()) {
             synchronized(hybrisProjectSettings) {
                 state.availableExtensions.clear()
 
                 val availableExtensions = state.completeSetOfAvailableExtensionsInHybris
-                    .map { Pair(it, ExtensionDescriptor(name = it)) }
+                    .associateWith { ExtensionDescriptor(name = it) }
                 state.availableExtensions.putAll(availableExtensions)
                 registerCloudExtensions()
             }
@@ -69,16 +72,17 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         return state.availableExtensions
     }
 
-    fun setAvailableExtensions(descriptors: Set<ModuleDescriptor>) {
+    fun setAvailableExtensions(descriptors: Set<YModuleDescriptor>) {
         state.availableExtensions.clear()
         descriptors
-            .map { YModuleDescriptorUtil.getExtensionDescriptor(it) }
+            .map { it.extensionDescriptor() }
             .forEach { state.availableExtensions[it.name] = it }
         registerCloudExtensions()
     }
 
     fun registerCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
-        .forEach { state.availableExtensions[it] = ExtensionDescriptor(it, ModuleDescriptorType.CCV2) }
+        .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2) }
+        .forEach { state.availableExtensions[it.name] = it }
 
     fun getBackofficeWebInfLib() = if (is2019VersionOrHigher()) HybrisConstants.BACKOFFICE_WEB_INF_LIB_2019
     else HybrisConstants.BACKOFFICE_WEB_INF_LIB
@@ -93,9 +97,6 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         val projectVersion = Version.parseVersion(hybrisVersion)
         return projectVersion >= Version.parseVersion(PLATFORM_VERSION_1905_0)
     }
-
-    private fun getModuleSettings(moduleName: String) = state.moduleSettings
-        .computeIfAbsent(moduleName) { _ -> ModuleSettings() }
 
     companion object {
         @JvmStatic

@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+package com.intellij.idea.plugin.hybris.facet
+
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import java.io.File
+import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 
-class YConfigModuleDescriptor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String = moduleRootDirectory.name
-) : AbstractYModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
-
-    var isPreselected = false
-    var isMainConfig = false
-    override val descriptorType: ModuleDescriptorType
-        get() = if (isMainConfig) ModuleDescriptorType.CONFIG
-        else ModuleDescriptorType.CUSTOM
-}
+class ExtensionDescriptor(
+    var name: String = "",
+    var readonly: Boolean = false,
+    var useMaven: Boolean = false,
+    var type: ModuleDescriptorType = ModuleDescriptorType.NONE,
+    var subModuleType: SubModuleDescriptorType? = null,
+    var backofficeModule: Boolean = false,
+    var hacModule: Boolean = false,
+    var deprecated: Boolean = false,
+    var extGenTemplateExtension: Boolean = false,
+    var addon: Boolean = false,
+    var classPathGen: String? = null,
+    var moduleGenName: String? = null,
+)

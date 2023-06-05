@@ -20,11 +20,10 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.facet.YFacetState
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -41,6 +40,8 @@ class YFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
+        if (moduleDescriptor !is YModuleDescriptor) return
+
         WriteAction.runAndWait<RuntimeException> {
             modifiableFacetModel.getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
                 ?.let { modifiableFacetModel.removeFacet(it) }
@@ -52,13 +53,7 @@ class YFacetConfigurator : FacetConfigurator {
                 facetType.createDefaultConfiguration(),
                 null
             )
-            val state = YFacetState(
-                name = moduleDescriptor.name,
-                readonly = moduleDescriptor.readonly,
-                moduleDescriptorType = moduleDescriptor.descriptorType,
-                subModuleDescriptorType = (moduleDescriptor as? YSubModuleDescriptor)?.subModuleDescriptorType,
-            )
-            facet.configuration.loadState(state)
+            facet.configuration.loadState(moduleDescriptor.extensionDescriptor())
 
             modifiableFacetModel.addFacet(facet)
         }
