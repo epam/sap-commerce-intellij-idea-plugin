@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.util.xml.DomElement
 import io.ktor.util.*
@@ -151,7 +151,7 @@ object TSMetaDetailsGenerator {
         <br>
         <div><strong>Declared in the following modules</strong></div>
         <ul>
-        ${declarations.map { it.module.shortName() }.distinct().joinToString("") { "<li>$it</li>" }}
+        ${declarations.map { it.module.yExtensionName() }.distinct().joinToString("") { "<li>$it</li>" }}
         </ul>
     """.trimIndent()
 

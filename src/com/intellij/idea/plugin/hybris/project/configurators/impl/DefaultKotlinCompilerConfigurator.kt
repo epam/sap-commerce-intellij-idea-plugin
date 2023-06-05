@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache
 import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
@@ -45,7 +45,7 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
 
     override fun configureAfterImport(project: Project) {
         val hasKotlinnatureExtension = ModuleManager.getInstance(project).modules
-            .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.shortName() }
+            .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
         if (!hasKotlinnatureExtension) return
 
         val compilerVersion = ProjectPropertiesUtils.findMacroProperty(project, HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)

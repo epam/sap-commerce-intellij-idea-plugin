@@ -26,6 +26,6 @@ import java.io.File
 class YAcceleratorAddonSubModuleDescriptor(
     owner: YModuleDescriptor,
     rootDirectory: File,
-    override val name: String = owner.name + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY,
+    override val name: String = owner.name + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY + "." + HybrisConstants.WEB_MODULE_DIRECTORY,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, rootDirectory)

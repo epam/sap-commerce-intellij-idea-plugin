@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
@@ -52,7 +52,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         val descriptor = HybrisProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
-            .find { it.shortName() == psi.value }
+            .find { it.yExtensionName() == psi.value }
             ?.let { EiSModelAccess.getExtensionInfo(it) }
             ?.xmlTag
             ?: return emptyList()

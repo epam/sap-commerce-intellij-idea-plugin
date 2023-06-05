@@ -2,7 +2,7 @@ package com.intellij.idea.plugin.hybris.impex.utils
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
@@ -168,10 +168,10 @@ object ProjectPropertiesUtils {
     }
 
     private fun obtainConfigModule(project: Project) =
-        ModuleManager.getInstance(project).modules.firstOrNull { it.shortName() == HybrisConstants.EXTENSION_NAME_CONFIG }
+        ModuleManager.getInstance(project).modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
 
     private fun obtainPlatformModule(project: Project) =
-        ModuleManager.getInstance(project).modules.firstOrNull { it.shortName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        ModuleManager.getInstance(project).modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {

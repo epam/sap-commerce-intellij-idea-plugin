@@ -25,7 +25,7 @@ import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -52,7 +52,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
             ?.moduleDescriptorType
             ?: HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType
 
-        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.shortName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
+        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
             data.setIcon(KotlinIcons.SMALL_LOGO)
             return
         }

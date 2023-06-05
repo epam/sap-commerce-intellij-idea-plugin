@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.module.Module
 
@@ -27,6 +27,6 @@ object ModuleDepGraphFactory {
     fun buildNode(module: Module) = ModuleDepGraphNodeModule(
         module,
         HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).descriptorType,
-        module.shortName()
+        module.yExtensionName()
     )
 }

@@ -23,4 +23,4 @@ import com.intellij.openapi.module.Module
 
 infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
 
-fun Module.shortName():String = ModuleUtils.getShortName(this)
+fun Module.yExtensionName():String = ModuleUtils.getShortName(this)

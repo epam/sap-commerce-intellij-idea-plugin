@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.kotlin.shortName
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.Disposable
@@ -52,5 +52,5 @@ class BSMetaModel(
         myMetaCache.clear()
     }
 
-    override fun toString() = "Module: ${module.shortName()} | psi file: ${psiFile.name}"
+    override fun toString() = "Module: ${module.yExtensionName()} | psi file: ${psiFile.name}"
 }
