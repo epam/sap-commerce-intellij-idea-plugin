@@ -32,10 +32,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
+import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
@@ -510,6 +507,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
                 && !(e instanceof ConfigModuleDescriptor)
+                && !(e instanceof YSubModuleDescriptor)
             )
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
