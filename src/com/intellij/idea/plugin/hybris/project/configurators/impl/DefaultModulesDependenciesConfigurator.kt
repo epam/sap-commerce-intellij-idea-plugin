@@ -46,7 +46,7 @@ class DefaultModulesDependenciesConfigurator : ModulesDependenciesConfigurator {
             .filterIsInstance<YModuleDescriptor>()
             .forEach { yModuleDescriptor ->
                 allModules[yModuleDescriptor.ideaModuleName()]
-                    ?.let {module ->
+                    ?.let { module ->
                         val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
 
                         yModuleDescriptor.dependenciesTree
@@ -63,7 +63,8 @@ class DefaultModulesDependenciesConfigurator : ModulesDependenciesConfigurator {
             platformModule,
             allModules,
             modifiableModelsProvider,
-            modulesChosenForImport)
+            modulesChosenForImport
+        )
     }
 
     private fun processPlatformModulesDependencies(

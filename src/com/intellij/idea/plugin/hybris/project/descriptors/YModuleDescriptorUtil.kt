@@ -64,7 +64,7 @@ object YModuleDescriptorUtil {
             virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDir)
         } else moduleRootDir.path
     }
-
+    // TODO: evaluate it only once during import, see usages
     fun getRequiredExtensionNames(descriptor: YModuleDescriptor) = when (descriptor) {
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
         // TODO: build web dependencies
@@ -72,6 +72,7 @@ object YModuleDescriptorUtil {
         is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         // TODO: build BO dependencies
 //        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        is YHacSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
     }
@@ -122,6 +123,11 @@ object YModuleDescriptorUtil {
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
         return setOf(descriptor.owner.name) + webNames
     }
+
+    private fun getRequiredExtensionNames(descriptor: YHacSubModuleDescriptor) = setOf(
+        descriptor.owner.name,
+        HybrisConstants.EXTENSION_NAME_HAC + ".web"
+    )
 
     private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String> {
         return setOf(descriptor.owner.name)

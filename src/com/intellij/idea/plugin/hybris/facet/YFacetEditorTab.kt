@@ -32,10 +32,16 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
     override fun createComponent() = dialogPanel
 
     private val dialogPanel = panel {
-        group("", false) {
-            row {
-                label("SAP Commerce descriptor")
+        row {
+            label("SAP Commerce descriptor")
+                .bold()
+        }
+        group("Extension details") {
+            row("Name:") {
+                label(state.name)
                     .bold()
+            }
+            row("Type:") {
                 icon(
                     when (state.type) {
                         ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
@@ -46,14 +52,6 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                         else -> HybrisIcons.HYBRIS
                     }
                 )
-            }
-        }
-        group("Extension details") {
-            row("Name:") {
-                label(state.name)
-                    .bold()
-            }
-            row("Type:") {
                 label(state.type.name)
             }
             state.subModuleType
