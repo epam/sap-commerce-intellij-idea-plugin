@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
-import org.jetbrains.annotations.NotNull;
+interface ModulesDependenciesConfigurator {
 
-public interface ModulesDependenciesConfigurator {
+    fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    )
 
-    void configure(
-        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull IdeModifiableModelsProvider modifiableModelsProvider
-    );
+    companion object {
+        val instance: ModulesDependenciesConfigurator = ApplicationManager.getApplication().getService(ModulesDependenciesConfigurator::class.java)
+    }
 }

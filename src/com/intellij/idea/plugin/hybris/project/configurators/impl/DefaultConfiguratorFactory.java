@@ -70,7 +70,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     @NotNull
     @Override
     public ModulesDependenciesConfigurator getModulesDependenciesConfigurator() {
-        return ApplicationManager.getApplication().getService(ModulesDependenciesConfigurator.class);
+        return ModulesDependenciesConfigurator.Companion.getInstance();
     }
 
     @NotNull
