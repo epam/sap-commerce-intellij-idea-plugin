@@ -30,4 +30,5 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     var readonly: Boolean
 
     fun extensionDescriptor(): ExtensionDescriptor
+    fun ideaModuleName() = groupNames.joinToString(separator = ".", postfix = ".") + name
 }

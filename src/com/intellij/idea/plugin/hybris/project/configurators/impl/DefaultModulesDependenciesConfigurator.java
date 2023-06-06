@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.DependencyScope;
@@ -30,9 +32,9 @@ import com.intellij.openapi.roots.ModuleOrderEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DefaultModulesDependenciesConfigurator implements ModulesDependenciesConfigurator {
@@ -42,7 +44,8 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        final var modules = Arrays.asList(modifiableModelsProvider.getModules());
+        final var allModules = Arrays.stream(modifiableModelsProvider.getModules())
+            .collect(Collectors.toMap(Module::getName, Function.identity()));
         final var modulesChosenForImport = hybrisProjectDescriptor.getModulesChosenForImport();
         final var extModules = modulesChosenForImport.stream()
             .filter(YPlatformExtModuleDescriptor.class::isInstance)
@@ -52,49 +55,66 @@ public class DefaultModulesDependenciesConfigurator implements ModulesDependenci
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .forEach(it -> {
-                findModuleByNameIgnoreCase(modules, it.getName())
-                    .ifPresent(nextModule -> configureModuleDependencies(
+                final var nextModule = allModules.get(it.ideaModuleName());
+
+                if (nextModule != null) {
+                    configureModuleDependencies(
                         it,
                         nextModule,
-                        modules,
+                        allModules,
                         extModules,
                         modifiableModelsProvider
-                    ));
+                    );
+                }
             });
+
+        final var platformDescriptor = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor();
+        final var module = allModules.get(platformDescriptor.ideaModuleName());
+        if (module != null) {
+            final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
+
+            modulesChosenForImport.stream()
+                .filter(YPlatformExtModuleDescriptor.class::isInstance)
+                .map(YPlatformExtModuleDescriptor.class::cast)
+                .forEach(dependency -> processModuleDependency(allModules, dependency.ideaModuleName(), rootModel));
+        }
+
+        final var configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
+        if (configDescriptor != null) {
+            final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
+            processModuleDependency(allModules, configDescriptor.ideaModuleName(), rootModel);
+        }
     }
 
     private void configureModuleDependencies(
         @NotNull final YModuleDescriptor moduleDescriptor,
         @NotNull final Module module,
-        @NotNull final Collection<Module> allModules,
+        @NotNull final Map<String, Module> allModules,
         @NotNull final Set<ModuleDescriptor> extModules,
         final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     ) {
-        final ModifiableRootModel rootModel = modifiableModelsProvider.getModifiableRootModel(module);
+        final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
         for (YModuleDescriptor dependency : moduleDescriptor.getDependenciesTree()) {
             if (moduleDescriptor instanceof YOotbRegularModuleDescriptor && extModules.contains(dependency)) {
                 continue;
             }
 
-            Optional<Module> targetDependencyModule = findModuleByNameIgnoreCase(allModules, dependency.getName());
-            final ModuleOrderEntry moduleOrderEntry = targetDependencyModule.isPresent()
-                ? rootModel.addModuleOrderEntry(targetDependencyModule.get())
-                : rootModel.addInvalidModuleEntry(dependency.getName());
-
-            moduleOrderEntry.setExported(true);
-            moduleOrderEntry.setScope(DependencyScope.COMPILE);
+            processModuleDependency(allModules, dependency.ideaModuleName(), rootModel);
         }
     }
 
-    private static Optional<Module> findModuleByNameIgnoreCase(
-        final @NotNull Collection<Module> all,
-        final @NotNull String name
-    ) {
-        // TODO: use MAP instead...
-        return all.stream()
-                  .filter(module -> name.equalsIgnoreCase(module.getName()))
-                  .findAny();
+    private void processModuleDependency(
+        final @NotNull Map<String, Module> allModules,
+        final String dependencyName,
+        final ModifiableRootModel rootModel) {
+        final Module targetDependencyModule = allModules.get(dependencyName);
+        final ModuleOrderEntry moduleOrderEntry = targetDependencyModule != null
+            ? rootModel.addModuleOrderEntry(targetDependencyModule)
+            : rootModel.addInvalidModuleEntry(dependencyName);
+
+        moduleOrderEntry.setExported(true);
+        moduleOrderEntry.setScope(DependencyScope.COMPILE);
     }
 
 }

@@ -142,10 +142,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 yRegularModuleDescriptor.setInLocalExtensions(true);
             }
-            // TODO: remove?
-//            if (yModuleDescriptor instanceof final YPlatformModuleDescriptor platformDescriptor) {
-//                platformDescriptor.getDependenciesTree().add(configHybrisModuleDescriptor);
-//            }
         }
         preselectConfigModules(configHybrisModuleDescriptor, foundModules);
     }

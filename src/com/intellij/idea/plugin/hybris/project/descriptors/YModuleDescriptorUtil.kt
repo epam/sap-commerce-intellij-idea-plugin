@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.openapi.application.ApplicationManager
 import io.ktor.util.*
 import org.apache.commons.collections4.CollectionUtils
-import org.apache.commons.io.filefilter.DirectoryFileFilter
 import java.io.File
-import java.io.FileFilter
 import java.util.*
 
 object YModuleDescriptorUtil {
@@ -51,7 +49,7 @@ object YModuleDescriptorUtil {
         || File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
     fun getIdeaModuleFile(descriptor: ModuleDescriptor): File {
-        val futureModuleName = descriptor.groupNames.joinToString(separator = ".", postfix = ".") + descriptor.name
+        val futureModuleName = descriptor.ideaModuleName()
         return descriptor.rootProjectDescriptor.modulesFilesDirectory
             ?.let { File(descriptor.rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
             ?: File(descriptor.moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
@@ -68,22 +66,15 @@ object YModuleDescriptorUtil {
     }
 
     fun getRequiredExtensionNames(descriptor: YModuleDescriptor) = when (descriptor) {
-        // TODO: build dependencies separately
-//        is PlatformModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        // TODO: build web dependencies
 //        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        // TODO: build BO dependencies
 //        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
     }
-
-    private fun getRequiredExtensionNames(descriptor: PlatformModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME)
-        .takeIf { it.isDirectory }
-        ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
-        ?.map { it.name }
-        ?.toSet()
-        ?: emptySet()
 
     private fun getRequiredExtensionNames(descriptor: YRegularModuleDescriptor): Set<String> {
         val extension = descriptor.extensionInfo.extension ?: return getDefaultRequiredExtensionNames(descriptor)
@@ -101,6 +92,7 @@ object YModuleDescriptorUtil {
         if (descriptor.hasHmcModule) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
         }
+        // TODO: mby move it to BackofficeSubModule
         if (descriptor.hasBackofficeModule) {
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
         }
@@ -128,13 +120,10 @@ object YModuleDescriptorUtil {
 
         val webNames = ownerRequiredExtensionNames
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
-//        val addonsNames = ownerRequiredExtensionNames
-//            .map { it + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY }
         return setOf(descriptor.owner.name) + webNames
     }
 
     private fun getRequiredExtensionNames(descriptor: YSubModuleDescriptor): Set<String> {
-//        return getRequiredExtensionNames(descriptor.owner)
         return setOf(descriptor.owner.name)
     }
 
