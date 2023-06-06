@@ -33,6 +33,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.facet.YFacet;
 import com.intellij.idea.plugin.hybris.facet.YFacetConfiguration;
+import com.intellij.idea.plugin.hybris.kotlin.InfixesKt;
 import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -92,7 +93,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             return children;
         }
 
-        final var newChildren = removeSubmodules(parent, children);
+        final var newChildren = filterOutChildren(parent, children);
 
         if (parent instanceof JunkProjectViewNode) {
             return this.isCompactEmptyMiddleFoldersEnabled(settings)
@@ -115,7 +116,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             : childrenWithProcessedJunkFiles;
     }
 
-    private Collection<AbstractTreeNode<?>> removeSubmodules(final AbstractTreeNode<?> parent, final Collection<AbstractTreeNode<?>> children) {
+    private Collection<AbstractTreeNode<?>> filterOutChildren(final AbstractTreeNode<?> parent, final Collection<AbstractTreeNode<?>> children) {
         return children.stream()
             .filter(it -> isNodeVisible(parent, it))
             .collect(Collectors.toCollection(ArrayList::new));
@@ -127,6 +128,10 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             if (vf == null) return true;
             final var module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(vf);
             if (module == null) return true;
+
+            // hide `platform/ext` node
+            if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME.equals(vf.getName())
+                && HybrisConstants.EXTENSION_NAME_PLATFORM.equals(InfixesKt.yExtensionName(module))) return false;
 
             return Optional.ofNullable(YFacet.Companion.get(module))
                 .map(Facet::getConfiguration)
