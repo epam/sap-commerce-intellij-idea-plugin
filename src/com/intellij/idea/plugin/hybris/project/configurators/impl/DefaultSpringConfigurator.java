@@ -20,8 +20,11 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.kotlin.InfixesKt;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
@@ -39,19 +42,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
+// TODO: refactor, respect modules/sub-modules
 public class DefaultSpringConfigurator implements SpringConfigurator {
 
     private static final Logger LOG = Logger.getInstance(DefaultSpringConfigurator.class);
@@ -98,7 +96,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
         for (Module module : modifiableModelsProvider.getModules()) {
             final ModifiableFacetModel modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
-            modifiableFacetModelMap.put(module.getName(), modifiableFacetModel);
+            modifiableFacetModelMap.put(InfixesKt.yExtensionName(module), modifiableFacetModel);
         }
 
         hybrisProjectDescriptor.getModulesChosenForImport().stream()
@@ -114,7 +112,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         Validate.notNull(moduleDescriptor);
         Validate.notNull(modifiableFacetModelMap);
 
-        final SpringFileSet springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor.getName());
+        final SpringFileSet springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor);
         if (springFileSet == null) {
             return;
         }
@@ -124,7 +122,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             .sorted()
             .toList();
         for (YModuleDescriptor dependsOnModule : sortedDependenciesTree) {
-            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule.getName());
+            final SpringFileSet parentFileSet = getSpringFileSet(modifiableFacetModelMap, dependsOnModule);
             if (parentFileSet == null) {
                 continue;
             }
@@ -134,12 +132,12 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
 
     private SpringFileSet getSpringFileSet(
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap,
-        @NotNull final String moduleName
+        final @NotNull YModuleDescriptor yModuleDescriptor
     ) {
-        Validate.notNull(moduleName);
+        Validate.notNull(yModuleDescriptor);
         Validate.notNull(modifiableFacetModelMap);
 
-        final ModifiableFacetModel modifiableFacetModel = modifiableFacetModelMap.get(moduleName);
+        final ModifiableFacetModel modifiableFacetModel = modifiableFacetModelMap.get(yModuleDescriptor.getName());
         if (modifiableFacetModel == null) {
             return null;
         }
