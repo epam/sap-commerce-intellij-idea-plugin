@@ -39,45 +39,51 @@ class DefaultModulesDependenciesConfigurator : ModulesDependenciesConfigurator {
         val extModules = modulesChosenForImport.filterIsInstance<YPlatformExtModuleDescriptor>()
             .toSet()
 
+        val platformIdeaModuleName = hybrisProjectDescriptor.platformHybrisModuleDescriptor.ideaModuleName()
+        val platformModule = allModules[platformIdeaModuleName] ?: return
+
         modulesChosenForImport
             .filterIsInstance<YModuleDescriptor>()
             .forEach { yModuleDescriptor ->
                 allModules[yModuleDescriptor.ideaModuleName()]
-                    ?.let { configureModuleDependencies(yModuleDescriptor, it, allModules, extModules, modifiableModelsProvider) }
+                    ?.let {module ->
+                        val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
+
+                        yModuleDescriptor.dependenciesTree
+                            .filterNot { yModuleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
+                            .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
+
+                        // also add Platform to every extension
+                        addModuleDependency(allModules, platformIdeaModuleName, rootModel)
+                    }
             }
 
-        val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
-        allModules[platformDescriptor.ideaModuleName()]
-            ?.let {
-                val rootModel = modifiableModelsProvider.getModifiableRootModel(it)
-                modulesChosenForImport
-                    .filterIsInstance<YPlatformExtModuleDescriptor>()
-                    .forEach { dependency -> processModuleDependency(allModules, dependency.ideaModuleName(), rootModel) }
-            }
-        val configDescriptor = hybrisProjectDescriptor.configHybrisModuleDescriptor
-
-        if (configDescriptor != null) {
-            val module = allModules[configDescriptor.ideaModuleName()]
-            val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
-            processModuleDependency(allModules, configDescriptor.ideaModuleName(), rootModel)
-        }
+        processPlatformModulesDependencies(
+            hybrisProjectDescriptor,
+            platformModule,
+            allModules,
+            modifiableModelsProvider,
+            modulesChosenForImport)
     }
 
-    private fun configureModuleDependencies(
-        moduleDescriptor: YModuleDescriptor,
-        module: Module,
+    private fun processPlatformModulesDependencies(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        platformModule: Module,
         allModules: Map<String, Module>,
-        extModules: Set<ModuleDescriptor>,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        modulesChosenForImport: List<ModuleDescriptor>
     ) {
-        val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
+        val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)
 
-        moduleDescriptor.dependenciesTree
-            .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
-            .forEach { processModuleDependency(allModules, it.ideaModuleName(), rootModel) }
+        modulesChosenForImport
+            .filterIsInstance<YPlatformExtModuleDescriptor>()
+            .forEach { dependency -> addModuleDependency(allModules, dependency.ideaModuleName(), platformRootModel) }
+
+        hybrisProjectDescriptor.configHybrisModuleDescriptor
+            ?.let { addModuleDependency(allModules, it.ideaModuleName(), platformRootModel) }
     }
 
-    private fun processModuleDependency(
+    private fun addModuleDependency(
         allModules: Map<String, Module>,
         dependencyName: String,
         rootModel: ModifiableRootModel
