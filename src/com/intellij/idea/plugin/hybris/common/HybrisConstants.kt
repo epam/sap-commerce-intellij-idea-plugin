@@ -427,36 +427,36 @@ object HybrisConstants {
     val BUILD_NUMBER_FILE_PATH = FileUtilRt.toSystemDependentName("/bin/platform/build.number")
 
     @JvmField
-    val WEB_ROOT_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("web/webroot")
+    val WEB_WEBROOT_DIRECTORY_PATH = FileUtilRt.toSystemDependentName("web/webroot")
     @JvmField
-    val WEB_XML_DIRECTORY_RELATIVE_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/web.xml")
+    val WEBROOT_WEBINF_WEB_XML_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/web.xml")
     @JvmField
-    val WEB_INF_CLASSES_DIRECTORY = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
+    val WEBROOT_WEBINF_CLASSES_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
     @JvmField
-    val WEB_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("web/src")
+    val WEB_SRC_PATH = FileUtilRt.toSystemDependentName("web/src")
     @JvmField
-    val WEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("web/webroot/WEB-INF/lib")
+    val WEBROOT_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
 
     @JvmField
-    val ACCELERATOR_ADDON_WEB_DIRECTORY = FileUtilRt.toSystemDependentName("acceleratoraddon/web")
+    val ACCELERATOR_ADDON_WEB_PATH = FileUtilRt.toSystemDependentName("acceleratoraddon/web")
 
     @JvmField
-    val COMMONWEB_WEBINF_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
+    val COMMONWEB_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
     @JvmField
-    val DOC_SOURCES_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("doc/sources")
+    val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
 
     @JvmField
-    val PL_BOOTSTRAP_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/bin")
+    val PL_BOOTSTRAP_LIB_PATH = FileUtilRt.toSystemDependentName("bootstrap/bin")
     @JvmField
-    val PL_BOOTSTRAP_GEN_SRC_DIRECTORY = FileUtilRt.toSystemDependentName("bootstrap/gensrc")
+    val PL_BOOTSTRAP_GEN_SRC_PATH = FileUtilRt.toSystemDependentName("bootstrap/gensrc")
     @JvmField
-    val PL_TOMCAT_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/lib")
+    val PL_TOMCAT_LIB_PATH = FileUtilRt.toSystemDependentName("tomcat/lib")
     @JvmField
-    val PL_TOMCAT_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat/bin")
+    val PL_TOMCAT_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat/bin")
     @JvmField
-    val PL_TOMCAT_6_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/lib")
+    val PL_TOMCAT_6_LIB_PATH = FileUtilRt.toSystemDependentName("tomcat-6/lib")
     @JvmField
-    val PL_TOMCAT_6_BIN_DIRECTORY = FileUtilRt.toSystemDependentName("tomcat-6/bin")
+    val PL_TOMCAT_6_BIN_PATH = FileUtilRt.toSystemDependentName("tomcat-6/bin")
     @JvmField
     val JAVA_COMPILER_OUTPUT_PATH = FileUtilRt.toSystemDependentName("/classes")
 
@@ -464,9 +464,9 @@ object HybrisConstants {
     val HAC_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/platform/ext/hac/web/webroot/WEB-INF/classes")
 
     @JvmField
-    val BACKOFFICE_LIB_DIRECTORY = FileUtilRt.toSystemDependentName("backoffice/bin")
+    val BACKOFFICE_LIB_PATH = FileUtilRt.toSystemDependentName("backoffice/bin")
     @JvmField
-    val BACKOFFICE_JAR_DIRECTORY = FileUtilRt.toSystemDependentName("resources/backoffice")
+    val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
     @JvmField
     val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
     @JvmField

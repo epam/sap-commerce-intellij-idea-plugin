@@ -23,6 +23,7 @@ import com.intellij.openapi.roots.DependencyScope
 import java.io.File
 
 data class JavaLibraryDescriptor(
+    var name: String? = null,
     var libraryFile: File,
     var sourceFiles: List<File> = emptyList(),
     var exported: Boolean = false,

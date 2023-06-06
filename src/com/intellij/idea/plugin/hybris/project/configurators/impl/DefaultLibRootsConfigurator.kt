@@ -64,7 +64,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
             is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
             is YOotbRegularModuleDescriptor -> {
                 if (moduleDescriptor.hasBackofficeModule) {
-                    val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_DIRECTORY)
+                    val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
                     if (backofficeJarDirectory.exists()) {
                         YModuleLibDescriptorUtil.createGlobalLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
                     }
@@ -92,7 +92,9 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         sourceCodeRoot: VirtualFile?,
         javaLibraryDescriptor: JavaLibraryDescriptor
     ) {
-        val library = modifiableRootModel.moduleLibraryTable.createLibrary()
+        val library = javaLibraryDescriptor.name
+            ?.let { modifiableRootModel.moduleLibraryTable.createLibrary(it) }
+            ?: modifiableRootModel.moduleLibraryTable.createLibrary()
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), OrderRootType.CLASSES)
 
@@ -123,7 +125,10 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         progressIndicator: ProgressIndicator
     ) {
         val projectLibraryTable = modifiableRootModel.moduleLibraryTable
-        val library = projectLibraryTable.createLibrary()
+        val library = javaLibraryDescriptor.name
+            ?.let { projectLibraryTable.createLibrary(it) }
+            ?: projectLibraryTable.createLibrary()
+
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
 
@@ -195,7 +200,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         if (!HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) return emptyList()
         if (LibraryDescriptorType.WEB_INF_LIB != javaLibraryDescriptor.descriptorType) return emptyList()
 
-        val sourcesDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_DIRECTORY)
+        val sourcesDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
         return sourcesDirectory
             .list { _, name -> name.endsWith("-sources.jar") }
             ?.map { File(sourcesDirectory, it) }

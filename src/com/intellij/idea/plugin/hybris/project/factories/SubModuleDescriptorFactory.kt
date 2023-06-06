@@ -42,7 +42,7 @@ object SubModuleDescriptorFactory {
             build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { YBackofficeSubModuleDescriptor(owner, it) }
         }
         build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
-        build(owner, HybrisConstants.ACCELERATOR_ADDON_WEB_DIRECTORY, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
+        build(owner, HybrisConstants.ACCELERATOR_ADDON_WEB_PATH, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
 
         return subModules.unmodifiable()
     }

@@ -92,7 +92,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_LIB_DIRECTORY),
+                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_LIB_PATH),
                 exported = true
             )
         )
@@ -124,6 +124,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
+                name = "Bin",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BIN_DIRECTORY),
                 exported = true
             )
@@ -134,7 +135,8 @@ object YModuleLibDescriptorUtil {
             ?.let {
                 libs.add(
                     JavaLibraryDescriptor(
-                        libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
+                        name = "Web Classes",
+                        libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                         directoryWithClasses = true
                     )
                 )
@@ -206,7 +208,8 @@ object YModuleLibDescriptorUtil {
             .filter { YModuleDescriptorUtil.getRequiredExtensionNames(it).contains(descriptor.name) }
             .map {
                 JavaLibraryDescriptor(
-                    libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                    name = "Web Library",
+                    libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
                 )
             }
         libs.addAll(backwardDependencies)
@@ -238,6 +241,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
+                name = "HAC Web Classes",
                 libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
                 directoryWithClasses = true
             )
@@ -279,8 +283,9 @@ object YModuleLibDescriptorUtil {
         val attachSources = descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
         libs.add(
             JavaLibraryDescriptor(
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEB_INF_CLASSES_DIRECTORY),
-                sourceFiles = if (attachSources) listOf(File(descriptor.moduleRootDirectory, HybrisConstants.WEB_SRC_DIRECTORY))
+                name = "Web Classes",
+                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                sourceFiles = if (attachSources) listOf(File(descriptor.moduleRootDirectory, HybrisConstants.WEB_SRC_PATH))
                 else emptyList(),
                 exported = true,
                 directoryWithClasses = true
@@ -289,7 +294,8 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEB_WEBINF_LIB_DIRECTORY),
+                name = "Web Library",
+                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )
         )
@@ -299,6 +305,7 @@ object YModuleLibDescriptorUtil {
 
     private fun getLibraryDescriptors(descriptor: ConfigModuleDescriptor) = listOf(
         JavaLibraryDescriptor(
+            name = "Config License",
             libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.CONFIG_LICENCE_DIRECTORY),
             exported = true
         )
@@ -306,6 +313,7 @@ object YModuleLibDescriptorUtil {
 
     private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf(
         JavaLibraryDescriptor(
+            name = "Database Drivers",
             libraryFile = getDbDriversDirectory(descriptor),
             exported = true,
         )

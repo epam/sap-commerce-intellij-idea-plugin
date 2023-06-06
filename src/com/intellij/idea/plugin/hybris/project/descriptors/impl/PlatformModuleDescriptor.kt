@@ -42,7 +42,7 @@ class PlatformModuleDescriptor(
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val libraryDirectories = getLibraryDirectories()
-        val bootStrapSrc = File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY)
+        val bootStrapSrc = File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP)
             ?: libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP)
@@ -84,11 +84,11 @@ class PlatformModuleDescriptor(
                     addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY))
                 }
             }
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_BIN_DIRECTORY))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_BIN_DIRECTORY))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_LIB_DIRECTORY))
-        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_LIB_DIRECTORY))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_PATH))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_BIN_PATH))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_BIN_PATH))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_LIB_PATH))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_LIB_PATH))
 
         return libraryDirectories
     }

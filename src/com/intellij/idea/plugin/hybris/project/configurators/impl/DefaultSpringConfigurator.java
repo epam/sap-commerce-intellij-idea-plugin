@@ -231,7 +231,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final YModuleDescriptor moduleDescriptor
     ) throws IOException, JDOMException {
         if (!(moduleDescriptor instanceof YWebSubModuleDescriptor)) return;
-        final File webXml = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH);
+        final File webXml = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH);
         if (!webXml.exists()) {
             return;
         }
@@ -258,7 +258,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final YModuleDescriptor moduleDescriptor,
         final String contextConfigLocation
     ) {
-        final File webModuleDir = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_ROOT_DIRECTORY_RELATIVE_PATH);
+        final File webModuleDir = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_WEBROOT_DIRECTORY_PATH);
         for (String xml: SPLIT_PATTERN.split(contextConfigLocation)) {
             if (!xml.endsWith(".xml")) {
                 continue;

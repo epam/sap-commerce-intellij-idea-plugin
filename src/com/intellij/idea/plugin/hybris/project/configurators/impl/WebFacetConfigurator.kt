@@ -61,7 +61,7 @@ class WebFacetConfigurator : FacetConfigurator {
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
             webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(yWebSubModuleDescriptor.webRoot.absolutePath)), "/")
 
-            VfsUtil.findFileByIoFile(File(yWebSubModuleDescriptor.moduleRootDirectory, HybrisConstants.WEB_XML_DIRECTORY_RELATIVE_PATH), true)
+            VfsUtil.findFileByIoFile(File(yWebSubModuleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }

@@ -347,7 +347,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             || (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
             && srcDirectoriesExists(rootDirectory))
         ) {
-            excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
+            excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }
     }
 
