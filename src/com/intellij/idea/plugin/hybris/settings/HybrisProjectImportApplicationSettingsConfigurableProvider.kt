@@ -114,6 +114,9 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
 
             group(message("hybris.import.settings.exclude.resources.name"), false) {
                 row {
+                    comment("Use SAP Commerce extension name, not fully qualified IDEA module name.")
+                }
+                row {
                     cell(excludeResources)
                         .align(AlignX.FILL)
                         .onApply { state.extensionsResourcesToExclude = excludeResources.data }

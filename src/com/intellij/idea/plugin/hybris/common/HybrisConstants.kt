@@ -336,6 +336,7 @@ object HybrisConstants {
     val DEFAULT_EXCLUDED_FROM_INDEX = listOf(
         "smartedit-custom-build",
         "smartedit-build",
+        "node_modules",
         "apps/**/node_modules",
         "common/temp/node_modules"
     );
