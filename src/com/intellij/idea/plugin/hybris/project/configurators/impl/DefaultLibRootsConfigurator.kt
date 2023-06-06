@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
@@ -42,13 +43,14 @@ import java.io.File
 class DefaultLibRootsConfigurator : LibRootsConfigurator {
 
     override fun configure(
+        allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         indicator: ProgressIndicator
     ) {
         val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
-        for (javaLibraryDescriptor in YModuleLibDescriptorUtil.getLibraryDescriptors(moduleDescriptor)) {
+        for (javaLibraryDescriptor in YModuleLibDescriptorUtil.getLibraryDescriptors(moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }

@@ -18,16 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Map;
 
 public interface SpringConfigurator {
 
-    void findSpringConfiguration(@NotNull List<ModuleDescriptor> modulesChosenForImport);
+    void findSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, Map<String, YModuleDescriptor> yModules);
 
     void configureDependencies(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,

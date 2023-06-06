@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -26,6 +27,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 interface LibRootsConfigurator {
 
     fun configure(
+        allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,

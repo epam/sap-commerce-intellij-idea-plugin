@@ -23,9 +23,10 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.kotlin.InfixesKt;
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.module.Module;
@@ -43,9 +44,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static com.intellij.openapi.util.io.FileUtilRt.toSystemDependentName;
 
@@ -56,33 +55,17 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     private static final Pattern SPLIT_PATTERN = Pattern.compile(" ,");
 
     @Override
-    public void findSpringConfiguration(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
-        Validate.notNull(modulesChosenForImport);
+    public void findSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, final Map<String, YModuleDescriptor> yModuleDescriptors) {
+        final var localProperties = Optional.ofNullable(hybrisProjectDescriptor.getConfigHybrisModuleDescriptor())
+            .map(it -> new File(it.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES));
+        final var advancedProperties = new File(hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor().getModuleRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
 
-        final var yModuleDescriptors = modulesChosenForImport.stream()
-            .filter(YModuleDescriptor.class::isInstance)
-            .map(YModuleDescriptor.class::cast)
-            .collect(Collectors.toMap(it -> it.getName(), Function.identity()));
-
-        File localProperties = null;
-        File advancedProperties = null;
-        for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            if (moduleDescriptor instanceof final ConfigModuleDescriptor configModule) {
-                localProperties = new File(configModule.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES);
-            }
-            if (moduleDescriptor instanceof final PlatformModuleDescriptor platformModule) {
-                advancedProperties = new File(platformModule.getModuleRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES);
-            }
-        }
-        for (YModuleDescriptor moduleDescriptor : yModuleDescriptors.values()) {
+        for (final var moduleDescriptor : yModuleDescriptors.values()) {
             processHybrisModule(yModuleDescriptors, moduleDescriptor);
             if (moduleDescriptor instanceof YCoreExtModuleDescriptor) {
-                if (advancedProperties != null) {
-                    moduleDescriptor.getSpringFileSet().add(advancedProperties.getAbsolutePath());
-                }
-                if (localProperties != null) {
-                    moduleDescriptor.getSpringFileSet().add(localProperties.getAbsolutePath());
-                }
+                moduleDescriptor.getSpringFileSet().add(advancedProperties.getAbsolutePath());
+                localProperties
+                    .ifPresent(it -> moduleDescriptor.getSpringFileSet().add(it.getAbsolutePath()));
             }
         }
     }
@@ -102,7 +85,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         hybrisProjectDescriptor.getModulesChosenForImport().stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
-            .forEach(it ->  configureFacetDependencies(it, modifiableFacetModelMap));
+            .forEach(it -> configureFacetDependencies(it, modifiableFacetModelMap));
     }
 
     private void configureFacetDependencies(
@@ -156,12 +139,12 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         try {
             processWebXml(moduleDescriptorMap, moduleDescriptor);
         } catch (Exception e) {
-            LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
+            LOG.error("Unable to parse web.xml for module " + moduleDescriptor.getName(), e);
         }
         try {
             processBackofficeXml(moduleDescriptorMap, moduleDescriptor);
         } catch (Exception e) {
-            LOG.error("Unable to parse web.xml for module "+moduleDescriptor.getName(), e);
+            LOG.error("Unable to parse web.xml for module " + moduleDescriptor.getName(), e);
         }
     }
 
@@ -240,13 +223,13 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             return;
         }
         final String location = root.getChildren()
-                                    .stream()
-                                    .filter(e -> e.getName().equals("context-param"))
-                                    .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
-                                    .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
-                                    .filter(Objects::nonNull)
-                                    .map(Element::getValue)
-                                    .findFirst().orElse(null);
+            .stream()
+            .filter(e -> e.getName().equals("context-param"))
+            .filter(e -> e.getChildren().stream().anyMatch(p -> p.getName().equals("param-name") && p.getValue().equals("contextConfigLocation")))
+            .map(e -> e.getChildren().stream().filter(p -> p.getName().equals("param-value")).findFirst().orElse(null))
+            .filter(Objects::nonNull)
+            .map(Element::getValue)
+            .findFirst().orElse(null);
         if (location == null) {
             return;
         }
@@ -259,7 +242,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final String contextConfigLocation
     ) {
         final File webModuleDir = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.WEB_WEBROOT_DIRECTORY_PATH);
-        for (String xml: SPLIT_PATTERN.split(contextConfigLocation)) {
+        for (String xml : SPLIT_PATTERN.split(contextConfigLocation)) {
             if (!xml.endsWith(".xml")) {
                 continue;
             }
@@ -292,7 +275,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             }
             return true;
         } catch (Exception e) {
-            LOG.error("unable scan file for spring imports "+springFile.getName());
+            LOG.error("unable scan file for spring imports " + springFile.getName());
         }
         return false;
     }
@@ -304,8 +287,8 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
     ) throws IOException, JDOMException {
         final Element root = getDocumentRoot(springFile);
         final List<Element> importList = root.getChildren().stream()
-                                             .filter(e -> e.getName().equals("import"))
-                                             .toList();
+            .filter(e -> e.getName().equals("import"))
+            .toList();
         processImportNodeList(moduleDescriptorMap, moduleDescriptor, importList, springFile);
     }
 
@@ -315,7 +298,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         final List<Element> importList,
         final File springFile
     ) {
-        for (Element importElement: importList) {
+        for (Element importElement : importList) {
             final String resource = importElement.getAttributeValue("resource");
             if (resource.startsWith("classpath:")) {
                 addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length()));
@@ -324,6 +307,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
             }
         }
     }
+
     private void addSpringOnClasspath(
         final Map<String, YModuleDescriptor> moduleDescriptorMap,
         final YModuleDescriptor relevantModule,
@@ -341,7 +325,7 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
                 return;
             }
         }
-        moduleDescriptorMap.values().stream().anyMatch(module->addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath));
+        moduleDescriptorMap.values().stream().anyMatch(module -> addSpringExternalXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(module), fileOnClasspath));
     }
 
     private boolean addSpringXmlFile(final Map<String, YModuleDescriptor> moduleDescriptorMap,

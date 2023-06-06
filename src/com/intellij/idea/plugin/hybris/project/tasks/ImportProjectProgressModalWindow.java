@@ -90,8 +90,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
@@ -132,8 +134,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(message("hybris.project.import.preparation"));
 
-        final HybrisConfiguratorCache cache = new HybrisConfiguratorCache();
-        final List<ModuleDescriptor> allModules = getHybrisModuleDescriptors();
+        final var cache = new HybrisConfiguratorCache();
+        final var allModules = getHybrisModuleDescriptors();
+        final var allYModules = allModules.stream()
+            .filter(YModuleDescriptor.class::isInstance)
+            .map(YModuleDescriptor.class::cast)
+            .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
 
         final var springConfigurator = configuratorFactory.getSpringConfigurator();
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
@@ -154,14 +160,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             : model;
 
         indicator.setText(message("hybris.project.import.spring"));
-        springConfigurator.findSpringConfiguration(allModules);
+        springConfigurator.findSpringConfiguration(hybrisProjectDescriptor, allYModules);
         indicator.setText2(message("hybris.project.import.module.groups"));
         groupModuleConfigurator.processDependencyModules(allModules);
         indicator.setText2("");
         int counter = 0;
 
         for (ModuleDescriptor moduleDescriptor : allModules) {
-            final Module javaModule = createJavaModule(indicator, rootProjectModifiableModel, moduleDescriptor);
+            final Module javaModule = createJavaModule(indicator, allYModules, rootProjectModifiableModel, moduleDescriptor);
             modules.add(javaModule);
             counter++;
 
@@ -264,7 +270,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     @NotNull
     private Module createJavaModule(
         final @NotNull ProgressIndicator indicator,
-        final ModifiableModuleModel rootProjectModifiableModel,
+        final Map<String, YModuleDescriptor> allYModules, final ModifiableModuleModel rootProjectModifiableModel,
         final ModuleDescriptor moduleDescriptor) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
@@ -284,7 +290,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modifiableRootModel.inheritSdk();
 
         indicator.setText2(message("hybris.project.import.module.libs"));
-        configuratorFactory.getLibRootsConfigurator().configure(modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
+        configuratorFactory.getLibRootsConfigurator().configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
 
         indicator.setText2(message("hybris.project.import.module.content"));
         configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(modifiableRootModel, moduleDescriptor);
@@ -483,7 +489,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
         appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
 
-        hybrisProjectSettings.setCreateBackwardCyclicDependenciesForAddOns(hybrisProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn());
         final File sourceCodeFile = hybrisProjectDescriptor.getSourceCodeFile();
 
         if (sourceCodeFile != null && sourceCodeFile.exists()) {

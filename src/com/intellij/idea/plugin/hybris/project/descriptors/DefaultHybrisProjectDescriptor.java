@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
@@ -113,7 +112,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String javadocUrl;
     @Nullable
     protected String hybrisVersion;
-    protected boolean createBackwardCyclicDependenciesForAddOns;
     protected boolean followSymlink;
     protected boolean excludeTestSources;
     protected boolean scanThroughExternalModule;
@@ -713,10 +711,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 dependencies.add(dependsOn);
             }
         }
-        // TODO: maybe do it differently
-        if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
-            processAddOnBackwardDependencies(yModuleDescriptors, ySubModuleDescriptor, dependencies);
-        }
 
         moduleDescriptor.getDependenciesTree().clear();
         moduleDescriptor.getDependenciesTree().addAll(dependencies);
@@ -726,22 +720,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public Project getProject() {
         return this.project;
-    }
-
-    protected void processAddOnBackwardDependencies(
-        @NotNull final Map<String, YModuleDescriptor> moduleDescriptors,
-        @NotNull final YAcceleratorAddonSubModuleDescriptor addOn,
-        @NotNull final Set<YModuleDescriptor> addOnDependencies
-    ) {
-        if (isCreateBackwardCyclicDependenciesForAddOn()) {
-            for (YModuleDescriptor moduleDescriptor : moduleDescriptors.values()) {
-                final var addonName = addOn.getName();
-                final var requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
-                if (requiredExtensionNames.contains(addonName)) {
-                    addOnDependencies.add(moduleDescriptor);
-                }
-            }
-        }
     }
 
     protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
@@ -1003,16 +981,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public void setCreateBackwardCyclicDependenciesForAddOns(final boolean createBackwardCyclicDependenciesForAddOns) {
-        this.createBackwardCyclicDependenciesForAddOns = createBackwardCyclicDependenciesForAddOns;
-    }
-
-    @Override
-    public boolean isCreateBackwardCyclicDependenciesForAddOn() {
-        return createBackwardCyclicDependenciesForAddOns;
-    }
-
-    @Override
     public void setFollowSymlink(final boolean followSymlink) {
         this.followSymlink = followSymlink;
     }
@@ -1084,7 +1052,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                ", externalDbDriversDirectory=" + externalDbDriversDirectory +
                ", javadocUrl='" + javadocUrl + '\'' +
                ", hybrisVersion='" + hybrisVersion + '\'' +
-               ", createBackwardCyclicDependenciesForAddOns=" + createBackwardCyclicDependenciesForAddOns +
                ", followSymlink=" + followSymlink +
                ", excludeTestSources=" + excludeTestSources +
                ", scanThroughExternalModule=" + scanThroughExternalModule +

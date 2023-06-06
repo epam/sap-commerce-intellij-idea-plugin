@@ -30,15 +30,15 @@ import java.io.File
 
 object YModuleLibDescriptorUtil {
 
-    fun getLibraryDescriptors(descriptor: ModuleDescriptor): List<JavaLibraryDescriptor> = when (descriptor) {
+    fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is PlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is ConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YWebSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is YHmcSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
         is YHacSubModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YHmcSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is PlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is ConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
         is RootModuleDescriptor -> emptyList()
         else -> emptyList()
     }
@@ -198,23 +198,6 @@ object YModuleLibDescriptorUtil {
         }
     }
 
-    private fun processAddOnBackwardDependencies(
-        descriptor: YModuleDescriptor,
-        libs: MutableList<JavaLibraryDescriptor>
-    ) {
-        if (!descriptor.rootProjectDescriptor.isCreateBackwardCyclicDependenciesForAddOn) return
-
-        val backwardDependencies = descriptor.dependenciesTree
-            .filter { YModuleDescriptorUtil.getRequiredExtensionNames(it).contains(descriptor.name) }
-            .map {
-                JavaLibraryDescriptor(
-                    name = "Web Library",
-                    libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
-                )
-            }
-        libs.addAll(backwardDependencies)
-    }
-
     private fun getLibraryDescriptors(descriptor: YBackofficeSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
 
@@ -261,15 +244,60 @@ object YModuleLibDescriptorUtil {
         return libs
     }
 
-    private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+    private fun getLibraryDescriptors(descriptor: YAcceleratorAddonSubModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): MutableList<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
 
         addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
         addServerLibs(descriptor, libs)
         addRootLib(descriptor, libs)
 
-        // TODO: add module dependency, not lib dependency
-        processAddOnBackwardDependencies(descriptor, libs)
+        val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+        allYModules.values
+            .filter { it.dependenciesTree.contains(descriptor.owner) }
+            .filter { it != descriptor }
+            .map { yModule ->
+                // create dependencies for web module nature
+                yModule.subModules
+                    .filterIsInstance<YWebSubModuleDescriptor>()
+                    .forEach { yWebModule ->
+                        val webClasses = JavaLibraryDescriptor(
+                            name = "Addon's Target Web Classes - ${yWebModule.name}",
+                            libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                            sourceFiles = if (attachSources) listOf(File(yWebModule.moduleRootDirectory, HybrisConstants.WEB_SRC_PATH))
+                            else emptyList(),
+                            directoryWithClasses = true
+                        )
+                        val webLibrary = JavaLibraryDescriptor(
+                            name = "Addon's Target Web Library - ${yWebModule.name}",
+                            libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
+                            descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                        )
+                        libs.add(webClasses)
+                        libs.add(webLibrary)
+                    }
+
+                // process owner extension dependencies
+                val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
+                    .map { File(yModule.moduleRootDirectory, it) }
+                    .filter { it.isDirectory }
+
+                libs.add(
+                    JavaLibraryDescriptor(
+                        name = "Addon's Target Classes - ${yModule.name}",
+                        libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                        sourceFiles = if (attachSources) sourceFiles
+                        else emptyList(),
+                        directoryWithClasses = true
+                    )
+                )
+                libs.add(
+                    JavaLibraryDescriptor(
+                        name = "Addon's Target Resources - ${yModule.name}",
+                        libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                        directoryWithClasses = true
+                    )
+                )
+            }
         return libs
     }
 

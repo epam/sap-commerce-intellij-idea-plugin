@@ -71,10 +71,6 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .bindSelected(state::scanThroughExternalModule)
                 }
                 row {
-                    checkBox(message("hybris.import.wizard.hybris.addon.circular.dependency.label"))
-                        .bindSelected(state::createBackwardCyclicDependenciesForAddOns)
-                }
-                row {
                     checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
                         .bindSelected(state::excludeTestSources)
                 }

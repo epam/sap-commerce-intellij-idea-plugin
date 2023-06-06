@@ -118,10 +118,6 @@ public interface HybrisProjectDescriptor {
 
     void setJavadocUrl(@Nullable String javadocUrl);
 
-    void setCreateBackwardCyclicDependenciesForAddOns(boolean selected);
-
-    boolean isCreateBackwardCyclicDependenciesForAddOn();
-
     void setFollowSymlink(boolean followSymlink);
 
     boolean isFollowSymlink();

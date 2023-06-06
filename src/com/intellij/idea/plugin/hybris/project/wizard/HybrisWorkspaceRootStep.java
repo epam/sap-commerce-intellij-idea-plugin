@@ -36,7 +36,6 @@ import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
-import com.intellij.ui.JBColor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
@@ -82,9 +81,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JLabel sourceCodeLabel;
     private JLabel importOotbModulesInReadOnlyModeLabel;
     private JLabel externalExtensionsPresentLabel;
-    private JCheckBox circularDependencyCheckBox;
-    private JTextPane circularDependencyIsNeededTextPane;
-    private JLabel circularDependencyIsNeededLabel;
     private JCheckBox configOverrideCheckBox;
     private JLabel configOverrideLabel;
     private JPanel configOverridePanel;
@@ -221,18 +217,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             }
         });
 
-        this.circularDependencyIsNeededTextPane.setVisible(false);
-        this.circularDependencyIsNeededTextPane.setDisabledTextColor(JBColor.RED);
-        this.circularDependencyCheckBox.addActionListener(e -> circularDependencyIsNeededTextPane.setVisible(((JCheckBox) e
-            .getSource()).isVisible()));
-        this.circularDependencyIsNeededLabel.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(final MouseEvent e) {
-                circularDependencyCheckBox.doClick();
-            }
-        });
-
         sourceCodeFilesInChooser.addActionListener(new MyChooserActionListener(
             FileChooserDescriptorFactory.createSingleLocalFileDescriptor(),
             sourceCodeFilesInChooser,
@@ -304,7 +288,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             ? FileUtils.toFile(this.dbDriversDirOverrideFileChooser.getText())
             : null
         );
-        projectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(this.circularDependencyCheckBox.isSelected());
         projectDescriptor.setWithMavenSources(withMavenSources.isSelected());
         projectDescriptor.setWithMavenJavadocs(withMavenJavadocs.isSelected());
         projectDescriptor.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
@@ -465,8 +448,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             sourceCodeFilesInChooser.setText(this.hybrisDistributionDirectoryFilesInChooser.getText());
         }
 
-        circularDependencyCheckBox.setSelected(false);
-
     }
 
     private File findSourceZip(final String sourceCodeDir, final String hybrisApiVersion) {
@@ -611,7 +592,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setExternalExtensionsDirectory(FileUtils.toFile(settings.getExternalExtensionsDirectory(), true));
         hybrisProjectDescriptor.setExternalConfigDirectory(FileUtils.toFile(settings.getExternalConfigDirectory(), true));
         hybrisProjectDescriptor.setExternalDbDriversDirectory(FileUtils.toFile(settings.getExternalDbDriversDirectory(), true));
-        hybrisProjectDescriptor.setCreateBackwardCyclicDependenciesForAddOns(settings.getCreateBackwardCyclicDependenciesForAddOns());
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.getFollowSymlink());
         hybrisProjectDescriptor.setExcludeTestSources(settings.getExcludeTestSources());

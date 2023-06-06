@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType.CUSTOM;
 
@@ -192,7 +194,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
     protected static class DummySpringConfigurator implements SpringConfigurator {
 
         @Override
-        public void findSpringConfiguration(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
+        public void findSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, final Map<String, YModuleDescriptor> yModules) {
 
         }
 
