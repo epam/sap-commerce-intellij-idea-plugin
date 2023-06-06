@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurato
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -58,21 +58,20 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                 addJarFolderToModuleLibs(modifiableRootModel, modifiableModelsProvider, javaLibraryDescriptor, moduleDescriptor, indicator)
             }
         }
-        if (moduleDescriptor is PlatformModuleDescriptor) {
-            YModuleLibDescriptorUtil.createBootstrapLib(moduleDescriptor, sourceCodeRoot, modifiableModelsProvider)
-        }
-        if (moduleDescriptor is YCoreExtModuleDescriptor) {
-            addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
-        }
-        if (moduleDescriptor is YOotbRegularModuleDescriptor) {
-            if (moduleDescriptor.hasBackofficeModule) {
-                val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_DIRECTORY)
-                if (backofficeJarDirectory.exists()) {
-                    YModuleLibDescriptorUtil.createGlobalLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
+
+        when (moduleDescriptor) {
+            is PlatformModuleDescriptor -> moduleDescriptor.createBootstrapLib(sourceCodeRoot, modifiableModelsProvider)
+            is YCoreExtModuleDescriptor -> addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.PLATFORM_LIBRARY_GROUP, true)
+            is YOotbRegularModuleDescriptor -> {
+                if (moduleDescriptor.hasBackofficeModule) {
+                    val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_DIRECTORY)
+                    if (backofficeJarDirectory.exists()) {
+                        YModuleLibDescriptorUtil.createGlobalLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
+                    }
                 }
-            }
-            if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
-                addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
+                if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+                    addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
+                }
             }
         }
     }

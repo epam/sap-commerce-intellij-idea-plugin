@@ -20,11 +20,83 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
+import com.intellij.openapi.vfs.JarFileSystem
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import org.apache.commons.io.filefilter.DirectoryFileFilter
 import java.io.File
+import java.io.FileFilter
 
 class PlatformModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = HybrisConstants.EXTENSION_NAME_PLATFORM,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    fun createBootstrapLib(
+        sourceCodeRoot: VirtualFile?,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) {
+        val libraryDirectories = getLibraryDirectories()
+        val bootStrapSrc = File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_GEN_SRC_DIRECTORY)
+        val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
+        val library = libraryTableModifiableModel.getLibraryByName(HybrisConstants.PLATFORM_LIBRARY_GROUP)
+            ?: libraryTableModifiableModel.createLibrary(HybrisConstants.PLATFORM_LIBRARY_GROUP)
+
+        if (libraryTableModifiableModel is LibrariesModifiableModel) {
+            with(libraryTableModifiableModel.getLibraryEditor(library)) {
+                for (libRoot in libraryDirectories) {
+                    addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true, OrderRootType.CLASSES)
+
+                    sourceCodeRoot
+                        ?.let {
+                            if (sourceCodeRoot.fileSystem is JarFileSystem) {
+                                addJarDirectory(sourceCodeRoot, true, OrderRootType.SOURCES)
+                            } else {
+                                addRoot(sourceCodeRoot, OrderRootType.SOURCES)
+                            }
+                        }
+                }
+                addRoot(VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES)
+            }
+        } else {
+            with(modifiableModelsProvider.getModifiableLibraryModel(library)) {
+                for (libRoot in libraryDirectories) {
+                    addJarDirectory(VfsUtil.getUrlForLibraryRoot(libRoot), true)
+                }
+                addRoot(VfsUtil.getUrlForLibraryRoot(bootStrapSrc), OrderRootType.SOURCES)
+            }
+        }
+    }
+
+    private fun getLibraryDirectories(): Collection<File> {
+        val libraryDirectories = mutableListOf<File>()
+        File(moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
+            .takeIf { it.exists() }
+            ?.listFiles(DirectoryFileFilter.DIRECTORY as FileFilter)
+            ?.let { resourcesInnerDirectories ->
+                for (resourcesInnerDirectory in resourcesInnerDirectories) {
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, HybrisConstants.LIB_DIRECTORY))
+                    addLibraryDirectories(libraryDirectories, File(resourcesInnerDirectory, HybrisConstants.BIN_DIRECTORY))
+                }
+            }
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_BOOTSTRAP_LIB_DIRECTORY))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_BIN_DIRECTORY))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_BIN_DIRECTORY))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_LIB_DIRECTORY))
+        addLibraryDirectories(libraryDirectories, File(moduleRootDirectory, HybrisConstants.PL_TOMCAT_6_LIB_DIRECTORY))
+
+        return libraryDirectories
+    }
+
+    private fun addLibraryDirectories(libraryDirectories: MutableList<File>, file: File) {
+        if (file.exists()) {
+            libraryDirectories.add(file)
+        }
+    }
+
+}
