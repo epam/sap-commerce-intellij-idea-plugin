@@ -53,6 +53,7 @@ import java.util.List;
  *       &lt;attribute name="managersuperclass" type="{}classType" />
  *       &lt;attribute name="description" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="usemaven" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="jaloLogicFree" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -95,6 +96,8 @@ public class ExtensionType {
     protected String description;
     @XmlAttribute
     protected String usemaven;
+    @XmlAttribute
+    protected Boolean jaloLogicFree;
 
     /**
      * Gets the value of the requiresExtension property.
@@ -412,6 +415,30 @@ public class ExtensionType {
      */
     public void setUsemaven(String value) {
         this.usemaven = value;
+    }
+
+    /**
+     * Gets the value of the jaloLogicFree property.
+     *
+     * @return possible object is
+     * {@link Boolean }
+     */
+    public boolean isJaloLogicFree() {
+        if (jaloLogicFree == null) {
+            return false;
+        } else {
+            return jaloLogicFree;
+        }
+    }
+
+    /**
+     * Sets the value of the jaloLogicFree property.
+     *
+     * @param value allowed object is
+     *              {@link Boolean }
+     */
+    public void setJaloLogicFree(Boolean value) {
+        this.jaloLogicFree = value;
     }
 
 }

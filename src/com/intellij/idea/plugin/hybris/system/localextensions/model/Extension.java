@@ -22,8 +22,10 @@
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
 import com.intellij.spellchecker.xml.NoSpellchecking;
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,6 +37,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Extension extends DomElement {
 
+	String DIR = "dir";
+	String NAME = "name";
+
 	/**
 	 * Returns the value of the dir child.
 	 * <pre>
@@ -44,9 +49,8 @@ public interface Extension extends DomElement {
 	 * @return the value of the dir child.
 	 */
 	@NotNull
-	@Attribute ("dir")
+	@Attribute(DIR)
 	GenericAttributeValue<String> getDir();
-
 
 	/**
 	 * Returns the value of the name child.
@@ -57,9 +61,9 @@ public interface Extension extends DomElement {
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@Attribute ("name")
+	@Attribute(NAME)
 	@NoSpellchecking
+	@ApiStatus.AvailableSince("5.0")
 	GenericAttributeValue<String> getName();
-
 
 }

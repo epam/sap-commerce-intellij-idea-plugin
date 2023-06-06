@@ -20,8 +20,9 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,7 +32,12 @@ import org.jetbrains.annotations.NotNull;
  * Configures an hmc module for the extension. Required directory: /hmc.
  * </pre>
  */
+@Deprecated(since = "6.7")
 public interface HmcModule extends DomElement {
+
+	String ADDITIONALCLASSPATH = "additionalclasspath";
+	String EXTENSIONCLASSNAME = "extensionclassname";
+	String SOURCEAVAILABLE = "sourceavailable";
 
 	/**
 	 * Returns the value of the additionalclasspath child.
@@ -42,9 +48,9 @@ public interface HmcModule extends DomElement {
 	 * @return the value of the additionalclasspath child.
 	 */
 	@NotNull
-	@Attribute ("additionalclasspath")
+	@Attribute(ADDITIONALCLASSPATH)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<String> getAdditionalClasspath();
-
 
 	/**
 	 * Returns the value of the extensionclassname child.
@@ -55,9 +61,8 @@ public interface HmcModule extends DomElement {
 	 * @return the value of the extensionclassname child.
 	 */
 	@NotNull
-	@Attribute ("extensionclassname")
+	@Attribute(EXTENSIONCLASSNAME)
 	GenericAttributeValue<String> getExtensionClassname();
-
 
 	/**
 	 * Returns the value of the sourceavailable child.
@@ -68,8 +73,8 @@ public interface HmcModule extends DomElement {
 	 * @return the value of the sourceavailable child.
 	 */
 	@NotNull
-	@Attribute ("sourceavailable")
+	@Attribute(SOURCEAVAILABLE)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<Boolean> getSourceAvailable();
-
 
 }

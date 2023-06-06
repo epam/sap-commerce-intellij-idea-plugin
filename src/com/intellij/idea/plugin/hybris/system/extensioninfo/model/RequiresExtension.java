@@ -34,6 +34,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface RequiresExtension extends DomElement {
 
+	String NAME = "name";
+	String VERSION = "version";
+
 	/**
 	 * Returns the value of the name child.
 	 * <pre>
@@ -43,11 +46,10 @@ public interface RequiresExtension extends DomElement {
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@Attribute ("name")
+	@Attribute(NAME)
 	@Required
 	@NoSpellchecking
 	GenericAttributeValue<String> getName();
-
 
 	/**
 	 * Returns the value of the version child.
@@ -58,8 +60,7 @@ public interface RequiresExtension extends DomElement {
 	 * @return the value of the version child.
 	 */
 	@NotNull
-	@Attribute ("version")
+	@Attribute(VERSION)
 	GenericAttributeValue<String> getVersion();
-
 
 }

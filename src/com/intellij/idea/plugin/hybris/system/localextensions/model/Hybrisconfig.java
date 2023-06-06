@@ -21,8 +21,9 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Hybrisconfig extends DomElement {
 
+	String EXTENSIONS = "extensions";
+
 	/**
 	 * Returns the value of the extensions child.
 	 * <pre>
@@ -43,7 +46,7 @@ public interface Hybrisconfig extends DomElement {
 	 * @return the value of the extensions child.
 	 */
 	@NotNull
-	@SubTag ("extensions")
+	@SubTag(EXTENSIONS)
 	@Required
 	Extensions getExtensions();
 

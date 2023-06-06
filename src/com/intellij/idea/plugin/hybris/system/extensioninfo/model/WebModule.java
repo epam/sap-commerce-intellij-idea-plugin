@@ -36,6 +36,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface WebModule extends DomElement {
 
+	String WEBROOT = "webroot";
+	String ADDITIONALCLASSPATH = "additionalclasspath";
+	String JSPCOMPILE = "jspcompile";
+	String SOURCEAVAILABLE = "sourceavailable";
+
 	/**
 	 * Returns the value of the webroot child.
 	 * <pre>
@@ -45,10 +50,9 @@ public interface WebModule extends DomElement {
 	 * @return the value of the webroot child.
 	 */
 	@NotNull
-	@Attribute ("webroot")
+	@Attribute(WEBROOT)
 	@Required
 	GenericAttributeValue<String> getWebroot();
-
 
 	/**
 	 * Returns the value of the additionalclasspath child.
@@ -59,9 +63,9 @@ public interface WebModule extends DomElement {
 	 * @return the value of the additionalclasspath child.
 	 */
 	@NotNull
-	@Attribute ("additionalclasspath")
+	@Attribute(ADDITIONALCLASSPATH)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<String> getAdditionalClasspath();
-
 
 	/**
 	 * Returns the value of the jspcompile child.
@@ -72,9 +76,8 @@ public interface WebModule extends DomElement {
 	 * @return the value of the jspcompile child.
 	 */
 	@NotNull
-	@Attribute ("jspcompile")
+	@Attribute(JSPCOMPILE)
 	TrueAttributeValue getJspCompile();
-
 
 	/**
 	 * Returns the value of the sourceavailable child.
@@ -85,8 +88,8 @@ public interface WebModule extends DomElement {
 	 * @return the value of the sourceavailable child.
 	 */
 	@NotNull
-	@Attribute ("sourceavailable")
+	@Attribute(SOURCEAVAILABLE)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<Boolean> getSourceAvailable();
-
 
 }

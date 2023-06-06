@@ -36,6 +36,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CoreModule extends DomElement {
 
+	String ADDITIONALCLASSPATH = "additionalclasspath";
+	String PACKAGEROOT = "packageroot";
+	String MANAGER = "manager";
+	String SOURCEAVAILABLE = "sourceavailable";
+	String GENERATED = "generated";
+	String JAVA_5 = "java5";
+
 	/**
 	 * Returns the value of the additionalclasspath child.
 	 * <pre>
@@ -45,9 +52,9 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the additionalclasspath child.
 	 */
 	@NotNull
-	@Attribute ("additionalclasspath")
+	@Attribute(ADDITIONALCLASSPATH)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<String> getAdditionalClasspath();
-
 
 	/**
 	 * Returns the value of the packageroot child.
@@ -58,9 +65,8 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the packageroot child.
 	 */
 	@NotNull
-	@Attribute ("packageroot")
+	@Attribute(PACKAGEROOT)
 	GenericAttributeValue<String> getPackageRoot();
-
 
 	/**
 	 * Returns the value of the manager child.
@@ -71,9 +77,8 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the manager child.
 	 */
 	@NotNull
-	@Attribute ("manager")
+	@Attribute(MANAGER)
 	GenericAttributeValue<String> getModuleManager();
-
 
 	/**
 	 * Returns the value of the sourceavailable child.
@@ -84,9 +89,9 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the sourceavailable child.
 	 */
 	@NotNull
-	@Attribute ("sourceavailable")
+	@Attribute(SOURCEAVAILABLE)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<Boolean> getSourceAvailable();
-
 
 	/**
 	 * Returns the value of the generated child.
@@ -97,9 +102,8 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the generated child.
 	 */
 	@NotNull
-	@Attribute ("generated")
+	@Attribute(GENERATED)
 	FalseAttributeValue getGenerated();
-
 
 	/**
 	 * Returns the value of the java5 child.
@@ -110,9 +114,9 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the java5 child.
 	 */
 	@NotNull
-	@Attribute ("java5")
+	@Attribute(JAVA_5)
+	@Deprecated(since = "ages")
 	GenericAttributeValue<Boolean> getJava5();
-
 
 	/**
 	 * Returns the value of the generatePartOf child.
@@ -123,8 +127,7 @@ public interface CoreModule extends DomElement {
 	 * @return the value of the generatePartOf child.
 	 */
 	@NotNull
-	@Attribute ("generatePartOf")
+	@Attribute("generatePartOf")
 	TrueAttributeValue getGeneratePartOf();
-
 
 }

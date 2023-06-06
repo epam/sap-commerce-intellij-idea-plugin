@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.system.extensioninfo.file.MetaValueConver
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,7 +35,11 @@ import org.jetbrains.annotations.NotNull;
  * Configures metadata.
  * </pre>
  */
+@ApiStatus.AvailableSince("5.0")
 public interface Meta extends DomElement {
+
+	String KEY = "key";
+	String VALUE = "value";
 
 	/**
 	 * Returns the value of the key child.
@@ -45,12 +50,11 @@ public interface Meta extends DomElement {
 	 * @return the value of the key child.
 	 */
 	@NotNull
-	@Attribute ("key")
+	@Attribute(KEY)
 	@Required
 	@Convert(MetaKeyConverter.class)
 	@NoSpellchecking
 	GenericAttributeValue<String> getKey();
-
 
 	/**
 	 * Returns the value of the value child.
@@ -61,10 +65,9 @@ public interface Meta extends DomElement {
 	 * @return the value of the value child.
 	 */
 	@NotNull
-	@Attribute ("value")
+	@Attribute(VALUE)
 	@Convert(MetaValueConverter.class)
 	@Required
 	GenericAttributeValue<String> getValue();
-
 
 }
