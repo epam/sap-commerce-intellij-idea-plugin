@@ -53,8 +53,10 @@ class DefaultModulesDependenciesConfigurator : ModulesDependenciesConfigurator {
                             .filterNot { yModuleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
                             .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
 
-                        // also add Platform to every extension
-                        addModuleDependency(allModules, platformIdeaModuleName, rootModel)
+                        // also add Platform to every extension except YPlatformExt modules
+                        if (yModuleDescriptor !is YPlatformExtModuleDescriptor) {
+                            addModuleDependency(allModules, platformIdeaModuleName, rootModel)
+                        }
                     }
             }
 
