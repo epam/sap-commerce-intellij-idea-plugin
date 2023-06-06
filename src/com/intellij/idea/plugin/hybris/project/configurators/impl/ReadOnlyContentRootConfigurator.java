@@ -45,29 +45,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     }
 
     @Override
-    protected void configureAdditionalRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final String directoryName,
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final File parentDirectory
-    ) {
-        final File additionalModuleDirectory = new File(parentDirectory, directoryName);
-        if (!additionalModuleDirectory.exists() || additionalModuleDirectory.isFile()) {
-            return;
-        }
-
-        final File additionalClassesDirectory = new File(additionalModuleDirectory, CLASSES_DIRECTORY);
-        contentEntry.addExcludeFolder(VfsUtil.pathToUrl(additionalClassesDirectory.getAbsolutePath()));
-
-        final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(additionalResourcesDirectory.getAbsolutePath()),
-            JavaResourceRootType.RESOURCE
-        );
-    }
-
-    @Override
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
@@ -83,7 +61,7 @@ public class ReadOnlyContentRootConfigurator extends RegularContentRootConfigura
     }
 
     @Override
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore

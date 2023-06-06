@@ -66,31 +66,25 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
-        this.configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
-//        if (YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor).contains(HybrisConstants.EXTENSION_NAME_HMC)) {
-        if (moduleDescriptor instanceof final YHmcSubModuleDescriptor ySubModuleDescriptor) {
-            configureAdditionalRoots(ySubModuleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getModuleRootDirectory());
-        }
-//        }
-        this.configureAdditionalRoots(moduleDescriptor, HAC_MODULE_DIRECTORY, contentEntry, moduleDescriptor.getModuleRootDirectory());
+        configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore);
 
         if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureRoots(ySubModuleDescriptor, contentEntry, dirsToIgnore);
+            configureSubModule(ySubModuleDescriptor, contentEntry, dirsToIgnore);
         }
         if (moduleDescriptor instanceof final YCommonWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureRoots(ySubModuleDescriptor, contentEntry);
+            configureSubModule(ySubModuleDescriptor, contentEntry);
         }
         if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
-            configureRoots(ySubModuleDescriptor, contentEntry);
+            configureSubModule(ySubModuleDescriptor, contentEntry);
         }
         if (moduleDescriptor instanceof final YBackofficeSubModuleDescriptor ySubModuleDescriptor) {
-            configureRoots(ySubModuleDescriptor, contentEntry, dirsToIgnore);
+            configureSubModule(ySubModuleDescriptor, contentEntry, dirsToIgnore);
         }
 
         configurePlatformRoots(moduleDescriptor, contentEntry);
     }
 
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
@@ -182,33 +176,6 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(dir.getAbsolutePath()));
     }
 
-    protected void configureAdditionalRoots(
-        @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final String directoryName,
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final File parentDirectory
-    ) {
-        final File additionalModuleDirectory = new File(parentDirectory, directoryName);
-        if (!additionalModuleDirectory.exists() || additionalModuleDirectory.isFile()) {
-            return;
-        }
-
-        for (String srcDirName : SRC_DIR_NAMES) {
-            final File additionalSrcDirectory = new File(additionalModuleDirectory, srcDirName);
-            contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(additionalSrcDirectory.getAbsolutePath()),
-                JavaSourceRootType.SOURCE
-            );
-        }
-
-        final File additionalResourcesDirectory = new File(additionalModuleDirectory, RESOURCES_DIRECTORY);
-        contentEntry.addSourceFolder(
-            VfsUtil.pathToUrl(additionalResourcesDirectory.getAbsolutePath()),
-            JavaResourceRootType.RESOURCE
-        );
-        excludeDirectory(contentEntry, new File(additionalModuleDirectory, CLASSES_DIRECTORY));
-    }
-
     protected void configureWebRoots(
         @NotNull final YSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
@@ -216,14 +183,14 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         configureWebModuleRoots(moduleDescriptor, contentEntry);
     }
 
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YCommonWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
         configureWebModuleRoots(moduleDescriptor, contentEntry);
     }
 
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YAcceleratorAddonSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
@@ -231,20 +198,20 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 //        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
     }
 
-    protected void configureRoots(
+    protected void configureSubModule(
         @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore
     ) {
         final File backOfficeModuleDirectory = moduleDescriptor.getModuleRootDirectory();
 
-        for (String srcDirName : SRC_DIR_NAMES) {
-            final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, srcDirName);
-            contentEntry.addSourceFolder(
-                VfsUtil.pathToUrl(backOfficeSrcDirectory.getAbsolutePath()),
-                JavaSourceRootType.SOURCE
-            );
-        }
+//        for (String srcDirName : SRC_DIR_NAMES) {
+//            final File backOfficeSrcDirectory = new File(backOfficeModuleDirectory, srcDirName);
+//            contentEntry.addSourceFolder(
+//                VfsUtil.pathToUrl(backOfficeSrcDirectory.getAbsolutePath()),
+//                JavaSourceRootType.SOURCE
+//            );
+//        }
 
         if (!moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
