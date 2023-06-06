@@ -21,7 +21,6 @@
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
 import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,14 +34,15 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface ExtensionInfo extends DomElement {
 
+	String EXTENSION = "extension";
+
 	/**
 	 * Returns the value of the extension child.
 	 * @return the value of the extension child.
 	 */
 	@NotNull
-	@SubTag ("extension")
+	@SubTag(EXTENSION)
 	@Required
 	Extension getExtension();
-
 
 }

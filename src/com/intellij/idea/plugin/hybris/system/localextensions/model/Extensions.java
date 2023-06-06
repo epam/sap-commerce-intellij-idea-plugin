@@ -21,11 +21,14 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.SubTagList;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * null:extensionsType interface.
@@ -36,7 +39,69 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Extensions extends DomElement {
 
+	String PATH = "path";
 	String EXTENSION = "extension";
+	String WEBAPP = "webapp";
+	String AUTOLOAD = "autoload";
+
+	/**
+	 * Returns the list of path children.
+	 * <pre>
+	 * <h3>Element null:path documentation</h3>
+	 * Adds a directory to scan for extensions in.
+	 * </pre>
+	 * @return the list of path children.
+	 */
+	@NotNull
+	@SubTagList(PATH)
+	@ApiStatus.AvailableSince("5.0")
+	List<Scan> getPaths();
+
+	/**
+	 * Adds new child to the list of path children.
+	 * @return created child
+	 */
+	@SubTagList(PATH)
+	Scan addPath();
+
+	/**
+	 * Returns the list of extension children.
+	 * <pre>
+	 * <h3>Element null:extension documentation</h3>
+	 * Adds an extension to the hybris platform.
+	 * </pre>
+	 * @return the list of extension children.
+	 */
+	@NotNull
+	@SubTagList(EXTENSION)
+	List<Extension> getExtensions();
+
+	/**
+	 * Adds new child to the list of extension children.
+	 * @return created child
+	 */
+	@SubTagList(EXTENSION)
+	Extension addExtension();
+
+	/**
+	 * Returns the list of webapp children.
+	 * <pre>
+	 * <h3>Element null:webapp documentation</h3>
+	 * Adds external extensions to the hybris platform.
+	 * </pre>
+	 * @return the list of webapp children.
+	 */
+	@NotNull
+	@SubTagList(WEBAPP)
+	List<Webapp> getWebapps();
+
+	/**
+	 * Adds new child to the list of webapp children.
+	 * @return created child
+	 */
+	@SubTagList(WEBAPP)
+	@ApiStatus.AvailableSince("5.2")
+	Webapp addWebapp();
 
 	/**
 	 * Returns the value of the autoload child.
@@ -49,65 +114,7 @@ public interface Extensions extends DomElement {
 	 * @return the value of the autoload child.
 	 */
 	@NotNull
-	@Attribute ("autoload")
-	GenericAttributeValue<Boolean> getAutoload();
-
-
-	/**
-	 * Returns the list of path children.
-	 * <pre>
-	 * <h3>Element null:path documentation</h3>
-	 * Adds a directory to scan for extensions in.
-	 * </pre>
-	 * @return the list of path children.
-	 */
-	@NotNull
-	@SubTagList ("path")
-	java.util.List<Scan> getPaths();
-	/**
-	 * Adds new child to the list of path children.
-	 * @return created child
-	 */
-	@SubTagList ("path")
-	Scan addPath();
-
-
-	/**
-	 * Returns the list of extension children.
-	 * <pre>
-	 * <h3>Element null:extension documentation</h3>
-	 * Adds an extension to the hybris platform.
-	 * </pre>
-	 * @return the list of extension children.
-	 */
-	@NotNull
-	@SubTagList (EXTENSION)
-	java.util.List<Extension> getExtensions();
-	/**
-	 * Adds new child to the list of extension children.
-	 * @return created child
-	 */
-	@SubTagList (EXTENSION)
-	Extension addExtension();
-
-
-	/**
-	 * Returns the list of webapp children.
-	 * <pre>
-	 * <h3>Element null:webapp documentation</h3>
-	 * Adds external extensions to the hybris platform.
-	 * </pre>
-	 * @return the list of webapp children.
-	 */
-	@NotNull
-	@SubTagList ("webapp")
-	java.util.List<Webapp> getWebapps();
-	/**
-	 * Adds new child to the list of webapp children.
-	 * @return created child
-	 */
-	@SubTagList ("webapp")
-	Webapp addWebapp();
-
+	@Attribute(AUTOLOAD)
+	TrueAttributeValue getAutoload();
 
 }

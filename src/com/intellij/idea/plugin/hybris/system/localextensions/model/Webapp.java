@@ -21,8 +21,10 @@
 
 package com.intellij.idea.plugin.hybris.system.localextensions.model;
 
-import com.intellij.util.xml.*;
+import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,7 +34,12 @@ import org.jetbrains.annotations.NotNull;
  * Adds external extension to the hybris platform.
  * </pre>
  */
+@ApiStatus.AvailableSince("5.2")
 public interface Webapp extends DomElement {
+
+	String CONTEXTROOT = "contextroot";
+	String CONTEXT = "context";
+	String PATH = "path";
 
 	/**
 	 * Returns the value of the contextroot child.
@@ -43,9 +50,8 @@ public interface Webapp extends DomElement {
 	 * @return the value of the contextroot child.
 	 */
 	@NotNull
-	@Attribute ("contextroot")
+	@Attribute(CONTEXTROOT)
 	GenericAttributeValue<String> getContextroot();
-
 
 	/**
 	 * Returns the value of the context child.
@@ -56,9 +62,8 @@ public interface Webapp extends DomElement {
 	 * @return the value of the context child.
 	 */
 	@NotNull
-	@Attribute ("context")
+	@Attribute(CONTEXT)
 	GenericAttributeValue<String> getContext();
-
 
 	/**
 	 * Returns the value of the path child.
@@ -69,8 +74,7 @@ public interface Webapp extends DomElement {
 	 * @return the value of the path child.
 	 */
 	@NotNull
-	@Attribute ("path")
+	@Attribute(PATH)
 	GenericAttributeValue<String> getPath();
-
 
 }

@@ -23,7 +23,10 @@ package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * null:extensionType interface.
@@ -35,154 +38,21 @@ import org.jetbrains.annotations.NotNull;
 public interface Extension extends DomElement {
 
 	String REQUIRES_EXTENSION = "requires-extension";
-
-	/**
-	 * Returns the value of the name child.
-	 * <pre>
-	 * <h3>Attribute null:name documentation</h3>
-	 * Name of the extension. Do not use special characters or spaces.
-	 * </pre>
-	 * @return the value of the name child.
-	 */
-	@NotNull
-	@Attribute ("name")
-	@Required
-	@NoSpellchecking
-	GenericAttributeValue<String> getName();
-
-
-	/**
-	 * Returns the value of the version child.
-	 * <pre>
-	 * <h3>Attribute null:version documentation</h3>
-	 * Optionally defines the version of this extension. If not defined the build process assumes it being the same version as the platform.
-	 * </pre>
-	 * @return the value of the version child.
-	 */
-	@NotNull
-	@Attribute ("version")
-	GenericAttributeValue<String> getVersion();
-
-
-	/**
-	 * Returns the value of the classprefix child.
-	 * <pre>
-	 * <h3>Attribute null:classprefix documentation</h3>
-	 * Prefix used for generated extension classes, such as the classes for Constants. Default is "[extensionname]".
-	 * </pre>
-	 * @return the value of the classprefix child.
-	 */
-	@NotNull
-	@Attribute ("classprefix")
-	@NoSpellchecking
-	GenericAttributeValue<String> getClassPrefix();
-
-
-	/**
-	 * Returns the value of the abstractclassprefix child.
-	 * <pre>
-	 * <h3>Attribute null:abstractclassprefix documentation</h3>
-	 * Prefix for generated Java classes, such as the abstract classes for getter and setter methods. Default is "Generated".
-	 * </pre>
-	 * @return the value of the abstractclassprefix child.
-	 */
-	@NotNull
-	@Attribute ("abstractclassprefix")
-	@NoSpellchecking
-	GenericAttributeValue<String> getAbstractClassPrefix();
-
-
-	/**
-	 * Returns the value of the isoldstyleextension child.
-	 * <pre>
-	 * <h3>Attribute null:isoldstyleextension documentation</h3>
-	 * Deprecated. Default is "false".
-	 * </pre>
-	 * @return the value of the isoldstyleextension child.
-	 */
-	@NotNull
-	@Attribute ("isoldstyleextension")
-	FalseAttributeValue getIsOldStyleExtension();
-
-
-	/**
-	 * Returns the value of the requiredbyall child.
-	 * <pre>
-	 * <h3>Attribute null:requiredbyall documentation</h3>
-	 * If 'true' this extension is treated like platform/ext core extensions and is automtically added to all other extension dependencies.
-	 * </pre>
-	 * @return the value of the requiredbyall child.
-	 */
-	@NotNull
-	@Attribute ("requiredbyall")
-	FalseAttributeValue getRequiredByAll();
-
-
-	/**
-	 * Returns the value of the managername child.
-	 * <pre>
-	 * <h3>Attribute null:managername documentation</h3>
-	 * Class name of the manager class. Default is "[classprefix]Manager"
-	 * </pre>
-	 * @return the value of the managername child.
-	 */
-	@NotNull
-	@Attribute ("managername")
-	@NoSpellchecking
-	GenericAttributeValue<String> getManagerName();
-
-
-	/**
-	 * Returns the value of the managersuperclass child.
-	 * <pre>
-	 * <h3>Attribute null:managersuperclass documentation</h3>
-	 * Class name of the manager's superclass. Default is de.hybris.platform.jalo.extension.Extension.
-	 * </pre>
-	 * @return the value of the managersuperclass child.
-	 */
-	@NotNull
-	@Attribute ("managersuperclass")
-	GenericAttributeValue<String> getManagerSuperClass();
-
-
-	/**
-	 * Returns the value of the description child.
-	 * <pre>
-	 * <h3>Attribute null:description documentation</h3>
-	 * Short description of this extension. Is used by the hybris package manager.
-	 * </pre>
-	 * @return the value of the description child.
-	 */
-	@NotNull
-	@Attribute ("description")
-	GenericAttributeValue<String> getDescription();
-
-
-	/**
-	 * Returns the value of the usemaven child.
-	 * <pre>
-	 * <h3>Attribute null:usemaven documentation</h3>
-	 * If 'true' uses maven and external-dependencies.xml file for fetching required libraries into \lib and \web\webroot\WEB-INF\lib.
-	 * </pre>
-	 * @return the value of the usemaven child.
-	 */
-	@NotNull
-	@Attribute ("usemaven")
-	FalseAttributeValue getUseMaven();
-
-
-	/**
-	 * Returns the value of the jaloLogicFree child.
-	 * <pre>
-	 * <h3>Attribute null:jaloLogicFree documentation</h3>
-	 * If 'true' types introduced by this extension are SLD safe by default and contains no JALO logic.
-	 * </pre>
-	 * @return the value of the jaloLogicFree child.
-	 */
-	@NotNull
-	@Attribute ("jaloLogicFree")
-	FalseAttributeValue getJaloLogicFree();
-
+	String COREMODULE = "coremodule";
+	String WEBMODULE = "webmodule";
+	String HMCMODULE = "hmcmodule";
+	String META = "meta";
+	String NAME = "name";
+	String VERSION = "version";
+	String CLASSPREFIX = "classprefix";
+	String ABSTRACTCLASSPREFIX = "abstractclassprefix";
+	String ISOLDSTYLEEXTENSION = "isoldstyleextension";
+	String REQUIREDBYALL = "requiredbyall";
+	String MANAGERNAME = "managername";
+	String MANAGERSUPERCLASS = "managersuperclass";
+	String DESCRIPTION = "description";
+	String USEMAVEN = "usemaven";
+	String JALO_LOGIC_FREE = "jaloLogicFree";
 
 	/**
 	 * Returns the list of requires-extension children.
@@ -193,15 +63,15 @@ public interface Extension extends DomElement {
 	 * @return the list of requires-extension children.
 	 */
 	@NotNull
-	@SubTagList (REQUIRES_EXTENSION)
-	java.util.List<RequiresExtension> getRequiresExtensions();
+	@SubTagList(REQUIRES_EXTENSION)
+	List<RequiresExtension> getRequiresExtensions();
+
 	/**
 	 * Adds new child to the list of requires-extension children.
 	 * @return created child
 	 */
-	@SubTagList (REQUIRES_EXTENSION)
+	@SubTagList(REQUIRES_EXTENSION)
 	RequiresExtension addRequiresExtension();
-
 
 	/**
 	 * Returns the value of the coremodule child.
@@ -212,9 +82,8 @@ public interface Extension extends DomElement {
 	 * @return the value of the coremodule child.
 	 */
 	@NotNull
-	@SubTag ("coremodule")
+	@SubTag(COREMODULE)
 	CoreModule getCoremodule();
-
 
 	/**
 	 * Returns the value of the webmodule child.
@@ -225,9 +94,8 @@ public interface Extension extends DomElement {
 	 * @return the value of the webmodule child.
 	 */
 	@NotNull
-	@SubTag ("webmodule")
+	@SubTag(WEBMODULE)
 	WebModule getWebmodule();
-
 
 	/**
 	 * Returns the value of the hmcmodule child.
@@ -238,9 +106,8 @@ public interface Extension extends DomElement {
 	 * @return the value of the hmcmodule child.
 	 */
 	@NotNull
-	@SubTag ("hmcmodule")
+	@SubTag(HMCMODULE)
 	HmcModule getHmcmodule();
-
 
 	/**
 	 * Returns the list of meta children.
@@ -251,14 +118,159 @@ public interface Extension extends DomElement {
 	 * @return the list of meta children.
 	 */
 	@NotNull
-	@SubTagList ("meta")
-	java.util.List<Meta> getMetas();
+	@SubTagList(META)
+	@ApiStatus.AvailableSince("5.0")
+	List<Meta> getMetas();
+
 	/**
 	 * Adds new child to the list of meta children.
 	 * @return created child
 	 */
-	@SubTagList ("meta")
+	@SubTagList(META)
+	@ApiStatus.AvailableSince("5.0")
 	Meta addMeta();
 
+	/**
+	 * Returns the value of the name child.
+	 * <pre>
+	 * <h3>Attribute null:name documentation</h3>
+	 * Name of the extension. Do not use special characters or spaces.
+	 * </pre>
+	 * @return the value of the name child.
+	 */
+	@NotNull
+	@Attribute(NAME)
+	@Required
+	@NoSpellchecking
+	GenericAttributeValue<String> getName();
+
+	/**
+	 * Returns the value of the version child.
+	 * <pre>
+	 * <h3>Attribute null:version documentation</h3>
+	 * Optionally defines the version of this extension. If not defined the build process assumes it being the same version as the platform.
+	 * </pre>
+	 * @return the value of the version child.
+	 */
+	@NotNull
+	@Attribute(VERSION)
+	@ApiStatus.AvailableSince("5.0")
+	GenericAttributeValue<String> getVersion();
+
+	/**
+	 * Returns the value of the classprefix child.
+	 * <pre>
+	 * <h3>Attribute null:classprefix documentation</h3>
+	 * Prefix used for generated extension classes, such as the classes for Constants. Default is "[extensionname]".
+	 * </pre>
+	 * @return the value of the classprefix child.
+	 */
+	@NotNull
+	@Attribute(CLASSPREFIX)
+	@NoSpellchecking
+	GenericAttributeValue<String> getClassPrefix();
+
+	/**
+	 * Returns the value of the abstractclassprefix child.
+	 * <pre>
+	 * <h3>Attribute null:abstractclassprefix documentation</h3>
+	 * Prefix for generated Java classes, such as the abstract classes for getter and setter methods. Default is "Generated".
+	 * </pre>
+	 * @return the value of the abstractclassprefix child.
+	 */
+	@NotNull
+	@Attribute(ABSTRACTCLASSPREFIX)
+	@NoSpellchecking
+	GenericAttributeValue<String> getAbstractClassPrefix();
+
+	/**
+	 * Returns the value of the isoldstyleextension child.
+	 * <pre>
+	 * <h3>Attribute null:isoldstyleextension documentation</h3>
+	 * Deprecated. Default is "false".
+	 * </pre>
+	 * @return the value of the isoldstyleextension child.
+	 */
+	@NotNull
+	@Attribute(ISOLDSTYLEEXTENSION)
+	@Deprecated(since = "ages")
+	FalseAttributeValue getIsOldStyleExtension();
+
+	/**
+	 * Returns the value of the requiredbyall child.
+	 * <pre>
+	 * <h3>Attribute null:requiredbyall documentation</h3>
+	 * If 'true' this extension is treated like platform/ext core extensions and is automtically added to all other extension dependencies.
+	 * </pre>
+	 * @return the value of the requiredbyall child.
+	 */
+	@NotNull
+	@Attribute(REQUIREDBYALL)
+	@ApiStatus.AvailableSince("5.0")
+	FalseAttributeValue getRequiredByAll();
+
+	/**
+	 * Returns the value of the managername child.
+	 * <pre>
+	 * <h3>Attribute null:managername documentation</h3>
+	 * Class name of the manager class. Default is "[classprefix]Manager"
+	 * </pre>
+	 * @return the value of the managername child.
+	 */
+	@NotNull
+	@Attribute(MANAGERNAME)
+	@NoSpellchecking
+	GenericAttributeValue<String> getManagerName();
+
+	/**
+	 * Returns the value of the managersuperclass child.
+	 * <pre>
+	 * <h3>Attribute null:managersuperclass documentation</h3>
+	 * Class name of the manager's superclass. Default is de.hybris.platform.jalo.extension.Extension.
+	 * </pre>
+	 * @return the value of the managersuperclass child.
+	 */
+	@NotNull
+	@Attribute(MANAGERSUPERCLASS)
+	GenericAttributeValue<String> getManagerSuperClass();
+
+	/**
+	 * Returns the value of the description child.
+	 * <pre>
+	 * <h3>Attribute null:description documentation</h3>
+	 * Short description of this extension. Is used by the hybris package manager.
+	 * </pre>
+	 * @return the value of the description child.
+	 */
+	@NotNull
+	@Attribute(DESCRIPTION)
+	GenericAttributeValue<String> getDescription();
+
+	/**
+	 * Returns the value of the usemaven child.
+	 * Originally, for some reason the schema defines this attribute as a string
+	 * <pre>
+	 * <h3>Attribute null:usemaven documentation</h3>
+	 * If 'true' uses maven and external-dependencies.xml file for fetching required libraries into \lib and \web\webroot\WEB-INF\lib.
+	 * </pre>
+	 * @return the value of the usemaven child.
+	 */
+	@NotNull
+	@Attribute(USEMAVEN)
+	@ApiStatus.AvailableSince("5.2")
+	FalseAttributeValue getUseMaven();
+
+	/**
+	 * Returns the value of the jaloLogicFree child.
+	 * <pre>
+	 * <h3>Attribute null:jaloLogicFree documentation</h3>
+	 * If 'true' types introduced by this extension are SLD safe by default and contains no JALO logic.
+	 * </pre>
+	 * @return the value of the jaloLogicFree child.
+	 */
+	@NotNull
+	@Attribute(JALO_LOGIC_FREE)
+	@ApiStatus.AvailableSince("1811")
+	FalseAttributeValue getJaloLogicFree();
 
 }

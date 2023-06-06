@@ -26,6 +26,7 @@ import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,7 +36,12 @@ import org.jetbrains.annotations.NotNull;
  * Scans for extensions in a given folder.
  * </pre>
  */
+@ApiStatus.AvailableSince("5.0")
 public interface Scan extends DomElement {
+
+	String DIR = "dir";
+	String AUTOLOAD = "autoload";
+	String DEPTH = "depth";
 
 	/**
 	 * Returns the value of the dir child.
@@ -46,10 +52,9 @@ public interface Scan extends DomElement {
 	 * @return the value of the dir child.
 	 */
 	@NotNull
-	@Attribute ("dir")
+	@Attribute(DIR)
 	@Required
 	GenericAttributeValue<String> getDir();
-
 
 	/**
 	 * Returns the value of the autoload child.
@@ -60,9 +65,8 @@ public interface Scan extends DomElement {
 	 * @return the value of the autoload child.
 	 */
 	@NotNull
-	@Attribute ("autoload")
+	@Attribute(AUTOLOAD)
 	FalseAttributeValue getAutoload();
-
 
 	/**
 	 * Returns the value of the depth child.
@@ -73,8 +77,7 @@ public interface Scan extends DomElement {
 	 * @return the value of the depth child.
 	 */
 	@NotNull
-	@Attribute ("depth")
+	@Attribute(DEPTH)
 	GenericAttributeValue<Integer> getDepth();
-
 
 }
