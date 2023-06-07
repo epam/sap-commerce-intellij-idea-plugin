@@ -10,6 +10,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ConfigHybrisModuleDes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.PlatformHybrisModuleDescriptor;
 import com.intellij.openapi.project.Project;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
 
@@ -17,8 +18,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyCollectionIfNull;
 
 public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator {
 
@@ -37,16 +36,16 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
             (CompilerConfigurationImpl) CompilerConfiguration.getInstance(project);
 
         if (buildCompilerPropValue.equals("org.eclipse.jdt.core.JDTCompilerAdapter")) {
-            final Optional<BackendCompiler> eclipseCompiler = emptyCollectionIfNull(
+            final Optional<BackendCompiler> eclipseCompiler = CollectionUtils.emptyIfNull(
                 configuration.getRegisteredJavaCompilers()
             ).stream().filter(
-                    it -> JavaCompilers.ECLIPSE_ID.equals(it.getId())
+                it -> JavaCompilers.ECLIPSE_ID.equals(it.getId())
             ).findAny();
 
             eclipseCompiler.ifPresent(configuration::setDefaultCompiler);
 
         } else if (buildCompilerPropValue.equals("modern")) {
-            final Optional<BackendCompiler> javac = emptyCollectionIfNull(
+            final Optional<BackendCompiler> javac = CollectionUtils.emptyIfNull(
                 configuration.getRegisteredJavaCompilers()
             ).stream().filter(
                 it -> JavaCompilers.JAVAC_ID.equals(it.getId())

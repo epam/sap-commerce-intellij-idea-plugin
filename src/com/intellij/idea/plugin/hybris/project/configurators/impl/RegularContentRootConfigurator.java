@@ -37,39 +37,10 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ACCELERATOR_ADDON_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ADDON_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BACKOFFICE_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.BOWER_COMPONENTS_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.COMMON_WEB_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ECLIPSE_BIN_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.EXTERNAL_TOOL_BUILDERS_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GEN_SRC_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HAC_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.HMC_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.JS_TARGET_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.NODE_MODULES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_6_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.RESOURCES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SETTINGS_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.SRC_DIR_NAMES;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.TEST_SRC_DIR_NAMES;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_INF_CLASSES_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.WEB_MODULE_DIRECTORY;
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyListIfNull;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 
 /**
@@ -98,7 +69,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             moduleDescriptor.getRootDirectory().getAbsolutePath()
         ));
 
-        final List<File> dirsToIgnore = emptyListIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
+        final List<File> dirsToIgnore = CollectionUtils.emptyIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
             .map(relPath -> new File(moduleDescriptor.getRootDirectory(), relPath))
             .collect(Collectors.toList());
 
@@ -158,7 +129,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         );
 
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
-                                                                                         .isExcludeTestSources()) {
+            .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory(), dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, moduleDescriptor.getRootDirectory());
@@ -199,7 +170,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         if (
             moduleDescriptor.getDescriptorType() == CUSTOM ||
-            !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
+                !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getRootDirectory(), CLASSES_DIRECTORY));
         }
@@ -312,7 +283,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         }
 
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
-                                                                                         .isExcludeTestSources()) {
+            .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, backOfficeModuleDirectory);
@@ -383,7 +354,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         );
 
         if (moduleDescriptor instanceof CustomHybrisModuleDescriptor || !moduleDescriptor.getRootProjectDescriptor()
-                                                                                         .isExcludeTestSources()) {
+            .isExcludeTestSources()) {
             addTestSourceRoots(contentEntry, webModuleDirectory, dirsToIgnore);
         } else {
             excludeTestSourceRoots(contentEntry, webModuleDirectory);
@@ -439,8 +410,8 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected boolean isResourceDirExcluded(final String moduleName) {
         List<String> extensionsResourcesToExcludeList = HybrisApplicationSettingsComponent.getInstance()
-                                                                                           .getState()
-                                                                                           .getExtensionsResourcesToExclude();
+            .getState()
+            .getExtensionsResourcesToExclude();
         return (CollectionUtils.isNotEmpty(extensionsResourcesToExcludeList) && extensionsResourcesToExcludeList
             .contains(moduleName));
     }
@@ -475,7 +446,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         } else if (
             !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode() &&
-            srcDirectoriesExists(webModuleDirectory)
+                srcDirectoriesExists(webModuleDirectory)
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEB_INF_CLASSES_DIRECTORY));
         }

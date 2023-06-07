@@ -66,7 +66,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.utils.CollectionUtils.emptyIfNull;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
 import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -338,7 +337,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             final var normalizedPaths = autoloadPaths.entrySet().stream().collect(Collectors.toMap(entry -> {
                 for (final var property : properties.entrySet()) {
-                    if (entry.getKey().contains("${"+property.getKey()+ '}')) {
+                    if (entry.getKey().contains("${" + property.getKey() + '}')) {
                         return Paths.get(entry.getKey().replace("${" + property.getKey() + '}', property.getValue())).normalize().toString();
                     }
                 }
@@ -658,22 +657,22 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     private boolean isDirectoryExcluded(final Path file) {
         final String path = file.toString();
         return path.endsWith(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_TOMCAT_6_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_TCSERVER_DIRECTORY) ||
-               path.endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY) ||
-               path.contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY);
+            path.endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_LIB_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_LOG_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_RESOURCES_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_SVN_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_TEMP_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_TOMCAT_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_TOMCAT_6_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_TCSERVER_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_TMP_DIRECTORY) ||
+            path.contains(HybrisConstants.EXCLUDE_ANT_DIRECTORY);
     }
 
     protected void buildDependencies(@NotNull final Iterable<HybrisModuleDescriptor> moduleDescriptors) {
@@ -687,8 +686,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 continue;
             }
             requiredExtensionNames = requiredExtensionNames.stream()
-                                                           .sorted()
-                                                           .collect(Collectors.toCollection(LinkedHashSet::new));
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
             final Set<HybrisModuleDescriptor> dependencies = new LinkedHashSet<>(
                 requiredExtensionNames.size()
@@ -752,13 +751,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Validate.notNull(moduleDescriptors);
         Validate.notEmpty(requiresExtensionName);
 
-        return emptyIfNull(Iterables.filter(
+        final Iterable<HybrisModuleDescriptor> hybrisModuleDescriptors = Iterables.filter(
             moduleDescriptors, new FindHybrisModuleDescriptorByName(requiresExtensionName)
-        ));
+        );
+
+        return null == hybrisModuleDescriptors ? Collections.emptyList() : hybrisModuleDescriptors;
     }
 
     protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
-
 
     @NotNull
     @Override
@@ -1088,21 +1088,21 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public String toString() {
         return "DefaultHybrisProjectDescriptor{" +
-               "rootDirectory=" + rootDirectory +
-               ", modulesFilesDirectory=" + modulesFilesDirectory +
-               ", sourceCodeFile=" + sourceCodeFile +
-               ", openProjectSettingsAfterImport=" + openProjectSettingsAfterImport +
-               ", importOotbModulesInReadOnlyMode=" + importOotbModulesInReadOnlyMode +
-               ", hybrisDistributionDirectory=" + hybrisDistributionDirectory +
-               ", externalExtensionsDirectory=" + externalExtensionsDirectory +
-               ", externalConfigDirectory=" + externalConfigDirectory +
-               ", externalDbDriversDirectory=" + externalDbDriversDirectory +
-               ", javadocUrl='" + javadocUrl + '\'' +
-               ", hybrisVersion='" + hybrisVersion + '\'' +
-               ", createBackwardCyclicDependenciesForAddOns=" + createBackwardCyclicDependenciesForAddOns +
-               ", followSymlink=" + followSymlink +
-               ", excludeTestSources=" + excludeTestSources +
-               ", scanThroughExternalModule=" + scanThroughExternalModule +
-               '}';
+            "rootDirectory=" + rootDirectory +
+            ", modulesFilesDirectory=" + modulesFilesDirectory +
+            ", sourceCodeFile=" + sourceCodeFile +
+            ", openProjectSettingsAfterImport=" + openProjectSettingsAfterImport +
+            ", importOotbModulesInReadOnlyMode=" + importOotbModulesInReadOnlyMode +
+            ", hybrisDistributionDirectory=" + hybrisDistributionDirectory +
+            ", externalExtensionsDirectory=" + externalExtensionsDirectory +
+            ", externalConfigDirectory=" + externalConfigDirectory +
+            ", externalDbDriversDirectory=" + externalDbDriversDirectory +
+            ", javadocUrl='" + javadocUrl + '\'' +
+            ", hybrisVersion='" + hybrisVersion + '\'' +
+            ", createBackwardCyclicDependenciesForAddOns=" + createBackwardCyclicDependenciesForAddOns +
+            ", followSymlink=" + followSymlink +
+            ", excludeTestSources=" + excludeTestSources +
+            ", scanThroughExternalModule=" + scanThroughExternalModule +
+            '}';
     }
 }

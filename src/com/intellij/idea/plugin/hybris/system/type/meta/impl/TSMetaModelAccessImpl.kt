@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
@@ -40,6 +39,7 @@ import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.xml.DomElement
+import org.apache.commons.collections4.CollectionUtils
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -60,6 +60,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
+
     @Volatile
     private var building: Boolean = false
     private val semaphore = Semaphore(1)
@@ -119,6 +120,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
         throw ProcessCanceledException()
     }
+
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
     override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.values()
         .flatMap { getAll(it) }
@@ -133,7 +135,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     override fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(TSMetaType.META_MAP, name)
     override fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(TSMetaType.META_RELATION, name)
 
-    override fun findRelationByName(name: String?) = CollectionUtils.emptyCollectionIfNull(getMetaModel().getAllRelations().values())
+    override fun findRelationByName(name: String?) = CollectionUtils.emptyIfNull(getMetaModel().getAllRelations().values())
         .mapNotNull { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
 

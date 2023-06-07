@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType;
-import com.intellij.idea.plugin.hybris.common.utils.CollectionUtils;
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.MetaType;
@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.Requi
 import com.intellij.idea.plugin.hybris.settings.ExtensionDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.project.Project;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +56,7 @@ public abstract class RegularHybrisModuleDescriptor extends AbstractHybrisModule
         super(moduleRootDirectory, rootProjectDescriptor, extensionInfo.getExtension().getName());
 
         this.extensionInfo = extensionInfo;
-        this.metas = CollectionUtils.emptyListIfNull(extensionInfo.getExtension().getMeta()).stream()
+        this.metas = CollectionUtils.emptyIfNull(extensionInfo.getExtension().getMeta()).stream()
             .collect(Collectors.toMap(MetaType::getKey, MetaType::getValue));
     }
 
