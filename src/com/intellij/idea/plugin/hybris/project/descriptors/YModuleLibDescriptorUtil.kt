@@ -261,15 +261,17 @@ object YModuleLibDescriptorUtil {
                     .filterIsInstance<YWebSubModuleDescriptor>()
                     .forEach { yWebModule ->
                         val webClasses = JavaLibraryDescriptor(
-                            name = "Addon's Target Web Classes - ${yWebModule.name}",
+                            name = "${yWebModule.name} - Addon's Target Web Classes",
                             libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                             sourceFiles = if (attachSources) listOf(File(yWebModule.moduleRootDirectory, HybrisConstants.WEB_SRC_PATH))
                             else emptyList(),
+                            exported = false,
                             directoryWithClasses = true
                         )
                         val webLibrary = JavaLibraryDescriptor(
-                            name = "Addon's Target Web Library - ${yWebModule.name}",
+                            name = "${yWebModule.name} - Addon's Target Web Library",
                             libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
+                            exported = false,
                             descriptorType = LibraryDescriptorType.WEB_INF_LIB
                         )
                         libs.add(webClasses)
@@ -283,17 +285,19 @@ object YModuleLibDescriptorUtil {
 
                 libs.add(
                     JavaLibraryDescriptor(
-                        name = "Addon's Target Classes - ${yModule.name}",
+                        name = "${yModule.name} - Addon's Target Classes",
                         libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
                         sourceFiles = if (attachSources) sourceFiles
                         else emptyList(),
+                        exported = false,
                         directoryWithClasses = true
                     )
                 )
                 libs.add(
                     JavaLibraryDescriptor(
-                        name = "Addon's Target Resources - ${yModule.name}",
+                        name = "${yModule.name} - Addon's Target Resources",
                         libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
+                        exported = false,
                         directoryWithClasses = true
                     )
                 )
@@ -311,7 +315,7 @@ object YModuleLibDescriptorUtil {
         val attachSources = descriptor.descriptorType != ModuleDescriptorType.CUSTOM && descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
         libs.add(
             JavaLibraryDescriptor(
-                name = "Web Classes",
+                name = "${descriptor.name} - Web Classes",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                 sourceFiles = if (attachSources) listOf(File(descriptor.moduleRootDirectory, HybrisConstants.WEB_SRC_PATH))
                 else emptyList(),
@@ -322,7 +326,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
-                name = "Web Library",
+                name = "${descriptor.name} - Web Library",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.view;
 
 import com.google.common.collect.Iterables;
-import com.intellij.facet.Facet;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
@@ -32,9 +31,7 @@ import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.facet.YFacet;
-import com.intellij.idea.plugin.hybris.facet.YFacetConfiguration;
 import com.intellij.idea.plugin.hybris.kotlin.InfixesKt;
-import com.intellij.idea.plugin.hybris.project.utils.ModuleUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -54,7 +51,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HybrisProjectView implements TreeStructureProvider, DumbAware {
@@ -133,17 +129,16 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME.equals(vf.getName())
                 && HybrisConstants.EXTENSION_NAME_PLATFORM.equals(InfixesKt.yExtensionName(module))) return false;
 
-            return Optional.ofNullable(YFacet.Companion.get(module))
-                .map(Facet::getConfiguration)
-                .map(YFacetConfiguration::getState)
-                .filter(it -> it.getSubModuleType() != null
-                    && it.getName().endsWith('.' + vf.getName())
-                    && !ModuleUtils.INSTANCE.getSubmoduleShortName(module).startsWith(parent.getName() + '.')
-                )
-                .isEmpty();
-        } else {
-            return true;
+            final var yFacet = YFacet.Companion.get(module);
+            if (yFacet == null) return true;
+
+            final var yFacetState = yFacet.getConfiguration().getState();
+            if (yFacetState == null) return true;
+            if (yFacetState.getSubModuleType() == null) return true;
+
+            return !(parent instanceof ProjectViewModuleGroupNode);
         }
+        return true;
     }
 
     private void modifyIcons(
