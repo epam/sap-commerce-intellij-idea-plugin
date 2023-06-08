@@ -4,7 +4,8 @@
 - Due mass API changes it is required to re-import the Project
 - Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`
 - Introduced new **SAP Commerce** module facet, which will contains all extension settings 
-- Module-type specific icons in the Project View 
+- Module-type specific icons in the Project View
+- Module groups will always have correct custom icons
 - Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
 
 ### `External Dependencies` enhancements

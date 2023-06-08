@@ -21,10 +21,7 @@ package com.intellij.idea.plugin.hybris.view;
 import com.google.common.collect.Iterables;
 import com.intellij.ide.projectView.TreeStructureProvider;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
-import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode;
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode;
+import com.intellij.ide.projectView.impl.nodes.*;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.NodeOptions;
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
@@ -82,12 +79,9 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         @NotNull final Collection<AbstractTreeNode<?>> children,
         final ViewSettings settings
     ) {
-        Validate.notNull(parent);
-        Validate.notNull(children);
+        if (this.isNotHybrisProject()) return children;
 
-        if (this.isNotHybrisProject()) {
-            return children;
-        }
+        replaceModuleGroupNodes(children);
 
         final var newChildren = filterOutChildren(parent, children);
 
@@ -97,8 +91,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : newChildren;
         }
 
-        if (parent instanceof ProjectViewModuleGroupNode) {
-            modifyIcons((ProjectViewModuleGroupNode) parent, newChildren);
+        if (parent instanceof YProjectViewModuleGroupNode) {
+            modifyModuleGroupIcons((YProjectViewModuleGroupNode) parent);
         }
 
         if (parent instanceof ExternalLibrariesNode) {
@@ -110,6 +104,19 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return this.isCompactEmptyMiddleFoldersEnabled(settings)
             ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
             : childrenWithProcessedJunkFiles;
+    }
+
+    private void replaceModuleGroupNodes(final Collection<AbstractTreeNode<?>> children) {
+        if (!(children instanceof final List<AbstractTreeNode<?>> modifiableChildren) || modifiableChildren.isEmpty()) return;
+
+        for (int i = 0; i < modifiableChildren.size(); i++) {
+            final AbstractTreeNode<?> node = modifiableChildren.get(i);
+            if (node instanceof final ProjectViewModuleGroupNode moduleGroupNode) {
+                final var yProjectViewModuleGroupNode = new YProjectViewModuleGroupNode(moduleGroupNode.getProject(), moduleGroupNode.getValue(), moduleGroupNode.getSettings());
+                modifiableChildren.set(i, yProjectViewModuleGroupNode);
+            }
+        }
+
     }
 
     private Collection<AbstractTreeNode<?>> filterOutChildren(final AbstractTreeNode<?> parent, final Collection<AbstractTreeNode<?>> children) {
@@ -141,9 +148,8 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
         return true;
     }
 
-    private void modifyIcons(
-        final ProjectViewModuleGroupNode parent,
-        final Collection<AbstractTreeNode<?>> children
+    private void modifyModuleGroupIcons(
+        final ProjectViewModuleGroupNode parent
     ) {
         final var moduleGroup = parent.getValue();
         if (moduleGroup == null) return;
@@ -164,14 +170,17 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : "";
 
             if (rootGroup.equalsIgnoreCase(platformGroupRootName)) {
-                parent.getPresentation().setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
+                parent.setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
+//                parent.getPresentation().setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
             }
 
             if (rootGroup.equalsIgnoreCase(commerceGroupRootName)) {
-                parent.getPresentation().setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
+                parent.setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
+//                parent.getPresentation().setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
             }
             if (rootGroup.equalsIgnoreCase(ccv2GroupRootName)) {
-                parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
+                parent.setIcon(HybrisIcons.MODULE_CCV2_GROUP);
+//                parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
             }
         }
     }
