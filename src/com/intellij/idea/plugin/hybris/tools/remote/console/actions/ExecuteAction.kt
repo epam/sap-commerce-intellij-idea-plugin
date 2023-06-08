@@ -7,7 +7,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.EmptyAction
-import com.intellij.openapi.project.DumbAwareAction
 import javax.swing.Icon
 
 abstract class HybrisExecuteActionBase(val executeActionHandler: HybrisConsoleExecuteActionHandler,

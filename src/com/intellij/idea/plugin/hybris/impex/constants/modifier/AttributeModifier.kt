@@ -19,10 +19,8 @@ package com.intellij.idea.plugin.hybris.impex.constants.modifier
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.openapi.project.Project
 
 /**

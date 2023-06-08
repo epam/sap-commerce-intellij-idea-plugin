@@ -34,7 +34,6 @@ import com.intellij.openapi.util.JDOMUtil;
 import com.intellij.spring.facet.SpringFacet;
 import com.intellij.spring.facet.SpringFileSet;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jetbrains.annotations.NotNull;
@@ -92,9 +91,6 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         @NotNull final YModuleDescriptor moduleDescriptor,
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap
     ) {
-        Validate.notNull(moduleDescriptor);
-        Validate.notNull(modifiableFacetModelMap);
-
         final SpringFileSet springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor);
         if (springFileSet == null) {
             return;
@@ -117,9 +113,6 @@ public class DefaultSpringConfigurator implements SpringConfigurator {
         @NotNull final Map<String, ModifiableFacetModel> modifiableFacetModelMap,
         final @NotNull YModuleDescriptor yModuleDescriptor
     ) {
-        Validate.notNull(yModuleDescriptor);
-        Validate.notNull(modifiableFacetModelMap);
-
         final ModifiableFacetModel modifiableFacetModel = modifiableFacetModelMap.get(yModuleDescriptor.getName());
         if (modifiableFacetModel == null) {
             return null;

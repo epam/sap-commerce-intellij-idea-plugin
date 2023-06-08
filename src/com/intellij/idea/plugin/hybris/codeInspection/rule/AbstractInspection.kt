@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project

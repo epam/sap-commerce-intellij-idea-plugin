@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile

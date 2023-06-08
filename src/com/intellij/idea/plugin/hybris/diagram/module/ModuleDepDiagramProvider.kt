@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.module
 
-import com.intellij.diagram.*
+import com.intellij.diagram.BaseDiagramProvider
+import com.intellij.diagram.DiagramPresentationModel
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.diagram.module.*
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.openapi.project.Project

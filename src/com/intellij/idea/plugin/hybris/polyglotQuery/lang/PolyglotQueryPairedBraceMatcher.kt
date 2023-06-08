@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher

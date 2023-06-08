@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.psi.ResolveResult
 
 class FxSColumnAliasNameResolveResult(private val ref: FlexibleSearchColumnAliasName?) : ResolveResult {

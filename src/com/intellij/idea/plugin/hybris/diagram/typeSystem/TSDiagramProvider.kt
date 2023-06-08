@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
-import com.intellij.diagram.*
+import com.intellij.diagram.BaseDiagramProvider
+import com.intellij.diagram.DiagramPresentationModel
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.diagram.module.*
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramColorManager
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode

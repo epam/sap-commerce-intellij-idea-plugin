@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemReference
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSItemReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider

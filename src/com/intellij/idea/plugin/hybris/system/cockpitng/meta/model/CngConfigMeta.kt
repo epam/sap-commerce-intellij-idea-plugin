@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.psi.PsiFile
-import io.ktor.util.*
 
 class CngConfigMeta(
     private val myPsiFile: PsiFile,
