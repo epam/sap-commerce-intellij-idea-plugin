@@ -164,11 +164,11 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
                 : "";
 
             if (rootGroup.equalsIgnoreCase(platformGroupRootName)) {
-                parent.getPresentation().setIcon(HybrisIcons.HYBRIS_ALTERNATIVE);
+                parent.getPresentation().setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
             }
 
             if (rootGroup.equalsIgnoreCase(commerceGroupRootName)) {
-                parent.getPresentation().setIcon(HybrisIcons.HYBRIS);
+                parent.getPresentation().setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
             }
             if (rootGroup.equalsIgnoreCase(ccv2GroupRootName)) {
                 parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);

@@ -187,7 +187,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.dependencies"));
         indicator.setText2("");
         configuratorFactory.getModulesDependenciesConfigurator().configure(hybrisProjectDescriptor, modifiableModelsProvider);
-        springConfigurator.configureDependencies(hybrisProjectDescriptor, modifiableModelsProvider);
+        springConfigurator.configureDependencies(hybrisProjectDescriptor, allYModules,  modifiableModelsProvider);
 
         indicator.setText(message("hybris.project.import.runconfigurations"));
         configuratorFactory.getDebugRunConfigurationConfigurator().configure(hybrisProjectDescriptor, project, cache);

@@ -117,7 +117,7 @@
         <group>
             <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
                     class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.HYBRIS"
+                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.Y_LOGO_BLUE"
                     text="Copy to ImpEx Console" description="Copy ImpEx file to SAP Commerce Console">
             </action>
             <separator/>

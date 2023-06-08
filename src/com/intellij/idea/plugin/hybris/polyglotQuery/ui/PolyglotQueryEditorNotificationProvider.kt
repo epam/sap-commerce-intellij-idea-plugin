@@ -56,7 +56,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
 
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-            panel.icon(HybrisIcons.HYBRIS)
+            panel.icon(HybrisIcons.Y_LOGO_BLUE)
             panel.text = message(
                 "hybris.pgq.notification.provider.keywords.text",
                 message("hybris.pgq.notification.provider.keywords.case.${pgqSettings.defaultCaseForReservedWords}")

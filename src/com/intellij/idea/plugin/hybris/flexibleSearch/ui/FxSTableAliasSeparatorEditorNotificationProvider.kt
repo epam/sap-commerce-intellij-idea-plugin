@@ -48,7 +48,7 @@ class FxSTableAliasSeparatorEditorNotificationProvider : AbstractFxSEditorNotifi
     ): Function<FileEditor, EditorNotificationPanel> {
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-            panel.icon(HybrisIcons.HYBRIS)
+            panel.icon(HybrisIcons.Y_LOGO_BLUE)
             panel.text = message(
                 "hybris.fxs.notification.provider.tableAliasSeparator.text",
                 when (val separator = fxsSettings.completion.defaultTableAliasSeparator) {

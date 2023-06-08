@@ -46,7 +46,7 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
     ): Function<FileEditor, EditorNotificationPanel> {
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-            panel.icon(HybrisIcons.HYBRIS)
+            panel.icon(HybrisIcons.Y_LOGO_BLUE)
             panel.text = message(
                 "hybris.fxs.notification.provider.keywords.text",
                 message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")

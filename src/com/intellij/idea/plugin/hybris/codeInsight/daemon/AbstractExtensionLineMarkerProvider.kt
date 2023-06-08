@@ -38,7 +38,7 @@ import javax.swing.Icon
 
 abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getIcon(): Icon = HybrisIcons.HYBRIS
+    override fun getIcon(): Icon = HybrisIcons.Y_LOGO_BLUE
     override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
     abstract fun getParentTagName(): String
     abstract fun getTooltipText(): String

@@ -44,9 +44,10 @@ public final class HybrisIcons {
 
     public static final Icon DECLARATION = getIcon("/icons/declaration.svg");
 
-    public static final Icon HYBRIS = getIcon("/icons/hybrisIcon.svg");
-    public static final Icon HYBRIS_ALTERNATIVE = getIcon("/icons/hybrisIconAlternative.svg");
-    public static final Icon HYBRIS_FACET = getIcon("/icons/yFacet.svg");
+    public static final Icon Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg");
+    public static final Icon Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg");
+    public static final Icon Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg");
+    public static final Icon Y_FACET = Y_LOGO_GREEN;
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg");
     public static final Icon COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitNG/widgets.svg");
@@ -62,6 +63,8 @@ public final class HybrisIcons {
 
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
+    public static final Icon MODULE_COMMERCE_GROUP = Y_LOGO_GREEN;
+    public static final Icon MODULE_PLATFORM_GROUP = Y_LOGO_ORANGE;
 
     public static final Icon EXTENSION_CONFIG = AllIcons.Nodes.ConfigFolder;
     public static final Icon EXTENSION_CLOUD = getIcon("/icons/extension/cloud.svg");
@@ -72,9 +75,9 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_COMMON_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_ADDON = AllIcons.Nodes.WebFolder;
-    public static final Icon EXTENSION_BACKOFFICE = HYBRIS;
-    public static final Icon EXTENSION_HMC = HYBRIS;
-    public static final Icon EXTENSION_HAC = HYBRIS;
+    public static final Icon EXTENSION_BACKOFFICE = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_HMC = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_HAC = Y_LOGO_BLUE;
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");

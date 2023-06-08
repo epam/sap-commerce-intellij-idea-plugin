@@ -27,5 +27,5 @@ import javax.swing.Icon
 
 class ModelValueIconRenderer : ValueIconRenderer {
     override fun calcValueIcon(descriptor: ValueDescriptor?, evaluationContext: EvaluationContext?, listener: DescriptorLabelListener?): Icon =
-        HybrisIcons.HYBRIS
+        HybrisIcons.Y_LOGO_BLUE
 }

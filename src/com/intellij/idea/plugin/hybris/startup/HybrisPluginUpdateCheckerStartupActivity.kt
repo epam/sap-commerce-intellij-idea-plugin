@@ -38,7 +38,7 @@ class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity, Disposable {
                 PluginId.getId(HybrisConstants.PLUGIN_ID),
                 HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
                 NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
-                HybrisIcons.HYBRIS
+                HybrisIcons.Y_LOGO_BLUE
             )
             Disposer.register(this, checker)
             checker.pluginUsed()

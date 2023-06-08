@@ -206,7 +206,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 //            return HybrisIcons.EXTENSION_HMC;
 //        }
 
-        return HybrisIcons.HYBRIS;
+        return HybrisIcons.Y_LOGO_BLUE;
     }
 
     private boolean isMandatoryOrPreselected(final ModuleDescriptor descriptor) {

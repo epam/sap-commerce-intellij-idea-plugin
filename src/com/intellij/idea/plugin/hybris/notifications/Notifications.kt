@@ -22,7 +22,7 @@ class Notifications private constructor(type: NotificationType, title: String, c
         notification = NotificationGroupManager.getInstance()
             .getNotificationGroup(NOTIFICATION_GROUP_HYBRIS)
             .createNotification(title, content, type)
-            .setIcon(HybrisIcons.HYBRIS)
+            .setIcon(HybrisIcons.Y_LOGO_BLUE)
     }
 
     fun important(important: Boolean): Notifications {

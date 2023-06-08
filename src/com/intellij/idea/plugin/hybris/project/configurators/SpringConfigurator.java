@@ -31,6 +31,6 @@ public interface SpringConfigurator {
 
     void configureDependencies(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
+        final Map<String, YModuleDescriptor> allYModules, final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     );
 }

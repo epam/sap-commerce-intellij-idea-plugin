@@ -38,7 +38,7 @@ object FxSLookupElementFactory {
         .withPresentableText(" ")
         .withTailText("{...}")
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
-        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeText(null, HybrisIcons.Y_LOGO_BLUE, true)
         .withTypeIconRightAligned(true)
         .withInsertHandler(object : AutoPopupInsertHandler() {
             override fun handle(context: InsertionContext, item: LookupElement) {
@@ -53,7 +53,7 @@ object FxSLookupElementFactory {
         .withTailText("{{...}}")
         .withTypeText(message("hybris.fxs.completion.subQuery"), true)
         .withIcon(HybrisIcons.FXS_Y_COLUMN_PLACEHOLDER)
-        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeText(null, HybrisIcons.Y_LOGO_BLUE, true)
         .withTypeIconRightAligned(true)
         .withInsertHandler { ctx, _ ->
             val cursorOffset = ctx.editor.caretModel.offset
@@ -63,7 +63,7 @@ object FxSLookupElementFactory {
     fun buildYFrom() = LookupElementBuilder.create("{}")
         .withPresentableText(" ")
         .withTailText("{...}")
-        .withTypeText(null, HybrisIcons.HYBRIS, true)
+        .withTypeText(null, HybrisIcons.Y_LOGO_BLUE, true)
         .withTypeIconRightAligned(true)
         .withIcon(HybrisIcons.FXS_Y_FROM_PLACEHOLDER)
         .withInsertHandler(object : AutoPopupInsertHandler() {
@@ -193,6 +193,6 @@ object FxSLookupElementFactory {
     fun build(yColumnName: FlexibleSearchYColumnName, addComma: Boolean) = LookupElementBuilder
         .create(yColumnName.text.trim() + (if (addComma) "," else ""))
         .withPresentableText(yColumnName.text.trim())
-        .withIcon(HybrisIcons.HYBRIS)
+        .withIcon(HybrisIcons.Y_LOGO_BLUE)
 
 }

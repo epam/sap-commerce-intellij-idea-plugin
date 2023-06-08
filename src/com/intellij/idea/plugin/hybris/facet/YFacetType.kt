@@ -28,7 +28,7 @@ import javax.swing.Icon
 
 class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
 
-    override fun getIcon(): Icon = HybrisIcons.HYBRIS_FACET
+    override fun getIcon(): Icon = HybrisIcons.Y_FACET
     override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType
     override fun createDefaultConfiguration() = YFacetConfiguration()
 

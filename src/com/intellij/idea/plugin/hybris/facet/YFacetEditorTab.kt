@@ -49,7 +49,7 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                         ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
                         ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
                         ModuleDescriptorType.CONFIG -> HybrisIcons.EXTENSION_CONFIG
-                        else -> HybrisIcons.HYBRIS
+                        else -> HybrisIcons.Y_LOGO_BLUE
                     }
                 )
                 label(state.type.name)

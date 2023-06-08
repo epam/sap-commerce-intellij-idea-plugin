@@ -201,7 +201,7 @@ public class DefaultConfiguratorFactory implements ConfiguratorFactory {
         @Override
         public void configureDependencies(
             @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-            @NotNull final IdeModifiableModelsProvider modifiableModelsProvider
+            final Map<String, YModuleDescriptor> allYModules, @NotNull final IdeModifiableModelsProvider modifiableModelsProvider
         ) {
 
         }

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 
 interface YModuleDescriptor : ModuleDescriptor {
 
-    val springFileSet: Set<String>
+    val springFileSet: MutableSet<String>
     val dependenciesTree: Set<YModuleDescriptor>
     var subModules: MutableSet<YSubModuleDescriptor>
 }

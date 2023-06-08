@@ -51,7 +51,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
         }
     }
 
-    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.HYBRIS }
+    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y_LOGO_BLUE }
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider {
         return FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
