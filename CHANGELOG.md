@@ -6,6 +6,9 @@
 ### `FlexibleSearch` enhancements
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 
+### `ImpEx` enhancements
+- Inspection and Quick fix to remove statement in case only one attribute provided [#523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/523)
+
 ### Other
 - Do not mark `ExtensibleItem`, `LocalizableItem` & `GenericItem` as not generated in `items.xml` [#522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/522)
 - Improve performance of the inlay for `DynamicAttributeHandler` [#521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/521) 

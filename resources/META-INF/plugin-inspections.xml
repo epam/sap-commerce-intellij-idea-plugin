@@ -123,6 +123,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpexMoreThanOnlyCodeAttributePresentForStaticEnumInspection" displayName="[y] Incorrect usage of statement"
+                         groupName="[y] Impex" level="WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexOnlyCodeSpecifiedForNonDynamicEnumInspection"/>
+
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDeclaration.key"
