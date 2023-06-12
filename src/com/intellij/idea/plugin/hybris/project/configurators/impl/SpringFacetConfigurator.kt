@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -40,8 +41,18 @@ class SpringFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        if (moduleDescriptor !is YModuleDescriptor) return
+        when (moduleDescriptor) {
+            is PlatformModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, emptySet())
+            is YModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, moduleDescriptor.springFileSet)
+        }
+    }
 
+    private fun configure(
+        javaModule: Module,
+        moduleDescriptor: ModuleDescriptor,
+        modifiableFacetModel: ModifiableFacetModel,
+        additionalFileSet: Set<String>
+    ) {
         WriteAction.runAndWait<RuntimeException> {
             val springFacet = SpringFacet.getInstance(javaModule)
                 ?.also { it.removeFileSets() }
@@ -53,7 +64,7 @@ class SpringFacetConfigurator : FacetConfigurator {
             val facetId = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
             val springFileSet = springFacet.addFileSet(facetId, facetId)
 
-            moduleDescriptor.springFileSet
+            additionalFileSet
                 .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
                 .forEach { springFileSet.addFile(it) }
 

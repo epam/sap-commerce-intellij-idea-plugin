@@ -51,7 +51,7 @@ abstract class YRegularModuleDescriptor protected constructor(
 
         val requiresExtension = extension.requiresExtension
             .takeIf { it.isNotEmpty() }
-            ?: emptyList()
+            ?: return getDefaultRequiredExtensionNames()
 
         val requiredExtensionNames = requiresExtension
             .filter { it.name.isNotBlank() }

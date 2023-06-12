@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.util.JDOMUtil
@@ -70,26 +68,40 @@ class DefaultSpringConfigurator : SpringConfigurator {
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
         allYModules.values
-            .forEach { configureFacetDependencies(it, modifiableFacetModelMap) }
+            .forEach { yModule ->
+                val dependencies = yModule.dependenciesTree
+                    .takeIf { it.isNotEmpty() }
+                    ?: setOf(hybrisProjectDescriptor.platformHybrisModuleDescriptor)
+                configureFacetDependencies(yModule, modifiableFacetModelMap, dependencies)
+            }
+
+        configureFacetDependencies(
+            hybrisProjectDescriptor.platformHybrisModuleDescriptor,
+            modifiableFacetModelMap,
+            allYModules.values
+                .filterIsInstance<YPlatformExtModuleDescriptor>()
+                .toSet()
+        )
     }
 
     private fun configureFacetDependencies(
-        moduleDescriptor: YModuleDescriptor,
-        modifiableFacetModelMap: Map<String, ModifiableFacetModel>
+        moduleDescriptor: ModuleDescriptor,
+        modifiableFacetModelMap: Map<String, ModifiableFacetModel>,
+        dependencies: Set<ModuleDescriptor>
     ) {
-        val springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor) ?: return
+        val springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor)
+            ?: return
 
-        moduleDescriptor.dependenciesTree
+        dependencies
             .sorted()
             .mapNotNull { getSpringFileSet(modifiableFacetModelMap, it) }
             .forEach { springFileSet.addDependency(it) }
-
     }
 
     private fun getSpringFileSet(
         modifiableFacetModelMap: Map<String, ModifiableFacetModel>,
-        yModuleDescriptor: YModuleDescriptor
-    ) = modifiableFacetModelMap[yModuleDescriptor.name]
+        moduleDescriptor: ModuleDescriptor
+    ) = modifiableFacetModelMap[moduleDescriptor.name]
         ?.getFacetByType(SpringFacet.FACET_TYPE_ID)
         ?.fileSets
         ?.takeIf { it.isNotEmpty() }
