@@ -45,14 +45,13 @@ abstract class YRegularModuleDescriptor protected constructor(
 
     override fun isPreselected() = isInLocalExtensions
 
-    // TODO: it is incorrect in case of blank extensions.......
     override fun getRequiredExtensionNames(): Set<String> {
         val extension = extensionInfo.extension
             ?: return getDefaultRequiredExtensionNames()
 
         val requiresExtension = extension.requiresExtension
             .takeIf { it.isNotEmpty() }
-            ?: return getDefaultRequiredExtensionNames()
+            ?: emptyList()
 
         val requiredExtensionNames = requiresExtension
             .filter { it.name.isNotBlank() }
@@ -65,7 +64,7 @@ abstract class YRegularModuleDescriptor protected constructor(
             requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
         }
         if (hasBackofficeModule) {
-            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
+            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY)
         }
         return requiredExtensionNames.unmodifiable()
     }

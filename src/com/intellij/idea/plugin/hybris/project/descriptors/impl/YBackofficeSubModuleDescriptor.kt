@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import java.io.File
 
@@ -26,10 +25,4 @@ class YBackofficeSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.BACKOFFICE,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
-
-    override fun getRequiredExtensionNames() = setOf(
-        owner.name,
-        HybrisConstants.EXTENSION_NAME_BACK_OFFICE + "." + HybrisConstants.WEB_MODULE_DIRECTORY
-    )
-}
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)

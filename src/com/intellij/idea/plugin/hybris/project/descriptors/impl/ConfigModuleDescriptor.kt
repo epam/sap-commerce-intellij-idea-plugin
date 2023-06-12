@@ -27,10 +27,14 @@ class ConfigModuleDescriptor(
     name: String = moduleRootDirectory.name
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
-    var isPreselected = false
+    private var preselected = false
     var isMainConfig = false
 
-    override fun isPreselected() = isPreselected
+    fun setPreselected(preselected: Boolean) {
+        this.preselected = preselected
+    }
+    override fun isPreselected() = preselected
+
     override val descriptorType: ModuleDescriptorType
         get() = if (isMainConfig) ModuleDescriptorType.CONFIG
         else ModuleDescriptorType.CUSTOM
