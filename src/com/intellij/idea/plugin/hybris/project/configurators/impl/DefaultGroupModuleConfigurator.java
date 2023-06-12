@@ -49,10 +49,10 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         modulesChosenForImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
-            .filter(YModuleDescriptorUtil.INSTANCE::isPreselected)
+            .filter(ModuleDescriptor::isPreselected)
             .forEach(it -> {
                 requiredYModuleDescriptorList.add(it);
-                requiredYModuleDescriptorList.addAll(YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(it));
+                requiredYModuleDescriptorList.addAll(it.getDependenciesPlainList());
             });
 
         final var groups = Map.of(

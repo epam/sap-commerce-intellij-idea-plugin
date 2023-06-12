@@ -37,6 +37,8 @@ class PlatformModuleDescriptor(
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.PLATFORM,
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
+    override fun isPreselected() = true
+
     fun createBootstrapLib(
         sourceCodeRoot: VirtualFile?,
         modifiableModelsProvider: IdeModifiableModelsProvider

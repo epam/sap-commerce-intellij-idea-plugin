@@ -31,4 +31,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
 
     fun extensionDescriptor(): ExtensionDescriptor
     fun ideaModuleName() = groupNames.joinToString(separator = ".", postfix = ".") + name
+    fun isPreselected(): Boolean
+    fun ideaModuleFile(): File
+    fun getRelativePath(): String
 }

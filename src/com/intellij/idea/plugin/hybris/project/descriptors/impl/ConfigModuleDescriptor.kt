@@ -29,6 +29,8 @@ class ConfigModuleDescriptor(
 
     var isPreselected = false
     var isMainConfig = false
+
+    override fun isPreselected() = isPreselected
     override val descriptorType: ModuleDescriptorType
         get() = if (isMainConfig) ModuleDescriptorType.CONFIG
         else ModuleDescriptorType.CUSTOM

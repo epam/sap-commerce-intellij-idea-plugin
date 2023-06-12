@@ -22,7 +22,6 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
@@ -171,7 +170,7 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
         return builder
             .append(" ".repeat(Math.max(0, spaceCount)))
             .append(" (")
-            .append(YModuleDescriptorUtil.INSTANCE.getRelativePath(moduleDescriptor))
+            .append(moduleDescriptor.getRelativePath())
             .append(')')
             .toString();
     }

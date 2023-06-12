@@ -212,7 +212,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     private List<File> getModulesChosenForImportFiles(final Iterable<ModuleDescriptor> modulesChosenForImport) {
         List<File> alreadyExistingModuleFiles = new ArrayList<>();
         for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
-            final File ideaModuleFile = YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor);
+            final File ideaModuleFile = moduleDescriptor.ideaModuleFile();
             if (ideaModuleFile.exists()) {
                 alreadyExistingModuleFiles.add(ideaModuleFile);
             }
@@ -241,7 +241,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();
         for (ModuleDescriptor moduleDescriptor : allModules) {
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(moduleDescriptor)) {
+            if (moduleDescriptor.isPreselected()) {
                 moduleToImport.add(moduleDescriptor);
                 moduleDescriptor.setImportStatus(MANDATORY);
                 moduleToCheck.add(moduleDescriptor);
@@ -267,7 +267,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
             : Collections.emptySet();
 
         return moduleToImport.stream()
-                             .filter(e -> !modulesOnBlackList.contains(YModuleDescriptorUtil.INSTANCE.getRelativePath(e)))
+                             .filter(e -> !modulesOnBlackList.contains(e.getRelativePath()))
                              .sorted(Comparator.nullsLast(Comparator.comparing(ModuleDescriptor::getName)))
                              .collect(Collectors.toList());
     }
@@ -342,7 +342,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         while (!moduleToCheck.isEmpty()) {
             final ModuleDescriptor currentModule = moduleToCheck.iterator().next();
             if (currentModule instanceof final YModuleDescriptor yModuleDescriptor) {
-                for (YModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor)) {
+                for (YModuleDescriptor moduleDescriptor : yModuleDescriptor.getDependenciesPlainList()) {
                     if (!moduleToImport.contains(moduleDescriptor)) {
                         moduleToImport.add(moduleDescriptor);
                         moduleDescriptor.setImportStatus(selectionMode);

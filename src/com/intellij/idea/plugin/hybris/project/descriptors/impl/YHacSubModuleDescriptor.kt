@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import java.io.File
 
@@ -25,4 +26,10 @@ class YHacSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.HAC,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+
+    override fun getRequiredExtensionNames() = setOf(
+        owner.name,
+        HybrisConstants.EXTENSION_NAME_HAC + "." + HybrisConstants.WEB_MODULE_DIRECTORY
+    )
+}

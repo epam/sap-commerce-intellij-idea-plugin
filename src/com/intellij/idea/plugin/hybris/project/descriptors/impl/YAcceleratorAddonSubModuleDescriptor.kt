@@ -27,4 +27,11 @@ class YAcceleratorAddonSubModuleDescriptor(
     moduleRootDirectory: File,
     override val name: String = owner.name + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY + "." + HybrisConstants.WEB_MODULE_DIRECTORY,
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+
+    override fun getRequiredExtensionNames(): Set<String> {
+        val webNames = owner.getRequiredExtensionNames()
+            .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
+        return setOf(owner.name) + webNames
+    }
+}

@@ -18,16 +18,17 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import java.io.File
 
 /**
  * Kotlin Facets will be configured only if `kotlinnature` extension is available and
@@ -43,7 +44,7 @@ class KotlinFacetConfigurator : FacetConfigurator {
     ) {
         if (moduleDescriptor !is YModuleDescriptor) return
 
-        val hasKotlinDirectories = YModuleDescriptorUtil.hasKotlinDirectories(moduleDescriptor)
+        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
 
         WriteAction.runAndWait<RuntimeException> {
             // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
@@ -69,5 +70,8 @@ class KotlinFacetConfigurator : FacetConfigurator {
             null
         )
     }
+
+    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
+        || File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
 }

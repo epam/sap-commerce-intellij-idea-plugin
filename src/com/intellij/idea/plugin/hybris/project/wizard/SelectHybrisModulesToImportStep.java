@@ -51,7 +51,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<ModuleDescriptor>) (element, isMarked) -> {
             if (element instanceof final YModuleDescriptor yModuleDescriptor) {
                 if (isMarked) {
-                    for (YModuleDescriptor moduleDescriptor : YModuleDescriptorUtil.INSTANCE.getDependenciesPlainList(yModuleDescriptor)) {
+                    for (YModuleDescriptor moduleDescriptor : yModuleDescriptor.getDependenciesPlainList()) {
                         if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                             continue;
                         }
@@ -76,7 +76,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         selectionMode = MANDATORY;
         for (int index = 0; index < fileChooser.getElementCount(); index++) {
             final ModuleDescriptor yModuleDescriptor = fileChooser.getElementAt(index);
-            if (YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+            if (yModuleDescriptor.isPreselected()) {
                 fileChooser.setElementMarked(yModuleDescriptor, true);
                 yModuleDescriptor.setImportStatus(MANDATORY);
             }
@@ -147,7 +147,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
 
     @Override
     protected boolean isElementEnabled(final ModuleDescriptor yModuleDescriptor) {
-        if (yModuleDescriptor instanceof ConfigModuleDescriptor && YModuleDescriptorUtil.INSTANCE.isPreselected(yModuleDescriptor)) {
+        if (yModuleDescriptor instanceof ConfigModuleDescriptor && yModuleDescriptor.isPreselected()) {
             return false;
         }
         if (yModuleDescriptor instanceof PlatformModuleDescriptor) {
@@ -210,8 +210,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
     }
 
     private boolean isMandatoryOrPreselected(final ModuleDescriptor descriptor) {
-        return descriptor.getImportStatus() == MANDATORY
-            || YModuleDescriptorUtil.INSTANCE.isPreselected(descriptor);
+        return descriptor.getImportStatus() == MANDATORY || descriptor.isPreselected();
     }
 
     private boolean isPlatformExtDescriptor(final ModuleDescriptor descriptor) {

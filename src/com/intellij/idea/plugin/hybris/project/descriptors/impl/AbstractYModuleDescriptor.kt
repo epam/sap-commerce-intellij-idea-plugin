@@ -21,10 +21,12 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptorUtil
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
+import io.ktor.util.*
+import org.apache.commons.collections4.CollectionUtils
 import java.io.File
+import java.util.*
 
 abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
@@ -38,6 +40,8 @@ abstract class AbstractYModuleDescriptor(
 
     override var springFileSet = mutableSetOf<String>()
     override val dependenciesTree = mutableSetOf<YModuleDescriptor>()
+
+    override fun getRequiredExtensionNames() = emptySet<String>()
 
     // Must be called at the end of the module import
     override fun extensionDescriptor() = ExtensionDescriptor(
@@ -55,8 +59,26 @@ abstract class AbstractYModuleDescriptor(
         extGenTemplateExtension = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
         classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
         moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
-        addon = YModuleDescriptorUtil.getRequiredExtensionNames(this).contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)
+        addon = getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)
     )
+
+    override fun getDependenciesPlainList() = recursivelyCollectDependenciesPlainSet(this, TreeSet())
+        .unmodifiable()
+
+    private fun recursivelyCollectDependenciesPlainSet(descriptor: YModuleDescriptor, dependenciesSet: MutableSet<YModuleDescriptor>): Set<YModuleDescriptor> {
+        val dependenciesTree = descriptor.dependenciesTree
+
+        if (CollectionUtils.isEmpty(dependenciesTree)) return dependenciesSet
+
+        for (moduleDescriptor in dependenciesTree) {
+            if (dependenciesSet.contains(moduleDescriptor)) {
+                continue
+            }
+            dependenciesSet.add(moduleDescriptor)
+            dependenciesSet.addAll(recursivelyCollectDependenciesPlainSet(moduleDescriptor, dependenciesSet))
+        }
+        return dependenciesSet
+    }
 
     internal fun isMetaKeySetToTrue(metaKeyName: String) = metas[metaKeyName]
         ?.let { "true".equals(it, true) }

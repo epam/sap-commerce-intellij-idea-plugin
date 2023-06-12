@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
@@ -27,4 +28,9 @@ open class YPlatformExtModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.EXT,
-) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+
+    override fun isPreselected() = true
+    override fun getDefaultRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_CORE)
+    override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
+}

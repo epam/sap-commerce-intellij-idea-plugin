@@ -25,4 +25,7 @@ class YCoreExtModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
-) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+
+    override fun getDefaultRequiredExtensionNames() = emptySet<String>()
+}

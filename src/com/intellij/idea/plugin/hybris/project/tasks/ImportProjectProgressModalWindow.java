@@ -275,7 +275,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
         final Module javaModule = rootProjectModifiableModel.newModule(
-            YModuleDescriptorUtil.INSTANCE.getIdeaModuleFile(moduleDescriptor).getAbsolutePath(),
+            moduleDescriptor.ideaModuleFile().getAbsolutePath(),
             StdModuleTypes.JAVA.getId()
         );
 
@@ -537,7 +537,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .getFoundModules().stream()
             .filter(e -> !hybrisProjectDescriptor.getModulesChosenForImport().contains(e))
             .filter(e -> toBeImportedNames.contains(e.getName()))
-            .map(YModuleDescriptorUtil.INSTANCE::getRelativePath)
+            .map(ModuleDescriptor::getRelativePath)
             .collect(Collectors.toSet());
     }
 

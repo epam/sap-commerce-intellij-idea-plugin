@@ -685,7 +685,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     private void buildDependencies(final YModuleDescriptor moduleDescriptor, final Map<String, YModuleDescriptor> yModuleDescriptors) {
-        Set<String> requiredExtensionNames = YModuleDescriptorUtil.INSTANCE.getRequiredExtensionNames(moduleDescriptor);
+        Set<String> requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
 
         if (CollectionUtils.isEmpty(requiredExtensionNames)) {
             return;

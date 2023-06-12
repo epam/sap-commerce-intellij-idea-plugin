@@ -38,6 +38,9 @@ abstract class AbstractYSubModuleDescriptor(
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 
+    override fun getRequiredExtensionNames() = setOf(owner.name)
+    override fun isPreselected() = owner.isPreselected()
+
     override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$moduleRootDirectory)"
 
 }

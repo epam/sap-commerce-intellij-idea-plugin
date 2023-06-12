@@ -17,11 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.openapi.application.ApplicationManager
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import java.io.File
@@ -34,6 +37,7 @@ abstract class AbstractModuleDescriptor(
     override var groupNames: Array<String> = emptyArray(),
     override var readonly: Boolean = false,
 ) : ModuleDescriptor {
+
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
 
     override fun compareTo(other: ModuleDescriptor) = name
@@ -67,6 +71,25 @@ abstract class AbstractModuleDescriptor(
         name = name,
         type = descriptorType
     )
+
+    override fun isPreselected() = false
+
+    override fun ideaModuleFile(): File {
+        val futureModuleName = ideaModuleName()
+        return rootProjectDescriptor.modulesFilesDirectory
+            ?.let { File(rootProjectDescriptor.modulesFilesDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION) }
+            ?: File(moduleRootDirectory, futureModuleName + HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
+    }
+
+    override fun getRelativePath(): String {
+        val projectRootDir: File = rootProjectDescriptor.rootDirectory
+            ?: return moduleRootDirectory.path
+        val virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService::class.java)
+
+        return if (virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDirectory)) {
+            virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)
+        } else moduleRootDirectory.path
+    }
 
     override fun toString() = javaClass.simpleName +
         "{" +

@@ -26,4 +26,7 @@ class CCv2ModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    override fun isPreselected() = true
+}

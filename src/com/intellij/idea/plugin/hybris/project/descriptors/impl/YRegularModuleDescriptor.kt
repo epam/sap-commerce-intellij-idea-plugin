@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
+import io.ktor.util.*
 import java.io.File
 
 abstract class YRegularModuleDescriptor protected constructor(
@@ -41,4 +42,34 @@ abstract class YRegularModuleDescriptor protected constructor(
 
     val hasWebModule = extensionInfo.extension.webmodule != null
         && File(moduleRootDirectory, HybrisConstants.WEB_MODULE_DIRECTORY).isDirectory
+
+    override fun isPreselected() = isInLocalExtensions
+
+    // TODO: it is incorrect in case of blank extensions.......
+    override fun getRequiredExtensionNames(): Set<String> {
+        val extension = extensionInfo.extension
+            ?: return getDefaultRequiredExtensionNames()
+
+        val requiresExtension = extension.requiresExtension
+            .takeIf { it.isNotEmpty() }
+            ?: return getDefaultRequiredExtensionNames()
+
+        val requiredExtensionNames = requiresExtension
+            .filter { it.name.isNotBlank() }
+            .map { it.name }
+            .toMutableSet()
+
+        requiredExtensionNames.addAll(getAdditionalRequiredExtensionNames())
+
+        if (hasHmcModule) {
+            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_HMC)
+        }
+        if (hasBackofficeModule) {
+            requiredExtensionNames.add(HybrisConstants.EXTENSION_NAME_BACK_OFFICE)
+        }
+        return requiredExtensionNames.unmodifiable()
+    }
+
+    internal open fun getDefaultRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
+    internal open fun getAdditionalRequiredExtensionNames() = setOf(HybrisConstants.EXTENSION_NAME_PLATFORM)
 }

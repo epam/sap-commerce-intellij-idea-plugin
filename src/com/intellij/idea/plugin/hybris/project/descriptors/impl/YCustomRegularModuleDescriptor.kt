@@ -27,4 +27,7 @@ class YCustomRegularModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     extensionInfo: ExtensionInfo,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CUSTOM
-) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo)
+) : YRegularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
+
+    override fun getAdditionalRequiredExtensionNames() = emptySet<String>()
+}
