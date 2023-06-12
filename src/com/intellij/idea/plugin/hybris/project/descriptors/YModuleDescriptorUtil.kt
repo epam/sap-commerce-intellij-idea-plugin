@@ -64,14 +64,14 @@ object YModuleDescriptorUtil {
             virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDir)
         } else moduleRootDir.path
     }
+
     // TODO: evaluate it only once during import, see usages
     fun getRequiredExtensionNames(descriptor: YModuleDescriptor) = when (descriptor) {
         is YRegularModuleDescriptor -> getRequiredExtensionNames(descriptor)
         // TODO: build web dependencies
 //        is YWebSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
-        // TODO: build BO dependencies
-//        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
+        is YBackofficeSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YHacSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         is YSubModuleDescriptor -> getRequiredExtensionNames(descriptor)
         else -> emptySet()
@@ -108,13 +108,10 @@ object YModuleDescriptorUtil {
         return setOf(descriptor.owner.name) + webNames
     }
 
-    private fun getRequiredExtensionNames(descriptor: YBackofficeSubModuleDescriptor): Set<String> {
-        val ownerRequiredExtensionNames = getRequiredExtensionNames(descriptor.owner)
-
-        val backofficeNames = ownerRequiredExtensionNames
-            .map { it + "." + HybrisConstants.BACKOFFICE_MODULE_DIRECTORY }
-        return ownerRequiredExtensionNames + backofficeNames
-    }
+    private fun getRequiredExtensionNames(descriptor: YBackofficeSubModuleDescriptor) = setOf(
+        descriptor.owner.name,
+        HybrisConstants.EXTENSION_NAME_BACK_OFFICE + ".web"
+    )
 
     private fun getRequiredExtensionNames(descriptor: YAcceleratorAddonSubModuleDescriptor): Set<String> {
         val ownerRequiredExtensionNames = getRequiredExtensionNames(descriptor.owner)

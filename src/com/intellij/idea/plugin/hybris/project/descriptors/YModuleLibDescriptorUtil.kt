@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
@@ -94,26 +93,6 @@ object YModuleLibDescriptorUtil {
             JavaLibraryDescriptor(
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_LIB_PATH),
                 exported = true
-            )
-        )
-
-        val project = descriptor.rootProjectDescriptor.project ?: return
-
-        libs.add(
-            JavaLibraryDescriptor(
-                libraryFile = File(
-                    descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
-                    HybrisProjectSettingsComponent.getInstance(project).getBackofficeWebInfLib()
-                )
-            )
-        )
-        libs.add(
-            JavaLibraryDescriptor(
-                libraryFile = File(
-                    descriptor.rootProjectDescriptor.hybrisDistributionDirectory,
-                    HybrisProjectSettingsComponent.getInstance(project).getBackofficeWebInfClasses()
-                ),
-                directoryWithClasses = true
             )
         )
     }
@@ -328,6 +307,7 @@ object YModuleLibDescriptorUtil {
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - Web Library",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
+                exported = true,
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )
         )

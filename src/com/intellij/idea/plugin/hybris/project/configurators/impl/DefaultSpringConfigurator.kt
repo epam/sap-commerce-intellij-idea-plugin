@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
@@ -99,10 +100,9 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
         moduleDescriptor: YModuleDescriptor
     ) {
-        processPropertiesFile(moduleDescriptorMap, moduleDescriptor)
-
         try {
             when (moduleDescriptor) {
+                is YRegularModuleDescriptor -> processPropertiesFile(moduleDescriptorMap, moduleDescriptor)
                 is YWebSubModuleDescriptor -> processWebXml(moduleDescriptorMap, moduleDescriptor)
                 is YBackofficeSubModuleDescriptor -> processBackofficeSubModule(moduleDescriptorMap, moduleDescriptor)
             }
@@ -234,27 +234,24 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptor: YModuleDescriptor,
         springFile: File
     ) {
-        val importList = getDocumentRoot(springFile).children
+        getDocumentRoot(springFile).children
             .filter { it.name == "import" }
-
-        processImportNodeList(moduleDescriptorMap, moduleDescriptor, importList, springFile)
+            .forEach { processImportNodeList(moduleDescriptorMap, moduleDescriptor, it, springFile) }
     }
 
     private fun processImportNodeList(
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
         moduleDescriptor: YModuleDescriptor,
-        importList: List<Element>,
+        import: Element,
         springFile: File
     ) {
-        importList
-            .map { it.getAttributeValue("resource") }
-            .forEach { resource ->
-                if (resource.startsWith("classpath:")) {
-                    addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length))
-                } else {
-                    addSpringXmlFile(moduleDescriptorMap, moduleDescriptor, springFile.parentFile, resource)
-                }
-            }
+        val resource = import.getAttributeValue("resource")
+
+        if (resource.startsWith("classpath:")) {
+            addSpringOnClasspath(moduleDescriptorMap, moduleDescriptor, resource.substring("classpath:".length))
+        } else {
+            addSpringXmlFile(moduleDescriptorMap, moduleDescriptor, springFile.parentFile, resource)
+        }
     }
 
     private fun addSpringOnClasspath(
