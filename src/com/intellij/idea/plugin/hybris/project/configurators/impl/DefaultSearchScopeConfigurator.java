@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
+import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -56,7 +57,6 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         NamedScope commerceScope = null;
         NamedScope hybrisScope = null;
 
-        // TODO: FIX After migration to new module names
         if (groupExists(model, customGroupName)) {
             customScope = createScope(customGroupName);
             newScopes.add(customScope);
@@ -144,10 +144,9 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     }
 
     private static boolean groupExists(@NotNull final ModifiableModuleModel model, final String groupName) {
-        return Arrays
-            .stream(model.getModules())
-            .map(model::getModuleGroupPath)
-            .anyMatch(groupPath -> groupPath != null && groupPath.length > 0 && groupPath[0].equals(groupName));
+        return !new ModuleGroup(List.of(groupName))
+            .modulesInGroup(model.getProject())
+            .isEmpty();
     }
 
     @NotNull
