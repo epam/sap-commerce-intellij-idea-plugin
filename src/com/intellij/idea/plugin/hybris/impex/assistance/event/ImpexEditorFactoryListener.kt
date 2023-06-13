@@ -24,8 +24,8 @@ import com.intellij.openapi.editor.event.EditorFactoryListener
 
 class ImpexEditorFactoryListener : EditorFactoryListener {
 
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.getInstance()
-    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.getInstance()
+    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
+    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.instance
 
     override fun editorCreated(editorFactoryEvent: EditorFactoryEvent) {}
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,20 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance;
 
-import com.intellij.openapi.editor.Editor;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ApplicationManager;
 
-/**
- * Created 19:46 11 January 2015
- *
- * @author Alexander Bartash <AlexanderBartash@gmail.com>
- */
-public interface ImpexHighlighterService {
+interface ImpexColumnHighlighterService : ImpexHighlighterService {
 
-    @Contract(pure = false)
-    void highlight(@NotNull Editor editor);
-
-    @Contract(pure = false)
-    void releaseEditorData(@NotNull Editor editor);
+    companion object {
+        val instance: ImpexColumnHighlighterService = ApplicationManager.getApplication().getService(ImpexColumnHighlighterService::class.java)
+    }
 }

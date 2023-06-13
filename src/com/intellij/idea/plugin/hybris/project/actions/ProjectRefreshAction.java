@@ -149,7 +149,7 @@ public class ProjectRefreshAction extends AnAction {
             moduleModel.commit();
             libraryModel.commit();
         });
-        final GradleSupport gradleSupport = GradleSupport.getInstance();
+        final GradleSupport gradleSupport = GradleSupport.Companion.getInstance();
 
         if (gradleSupport != null) {
             gradleSupport.clearLinkedProjectSettings(project);
