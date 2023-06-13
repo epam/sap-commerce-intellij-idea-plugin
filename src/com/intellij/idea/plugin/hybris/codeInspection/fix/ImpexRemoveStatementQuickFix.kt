@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.fix
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexElementType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
@@ -31,18 +29,17 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import org.jetbrains.kotlin.idea.util.CommentSaver.Companion.tokenType
-
-val elementsListToStopSearching = mutableSetOf<IElementType>(
-    ImpexTypes.USER_RIGHTS_HEADER_LINE,
-    ImpexTypes.HEADER_LINE
-)
 
 class ImpexRemoveStatementQuickFix(
     parameter: ImpexHeaderTypeName,
     private val elementName: String,
     private val message: String = "Remove statement"//message("hybris.inspections.fix.impex.ChangeHeaderMode.text", headerMode.firstChild, headerModeReplacement, elementName)
 ) : LocalQuickFixOnPsiElement(parameter) {
+
+    private val elementsListToStopSearching = mutableSetOf<IElementType>(
+        ImpexTypes.USER_RIGHTS,
+        ImpexTypes.HEADER_LINE
+    )
 
     override fun getFamilyName() = "remove statement"//message("hybris.inspections.fix.impex.ChangeHeaderMode")
 
@@ -53,10 +50,10 @@ class ImpexRemoveStatementQuickFix(
         val valueLines = headerLine.valueLines
 
         if (valueLines.isEmpty()) {
-            val emptyCrlfs = mutableSetOf<PsiElement>()
+            val emptyCrlfs = mutableListOf<PsiElement>()
             var nextSibling = headerLine.nextSibling
 
-            while (nextSibling.elementType == ImpexTypes.CRLF) {
+            while (nextSibling.elementType == ImpexTypes.CRLF && nextSibling != null) {
                 emptyCrlfs.add(nextSibling)
                 nextSibling = nextSibling.nextSibling
             }
@@ -65,20 +62,32 @@ class ImpexRemoveStatementQuickFix(
             return
         }
 
-        val elementsToDelete = mutableSetOf<PsiElement>()
-        elementsToDelete.addAll(valueLines)
+        val elementsToDelete = mutableListOf<PsiElement>()
+        for (valueLine in valueLines) {
+            var nextSibling = valueLine.nextSibling
+            while (nextSibling.elementType == ImpexTypes.CRLF && nextSibling != null) {
+                val currentSibling = nextSibling
+                nextSibling = currentSibling.nextSibling
+                currentSibling.delete()
+                valueLine.delete()
+            }
+        }
 
-        if (headerLine.nextSibling.elementType == ImpexTypes.CRLF) elementsToDelete.add(headerLine.nextSibling)
+        var nextHeaderSibling = headerLine.nextSibling
+        while (nextHeaderSibling.elementType == ImpexTypes.CRLF && nextHeaderSibling != null) {
+            elementsToDelete.add(nextHeaderSibling)
+            nextHeaderSibling = nextHeaderSibling.nextSibling
+        }
 
         var nextSibling = valueLines
             .last()
             .nextSibling
 
-        while (!elementsListToStopSearching.contains(nextSibling.elementType)) {
+        while (!elementsListToStopSearching.contains(nextSibling.elementType) && nextSibling != null) {
             if (nextSibling.elementType == ImpexTypes.CRLF || nextSibling.elementType == TokenType.WHITE_SPACE) {
                 elementsToDelete.add(nextSibling)
-                nextSibling = nextSibling.nextSibling
             }
+            nextSibling = nextSibling.nextSibling
         }
 
         elementsToDelete.forEach { it.delete() }
