@@ -102,13 +102,13 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (!groupFile.exists()) {
             createCommentedProperties(groupFile, null, GLOBAL_GROUP_OVERRIDE_COMMENTS);
         }
-        return getGroupPathOverride(groupFile, moduleDescriptor.getName());
+        return getGroupPathOverride(groupFile, moduleDescriptor);
     }
 
 
     private String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
         final File groupFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
-        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor.getName());
+        final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
         if (groupFile.exists() && pathOverride == null) {
             createCommentedProperties(groupFile, GROUP_OVERRIDE_KEY, LOCAL_GROUP_OVERRIDE_COMMENTS);
         }
@@ -127,11 +127,14 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
     }
 
-    private String[] getGroupPathOverride(final File groupFile, final String moduleName) {
+    private String[] getGroupPathOverride(final File groupFile, final ModuleDescriptor moduleDescriptor) {
         if (!groupFile.exists()) {
             return null;
         }
-        String rawGroupText = null;
+        // take group override from owner module for sub-modules
+        final var moduleName = (moduleDescriptor instanceof final YSubModuleDescriptor subModuleDescriptor)
+            ? subModuleDescriptor.getOwner().getName()
+            : moduleDescriptor.getName();
         final Properties properties = new Properties();
         try (final InputStream in = new FileInputStream(groupFile)) {
             properties.load(in);
@@ -139,7 +142,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             LOG.error("Cannot read " + HybrisConstants.IMPORT_OVERRIDE_FILENAME + " for module " + moduleName);
             return null;
         }
-        rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
+        String rawGroupText = properties.getProperty(GROUP_OVERRIDE_KEY);
         if (rawGroupText == null) {
             rawGroupText = properties.getProperty(moduleName + '.' + GROUP_OVERRIDE_KEY);
         }
