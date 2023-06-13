@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
-import com.intellij.idea.plugin.hybris.project.configurators.impl.ConfiguratorFactoryProvider;
 import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
@@ -156,7 +155,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
-        final ConfiguratorFactory configuratorFactory = ConfiguratorFactoryProvider.get();
+        final ConfiguratorFactory configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactory.class);
 
         this.performProjectsCleanup(allModules);
 
@@ -342,7 +341,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         while (!moduleToCheck.isEmpty()) {
             final ModuleDescriptor currentModule = moduleToCheck.iterator().next();
             if (currentModule instanceof final YModuleDescriptor yModuleDescriptor) {
-                for (YModuleDescriptor moduleDescriptor : yModuleDescriptor.getDependenciesPlainList()) {
+                for (final ModuleDescriptor moduleDescriptor : yModuleDescriptor.getAllDependencies()) {
                     if (!moduleToImport.contains(moduleDescriptor)) {
                         moduleToImport.add(moduleDescriptor);
                         moduleDescriptor.setImportStatus(selectionMode);

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.common.utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
+import icons.GradleIcons;
+import icons.OpenapiIcons;
 
 import javax.swing.*;
 
@@ -61,6 +63,10 @@ public final class HybrisIcons {
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
 
+    public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
+    public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
+    public static final Icon MODULE_CONFLICT = AllIcons.Actions.Cancel;
+    public static final Icon MODULE_GRADLE = GradleIcons.Gradle;
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
     public static final Icon MODULE_COMMERCE_GROUP = Y_LOGO_GREEN;

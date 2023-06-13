@@ -25,9 +25,12 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.openapi.application.ApplicationManager
+import io.ktor.util.*
+import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import java.io.File
+import java.util.*
 
 abstract class AbstractModuleDescriptor(
     override val moduleRootDirectory: File,
@@ -39,6 +42,9 @@ abstract class AbstractModuleDescriptor(
 ) : ModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
+    override var springFileSet = mutableSetOf<String>()
+    override val dependencies = mutableSetOf<ModuleDescriptor>()
+    private lateinit var requiredExtensionNames: Set<String>
 
     override fun compareTo(other: ModuleDescriptor) = name
         .compareTo(other.name, true)
@@ -90,6 +96,31 @@ abstract class AbstractModuleDescriptor(
             virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)
         } else moduleRootDirectory.path
     }
+
+    override fun getAllDependencies() = recursivelyCollectDependenciesPlainSet(this, TreeSet())
+        .unmodifiable()
+
+    private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
+        val dependencies = descriptor.dependencies
+
+        if (CollectionUtils.isEmpty(dependencies)) return dependenciesSet
+
+        dependencies
+            .filterNot { dependenciesSet.contains(it) }
+            .forEach {
+                dependenciesSet.add(it)
+                dependenciesSet.addAll(recursivelyCollectDependenciesPlainSet(it, dependenciesSet))
+            }
+
+        return dependenciesSet
+    }
+
+    override fun getRequiredExtensionNames() = requiredExtensionNames
+    override fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
+        requiredExtensionNames = initDependencies(moduleDescriptors)
+    }
+
+    internal open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 
     override fun toString() = javaClass.simpleName +
         "{" +

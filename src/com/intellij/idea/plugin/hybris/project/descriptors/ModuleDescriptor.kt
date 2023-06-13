@@ -28,10 +28,15 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
+    val springFileSet: MutableSet<String>
+    val dependencies: Set<ModuleDescriptor>
 
+    fun getAllDependencies(): Set<ModuleDescriptor>
     fun extensionDescriptor(): ExtensionDescriptor
     fun ideaModuleName() = groupNames.joinToString(separator = ".", postfix = ".") + name
     fun isPreselected(): Boolean
     fun ideaModuleFile(): File
     fun getRelativePath(): String
+    fun getRequiredExtensionNames(): Set<String>
+    fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
 }

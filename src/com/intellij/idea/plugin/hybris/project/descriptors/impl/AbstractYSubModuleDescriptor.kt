@@ -17,10 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.*
 import java.io.File
 
 abstract class AbstractYSubModuleDescriptor(
@@ -38,9 +35,6 @@ abstract class AbstractYSubModuleDescriptor(
     extensionInfo = owner.extensionInfo
 ), YSubModuleDescriptor {
 
-    override fun getRequiredExtensionNames() = setOf(owner.name)
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = setOf(owner.name)
     override fun isPreselected() = owner.isPreselected()
-
-    override fun toString() = "YSubModuleDescriptor(name='$name', owner=$owner, rootDirectory=$moduleRootDirectory)"
-
 }

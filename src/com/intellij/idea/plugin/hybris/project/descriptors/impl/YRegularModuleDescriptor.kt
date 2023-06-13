@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import io.ktor.util.*
 import java.io.File
@@ -45,7 +46,7 @@ abstract class YRegularModuleDescriptor protected constructor(
 
     override fun isPreselected() = isInLocalExtensions
 
-    override fun getRequiredExtensionNames(): Set<String> {
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val extension = extensionInfo.extension
             ?: return getDefaultRequiredExtensionNames()
 

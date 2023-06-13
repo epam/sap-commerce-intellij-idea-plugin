@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import java.io.File
 
@@ -27,5 +28,5 @@ class YCoreExtModuleDescriptor(
     extensionInfo: ExtensionInfo,
 ) : YPlatformExtModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, extensionInfo) {
 
-    override fun getDefaultRequiredExtensionNames() = emptySet<String>()
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = emptySet<String>()
 }

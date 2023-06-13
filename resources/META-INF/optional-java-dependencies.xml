@@ -18,10 +18,6 @@
 
 <idea-plugin>
 
-    <extensionPoints>
-        <extensionPoint name="hybrisConfiguratorFactory" interface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"/>
-    </extensionPoints>
-
     <extensions defaultExtensionNs="com.intellij">
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
@@ -48,13 +44,14 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLibRootsConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModulesDependenciesConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModulesDependenciesConfigurator"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocModuleConfigurator"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleSettingsConfigurator"/>

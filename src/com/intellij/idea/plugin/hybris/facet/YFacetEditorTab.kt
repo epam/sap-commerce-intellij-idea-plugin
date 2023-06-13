@@ -33,10 +33,10 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
 
     private val dialogPanel = panel {
         row {
-            label("SAP Commerce descriptor")
+            label("SAP Commerce module descriptor")
                 .bold()
         }
-        group("Extension details") {
+        group("Details") {
             row("Name:") {
                 label(state.name)
                     .bold()
@@ -49,6 +49,7 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                         ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
                         ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
                         ModuleDescriptorType.CONFIG -> HybrisIcons.EXTENSION_CONFIG
+                        ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
                         else -> HybrisIcons.Y_LOGO_BLUE
                     }
                 )
@@ -72,7 +73,7 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                 }
         }
 
-        if (state.subModuleType == null) {
+        if (state.subModuleType == null && state.type != ModuleDescriptorType.PLATFORM && state.type != ModuleDescriptorType.CCV2) {
             group("Settings") {
                 row("Read only:") {
                     checkBox("")

@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -42,6 +43,7 @@ class SpringFacetConfigurator : FacetConfigurator {
         modifiableRootModel: ModifiableRootModel
     ) {
         when (moduleDescriptor) {
+            is YBackofficeSubModuleDescriptor -> return
             is PlatformModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, emptySet())
             is YModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, moduleDescriptor.springFileSet)
         }

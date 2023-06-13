@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,17 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.CCv2ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
-import icons.GradleIcons;
-import icons.OpenapiIcons;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -50,6 +48,9 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
             if (descriptor instanceof EclipseModuleDescriptor || descriptor instanceof CCv2ModuleDescriptor) {
                 fileChooser.setElementMarked(descriptor, true);
             }
+            if (descriptor instanceof CCv2ModuleDescriptor && descriptor.isPreselected()) {
+                descriptor.setImportStatus(ModuleDescriptorImportStatus.MANDATORY);
+            }
         }
     }
 
@@ -57,16 +58,16 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
     @Nullable
     protected Icon getElementIcon(final ModuleDescriptor module) {
         if (this.isInConflict(module)) {
-            return AllIcons.Actions.Cancel;
+            return HybrisIcons.MODULE_CONFLICT;
         }
         if (module instanceof MavenModuleDescriptor) {
-            return OpenapiIcons.RepositoryLibraryLogo;
+            return HybrisIcons.MODULE_MAVEN;
         }
         if (module instanceof EclipseModuleDescriptor) {
-            return AllIcons.Providers.Eclipse;
+            return HybrisIcons.MODULE_ECLIPSE;
         }
         if (module instanceof GradleModuleDescriptor) {
-            return GradleIcons.Gradle;
+            return HybrisIcons.MODULE_GRADLE;
         }
         if (module instanceof CCv2ModuleDescriptor) {
             return HybrisIcons.MODULE_CCV2;
@@ -77,9 +78,11 @@ public class SelectOtherModulesToImportStep extends AbstractSelectModulesToImpor
 
     @Override
     protected void setList(final List<ModuleDescriptor> otherElements) {
-        final Stream<ModuleDescriptor> hybrisModuleStream = getContext().getHybrisModulesToImport().stream();
-        final List<ModuleDescriptor> allModules =
-            Stream.concat(hybrisModuleStream, otherElements.stream()).collect(Collectors.toList());
+        final List<ModuleDescriptor> allModules = Stream.concat(
+                getContext().getHybrisModulesToImport().stream(),
+                otherElements.stream()
+            )
+            .collect(Collectors.toList());
         try {
             this.getContext().setList(allModules);
         } catch (ConfigurationException e) {

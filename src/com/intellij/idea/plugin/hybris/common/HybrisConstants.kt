@@ -159,7 +159,6 @@ object HybrisConstants {
     const val STORAGE_HYBRIS_BS_VIEW = "hybrisBeanSystemViewSettings.xml"
     const val PLUGIN_ID = "com.intellij.idea.plugin.sap.commerce"
     const val JREBEL_PLUGIN_ID = "JRebelPlugin"
-    const val CONFIGURATOR_FACTORY_ID = "$PLUGIN_ID.hybrisConfiguratorFactory"
 
     const val NEW_IDEA_MODULE_FILE_EXTENSION = ".iml"
     const val HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml"

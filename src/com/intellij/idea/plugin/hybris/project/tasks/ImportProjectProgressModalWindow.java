@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,11 +32,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
@@ -140,6 +140,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
+        final var allModuleDescriptors = allModules.stream()
+            .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
 
         final var springConfigurator = configuratorFactory.getSpringConfigurator();
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
@@ -160,7 +162,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             : model;
 
         indicator.setText(message("hybris.project.import.spring"));
-        springConfigurator.findSpringConfiguration(hybrisProjectDescriptor, allYModules);
+        springConfigurator.processSpringConfiguration(hybrisProjectDescriptor, allModuleDescriptors);
         indicator.setText2(message("hybris.project.import.module.groups"));
         groupModuleConfigurator.processDependencyModules(allModules);
         indicator.setText2("");
@@ -187,7 +189,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.dependencies"));
         indicator.setText2("");
         configuratorFactory.getModulesDependenciesConfigurator().configure(hybrisProjectDescriptor, modifiableModelsProvider);
-        springConfigurator.configureDependencies(hybrisProjectDescriptor, allYModules,  modifiableModelsProvider);
+        springConfigurator.configureDependencies(hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
 
         indicator.setText(message("hybris.project.import.runconfigurations"));
         configuratorFactory.getDebugRunConfigurationConfigurator().configure(hybrisProjectDescriptor, project, cache);
@@ -213,7 +215,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configureJavaCompiler(indicator, cache);
         configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator);
-        configureGradleModules(indicator, groupModuleConfigurator);
+        configureGradleModules(indicator);
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
@@ -270,7 +272,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     @NotNull
     private Module createJavaModule(
         final @NotNull ProgressIndicator indicator,
-        final Map<String, YModuleDescriptor> allYModules, final ModifiableModuleModel rootProjectModifiableModel,
+        final Map<String, YModuleDescriptor> allYModules,
+        final ModifiableModuleModel rootProjectModifiableModel,
         final ModuleDescriptor moduleDescriptor) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
@@ -357,7 +360,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private void configureGradleModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
+    private void configureGradleModules(final @NotNull ProgressIndicator indicator) {
         final GradleConfigurator gradleConfigurator = configuratorFactory.getGradleConfigurator();
 
         if (gradleConfigurator == null) return;
@@ -511,6 +514,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
+                && !(e instanceof CCv2ModuleDescriptor)
                 && !(e instanceof ConfigModuleDescriptor)
                 && !(e instanceof YSubModuleDescriptor)
             )

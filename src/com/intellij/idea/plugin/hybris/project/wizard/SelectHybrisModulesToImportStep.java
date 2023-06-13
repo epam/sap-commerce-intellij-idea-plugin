@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,7 +51,7 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         this.fileChooser.addElementsMarkListener((ElementsChooser.ElementsMarkListener<ModuleDescriptor>) (element, isMarked) -> {
             if (element instanceof final YModuleDescriptor yModuleDescriptor) {
                 if (isMarked) {
-                    for (YModuleDescriptor moduleDescriptor : yModuleDescriptor.getDependenciesPlainList()) {
+                    for (final ModuleDescriptor moduleDescriptor : yModuleDescriptor.getAllDependencies()) {
                         if (BooleanUtils.isNotFalse(fileChooser.getElementMarkStates().get(moduleDescriptor))) {
                             continue;
                         }
@@ -91,6 +91,8 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
                 uniqueModules.add(e.getName());
             }
         });
+
+        // TODO: improve sorting
         fileChooser.sort((o1, o2) -> {
             final boolean o1dup = duplicateModules.contains(o1.getName());
             final boolean o2dup = duplicateModules.contains(o2.getName());

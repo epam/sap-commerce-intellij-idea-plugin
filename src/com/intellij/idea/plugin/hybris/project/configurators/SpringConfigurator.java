@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators;
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,10 +27,11 @@ import java.util.Map;
 
 public interface SpringConfigurator {
 
-    void findSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, Map<String, YModuleDescriptor> yModules);
+    void processSpringConfiguration(final HybrisProjectDescriptor hybrisProjectDescriptor, Map<String, ModuleDescriptor> moduleDescriptors);
 
     void configureDependencies(
         final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
-        final Map<String, YModuleDescriptor> allYModules, final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
+        final Map<String, ModuleDescriptor> moduleDescriptors,
+        final @NotNull IdeModifiableModelsProvider modifiableModelsProvider
     );
 }

@@ -23,9 +23,7 @@ import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.diagnostic.Logger
@@ -36,93 +34,80 @@ import com.intellij.spring.facet.SpringFacet
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
+import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
 
-// TODO: improve sub-modules support
 class DefaultSpringConfigurator : SpringConfigurator {
 
-    override fun findSpringConfiguration(hybrisProjectDescriptor: HybrisProjectDescriptor, yModuleDescriptors: Map<String, YModuleDescriptor>) {
-        val localProperties = hybrisProjectDescriptor.configHybrisModuleDescriptor
-            ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES) }
-
-        val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
-        for (moduleDescriptor in yModuleDescriptors.values) {
-            processHybrisModule(yModuleDescriptors, moduleDescriptor)
-
-            if (moduleDescriptor is YCoreExtModuleDescriptor) {
-                moduleDescriptor.springFileSet.add(advancedProperties.absolutePath)
-
-                localProperties
-                    ?.let { moduleDescriptor.springFileSet.add(it.absolutePath) }
+    override fun processSpringConfiguration(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>
+    ) {
+        for (moduleDescriptor in moduleDescriptors.values) {
+            try {
+                when (moduleDescriptor) {
+                    is YWebSubModuleDescriptor -> process(moduleDescriptors, moduleDescriptor)
+                    is YRegularModuleDescriptor -> process(moduleDescriptors, moduleDescriptor)
+                }
+            } catch (e: Exception) {
+                LOG.error("Unable to parse Spring context for module " + moduleDescriptor.name, e)
             }
         }
+
+        moduleDescriptors.values.firstIsInstanceOrNull<YCoreExtModuleDescriptor>()
+            ?.let { moduleDescriptor ->
+                val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
+                moduleDescriptor.springFileSet.add(advancedProperties.absolutePath)
+
+                hybrisProjectDescriptor.configHybrisModuleDescriptor
+                    ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES) }
+                    ?.let { moduleDescriptor.springFileSet.add(it.absolutePath) }
+            }
+
     }
 
     override fun configureDependencies(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allYModules: MutableMap<String, YModuleDescriptor>,
+        moduleDescriptors: MutableMap<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
-        val modifiableFacetModelMap = modifiableModelsProvider.modules
+        val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
-        allYModules.values.forEach {
-            configureFacetDependencies(it, modifiableFacetModelMap, it.dependenciesTree)
-        }
-
-        configureFacetDependencies(
-            hybrisProjectDescriptor.platformHybrisModuleDescriptor,
-            modifiableFacetModelMap,
-            allYModules.values
-                .filterIsInstance<YPlatformExtModuleDescriptor>()
-                .toSet()
-        )
+        moduleDescriptors.values
+            .forEach { configureFacetDependencies(it, facetModels, it.dependencies) }
     }
 
     private fun configureFacetDependencies(
         moduleDescriptor: ModuleDescriptor,
-        modifiableFacetModelMap: Map<String, ModifiableFacetModel>,
+        facetModels: Map<String, ModifiableFacetModel>,
         dependencies: Set<ModuleDescriptor>
     ) {
-        val springFileSet = getSpringFileSet(modifiableFacetModelMap, moduleDescriptor)
+        val springFileSet = getSpringFileSet(facetModels, moduleDescriptor)
             ?: return
 
         dependencies
             .sorted()
-            .mapNotNull { getSpringFileSet(modifiableFacetModelMap, it) }
+            .mapNotNull { getSpringFileSet(facetModels, it) }
             .forEach { springFileSet.addDependency(it) }
     }
 
     private fun getSpringFileSet(
-        modifiableFacetModelMap: Map<String, ModifiableFacetModel>,
+        facetModels: Map<String, ModifiableFacetModel>,
         moduleDescriptor: ModuleDescriptor
-    ) = modifiableFacetModelMap[moduleDescriptor.name]
+    ) = facetModels[moduleDescriptor.name]
         ?.getFacetByType(SpringFacet.FACET_TYPE_ID)
         ?.fileSets
         ?.takeIf { it.isNotEmpty() }
         ?.iterator()
         ?.next()
 
-    private fun processHybrisModule(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor
-    ) {
-        try {
-            when (moduleDescriptor) {
-                is YRegularModuleDescriptor -> processPropertiesFile(moduleDescriptorMap, moduleDescriptor)
-                is YWebSubModuleDescriptor -> processWebXml(moduleDescriptorMap, moduleDescriptor)
-            }
-        } catch (e: Exception) {
-            LOG.error("Unable to parse Spring context for module " + moduleDescriptor.name, e)
-        }
-    }
-
-    private fun processPropertiesFile(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
+    private fun process(
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
         moduleDescriptor: YRegularModuleDescriptor
     ) {
         val projectProperties = Properties()
@@ -169,14 +154,14 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
     // This is not a nice practice but the platform has a bug in acceleratorstorefrontcommons/project.properties.
     // See https://jira.hybris.com/browse/ECP-3167
-    private fun hackGuessLocation(moduleDescriptor: YModuleDescriptor) = File(
+    private fun hackGuessLocation(moduleDescriptor: ModuleDescriptor) = File(
         getResourceDir(moduleDescriptor),
         FileUtilRt.toSystemDependentName(moduleDescriptor.name + "/web/spring")
     )
 
     @Throws(IOException::class, JDOMException::class)
-    private fun processWebXml(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
+    private fun process(
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
         moduleDescriptor: YWebSubModuleDescriptor
     ) {
         File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH)
@@ -196,8 +181,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     private fun processContextParam(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        moduleDescriptor: ModuleDescriptor,
         contextConfigLocation: String
     ) {
         val webModuleDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEB_WEBROOT_DIRECTORY_PATH)
@@ -218,8 +203,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     private fun processSpringFile(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        relevantModule: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        relevantModule: ModuleDescriptor,
         springFile: File
     ): Boolean {
         try {
@@ -237,8 +222,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
     @Throws(IOException::class, JDOMException::class)
     private fun scanForSpringImport(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        moduleDescriptor: ModuleDescriptor,
         springFile: File
     ) {
         getDocumentRoot(springFile).children
@@ -247,8 +232,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     private fun processImportNodeList(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        moduleDescriptor: ModuleDescriptor,
         import: Element,
         springFile: File
     ) {
@@ -262,8 +247,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     private fun addSpringOnClasspath(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        relevantModule: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        relevantModule: ModuleDescriptor,
         fileOnClasspath: String
     ) {
         val resourceDirectory = getResourceDir(relevantModule)
@@ -284,22 +269,22 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     private fun addSpringXmlFile(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        moduleDescriptor: ModuleDescriptor,
         resourceDirectory: File,
         file: String
     ) = if (StringUtils.startsWith(file, "/")) {
         addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file)
     } else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file)
 
-    private fun getResourceDir(moduleToSearch: YModuleDescriptor) = File(
+    private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,
         HybrisConstants.RESOURCES_DIRECTORY
     )
 
     private fun addSpringExternalXmlFile(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor,
+        moduleDescriptorMap: Map<String, ModuleDescriptor>,
+        moduleDescriptor: ModuleDescriptor,
         resourcesDir: File,
         file: String
     ) = File(resourcesDir, file)

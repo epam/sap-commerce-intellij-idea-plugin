@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,7 +52,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             .filter(ModuleDescriptor::isPreselected)
             .forEach(it -> {
                 requiredYModuleDescriptorList.add(it);
-                requiredYModuleDescriptorList.addAll(it.getDependenciesPlainList());
+                requiredYModuleDescriptorList.addAll(it.getAllDependencies());
             });
 
         final var groups = Map.of(

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType
@@ -38,6 +39,11 @@ class PlatformModuleDescriptor(
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     override fun isPreselected() = true
+
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
+        .filterIsInstance<YPlatformExtModuleDescriptor>()
+        .map { it.name }
+        .toSet()
 
     fun createBootstrapLib(
         sourceCodeRoot: VirtualFile?,

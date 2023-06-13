@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 
-interface ModulesDependenciesConfigurator {
+interface ModuleDependenciesConfigurator {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
@@ -29,6 +29,6 @@ interface ModulesDependenciesConfigurator {
     )
 
     companion object {
-        val instance: ModulesDependenciesConfigurator = ApplicationManager.getApplication().getService(ModulesDependenciesConfigurator::class.java)
+        val instance: ModuleDependenciesConfigurator = ApplicationManager.getApplication().getService(ModuleDependenciesConfigurator::class.java)
     }
 }

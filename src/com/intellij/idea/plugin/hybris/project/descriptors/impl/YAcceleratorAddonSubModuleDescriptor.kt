@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import java.io.File
 
@@ -29,7 +30,7 @@ class YAcceleratorAddonSubModuleDescriptor(
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.ADDON,
 ) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
 
-    override fun getRequiredExtensionNames(): Set<String> {
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
         return setOf(owner.name) + webNames

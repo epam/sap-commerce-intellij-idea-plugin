@@ -253,7 +253,7 @@ object YModuleLibDescriptorUtil {
 
         val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
         allYModules.values
-            .filter { it.dependenciesTree.contains(descriptor.owner) }
+            .filter { it.dependencies.contains(descriptor.owner) }
             .filter { it != descriptor }
             .map { yModule ->
                 // create dependencies for web module nature
