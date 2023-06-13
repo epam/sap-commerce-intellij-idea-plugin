@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -39,6 +41,8 @@ class YFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
+        if (moduleDescriptor is YBackofficeSubModuleDescriptor || moduleDescriptor is ConfigModuleDescriptor) return
+
         WriteAction.runAndWait<RuntimeException> {
             modifiableFacetModel.getFacetByType(HybrisConstants.Y_FACET_TYPE_ID)
                 ?.let { modifiableFacetModel.removeFacet(it) }

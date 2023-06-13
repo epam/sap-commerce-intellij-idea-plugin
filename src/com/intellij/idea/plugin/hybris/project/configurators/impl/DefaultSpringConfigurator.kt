@@ -24,7 +24,10 @@ import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.util.JDOMUtil
@@ -67,13 +70,9 @@ class DefaultSpringConfigurator : SpringConfigurator {
         val modifiableFacetModelMap = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
-        allYModules.values
-            .forEach { yModule ->
-                val dependencies = yModule.dependenciesTree
-                    .takeIf { it.isNotEmpty() }
-                    ?: setOf(hybrisProjectDescriptor.platformHybrisModuleDescriptor)
-                configureFacetDependencies(yModule, modifiableFacetModelMap, dependencies)
-            }
+        allYModules.values.forEach {
+            configureFacetDependencies(it, modifiableFacetModelMap, it.dependenciesTree)
+        }
 
         configureFacetDependencies(
             hybrisProjectDescriptor.platformHybrisModuleDescriptor,
@@ -116,7 +115,6 @@ class DefaultSpringConfigurator : SpringConfigurator {
             when (moduleDescriptor) {
                 is YRegularModuleDescriptor -> processPropertiesFile(moduleDescriptorMap, moduleDescriptor)
                 is YWebSubModuleDescriptor -> processWebXml(moduleDescriptorMap, moduleDescriptor)
-                is YBackofficeSubModuleDescriptor -> processBackofficeSubModule(moduleDescriptorMap, moduleDescriptor)
             }
         } catch (e: Exception) {
             LOG.error("Unable to parse Spring context for module " + moduleDescriptor.name, e)
@@ -125,7 +123,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
     private fun processPropertiesFile(
         moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YModuleDescriptor
+        moduleDescriptor: YRegularModuleDescriptor
     ) {
         val projectProperties = Properties()
         val propFile = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.PROJECT_PROPERTIES)
@@ -161,6 +159,12 @@ class DefaultSpringConfigurator : SpringConfigurator {
                             }
                     }
             }
+
+        if (moduleDescriptor.hasBackofficeModule) {
+            File(moduleDescriptor.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
+                .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
+                ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
+        }
     }
 
     // This is not a nice practice but the platform has a bug in acceleratorstorefrontcommons/project.properties.
@@ -169,15 +173,6 @@ class DefaultSpringConfigurator : SpringConfigurator {
         getResourceDir(moduleDescriptor),
         FileUtilRt.toSystemDependentName(moduleDescriptor.name + "/web/spring")
     )
-
-    private fun processBackofficeSubModule(
-        moduleDescriptorMap: Map<String, YModuleDescriptor>,
-        moduleDescriptor: YBackofficeSubModuleDescriptor
-    ) {
-        File(moduleDescriptor.owner.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY)
-            .listFiles { _, name: String -> name.endsWith("-backoffice-spring.xml") }
-            ?.forEach { processSpringFile(moduleDescriptorMap, moduleDescriptor, it) }
-    }
 
     @Throws(IOException::class, JDOMException::class)
     private fun processWebXml(
