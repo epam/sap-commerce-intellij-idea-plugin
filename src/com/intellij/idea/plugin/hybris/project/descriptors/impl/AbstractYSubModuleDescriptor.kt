@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,6 @@ abstract class AbstractYSubModuleDescriptor(
     override val rootProjectDescriptor: HybrisProjectDescriptor = owner.rootProjectDescriptor,
     override var importStatus: ModuleDescriptorImportStatus = ModuleDescriptorImportStatus.MANDATORY,
     override val descriptorType: ModuleDescriptorType = owner.descriptorType,
-    override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf()
 ) : AbstractYModuleDescriptor(
     moduleRootDirectory = moduleRootDirectory,
     rootProjectDescriptor = rootProjectDescriptor,

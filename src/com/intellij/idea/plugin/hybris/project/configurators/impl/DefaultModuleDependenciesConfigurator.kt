@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,7 +47,7 @@ class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
                     ?.let { module ->
                         val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
 
-                        moduleDescriptor.getDependencies()
+                        moduleDescriptor.getDirectDependencies()
                             .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
                             .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
                     }

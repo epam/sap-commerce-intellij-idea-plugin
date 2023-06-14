@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,11 +29,16 @@ abstract class AbstractYModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
-    override var subModules: MutableSet<YSubModuleDescriptor> = mutableSetOf(),
     internal val extensionInfo: ExtensionInfo,
     private val metas: Map<String, String> = extensionInfo.extension.meta
         .associate { it.key to it.value }
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name), YModuleDescriptor {
+
+    private var ySubModules = mutableSetOf<YSubModuleDescriptor>()
+
+    override fun getSubModules(): Set<YSubModuleDescriptor> = ySubModules
+    override fun addSubModule(subModule: YSubModuleDescriptor) = ySubModules.add(subModule)
+    override fun removeSubModule(subModule: YSubModuleDescriptor) = ySubModules.remove(subModule)
 
     // Must be called at the end of the module import
     override fun extensionDescriptor() = ExtensionDescriptor(

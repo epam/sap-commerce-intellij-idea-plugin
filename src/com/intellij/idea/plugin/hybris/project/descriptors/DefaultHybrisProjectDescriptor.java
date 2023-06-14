@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
@@ -409,10 +410,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         for (File moduleRootDirectory : moduleRootDirectories) {
             try {
-                final ModuleDescriptor moduleDescriptor = ModuleDescriptorFactory.INSTANCE.createDescriptor(
-                    moduleRootDirectory, this
-                );
+                final ModuleDescriptor moduleDescriptor = ModuleDescriptorFactory.INSTANCE
+                    .createDescriptor(moduleRootDirectory, this);
                 moduleDescriptors.add(moduleDescriptor);
+
                 if (moduleDescriptor instanceof final YModuleDescriptor yModuleDescriptor) {
                     moduleDescriptors.addAll(yModuleDescriptor.getSubModules());
                 }
@@ -432,8 +433,30 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Collections.sort(moduleDescriptors);
 
         buildDependencies(moduleDescriptors);
+        removeNotInstalledAddons(moduleDescriptors);
 
         foundModules.addAll(moduleDescriptors);
+    }
+
+    private void removeNotInstalledAddons(final List<ModuleDescriptor> moduleDescriptors) {
+        final var addons = moduleDescriptors.stream()
+            .filter(YAcceleratorAddonSubModuleDescriptor.class::isInstance)
+            .map(YAcceleratorAddonSubModuleDescriptor.class::cast)
+            .collect(Collectors.toList());
+
+        final var installed = new ArrayList<YAcceleratorAddonSubModuleDescriptor>();
+        for (final var module : moduleDescriptors) {
+            for (final var yAddon : addons) {
+                if (!module.equals(yAddon) && module.getDirectDependencies().contains(yAddon.getOwner())) {
+                    installed.add(yAddon);
+                    break;
+                }
+            }
+        }
+
+        addons.removeAll(installed);
+        addons.forEach(it -> it.getOwner().removeSubModule(it));
+        moduleDescriptors.removeAll(addons);
     }
 
     // scan through eclipse module for hybris custom mudules in its subdirectories
@@ -695,7 +718,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        moduleDescriptor.addDependencies(dependencies);
+        moduleDescriptor.addDirectDependencies(dependencies);
     }
 
     @Nullable

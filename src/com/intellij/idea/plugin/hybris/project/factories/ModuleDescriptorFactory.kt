@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -79,8 +79,8 @@ object ModuleDescriptorFactory {
             hybrisProjectService.isPlatformExtModule(resolvedFile) -> {
                 LOG.info("Creating Platform EXT module for $path")
                 with(YPlatformExtModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
-                    this.subModules.addAll(SubModuleDescriptorFactory.buildAll(this))
-                    LOG.info("Created sub-modules: ${this.subModules}")
+                    SubModuleDescriptorFactory.buildAll(this)
+                        .forEach { this.addSubModule(it) }
                     this
                 }
             }
@@ -88,8 +88,8 @@ object ModuleDescriptorFactory {
             hybrisProjectService.isOutOfTheBoxModule(resolvedFile, rootProjectDescriptor) -> {
                 LOG.info("Creating OOTB module for $path")
                 with(YOotbRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
-                    this.subModules.addAll(SubModuleDescriptorFactory.buildAll(this))
-                    LOG.info("Created sub-modules: ${this.subModules}")
+                    SubModuleDescriptorFactory.buildAll(this)
+                        .forEach { this.addSubModule(it) }
                     this
                 }
             }
@@ -97,8 +97,8 @@ object ModuleDescriptorFactory {
             hybrisProjectService.isHybrisModule(resolvedFile) -> {
                 LOG.info("Creating Custom hybris module for $path")
                 with(YCustomRegularModuleDescriptor(resolvedFile, rootProjectDescriptor, getExtensionInfo(resolvedFile))) {
-                    this.subModules.addAll(SubModuleDescriptorFactory.buildAll(this))
-                    LOG.info("Created sub-modules: ${this.subModules}")
+                    SubModuleDescriptorFactory.buildAll(this)
+                        .forEach { this.addSubModule(it) }
                     this
                 }
 

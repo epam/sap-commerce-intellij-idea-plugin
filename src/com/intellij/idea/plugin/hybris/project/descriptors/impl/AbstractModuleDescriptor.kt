@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,9 +42,13 @@ abstract class AbstractModuleDescriptor(
 ) : ModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
-    private val dependencies = mutableSetOf<ModuleDescriptor>()
-    private val springFileSet = mutableSetOf<String>()
     private lateinit var requiredExtensionNames: Set<String>
+    private val springFileSet = mutableSetOf<String>()
+    private val directDependencies = mutableSetOf<ModuleDescriptor>()
+    private val dependencies: Set<ModuleDescriptor> by lazy {
+        recursivelyCollectDependenciesPlainSet(this, TreeSet())
+            .unmodifiable()
+    }
 
     override fun compareTo(other: ModuleDescriptor) = name
         .compareTo(other.name, true)
@@ -97,11 +101,25 @@ abstract class AbstractModuleDescriptor(
         } else moduleRootDirectory.path
     }
 
-    override fun getAllDependencies() = recursivelyCollectDependenciesPlainSet(this, TreeSet())
-        .unmodifiable()
+    override fun getAllDependencies() = dependencies
+
+    override fun getRequiredExtensionNames() = requiredExtensionNames
+    override fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
+        requiredExtensionNames = initDependencies(moduleDescriptors)
+    }
+
+    override fun getSpringFiles() = springFileSet
+
+    override fun addSpringFile(file: String) = springFileSet.add(file)
+    override fun getDirectDependencies() = directDependencies
+
+    override fun addDirectDependencies(dependencies: Set<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
+    internal open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
+
+    override fun toString() = "${javaClass.simpleName} {name=$name, moduleRootDirectory=$moduleRootDirectory}"
 
     private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
-        val dependencies = descriptor.getDependencies()
+        val dependencies = descriptor.getDirectDependencies()
 
         if (CollectionUtils.isEmpty(dependencies)) return dependenciesSet
 
@@ -114,23 +132,4 @@ abstract class AbstractModuleDescriptor(
 
         return dependenciesSet
     }
-
-    override fun getRequiredExtensionNames() = requiredExtensionNames
-    override fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
-        requiredExtensionNames = initDependencies(moduleDescriptors)
-    }
-
-    override fun getSpringFiles() = springFileSet
-    override fun addSpringFile(file: String) = springFileSet.add(file)
-
-    override fun getDependencies() = dependencies
-    override fun addDependencies(dependencies: Set<ModuleDescriptor>) = this.dependencies.addAll(dependencies)
-
-    internal open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
-
-    override fun toString() = javaClass.simpleName +
-        "{" +
-        "name=$name, " +
-        "moduleRootDirectory=$moduleRootDirectory, " +
-        "}"
 }

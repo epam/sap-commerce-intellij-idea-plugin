@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,6 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
 
-    fun getAllDependencies(): Set<ModuleDescriptor>
     fun extensionDescriptor(): ExtensionDescriptor
     fun ideaModuleName() = groupNames.joinToString(separator = ".", postfix = ".") + name
     fun isPreselected(): Boolean
@@ -39,6 +38,7 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
     fun getSpringFiles(): Set<String>
     fun addSpringFile(file: String): Boolean
-    fun getDependencies(): Set<ModuleDescriptor>
-    fun addDependencies(dependencies: Set<ModuleDescriptor>): Boolean
+    fun getAllDependencies(): Set<ModuleDescriptor>
+    fun getDirectDependencies(): Set<ModuleDescriptor>
+    fun addDirectDependencies(dependencies: Set<ModuleDescriptor>): Boolean
 }

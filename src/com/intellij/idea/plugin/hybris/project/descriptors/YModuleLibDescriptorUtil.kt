@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,7 +71,7 @@ object YModuleLibDescriptorUtil {
         addRootLib(descriptor, libs)
 
         if (descriptor.hasBackofficeModule) {
-            descriptor.subModules.firstIsInstanceOrNull<YBackofficeSubModuleDescriptor>()
+            descriptor.getSubModules().firstIsInstanceOrNull<YBackofficeSubModuleDescriptor>()
                 ?.let { yModule ->
                     val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
                     val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
@@ -253,11 +253,11 @@ object YModuleLibDescriptorUtil {
 
         val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
         allYModules.values
-            .filter { it.getDependencies().contains(descriptor.owner) }
+            .filter { it.getDirectDependencies().contains(descriptor.owner) }
             .filter { it != descriptor }
             .map { yModule ->
                 // create dependencies for web module nature
-                yModule.subModules
+                yModule.getSubModules()
                     .filterIsInstance<YWebSubModuleDescriptor>()
                     .forEach { yWebModule ->
                         val webClasses = JavaLibraryDescriptor(
