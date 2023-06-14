@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,6 +71,18 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
                         label(it.name)
                     }
                 }
+        }
+
+        if (state.subModuleType == SubModuleDescriptorType.ADDON && state.installedIntoExtensions.isNotEmpty()) {
+            group("Installed into extensions") {
+                state.installedIntoExtensions.forEach {
+                    row {
+                        icon(HybrisIcons.Y_LOGO_BLUE)
+                        label(it)
+                            .bold()
+                    }
+                }
+            }
         }
 
         if (state.subModuleType == null && state.type != ModuleDescriptorType.PLATFORM && state.type != ModuleDescriptorType.CCV2) {

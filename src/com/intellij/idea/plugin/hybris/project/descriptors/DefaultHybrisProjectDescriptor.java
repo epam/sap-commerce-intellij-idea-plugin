@@ -433,30 +433,41 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Collections.sort(moduleDescriptors);
 
         buildDependencies(moduleDescriptors);
-        removeNotInstalledAddons(moduleDescriptors);
+        final var addons = processAddons(moduleDescriptors);
+        removeNotInstalledAddons(moduleDescriptors, addons);
 
         foundModules.addAll(moduleDescriptors);
     }
 
-    private void removeNotInstalledAddons(final List<ModuleDescriptor> moduleDescriptors) {
+    private List<YAcceleratorAddonSubModuleDescriptor> processAddons(final List<ModuleDescriptor> moduleDescriptors) {
         final var addons = moduleDescriptors.stream()
             .filter(YAcceleratorAddonSubModuleDescriptor.class::isInstance)
             .map(YAcceleratorAddonSubModuleDescriptor.class::cast)
-            .collect(Collectors.toList());
+            .toList();
 
-        final var installed = new ArrayList<YAcceleratorAddonSubModuleDescriptor>();
         for (final var module : moduleDescriptors) {
-            for (final var yAddon : addons) {
-                if (!module.equals(yAddon) && module.getDirectDependencies().contains(yAddon.getOwner())) {
-                    installed.add(yAddon);
-                    break;
+            if (module instanceof final YModuleDescriptor yModule) {
+                for (final var yAddon : addons) {
+                    if (!yModule.equals(yAddon) && yModule.getDirectDependencies().contains(yAddon.getOwner())) {
+                        yAddon.addTargetModule(yModule);
+                    }
                 }
             }
         }
 
-        addons.removeAll(installed);
-        addons.forEach(it -> it.getOwner().removeSubModule(it));
-        moduleDescriptors.removeAll(addons);
+        return addons;
+    }
+
+    private void removeNotInstalledAddons(
+        final List<ModuleDescriptor> moduleDescriptors,
+        final List<YAcceleratorAddonSubModuleDescriptor> addons
+    ) {
+        final var notInstalledAddons = addons.stream()
+            .filter(it -> it.getTargetModules().isEmpty())
+            .toList();
+
+        notInstalledAddons.forEach(it -> it.getOwner().removeSubModule(it));
+        moduleDescriptors.removeAll(notInstalledAddons);
     }
 
     // scan through eclipse module for hybris custom mudules in its subdirectories
