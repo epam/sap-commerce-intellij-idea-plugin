@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.factories
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import io.ktor.util.*
@@ -39,7 +40,16 @@ object SubModuleDescriptorFactory {
             build(owner, HybrisConstants.HAC_MODULE_DIRECTORY, subModules) { YHacSubModuleDescriptor(owner, it) }
         }
         if (owner.hasBackofficeModule) {
-            build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { YBackofficeSubModuleDescriptor(owner, it) }
+            build(owner, HybrisConstants.BACKOFFICE_MODULE_DIRECTORY, subModules) { backoffice ->
+                val subModule = YBackofficeSubModuleDescriptor(owner, backoffice)
+
+                if (subModule.hasWebModule) {
+                    build(subModule, HybrisConstants.WEB_MODULE_DIRECTORY, subModules) { web ->
+                        YWebSubModuleDescriptor(owner, web, subModule.name + "." + web.name)
+                    }
+                }
+                subModule
+            }
         }
         build(owner, HybrisConstants.COMMON_WEB_MODULE_DIRECTORY, subModules) { YCommonWebSubModuleDescriptor(owner, it) }
         build(owner, HybrisConstants.ACCELERATOR_ADDON_WEB_PATH, subModules) { YAcceleratorAddonSubModuleDescriptor(owner, it) }
@@ -48,7 +58,7 @@ object SubModuleDescriptorFactory {
     }
 
     private fun build(
-        owner: YRegularModuleDescriptor,
+        owner: YModuleDescriptor,
         subModuleDirectory: String,
         subModules: MutableSet<YSubModuleDescriptor>,
         builder: (File) -> (YSubModuleDescriptor)

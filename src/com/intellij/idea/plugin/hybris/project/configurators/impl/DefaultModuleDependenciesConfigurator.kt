@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
@@ -48,14 +47,9 @@ class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
                     ?.let { module ->
                         val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
 
-                        moduleDescriptor.dependencies
+                        moduleDescriptor.getDependencies()
                             .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
                             .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
-
-                        // also add Platform to every extension except YPlatformExt modules
-//                        if (yModuleDescriptor !is YPlatformExtModuleDescriptor) {
-//                            addModuleDependency(allModules, platformIdeaModuleName, rootModel)
-//                        }
                     }
             }
 
@@ -63,8 +57,7 @@ class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
             hybrisProjectDescriptor,
             platformModule,
             allModules,
-            modifiableModelsProvider,
-            modulesChosenForImport
+            modifiableModelsProvider
         )
     }
 
@@ -72,14 +65,9 @@ class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         platformModule: Module,
         allModules: Map<String, Module>,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        modulesChosenForImport: List<ModuleDescriptor>
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val platformRootModel = modifiableModelsProvider.getModifiableRootModel(platformModule)
-
-//        modulesChosenForImport
-//            .filterIsInstance<YPlatformExtModuleDescriptor>()
-//            .forEach { dependency -> addModuleDependency(allModules, dependency.ideaModuleName(), platformRootModel) }
 
         hybrisProjectDescriptor.configHybrisModuleDescriptor
             ?.let { addModuleDependency(allModules, it.ideaModuleName(), platformRootModel) }

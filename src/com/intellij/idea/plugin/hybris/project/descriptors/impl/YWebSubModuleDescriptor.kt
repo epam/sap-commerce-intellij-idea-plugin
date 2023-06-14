@@ -25,6 +25,7 @@ import java.io.File
 class YWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
     moduleRootDirectory: File,
+    name: String = owner.name + "." + moduleRootDirectory.name,
     val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
-    override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)
+    override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name)

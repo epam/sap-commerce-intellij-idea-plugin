@@ -695,7 +695,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        moduleDescriptor.getDependencies().addAll(dependencies);
+        moduleDescriptor.addDependencies(dependencies);
     }
 
     @Nullable

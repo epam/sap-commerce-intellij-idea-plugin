@@ -45,7 +45,7 @@ class SpringFacetConfigurator : FacetConfigurator {
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
             is PlatformModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, emptySet())
-            is YModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, moduleDescriptor.springFileSet)
+            is YModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, moduleDescriptor.getSpringFiles())
         }
     }
 

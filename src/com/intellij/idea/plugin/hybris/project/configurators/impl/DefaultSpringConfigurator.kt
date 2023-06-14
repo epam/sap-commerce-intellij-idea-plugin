@@ -61,11 +61,11 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptors.values.firstIsInstanceOrNull<YCoreExtModuleDescriptor>()
             ?.let { moduleDescriptor ->
                 val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
-                moduleDescriptor.springFileSet.add(advancedProperties.absolutePath)
+                moduleDescriptor.addSpringFile(advancedProperties.absolutePath)
 
                 hybrisProjectDescriptor.configHybrisModuleDescriptor
                     ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES) }
-                    ?.let { moduleDescriptor.springFileSet.add(it.absolutePath) }
+                    ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
 
     }
@@ -79,7 +79,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
         moduleDescriptors.values
-            .forEach { configureFacetDependencies(it, facetModels, it.dependencies) }
+            .forEach { configureFacetDependencies(it, facetModels, it.getDependencies()) }
     }
 
     private fun configureFacetDependencies(
@@ -112,7 +112,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
     ) {
         val projectProperties = Properties()
         val propFile = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.PROJECT_PROPERTIES)
-        moduleDescriptor.springFileSet.add(propFile.absolutePath)
+        moduleDescriptor.addSpringFile(propFile.absolutePath)
         try {
             projectProperties.load(propFile.inputStream())
         } catch (e: FileNotFoundException) {
@@ -210,7 +210,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
         try {
             if (!hasSpringContent(springFile)) return false
 
-            if (relevantModule.springFileSet.add(springFile.absolutePath)) {
+            if (relevantModule.addSpringFile(springFile.absolutePath)) {
                 scanForSpringImport(moduleDescriptorMap, relevantModule, springFile)
             }
             return true

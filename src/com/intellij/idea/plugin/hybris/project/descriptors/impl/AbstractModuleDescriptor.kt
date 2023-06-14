@@ -42,8 +42,8 @@ abstract class AbstractModuleDescriptor(
 ) : ModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
-    override var springFileSet = mutableSetOf<String>()
-    override val dependencies = mutableSetOf<ModuleDescriptor>()
+    private val dependencies = mutableSetOf<ModuleDescriptor>()
+    private val springFileSet = mutableSetOf<String>()
     private lateinit var requiredExtensionNames: Set<String>
 
     override fun compareTo(other: ModuleDescriptor) = name
@@ -101,7 +101,7 @@ abstract class AbstractModuleDescriptor(
         .unmodifiable()
 
     private fun recursivelyCollectDependenciesPlainSet(descriptor: ModuleDescriptor, dependenciesSet: MutableSet<ModuleDescriptor>): Set<ModuleDescriptor> {
-        val dependencies = descriptor.dependencies
+        val dependencies = descriptor.getDependencies()
 
         if (CollectionUtils.isEmpty(dependencies)) return dependenciesSet
 
@@ -119,6 +119,12 @@ abstract class AbstractModuleDescriptor(
     override fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
         requiredExtensionNames = initDependencies(moduleDescriptors)
     }
+
+    override fun getSpringFiles() = springFileSet
+    override fun addSpringFile(file: String) = springFileSet.add(file)
+
+    override fun getDependencies() = dependencies
+    override fun addDependencies(dependencies: Set<ModuleDescriptor>) = this.dependencies.addAll(dependencies)
 
     internal open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 

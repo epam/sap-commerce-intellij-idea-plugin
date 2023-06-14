@@ -28,8 +28,6 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     var importStatus: ModuleDescriptorImportStatus
     val descriptorType: ModuleDescriptorType
     var readonly: Boolean
-    val springFileSet: MutableSet<String>
-    val dependencies: Set<ModuleDescriptor>
 
     fun getAllDependencies(): Set<ModuleDescriptor>
     fun extensionDescriptor(): ExtensionDescriptor
@@ -39,4 +37,8 @@ interface ModuleDescriptor : Comparable<ModuleDescriptor> {
     fun getRelativePath(): String
     fun getRequiredExtensionNames(): Set<String>
     fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>)
+    fun getSpringFiles(): Set<String>
+    fun addSpringFile(file: String): Boolean
+    fun getDependencies(): Set<ModuleDescriptor>
+    fun addDependencies(dependencies: Set<ModuleDescriptor>): Boolean
 }
