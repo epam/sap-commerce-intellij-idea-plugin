@@ -247,7 +247,6 @@ object HybrisConstants {
     const val HYBRIS = "[y]"
     const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
     const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
-    const val SEARCH_SCOPE_GROUP_PREFIX = "group:"
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"

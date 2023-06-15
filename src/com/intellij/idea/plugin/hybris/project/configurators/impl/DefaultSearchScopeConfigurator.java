@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,7 +63,10 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
             newScopes.add(new NamedScope(
                 HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.files"),
-                new FilePatternPackageSet(SEARCH_SCOPE_GROUP_PREFIX + customGroupName, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
+                new FilePatternPackageSet(
+                    customGroupName + '*',
+                    "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING
+                )
             ));
 
             newScopes.add(new NamedScope(
@@ -107,15 +110,15 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     public static PackageSet createCustomTsImpexBeansFilesPattern() {
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            customGroupName + '*',
             "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING
         );
         final FilePatternPackageSet beansFilePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            customGroupName + '*',
             "*//*" + HYBRIS_BEANS_XML_FILE_ENDING
         );
         final FilePatternPackageSet impexFilePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + customGroupName,
+            customGroupName + '*',
             "*//*" + HYBRIS_IMPEX_XML_FILE_ENDING
         );
         return UnionPackageSet.create(
@@ -152,7 +155,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     @NotNull
     private static NamedScope createScope(@NotNull final String groupName) {
         final FilePatternPackageSet filePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + groupName,
+            groupName + '*',
             "*//*"
         );
         return new NamedScope(SEARCH_SCOPE_Y_PREFIX + ' ' + groupName, filePatternPackageSet);
@@ -161,11 +164,11 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     @NotNull
     private static NamedScope createScopeFor2Groups(@NotNull final String firstGroupName, @NotNull final String secondGroupName) {
         final FilePatternPackageSet firstFilePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + firstGroupName,
+            firstGroupName + '*',
             "*//*"
         );
         final FilePatternPackageSet secondFilePatternPackageSet = new FilePatternPackageSet(
-            SEARCH_SCOPE_GROUP_PREFIX + secondGroupName,
+            secondGroupName + '*',
             "*//*"
         );
         final PackageSet unionPackageSet = UnionPackageSet.create(
