@@ -304,10 +304,15 @@ object YModuleLibDescriptorUtil {
             )
         )
 
+        val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
+
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - Web Library",
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
+                libraryFile = libFolder,
+                jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
+                    ?.toSet()
+                    ?: emptySet(),
                 exported = true,
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )

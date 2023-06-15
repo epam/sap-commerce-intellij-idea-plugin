@@ -133,6 +133,11 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
 
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
+        // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
+        // Jetbrains Intellij IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
+        javaLibraryDescriptor.jarFiles.forEach {
+            libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(it), OrderRootType.CLASSES)
+        }
 
         javaLibraryDescriptor.sourceFiles
             .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
