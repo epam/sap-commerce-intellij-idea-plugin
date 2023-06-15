@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ data class HybrisProjectSettings(
     var hybrisProject: Boolean = false,
     var importOotbModulesInReadOnlyMode: Boolean = false,
     var followSymlink: Boolean = false,
-    var scanThroughExternalModule: Boolean = false,
+    var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
     var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf(),
     var unusedExtensions: Set<String> = mutableSetOf(),
