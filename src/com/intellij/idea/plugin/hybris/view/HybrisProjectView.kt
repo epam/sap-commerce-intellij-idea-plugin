@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.BasePsiNode
 import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
-import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
@@ -38,7 +37,6 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import org.apache.commons.collections4.CollectionUtils
-import org.apache.commons.lang3.Validate
 import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
@@ -52,6 +50,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .firstOrNull()
     private val ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
         .firstOrNull()
+    private val groupToIcon = mapOf(
+        platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
+        commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
+        ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
+    )
 
     override fun modify(
         parent: AbstractTreeNode<*>,
@@ -71,7 +74,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             else newChildren
         }
 
-        if (parent is YProjectViewModuleGroupNode) modifyModuleGroupIcons(parent)
         if (parent is ExternalLibrariesNode) return modifyExternalLibrariesNodes(newChildren)
 
         val childrenWithProcessedJunkFiles = processJunkFiles(newChildren, settings)
@@ -87,7 +89,19 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         for (i in nodes.indices) {
             nodes[i]
                 .let { it as? ProjectViewModuleGroupNode }
-                ?.let { YProjectViewModuleGroupNode(it.project, it.value, it.settings) }
+                ?.let { node ->
+                    val yNode = YProjectViewModuleGroupNode(node.project, node.value, node.settings)
+                    yNode.value
+                        ?.groupPath
+                        ?.firstOrNull()
+                        ?.let { groupName ->
+                            groupToIcon
+                                .firstNotNullOfOrNull { if (groupName.equals(it.key, true)) it.value else null }
+                        }
+                        ?.let { yNode.icon = it }
+
+                    yNode
+                }
                 ?.let { nodes.set(i, it) }
 
         }
@@ -112,21 +126,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 else parent !is ProjectViewModuleGroupNode
             }
             ?: true
-    }
-
-    private fun modifyModuleGroupIcons(parent: ProjectViewModuleGroupNode) {
-        val rootGroup = parent.value
-            ?.groupPath
-            ?.firstOrNull()
-            ?: return
-
-        mapOf(
-            platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
-            commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
-            ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
-        )
-            .firstNotNullOfOrNull { if (rootGroup.equals(it.key, true)) it.value else null }
-            ?.let { parent.icon = it }
     }
 
     private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = hybrisApplicationSettings.hideEmptyMiddleFolders
@@ -264,15 +263,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         || HybrisConstants.CLASSES_DIRECTORY == file.name
         || HybrisConstants.TEST_CLASSES_DIRECTORY == file.name
 
-    protected fun isJunk(virtualFile: VirtualFile, junkFileNames: List<String>): Boolean {
-        Validate.notNull(virtualFile)
-        Validate.notNull(junkFileNames)
-        return junkFileNames.contains(virtualFile.name) || isIdeaModuleFile(virtualFile)
-    }
+    private fun isJunk(virtualFile: VirtualFile, junkFileNames: List<String>) = junkFileNames.contains(virtualFile.name)
+        || isIdeaModuleFile(virtualFile)
 
-    protected fun isIdeaModuleFile(virtualFile: VirtualFile): Boolean {
-        Validate.notNull(virtualFile)
-        return virtualFile.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
-    }
+    private fun isIdeaModuleFile(virtualFile: VirtualFile) = virtualFile
+        .name
+        .endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
 
 }

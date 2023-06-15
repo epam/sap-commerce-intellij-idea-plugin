@@ -181,22 +181,16 @@ public class DefaultAntConfigurator implements AntConfigurator {
     }
 
     private void parseModules(final List<ModuleDescriptor> allModules) {
-        platformDescriptor = null;
-        configDescriptor = null;
+        platformDescriptor = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor();
+        configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
-        for (ModuleDescriptor descriptor : allModules) {
-            if (descriptor instanceof PlatformModuleDescriptor) {
-                platformDescriptor = (PlatformModuleDescriptor) descriptor;
+        for (final var descriptor : allModules) {
+            if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
+                extHybrisModuleDescriptorList.add(myDescriptor);
             }
-            if (descriptor instanceof YPlatformExtModuleDescriptor) {
-                extHybrisModuleDescriptorList.add((YPlatformExtModuleDescriptor) descriptor);
-            }
-            if (descriptor instanceof YCustomRegularModuleDescriptor) {
-                customHybrisModuleDescriptorList.add((YCustomRegularModuleDescriptor) descriptor);
-            }
-            if (descriptor instanceof ConfigModuleDescriptor) {
-                configDescriptor = (ConfigModuleDescriptor) descriptor;
+            if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
+                customHybrisModuleDescriptorList.add(myDescriptor);
             }
         }
     }
