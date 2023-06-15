@@ -15,394 +15,264 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.view
 
-package com.intellij.idea.plugin.hybris.view;
+import com.intellij.ide.projectView.TreeStructureProvider
+import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.nodes.BasePsiNode
+import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
+import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
+import com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode
+import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
+import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.facet.YFacet
+import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.SimpleTextAttributes
+import org.apache.commons.collections4.CollectionUtils
+import org.apache.commons.lang3.Validate
+import java.io.File
 
-import com.google.common.collect.Iterables;
-import com.intellij.ide.projectView.TreeStructureProvider;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.*;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.ide.util.treeView.NodeOptions;
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor.ColoredFragment;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.facet.YFacet;
-import com.intellij.idea.plugin.hybris.kotlin.InfixesKt;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.SimpleTextAttributes;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+    private val hybrisProjectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project)
+    private val hybrisProject = hybrisProjectSettingsComponent.state.hybrisProject
+    private val hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().state
+    private val commerceGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupHybris)
+        .firstOrNull()
+    private val platformGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
+        .firstOrNull()
+    private val ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
+        .firstOrNull()
 
-public class HybrisProjectView implements TreeStructureProvider, DumbAware {
+    override fun modify(
+        parent: AbstractTreeNode<*>,
+        children: MutableCollection<AbstractTreeNode<*>>,
+        settings: ViewSettings
+    ): Collection<AbstractTreeNode<*>> {
+        if (!hybrisProject) return children
 
-    protected final Project project;
-    protected final HybrisProjectSettingsComponent hybrisProjectSettingsComponent;
-    protected final HybrisProjectSettings hybrisProjectSettings;
-    protected final HybrisApplicationSettings hybrisApplicationSettings;
-    private final String[] commerceGroupName;
-    private final String[] platformGroupName;
-    private final String[] ccv2GroupName;
+        replaceModuleGroupNodes(children)
 
-    public HybrisProjectView(@NotNull final Project project) {
-        Validate.notNull(project);
+        val newChildren = children
+            .filter { isNodeVisible(parent, it) }
+            .toMutableList()
 
-        this.project = project;
-        this.hybrisProjectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-        this.hybrisProjectSettings = hybrisProjectSettingsComponent.getState();
-        this.hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        this.commerceGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupHybris());
-        this.platformGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupPlatform());
-        this.ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.getGroupCCv2());
+        if (parent is JunkProjectViewNode) {
+            return if (isCompactEmptyMiddleFoldersEnabled(settings)) compactEmptyMiddlePackages(parent, newChildren)
+            else newChildren
+        }
+
+        if (parent is YProjectViewModuleGroupNode) modifyModuleGroupIcons(parent)
+        if (parent is ExternalLibrariesNode) return modifyExternalLibrariesNodes(newChildren)
+
+        val childrenWithProcessedJunkFiles = processJunkFiles(newChildren, settings)
+
+        return if (isCompactEmptyMiddleFoldersEnabled(settings)) compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
+        else childrenWithProcessedJunkFiles
     }
 
-    @Override
-    @NotNull
-    public Collection<AbstractTreeNode<?>> modify(
-        @NotNull final AbstractTreeNode<?> parent,
-        @NotNull final Collection<AbstractTreeNode<?>> children,
-        final ViewSettings settings
-    ) {
-        if (this.isNotHybrisProject()) return children;
+    private fun replaceModuleGroupNodes(children: MutableCollection<AbstractTreeNode<*>>) {
+        val nodes = children as? MutableList<AbstractTreeNode<*>>
+            ?: return
 
-        replaceModuleGroupNodes(children);
+        for (i in nodes.indices) {
+            nodes[i]
+                .let { it as? ProjectViewModuleGroupNode }
+                ?.let { YProjectViewModuleGroupNode(it.project, it.value, it.settings) }
+                ?.let { nodes.set(i, it) }
 
-        final var newChildren = filterOutChildren(parent, children);
-
-        if (parent instanceof JunkProjectViewNode) {
-            return this.isCompactEmptyMiddleFoldersEnabled(settings)
-                ? this.compactEmptyMiddlePackages(parent, newChildren)
-                : newChildren;
         }
-
-        if (parent instanceof YProjectViewModuleGroupNode) {
-            modifyModuleGroupIcons((YProjectViewModuleGroupNode) parent);
-        }
-
-        if (parent instanceof ExternalLibrariesNode) {
-            return this.modifyExternalLibrariesNodes(newChildren);
-        }
-
-        final Collection<AbstractTreeNode<?>> childrenWithProcessedJunkFiles = this.processJunkFiles(newChildren, settings);
-
-        return this.isCompactEmptyMiddleFoldersEnabled(settings)
-            ? this.compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
-            : childrenWithProcessedJunkFiles;
     }
 
-    private void replaceModuleGroupNodes(final Collection<AbstractTreeNode<?>> children) {
-        if (!(children instanceof final List<AbstractTreeNode<?>> modifiableChildren) || modifiableChildren.isEmpty()) return;
+    private fun isNodeVisible(parent: AbstractTreeNode<*>, node: AbstractTreeNode<*>): Boolean {
+        if (node !is PsiDirectoryNode) return true
 
-        for (int i = 0; i < modifiableChildren.size(); i++) {
-            final AbstractTreeNode<?> node = modifiableChildren.get(i);
-            if (node instanceof final ProjectViewModuleGroupNode moduleGroupNode) {
-                final var yProjectViewModuleGroupNode = new YProjectViewModuleGroupNode(moduleGroupNode.getProject(), moduleGroupNode.getValue(), moduleGroupNode.getSettings());
-                modifiableChildren.set(i, yProjectViewModuleGroupNode);
+        val vf = node.virtualFile
+            ?: return true
+        val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)
+            ?: return true
+
+        // hide `platform/ext` node
+        if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME == vf.name
+            && HybrisConstants.EXTENSION_NAME_PLATFORM == module.yExtensionName()
+        ) return false
+
+        return YFacet.getState(module)
+            ?.let {
+                if (it.subModuleType == null) true
+                else parent !is ProjectViewModuleGroupNode
             }
-        }
-
+            ?: true
     }
 
-    private Collection<AbstractTreeNode<?>> filterOutChildren(final AbstractTreeNode<?> parent, final Collection<AbstractTreeNode<?>> children) {
-        return children.stream()
-            .filter(it -> isNodeVisible(parent, it))
-            .collect(Collectors.toCollection(ArrayList::new));
+    private fun modifyModuleGroupIcons(parent: ProjectViewModuleGroupNode) {
+        val rootGroup = parent.value
+            ?.groupPath
+            ?.firstOrNull()
+            ?: return
+
+        mapOf(
+            platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
+            commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
+            ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
+        )
+            .firstNotNullOfOrNull { if (rootGroup.equals(it.key, true)) it.value else null }
+            ?.let { parent.icon = it }
     }
 
-    private boolean isNodeVisible(final AbstractTreeNode<?> parent, final AbstractTreeNode<?> node) {
-        if (node instanceof final PsiDirectoryNode directoryNode) {
-            final var vf = directoryNode.getVirtualFile();
-            if (vf == null) return true;
-            final var module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(vf);
-            if (module == null) return true;
+    private fun isCompactEmptyMiddleFoldersEnabled(settings: ViewSettings) = hybrisApplicationSettings.hideEmptyMiddleFolders
+        && settings.isHideEmptyMiddlePackages
 
-            // hide `platform/ext` node
-            if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME.equals(vf.getName())
-                && HybrisConstants.EXTENSION_NAME_PLATFORM.equals(InfixesKt.yExtensionName(module))) return false;
+    private fun modifyExternalLibrariesNodes(
+        children: Collection<AbstractTreeNode<*>>
+    ): Collection<AbstractTreeNode<*>> {
+        val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
-            final var yFacetState = YFacet.Companion.getState(module);
-            if (yFacetState == null) return true;
-            if (yFacetState.getSubModuleType() == null) return true;
-
-            return !(parent instanceof ProjectViewModuleGroupNode);
-        }
-        return true;
-    }
-
-    private void modifyModuleGroupIcons(
-        final ProjectViewModuleGroupNode parent
-    ) {
-        final var moduleGroup = parent.getValue();
-        if (moduleGroup == null) return;
-
-        final var groupPath = moduleGroup.getGroupPath();
-        if (groupPath.length > 0) {
-            final var rootGroup = groupPath[0];
-
-            // TODO: improve with Kotlin...
-            final var commerceGroupRootName = commerceGroupName.length > 0
-                ? commerceGroupName[0]
-                : "";
-            final var platformGroupRootName = platformGroupName.length > 0
-                ? platformGroupName[0]
-                : "";
-            final var ccv2GroupRootName = ccv2GroupName.length > 0
-                ? ccv2GroupName[0]
-                : "";
-
-            if (rootGroup.equalsIgnoreCase(platformGroupRootName)) {
-                parent.setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
-            }
-
-            if (rootGroup.equalsIgnoreCase(commerceGroupRootName)) {
-                parent.setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
-            }
-            if (rootGroup.equalsIgnoreCase(ccv2GroupRootName)) {
-                parent.setIcon(HybrisIcons.MODULE_CCV2_GROUP);
-            }
-        }
-    }
-
-    protected boolean isCompactEmptyMiddleFoldersEnabled(@Nullable final NodeOptions settings) {
-        return this.hybrisApplicationSettings.getHideEmptyMiddleFolders()
-            && (null != settings)
-            && settings.isHideEmptyMiddlePackages();
-    }
-
-    @NotNull
-    protected Collection<AbstractTreeNode<?>> modifyExternalLibrariesNodes(
-        @NotNull final Collection<AbstractTreeNode<?>> children
-    ) {
-        Validate.notNull(children);
-
-        final Collection<AbstractTreeNode<?>> treeNodes = new ArrayList<>();
-
-        for (AbstractTreeNode<?> child : children) {
-            if (child instanceof PsiDirectoryNode) {
-                final VirtualFile virtualFile = ((PsiDirectoryNode) child).getVirtualFile();
-
-                if (null == virtualFile) {
-                    continue;
-                }
-
-                if (!HybrisConstants.CLASSES_DIRECTORY.equalsIgnoreCase(virtualFile.getName())) {
-                    treeNodes.add(child);
+        for (child in children) {
+            if (child is PsiDirectoryNode) {
+                val virtualFile = child.virtualFile ?: continue
+                if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)) {
+                    treeNodes.add(child)
                 }
             } else {
-                treeNodes.add(child);
+                treeNodes.add(child)
             }
         }
-
-        return treeNodes;
+        return treeNodes
     }
 
-    @NotNull
-    protected Collection<AbstractTreeNode<?>> processJunkFiles(
-        @NotNull final Collection<AbstractTreeNode<?>> children,
-        @Nullable final ViewSettings settings
-    ) {
-        Validate.notNull(children);
+    private fun processJunkFiles(
+        children: Collection<AbstractTreeNode<*>>,
+        settings: ViewSettings?
+    ): Collection<AbstractTreeNode<*>> {
+        val junkFileNames = HybrisApplicationSettingsComponent.getInstance().state.junkDirectoryList
+            .takeIf { it.isNotEmpty() }
+            ?: return children
 
-        final List<String> junkFileNames = this.getJunkFileNames();
+        val junkTreeNodes = mutableListOf<AbstractTreeNode<*>>()
+        val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
-        if (junkFileNames == null || junkFileNames.isEmpty()) {
-            return children;
-        }
+        for (child in children) {
+            if (child is BasePsiNode<*>) {
+                val virtualFile = child.virtualFile
+                    ?: continue
 
-        final List<AbstractTreeNode<?>> junkTreeNodes = new ArrayList<>();
-        final Collection<AbstractTreeNode<?>> treeNodes = new ArrayList<>();
-
-        for (AbstractTreeNode child : children) {
-            if (child instanceof BasePsiNode) {
-                final VirtualFile virtualFile = ((BasePsiNode) child).getVirtualFile();
-
-                if (null == virtualFile) {
-                    continue;
-                }
-
-                if (this.isJunk(virtualFile, junkFileNames)) {
-                    junkTreeNodes.add(child);
+                if (isJunk(virtualFile, junkFileNames)) {
+                    junkTreeNodes.add(child)
                 } else {
-                    treeNodes.add(child);
+                    treeNodes.add(child)
                 }
-
             } else {
-                treeNodes.add(child);
+                treeNodes.add(child)
+            }
+        }
+        if (junkTreeNodes.isNotEmpty()) {
+            treeNodes.add(JunkProjectViewNode(project, junkTreeNodes, settings))
+        }
+
+        return treeNodes
+    }
+
+    private fun compactEmptyMiddlePackages(
+        parent: AbstractTreeNode<*>,
+        children: Collection<AbstractTreeNode<*>>
+    ): Collection<AbstractTreeNode<*>> {
+        if (children.isEmpty()) return children
+
+        if (parent is PsiDirectoryNode) {
+            val parentVirtualFile = parent.virtualFile
+
+            if (null != parentVirtualFile && isFileInRoots(parentVirtualFile)) {
+                return children
             }
         }
 
-        if (!junkTreeNodes.isEmpty()) {
-            treeNodes.add(new JunkProjectViewNode(this.project, junkTreeNodes, settings));
-        }
-
-        return treeNodes;
+        return children
+            .map { recursivelyCompactEmptyMiddlePackages(it, it.children) }
+            .toMutableList()
     }
 
-    @NotNull
-    protected Collection<AbstractTreeNode<?>> compactEmptyMiddlePackages(
-        @NotNull final AbstractTreeNode<?> parent,
-        @NotNull final Collection<AbstractTreeNode<?>> children
-    ) {
-        Validate.notNull(parent);
-        Validate.notNull(children);
+    protected fun recursivelyCompactEmptyMiddlePackages(
+        parent: AbstractTreeNode<*>,
+        children: Collection<AbstractTreeNode<*>>
+    ): AbstractTreeNode<*> {
+        if (children.isEmpty()) return parent
+        if (parent is JunkProjectViewNode) return parent
 
-        if (CollectionUtils.isEmpty(children)) {
-            return children;
+        if (parent is PsiDirectoryNode) {
+            val directory = children.firstOrNull()
+                ?.let { it as? PsiDirectoryNode }
+                ?: return parent
+
+            val parentVirtualFile = parent.virtualFile
+                ?: return parent
+
+            if (isFileInRoots(parentVirtualFile) || isSrcOrClassesDirectory(parentVirtualFile))
+                return parent
+            val onlyChildVirtualFile = directory.virtualFile
+                ?: return parent
+
+            appendParentNameToOnlyChildName(parent, parentVirtualFile, directory, onlyChildVirtualFile)
+            return recursivelyCompactEmptyMiddlePackages(directory, directory.children)
         }
-
-        if (parent instanceof PsiDirectoryNode) {
-            final PsiDirectoryNode parentPsiDirectoryNode = (PsiDirectoryNode) parent;
-            final VirtualFile parentVirtualFile = parentPsiDirectoryNode.getVirtualFile();
-
-            if (null != parentVirtualFile && this.isFileInRoots(parentVirtualFile)) {
-                return children;
-            }
-        }
-
-        final Collection<AbstractTreeNode<?>> compactedChildren = new ArrayList<>();
-
-        for (AbstractTreeNode<?> child : children) {
-
-            final AbstractTreeNode<?> compactedChild = this.recursivelyCompactEmptyMiddlePackages(
-                child, child.getChildren()
-            );
-
-            compactedChildren.add(compactedChild);
-        }
-
-        return compactedChildren;
+        return parent
     }
 
-    @Nullable
-    protected AbstractTreeNode<?> recursivelyCompactEmptyMiddlePackages(
-        @NotNull final AbstractTreeNode<?> parent,
-        @Nullable final Collection<? extends AbstractTreeNode<?>> children
+    private fun appendParentNameToOnlyChildName(
+        parentPsiDirectoryNode: PsiDirectoryNode,
+        parentVirtualFile: VirtualFile,
+        onlyChildPsiDirectoryNode: PsiDirectoryNode,
+        onlyChildVirtualFile: VirtualFile
     ) {
-        Validate.notNull(parent);
-
-        if (CollectionUtils.isEmpty(children)) {
-            return parent;
-        }
-
-        if (parent instanceof JunkProjectViewNode) {
-            return parent;
-        }
-
-        if ((parent instanceof PsiDirectoryNode) && (children.size() == 1)) {
-            final AbstractTreeNode<?> onlyChild = Iterables.getOnlyElement(children);
-
-            if (onlyChild instanceof PsiDirectoryNode) {
-                final PsiDirectoryNode parentPsiDirectoryNode = (PsiDirectoryNode) parent;
-                final VirtualFile parentVirtualFile = parentPsiDirectoryNode.getVirtualFile();
-
-                if (null == parentVirtualFile) {
-                    return parent;
-                }
-
-                if (this.isFileInRoots(parentVirtualFile) || this.isSrcOrClassesDirectory(parentVirtualFile)) {
-                    return parent;
-                }
-
-                final PsiDirectoryNode onlyChildPsiDirectoryNode = (PsiDirectoryNode) onlyChild;
-                final VirtualFile onlyChildVirtualFile = onlyChildPsiDirectoryNode.getVirtualFile();
-
-                if (null == onlyChildVirtualFile) {
-                    return parent;
-                }
-
-                this.appendParentNameToOnlyChildName(
-                    parentPsiDirectoryNode, parentVirtualFile, onlyChildPsiDirectoryNode, onlyChildVirtualFile
-                );
-
-                return this.recursivelyCompactEmptyMiddlePackages(onlyChild, onlyChild.getChildren());
-            }
-        }
-
-        return parent;
-    }
-
-    private void appendParentNameToOnlyChildName(
-        @NotNull final PsiDirectoryNode parentPsiDirectoryNode,
-        @NotNull final VirtualFile parentVirtualFile,
-        @NotNull final PsiDirectoryNode onlyChildPsiDirectoryNode,
-        @NotNull final VirtualFile onlyChildVirtualFile
-    ) {
-        Validate.notNull(parentPsiDirectoryNode);
-        Validate.notNull(parentVirtualFile);
-        Validate.notNull(onlyChildPsiDirectoryNode);
-        Validate.notNull(onlyChildVirtualFile);
-
-        if (CollectionUtils.isEmpty(parentPsiDirectoryNode.getPresentation().getColoredText())) {
-            onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
-                parentVirtualFile.getName(), SimpleTextAttributes.REGULAR_ATTRIBUTES
-            ));
+        if (CollectionUtils.isEmpty(parentPsiDirectoryNode.presentation.coloredText)) {
+            onlyChildPsiDirectoryNode.presentation.addText(
+                PresentableNodeDescriptor
+                    .ColoredFragment(parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+            )
         } else {
-            for (ColoredFragment coloredFragment : parentPsiDirectoryNode.getPresentation().getColoredText()) {
-                onlyChildPsiDirectoryNode.getPresentation().addText(coloredFragment);
+            for (coloredFragment in parentPsiDirectoryNode.presentation.coloredText) {
+                onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
             }
         }
-
-        onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
-            File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
-        ));
-
-        onlyChildPsiDirectoryNode.getPresentation().addText(new ColoredFragment(
-            onlyChildVirtualFile.getName(), SimpleTextAttributes.REGULAR_ATTRIBUTES
-        ));
+        onlyChildPsiDirectoryNode.presentation.addText(
+            PresentableNodeDescriptor.ColoredFragment(
+                File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
+            )
+        )
+        onlyChildPsiDirectoryNode.presentation.addText(
+            PresentableNodeDescriptor.ColoredFragment(
+                onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
+            )
+        )
     }
 
-    private boolean isFileInRoots(@NotNull final VirtualFile file) {
-        Validate.notNull(file);
-
-        final ProjectFileIndex index = ProjectRootManager.getInstance(this.project).getFileIndex();
-
-        return index.isInSource(file) || index.isInLibraryClasses(file);
+    private fun isFileInRoots(file: VirtualFile): Boolean {
+        val index = ProjectRootManager.getInstance(project).fileIndex
+        return index.isInSource(file) || index.isInLibraryClasses(file)
     }
 
-    private boolean isSrcOrClassesDirectory(@NotNull final VirtualFile file) {
-        Validate.notNull(file);
+    private fun isSrcOrClassesDirectory(file: VirtualFile) = HybrisConstants.ADDON_SRC_DIRECTORY == file.name
+        || HybrisConstants.CLASSES_DIRECTORY == file.name
+        || HybrisConstants.TEST_CLASSES_DIRECTORY == file.name
 
-        return HybrisConstants.ADDON_SRC_DIRECTORY.equals(file.getName())
-            || HybrisConstants.CLASSES_DIRECTORY.equals(file.getName())
-            || HybrisConstants.TEST_CLASSES_DIRECTORY.equals(file.getName());
+    protected fun isJunk(virtualFile: VirtualFile, junkFileNames: List<String>): Boolean {
+        Validate.notNull(virtualFile)
+        Validate.notNull(junkFileNames)
+        return junkFileNames.contains(virtualFile.name) || isIdeaModuleFile(virtualFile)
     }
 
-    protected boolean isNotHybrisProject() {
-        return null != hybrisProjectSettings && !hybrisProjectSettingsComponent.isHybrisProject();
-    }
-
-    protected boolean isJunk(@NotNull final VirtualFile virtualFile, @NotNull final List<String> junkFileNames) {
-        Validate.notNull(virtualFile);
-        Validate.notNull(junkFileNames);
-
-        return junkFileNames.contains(virtualFile.getName()) || this.isIdeaModuleFile(virtualFile);
-    }
-
-    protected boolean isIdeaModuleFile(@NotNull final VirtualFile virtualFile) {
-        Validate.notNull(virtualFile);
-
-        return virtualFile.getName().endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION);
-    }
-
-    @Nullable
-    protected List<String> getJunkFileNames() {
-        return HybrisApplicationSettingsComponent.getInstance().getState().getJunkDirectoryList();
+    protected fun isIdeaModuleFile(virtualFile: VirtualFile): Boolean {
+        Validate.notNull(virtualFile)
+        return virtualFile.name.endsWith(HybrisConstants.NEW_IDEA_MODULE_FILE_EXTENSION)
     }
 
 }
