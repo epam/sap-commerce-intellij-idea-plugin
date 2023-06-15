@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -160,9 +160,9 @@ public class DefaultAntConfigurator implements AntConfigurator {
             return;
         }
         createAntClassPath(platformDir);
-        AntConfigurationBase.getInstance(project).setFilterTargets(true);
         antConfiguration = AntConfigurationBase.getInstance(project);
-        final AntBuildFileBase buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
+        antConfiguration.setFilterTargets(true);
+        final var buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
         customHybrisModuleDescriptorList.forEach(
             e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
         );

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -136,10 +136,7 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
             if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME.equals(vf.getName())
                 && HybrisConstants.EXTENSION_NAME_PLATFORM.equals(InfixesKt.yExtensionName(module))) return false;
 
-            final var yFacet = YFacet.Companion.get(module);
-            if (yFacet == null) return true;
-
-            final var yFacetState = yFacet.getConfiguration().getState();
+            final var yFacetState = YFacet.Companion.getState(module);
             if (yFacetState == null) return true;
             if (yFacetState.getSubModuleType() == null) return true;
 
@@ -171,16 +168,13 @@ public class HybrisProjectView implements TreeStructureProvider, DumbAware {
 
             if (rootGroup.equalsIgnoreCase(platformGroupRootName)) {
                 parent.setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
-//                parent.getPresentation().setIcon(HybrisIcons.MODULE_PLATFORM_GROUP);
             }
 
             if (rootGroup.equalsIgnoreCase(commerceGroupRootName)) {
                 parent.setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
-//                parent.getPresentation().setIcon(HybrisIcons.MODULE_COMMERCE_GROUP);
             }
             if (rootGroup.equalsIgnoreCase(ccv2GroupRootName)) {
                 parent.setIcon(HybrisIcons.MODULE_CCV2_GROUP);
-//                parent.getPresentation().setIcon(HybrisIcons.MODULE_CCV2_GROUP);
             }
         }
     }

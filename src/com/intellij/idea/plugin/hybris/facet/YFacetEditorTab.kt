@@ -18,14 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.facet
 
+import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetEditorTab
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.facet.YFacet.Companion.get
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 
-class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
+class YFacetEditorTab(
+    val state: ExtensionDescriptor,
+    private val editorContext: FacetEditorContext
+) : FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
     override fun isModified() = dialogPanel.isModified()
@@ -75,13 +81,24 @@ class YFacetEditorTab(val state: ExtensionDescriptor) : FacetEditorTab() {
 
         if (state.subModuleType == SubModuleDescriptorType.ADDON && state.installedIntoExtensions.isNotEmpty()) {
             group("Installed into extensions") {
-                state.installedIntoExtensions.forEach {
-                    row {
-                        icon(HybrisIcons.Y_LOGO_BLUE)
-                        label(it)
-                            .bold()
+                ModuleManager.getInstance(editorContext.project)
+                    .modules
+                    .mapNotNull { YFacet.getState(it) }
+                    .filter { state.installedIntoExtensions.contains(it.name) }
+                    .map {
+                        row {
+                            icon(
+                                when (it.type) {
+                                    ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
+                                    ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
+                                    ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
+                                    else -> HybrisIcons.Y_LOGO_BLUE
+                                }
+                            )
+                            label(it.name)
+                                .bold()
+                        }
                     }
-                }
             }
         }
 
