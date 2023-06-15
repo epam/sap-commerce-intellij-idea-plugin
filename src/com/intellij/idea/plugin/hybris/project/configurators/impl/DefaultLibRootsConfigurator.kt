@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -173,8 +173,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         modifiableRootModel: ModifiableRootModel,
         library: Library
     ) {
-        findOrderEntryForLibrary(modifiableRootModel, library)
-            .let { it.isExported = true }
+        findOrderEntryForLibrary(modifiableRootModel, library).isExported = true
     }
 
     private fun setLibraryEntryScope(
@@ -182,8 +181,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         library: Library,
         scope: DependencyScope
     ) {
-        findOrderEntryForLibrary(modifiableRootModel, library)
-            .let { it.scope = scope }
+        findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
     }
 
     private fun resolveMavenSources(

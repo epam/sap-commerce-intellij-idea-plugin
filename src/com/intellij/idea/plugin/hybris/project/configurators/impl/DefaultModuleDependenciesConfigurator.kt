@@ -41,17 +41,16 @@ class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
         val platformIdeaModuleName = hybrisProjectDescriptor.platformHybrisModuleDescriptor.ideaModuleName()
         val platformModule = allModules[platformIdeaModuleName] ?: return
 
-        modulesChosenForImport
-            .forEach { moduleDescriptor ->
-                allModules[moduleDescriptor.ideaModuleName()]
-                    ?.let { module ->
-                        val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
+        modulesChosenForImport.forEach { moduleDescriptor ->
+            allModules[moduleDescriptor.ideaModuleName()]
+                ?.let { module ->
+                    val rootModel = modifiableModelsProvider.getModifiableRootModel(module)
 
-                        moduleDescriptor.getDirectDependencies()
-                            .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
-                            .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
-                    }
-            }
+                    moduleDescriptor.getDirectDependencies()
+                        .filterNot { moduleDescriptor is YOotbRegularModuleDescriptor && extModules.contains(it) }
+                        .forEach { addModuleDependency(allModules, it.ideaModuleName(), rootModel) }
+                }
+        }
 
         processPlatformModulesDependencies(
             hybrisProjectDescriptor,

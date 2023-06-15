@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 
 import com.google.common.collect.Sets;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
@@ -455,6 +452,20 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
+        // update direct dependencies for addons
+        addons.stream()
+            .filter(Predicate.not(it -> it.getTargetModules().isEmpty()))
+            .forEach(it -> {
+                final var targetModules = it.getTargetModules().stream()
+                    .map(YModuleDescriptor::getSubModules)
+                    .flatMap(Collection::stream)
+                    .filter(YWebSubModuleDescriptor.class::isInstance)
+                    .map(YWebSubModuleDescriptor.class::cast)
+                    .collect(Collectors.toSet());
+                it.addRequiredExtensionNames(targetModules);
+                it.addDirectDependencies(targetModules);
+            });
+
         return addons;
     }
 
@@ -696,18 +707,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         final var moduleDescriptorsMap = moduleDescriptors.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
-        for (final ModuleDescriptor moduleDescriptor : moduleDescriptors) {
-            buildDependencies(moduleDescriptor, moduleDescriptorsMap);
+        for (final var moduleDescriptor : moduleDescriptors) {
+            final var dependencies = buildDependencies(moduleDescriptor, moduleDescriptorsMap);
+            moduleDescriptor.addDirectDependencies(dependencies);
         }
     }
 
-    private void buildDependencies(final ModuleDescriptor moduleDescriptor, final Map<String, ModuleDescriptor> moduleDescriptors) {
-        moduleDescriptor.setRequiredExtensionNames(moduleDescriptors);
+    private Set<ModuleDescriptor> buildDependencies(final ModuleDescriptor moduleDescriptor, final Map<String, ModuleDescriptor> moduleDescriptors) {
+        moduleDescriptor.computeRequiredExtensionNames(moduleDescriptors);
 
         var requiredExtensionNames = moduleDescriptor.getRequiredExtensionNames();
 
         if (CollectionUtils.isEmpty(requiredExtensionNames)) {
-            return;
+            return Collections.emptySet();
         }
         requiredExtensionNames = requiredExtensionNames.stream()
             .sorted()
@@ -729,7 +741,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
-        moduleDescriptor.addDirectDependencies(dependencies);
+        return dependencies;
     }
 
     @Nullable

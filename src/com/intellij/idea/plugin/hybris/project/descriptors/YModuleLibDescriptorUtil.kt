@@ -256,30 +256,6 @@ object YModuleLibDescriptorUtil {
             .filter { it.getDirectDependencies().contains(descriptor.owner) }
             .filter { it != descriptor }
             .map { yModule ->
-                // create dependencies for web module nature
-                yModule.getSubModules()
-                    .filterIsInstance<YWebSubModuleDescriptor>()
-                    .forEach { yWebModule ->
-                        val webModuleSourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
-                            .map { File(yWebModule.moduleRootDirectory, it) }
-                            .filter { it.isDirectory }
-
-                        val webClasses = JavaLibraryDescriptor(
-                            name = "${yWebModule.name} - Addon's Target Web Classes",
-                            libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
-                            sourceFiles = if (attachSources) webModuleSourceFiles
-                            else emptyList(),
-                            directoryWithClasses = true
-                        )
-                        val webLibrary = JavaLibraryDescriptor(
-                            name = "${yWebModule.name} - Addon's Target Web Library",
-                            libraryFile = File(yWebModule.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH),
-                            descriptorType = LibraryDescriptorType.WEB_INF_LIB
-                        )
-                        libs.add(webClasses)
-                        libs.add(webLibrary)
-                    }
-
                 // process owner extension dependencies
                 val addonSourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
                     .map { File(yModule.moduleRootDirectory, it) }

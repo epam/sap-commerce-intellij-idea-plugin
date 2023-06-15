@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.*
 import com.intellij.openapi.application.ApplicationManager
 import io.ktor.util.*
 import org.apache.commons.collections4.CollectionUtils
@@ -42,7 +39,7 @@ abstract class AbstractModuleDescriptor(
 ) : ModuleDescriptor {
 
     override var importStatus = ModuleDescriptorImportStatus.UNUSED
-    private lateinit var requiredExtensionNames: Set<String>
+    private lateinit var requiredExtensionNames: MutableSet<String>
     private val springFileSet = mutableSetOf<String>()
     private val directDependencies = mutableSetOf<ModuleDescriptor>()
     private val dependencies: Set<ModuleDescriptor> by lazy {
@@ -106,8 +103,11 @@ abstract class AbstractModuleDescriptor(
     override fun getAllDependencies() = dependencies
 
     override fun getRequiredExtensionNames() = requiredExtensionNames
-    override fun setRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
-        requiredExtensionNames = initDependencies(moduleDescriptors)
+    override fun addRequiredExtensionNames(extensions: Set<YModuleDescriptor>) = extensions
+        .map { it.name }
+        .let { requiredExtensionNames.addAll(it) }
+    override fun computeRequiredExtensionNames(moduleDescriptors: Map<String, ModuleDescriptor>) {
+        requiredExtensionNames = initDependencies(moduleDescriptors).toMutableSet()
     }
 
     override fun getSpringFiles() = springFileSet
