@@ -182,10 +182,10 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
     private fun processContextParam(
         moduleDescriptorMap: Map<String, ModuleDescriptor>,
-        moduleDescriptor: ModuleDescriptor,
+        moduleDescriptor: YWebSubModuleDescriptor,
         contextConfigLocation: String
     ) {
-        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEB_WEBROOT_DIRECTORY_PATH)
+        val webModuleDir = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY)
 
         SPLIT_PATTERN.split(contextConfigLocation)
             .filter { it.endsWith(".xml") }
