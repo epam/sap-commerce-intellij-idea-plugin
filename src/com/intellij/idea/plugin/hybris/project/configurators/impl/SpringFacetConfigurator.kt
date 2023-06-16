@@ -18,12 +18,14 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YBackofficeSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
@@ -63,8 +65,13 @@ class SpringFacetConfigurator : FacetConfigurator {
                     ?.let { it.createFacet(javaModule, it.defaultFacetName, it.createDefaultConfiguration(), null) }
                 ?: return@runAndWait
 
-            val facetId = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
-            val springFileSet = springFacet.addFileSet(facetId, facetId)
+            val facetName = moduleDescriptor.name + SpringFacet.FACET_TYPE_ID
+            // dirty hack to trick IDEA autodetection of the web Spring context, see https://youtrack.jetbrains.com/issue/IDEA-257819
+            // and WebXmlSpringWebModelContributor
+            val facetId = if (moduleDescriptor is YWebSubModuleDescriptor) HybrisConstants.SPRING_WEB_FILE_SET_NAME
+            else facetName
+
+            val springFileSet = springFacet.addFileSet(facetId, facetName)
             springFileSet.isAutodetected = true
 
             additionalFileSet

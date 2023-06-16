@@ -289,6 +289,7 @@ object HybrisConstants {
     const val RESOURCES_DIRECTORY = "resources"
     const val LOCAL_PROPERTIES = "local.properties"
     const val PROJECT_PROPERTIES = "project.properties"
+    const val SPRING_WEB_FILE_SET_NAME = "web application context"
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
     const val GLOBAL_CONTEXT_SPRING_FILES = "global-context"
