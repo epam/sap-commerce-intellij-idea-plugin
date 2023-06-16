@@ -32,7 +32,8 @@ object YModuleLibDescriptorUtil {
 
     fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is YWebSubModuleDescriptor -> getLibraryDescriptors(descriptor)
+        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Web")
+        is YCommonWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Common Web")
         is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
         is YHacSubModuleDescriptor -> getLibraryDescriptors(descriptor)
@@ -281,7 +282,10 @@ object YModuleLibDescriptorUtil {
         return libs
     }
 
-    private fun getLibraryDescriptors(descriptor: YWebSubModuleDescriptor): MutableList<JavaLibraryDescriptor> {
+    private fun getWebLibraryDescriptors(
+        descriptor: YSubModuleDescriptor,
+        libName: String = "Web"
+    ): MutableList<JavaLibraryDescriptor> {
         val libs = mutableListOf<JavaLibraryDescriptor>()
 
         addLibrariesToNonCustomModule(descriptor, descriptor.descriptorType, libs)
@@ -295,7 +299,7 @@ object YModuleLibDescriptorUtil {
             .filter { it.isDirectory }
         libs.add(
             JavaLibraryDescriptor(
-                name = "${descriptor.name} - Web Classes",
+                name = "${descriptor.name} - $libName Classes",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                 sourceFiles = if (attachSources) sourceFiles
                 else emptyList(),
@@ -308,7 +312,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
-                name = "${descriptor.name} - Web Library",
+                name = "${descriptor.name} - $libName Library",
                 libraryFile = libFolder,
                 jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
                     ?.toSet()
