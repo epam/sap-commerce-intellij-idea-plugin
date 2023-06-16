@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -104,6 +104,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox customProjectIconCheckBox;
     private JLabel customProjectIconLabel;
     private TextFieldWithBrowseButton customProjectIconChooser;
+    private JCheckBox importCustomAntBuildFilesCheckBox;
     private String hybrisVersion;
 
     public HybrisWorkspaceRootStep(final WizardContext context) {
@@ -297,6 +298,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         projectDescriptor.setImportOotbModulesInReadOnlyMode(this.importOotbModulesInReadOnlyModeCheckBox.isSelected());
         projectDescriptor.setFollowSymlink(this.followSimplinkCheckbox.isSelected());
         projectDescriptor.setExcludeTestSources(this.excludeTestSourcesCheckBox.isSelected());
+        projectDescriptor.setImportCustomAntBuildFiles(this.importCustomAntBuildFilesCheckBox.isSelected());
         projectDescriptor.setScanThroughExternalModule(this.scanThroughExternalModuleCheckbox.isSelected());
         projectDescriptor.setSourceCodeFile(getValidSourceCode());
         projectDescriptor.setProjectIconFile(getProjectIcon());
@@ -354,24 +356,16 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setScanThroughExternalModule(
             appSettings.getScanThroughExternalModule()
         );
-        hybrisProjectDescriptor.setExcludeTestSources(
-            appSettings.getExcludeTestSources()
-        );
+        hybrisProjectDescriptor.setExcludeTestSources(appSettings.getExcludeTestSources());
+        hybrisProjectDescriptor.setImportCustomAntBuildFiles(appSettings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
-        this.importOotbModulesInReadOnlyModeCheckBox.setSelected(
-            hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode()
-        );
-        this.scanThroughExternalModuleCheckbox.setSelected(
-            hybrisProjectDescriptor.isScanThroughExternalModule()
-        );
-        this.followSimplinkCheckbox.setSelected(
-            hybrisProjectDescriptor.isFollowSymlink()
-        );
-        this.excludeTestSourcesCheckBox.setSelected(
-            hybrisProjectDescriptor.isExcludeTestSources()
-        );
+        this.importOotbModulesInReadOnlyModeCheckBox.setSelected(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
+        this.scanThroughExternalModuleCheckbox.setSelected(hybrisProjectDescriptor.isScanThroughExternalModule());
+        this.followSimplinkCheckbox.setSelected(hybrisProjectDescriptor.isFollowSymlink());
+        this.excludeTestSourcesCheckBox.setSelected(hybrisProjectDescriptor.isExcludeTestSources());
+        this.importCustomAntBuildFilesCheckBox.setSelected(hybrisProjectDescriptor.isImportCustomAntBuildFiles());
 
         if (StringUtils.isBlank(this.hybrisDistributionDirectoryFilesInChooser.getText())) {
 
@@ -595,6 +589,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setImportOotbModulesInReadOnlyMode(settings.getImportOotbModulesInReadOnlyMode());
         hybrisProjectDescriptor.setFollowSymlink(settings.getFollowSymlink());
         hybrisProjectDescriptor.setExcludeTestSources(settings.getExcludeTestSources());
+        hybrisProjectDescriptor.setImportCustomAntBuildFiles(settings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
         final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();

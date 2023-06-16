@@ -45,6 +45,7 @@ data class HybrisProjectSettings(
     var followSymlink: Boolean = false,
     var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
+    var importCustomAntBuildFiles: Boolean = false,
     var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf(),
     var unusedExtensions: Set<String> = mutableSetOf(),
     var modulesOnBlackList: Set<String> = mutableSetOf(),

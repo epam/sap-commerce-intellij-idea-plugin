@@ -110,6 +110,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected String hybrisVersion;
     protected boolean followSymlink;
     protected boolean excludeTestSources;
+    protected boolean importCustomAntBuildFiles;
     protected boolean scanThroughExternalModule;
     private boolean withMavenSources;
     private boolean withStandardProvidedSources;
@@ -1041,6 +1042,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
+    public void setImportCustomAntBuildFiles(final boolean importCustomAntBuildFiles) {
+        this.importCustomAntBuildFiles = importCustomAntBuildFiles;
+    }
+
+    @Override
+    public boolean isImportCustomAntBuildFiles() {
+        return importCustomAntBuildFiles;
+    }
+
+    @Override
     public boolean isScanThroughExternalModule() {
         return scanThroughExternalModule;
     }
@@ -1090,6 +1101,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ", externalExtensionsDirectory=" + externalExtensionsDirectory +
             ", externalConfigDirectory=" + externalConfigDirectory +
             ", externalDbDriversDirectory=" + externalDbDriversDirectory +
+            ", importCustomAntBuildFiles=" + importCustomAntBuildFiles +
             ", javadocUrl='" + javadocUrl + '\'' +
             ", hybrisVersion='" + hybrisVersion + '\'' +
             ", followSymlink=" + followSymlink +

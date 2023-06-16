@@ -163,9 +163,12 @@ public class DefaultAntConfigurator implements AntConfigurator {
         antConfiguration = AntConfigurationBase.getInstance(project);
         antConfiguration.setFilterTargets(true);
         final var buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
-        customHybrisModuleDescriptorList.forEach(
-            e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
-        );
+
+        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
+            customHybrisModuleDescriptorList.forEach(
+                e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
+            );
+        }
         saveAntInstallation(antInstallation);
         removeMake(project);
         createMetaTargets(buildFile);
@@ -185,12 +188,15 @@ public class DefaultAntConfigurator implements AntConfigurator {
         configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         extHybrisModuleDescriptorList = new ArrayList<>();
         customHybrisModuleDescriptorList = new ArrayList<>();
-        for (final var descriptor : allModules) {
-            if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
-                extHybrisModuleDescriptorList.add(myDescriptor);
-            }
-            if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
-                customHybrisModuleDescriptorList.add(myDescriptor);
+
+        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
+            for (final var descriptor : allModules) {
+                if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
+                    extHybrisModuleDescriptorList.add(myDescriptor);
+                }
+                if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
+                    customHybrisModuleDescriptorList.add(myDescriptor);
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,6 +66,10 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
             row {
                 checkBox(message("hybris.project.import.excludeTestSources"))
                     .bindSelected(state::excludeTestSources)
+            }
+            row {
+                checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
+                    .bindSelected(state::importCustomAntBuildFiles)
             }
             row {
                 checkBox(message("hybris.ts.items.validation.settings.enabled"))

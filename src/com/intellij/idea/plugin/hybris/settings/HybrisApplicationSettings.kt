@@ -33,6 +33,7 @@ data class HybrisApplicationSettings(
     var withStandardProvidedSources: Boolean = false,
     var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
+    var importCustomAntBuildFiles: Boolean = false,
     var groupHybris: String = "Hybris",
     var groupOtherHybris: String = "Hybris/Unused",
     var groupCustom: String = "Custom",
