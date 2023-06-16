@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,17 +65,11 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
 
     open fun canProcess(dom: T): Boolean = true
 
-    protected fun getTextRange(dom: DomElement): TextRange? {
-        val xmlElement = dom.xmlElement ?: return null
+    protected fun getTextRange(dom: DomElement) = dom.xmlElement
+        ?.let { TextRange.from(0, it.textLength) }
 
-        return TextRange.from(0, xmlElement.textLength)
-    }
-
-    protected fun getTextRange(xmlElement: XmlElement?): TextRange? {
-        if (xmlElement == null) return null
-
-        return TextRange.from(0, xmlElement.textLength)
-    }
+    protected fun getTextRange(xmlElement: XmlElement?) = xmlElement
+        ?.let { TextRange.from(0, it.textLength) }
 
     private fun getProblemHighlightType(file: PsiFile): HighlightDisplayLevel {
         val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
