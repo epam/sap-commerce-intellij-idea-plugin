@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule
 
-import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -71,10 +70,11 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
     protected fun getTextRange(xmlElement: XmlElement?) = xmlElement
         ?.let { TextRange.from(0, it.textLength) }
 
-    private fun getProblemHighlightType(file: PsiFile): HighlightDisplayLevel {
-        val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
-        val inspectProfile = InspectionProfileWrapper(profile)
-        return inspectProfile.getErrorLevel(HighlightDisplayKey.find(shortName), file)
-    }
+    private fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)
+        ?.let {
+            val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
+            InspectionProfileWrapper(profile).getErrorLevel(it, file)
+        }
+        ?: defaultLevel
 
 }
