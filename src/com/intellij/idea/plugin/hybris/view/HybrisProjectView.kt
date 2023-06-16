@@ -36,7 +36,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
-import org.apache.commons.collections4.CollectionUtils
 import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
@@ -200,30 +199,30 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             .toMutableList()
     }
 
-    protected fun recursivelyCompactEmptyMiddlePackages(
+    private fun recursivelyCompactEmptyMiddlePackages(
         parent: AbstractTreeNode<*>,
         children: Collection<AbstractTreeNode<*>>
     ): AbstractTreeNode<*> {
         if (children.isEmpty()) return parent
         if (parent is JunkProjectViewNode) return parent
+        if (parent !is PsiDirectoryNode) return parent
 
-        if (parent is PsiDirectoryNode) {
-            val directory = children.firstOrNull()
-                ?.let { it as? PsiDirectoryNode }
-                ?: return parent
+        val onlyChild = children
+            .takeIf { it.size == 1 }
+            ?.firstOrNull()
+            ?.let { it as? PsiDirectoryNode }
+            ?: return parent
 
-            val parentVirtualFile = parent.virtualFile
-                ?: return parent
+        val parentVirtualFile = parent.virtualFile
+            ?: return parent
 
-            if (isFileInRoots(parentVirtualFile) || isSrcOrClassesDirectory(parentVirtualFile))
-                return parent
-            val onlyChildVirtualFile = directory.virtualFile
-                ?: return parent
+        if (isFileInRoots(parentVirtualFile) || isSrcOrClassesDirectory(parentVirtualFile)) return parent
 
-            appendParentNameToOnlyChildName(parent, parentVirtualFile, directory, onlyChildVirtualFile)
-            return recursivelyCompactEmptyMiddlePackages(directory, directory.children)
-        }
-        return parent
+        val onlyChildVirtualFile = onlyChild.virtualFile
+            ?: return parent
+
+        appendParentNameToOnlyChildName(parent, parentVirtualFile, onlyChild, onlyChildVirtualFile)
+        return recursivelyCompactEmptyMiddlePackages(onlyChild, onlyChild.children)
     }
 
     private fun appendParentNameToOnlyChildName(
@@ -232,26 +231,25 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         onlyChildPsiDirectoryNode: PsiDirectoryNode,
         onlyChildVirtualFile: VirtualFile
     ) {
-        if (CollectionUtils.isEmpty(parentPsiDirectoryNode.presentation.coloredText)) {
-            onlyChildPsiDirectoryNode.presentation.addText(
-                PresentableNodeDescriptor
-                    .ColoredFragment(parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        if (parentPsiDirectoryNode.presentation.coloredText.isNotEmpty()) {
+            val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
+                parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
             )
+            onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
         } else {
-            for (coloredFragment in parentPsiDirectoryNode.presentation.coloredText) {
-                onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
-            }
+            parentPsiDirectoryNode.presentation.coloredText
+                .forEach { onlyChildPsiDirectoryNode.presentation.addText(it) }
         }
-        onlyChildPsiDirectoryNode.presentation.addText(
-            PresentableNodeDescriptor.ColoredFragment(
-                File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
-            )
+
+        val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
+            File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
         )
-        onlyChildPsiDirectoryNode.presentation.addText(
-            PresentableNodeDescriptor.ColoredFragment(
-                onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
-            )
+        val childColoredFragment = PresentableNodeDescriptor.ColoredFragment(
+            onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
         )
+
+        onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
+        onlyChildPsiDirectoryNode.presentation.addText(childColoredFragment)
     }
 
     private fun isFileInRoots(file: VirtualFile): Boolean {
