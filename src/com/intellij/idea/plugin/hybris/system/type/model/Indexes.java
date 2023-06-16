@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Indexes extends DomElement {
 
+    String INDEX = "index";
+
     /**
      * Returns the list of index children.
      * <pre>
@@ -45,7 +47,7 @@ public interface Indexes extends DomElement {
      * @return the list of index children.
      */
     @NotNull
-    @SubTagList("index")
+    @SubTagList(INDEX)
     @Required
     java.util.List<Index> getIndexes();
 
@@ -54,7 +56,7 @@ public interface Indexes extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("index")
+    @SubTagList(INDEX)
     Index addIndex();
 
 

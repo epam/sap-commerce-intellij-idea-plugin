@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public interface AtomicType extends DomElement {
 
     String CLASS = "class";
+    String EXTENDS = "extends";
 
     /**
      * Returns the value of the class child.
@@ -91,7 +92,7 @@ public interface AtomicType extends DomElement {
      * @return the value of the extends child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("extends")
+    @com.intellij.util.xml.Attribute(EXTENDS)
     GenericAttributeValue<String> getExtends();
 
 

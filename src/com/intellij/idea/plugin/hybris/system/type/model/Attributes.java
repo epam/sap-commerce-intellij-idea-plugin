@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,6 +38,8 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface Attributes extends DomElement {
 
+    String ATTRIBUTE = "attribute";
+
     /**
      * Returns the list of attribute children.
      * <pre>
@@ -48,7 +50,7 @@ public interface Attributes extends DomElement {
      * @return the list of attribute children.
      */
     @NotNull
-    @SubTagList("attribute")
+    @SubTagList(ATTRIBUTE)
     java.util.List<Attribute> getAttributes();
 
     /**
@@ -56,7 +58,7 @@ public interface Attributes extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("attribute")
+    @SubTagList(ATTRIBUTE)
     Attribute addAttribute();
 
 

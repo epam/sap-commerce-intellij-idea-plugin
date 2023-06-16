@@ -1,5 +1,8 @@
 ## [2023.2.1]
 
+### Features
+- Added folding for `items.xml` files [#478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/478)
+
 ### `Project Import 2.0` 
 - Due mass API changes it is required to re-import the Project
 - Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`

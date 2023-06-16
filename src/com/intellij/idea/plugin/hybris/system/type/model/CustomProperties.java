@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface CustomProperties extends DomElement {
 
+    String PROPERTY = "property";
+
     /**
      * Returns the list of property children.
      * <pre>
@@ -44,7 +46,7 @@ public interface CustomProperties extends DomElement {
      * @return the list of property children.
      */
     @NotNull
-    @SubTagList("property")
+    @SubTagList(PROPERTY)
     java.util.List<CustomProperty> getProperties();
 
     /**
@@ -52,7 +54,7 @@ public interface CustomProperties extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("property")
+    @SubTagList(PROPERTY)
     CustomProperty addProperty();
 
 
