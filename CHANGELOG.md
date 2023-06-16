@@ -7,6 +7,9 @@
 - Module-type specific icons in the Project View
 - Module groups will always have correct custom icons
 - Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
+- Improved compilation
+- Removed circular dependencies
+- Multiple other improvements [#477](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/477)
 
 ### `External Dependencies` enhancements
 - Added custom icon for `external-dependencies.xml` file [#470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/470)
