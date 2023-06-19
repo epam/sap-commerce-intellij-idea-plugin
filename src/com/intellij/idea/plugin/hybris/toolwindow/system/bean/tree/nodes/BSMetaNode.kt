@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.util.xml.DomElement
 
+@Suppress("UNCHECKED_CAST")
 abstract class BSMetaNode<T : BSMetaClassifier<out DomElement>>(parent: BSNode, var meta: T) : BSNode(parent) {
 
     override fun update(existingNode: BSNode, newNode: BSNode) {

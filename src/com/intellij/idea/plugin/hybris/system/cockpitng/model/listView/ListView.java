@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ListView extends DomElement {
 
+	String COLUMN = "column";
+
 	/**
 	 * Returns the value of the refresh-after-object-creation child.
 	 * @return the value of the refresh-after-object-creation child.
@@ -54,13 +56,13 @@ public interface ListView extends DomElement {
 	 * @return the list of column children.
 	 */
 	@NotNull
-	@SubTagList ("column")
+	@SubTagList (COLUMN)
 	java.util.List<ListColumn> getColumns();
 	/**
 	 * Adds new child to the list of column children.
 	 * @return created child
 	 */
-	@SubTagList ("column")
+	@SubTagList (COLUMN)
 	ListColumn addColumn();
 
 

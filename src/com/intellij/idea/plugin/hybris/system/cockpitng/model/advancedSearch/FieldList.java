@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface FieldList extends DomElement {
 
+	String FIELD = "field";
+
 	/**
 	 * Returns the value of the includeSubtypes child.
 	 * @return the value of the includeSubtypes child.
@@ -66,13 +68,13 @@ public interface FieldList extends DomElement {
 	 * @return the list of field children.
 	 */
 	@NotNull
-	@SubTagList ("field")
+	@SubTagList (FIELD)
 	java.util.List<Field> getFields();
 	/**
 	 * Adds new child to the list of field children.
 	 * @return created child
 	 */
-	@SubTagList ("field")
+	@SubTagList (FIELD)
 	Field addField();
 
 

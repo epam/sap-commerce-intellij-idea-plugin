@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,12 +37,14 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Field extends DomElement, Positioned {
 
+	String NAME = "name";
+
 	/**
 	 * Returns the value of the name child.
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("name")
+	@com.intellij.util.xml.Attribute (NAME)
 	@Required
 	GenericAttributeValue<String> getName();
 

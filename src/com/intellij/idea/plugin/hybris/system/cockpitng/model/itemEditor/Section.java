@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Section extends DomElement, AbstractSection {
+
+	String ATTRIBUTE = "attribute";
 
 	/**
 	 * Returns the value of the columns child.
@@ -79,13 +81,13 @@ public interface Section extends DomElement, AbstractSection {
 	 * @return the list of attribute children.
 	 */
 	@NotNull
-	@SubTagList ("attribute")
+	@SubTagList (ATTRIBUTE)
 	java.util.List<com.intellij.util.xml.Attribute> getAttributes();
 	/**
 	 * Adds new child to the list of attribute children.
 	 * @return created child
 	 */
-	@SubTagList ("attribute")
+	@SubTagList (ATTRIBUTE)
     Attribute addAttribute();
 
 

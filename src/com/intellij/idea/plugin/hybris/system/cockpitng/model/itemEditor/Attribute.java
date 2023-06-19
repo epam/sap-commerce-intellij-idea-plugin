@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
+import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -35,12 +37,16 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Attribute extends DomElement, AbstractPositioned {
 
+	String QUALIFIER = "qualifier";
+	String READONLY = "readonly";
+	String VISIBLE = "visible";
+
 	/**
 	 * Returns the value of the qualifier child.
 	 * @return the value of the qualifier child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("qualifier")
+	@com.intellij.util.xml.Attribute (QUALIFIER)
 	@Required
 	GenericAttributeValue<String> getQualifier();
 
@@ -59,8 +65,8 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	 * @return the value of the visible child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("visible")
-	GenericAttributeValue<Boolean> getVisible();
+	@com.intellij.util.xml.Attribute (VISIBLE)
+	TrueAttributeValue getVisible();
 
 
 	/**
@@ -68,8 +74,8 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	 * @return the value of the readonly child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("readonly")
-	GenericAttributeValue<Boolean> getReadonly();
+	@com.intellij.util.xml.Attribute (READONLY)
+	FalseAttributeValue getReadonly();
 
 
 	/**

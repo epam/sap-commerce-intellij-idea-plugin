@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -82,7 +82,7 @@ class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilde
     }
 
     override fun getSpacing(parent: Block?, child1: Block?, child2: Block?): Spacing? {
-        val childNode1 = (child1 as? ASTBlock)?.node
+        (child1 as? ASTBlock)?.node
             ?: return super.getSpacing(null, null, child2)
         val childNode2 = (child2 as? ASTBlock)?.node
             ?: return super.getSpacing(null, null, child2)

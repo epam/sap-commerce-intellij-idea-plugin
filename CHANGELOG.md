@@ -2,6 +2,7 @@
 
 ### Features
 - Added folding for `items.xml` files [#478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/478)
+- Added folding for `-backoffice-config.xml` files [#479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/479)
 
 ### `Project Import 2.0` 
 - Due mass API changes it is required to re-import the Project
