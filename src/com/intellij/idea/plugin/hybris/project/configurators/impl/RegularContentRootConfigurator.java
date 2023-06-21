@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
@@ -41,7 +42,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.project.descriptors.HybrisModuleDescriptorType.CUSTOM;
 
 public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
@@ -154,7 +154,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         ));
 
         if (
-            moduleDescriptor.getDescriptorType() == CUSTOM ||
+            moduleDescriptor.getDescriptorType() == ModuleDescriptorType.CUSTOM ||
                 !moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
         ) {
             excludeDirectory(contentEntry, new File(moduleDescriptor.getModuleRootDirectory(), CLASSES_DIRECTORY));
@@ -334,7 +334,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
     ) {
         final File rootDirectory = moduleDescriptor.getModuleRootDirectory();
 
-        if (moduleDescriptor.getDescriptorType() == CUSTOM
+        if (moduleDescriptor.getDescriptorType() == ModuleDescriptorType.CUSTOM
             || (!moduleDescriptor.getRootProjectDescriptor().isImportOotbModulesInReadOnlyMode()
                 && srcDirectoriesExists(rootDirectory))
         ) {
