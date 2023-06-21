@@ -1,6 +1,6 @@
 /*
  * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.assistance;
+package com.intellij.idea.plugin.hybris.gradle;
 
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import org.jetbrains.plugins.gradle.settings.GradleSettings
 
-public interface ImpexHeaderNameHighlighterService extends ImpexHighlighterService {
+class GradleSupport {
 
-    static ImpexHeaderNameHighlighterService getInstance() {
-        return ApplicationManager.getApplication().getService(ImpexHeaderNameHighlighterService.class);
+    fun clearLinkedProjectSettings(project: Project) {
+        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }
 
+    companion object {
+        val instance: GradleSupport? = ApplicationManager.getApplication().getService(GradleSupport::class.java)
+    }
 }

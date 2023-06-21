@@ -3,8 +3,8 @@
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of the
+ * it under the terms of the GNU Lesser General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -16,17 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.assistance;
+package com.intellij.idea.plugin.hybris.impex.formatting;
 
-import com.intellij.openapi.editor.Editor;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.formatting.Alignment
+import com.intellij.lang.ASTNode
 
-public interface ImpexHighlighterService {
+interface AlignmentStrategy {
 
-    @Contract(pure = false)
-    void highlight(@NotNull Editor editor);
+    fun getAlignment(currentNode: ASTNode): Alignment
 
-    @Contract(pure = false)
-    void releaseEditorData(@NotNull Editor editor);
+    fun processNode(currentNode: ASTNode)
 }

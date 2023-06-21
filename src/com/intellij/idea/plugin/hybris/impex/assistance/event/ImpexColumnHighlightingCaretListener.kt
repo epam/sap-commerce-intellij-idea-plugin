@@ -25,7 +25,7 @@ import com.intellij.openapi.editor.event.CaretListener
 class ImpexColumnHighlightingCaretListener : CaretListener {
 
     private val commonIdeaService = CommonIdeaService.instance
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.getInstance()
+    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
 
     override fun caretPositionChanged(e: CaretEvent) {
         if (commonIdeaService.isTypingActionInProgress()) {

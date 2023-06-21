@@ -27,8 +27,8 @@ import com.intellij.psi.util.PsiUtilBase
 
 class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
 
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.getInstance()
-    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.getInstance()
+    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
+    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.instance
 
     private fun highlightHeader(psiTreeChangeEvent: PsiTreeChangeEvent) {
         val file = psiTreeChangeEvent.file ?: return
