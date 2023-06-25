@@ -74,6 +74,7 @@ object TSLookupElementFactory {
                         TSMetaRelation.RelationEnd.TARGET -> HybrisIcons.TS_RELATION_TARGET
                     }
                 )
+                .withCaseSensitivity(false)
         }
 
     fun build(relationElement: TSMetaRelation.TSMetaRelationElement, lookupString: String) = LookupElementBuilder.create(lookupString)
@@ -100,7 +101,7 @@ object TSLookupElementFactory {
         .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
         .withStrikeoutness(attribute.isDeprecated)
         .withTypeText(attribute.flattenType, true)
-        .withCaseSensitivity(true)
+        .withCaseSensitivity(false)
 
     fun build(type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTypeText(type, true)
