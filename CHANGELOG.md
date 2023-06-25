@@ -24,7 +24,7 @@
 ### Fixes
 - NPE in manifest files [#469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/469)
 - Add locale to JAVADOC_URL [#472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/472)
-- Add case-insensitive attribute suggestions for FlexibleSearch language [#480](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/480)
+- Add case-insensitive attribute suggestions for FlexibleSearch language [#484](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/484)
 
 ### Other
 - Navigate to the extension tag, not `name` attribute [#475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/475)
