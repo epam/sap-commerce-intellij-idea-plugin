@@ -410,6 +410,8 @@ object HybrisConstants {
     @JvmField
     val EXCLUDE_GIT_DIRECTORY = FileUtilRt.toSystemDependentName("/.git")
     @JvmField
+    val EXCLUDE_GRADLE_DIRECTORY = FileUtilRt.toSystemDependentName("/.gradle")
+    @JvmField
     val EXCLUDE_TEMP_DIRECTORY = FileUtilRt.toSystemDependentName("/temp")
     @JvmField
     val EXCLUDE_IDEA_DIRECTORY = FileUtilRt.toSystemDependentName("/.idea")

@@ -685,6 +685,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final String path = file.toString();
         return path.endsWith(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_DATA_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_GRADLE_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
