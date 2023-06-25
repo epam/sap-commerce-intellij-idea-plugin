@@ -5,6 +5,7 @@
 
 ### Fixes
 - Make language code case-insensitive for FlexibleSearch, ImpEx and Polyglot languages [#485](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/485)
+- Missing text for `ImpEx` actions [#486](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/486)
 
 ## [2023.2.1]
 
