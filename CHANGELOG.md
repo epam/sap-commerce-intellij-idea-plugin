@@ -1,5 +1,8 @@
 ## [2023.2.2]
 
+### `ImpEx` enhancements
+- Show documentation for Header line attribute modifiers [#487](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/487 )
+
 ### `FlexibleSearch` enhancements
 - Add case-insensitive suggestion support in FxS query for attribute parameters [#484](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/484)
 

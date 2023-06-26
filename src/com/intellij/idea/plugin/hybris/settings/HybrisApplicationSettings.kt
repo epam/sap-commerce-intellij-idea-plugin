@@ -27,7 +27,7 @@ data class HybrisApplicationSettings(
     var defaultPlatformInReadOnly: Boolean = true,
     var followSymlink: Boolean = true,
     var sourceZipUsed: Boolean = true,
-    var warnIfGeneratedItemsAreOutOfDate: Boolean = true,
+    var warnIfGeneratedItemsAreOutOfDate: Boolean = false,
     var withMavenSources: Boolean = false,
     var withMavenJavadocs: Boolean = false,
     var withStandardProvidedSources: Boolean = false,
