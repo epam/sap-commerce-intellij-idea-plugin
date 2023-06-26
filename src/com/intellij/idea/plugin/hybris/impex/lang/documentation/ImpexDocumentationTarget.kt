@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.documentation.renderer.impexDoc
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.model.Pointer
@@ -58,6 +59,71 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
     private fun computeLocalDocumentation(element: PsiElement) = when (element.elementType) {
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
+                TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Using ServiceLayer Direct",
+                        "https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US"
+                    )
+                    content("Setting the modifier to sld.enabled=true means that both titles are to be imported using the SLD mode, even if the global switch, or the flag in ImportConfig is set to the legacy mode.")
+                    example("[sld.enabled=true]")
+                }.build()
+
+                TypeModifier.BATCH_MODE.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    header("Import only")
+                    booleanAllowedValues(false)
+                    content(
+                        "In UPDATE or REMOVE mode, the batch mode allows modifying more than one item that matches for a combination of all unique attributes of a value line.",
+                        "So, if for a value line more than one item is found that matches the combination of unique attributes, the attributes specified as non-unique are updated at all found items."
+                    )
+                    example("[batchmode=true]")
+                    list(
+                        "If the batch mode is not enabled (as by default), the hybris ImpEx extension throws an exception if more than one item matches for a value line.",
+                        "If the batch mode is enabled, the hybris ImpEx extension modifies any platform item that matches the value line."
+                    )
+                }.build()
+
+                TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    header("Import only")
+                    booleanAllowedValues(false)
+                    content(
+                        "If this option is enabled, the CachingExistingItemResolver is used for existing item resolving (in case of update or remove mode) which caches by the combination of unique keys already resolved items.",
+                        "So when processing a value line first, it is tried to find the related item by searching the cache using the unique keys.",
+                        "The usage is only meaningful if an item has to be processed more than one time within a header scope.",
+                        "The maximum size of the cache is not restricted at the moment."
+                    )
+                    example("[cacheUnique=true]")
+                }.build()
+
+                TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    header("Import only")
+                    allowedValues(
+                        "A ImportProcessor class",
+                        "Default is the DefaultImportProcessor"
+                    )
+                    content(
+                        "Unlike a Translator, which handles a certain column of a value line, a Processor handles an entire value line.",
+                        "It contains all business logic to transform a value line into values for attributes of an item in SAP Commerce (such as calls for translator classes, for example) and performs the real setting of the values.",
+                        "In other words: a Processor is passed a value line as input, and it creates or updates an item in SAP Commerce as its output."
+                    )
+                    example("[processor=de.hybris.platform.impex.jalo.imp.DefaultImportProcessor]")
+                    tip("SAP Commerce doesn't support the Processor modifier in Distributed ImpEx.")
+                }.build()
+
+                TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    header("(since SAP Commerce version 5.1.1)")
+                    booleanAllowedValues(false)
+                    content(
+                        "This modifier allows enabling the legacy mode (jalo) per header.",
+                        "This way - in case of service layer mode enabled globally, ImpEx will switch dynamically to legacy mode, just like for existing 'allowNull' or 'forceWrite' modifiers.",
+                        "The only difference is - it's set for the type, not for the column."
+                    )
+                    example("INSERT_UPDATE myProduct[impex.legacy.mode=true];myAttribute")
+                }.build()
 
                 AttributeModifier.ALIAS.modifierName -> impexDoc {
                     attributeModifier(element.text)
