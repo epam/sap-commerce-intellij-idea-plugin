@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -105,8 +105,7 @@ internal class TSMetaItemImpl(
     }
 }
 
-internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
-    : TSGlobalMetaItemSelfMerge<ItemType, TSMetaItem>(localMeta), TSGlobalMetaItem {
+internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSelfMerge<ItemType, TSMetaItem>(localMeta), TSGlobalMetaItem {
 
     override val attributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
@@ -134,7 +133,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     init {
-        mergeAttributes(localMeta)
+        mergeAttributes(localMeta, this)
         mergeIndexes(localMeta)
         mergeCustomProperties(localMeta)
     }
@@ -142,9 +141,10 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
     override fun toString() = "Item(module=$module, name=$name, isCustom=$isCustom)"
 
     @Suppress("UNCHECKED_CAST")
-    private fun mergeAttributes(localMeta: TSMetaItem) = localMeta.attributes.values.forEach {
-        val globalAttribute = this.attributes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemAttributeImpl(it)}
-        (globalAttribute as? TSMetaSelfMerge<Attribute, TSMetaItemAttribute>)?.merge(it)
+    private fun mergeAttributes(localMeta: TSMetaItem, globalMeta: TSGlobalMetaItemImpl) = localMeta.attributes.values.forEach {
+        val globalAttribute = this.attributes.computeIfAbsent(it.name) { _ -> TSGlobalMetaItemAttributeImpl(globalMeta, it) }
+        (globalAttribute as? TSMetaSelfMerge<Attribute, TSMetaItemAttribute>)
+            ?.merge(it)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -187,13 +187,12 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
             extendedMetaItemName = it
         }
 
-        mergeAttributes(localMeta)
+        mergeAttributes(localMeta, this)
         mergeIndexes(localMeta)
         mergeCustomProperties(localMeta)
     }
 
-    internal class TSGlobalMetaItemIndexImpl(localMeta: TSMetaItemIndex)
-        : TSMetaSelfMerge<Index, TSMetaItemIndex>(localMeta), TSGlobalMetaItem.TSGlobalMetaItemIndex {
+    internal class TSGlobalMetaItemIndexImpl(localMeta: TSMetaItemIndex) : TSMetaSelfMerge<Index, TSMetaItemIndex>(localMeta), TSGlobalMetaItem.TSGlobalMetaItemIndex {
 
         override val name: String = localMeta.name
         override var domAnchor = localMeta.domAnchor
@@ -219,8 +218,11 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override fun toString() = "Index(module=$module, name=$name, isCustom=$isCustom)"
     }
 
-    internal class TSGlobalMetaItemAttributeImpl(localMeta: TSMetaItemAttribute)
-        : TSMetaSelfMerge<Attribute, TSMetaItemAttribute>(localMeta), TSGlobalMetaItem.TSGlobalMetaItemAttribute {
+    internal class TSGlobalMetaItemAttributeImpl(
+        override val owner: TSGlobalMetaItem,
+        localMeta: TSMetaItemAttribute
+    ) : TSMetaSelfMerge<Attribute, TSMetaItemAttribute>(localMeta),
+        TSGlobalMetaItem.TSGlobalMetaItemAttribute {
 
         override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
         override val name: String = localMeta.name
@@ -238,6 +240,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem)
         override var isSelectionOf = localMeta.isSelectionOf
         override var isLocalized = localMeta.isLocalized
         override var isDynamic = localMeta.isDynamic
+
         // type will be flattened after merge, we need to know exact type to expand it
         override var flattenType: String? = null
 

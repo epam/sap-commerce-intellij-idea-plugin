@@ -97,7 +97,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                     example("[cacheUnique=true]")
                 }.build()
 
-                TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
+                TypeModifier.PROCESSOR.modifierName -> impexDoc {
                     typeModifier(element.text)
                     header("Import only")
                     allowedValues(
@@ -113,7 +113,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                     tip("SAP Commerce doesn't support the Processor modifier in Distributed ImpEx.")
                 }.build()
 
-                TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
+                TypeModifier.IMPEX_LEGACY_MODE.modifierName -> impexDoc {
                     typeModifier(element.text)
                     header("(since SAP Commerce version 5.1.1)")
                     booleanAllowedValues(false)

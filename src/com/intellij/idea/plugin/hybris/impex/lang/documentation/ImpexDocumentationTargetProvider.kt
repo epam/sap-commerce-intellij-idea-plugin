@@ -28,8 +28,13 @@ class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
 
     override fun documentationTargets(file: PsiFile, offset: Int): List<DocumentationTarget> {
         val element = file.findElementAt(offset) ?: return emptyList()
-        return if (element.elementType == ImpexTypes.ATTRIBUTE_NAME) {
-            arrayListOf(ImpexDocumentationTarget(element, element))
-        } else emptyList()
+
+        return when (element.elementType) {
+            ImpexTypes.ATTRIBUTE_NAME,
+            ImpexTypes.FUNCTION,
+            ImpexTypes.HEADER_PARAMETER_NAME -> arrayListOf(ImpexDocumentationTarget(element, element))
+
+            else -> emptyList()
+        }
     }
 }

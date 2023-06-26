@@ -96,6 +96,18 @@ class ImpexDocRenderer {
     fun attributeModifier(name: String) = modifier("Attribute", name)
     fun typeModifier(name: String) = modifier("Type", name)
 
+    fun attributeHeader(itemName: String, attributeName:String, attributeType: String) {
+        with(entries) {
+            add(DocumentationMarkup.CONTENT_START)
+            add(DocumentationMarkup.INFORMATION_ICON.toString())
+            add("$itemName :: ")
+            add(HtmlChunk.span().bold().addText(attributeName).toString())
+            add(" ($attributeType)")
+            add(DocumentationMarkup.CONTENT_END)
+            add("<hr>")
+        }
+    }
+
     private fun modifier(prefix: String, name: String) {
         with(entries) {
             add(DocumentationMarkup.CONTENT_START)
