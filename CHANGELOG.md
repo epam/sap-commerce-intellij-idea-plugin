@@ -10,6 +10,8 @@
 ### Fixes
 - Make language code case-insensitive for FlexibleSearch, ImpEx and Polyglot languages [#485](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/485)
 - Missing text for `ImpEx` actions [#486](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/486)
+- Fixed warning message for Settings panels [#492](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/492)
+- Fixed NPE for refactored Kotlin classes [#491](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/491)
 
 ## [2023.2.1]
 
