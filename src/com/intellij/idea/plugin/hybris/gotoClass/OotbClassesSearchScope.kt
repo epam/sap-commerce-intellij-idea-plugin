@@ -1,3 +1,21 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.gotoClass
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -15,27 +33,29 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
     override fun isSearchInLibraries() = true
 
     override fun contains(file: VirtualFile): Boolean {
-        var virtualFile = file
+        var virtualFile: VirtualFile? = file
 
         while (isNotClassesOrDirectories(virtualFile)) {
-            virtualFile = virtualFile.parent
+            virtualFile = virtualFile?.parent
         }
+        if (virtualFile == null) return false
 
         if (virtualFile.name == HybrisConstants.CLASSES_DIRECTORY) {
-            virtualFile = virtualFile.parent
-            return HybrisUtil.isHybrisModuleRoot(virtualFile)
+            return virtualFile.parent
+                ?.let { HybrisUtil.isHybrisModuleRoot(virtualFile) }
+                ?: false
         }
 
         return JarFileSystem.getInstance().getVirtualFileForJar(file)
             ?.parent
             ?.path
-            ?.endsWith("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.BIN_DIRECTORY}")
+            ?.endsWith(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY + '/' + HybrisConstants.BIN_DIRECTORY)
             ?: false
     }
 
-    private fun isNotClassesOrDirectories(virtualFile: VirtualFile) =
-        !(virtualFile.isDirectory && (isClassesOrModels(virtualFile)))
+    private fun isNotClassesOrDirectories(f: VirtualFile?) = f != null
+        && !(f.isDirectory && (isClassesOrModels(f)))
 
-    private fun isClassesOrModels(virtualFile: VirtualFile) = virtualFile.name == HybrisConstants.CLASSES_DIRECTORY
-        || virtualFile.name == HybrisConstants.JAR_MODELS
+    private fun isClassesOrModels(f: VirtualFile) = f.name == HybrisConstants.CLASSES_DIRECTORY
+        || f.name == HybrisConstants.JAR_MODELS
 }
