@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,12 +55,16 @@ open class ColumnsAlignmentStrategy : AlignmentStrategy {
             return
         }
 
-        when {
-            isNewLine(currentNode) -> columnNumber = 0
+        if (isNewLine(currentNode)) {
+            columnNumber = 0
+        }
 
-            isHeaderLine(currentNode) -> alignments.clear()
+        if (isHeaderLine(currentNode)) {
+            alignments.clear()
+        }
 
-            ImpexPsiUtils.isUserRightsMacros(currentNode.psi) -> alignments.clear()
+        if (ImpexPsiUtils.isUserRightsMacros(currentNode.psi)) {
+            alignments.clear()
         }
     }
 
