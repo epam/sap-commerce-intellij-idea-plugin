@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -82,14 +82,14 @@ object FxSUtils {
                     if (probableDefinition is PsiVariable) {
                         probableDefinition.initializer?.let { initializer ->
                             val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true);
-                            if (value is String) {
+                            if (value is String || value is Char) {
                                 computedValue += value;
                             }
                         }
                     }
                 } else {
                     val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true);
-                    if (value is String) {
+                    if (value is String || value is Char) {
                         computedValue += value;
                     }
                 }
