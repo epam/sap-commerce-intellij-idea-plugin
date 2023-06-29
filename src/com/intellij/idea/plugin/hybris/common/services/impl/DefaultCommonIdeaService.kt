@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -66,8 +66,7 @@ class DefaultCommonIdeaService : CommonIdeaService {
         .foundModules
         .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
 
-    override fun getActiveHacUrl(project: Project) = getActiveHacRemoteConnectionSettings(project)
-        .let { getUrl(it) }
+    override fun getActiveHacUrl(project: Project) = getUrl(getActiveHacRemoteConnectionSettings(project))
 
     override fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
         ?.sslProtocol
@@ -76,12 +75,11 @@ class DefaultCommonIdeaService : CommonIdeaService {
     override fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
         .let(::getUrl)
 
-    private fun getProjectSettings(project: Project, settings: HybrisRemoteConnectionSettings?) =
-        settings ?: getActiveHacRemoteConnectionSettings(project)
+    private fun getProjectSettings(project: Project, settings: HybrisRemoteConnectionSettings?) = settings
+        ?: getActiveHacRemoteConnectionSettings(project)
 
-    private fun getActiveHacRemoteConnectionSettings(project: Project) =
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-            .getActiveHacRemoteConnectionSettings(project)
+    private fun getActiveHacRemoteConnectionSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        .getActiveHacRemoteConnectionSettings(project)
 
     override fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
         val currentSettings = settings ?: HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)

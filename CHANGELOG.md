@@ -1,6 +1,7 @@
 ## [2023.2.2]
 
 ### `ImpEx` enhancements
+- Improved substitution of the `$config-xxx` properties [#489](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/489)
 - Show documentation for Header line attribute modifiers [#487](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/487)
 - Show documentation for Header line type modifiers [#488](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/488)
 
