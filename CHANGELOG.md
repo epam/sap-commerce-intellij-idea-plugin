@@ -3,6 +3,9 @@
 ### `ImpEx` enhancements
 - Improved substitution of the `$config-xxx` properties [#496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/496)
 
+### Fixes
+- Java single characters are not respected when copying `FlexibleSearch` query  [#495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/495)
+
 ## [2023.2.2]
 
 ### `ImpEx` enhancements
