@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,6 +40,7 @@ import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.asSafely
+import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
@@ -99,7 +100,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun initReloadCoresButton() {
-        reloadCoresButton.border = EmptyBorder(0, 0, 0, 0)
+        reloadCoresButton.border = JBUI.Borders.empty()
         reloadCoresButton.toolTipText = HybrisI18NBundleUtils.message("hybris.solr.search.console.reload.cores.button.tooltip")
         reloadCoresButton.preferredSize = Dimension(60, 25)
         panel.add(reloadCoresButton)

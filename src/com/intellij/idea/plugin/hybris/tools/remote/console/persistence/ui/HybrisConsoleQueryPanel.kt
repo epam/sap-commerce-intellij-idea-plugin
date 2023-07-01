@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
+import com.intellij.util.ui.JBUI
 import java.awt.Dimension
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -100,12 +101,12 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     }
 
     private fun addQueryTextFieldAndSaveButton() {
-        queryNameTextField.border = EmptyBorder(0, 0, 0, 0)
+        queryNameTextField.border = JBUI.Borders.empty()
         queryNameTextField.setPlaceholder(queryNamePlaceholder, console, saveButton)
         queryNameTextField.preferredSize = Dimension(170, 20)
         queryNameTextField.addKeyListener(RemoveTextKeyAdapter())
         add(queryNameTextField)
-        saveButton.border = EmptyBorder(0, 0, 0, 0)
+        saveButton.border = JBUI.Borders.empty()
         saveButton.toolTipText = "Save Last Query"
         saveButton.preferredSize = Dimension(30, 25)
         add(saveButton)
@@ -146,7 +147,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     }
 
     private fun loadQueryBodyToConsole() {
-        loadButton.border = EmptyBorder(0, 0, 0, 0)
+        loadButton.border = JBUI.Borders.empty()
         loadButton.toolTipText = "Load Selected Query"
         loadButton.preferredSize = Dimension(30, 25)
         loadButton.isEnabled = false
@@ -160,7 +161,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
     }
 
     private fun removeQuery() {
-        removeButton.border = EmptyBorder(0, 0, 0, 0)
+        removeButton.border = JBUI.Borders.empty()
         removeButton.toolTipText = "Remove Selected Query"
         removeButton.preferredSize = Dimension(30, 25)
         removeButton.isEnabled = false

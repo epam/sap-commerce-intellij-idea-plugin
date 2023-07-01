@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import org.apache.commons.lang.StringUtils
 import java.awt.BorderLayout
@@ -76,9 +77,9 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
                 ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }
             }
         }
-        catalogVersionLabel.border = EmptyBorder(0, 10, 0, 5)
-        legacyModeLabel.border = EmptyBorder(0, 10, 0, 5)
-        legacyModeCheckbox.border = EmptyBorder(0, 0, 0, 5)
+        catalogVersionLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
+        legacyModeLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
+        legacyModeCheckbox.border = JBUI.Borders.emptyRight(5)
 
         panel.add(catalogVersionLabel)
         panel.add(catalogVersionComboBox)

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.util.ui.JBUI
 import icons.JetgroovyIcons
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
@@ -37,7 +38,6 @@ import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
-import javax.swing.border.EmptyBorder
 
 class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConstants.GROOVY_CONSOLE_TITLE, GroovyLanguage) {
 
@@ -57,8 +57,8 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     }
 
     private fun createUI() {
-        commitLabel.border = EmptyBorder(5, 10, 5, 3)
-        commitCheckbox.border = EmptyBorder(0, 0, 0, 5)
+        commitLabel.border = JBUI.Borders.empty(5, 10, 5, 3)
+        commitCheckbox.border = JBUI.Borders.emptyRight(5)
         panel.add(commitLabel)
         panel.add(commitCheckbox)
         add(panel, BorderLayout.NORTH)
@@ -67,7 +67,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
     }
 
     private fun initTimeoutSpinner() {
-        commitLabel.border = EmptyBorder(5, 10, 5, 3)
+        commitLabel.border = JBUI.Borders.empty(5, 10, 5, 3)
         panel.add(timeoutLabel)
         panel.add(timeoutSpinner)
     }

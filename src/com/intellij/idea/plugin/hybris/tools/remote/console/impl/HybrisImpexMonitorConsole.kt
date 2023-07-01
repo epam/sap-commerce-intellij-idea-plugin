@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
+import com.intellij.util.ui.JBUI
 import org.apache.batik.ext.swing.GridBagConstants
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
@@ -69,12 +70,12 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
         panel.layout = GridBagLayout()
         val constraints = GridBagConstraints()
         constraints.weightx = 0.0
-        timeOptionLabel.border = EmptyBorder(0, 10, 0, 5)
+        timeOptionLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
         panel.add(timeOptionLabel)
         panel.add(timeComboBox, constraints)
         constraints.weightx = 1.0
         constraints.fill = GridBagConstants.HORIZONTAL
-        workingDirLabel.border = EmptyBorder(0, 10, 0, 10)
+        workingDirLabel.border = JBUI.Borders.empty(0, 10)
         panel.add(workingDirLabel, constraints)
         add(panel, BorderLayout.NORTH)
         isEditable = true
