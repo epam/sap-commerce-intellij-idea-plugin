@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,8 @@
 package com.intellij.idea.plugin.hybris.system.type.validation.impl
 
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlDomValidator
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiField
 import com.intellij.util.xml.DomElement
@@ -30,8 +32,9 @@ abstract class AbstractClassesValidation<T : DomElement, M : DomElement> : Items
     abstract fun isJavaClassGenerationDisabledForItemType(itemType: T): Boolean
     protected abstract fun isJavaFieldGenerationDisabled(itemAttribute: M): Boolean
 
-    override fun validate(dom: List<T>, psi: Map<String, PsiClass>): Boolean {
+    override fun validate(project: Project, dom: List<T>, psi: Map<String, PsiClass>): Boolean {
         for (itemType in dom) {
+            if (DumbService.isDumb(project)) return true
             if (isJavaClassGenerationDisabledForItemType(itemType)) continue
             val javaClass = getJavaClassForItemType(itemType, psi) ?: return true
             if (!isJavaClassMatchesItemTypeDefinition(javaClass, itemType)) return true

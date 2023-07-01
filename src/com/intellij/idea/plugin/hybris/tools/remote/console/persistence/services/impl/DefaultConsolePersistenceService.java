@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,16 +21,16 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.service
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache;
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionPersistenceService;
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,46 +47,54 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
 
     private final Project project;
     private final RegionPersistenceService regionPersistenceService;
-    private final HybrisConsoleRegionsCache hybrisConsoleRegionsCache;
 
     public DefaultConsolePersistenceService(
         final Project project
     ) {
         this.project = project;
         this.regionPersistenceService = RegionPersistenceService.getInstance(project);
-        this.hybrisConsoleRegionsCache = HybrisConsoleRegionsCache.getInstance(project);
     }
 
     @Override
     public void loadPersistedQueries() {
-        final Path directoryPath = Paths.get(getStoragePath());
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return;
 
-        if (Files.exists(directoryPath)) {
-            try {
-                loadEntitiesFromFile(regionPersistenceService, getStoragePath());
-            } catch (IOException e) {
-                LOG.error(e);
-            }
+        final var directoryPath = getStoragePath();
+
+        try {
+            loadEntitiesFromFile(regionPersistenceService, directoryPath);
             HybrisConsoleQueryPanelEventManager.getInstance(project).notifyListeners();
-            return;
+        } catch (IOException e) {
+            LOG.error(e);
         }
-        FileUtil.createDirectory(new File(String.valueOf(directoryPath)));
-        HybrisConsoleQueryPanelEventManager.getInstance(project).notifyListeners();
     }
 
     @Override
     public void persistQueryRegions() {
-        final String projectPath = getStoragePath();
+        final var projectPath = getStoragePath();
+        if (projectPath == null) return;
+
         regionPersistenceService.writeRegionData(getRegionPath(projectPath, SOLR), SOLR);
         regionPersistenceService.writeRegionData(getRegionPath(projectPath, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
 
-    @NotNull
-    private String getStoragePath() {
-        return ProjectUtil.guessProjectDir(project).getPath() + HybrisConstants.QUERY_STORAGE_FOLDER_PATH;
+    @Nullable
+    private Path getStoragePath() {
+        final var ideModulesFilesDirectory = HybrisProjectSettingsComponent.getInstance(project).getState().getIdeModulesFilesDirectory();
+        if (ideModulesFilesDirectory == null) {
+            LOG.warn("Cannot detect .idea folder for project: " + project.getName());
+            return null;
+        }
+
+        final var path = Paths.get(ideModulesFilesDirectory).getParent().resolve(HybrisConstants.QUERY_STORAGE_FOLDER_PATH);
+
+        if (!Files.exists(path)) {
+            FileUtil.createDirectory(new File(path.toString()));
+        }
+        return path;
     }
 
-    private void loadEntitiesFromFile(final RegionPersistenceService loadService, final String path) throws IOException {
+    private void loadEntitiesFromFile(final RegionPersistenceService loadService, final Path path) throws IOException {
         loadEntityFromFile(loadService, getRegionPath(path, SOLR), SOLR);
         loadEntityFromFile(loadService, getRegionPath(path, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
@@ -100,16 +108,16 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
             loadService.loadRegionData(path, regionName);
         } catch (IllegalArgumentException e) {
             Notifications.create(NotificationType.WARNING,
-                                 e.getMessage(),
-                                 HybrisI18NBundleUtils.message("hybris.notification.region.not.allowed")
-                                 )
-                         .notify(project);
+                    e.getMessage(),
+                    HybrisI18NBundleUtils.message("hybris.notification.region.not.allowed")
+                )
+                .notify(project);
         }
     }
 
     @NotNull
-    private Path getRegionPath(final String path, final String regionName) {
-        return Paths.get(path + File.separator + regionName.toLowerCase() + "_region.json");
+    private Path getRegionPath(final Path path, final String regionName) {
+        return path.resolve(regionName.toLowerCase() + "_region.json");
     }
 
 }

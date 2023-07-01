@@ -84,18 +84,18 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
 
             val inheritedEnumClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ENUM_ROOT)
             val enumTypes = items.enumTypes.enumTypes
-            if (enumTypeClassValidation.validate(enumTypes, inheritedEnumClasses)) return true
+            if (enumTypeClassValidation.validate(project, enumTypes, inheritedEnumClasses)) return true
 
             val inheritedItemClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ITEM_ROOT)
             val filteredItemTypes = getItemTypesExcludeRelations(items)
-            if (itemTypeClassValidation.validate(filteredItemTypes, inheritedItemClasses)) return true
+            if (itemTypeClassValidation.validate(project, filteredItemTypes, inheritedItemClasses)) return true
 
             items.itemTypes.typeGroups
-                .find { itemTypeClassValidation.validate(it.itemTypes, inheritedItemClasses) }
+                .find { itemTypeClassValidation.validate(project, it.itemTypes, inheritedItemClasses) }
                 ?.let { return true }
 
             val relations = items.relations.relations
-            if (relationValidation.validate(relations, inheritedItemClasses)) return true
+            if (relationValidation.validate(project, relations, inheritedItemClasses)) return true
         } catch (ignore: IndexNotReadyException) {
             //do not validate Items.xml until index is not ready
         } catch (e: Exception) {
