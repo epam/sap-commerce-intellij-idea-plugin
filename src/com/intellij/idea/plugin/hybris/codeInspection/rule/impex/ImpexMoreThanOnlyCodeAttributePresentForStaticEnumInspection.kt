@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,18 +22,16 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexChangeHeaderModeQuickFix
-import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexRemoveStatementQuickFix
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.codeInspection.fix.ImpexDeleteStatementQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.constants.HeaderMode
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
+
+private const val CODE = "code"
 
 class ImpexMoreThanOnlyCodeAttributePresentForStaticEnumInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -50,30 +48,26 @@ class ImpexMoreThanOnlyCodeAttributePresentForStaticEnumInspection : LocalInspec
                 ?.text
                 ?: return
 
-            val meta = TSMetaModelAccess.getInstance(parameter.firstChild.project).findMetaEnumByName(typeName)
+            val meta = TSMetaModelAccess.getInstance(parameter.firstChild.project)
+                .findMetaEnumByName(typeName)
                 ?.takeUnless { it.isDynamic }
                 ?: return
 
-            val fullHeaderParameterList = impexHeaderLine
+            impexHeaderLine
                 .fullHeaderParameterList
-                .takeUnless { it.isEmpty() }
+                .takeUnless { it.isEmpty() || it.size > 1 }
+                ?.get(0)
+                ?.firstChild
+                ?.firstChild
+                ?.text
+                ?.equals(CODE)
                 ?: return
-
-            var isCodeHeaderParameterPresent = false;
-
-            for (impexFullHeaderParameter in fullHeaderParameterList) {
-                if (impexFullHeaderParameter.firstChild.firstChild.text == "code") {
-                    isCodeHeaderParameterPresent = true
-                }
-            }
-
-            if (isCodeHeaderParameterPresent && fullHeaderParameterList.size > 1) return
 
             problemsHolder.registerProblem(
                 parameter,
-                message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
+                message("hybris.inspections.impex.ImpexMoreThanOnlyCodeAttributePresentForStaticEnumInspection.key", CODE),
                 ProblemHighlightType.ERROR,
-                ImpexRemoveStatementQuickFix(
+                ImpexDeleteStatementQuickFix(
                     parameter = parameter,
                     elementName = meta.name ?: "",
                 )

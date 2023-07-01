@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.fix
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
@@ -30,10 +31,10 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 
-class ImpexRemoveStatementQuickFix(
+class ImpexDeleteStatementQuickFix(
     parameter: ImpexHeaderTypeName,
     private val elementName: String,
-    private val message: String = "Remove statement"//message("hybris.inspections.fix.impex.ChangeHeaderMode.text", headerMode.firstChild, headerModeReplacement, elementName)
+    private val message: String = message("hybris.inspections.fix.impex.DeleteStatement.text", elementName)
 ) : LocalQuickFixOnPsiElement(parameter) {
 
     private val elementsListToStopSearching = mutableSetOf<IElementType>(
@@ -41,31 +42,23 @@ class ImpexRemoveStatementQuickFix(
         ImpexTypes.HEADER_LINE
     )
 
-    override fun getFamilyName() = "remove statement"//message("hybris.inspections.fix.impex.ChangeHeaderMode")
+    override fun getFamilyName() = message("hybris.inspections.fix.impex.DeleteStatement")
 
     override fun getText() = message
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         val headerLine = PsiTreeUtil.getParentOfType(startElement, ImpexHeaderLine::class.java) ?: return
+
         val valueLines = headerLine.valueLines
 
         if (valueLines.isEmpty()) {
-            val emptyCrlfs = mutableListOf<PsiElement>()
-            var nextSibling = headerLine.nextSibling
-
-            while (nextSibling.elementType == ImpexTypes.CRLF && nextSibling != null) {
-                emptyCrlfs.add(nextSibling)
-                nextSibling = nextSibling.nextSibling
-            }
-            emptyCrlfs.forEach { it.delete() }
-            headerLine.delete()
+            deleteHeaderLine(headerLine)
             return
         }
 
-        val elementsToDelete = mutableListOf<PsiElement>()
         for (valueLine in valueLines) {
             var nextSibling = valueLine.nextSibling
-            while (nextSibling.elementType == ImpexTypes.CRLF && nextSibling != null) {
+            while (isNextSiblingElementBlank(nextSibling)) {
                 val currentSibling = nextSibling
                 nextSibling = currentSibling.nextSibling
                 currentSibling.delete()
@@ -73,8 +66,9 @@ class ImpexRemoveStatementQuickFix(
             }
         }
 
+        val elementsToDelete = mutableListOf<PsiElement>()
         var nextHeaderSibling = headerLine.nextSibling
-        while (nextHeaderSibling.elementType == ImpexTypes.CRLF && nextHeaderSibling != null) {
+        while (isNextSiblingElementBlank(nextHeaderSibling)) {
             elementsToDelete.add(nextHeaderSibling)
             nextHeaderSibling = nextHeaderSibling.nextSibling
         }
@@ -93,4 +87,20 @@ class ImpexRemoveStatementQuickFix(
         elementsToDelete.forEach { it.delete() }
         headerLine.delete()
     }
+
+    private fun deleteHeaderLine(headerLine: ImpexHeaderLine) {
+        val emptyCrlfElements = mutableListOf<PsiElement>()
+        var nextSibling = headerLine.nextSibling
+
+        while (isNextSiblingElementBlank(nextSibling)) {
+            emptyCrlfElements.add(nextSibling)
+            nextSibling = nextSibling.nextSibling
+        }
+        emptyCrlfElements.forEach { it.delete() }
+        headerLine.delete()
+        return
+    }
+
+    private fun isNextSiblingElementBlank(nextSibling: PsiElement?) = nextSibling
+        .elementType == ImpexTypes.CRLF && nextSibling != null
 }
