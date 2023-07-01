@@ -85,6 +85,7 @@ object HybrisConstants {
     const val COCKPIT_NG_WIDGETS_XML = "widgets.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
 
+    const val HYBRIS_DIRECTORY = "hybris"
     const val HYBRIS_DATA_DIRECTORY = "data"
     const val HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX = "server.jar"
 

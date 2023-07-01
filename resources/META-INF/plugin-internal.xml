@@ -67,6 +67,11 @@
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.JsonIOUtil"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager"/>
 
+        <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.project.view.impl.HybrisProjectViewDirectoryHelper"
+                        order="last"
+                        overrides="true"/>
+
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.indexing.HybrisDirectoryIndexExcludePolicy"/>
 

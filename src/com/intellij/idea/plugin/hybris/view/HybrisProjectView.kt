@@ -119,6 +119,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             && HybrisConstants.EXTENSION_NAME_PLATFORM == module.yExtensionName()
         ) return false
 
+        // hide `core-customize/hybris` node
+        if (HybrisConstants.HYBRIS_DIRECTORY == vf.name
+            && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == module.yExtensionName()
+        ) return false
+
         return YFacet.getState(module)
             ?.let {
                 if (it.subModuleType == null) true

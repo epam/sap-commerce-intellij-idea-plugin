@@ -67,8 +67,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.HYBRIS;
-import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.NON_HYBRIS;
+import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.*;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
@@ -507,6 +506,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         } else {
             moduleRootMap.get(NON_HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
         }
+
+        moduleRootMap.get(CCV2).forEach(file -> addIfNotExists(moduleRootDirectories, file));
+
         return Sets.newHashSet(moduleRootDirectories.values());
     }
 
@@ -542,10 +544,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     private Map<DIRECTORY_TYPE, Set<File>> newModuleRootMap() {
-        final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = new HashMap<>();
-        moduleRootMap.put(HYBRIS, new HashSet<>());
-        moduleRootMap.put(NON_HYBRIS, new HashSet<>());
-        return moduleRootMap;
+        return Map.of(
+            HYBRIS, new HashSet<>(),
+            NON_HYBRIS, new HashSet<>(),
+            CCV2, new HashSet<>()
+        );
     }
 
     private void addRootModule(
@@ -637,7 +640,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(CCV2).add(rootProjectDirectory);
                 final var name = rootProjectDirectory.getName();
                 if (name.endsWith(HybrisConstants.CCV2_JS_STOREFRONT_NAME) || name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
