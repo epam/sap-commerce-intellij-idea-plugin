@@ -1,5 +1,8 @@
 ## [2023.2.3]
 
+### Features
+- Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497) 
+
 ### `ImpEx` enhancements
 - Improved substitution of the `$config-xxx` properties [#496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/496)
 

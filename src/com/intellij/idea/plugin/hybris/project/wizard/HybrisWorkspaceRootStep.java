@@ -580,7 +580,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.getContext().cleanup();
 
-        final HybrisProjectDescriptor hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
+        final var hybrisProjectDescriptor = this.getContext().getHybrisProjectDescriptor();
 
         hybrisProjectDescriptor.setSourceCodeFile(FileUtils.toFile(settings.getSourceCodeFile(), true));
         hybrisProjectDescriptor.setExternalExtensionsDirectory(FileUtils.toFile(settings.getExternalExtensionsDirectory(), true));
@@ -592,12 +592,12 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setImportCustomAntBuildFiles(settings.getImportCustomAntBuildFiles());
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
-        final HybrisApplicationSettings appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
         hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
 
-        final String ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
+        final var ideModulesFilesDirectory = settings.getIdeModulesFilesDirectory();
         if (ideModulesFilesDirectory != null) {
             hybrisProjectDescriptor.setModulesFilesDirectory(
                 new File(ideModulesFilesDirectory)
@@ -611,7 +611,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             );
         }
 
-        final String hybrisDirectory = settings.getHybrisDirectory();
+        final var hybrisDirectory = settings.getHybrisDirectory();
         if (hybrisDirectory != null) {
             hybrisProjectDescriptor.setHybrisDistributionDirectory(
                 FileUtils.toFile(

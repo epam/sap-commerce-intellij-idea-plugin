@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Obj
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ScanType;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
@@ -379,7 +378,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.foundModules.clear();
 
-        final HybrisApplicationSettings settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var settings = HybrisApplicationSettingsComponent.getInstance().getState();
 
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         LOG.info("Scanning for modules");
@@ -395,21 +394,20 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for hybris modules out of the project");
             this.findModuleRoots(moduleRootMap, false, hybrisDistributionDirectory, progressListenerProcessor);
         }
-        final Set<File> moduleRootDirectories = processDirectoriesByTypePriority(
+        final var moduleRootDirectories = processDirectoriesByTypePriority(
             moduleRootMap,
             isScanThroughExternalModule(),
             progressListenerProcessor
         );
 
-        final List<ModuleDescriptor> moduleDescriptors = new ArrayList<>();
-        final List<File> pathsFailedToImport = new ArrayList<>();
+        final var moduleDescriptors = new ArrayList<ModuleDescriptor>();
+        final var pathsFailedToImport = new ArrayList<File>();
 
         addRootModule(rootDirectory, moduleDescriptors, pathsFailedToImport, settings.getGroupModules());
 
-        for (File moduleRootDirectory : moduleRootDirectories) {
+        for (final var moduleRootDirectory : moduleRootDirectories) {
             try {
-                final ModuleDescriptor moduleDescriptor = ModuleDescriptorFactory.INSTANCE
-                    .createDescriptor(moduleRootDirectory, this);
+                final var moduleDescriptor = ModuleDescriptorFactory.INSTANCE.createDescriptor(moduleRootDirectory, this);
                 moduleDescriptors.add(moduleDescriptor);
 
                 if (moduleDescriptor instanceof final YModuleDescriptor yModuleDescriptor) {
@@ -640,6 +638,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                final var name = rootProjectDirectory.getName();
+                if (name.endsWith(HybrisConstants.CCV2_JS_STOREFRONT_NAME) || name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
+                    // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
+                    return;
+                }
             }
         }
 
@@ -688,6 +691,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             path.endsWith(HybrisConstants.EXCLUDE_GRADLE_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_ECLIPSEBIN_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_GIT_DIRECTORY) ||
+            path.endsWith(HybrisConstants.EXCLUDE_GITHUB_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_IDEA_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_MACOSX_DIRECTORY) ||
             path.endsWith(HybrisConstants.EXCLUDE_IDEA_MODULE_FILES_DIRECTORY) ||
@@ -1111,5 +1115,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             '}';
     }
 
-    protected enum DIRECTORY_TYPE {HYBRIS, NON_HYBRIS}
+    protected enum DIRECTORY_TYPE {
+        HYBRIS,
+        NON_HYBRIS,
+        CCV2,
+    }
 }
