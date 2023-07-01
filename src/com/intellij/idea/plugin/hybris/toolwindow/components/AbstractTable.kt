@@ -110,8 +110,10 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     private fun setFixedColumnWidth(column: TableColumn, table: JTable, text: String) = with(column) {
         val width = table
             .getFontMetrics(table.font)
-            .stringWidth(" $text ") + JBUIScale.scale(4)
+            .stringWidth("   $text   ")
+            .let { JBUIScale.scale(it) }
 
+        headerValue = " $headerValue"
         preferredWidth = width
         minWidth = width
         maxWidth = width
