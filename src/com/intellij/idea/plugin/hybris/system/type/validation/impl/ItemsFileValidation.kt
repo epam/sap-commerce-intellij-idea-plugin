@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -46,6 +47,7 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
         if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return false
         if (!file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)) return false
         if (!ModuleUtil.projectContainsFile(project, file, false)) return false
+        if (DumbService.isDumb(project)) return false
 
         return isFileOutOfDateWithGeneratedClasses(file)
     }
