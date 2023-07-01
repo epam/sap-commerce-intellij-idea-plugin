@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,35 +17,20 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.ide.plugins.StandalonePluginUpdateChecker
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.notification.NotificationGroupManager
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
-import com.intellij.openapi.util.Disposer
 
-class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity, Disposable {
+class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         ApplicationManager.getApplication().invokeLater {
+            if (project.isDisposed) return@invokeLater
+
             UpdateSettings.getInstance().state.isCheckNeeded = true
-            val checker = StandalonePluginUpdateChecker(
-                PluginId.getId(HybrisConstants.PLUGIN_ID),
-                HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
-                NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
-                HybrisIcons.Y_LOGO_BLUE
-            )
-            Disposer.register(this, checker)
+            val checker = HybrisStandalonePluginUpdateChecker.getInstance(project)
             checker.pluginUsed()
         }
-    }
-
-    override fun dispose() {
-        // NOP
     }
 }

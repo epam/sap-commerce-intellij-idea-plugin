@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,8 +21,8 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 
@@ -31,13 +31,13 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
-        refreshSystem(project) { TSMetaModelAccess.getInstance(project).getMetaModel() }
-        refreshSystem(project) { BSMetaModelAccess.getInstance(project).getMetaModel() }
-        refreshSystem(project) { CngMetaModelAccess.getInstance(project).getMetaModel() }
+        refreshSystem(project) { TSMetaModelAccess.getInstance(project).initMetaModel() }
+        refreshSystem(project) { BSMetaModelAccess.getInstance(project).initMetaModel() }
+        refreshSystem(project) { CngMetaModelAccess.getInstance(project).initMetaModel() }
     }
 
     private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {
-        ApplicationManager.getApplication().runReadAction {
+        DumbService.getInstance(project).runWhenSmart {
             try {
                 refresher.invoke(project)
             } catch (e: ProcessCanceledException) {

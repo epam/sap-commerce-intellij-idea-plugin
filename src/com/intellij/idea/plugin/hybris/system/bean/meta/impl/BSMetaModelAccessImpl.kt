@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,6 +50,8 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
 
     @Volatile
     private var building: Boolean = false
+    @Volatile
+    private var initialized: Boolean = false
     private val semaphore = Semaphore(1)
 
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
@@ -82,6 +84,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
                             building = true
                             val globalMetaModel = myGlobalMetaModelCache.value
                             building = false
+                            initialized = true
 
                             myMessageBus.syncPublisher(BSMetaModelAccess.TOPIC).beanSystemChanged(globalMetaModel)
                         } finally {
@@ -93,15 +96,19 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         }
     }
 
+    override fun initMetaModel() {
+        building = true
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+    }
+
     override fun getMetaModel(): BSGlobalMetaModel {
-        if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
+        if (building || !initialized || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
         if (myGlobalMetaModelCache.hasUpToDateValue()) {
             return myGlobalMetaModelCache.value
         }
 
-        building = true
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+        initMetaModel()
 
         throw ProcessCanceledException()
     }

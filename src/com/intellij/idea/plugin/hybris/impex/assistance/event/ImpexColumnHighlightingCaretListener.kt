@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,21 +19,23 @@ package com.intellij.idea.plugin.hybris.impex.assistance.event
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 
 class ImpexColumnHighlightingCaretListener : CaretListener {
 
-    private val commonIdeaService = CommonIdeaService.instance
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
-
     override fun caretPositionChanged(e: CaretEvent) {
-        if (commonIdeaService.isTypingActionInProgress()) {
-            return
-        }
-        impexColumnHighlighterService.highlight(e.editor)
+        if (CommonIdeaService.instance.isTypingActionInProgress()) return
+
+        ImpexColumnHighlighterService.instance.highlight(e.editor)
     }
 
     override fun caretAdded(e: CaretEvent) {}
     override fun caretRemoved(e: CaretEvent) {}
+
+    companion object {
+        val instance: ImpexColumnHighlightingCaretListener = ApplicationManager.getApplication().getService(ImpexColumnHighlightingCaretListener::class.java)
+    }
+
 }

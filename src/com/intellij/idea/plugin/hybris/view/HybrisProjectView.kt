@@ -111,17 +111,18 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         val vf = node.virtualFile
             ?: return true
+
+        // hide `core-customize/hybris` node
+        if (HybrisConstants.HYBRIS_DIRECTORY == vf.name
+            && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == parent.name
+        ) return false
+
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)
             ?: return true
 
         // hide `platform/ext` node
         if (HybrisConstants.PLATFORM_EXTENSIONS_DIRECTORY_NAME == vf.name
             && HybrisConstants.EXTENSION_NAME_PLATFORM == module.yExtensionName()
-        ) return false
-
-        // hide `core-customize/hybris` node
-        if (HybrisConstants.HYBRIS_DIRECTORY == vf.name
-            && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == module.yExtensionName()
         ) return false
 
         return YFacet.getState(module)

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,18 +18,34 @@
 
 package com.intellij.idea.plugin.hybris.startup.event
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-        val itemsFileValidation = ItemsXmlFileValidation.getInstance(project)
-        if (itemsFileValidation.isFileOutOfDate(file)) {
-            itemsFileValidation.showNotification()
+        val task = object : Task.Backgroundable(project, HybrisI18NBundleUtils.message("hybris.startupActivity.itemsXmlValidation.progress.title")) {
+            override fun run(indicator: ProgressIndicator) {
+                ApplicationManager.getApplication().runReadAction {
+                    val validation = ItemsXmlFileValidation.getInstance(project)
+                    if (validation.isFileOutOfDate(file)) {
+                        validation.showNotification()
+                    }
+                }
+            }
+        }
+        DumbService.getInstance(project).smartInvokeLater {
+            ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
         }
     }
 }

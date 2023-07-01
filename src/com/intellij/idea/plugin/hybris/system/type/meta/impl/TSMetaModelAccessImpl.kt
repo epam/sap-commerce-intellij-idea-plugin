@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -63,6 +63,8 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     @Volatile
     private var building: Boolean = false
+    @Volatile
+    private var initialized: Boolean = false
     private val semaphore = Semaphore(1)
 
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
@@ -97,6 +99,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
                             building = true
                             val globalMetaModel = myGlobalMetaModelCache.value
                             building = false
+                            initialized = true
                             myMessageBus.syncPublisher(TSMetaModelAccess.TOPIC).typeSystemChanged(globalMetaModel)
                         } finally {
                             semaphore.release();
@@ -107,16 +110,19 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         }
     }
 
+    override fun initMetaModel() {
+        building = true
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+    }
+
     override fun getMetaModel(): TSGlobalMetaModel {
-        if (building || DumbService.isDumb(myProject)) throw ProcessCanceledException()
+        if (building || !initialized || DumbService.isDumb(myProject)) throw ProcessCanceledException()
 
         if (myGlobalMetaModelCache.hasUpToDateValue()) {
             return myGlobalMetaModelCache.value
         }
 
-        building = true
-
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+        initMetaModel()
 
         throw ProcessCanceledException()
     }

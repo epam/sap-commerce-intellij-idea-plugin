@@ -15,17 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
+package com.intellij.idea.plugin.hybris.startup
+
+import com.intellij.ide.plugins.StandalonePluginUpdateChecker
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 
-interface CngMetaModelAccess {
+class HybrisStandalonePluginUpdateChecker : StandalonePluginUpdateChecker(
+    PluginId.getId(HybrisConstants.PLUGIN_ID),
+    HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
+    NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
+    HybrisIcons.Y_LOGO_BLUE
+) {
 
     companion object {
-        fun getInstance(project: Project): CngMetaModelAccess = project.getService(CngMetaModelAccess::class.java)
+        fun getInstance(project: Project): HybrisStandalonePluginUpdateChecker = project.getService(HybrisStandalonePluginUpdateChecker::class.java)
     }
-
-    fun initMetaModel()
-    fun getMetaModel(): CngGlobalMetaModel
-
 }

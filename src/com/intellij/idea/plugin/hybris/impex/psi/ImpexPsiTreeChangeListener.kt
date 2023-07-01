@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,9 +27,6 @@ import com.intellij.psi.util.PsiUtilBase
 
 class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
 
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
-    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.instance
-
     private fun highlightHeader(psiTreeChangeEvent: PsiTreeChangeEvent) {
         val file = psiTreeChangeEvent.file ?: return
         val editor = PsiEditorUtil.findEditor(file) ?: return
@@ -37,27 +34,9 @@ class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
         if (project.isDisposed) return
 
         if (PsiUtilBase.getLanguageInEditor(editor, project) is ImpexLanguage) {
-            impexHeaderNameHighlighterService.highlight(editor)
-            impexColumnHighlighterService.highlight(editor)
+            ImpexHeaderNameHighlighterService.instance.highlight(editor)
+            ImpexColumnHighlighterService.instance.highlight(editor)
         }
-    }
-
-    override fun beforeChildAddition(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
-    override fun beforeChildRemoval(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
-    override fun beforeChildReplacement(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
-    override fun beforeChildMovement(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
-    override fun beforeChildrenChange(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
-    override fun beforePropertyChange(psiTreeChangeEvent: PsiTreeChangeEvent) {
     }
 
     override fun childAdded(psiTreeChangeEvent: PsiTreeChangeEvent) {
@@ -72,13 +51,17 @@ class ImpexPsiTreeChangeListener : PsiTreeChangeListener {
         highlightHeader(psiTreeChangeEvent)
     }
 
-    override fun childrenChanged(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
-
     override fun childMoved(psiTreeChangeEvent: PsiTreeChangeEvent) {
         highlightHeader(psiTreeChangeEvent)
     }
 
-    override fun propertyChanged(psiTreeChangeEvent: PsiTreeChangeEvent) {
-    }
+
+    override fun beforeChildAddition(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun beforeChildRemoval(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun beforeChildReplacement(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun beforeChildMovement(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun beforeChildrenChange(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun beforePropertyChange(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun childrenChanged(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
+    override fun propertyChanged(psiTreeChangeEvent: PsiTreeChangeEvent) = Unit
 }

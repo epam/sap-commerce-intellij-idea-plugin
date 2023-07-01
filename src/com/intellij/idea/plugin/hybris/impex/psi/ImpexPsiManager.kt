@@ -15,27 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.assistance.event
+package com.intellij.idea.plugin.hybris.impex.psi
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService
+import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener
+import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.event.CaretEvent
-import com.intellij.openapi.editor.event.CaretListener
+import com.intellij.openapi.editor.EditorFactory
 
-class ImpexHeaderHighlightingCaretListener : CaretListener {
+class ImpexPsiManager : Disposable {
 
-    override fun caretPositionChanged(e: CaretEvent) {
-        if (CommonIdeaService.instance.isTypingActionInProgress()) return
-
-        ImpexHeaderNameHighlighterService.instance.highlight(e.editor)
+    fun registerListeners() {
+        with(EditorFactory.getInstance()) {
+            this.eventMulticaster.addCaretListener(ImpexHeaderHighlightingCaretListener.instance, this@ImpexPsiManager)
+            this.eventMulticaster.addCaretListener(ImpexColumnHighlightingCaretListener.instance, this@ImpexPsiManager)
+        }
     }
 
-    override fun caretAdded(e: CaretEvent) {}
-    override fun caretRemoved(e: CaretEvent) {}
+    override fun dispose() = Unit
 
     companion object {
-        val instance: ImpexHeaderHighlightingCaretListener = ApplicationManager.getApplication().getService(ImpexHeaderHighlightingCaretListener::class.java)
+        val instance: ImpexPsiManager = ApplicationManager.getApplication().getService(ImpexPsiManager::class.java)
     }
 
 }
