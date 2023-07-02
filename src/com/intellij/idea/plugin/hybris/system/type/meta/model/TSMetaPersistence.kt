@@ -25,11 +25,24 @@ interface TSMetaPersistence : TSMetaClassifier<Persistence> {
     val qualifier: String?
     val attributeHandler: String?
 
-    fun inlineType() = when (type) {
+    override fun inlineDocumentation() = when (type) {
         PersistenceType.CMP -> "C"
         PersistenceType.DYNAMIC -> "D"
         PersistenceType.PROPERTY -> "P"
         PersistenceType.JALO -> "J"
         null -> "?"
+    }
+
+    companion object {
+
+        val tableHeaderTooltip = """
+                <strong>Persistence</strong>
+                <table>
+                    <tr><td>C</td><td>cmp</td></tr>
+                    <tr><td>D</td><td>dynamic</td></tr>
+                    <tr><td>P</td><td>property</td></tr>
+                    <tr><td>J</td><td>jalo</td></tr>
+                </table>
+            """.trimIndent()
     }
 }

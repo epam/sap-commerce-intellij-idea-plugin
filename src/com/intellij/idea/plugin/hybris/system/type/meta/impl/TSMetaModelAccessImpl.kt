@@ -147,6 +147,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     override fun findMetaClassifierByName(name: String?): TSGlobalMetaClassifier<out DomElement>? = findMetaItemByName(name)
         ?: findMetaCollectionByName(name)
+        ?: findMetaRelationByName(name)
         ?: findMetaEnumByName(name)
         ?: findMetaMapByName(name)
         ?: findMetaAtomicByName(name)

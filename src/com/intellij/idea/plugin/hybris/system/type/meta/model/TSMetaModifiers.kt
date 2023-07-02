@@ -33,7 +33,21 @@ interface TSMetaModifiers : TSMetaClassifier<Modifiers> {
     val isDoNotOptimize: Boolean
     val isEncrypted: Boolean
 
-    fun inlineName(): String {
+    override fun documentation() = listOfNotNull(
+        if (isInitial) "initial" else null,
+        if (isOptional) "optional" else null,
+        if (isRead) "read" else null,
+        if (isWrite) "write" else null,
+        if (isRemovable) "removable" else null,
+        if (isPartOf) "partOf" else null,
+        if (isUnique) "unique" else null,
+        if (isPrivate) "private" else null,
+        if (isSearch) "search" else null,
+        if (isDoNotOptimize) "doNotOptimize" else null,
+        if (isEncrypted) "encrypted" else null
+    ).joinToString(",&nbsp;")
+
+    override fun inlineDocumentation(): String {
         val meta = this
         return buildString {
             if (meta.isInitial) append("I")
@@ -54,19 +68,19 @@ interface TSMetaModifiers : TSMetaClassifier<Modifiers> {
 
         val tableHeaderTooltip = """
             <strong>Modifiers</strong>
-            <ul>
-                <li>I - initial</li>
-                <li>O - optional</li>
-                <li>R - read</li>
-                <li>W - write</li>
-                <li>S - search</li>
-                <li>P - private</li>
-                <li>D - removable</li>
-                <li>pO - partOf</li>
-                <li>U - unique</li>
-                <li>dNO - doNotOptimize</li>
-                <li>E - encrypted</li>
-            </ul>
+            <table>
+                <tr><td>I</td><td>initial</td></tr>
+                <tr><td>O</td><td>optional</td></tr>
+                <tr><td>R</td><td>read</td></tr>
+                <tr><td>W</td><td>write</td></tr>
+                <tr><td>S</td><td>search</td></tr>
+                <tr><td>P</td><td>private</td></tr>
+                <tr><td>D</td><td>removable</td></tr>
+                <tr><td>pO</td><td>partOf</td></tr>
+                <tr><td>U</td><td>unique</td></tr>
+                <tr><td>dNO</td><td>doNotOptimize</td></tr>
+                <tr><td>E</td><td>encrypted</td></tr>
+            </table>
         """.trimIndent()
     }
 }

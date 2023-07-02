@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,8 @@ interface TSMetaClassifier<DOM : DomElement> {
     var isCustom: Boolean
     val domAnchor: DomAnchor<DOM>
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()
+    fun documentation(): String? = null
+    fun inlineDocumentation(): String? = null
 }
 
 interface TSGlobalMetaClassifier<DOM : DomElement> : TSMetaClassifier<DOM> {

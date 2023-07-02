@@ -30,6 +30,7 @@ class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
         val element = file.findElementAt(offset) ?: return emptyList()
 
         return when (element.elementType) {
+            ImpexTypes.HEADER_TYPE,
             ImpexTypes.ATTRIBUTE_NAME,
             ImpexTypes.FUNCTION,
             ImpexTypes.HEADER_PARAMETER_NAME -> arrayListOf(ImpexDocumentationTarget(element, element))

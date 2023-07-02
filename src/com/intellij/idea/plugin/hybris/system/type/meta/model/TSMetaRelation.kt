@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
+import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
@@ -45,6 +46,21 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
         val isOrdered: Boolean
         val isNavigable: Boolean
         val isDeprecated: Boolean
+
+        override fun documentation() = hybrisDoc {
+            texts(
+                "<strong>${end.name.lowercase()}</strong> (${cardinality.value} $type)",
+                "qualifier :: ${qualifier ?: "<no qualifier>"}",
+                flagDocumentation(),
+                modifiers.documentation()
+            )
+        }.build()
+
+        private fun flagDocumentation() = listOfNotNull(
+            if (isOrdered) "ordered" else null,
+            if (isNavigable) "navigable" else null,
+            if (isDeprecated) "isDeprecated" else null
+        ).joinToString(",&nbsp;")
     }
 
     enum class RelationEnd {
@@ -54,4 +70,25 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
 
 interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaRelation>
+
+    override fun documentation() = hybrisDoc {
+        title("Relation", name ?: "?")
+        modifiersDocumentation()
+            .takeIf { it.isNotBlank() }
+            ?.let { subHeader(it) }
+        deployment
+            ?.documentation()
+            ?.let { contentsWithSeparator(it) }
+        contents(
+            source.documentation(),
+            target.documentation(),
+        )
+    }.build()
+
+    private fun modifiersDocumentation() = listOfNotNull(
+        if (isLocalized) "localized" else null,
+        if (isAutoCreate) "autocreate" else null,
+        if (isGenerate) "generate" else null
+    ).joinToString(",&nbsp;")
+
 }

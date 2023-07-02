@@ -18,11 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.documentation.renderer.impexDoc
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.model.Pointer
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
@@ -57,6 +60,15 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
         get() = element as? Navigatable
 
     private fun computeLocalDocumentation(element: PsiElement) = when (element.elementType) {
+        ImpexTypes.HEADER_TYPE -> {
+            try {
+                TSMetaModelAccess.getInstance(element.project).findMetaClassifierByName(element.text)
+                    ?.documentation()
+            } catch (_: ProcessCanceledException) {
+                message("hybris.documentation.not.available.during.indexing")
+            }
+        }
+
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
                 TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
@@ -65,15 +77,15 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "Using ServiceLayer Direct",
                         "https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US"
                     )
-                    content("Setting the modifier to sld.enabled=true means that both titles are to be imported using the SLD mode, even if the global switch, or the flag in ImportConfig is set to the legacy mode.")
+                    texts("Setting the modifier to sld.enabled=true means that both titles are to be imported using the SLD mode, even if the global switch, or the flag in ImportConfig is set to the legacy mode.")
                     example("[sld.enabled=true]")
                 }.build()
 
                 TypeModifier.BATCH_MODE.modifierName -> impexDoc {
                     typeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "In UPDATE or REMOVE mode, the batch mode allows modifying more than one item that matches for a combination of all unique attributes of a value line.",
                         "So, if for a value line more than one item is found that matches the combination of unique attributes, the attributes specified as non-unique are updated at all found items."
                     )
@@ -86,9 +98,9 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 TypeModifier.CACHE_UNIQUE.modifierName -> impexDoc {
                     typeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "If this option is enabled, the CachingExistingItemResolver is used for existing item resolving (in case of update or remove mode) which caches by the combination of unique keys already resolved items.",
                         "So when processing a value line first, it is tried to find the related item by searching the cache using the unique keys.",
                         "The usage is only meaningful if an item has to be processed more than one time within a header scope.",
@@ -99,12 +111,12 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 TypeModifier.PROCESSOR.modifierName -> impexDoc {
                     typeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     allowedValues(
                         "A ImportProcessor class",
                         "Default is the DefaultImportProcessor"
                     )
-                    content(
+                    texts(
                         "Unlike a Translator, which handles a certain column of a value line, a Processor handles an entire value line.",
                         "It contains all business logic to transform a value line into values for attributes of an item in SAP Commerce (such as calls for translator classes, for example) and performs the real setting of the values.",
                         "In other words: a Processor is passed a value line as input, and it creates or updates an item in SAP Commerce as its output."
@@ -115,9 +127,9 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 TypeModifier.IMPEX_LEGACY_MODE.modifierName -> impexDoc {
                     typeModifier(element.text)
-                    header("(since SAP Commerce version 5.1.1)")
+                    subHeader("(since SAP Commerce version 5.1.1)")
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "This modifier allows enabling the legacy mode (jalo) per header.",
                         "This way - in case of service layer mode enabled globally, ImpEx will switch dynamically to legacy mode, just like for existing 'allowNull' or 'forceWrite' modifiers.",
                         "The only difference is - it's set for the type, not for the column."
@@ -127,20 +139,20 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.ALIAS.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Export only")
+                    subHeader("Export only")
                     allowedValues(
                         "A text such as myAttribute",
                         "Default: no alias is set"
                     )
-                    content("With that modifier you can specify an alias name for an attribute, which is used in export case as attribute text in destination file.")
+                    texts("With that modifier you can specify an alias name for an attribute, which is used in export case as attribute text in destination file.")
                     example("[alias=myAttribute]")
                 }.build()
 
                 AttributeModifier.ALLOW_NULL.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "If set to true, this modifier explicitly allows null values for the column values.",
                         "If there is no business code that blocks null values, this modifier even allows null values in mandatory attributes, such as the catalogVersion attribute of the Media type, for example."
                     )
@@ -154,12 +166,12 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.CELL_DECORATOR.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     allowedValues(
                         "An AbstractImpExCSVCellDecorator class",
                         "Default: no decorator is applied."
                     )
-                    content(
+                    texts(
                         "Specifies a decorator class for modifying the cell value before interpreting.",
                         "See Impex API document, section Writing Own Cell Decorator for more information."
                     )
@@ -168,12 +180,12 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.COLLECTION_DELIMITER.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to attributes of type Collection.")
+                    subHeader("Restricted to attributes of type Collection.")
                     allowedValues(
                         "Any character",
                         "Default: comma ( , )"
                     )
-                    content(
+                    texts(
                         "Allows specifying a delimiter for separating values in a Collection.",
                         "For more information about Collections, see Type System Documentation."
                     )
@@ -182,15 +194,15 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.DATE_FORMAT.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to Date and StandardDateRange types.")
+                    subHeader("Restricted to Date and StandardDateRange types.")
                     allowedValues(
                         "A date format such as MM-dd-yyyy or dd.MM.yyyy",
                         "(See the Date and Time Patterns in Java API documentation)",
                         "Default: DateFormat.getDateTimeInstance (DateFormat.MEDIUM, DateFormat.MEDIUM, impexReader.getLocale())"
                     )
-                    content("Specifies the format in which the column specifies Date values.")
+                    texts("Specifies the format in which the column specifies Date values.")
                     example("UPDATE myProduct;myAttribute [dateformat=dd-MM-yyyy] ;17-01-1972")
-                    content(
+                    texts(
                         "A more complex example would be to implement a ISO 8601 compliant combined date and time representation.",
                         "The DateFormat class requires a syntax such as yyyy-MM-dd'T'HH:mm:ss.SSSZ.",
                         "The T in the date format representation must be delimited by single quotes by convention.",
@@ -202,15 +214,15 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                 AttributeModifier.DEFAULT.modifierName -> impexDoc {
                     attributeModifier(element.text)
                     allowedValues("A value that matches the current attribute column type.")
-                    content("Sets the default for values of this column")
+                    texts("Sets the default for values of this column")
                     example("INSERT_UPDATE myProduct;myAttribute[default=MyName]")
                 }.build()
 
                 AttributeModifier.FORCE_WRITE.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Import only")
+                    subHeader("Import only")
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "If set, it tries to write into read-only columns.",
                         "Success depends on business logic of attribute setter.",
                         "If not set, writing of read-only attributes is not to be tried.",
@@ -225,23 +237,23 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.IGNORE_KEY_CASE.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header(
+                    subHeader(
                         "Import only",
                         "Restricted to attributes of type Item"
                     )
                     booleanAllowedValues(false)
-                    content("If set, the case of the text that specifies attributes of items for resolving is ignored")
+                    texts("If set, the case of the text that specifies attributes of items for resolving is ignored")
 
                 }.build()
 
                 AttributeModifier.IGNORE_NULL.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header(
+                    subHeader(
                         "Import only",
                         "Restricted to attributes of type Item"
                     )
                     booleanAllowedValues(false)
-                    content("For Collection-type attribute values, this allows ignoring of null values.")
+                    texts("For Collection-type attribute values, this allows ignoring of null values.")
                     list(
                         "If set to false as by default, a null value in a Collection-related column causes the null value to be written to the Collection instance. For example, if the value line contained the value myValue;null;myValue2, then setting the ignorenull modifier to false would cause the Collection to contain the null value, as in myValue;null;myValue2.",
                         "If set to true, a null value in a Collection-related column causes the null value to be skipped for the Collection instance. For example, if the value line contained the value myValue;null;myValue2, then setting the ignorenull modifier to true would cause the Collection not to contain the null value, as in myValue;myValue2."
@@ -251,34 +263,34 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.KEY_2_VALUE_DELIMITER.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to attributes of type Map.")
+                    subHeader("Restricted to attributes of type Map.")
                     allowedValues(
                         "any character",
                         "Default: '->'"
                     )
-                    content("Specifies the assignment delimiter for a key-value pair.")
+                    texts("Specifies the assignment delimiter for a key-value pair.")
                     example("INSERT_UPDATE myProduct;myAttribute[key2value-delimiter=>>] ;myKey>>myValue;")
                 }.build()
 
                 AttributeModifier.LANG.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to localized attributes (Map<String, Language>)")
+                    subHeader("Restricted to localized attributes (Map<String, Language>)")
                     allowedValues(
                         "The ISO code or PK of a language defined for the SAP Commerce (such as de, en, or de_ch, for example)",
                         "Default: session language"
                     )
-                    content("Specifies the language for a column containing localized attribute values.")
+                    texts("Specifies the language for a column containing localized attribute values.")
                     example("INSERT_UPDATE myProduct;myAttribute[lang=de]")
                 }.build()
 
                 AttributeModifier.MAP_DELIMITER.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to attributes of type Map.")
+                    subHeader("Restricted to attributes of type Map.")
                     allowedValues(
                         "Any character",
                         "Default: ';'"
                     )
-                    content("Specifies the delimiter between two key-value pairs.")
+                    texts("Specifies the delimiter between two key-value pairs.")
                     example(
                         """
                         INSERT_UPDATE myProduct;myAttribute[map-delimiter=|] 
@@ -293,7 +305,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "Header and Attribute Modifier",
                         "https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html#header-and-attribute-modifier"
                     )
-                    header(
+                    subHeader(
                         "Import only",
                         "Restricted to attributes of type Collection"
                     )
@@ -301,7 +313,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "append, remove, merge",
                         "Default: replace (not explicitly specifiable) - an already existing Collection will be replaced"
                     )
-                    content("Specifies the modification mode for Collection instances.")
+                    texts("Specifies the modification mode for Collection instances.")
                     list(
                         "mode=append: In the append mode, references to elements of the Collection value are added to the existing resolved Collection. You can also use (+) instead of mode=append.",
                         "mode=remove: In the remove mode, references to elements of the Collection value are removed from the resolved Collection. You can also use (-) instead of mode=remove",
@@ -311,18 +323,18 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.NUMBER_FORMAT.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to attributes of type Number")
+                    subHeader("Restricted to attributes of type Number")
                     allowedValues(
                         "A number format like #.###,## (For further information, refer to the NumberFormat class documentation by Sun Microsystems)",
                         "Default: NumberFormat.getNumberInstance( impexReader.getLocale() )"
                     )
-                    content(
+                    texts(
                         "Specifies the format the column uses to specify Number values.",
                         "Be aware that the delimiters for number values depend on the locale settings specified for the session, and you cannot specify the delimiters using the numberformat modifier only.",
                         "If you need to specify the delimiters explicitly, you have to set a locale for the reader instance explicitly that is related to the delimiters using the BeanShell code."
                     )
                     example("#% impex.setLocale( Locale.GERMAN );")
-                    content("The following code snippet shows two settings for the numberformat parameter (typical for German-and English-related locales, respectively).")
+                    texts("The following code snippet shows two settings for the numberformat parameter (typical for German-and English-related locales, respectively).")
                     example(
                         """
                         INSERT_UPDATE myProduct;myAttribute[numberformat=#.###,##] 
@@ -335,12 +347,12 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 AttributeModifier.PATH_DELIMITER.modifierName -> impexDoc {
                     attributeModifier(element.text)
-                    header("Restricted to attribute of type ComposedType")
+                    subHeader("Restricted to attribute of type ComposedType")
                     allowedValues(
                         "Any character",
                         "Default: ':'"
                     )
-                    content("Defines the delimiter to separate values for attributes using an item expression, such as catalog versions, for example.")
+                    texts("Defines the delimiter to separate values for attributes using an item expression, such as catalog versions, for example.")
                     example(
                         """
                         INSERT_UPDATE myProduct;myAttribute(code,id)[path-delimiter=:] 
@@ -355,7 +367,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "A positive integer",
                         "Default: column number as positioned in header."
                     )
-                    content(
+                    texts(
                         "Specifies the column position where the values for this attribute can be found within the following value lines.",
                         "Attention: if this modifier is used for an attribute in a header description, it has to be used for all attributes in that header to avoid conflicts."
                     )
@@ -368,7 +380,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "An AbstractValueTranslator or a SpecialValueTranslator",
                         "Default varies; each Type has a predefined default Translator."
                     )
-                    content(
+                    texts(
                         "A Translator class resolves a column of a value line into an attribute value for the item in the SAP Commerce.",
                         "The ImpEx extension processes all instances of out-of-the-box AtomicType and ComposedType instances, such as Java.lang.String and Product respectively, for example, into attribute values using the default Translator classes."
                     )
@@ -378,7 +390,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                 AttributeModifier.UNIQUE.modifierName -> impexDoc {
                     attributeModifier(element.text)
                     booleanAllowedValues(false)
-                    content(
+                    texts(
                         "Marks this column as a key attribute - that is, the value is used to determine whether the item is unique or not.",
                         "ImpEx uses the combination of the values of all key attributes to check whether the item already exists.",
                         "This means that in the case of unique=true, each combination of the values of all key attributes in a row must be unique.",
@@ -394,14 +406,14 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                 AttributeModifier.VIRTUAL.modifierName -> impexDoc {
                     attributeModifier(element.text)
                     booleanAllowedValues(false)
-                    content("If set, a related column within the following value lines is expected. This has to be used in conjunction with default modifier.")
+                    texts("If set, a related column within the following value lines is expected. This has to be used in conjunction with default modifier.")
                     example(
                         """
                         INSERT MyProduct;myAttribute1[virtual=true,default=myValue1];myAttribute2[unique=true] 
                         ;myValue2;
                     """.trimIndent()
                     )
-                    content(
+                    texts(
                         "Sets myValue1 to attribute myAttribute1 and myValue2 to attribute myAttribute2.",
                         "Be aware that the virtual column has no dedicated field in the value line.",
                         "This could lead to shiftings in the value line. For a better readability, it's advisable to add the virtual attributes at the end of the header line."

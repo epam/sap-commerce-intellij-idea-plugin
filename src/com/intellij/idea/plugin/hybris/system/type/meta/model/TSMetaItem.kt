@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
 import com.intellij.idea.plugin.hybris.system.type.model.Index
@@ -66,19 +67,6 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
         val isGenerate: Boolean
         val isLocalized: Boolean
         val isDynamic: Boolean
-
-        companion object {
-
-            val tableHeaderTooltip = """
-                <strong>Persistence</strong>
-                <ul>
-                    <li>C - cmp</li>
-                    <li>D - dynamic</li>
-                    <li>P - property</li>
-                    <li>J - jalo</li>
-                </ul>
-            """.trimIndent()
-        }
     }
 }
 
@@ -92,6 +80,27 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
     val allCustomProperties: List<TSMetaCustomProperty>
     val allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>
     val allExtends: Set<TSGlobalMetaItem>
+
+    override fun documentation() = hybrisDoc {
+        title("Item", name ?: "?")
+        subHeader(
+            modifiersDocumentation(),
+            "extends :: ${extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}",
+            description ?: "",
+        )
+        deployment
+            ?.documentation()
+            ?.let { contentsWithSeparator(it) }
+    }.build()
+
+    private fun modifiersDocumentation() = listOfNotNull(
+        if (isAbstract) "abstract" else null,
+        if (isAutoCreate) "autocreate" else null,
+        if (isGenerate) "generate" else null,
+        if (isSingleton) "singleton" else null,
+        if (isJaloOnly) "jaloonly" else null,
+        if (isCatalogAware) "catalogAware" else null
+    ).joinToString(",&nbsp;")
 
     interface TSGlobalMetaItemIndex : TSMetaItem.TSMetaItemIndex, TSGlobalMetaClassifier<Index> {
         override val declarations: MutableSet<TSMetaItem.TSMetaItemIndex>

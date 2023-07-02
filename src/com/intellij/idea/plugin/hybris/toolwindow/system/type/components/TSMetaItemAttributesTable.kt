@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaModifiers
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaPersistence
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -78,12 +79,12 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
             ),
             createColumn(
                 name = COLUMN_PERSISTENCE,
-                valueProvider = { attr -> attr.persistence.inlineType() },
-                tooltip = TSMetaItemAttribute.tableHeaderTooltip
+                valueProvider = { attr -> attr.persistence.inlineDocumentation() },
+                tooltip = TSMetaPersistence.tableHeaderTooltip
             ),
             createColumn(
                 name = COLUMN_MODIFIERS,
-                valueProvider = { attr -> attr.modifiers.inlineName() },
+                valueProvider = { attr -> attr.modifiers.inlineDocumentation() },
                 tooltip = TSMetaModifiers.tableHeaderTooltip
             ),
             createColumn(

@@ -63,7 +63,7 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
             ),
             createColumn(
                 name = COLUMN_MODIFIERS,
-                valueProvider = { attr -> attr.modifiers.inlineName() },
+                valueProvider = { attr -> attr.modifiers.inlineDocumentation() },
                 tooltip = TSMetaModifiers.tableHeaderTooltip
             ),
             createColumn(

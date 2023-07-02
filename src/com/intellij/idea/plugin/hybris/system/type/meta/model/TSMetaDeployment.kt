@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -17,10 +17,20 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
+import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 
 interface TSMetaDeployment : TSMetaClassifier<Deployment> {
     val table: String?
     val propertyTable: String
     val typeCode: String?
+
+    override fun documentation() = hybrisDoc {
+        texts(
+            "<strong>Deployment</strong>",
+            "Table: ${table ?: "?"}",
+            "Type code: ${typeCode ?: "?"}",
+            "Property table: ${propertyTable}",
+        )
+    }.build()
 }
