@@ -18,19 +18,46 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 
 class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
 
     override fun documentationTargets(file: PsiFile, offset: Int): List<DocumentationTarget> {
+        if (file !is ImpexFile) return emptyList()
+
         val element = file.findElementAt(offset) ?: return emptyList()
+        val settingsComponent = HybrisProjectSettingsComponent.getInstance(file.project)
+
+        if (!settingsComponent.isHybrisProject()) return emptyList()
+
+        val documentationSettings = settingsComponent.state.impexSettings.documentation
+        if (!documentationSettings.enabled) return emptyList()
+
+        val allowedElementTypes = with(mutableListOf<IElementType>()) {
+            if (documentationSettings.showTypeDocumentation) {
+                add(ImpexTypes.HEADER_TYPE)
+                add(ImpexTypes.VALUE_SUBTYPE)
+            }
+            if (documentationSettings.showModifierDocumentation) {
+                add(ImpexTypes.ATTRIBUTE_NAME)
+                add(ImpexTypes.FUNCTION)
+                add(ImpexTypes.HEADER_PARAMETER_NAME)
+            }
+            this
+        }
+
+        if (!allowedElementTypes.contains(element.elementType)) return emptyList()
 
         return when (element.elementType) {
             ImpexTypes.HEADER_TYPE,
+            ImpexTypes.VALUE_SUBTYPE,
             ImpexTypes.ATTRIBUTE_NAME,
             ImpexTypes.FUNCTION,
             ImpexTypes.HEADER_PARAMETER_NAME -> arrayListOf(ImpexDocumentationTarget(element, element))

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,6 +40,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
         private val state = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
+        private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
             group("Code Folding") {
@@ -57,7 +58,8 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
             group("Code Completion") {
                 row {
                     checkBox("Show inline type for reference header parameter")
-                        .comment("""
+                        .comment(
+                            """
                             When enabled, parameter Type and all its extends will be available as suggestions.<br>
                             Sample: <code>principal(<strong>Principal.</strong>uid)</code>
                             """.trimIndent()
@@ -66,11 +68,39 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                 }
                 row {
                     checkBox("Automatically add '.' char after inline type")
-                        .comment("""
+                        .comment(
+                            """
                             When enabled and there is '.' char is not present, it will be injected automatically
                             """.trimIndent()
                         )
                         .bindSelected(state.completion::addCommaAfterInlineType)
+                }
+            }
+            group("Documentation") {
+                row {
+                    documentationEnableCheckBox = checkBox("Enable code folding")
+                        .bindSelected(state.documentation::enabled)
+                        .component
+                }
+                row {
+                    checkBox("Show documentation for type")
+                        .comment(
+                            """
+                            When enabled short description of the type will be shown on-hover as a tooltip for type in the header or sub-type in the value line.
+                        """.trimIndent()
+                        )
+                        .bindSelected(state.documentation::showTypeDocumentation)
+                        .enabledIf(documentationEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Show documentation for modifier")
+                        .comment(
+                            """
+                            When enabled short description of the modifier will be shown on-hover as a tooltip for type or attribute modifier in the header.
+                        """.trimIndent()
+                        )
+                        .bindSelected(state.documentation::showModifierDocumentation)
+                        .enabledIf(documentationEnableCheckBox.selected)
                 }
             }
         }

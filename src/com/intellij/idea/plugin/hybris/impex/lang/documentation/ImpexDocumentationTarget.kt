@@ -60,7 +60,8 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
         get() = element as? Navigatable
 
     private fun computeLocalDocumentation(element: PsiElement) = when (element.elementType) {
-        ImpexTypes.HEADER_TYPE -> {
+        ImpexTypes.HEADER_TYPE,
+        ImpexTypes.VALUE_SUBTYPE -> {
             try {
                 TSMetaModelAccess.getInstance(element.project).findMetaClassifierByName(element.text)
                     ?.documentation()
