@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
-
-private const val COLUMN_CUSTOM = "C"
-private const val COLUMN_MODULE = "Module"
-private const val COLUMN_VALUE = "Value"
-private const val COLUMN_DESCRIPTION = "Description"
 
 class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaEnum, TSMetaEnum.TSMetaEnumValue>(myProject) {
 
@@ -69,6 +64,11 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
 
     companion object {
         private const val serialVersionUID: Long = 6652572661218637911L
+
+        private const val COLUMN_CUSTOM = "C"
+        private const val COLUMN_MODULE = "Module"
+        private const val COLUMN_VALUE = "Value"
+        private const val COLUMN_DESCRIPTION = "Description"
 
         fun getInstance(project: Project): TSMetaEnumValuesTable = with(TSMetaEnumValuesTable(project)) {
             init()

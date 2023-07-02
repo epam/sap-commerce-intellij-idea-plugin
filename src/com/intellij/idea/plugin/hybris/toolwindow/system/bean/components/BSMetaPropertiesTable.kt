@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,13 +24,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
-
-private const val COLUMN_CUSTOM = "C"
-private const val COLUMN_DEPRECATED = "D"
-private const val COLUMN_EQUALS = "E"
-private const val COLUMN_MODULE = "Module"
-private const val COLUMN_NAME = "Name"
-private const val COLUMN_TYPE = "Type"
 
 class BSMetaPropertiesTable private constructor(myProject: Project) :
     AbstractTable<BSGlobalMetaBean, BSMetaProperty>(myProject) {
@@ -85,6 +78,13 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
 
     companion object {
         private const val serialVersionUID: Long = 6752572661238637911L
+
+        private const val COLUMN_CUSTOM = "C"
+        private const val COLUMN_DEPRECATED = "D"
+        private const val COLUMN_EQUALS = "E"
+        private const val COLUMN_MODULE = "Module"
+        private const val COLUMN_NAME = "Name"
+        private const val COLUMN_TYPE = "Type"
 
         fun getInstance(project: Project): BSMetaPropertiesTable = with(BSMetaPropertiesTable(project)) {
             init()

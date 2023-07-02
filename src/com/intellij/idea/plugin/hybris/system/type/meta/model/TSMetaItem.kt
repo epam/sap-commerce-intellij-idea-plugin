@@ -66,6 +66,19 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
         val isGenerate: Boolean
         val isLocalized: Boolean
         val isDynamic: Boolean
+
+        companion object {
+
+            val tableHeaderTooltip = """
+                <strong>Persistence</strong>
+                <ul>
+                    <li>C - cmp</li>
+                    <li>D - dynamic</li>
+                    <li>P - property</li>
+                    <li>J - jalo</li>
+                </ul>
+            """.trimIndent()
+        }
     }
 }
 

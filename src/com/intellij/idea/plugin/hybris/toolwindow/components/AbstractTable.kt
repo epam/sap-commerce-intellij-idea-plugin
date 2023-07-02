@@ -31,7 +31,10 @@ import com.intellij.util.ui.ListTableModel
 import java.awt.Dimension
 import java.awt.Rectangle
 import javax.swing.JTable
+import javax.swing.SwingConstants
+import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.TableColumn
+
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTable() {
@@ -56,6 +59,9 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     fun updateModel(owner: Owner) {
         val listTableModel = model as? ListTableModel<Item> ?: return
         listTableModel.items = getItems(owner)
+
+        getAutoWidthColumnNames()
+            .forEach { setAutoWidthForColumn(getColumn(it), this, it) }
     }
 
     fun getItems(): List<Item> = (model as? ListTableModel<Item>)?.items
@@ -76,6 +82,7 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     protected abstract fun createModel(): ListTableModel<Item>
     protected open fun getSearchableColumnNames(): List<String> = emptyList()
     protected open fun getFixedWidthColumnNames(): List<String> = emptyList()
+    protected open fun getAutoWidthColumnNames(): List<String> = emptyList()
 
     protected fun selectRowWithValue(value: String?, columnName: String) {
         var row = 0;
@@ -108,16 +115,44 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     }
 
     private fun setFixedColumnWidth(column: TableColumn, table: JTable, text: String) = with(column) {
-        val width = table
+        val newWidth = table
             .getFontMetrics(table.font)
-            .stringWidth("   $text   ")
+            .stringWidth("$text      ")
             .let { JBUIScale.scale(it) }
 
-        headerValue = " $headerValue"
-        preferredWidth = width
-        minWidth = width
-        maxWidth = width
+        val centerHeaderRenderer = DefaultTableCellRenderer()
+        centerHeaderRenderer.setHorizontalAlignment(SwingConstants.CENTER)
+        headerRenderer = centerHeaderRenderer
+        preferredWidth = newWidth
+        minWidth = newWidth
+        maxWidth = newWidth
         resizable = false
+
+        this
+    }
+
+    private fun setAutoWidthForColumn(column: TableColumn, table: JTable, text: String) = with(column) {
+        var newWidth = table
+            .getFontMetrics(table.font)
+            .stringWidth("$text      ")
+            .let { JBUIScale.scale(it) }
+
+        (0 until table.rowCount).forEach {
+            val cellWidth = table.prepareRenderer(
+                table.getCellRenderer(it, column.modelIndex),
+                it, column.modelIndex
+            )
+                .preferredSize
+                .width
+                .let { width -> JBUIScale.scale(width) }
+
+            if (cellWidth > newWidth) {
+                newWidth = cellWidth
+            }
+        }
+        preferredWidth = newWidth
+        minWidth = newWidth
+        maxWidth = newWidth
 
         this
     }

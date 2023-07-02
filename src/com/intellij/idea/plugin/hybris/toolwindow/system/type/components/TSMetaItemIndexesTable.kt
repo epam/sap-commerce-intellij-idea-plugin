@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,16 +24,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaI
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
-
-private const val COLUMN_NAME = "Name"
-private const val COLUMN_CUSTOM = "C"
-private const val COLUMN_REMOVE = "D"
-private const val COLUMN_REPLACE = "R"
-private const val COLUMN_UNIQUE = "U"
-private const val COLUMN_CREATION_MODE = "Creation mode"
-private const val COLUMN_KEYS = "Keys"
-private const val COLUMN_INCLUDES = "Includes"
-private const val COLUMN_MODULE = "Module"
 
 class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaItemIndex>(myProject) {
 
@@ -109,6 +99,16 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
 
     companion object {
         private const val serialVersionUID: Long = -6854917148686972681L
+
+        private const val COLUMN_NAME = "Name"
+        private const val COLUMN_CUSTOM = "C"
+        private const val COLUMN_REMOVE = "D"
+        private const val COLUMN_REPLACE = "R"
+        private const val COLUMN_UNIQUE = "U"
+        private const val COLUMN_CREATION_MODE = "Creation mode"
+        private const val COLUMN_KEYS = "Keys"
+        private const val COLUMN_INCLUDES = "Includes"
+        private const val COLUMN_MODULE = "Module"
 
         fun getInstance(project: Project): TSMetaItemIndexesTable = with(TSMetaItemIndexesTable(project)) {
             init()

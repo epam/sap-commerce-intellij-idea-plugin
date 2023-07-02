@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,10 +24,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
-
-private const val COLUMN_CUSTOM = "C"
-private const val COLUMN_MODULE = "Module"
-private const val COLUMN_VALUE = "Value"
 
 class BSMetaEnumValuesTable private constructor(myProject: Project) :
     AbstractTable<BSGlobalMetaEnum, BSMetaEnum.BSMetaEnumValue>(myProject) {
@@ -66,6 +62,10 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
 
     companion object {
         private const val serialVersionUID: Long = 6612572661238637911L
+
+        private const val COLUMN_CUSTOM = "C"
+        private const val COLUMN_MODULE = "Module"
+        private const val COLUMN_VALUE = "Value"
 
         fun getInstance(project: Project): BSMetaEnumValuesTable = with(BSMetaEnumValuesTable(project)) {
             init()

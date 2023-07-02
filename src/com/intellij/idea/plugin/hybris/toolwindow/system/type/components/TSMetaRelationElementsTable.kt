@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,22 +21,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaModifiers
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial
-
-private const val COLUMN_CUSTOM = "C"
-private const val COLUMN_ORDERED = "O"
-private const val COLUMN_DEPRECATED = "D"
-private const val COLUMN_MODULE = "Module"
-private const val COLUMN_OWNER = "Owner"
-private const val COLUMN_QUALIFIER = "Qualifier"
-private const val COLUMN_TYPE = "Type"
-private const val COLUMN_COLLECTION_TYPE = "Collection Type"
-private const val COLUMN_CARDINALITY = "Cardinality"
-private const val COLUMN_DESCRIPTION = "Description"
 
 class TSMetaRelationElementsTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaRelation.TSMetaRelationElement>(myProject) {
 
@@ -72,6 +62,11 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
                 tooltip = "Deprecated"
             ),
             createColumn(
+                name = COLUMN_MODIFIERS,
+                valueProvider = { attr -> attr.modifiers.inlineName() },
+                tooltip = TSMetaModifiers.tableHeaderTooltip
+            ),
+            createColumn(
                 name = COLUMN_MODULE,
                 valueProvider = { attr -> attr.module.yExtensionName() }
             ),
@@ -105,6 +100,18 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
     }
 
     companion object {
+
+        private const val COLUMN_CUSTOM = "C"
+        private const val COLUMN_ORDERED = "O"
+        private const val COLUMN_DEPRECATED = "D"
+        private const val COLUMN_MODIFIERS = "[M]"
+        private const val COLUMN_MODULE = "Module"
+        private const val COLUMN_OWNER = "Owner"
+        private const val COLUMN_QUALIFIER = "Qualifier"
+        private const val COLUMN_TYPE = "Type"
+        private const val COLUMN_COLLECTION_TYPE = "Collection Type"
+        private const val COLUMN_CARDINALITY = "Cardinality"
+        private const val COLUMN_DESCRIPTION = "Description"
 
         @Serial
         private const val serialVersionUID: Long = -3549248270797403106L
