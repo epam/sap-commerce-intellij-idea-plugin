@@ -9,6 +9,10 @@
 - Added documentation for Header type name [#506](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/506)
 - Added documentation for sub-type in the Value line [#507](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/507)
 - Improved substitution of the `$config-xxx` properties [#496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/496)
+- New documentation settings added to the Project Settings 
+
+### `FlexibleSearch` enhancements
+- Added documentation for type name in the `FROM` statement [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508)
 - New documentation settings added to the Project Settings
 
 ### Fixes

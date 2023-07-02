@@ -28,9 +28,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.liste
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,21 +72,33 @@ public class DefaultConsolePersistenceService implements ConsolePersistenceServi
     @Override
     public void persistQueryRegions() {
         final var projectPath = getStoragePath();
-        if (projectPath == null) return;
 
         regionPersistenceService.writeRegionData(getRegionPath(projectPath, SOLR), SOLR);
         regionPersistenceService.writeRegionData(getRegionPath(projectPath, FLEXIBLE_SEARCH), FLEXIBLE_SEARCH);
     }
 
-    @Nullable
+    @NotNull
     private Path getStoragePath() {
-        final var ideModulesFilesDirectory = HybrisProjectSettingsComponent.getInstance(project).getState().getIdeModulesFilesDirectory();
-        if (ideModulesFilesDirectory == null) {
-            LOG.warn("Cannot detect .idea folder for project: " + project.getName());
-            return null;
+        final Path ideaPath;
+        var ideModulesFilesDirectory = HybrisProjectSettingsComponent.getInstance(project).getState().getIdeModulesFilesDirectory();
+        if (ideModulesFilesDirectory != null) {
+            ideaPath = Paths.get(ideModulesFilesDirectory).getParent();
+        } else {
+            LOG.warn("Cannot properly detect .idea folder for project " + project.getName() + ", falling back to other options.");
+            final var projectFile = project.getProjectFile();
+            if (projectFile != null) {
+                final var projectFileParent = projectFile.getParent();
+
+                ideModulesFilesDirectory = projectFileParent != null
+                    ? projectFileParent.getPath()
+                    : ProjectUtil.guessProjectDir(project).getPath() + HybrisConstants.EXCLUDE_IDEA_DIRECTORY;
+            } else {
+                ideModulesFilesDirectory = ProjectUtil.guessProjectDir(project).getPath() + HybrisConstants.EXCLUDE_IDEA_DIRECTORY;
+            }
+            ideaPath = Paths.get(ideModulesFilesDirectory);
         }
 
-        final var path = Paths.get(ideModulesFilesDirectory).getParent().resolve(HybrisConstants.QUERY_STORAGE_FOLDER_PATH);
+        final var path = ideaPath.resolve(HybrisConstants.QUERY_STORAGE_FOLDER_PATH);
 
         if (!Files.exists(path)) {
             FileUtil.createDirectory(new File(path.toString()));

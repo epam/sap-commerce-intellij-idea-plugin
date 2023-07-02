@@ -31,6 +31,8 @@
 
         <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
 
+        <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider" />
+        <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation.FlexibleSearchDocumentationTargetProvider"/>
         <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
         <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
         <lang.quoteHandler language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
