@@ -15,19 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-package com.intellij.idea.plugin.hybris.project.configurators
-
+import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.progress.ProgressIndicator
 
-interface KotlinCompilerConfigurator {
+class DummySpringConfigurator : SpringConfigurator {
 
-    fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache)
-    fun configureAfterImport(project: Project)
+    override fun process(
+        indicator: ProgressIndicator,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>
+    ) = Unit
 
-    companion object {
-        val instance: KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
-    }
+    override fun configure(
+        indicator: ProgressIndicator,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>,
+        modifiableModelsProvider: IdeModifiableModelsProvider
+    ) = Unit
+
 }

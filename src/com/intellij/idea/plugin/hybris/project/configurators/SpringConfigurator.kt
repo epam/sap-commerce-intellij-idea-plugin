@@ -16,29 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package com.intellij.idea.plugin.hybris.project.configurators
 
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.roots.ModifiableRootModel
 
-interface LibRootsConfigurator {
+interface SpringConfigurator {
+
+    fun process(
+        indicator: ProgressIndicator,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>
+    )
 
     fun configure(
-        progressIndicator: ProgressIndicator,
-        allYModules: Map<String, YModuleDescriptor>,
-        modifiableRootModel: ModifiableRootModel,
-        moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        indicator: ProgressIndicator
+        indicator: ProgressIndicator,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: Map<String, ModuleDescriptor>,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     )
 
     companion object {
-        val instance: LibRootsConfigurator = ApplicationManager.getApplication().getService(LibRootsConfigurator::class.java)
+        val instance: DefaultSpringConfigurator? = ApplicationManager.getApplication().getService(DefaultSpringConfigurator::class.java)
+        val dummyInstance: DummySpringConfigurator = ApplicationManager.getApplication().getService(DummySpringConfigurator::class.java)
     }
 }

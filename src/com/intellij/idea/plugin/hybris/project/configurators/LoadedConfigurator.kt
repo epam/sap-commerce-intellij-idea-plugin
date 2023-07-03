@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+interface LoadedConfigurator {
 
-import java.util.List;
+    fun configure(project: Project, allModules: List<ModuleDescriptor>)
 
-public interface EclipseConfigurator {
-
-    void configure(
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Project project,
-        @NotNull final List<EclipseModuleDescriptor> eclipseModules
-    );
+    companion object {
+        val instance: LoadedConfigurator = ApplicationManager.getApplication().getService(LoadedConfigurator::class.java)
+    }
 }

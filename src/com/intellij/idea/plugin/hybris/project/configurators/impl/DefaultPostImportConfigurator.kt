@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
@@ -64,16 +64,17 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         } catch (e: Exception) {
             LOG.error("Can not configure Ant due to an error.", e)
         }
-        try {
-            configuratorFactory.dataSourcesConfigurator
-                ?.configure(project)
-        } catch (e: Exception) {
-            LOG.error("Can not import data sources due to an error.", e)
-        }
         // invokeLater is needed to avoid a problem with transaction validation:
         // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
+
+            try {
+                configuratorFactory.dataSourcesConfigurator
+                    ?.configure(project)
+            } catch (e: Exception) {
+                LOG.error("Can not import data sources due to an error.", e)
+            }
 
             configuratorFactory.kotlinCompilerConfigurator
                 ?.configureAfterImport(project)
@@ -96,10 +97,10 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     }
 
     private fun notifyImportFinished(project: Project, refresh: Boolean) {
-        val notificationContent = if (refresh) HybrisI18NBundleUtils.message("hybris.notification.project.refresh.finished.content")
-        else HybrisI18NBundleUtils.message("hybris.notification.project.import.finished.content")
-        val notificationTitle = if (refresh) HybrisI18NBundleUtils.message("hybris.notification.project.refresh.title")
-        else HybrisI18NBundleUtils.message("hybris.notification.project.import.title")
+        val notificationContent = if (refresh) message("hybris.notification.project.refresh.finished.content")
+        else message("hybris.notification.project.import.finished.content")
+        val notificationTitle = if (refresh) message("hybris.notification.project.refresh.title")
+        else message("hybris.notification.project.import.title")
 
         Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
             .notify(project)

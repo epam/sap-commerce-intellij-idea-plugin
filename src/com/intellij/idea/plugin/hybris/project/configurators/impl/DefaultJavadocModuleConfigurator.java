@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,26 +24,26 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.JavaModuleExternalPaths;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+
 public class DefaultJavadocModuleConfigurator implements JavadocModuleConfigurator {
 
     @Override
     public void configure(
+        @NotNull ProgressIndicator indicator,
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final ProgressIndicator progressIndicator
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
-        Validate.notNull(modifiableRootModel);
-        Validate.notNull(moduleDescriptor);
+        indicator.setText2(message("hybris.project.import.module.javadoc"));
 
         final String javadocUrl = moduleDescriptor.getRootProjectDescriptor().getJavadocUrl();
 
-        final List<String> javadocPathList = MavenUtils.resolveMavenJavadocs(modifiableRootModel, moduleDescriptor, progressIndicator);
+        final List<String> javadocPathList = MavenUtils.resolveMavenJavadocs(modifiableRootModel, moduleDescriptor, indicator);
         final JavaModuleExternalPaths javaModuleExternalPaths = modifiableRootModel.getModuleExtension(
             JavaModuleExternalPaths.class
         );

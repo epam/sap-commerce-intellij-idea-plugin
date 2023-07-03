@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigur
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.*;
 import com.intellij.util.ArrayUtil;
@@ -37,14 +39,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 
 public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     @Override
     public void configure(
-        @NotNull final Project project,
+        final @NotNull ProgressIndicator indicator, @NotNull final Project project,
         @NotNull final ModifiableModuleModel model
     ) {
+        indicator.setText(message("hybris.project.import.search.scope"));
         final String customGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupCustom();
         final String commerceGroupName = HybrisApplicationSettingsComponent.getInstance().getState().getGroupHybris();
         final String nonHybrisGroupName = HybrisApplicationSettingsComponent.getInstance()

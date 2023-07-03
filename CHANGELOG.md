@@ -1,6 +1,7 @@
 ## [2023.2.3]
 
 ### Features
+- Automatically configure Database based on project settings during project import/refresh [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508) 
 - Show modifiers and persistence information for Items in the Type System preview [#505](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/505)
 - Import CCv2 `core-customize` as a separate module [#498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/498)
 - Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497) 

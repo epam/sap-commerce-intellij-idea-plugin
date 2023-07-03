@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,11 +21,14 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,13 +37,18 @@ import java.io.*;
 import java.util.*;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
 
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
 
     @Override
-    public void processDependencyModules(@NotNull final List<ModuleDescriptor> modulesChosenForImport) {
+    public void process(
+        @NotNull final ProgressIndicator indicator,
+        @NotNull final List<? extends ModuleDescriptor> modulesChosenForImport
+    ) {
+        indicator.setText2(message("hybris.project.import.module.groups"));
         final var applicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
         if (!applicationSettings.getGroupModules()) {
             return;
@@ -70,6 +79,8 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 it.setGroupNames(groupNames);
             }
         });
+
+        indicator.setText2("");
     }
 
     @Nullable

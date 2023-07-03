@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,18 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-package com.intellij.idea.plugin.hybris.project.configurators;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressIndicator
 
-import com.intellij.openapi.module.ModifiableModuleModel;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+interface GroupModuleConfigurator {
 
-public interface SearchScopeConfigurator {
+    fun process(
+        indicator: ProgressIndicator,
+        modulesChosenForImport: List<ModuleDescriptor>
+    )
 
-    void configure(
-        @NotNull final Project project,
-        @NotNull final ModifiableModuleModel model
-    );
-
+    companion object {
+        val instance: GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
+    }
 }

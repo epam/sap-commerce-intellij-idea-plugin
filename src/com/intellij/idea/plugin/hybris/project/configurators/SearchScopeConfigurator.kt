@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,19 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.ModifiableModuleModel
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 
-interface KotlinCompilerConfigurator {
+interface SearchScopeConfigurator {
 
-    fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache)
-    fun configureAfterImport(project: Project)
+    fun configure(
+        indicator: ProgressIndicator,
+        project: Project,
+        model: ModifiableModuleModel
+    )
 
     companion object {
-        val instance: KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
+        val instance: SearchScopeConfigurator = ApplicationManager.getApplication().getService(SearchScopeConfigurator::class.java)
     }
 }

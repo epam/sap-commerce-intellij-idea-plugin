@@ -22,12 +22,15 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
-interface KotlinCompilerConfigurator {
+interface JavaCompilerConfigurator {
 
-    fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache)
-    fun configureAfterImport(project: Project)
+    fun configure(
+        descriptor: HybrisProjectDescriptor,
+        project: Project,
+        cache: HybrisConfiguratorCache
+    )
 
     companion object {
-        val instance: KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
+        val instance: JavaCompilerConfigurator = ApplicationManager.getApplication().getService(JavaCompilerConfigurator::class.java)
     }
 }

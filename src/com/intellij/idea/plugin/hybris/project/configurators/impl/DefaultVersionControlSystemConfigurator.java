@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,35 +21,40 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
-import com.intellij.openapi.vcs.VcsRoot;
 import com.intellij.openapi.vcs.roots.VcsRootDetector;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 
 public class DefaultVersionControlSystemConfigurator implements VersionControlSystemConfigurator {
 
     @Override
     public void configure(
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
+        final @NotNull ProgressIndicator indicator, @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project
     ) {
-        final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(project);
-        final VcsRootDetector rootDetector = project.getService(VcsRootDetector.class);
-        final Set<VcsRoot> detectedRoots = new HashSet<>(rootDetector.detect());
-        for (File vcs: hybrisProjectDescriptor.getDetectedVcs()) {
-            detectedRoots.addAll(rootDetector.detect(VfsUtil.findFileByIoFile(vcs, true)));
+        indicator.setText(message("hybris.project.import.vcs"));
+
+        final var vcsManager = ProjectLevelVcsManager.getInstance(project);
+        final var rootDetector = project.getService(VcsRootDetector.class);
+        final var detectedRoots = new HashSet<>(rootDetector.detect());
+
+        for (final var vcs : hybrisProjectDescriptor.getDetectedVcs()) {
+            final var vf = VfsUtil.findFileByIoFile(vcs, true);
+            final var roots = rootDetector.detect(vf);
+            detectedRoots.addAll(roots);
         }
-        final ArrayList<VcsDirectoryMapping> directoryMappings = detectedRoots
-            .stream()
+        final var directoryMappings = detectedRoots.stream()
+            .filter(root -> root.getVcs() != null)
             .map(root -> new VcsDirectoryMapping(root.getPath().getPath(), root.getVcs().getName()))
             .collect(Collectors.toCollection(ArrayList::new));
         vcsManager.setDirectoryMappings(directoryMappings);

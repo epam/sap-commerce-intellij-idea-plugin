@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -335,7 +335,7 @@ object YModuleLibDescriptorUtil {
 
     private fun getLibraryDescriptors(descriptor: PlatformModuleDescriptor) = listOf(
         JavaLibraryDescriptor(
-            name = "Database Drivers",
+            name = HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY,
             libraryFile = getDbDriversDirectory(descriptor),
             exported = true,
         )

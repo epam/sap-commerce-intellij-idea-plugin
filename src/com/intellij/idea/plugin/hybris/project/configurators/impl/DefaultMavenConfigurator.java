@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,7 +36,6 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class DefaultMavenConfigurator implements MavenConfigurator {
 
@@ -50,7 +50,7 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             .stream()
             .map(e -> new File(e.getModuleRootDirectory(), MavenConstants.POM_XML))
             .map(e -> VfsUtil.findFileByIoFile(e, true))
-            .collect(Collectors.toList());
+            .toList();
 
         final var mavenProjectBuilders = mavenProjectFiles.stream()
                                                           .map(mavenProjectBuilderFunction(project))

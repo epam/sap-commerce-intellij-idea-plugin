@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,11 +20,16 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 
 interface VersionControlSystemConfigurator {
 
-    fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, project: Project)
+    fun configure(
+        indicator: ProgressIndicator,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        project: Project
+    )
 
     companion object {
         val instance: VersionControlSystemConfigurator = ApplicationManager.getApplication().getService(VersionControlSystemConfigurator::class.java)

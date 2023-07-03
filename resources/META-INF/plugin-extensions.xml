@@ -1,7 +1,0 @@
-<idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
-
-        <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
-
-    </extensions>
-</idea-plugin>

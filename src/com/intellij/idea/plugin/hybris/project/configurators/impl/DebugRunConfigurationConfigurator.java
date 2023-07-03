@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDesc
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,15 +43,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+
 public class DebugRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
     public void configure(
-        final HybrisProjectDescriptor hybrisProjectDescriptor,
+        final @NotNull ProgressIndicator indicator, final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final Project project,
         final HybrisConfiguratorCache cache
     ) {
-
+        indicator.setText(message("hybris.project.import.runconfiguration.debug"));
         final RunManager runManager = RunManager.getInstance(project);
         createRemoteDebug(runManager, hybrisProjectDescriptor, cache);
     }

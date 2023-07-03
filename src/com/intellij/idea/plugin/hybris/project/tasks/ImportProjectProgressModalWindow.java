@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -91,7 +91,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -143,16 +142,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var allModuleDescriptors = allModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
 
-        final var springConfigurator = configuratorFactory.getSpringConfigurator();
-        final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
-        final var versionControlSystemConfigurator = configuratorFactory.getVersionControlSystemConfigurator();
-
         this.initializeHybrisProjectSettings(project);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
         this.saveCustomDirectoryLocation(project);
         this.saveImportedSettings(project);
         this.disableWrapOnType(ImpexLanguage.getInstance());
+
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 
         processUltimateEdition(indicator);
@@ -161,11 +157,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
 
-        indicator.setText(message("hybris.project.import.spring"));
-        springConfigurator.processSpringConfiguration(hybrisProjectDescriptor, allModuleDescriptors);
-        indicator.setText2(message("hybris.project.import.module.groups"));
-        groupModuleConfigurator.processDependencyModules(allModules);
-        indicator.setText2("");
+        configuratorFactory.getSpringConfigurator().process(indicator, hybrisProjectDescriptor, allModuleDescriptors);
+        configuratorFactory.getGroupModuleConfigurator().process(indicator, allModules);
+
         int counter = 0;
 
         for (ModuleDescriptor moduleDescriptor : allModules) {
@@ -186,22 +180,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
-        indicator.setText(message("hybris.project.import.dependencies"));
-        indicator.setText2("");
-        configuratorFactory.getModulesDependenciesConfigurator().configure(hybrisProjectDescriptor, modifiableModelsProvider);
-        springConfigurator.configureDependencies(hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
-
-        indicator.setText(message("hybris.project.import.runconfigurations"));
-        configuratorFactory.getDebugRunConfigurationConfigurator().configure(hybrisProjectDescriptor, project, cache);
-
-        Optional.ofNullable(configuratorFactory.getTestRunConfigurationConfigurator())
-            .ifPresent(testRunConfigurationConfigurator -> testRunConfigurationConfigurator.configure(hybrisProjectDescriptor, project, cache));
-
-        indicator.setText(message("hybris.project.import.vcs"));
-        versionControlSystemConfigurator.configure(hybrisProjectDescriptor, project);
-
-        indicator.setText(message("hybris.project.import.search.scope"));
-        configuratorFactory.getSearchScopeConfigurator().configure(project, rootProjectModifiableModel);
+        configuratorFactory.getModulesDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
+        configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
+        configuratorFactory.getDebugRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
+        configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
+        configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, rootProjectModifiableModel);
+//        Optional.ofNullable(configuratorFactory.getDataSourcesConfigurator())
+//            .ifPresent(it -> it.configure(indicator, project));
 
         configureProjectIcon();
 
@@ -274,9 +259,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final @NotNull ProgressIndicator indicator,
         final Map<String, YModuleDescriptor> allYModules,
         final ModifiableModuleModel rootProjectModifiableModel,
-        final ModuleDescriptor moduleDescriptor) {
+        final ModuleDescriptor moduleDescriptor
+    ) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
+
         final Module javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().getAbsolutePath(),
             StdModuleTypes.JAVA.getId()
@@ -292,17 +279,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         modifiableRootModel.inheritSdk();
 
-        indicator.setText2(message("hybris.project.import.module.libs"));
-        configuratorFactory.getLibRootsConfigurator().configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-
-        indicator.setText2(message("hybris.project.import.module.content"));
-        configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(modifiableRootModel, moduleDescriptor);
-
-        indicator.setText2(message("hybris.project.import.module.outputpath"));
-        configuratorFactory.getCompilerOutputPathsConfigurator().configure(modifiableRootModel, moduleDescriptor);
-
-        indicator.setText2(message("hybris.project.import.module.javadoc"));
-        configuratorFactory.getJavadocModuleConfigurator().configure(modifiableRootModel, moduleDescriptor, indicator);
+        configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
+        configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(indicator, modifiableRootModel, moduleDescriptor);
+        configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
+        configuratorFactory.getJavadocModuleConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {

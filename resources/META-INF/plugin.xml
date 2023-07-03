@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -47,9 +47,8 @@
     <depends optional="true" config-file="optional-copyright-impex-dependencies.xml">com.intellij.copyright</depends>
     <depends optional="true" config-file="optional-xdebugger-dependencies.xml">com.intellij.modules.xdebugger</depends>
     <depends optional="true" config-file="optional-kotlin-dependencies.xml">org.jetbrains.kotlin</depends>
+    <depends optional="true" config-file="optional-database-dependencies.xml">com.intellij.database</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/plugin-community.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/plugin-extensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

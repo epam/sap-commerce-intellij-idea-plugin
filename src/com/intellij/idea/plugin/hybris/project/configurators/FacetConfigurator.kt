@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +19,13 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.ModifiableFacetModel
+import com.intellij.idea.plugin.hybris.project.configurators.impl.KotlinFacetConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.WebFacetConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.YFacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -32,4 +38,11 @@ interface FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     )
+
+    companion object {
+        val yInstance: YFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator::class.java)
+        val springInstance: SpringFacetConfigurator? = ApplicationManager.getApplication().getService(SpringFacetConfigurator::class.java)
+        val kotlinInstance: KotlinFacetConfigurator? = ApplicationManager.getApplication().getService(KotlinFacetConfigurator::class.java)
+        val webInstance: WebFacetConfigurator? = ApplicationManager.getApplication().getService(WebFacetConfigurator::class.java)
+    }
 }

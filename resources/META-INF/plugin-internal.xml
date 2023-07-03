@@ -1,6 +1,7 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -20,6 +21,8 @@
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
         <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 

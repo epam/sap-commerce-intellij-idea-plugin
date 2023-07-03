@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,19 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
-interface KotlinCompilerConfigurator {
+interface AntConfigurator {
 
-    fun configure(descriptor: HybrisProjectDescriptor, project: Project, cache: HybrisConfiguratorCache)
-    fun configureAfterImport(project: Project)
+    fun configure(
+        hybrisProjectDescriptor: HybrisProjectDescriptor?,
+        allModules: List<ModuleDescriptor?>,
+        project: Project
+    )
 
     companion object {
-        val instance: KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
+        val instance: AntConfigurator? = ApplicationManager.getApplication().getService(AntConfigurator::class.java)
     }
 }

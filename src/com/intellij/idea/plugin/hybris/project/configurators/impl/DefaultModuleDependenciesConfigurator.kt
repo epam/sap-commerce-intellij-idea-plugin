@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,21 +17,26 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
 
 class DefaultModuleDependenciesConfigurator : ModuleDependenciesConfigurator {
 
     override fun configure(
+        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        indicator.text = HybrisI18NBundleUtils.message("hybris.project.import.dependencies")
+        indicator.text2 = ""
         val modulesChosenForImport = hybrisProjectDescriptor.modulesChosenForImport
         val allModules = modifiableModelsProvider.modules
             .associateBy { it.name }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
@@ -43,12 +44,15 @@ import java.io.File
 class DefaultLibRootsConfigurator : LibRootsConfigurator {
 
     override fun configure(
+        progressIndicator: ProgressIndicator,
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableModelsProvider: IdeModifiableModelsProvider,
         indicator: ProgressIndicator
     ) {
+        indicator.text2 = HybrisI18NBundleUtils.message("hybris.project.import.module.libs")
+
         val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
         for (javaLibraryDescriptor in YModuleLibDescriptorUtil.getLibraryDescriptors(moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {

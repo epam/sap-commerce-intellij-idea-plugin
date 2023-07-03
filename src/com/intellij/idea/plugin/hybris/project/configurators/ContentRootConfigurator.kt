@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +22,16 @@ import com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyConten
 import com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
 
 interface ContentRootConfigurator {
 
-    fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor)
+    fun configure(
+        indicator: ProgressIndicator,
+        modifiableRootModel: ModifiableRootModel,
+        moduleDescriptor: ModuleDescriptor
+    )
 
     companion object {
         val instance: ContentRootConfigurator = ApplicationManager.getApplication().getService(RegularContentRootConfigurator::class.java)

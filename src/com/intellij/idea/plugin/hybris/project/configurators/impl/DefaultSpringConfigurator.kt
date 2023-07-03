@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.kotlin.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
@@ -28,6 +30,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDe
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.spring.facet.SpringFacet
@@ -43,10 +46,12 @@ import java.util.regex.Pattern
 
 class DefaultSpringConfigurator : SpringConfigurator {
 
-    override fun processSpringConfiguration(
+    override fun process(
+        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
+        indicator.text = message("hybris.project.import.spring")
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
                 when (moduleDescriptor) {
@@ -70,9 +75,10 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
     }
 
-    override fun configureDependencies(
+    override fun configure(
+        indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: MutableMap<String, ModuleDescriptor>,
+        moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val facetModels = modifiableModelsProvider.modules
