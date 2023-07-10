@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
@@ -39,6 +38,8 @@ import com.intellij.psi.util.PsiTreeUtil
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
+    private val filter = FlexibleSearchFoldingBlocksFilter()
+
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val foldingSettings = HybrisProjectSettingsComponent.getInstance(root.project).state.flexibleSearchSettings.folding
         if (!foldingSettings.enabled) {
@@ -46,7 +47,6 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         }
 
         return CachedValuesManager.getCachedValue(root) {
-            val filter = ApplicationManager.getApplication().getService(FlexibleSearchFoldingBlocksFilter::class.java)
             val results = SyntaxTraverser.psiTraverser(root)
                 .filter { filter.isAccepted(it) }
                 .mapNotNull {
@@ -113,6 +113,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 }
                 ?.joinToString { it ?: "?" }
                 ?.let { if (it.contains(",")) "[$it]" else it }
+                ?: "?"
 
             "$tables($columns)"
         }

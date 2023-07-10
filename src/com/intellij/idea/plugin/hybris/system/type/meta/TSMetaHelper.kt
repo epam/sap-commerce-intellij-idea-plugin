@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -107,11 +107,11 @@ object TSMetaHelper {
 
     fun getAllExtends(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): Set<TSGlobalMetaItem> {
         val tempParents = LinkedHashSet<TSGlobalMetaItem>()
-        var metaItem = getMetaItem(metaModel, meta)
+        var metaItem = getExtendsMetaItem(metaModel, meta)
 
         while (metaItem != null) {
             tempParents.add(metaItem)
-            metaItem = getMetaItem(metaModel, metaItem)
+            metaItem = getExtendsMetaItem(metaModel, metaItem)
         }
         return Collections.unmodifiableSet(tempParents)
     }
@@ -130,8 +130,11 @@ object TSMetaHelper {
         || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
 
 
-    private fun getMetaItem(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): TSGlobalMetaItem? {
-        val realExtendedMetaItemName = meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM
+    private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): TSGlobalMetaItem? {
+        val realExtendedMetaItemName = meta.extendedMetaItemName
+            // prevent deadlock when type extends itself
+            ?.takeIf { it != meta.name }
+            ?: HybrisConstants.TS_TYPE_GENERIC_ITEM
 
         return metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[realExtendedMetaItemName]
     }

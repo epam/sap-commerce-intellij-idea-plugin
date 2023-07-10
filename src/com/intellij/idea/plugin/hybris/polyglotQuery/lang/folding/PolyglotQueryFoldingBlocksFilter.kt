@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiElementFilter
@@ -31,7 +30,4 @@ class PolyglotQueryFoldingBlocksFilter : PsiElementFilter {
         && (element is FoldablePsiElement || element.elementType == PolyglotQueryTypes.COMMENT)
         && !element.textRange.isEmpty
 
-    companion object {
-        val instance: PolyglotQueryFoldingBlocksFilter = ApplicationManager.getApplication().getService(PolyglotQueryFoldingBlocksFilter::class.java)
-    }
 }

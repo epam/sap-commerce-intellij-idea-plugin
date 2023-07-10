@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,12 +30,13 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
-import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
 
 class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
+
+    private val filter = ItemsXmlFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
@@ -44,7 +45,7 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             ?: return emptyArray()
 
         return SyntaxTraverser.psiTraverser(root)
-            .filter { ItemsXmlFilter().isAccepted(it) }
+            .filter { filter.isAccepted(it) }
             .mapNotNull {
                 if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
                 FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
@@ -104,30 +105,6 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         }
 
         else -> false
-    }
-
-    class ItemsXmlFilter : PsiElementFilter {
-
-        override fun isAccepted(element: PsiElement) = when (element) {
-            is XmlTag -> when (element.localName) {
-                CustomProperties.PROPERTY,
-                MapTypes.MAPTYPE,
-                AtomicTypes.ATOMICTYPE,
-                EnumTypes.ENUMTYPE,
-                CollectionTypes.COLLECTIONTYPE,
-                Relations.RELATION,
-                Relation.SOURCE_ELEMENT,
-                Relation.TARGET_ELEMENT,
-                ItemTypes.ITEMTYPE,
-                ItemType.DEPLOYMENT,
-                Attributes.ATTRIBUTE,
-                Indexes.INDEX -> true
-
-                else -> false
-            }
-
-            else -> false
-        }
     }
 
     companion object {
