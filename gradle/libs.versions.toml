@@ -27,11 +27,11 @@ solrSolrj = "8.11.2"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
-kotlin = "1.8.21"
+kotlin = "1.9.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.intellij
-gradleIntelliJPlugin = "1.14.2"
+gradleIntelliJPlugin = "1.15.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-changelog = "2.0.0"
+changelog = "2.1.2"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }

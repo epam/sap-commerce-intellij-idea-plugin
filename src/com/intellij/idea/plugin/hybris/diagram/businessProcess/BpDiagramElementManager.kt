@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,9 +51,9 @@ class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
         else -> null
     }
 
-    override fun getItemType(element: Any?) = when (element) {
-        is BpGraphFieldContextParameter -> SimpleColoredText(element.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        is BpGraphFieldParameter -> SimpleColoredText(element.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+    override fun getItemType(nodeElement: BpGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
+        is BpGraphFieldContextParameter -> SimpleColoredText(nodeItem.type, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is BpGraphFieldParameter -> SimpleColoredText(nodeItem.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         else -> null
     }
 
@@ -62,6 +62,7 @@ class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
             ParameterUse.REQUIRED -> HybrisIcons.BP_DIAGRAM_PARAMETER_REQUIRED
             else -> HybrisIcons.BP_DIAGRAM_PARAMETER_OPTIONAL
         }
+
         is BpGraphField -> when (nodeItem.name) {
             Action.BEAN -> HybrisIcons.BP_DIAGRAM_SPRING_BEAN
             Action.NODE -> HybrisIcons.BP_DIAGRAM_NODE

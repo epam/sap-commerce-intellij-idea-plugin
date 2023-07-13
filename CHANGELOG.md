@@ -8,6 +8,13 @@
 - Refactored `ImportProjectProgressModalWindow` so that is calls so that project state retrieved only once [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
 - Changed generated `*.iml` file name when grouping is not selected so file name does not start with a dot [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
 
+### Other
+- Updated Kotlin to 1.9.0
+- Updated Gradle plugin to 1.15.0
+
+### Deprecated
+- Updated usage of the Diagram API
+
 ## [2023.2.3]
 
 ### Features
@@ -572,7 +579,7 @@
 - Extended/refactored type system inspection rules
 - Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions
 
-### Deprecation
+### Deprecated
 - Decreased usage of the Deprecated API
 
 ## [2022.2]
