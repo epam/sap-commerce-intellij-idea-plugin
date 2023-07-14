@@ -1,7 +1,7 @@
 ## [2023.2.4]
 
 ### `FlexibleSearch` enhancements
-- Improved language injection into Java files [#514](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/514)
+- Improved language injection into Java files [#515](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/515)
 
 ### Features
 - Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
