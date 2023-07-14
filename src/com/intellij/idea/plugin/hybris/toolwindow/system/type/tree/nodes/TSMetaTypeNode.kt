@@ -32,6 +32,7 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
 
     override fun getName() = HybrisI18NBundleUtils.message("hybris.toolwindow.ts.group.${metaType.name.lowercase()}.name")
 
+    @Suppress("UNCHECKED_CAST")
     override fun update(existingNode: TSNode, newNode: TSNode) {
         val current = existingNode as? TSMetaNode<TSMetaClassifier<out DomElement>> ?: return
         val new = newNode as? TSMetaNode<*> ?: return

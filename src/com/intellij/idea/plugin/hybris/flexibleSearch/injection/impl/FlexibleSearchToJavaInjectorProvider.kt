@@ -35,17 +35,12 @@ class FlexibleSearchToJavaInjectorProvider : FlexibleSearchInjectorProvider() {
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         val hostParent = host.parent ?: return
-        when (hostParent) {
-            is PsiExpressionList -> {
-                val psiMethod = hostParent.parent as? PsiMethodCallExpression ?: return
-                inject(psiMethod, injectionPlacesRegistrar, host)
-            }
 
-            else -> {
-                if (host is PsiLiteralExpression && hostParent !is PsiPolyadicExpression) {
-                    inject(injectionPlacesRegistrar, host) { FxSUtils.computeExpression(host) }
-                }
-            }
+        if (host is PsiLiteralExpression && hostParent !is PsiPolyadicExpression) {
+            inject(injectionPlacesRegistrar, host) { FxSUtils.computeExpression(host) }
+        } else if (hostParent is PsiExpressionList) {
+            val psiMethod = hostParent.parent as? PsiMethodCallExpression ?: return
+            inject(psiMethod, injectionPlacesRegistrar, host)
         }
     }
 

@@ -1,5 +1,8 @@
 ## [2023.2.4]
 
+### `FlexibleSearch` enhancements
+- Improved language injection into Java files [#514](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/514)
+
 ### Features
 - Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
 
@@ -11,6 +14,7 @@
 ### Other
 - Updated Kotlin to 1.9.0
 - Updated Gradle plugin to 1.15.0
+- Updated Gradle to 8.2.1
 
 ### Deprecated
 - Updated usage of the Diagram API
