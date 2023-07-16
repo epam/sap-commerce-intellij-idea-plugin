@@ -4,11 +4,11 @@
 - Improved language injection into Java files [#515](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/515)
 
 ### Features
-- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
-- Improved performance of the Item attribute resolution [#516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/516)
+- Improved performance of the Item attribute resolution [#516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/516)
+- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
 
 ### Fixes
-- Missing navigation to Bean Enum declaration from java class [#516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/516)
+- Missing navigation to Bean Enum declaration from java class [#517](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/517)
 - Fixed deadlock when ItemType name equals to its extends [#513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/513)
 - Refactored `ImportProjectProgressModalWindow` so that is calls so that project state retrieved only once [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
 - Changed generated `*.iml` file name when grouping is not selected so file name does not start with a dot [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
