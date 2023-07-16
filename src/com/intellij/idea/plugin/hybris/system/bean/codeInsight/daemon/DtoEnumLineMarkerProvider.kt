@@ -22,8 +22,8 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.BeansUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -33,7 +33,7 @@ class DtoEnumLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass
 
     override fun getName() = message("hybris.editor.gutter.bs.dto.enum.name")
     override fun getIcon(): Icon = HybrisIcons.BS_ENUM
-    override fun canProcess(psi: PsiClass) = ModelsUtils.isEnumFile(psi)
+    override fun canProcess(psi: PsiClass) = BeansUtils.isEnumFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.qualifiedName != null }
         ?.takeIf { it.nameIdentifier != null }
