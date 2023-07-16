@@ -99,12 +99,10 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
                 ?.let { meta ->
                     when (meta) {
                         is TSGlobalMetaEnum -> metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
-                            ?.allAttributes
-                            ?.find { attr -> attr.name.equals(featureName, true) }
+                            ?.let { it.allAttributes[featureName] }
                             ?.let { attr -> AttributeResolveResult(attr) }
 
-                        is TSGlobalMetaItem -> meta.allAttributes
-                            .find { attr -> attr.name.equals(featureName, true) }
+                        is TSGlobalMetaItem -> meta.allAttributes[featureName]
                             ?.let { attr -> AttributeResolveResult(attr) }
                             ?: meta.allRelationEnds
                                 .find { relationEnd -> relationEnd.name.equals(featureName, true) }

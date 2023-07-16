@@ -132,6 +132,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
     private fun getCompletionsForEnum(metaModelAccess: TSMetaModelAccess) = metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
         ?.allAttributes
+        ?.values
         ?.map { TSLookupElementFactory.build(it) }
         ?: emptyList()
 
@@ -151,7 +152,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
     private fun getCompletions(metaItem: TSGlobalMetaItem) = getCompletions(metaItem, emptySet())
 
     private fun getCompletions(metaItem: TSGlobalMetaItem, excludeNames: Set<String>): List<LookupElementBuilder> {
-        val attributes = metaItem.allAttributes
+        val attributes = metaItem.allAttributes.values
             .mapNotNull { mapAttributeToLookup(excludeNames, it) }
         val relationEnds = metaItem.allRelationEnds
             .mapNotNull { TSLookupElementFactory.build(it) }

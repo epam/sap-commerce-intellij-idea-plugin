@@ -3,8 +3,8 @@
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -42,9 +42,9 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     @Override
     public List<? extends TSGlobalMetaItem.TSGlobalMetaItemAttribute> findAttributesByName(final TSGlobalMetaItem meta, final String name, final boolean includeInherited) {
         return includeInherited
-            ? meta.getAllAttributes().stream()
-                  .filter(attribute -> attribute.getName().equalsIgnoreCase(name))
-                  .collect(Collectors.toList())
+            ? Optional.ofNullable(meta.getAllAttributes().get(name))
+                      .map(Collections::singletonList)
+                      .orElseGet(Collections::emptyList)
             : Optional.ofNullable(meta.getAttributes().get(name))
                       .map(Collections::singletonList)
                       .orElseGet(Collections::emptyList);

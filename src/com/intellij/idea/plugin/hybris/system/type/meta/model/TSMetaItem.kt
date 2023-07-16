@@ -75,7 +75,7 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
     override val attributes: Map<String, TSGlobalMetaItemAttribute>
     override val indexes: Map<String, TSGlobalMetaItemIndex>
     val relationEnds: List<TSMetaRelation.TSMetaRelationElement>
-    val allAttributes: List<TSGlobalMetaItemAttribute>
+    val allAttributes: Map<String, TSGlobalMetaItemAttribute>
     val allIndexes: List<TSGlobalMetaItemIndex>
     val allCustomProperties: List<TSMetaCustomProperty>
     val allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>

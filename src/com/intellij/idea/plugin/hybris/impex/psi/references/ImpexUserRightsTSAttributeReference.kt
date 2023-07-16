@@ -74,8 +74,7 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
                 ?.let { meta ->
                     when (meta) {
                         is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
-                            ?.allAttributes
-                            ?.find { attr -> attr.name.equals(featureName, true) }
+                            ?.let { it.allAttributes[featureName] }
                             ?.let { attr -> AttributeResolveResult(attr) }
 
                         is TSGlobalMetaItem -> resolve(meta, featureName)
@@ -104,8 +103,7 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
             )
         }
 
-        private fun resolve(meta: TSGlobalMetaItem, featureName: String) = meta.allAttributes
-            .find { attr -> attr.name.equals(featureName, true) }
+        private fun resolve(meta: TSGlobalMetaItem, featureName: String) = meta.allAttributes[featureName]
             ?.let { attr -> AttributeResolveResult(attr) }
             ?: meta.allRelationEnds
                 .find { relationEnd -> relationEnd.name.equals(featureName, true) }

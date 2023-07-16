@@ -73,8 +73,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : T
             ?.text
             ?.let { metaService.findMetaEnumByName(it) }
             ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
-            ?.allAttributes
-            ?.firstOrNull { refName.equals(it.name, true) }
+            ?.let { it.allAttributes[refName] }
             ?.let { AttributeResolveResult(it) }
 
         private fun tryResolveForItemType(
@@ -84,8 +83,7 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : T
         ): ResolveResult? = itemTypeCode
             ?.let { metaModelService.findMetaItemByName(it) }
             ?.let { meta ->
-                meta.allAttributes
-                    .find { it.name.equals(featureName, true) }
+                meta.allAttributes[featureName]
                     ?.let { AttributeResolveResult(it) }
                     ?: meta.allRelationEnds
                         .find { it.name.equals(featureName, true) }

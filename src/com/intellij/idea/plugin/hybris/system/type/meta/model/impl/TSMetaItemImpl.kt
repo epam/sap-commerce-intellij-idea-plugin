@@ -112,7 +112,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override val indexes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemIndex>()
     override val relationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
 
-    override val allAttributes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
+    override val allAttributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
     override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
     override val allCustomProperties = LinkedList<TSMetaCustomProperty>()
     override val allRelationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
@@ -161,7 +161,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         val combinedRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
 
         allExtends.addAll(extends)
-        allAttributes.addAll(attributes.values + extends.flatMap { it.attributes.values })
+        allAttributes.putAll(attributes)
+        extends.forEach { allAttributes.putAll(it.attributes) }
         allCustomProperties.addAll(customProperties.values + extends.flatMap { it.customProperties.values })
         allIndexes.addAll(indexes.values + extends.flatMap { it.indexes.values })
         allRelationEnds.addAll(combinedRelationEnds)

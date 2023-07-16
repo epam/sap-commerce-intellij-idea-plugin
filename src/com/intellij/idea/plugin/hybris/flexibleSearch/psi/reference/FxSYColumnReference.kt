@@ -75,7 +75,8 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
             return getSuitablePrefixes() + getColumns(type)
         }
         if ((hasColumnAlias && hasTableAlias)
-            || (!hasColumnAlias && (!hasTableAlias || canFallback))) {
+            || (!hasColumnAlias && (!hasTableAlias || canFallback))
+        ) {
             return getColumns(type)
         }
 
@@ -183,9 +184,10 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         private fun tryResolveByItemType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? =
             metaService.findMetaItemByName(type)
                 ?.let { meta ->
-                    val attributes = meta.allAttributes
-                        .filter { refName.equals(it.name, true) }
-                        .map { AttributeResolveResult(it) }
+                    val attributes = meta.allAttributes[refName]
+                        ?.let { AttributeResolveResult(it) }
+                        ?.let { listOf(it) }
+                        ?: emptyList()
 
                     val relations = meta.allRelationEnds
                         .filter { refName.equals(it.name, true) }
@@ -208,8 +210,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
             ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
-            ?.allAttributes
-            ?.firstOrNull { refName.equals(it.name, true) }
+            ?.let { it.allAttributes[refName] }
             ?.let { arrayOf(AttributeResolveResult(it)) }
 
     }

@@ -36,7 +36,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
     )
 
     override fun select(item: TSMetaItemAttribute) = selectRowWithValue(item.name, COLUMN_QUALIFIER)
-    override fun getItems(owner: TSGlobalMetaItem): MutableList<TSMetaItemAttribute> = owner.allAttributes
+    override fun getItems(owner: TSGlobalMetaItem): MutableList<TSMetaItemAttribute> = owner.allAttributes.values
         .sortedWith(
             compareBy(
                 { !it.isCustom },

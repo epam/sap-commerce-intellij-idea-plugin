@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -99,9 +99,10 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
         private fun tryResolveByItemType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? =
             metaService.findMetaItemByName(type)
                 ?.let { meta ->
-                    val attributes = meta.allAttributes
-                        .filter { refName.equals(it.name, true) }
-                        .map { AttributeResolveResult(it) }
+                    val attributes = meta.allAttributes[refName]
+                        ?.let { AttributeResolveResult(it) }
+                        ?.let { listOf(it) }
+                        ?: emptyList()
 
                     val relations = meta.allRelationEnds
                         .filter { refName.equals(it.name, true) }
@@ -112,8 +113,7 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)
             ?.let { metaService.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE) }
-            ?.allAttributes
-            ?.firstOrNull { refName.equals(it.name, true) }
+            ?.let { it.allAttributes[refName] }
             ?.let { arrayOf(AttributeResolveResult(it)) }
 
     }

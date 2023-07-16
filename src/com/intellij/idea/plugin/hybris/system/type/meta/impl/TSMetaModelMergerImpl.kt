@@ -51,7 +51,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .forEach { (it as? TSGlobalMetaItemSelfMerge<*, *>)?.postMerge(this) }
 
         getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
-            .flatMap { it.allAttributes }
+            .flatMap { it.allAttributes.values }
             .filter { it.type != null }
             .forEach { it.flattenType = TSMetaHelper.flattenType(it.type!!, allTypes) }
 

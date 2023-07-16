@@ -42,19 +42,22 @@ public final class ModelsUtils {
     public static boolean isItemModelFile(final PsiClass psiClass) {
         final var psiFile = psiClass.getContainingFile();
 
-        if (psiFile.getText().contains("Generated model class for type")) {
-            return true;
-        }
-
         final VirtualFile virtualFile = psiFile.getVirtualFile() != null
             ? psiFile.getVirtualFile()
             : psiFile.getOriginalFile().getVirtualFile();
 
-        if (virtualFile == null || virtualFile.getExtension() == null) {
-            return false;
-        }
+        if (virtualFile == null) return false;
 
-        return virtualFile.getExtension().equals("class")
+        final var extension = virtualFile.getExtension();
+        if (extension == null) return false;
+
+        if (extension.equals("java")
+            && virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
+            && shouldProcessItemType(psiClass)
+        ) return true;
+
+
+        return extension.equals("class")
                && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)
                && shouldProcessItemType(psiClass);
     }
@@ -68,15 +71,17 @@ public final class ModelsUtils {
 
     public static boolean isEnumFile(final PsiClass psiClass) {
         final var psiFile = psiClass.getContainingFile();
-
-        if (psiFile.getText().contains("Generated enum")) {
-            return true;
-        }
-
-        final VirtualFile virtualFile = psiFile.getVirtualFile();
+        final var virtualFile = psiFile.getVirtualFile();
 
         if (virtualFile == null) return false;
-        if (virtualFile.getExtension() == null) return false;
+
+        final var extension = virtualFile.getExtension();
+        if (extension == null) return false;
+
+        if (extension.equals("java")
+            && virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
+            && shouldProcessEnum(psiClass)
+        ) return true;
 
         return virtualFile.getExtension().equals("class")
                && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)

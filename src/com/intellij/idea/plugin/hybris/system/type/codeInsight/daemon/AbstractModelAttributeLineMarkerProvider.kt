@@ -48,7 +48,7 @@ abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : Abstra
     protected open fun getPsiElementItemLineMarkerInfo(
         meta: TSGlobalMetaItem, name: String, nameIdentifier: PsiIdentifier
     ) = with(getAttributeElements(meta, name)) {
-        if (this.isEmpty()) {
+        if (this == null) {
             val groupedRelElements = getRelations(meta, name)
             return@with getRelationMarkers(groupedRelElements, RelationEnd.SOURCE, HybrisIcons.TS_RELATION_SOURCE, nameIdentifier)
                 ?: getRelationMarkers(groupedRelElements, RelationEnd.TARGET, HybrisIcons.TS_RELATION_TARGET, nameIdentifier)
@@ -63,13 +63,12 @@ abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : Abstra
         }
     }
 
-    open fun getAttributeElements(meta: TSGlobalMetaItem, name: String) = meta.allAttributes
-        .filter { it.name == name }
-        .flatMap { it.declarations }
-        .map { it.domAnchor }
-        .mapNotNull { it.retrieveDomElement() }
-        .map { it.qualifier }
-        .mapNotNull { it.xmlAttributeValue }
+    open fun getAttributeElements(meta: TSGlobalMetaItem, name: String) = meta.allAttributes[name]
+        ?.declarations
+        ?.map { it.domAnchor }
+        ?.mapNotNull { it.retrieveDomElement() }
+        ?.map { it.qualifier }
+        ?.mapNotNull { it.xmlAttributeValue }
 
     open fun getRelations(meta: TSGlobalMetaItem, name: String) = meta.allRelationEnds
         .filter { it.qualifier == name }

@@ -40,6 +40,7 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
         val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
         meta
             ?.allAttributes
+            ?.values
             ?.map { TSLookupElementFactory.build(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
 

@@ -53,8 +53,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
                     val computedConstantValue = it.computeConstantValue() ?: return@mapNotNull null
                     if (computedConstantValue !is String) return@mapNotNull null
 
-                    meta.allAttributes
-                        .find { attr -> attr.name == computedConstantValue }
+                    meta.allAttributes[computedConstantValue]
                         ?.let { attribute -> return@mapNotNull createChildInfo(attribute, computedConstantValue, it.name, metaAccess, debuggerUtils) }
                     meta.allRelationEnds
                         .filter { relation -> relation.isNavigable }

@@ -27,8 +27,10 @@ import com.intellij.psi.PsiClass
 class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
 
     override fun handleClick(editor: Editor, payload: InlayActionPayload) {
-        val target = (payload as? PsiPointerInlayActionPayload)?.pointer?.element as? PsiClass
-        target
+        (payload as? PsiPointerInlayActionPayload)
+            ?.pointer
+            ?.element
+            ?.let { it as? PsiClass }
             ?.let {
                 invokeLater { it.navigate(true) }
             }

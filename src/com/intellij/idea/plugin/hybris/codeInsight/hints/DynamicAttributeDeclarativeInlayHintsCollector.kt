@@ -53,9 +53,9 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
             .map { it.value }
             .firstOrNull { it != null } ?: return
 
-        val attribute = meta.allAttributes
-            .filter { it.persistence.type == PersistenceType.DYNAMIC }
-            .firstOrNull { it.name == qualifier } ?: return
+        val attribute = meta.allAttributes[qualifier]
+            ?.takeIf { it.persistence.type == PersistenceType.DYNAMIC }
+            ?: return
 
         val identifier = element.methodExpression.lastChild
 
