@@ -5,7 +5,7 @@
 
 ### Features
 - Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)
-- Improved performace of the Item attribute resolution [#516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/516)
+- Improved performance of the Item attribute resolution [#516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/511)- Added possibility to skip non-existing source directories during project import [#511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/516)
 
 ### Fixes
 - Fixed deadlock when ItemType name equals to its extends [#513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/513)
