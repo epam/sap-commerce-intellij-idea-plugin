@@ -1,3 +1,8 @@
+## [2023.2.5]
+
+### `FlexibleSearch` enhancements
+- Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
+
 ## [2023.2.4]
 
 ### `FlexibleSearch` enhancements
