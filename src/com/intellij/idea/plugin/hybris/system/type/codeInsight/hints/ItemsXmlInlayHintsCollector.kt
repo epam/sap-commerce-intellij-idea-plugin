@@ -51,6 +51,12 @@ import javax.swing.Icon
  */
 class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
 
+    private val excludedItemTypes = setOf(
+        HybrisConstants.TS_TYPE_GENERIC_ITEM,
+        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
+        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM
+    )
+
     val unknown: InlayPresentation by lazy {
         val icon = factory.icon(AllIcons.General.ExclMark)
         val inset = factory.inset(icon, right = 5, top = 3)
@@ -80,7 +86,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 .takeIf { it.isNotEmpty() }
                 ?.let { inlayPresentation(HybrisIcons.TS_ENUM, it) }
                 ?: unknown
-        } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE) {
+        } else if (parent.name == ItemTypes.ITEMTYPE && attribute == ItemType.CODE && !excludedItemTypes.contains(element.text)) {
             return findItemClass(project, element.text)
                 .takeIf { it.isNotEmpty() }
                 ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
