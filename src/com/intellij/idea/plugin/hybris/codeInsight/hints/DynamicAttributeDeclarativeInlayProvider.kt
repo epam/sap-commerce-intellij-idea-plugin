@@ -23,6 +23,11 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 
 class DynamicAttributeDeclarativeInlayProvider : InlayHintsProvider {
-    override fun createCollector(file: PsiFile, editor: Editor) = if (HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) DynamicAttributeDeclarativeInlayHintsCollector()
+
+    private val collector by lazy {
+        DynamicAttributeDeclarativeInlayHintsCollector()
+    }
+
+    override fun createCollector(file: PsiFile, editor: Editor) = if (HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
     else null
 }
