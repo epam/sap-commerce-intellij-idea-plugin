@@ -19,12 +19,16 @@
 package com.intellij.idea.plugin.hybris.system.type.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class ModelsUtils {
+
+    private static final Key<Boolean> ITEM_MODEL_KEY = Key.create("Y_IS_ITEM_MODEL_CLASS");
+    private static final Key<Boolean> ENUM_MODEL_KEY = Key.create("Y_IS_ENUM_MODEL_CLASS");
 
     private ModelsUtils() {
     }
@@ -40,58 +44,74 @@ public final class ModelsUtils {
     }
 
     public static boolean isItemModelFile(final PsiClass psiClass) {
+        final var itemModelFile = psiClass.getUserData(ITEM_MODEL_KEY);
+        if (itemModelFile != null) return itemModelFile;
+
         final var psiFile = psiClass.getContainingFile();
 
         final VirtualFile virtualFile = psiFile.getVirtualFile() != null
             ? psiFile.getVirtualFile()
             : psiFile.getOriginalFile().getVirtualFile();
 
-        if (virtualFile == null) return false;
+        if (virtualFile == null) return storeAndReturn(psiClass, ITEM_MODEL_KEY, false);
 
         final var extension = virtualFile.getExtension();
-        if (extension == null) return false;
+        if (extension == null) return storeAndReturn(psiClass, ITEM_MODEL_KEY, false);
 
-        if (extension.equals("java")
-            && virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
-            && shouldProcessItemType(psiClass)
-        ) return true;
+        if (!shouldProcessItemType(psiClass, virtualFile, extension)) return storeAndReturn(psiClass, ITEM_MODEL_KEY, false);
 
-
-        return extension.equals("class")
-               && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)
-               && shouldProcessItemType(psiClass);
-    }
-
-    private static boolean shouldProcessItemType(final PsiClass psiClass) {
-        return psiClass.getName() != null && psiClass.getName().endsWith(HybrisConstants.MODEL_SUFFIX)
-               || (psiClass.getSuperClass() != null
-                   && psiClass.getSuperClass().getName() != null
-                   && psiClass.getSuperClass().getName().startsWith("Generated"));
+        return storeAndReturn(psiClass, ITEM_MODEL_KEY, true);
     }
 
     public static boolean isEnumFile(final PsiClass psiClass) {
+        final var enumModelFile = psiClass.getUserData(ENUM_MODEL_KEY);
+        if (enumModelFile != null) return enumModelFile;
+
         final var psiFile = psiClass.getContainingFile();
         final var virtualFile = psiFile.getVirtualFile();
 
-        if (virtualFile == null) return false;
+        if (virtualFile == null) return storeAndReturn(psiClass, ENUM_MODEL_KEY, false);
 
         final var extension = virtualFile.getExtension();
-        if (extension == null) return false;
+        if (extension == null) return storeAndReturn(psiClass, ENUM_MODEL_KEY, false);
 
-        if (extension.equals("java")
-            && virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)
-            && shouldProcessEnum(psiClass)
-        ) return true;
+        if (!shouldProcessEnum(psiClass, virtualFile, extension)) return storeAndReturn(psiClass, ENUM_MODEL_KEY, false);
 
-        return virtualFile.getExtension().equals("class")
-               && virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)
-               && shouldProcessEnum(psiClass);
+        return storeAndReturn(psiClass, ENUM_MODEL_KEY, true);
     }
 
-    private static boolean shouldProcessEnum(final PsiClass psiClass) {
-        final PsiClassType[] implementsListTypes = psiClass.getImplementsListTypes();
+    private static boolean storeAndReturn(final PsiClass psiClass, final Key<Boolean> key, final boolean verificationResult) {
+        psiClass.putUserData(key, verificationResult);
+        return verificationResult;
+    }
 
-        for (final PsiClassType implementsListType : implementsListTypes) {
+    private static boolean shouldProcessItemType(
+        final PsiClass psiClass,
+        final @NotNull VirtualFile virtualFile,
+        final @NotNull String extension
+    ) {
+        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)) return false;
+        if (extension.equals("class") && !virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)) return false;
+
+        final var className = psiClass.getName();
+        if (className == null) return false;
+        if (className.endsWith(HybrisConstants.MODEL_SUFFIX)) return true;
+
+        final var superClass = psiClass.getSuperClass();
+        return superClass != null
+            && superClass.getName() != null
+            && superClass.getName().startsWith("Generated");
+    }
+
+    private static boolean shouldProcessEnum(
+        final PsiClass psiClass,
+        final @NotNull VirtualFile virtualFile,
+        final @NotNull String extension
+    ) {
+        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)) return false;
+        if (extension.equals("class") && !virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)) return false;
+
+        for (final var implementsListType : psiClass.getImplementsListTypes()) {
             if (HybrisConstants.CLASS_ENUM_NAME.equals(implementsListType.getClassName())) {
                 return true;
             }
