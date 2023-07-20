@@ -63,7 +63,9 @@ object FxSUtils {
         return addComma
     }
 
-    fun isFlexibleSearchQuery(expression: String) = expression.contains(fxsKeywordsRegex) && expression.contains(fxsBracesRegex)
+    fun isFlexibleSearchQuery(expression: String) = expression.trim().startsWith("SELECT", true)
+        && expression.contains(fxsKeywordsRegex)
+        && expression.contains(fxsBracesRegex)
 
     fun computeExpression(element: PsiLiteralExpression): String = if (element.isTextBlock) {
         element.text
