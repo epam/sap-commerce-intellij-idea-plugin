@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
@@ -105,6 +106,8 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
 
         private fun resolve(meta: TSGlobalMetaItem, featureName: String) = meta.allAttributes[featureName]
             ?.let { attr -> AttributeResolveResult(attr) }
+            ?: meta.allOrderingAttributes[featureName]
+                ?.let { attr -> OrderingAttributeResolveResult(attr) }
             ?: meta.allRelationEnds
                 .find { relationEnd -> relationEnd.name.equals(featureName, true) }
                 ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }

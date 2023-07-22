@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSComp
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -104,11 +105,16 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
                         ?.let { listOf(it) }
                         ?: emptyList()
 
+                    val orderingAttributes = meta.allOrderingAttributes[refName]
+                        ?.let { OrderingAttributeResolveResult(it) }
+                        ?.let { listOf(it) }
+                        ?: emptyList()
+
                     val relations = meta.allRelationEnds
                         .filter { refName.equals(it.name, true) }
                         .map { RelationEndResolveResult(it) }
 
-                    (attributes + relations).toTypedArray()
+                    (attributes + orderingAttributes + relations).toTypedArray()
                 }
 
         private fun tryResolveByEnumType(type: String, refName: String, metaService: TSMetaModelAccess): Array<ResolveResult>? = metaService.findMetaEnumByName(type)

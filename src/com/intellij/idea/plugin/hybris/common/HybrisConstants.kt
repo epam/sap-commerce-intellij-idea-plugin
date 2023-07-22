@@ -208,6 +208,7 @@ object HybrisConstants {
 
     const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"
+    const val TS_RELATION_ORDERING_POSTFIX = "POS"
     const val TS_TYPE_ITEM = "Item"
     const val TS_TYPE_GENERIC_ITEM = "GenericItem"
     const val TS_TYPE_LOCALIZABLE_ITEM = "LocalizableItem"

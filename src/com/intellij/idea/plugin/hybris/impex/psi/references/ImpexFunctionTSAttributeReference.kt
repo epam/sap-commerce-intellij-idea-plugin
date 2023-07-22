@@ -104,6 +104,8 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
 
                         is TSGlobalMetaItem -> meta.allAttributes[featureName]
                             ?.let { attr -> AttributeResolveResult(attr) }
+                            ?: meta.allOrderingAttributes[featureName]
+                                ?.let { attr -> OrderingAttributeResolveResult(attr) }
                             ?: meta.allRelationEnds
                                 .find { relationEnd -> relationEnd.name.equals(featureName, true) }
                                 ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }

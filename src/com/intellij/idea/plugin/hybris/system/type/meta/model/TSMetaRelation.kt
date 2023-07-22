@@ -27,6 +27,7 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
     val deployment: TSMetaDeployment?
     val source: TSMetaRelationElement
     val target: TSMetaRelationElement
+    val orderingAttribute: TSMetaOrderingAttribute?
     val description: String?
     val isLocalized: Boolean
     val isAutoCreate: Boolean
@@ -61,6 +62,13 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
             if (isNavigable) "navigable" else null,
             if (isDeprecated) "isDeprecated" else null
         ).joinToString(",&nbsp;")
+    }
+
+    interface TSMetaOrderingAttribute : TSMetaClassifier<RelationElement>, TSTypedClassifier {
+        override val name: String
+        var owner: TSMetaRelationElement
+        var qualifier: String
+        var type: String
     }
 
     enum class RelationEnd {

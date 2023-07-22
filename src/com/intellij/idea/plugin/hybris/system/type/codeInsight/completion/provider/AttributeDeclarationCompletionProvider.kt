@@ -45,6 +45,12 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
             ?.forEach { resultCaseInsensitive.addElement(it) }
 
         meta
+            ?.allOrderingAttributes
+            ?.values
+            ?.map { TSLookupElementFactory.build(it) }
+            ?.forEach { resultCaseInsensitive.addElement(it) }
+
+        meta
             ?.allRelationEnds
             ?.filter { it.qualifier != null }
             ?.mapNotNull { TSLookupElementFactory.build(it) }

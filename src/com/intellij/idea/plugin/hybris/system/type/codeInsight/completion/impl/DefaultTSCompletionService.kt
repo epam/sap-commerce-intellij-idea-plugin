@@ -154,9 +154,11 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
     private fun getCompletions(metaItem: TSGlobalMetaItem, excludeNames: Set<String>): List<LookupElementBuilder> {
         val attributes = metaItem.allAttributes.values
             .mapNotNull { mapAttributeToLookup(excludeNames, it) }
+        val orderingAttributes = metaItem.allOrderingAttributes.values
+            .map { TSLookupElementFactory.build(it) }
         val relationEnds = metaItem.allRelationEnds
             .mapNotNull { TSLookupElementFactory.build(it) }
-        return attributes + relationEnds
+        return attributes + orderingAttributes + relationEnds
     }
 
     private fun mapAttributeToLookup(

@@ -66,6 +66,16 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .forEach {
                 it.source.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it.source), allTypes)
                 it.target.flattenType = TSMetaHelper.flattenType(TSMetaHelper.flattenType(it.target), allTypes)
+
+                it.orderingAttribute
+                    ?.let { orderingAttribute ->
+                        val type = orderingAttribute.owner.type
+                        getMetaItem(type)
+                            ?.let { metaItem -> metaItem as? TSGlobalMetaItemImpl}
+                            ?.let { metaItem ->
+                                metaItem.allOrderingAttributes[orderingAttribute.qualifier] = orderingAttribute
+                            }
+                    }
             }
     }
 

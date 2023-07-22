@@ -19,8 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.*
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.openapi.module.Module
@@ -34,6 +33,7 @@ internal class TSMetaRelationImpl(
     override var isCustom: Boolean,
     override val source: TSMetaRelationElement,
     override val target: TSMetaRelationElement,
+    override val orderingAttribute: TSMetaOrderingAttribute?,
     override val deployment: TSMetaDeployment?
 ) : TSMetaRelation {
 
@@ -78,6 +78,23 @@ internal class TSMetaRelationImpl(
 
         override fun toString() = "RelationElement(module=$module, name=$name, isCustom=$isCustom)"
     }
+
+    internal class TSMetaOrderingAttributeImpl(
+        dom: RelationElement,
+        override var owner: TSMetaRelationElement,
+        override val module: Module,
+        override var isCustom: Boolean,
+        override var qualifier: String
+    ) : TSMetaOrderingAttribute {
+
+        override val domAnchor: DomAnchor<RelationElement> = DomService.getInstance().createAnchor(dom)
+
+        override val name = qualifier
+        override var type: String = "int"
+        override var flattenType: String? = "int"
+
+        override fun toString() = "RelationOrderingAttribute(module=$module, name=$name, isCustom=$isCustom)"
+    }
 }
 
 internal class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
@@ -92,6 +109,7 @@ internal class TSGlobalMetaRelationImpl(localMeta: TSMetaRelation)
     override var deployment = localMeta.deployment
     override var source = localMeta.source
     override var target = localMeta.target
+    override val orderingAttribute = localMeta.orderingAttribute
     override var flattenType: String? = TSMetaHelper.flattenType(this)
 
     override fun mergeInternally(localMeta: TSMetaRelation) = Unit

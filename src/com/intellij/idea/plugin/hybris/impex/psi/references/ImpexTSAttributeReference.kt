@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
@@ -85,6 +86,8 @@ internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : T
             ?.let { meta ->
                 meta.allAttributes[featureName]
                     ?.let { AttributeResolveResult(it) }
+                    ?: meta.allOrderingAttributes[featureName]
+                        ?.let { OrderingAttributeResolveResult(it) }
                     ?: meta.allRelationEnds
                         .find { it.name.equals(featureName, true) }
                         ?.let { RelationEndResolveResult(it) }

@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
@@ -118,13 +119,41 @@ class TSMetaModelBuilder(
 
     private fun create(dom: Relation): TSMetaRelation? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
+        val source = create(dom.sourceElement, TSMetaRelation.RelationEnd.SOURCE)
+        val target = create(dom.targetElement, TSMetaRelation.RelationEnd.TARGET)
+        val orderingAttribute = create(source, target)
+
         return TSMetaRelationImpl(
             dom, myModule, name, myCustom,
             deployment = create(dom.deployment),
-            source = create(dom.sourceElement, TSMetaRelation.RelationEnd.SOURCE),
-            target = create(dom.targetElement, TSMetaRelation.RelationEnd.TARGET)
+            source = source,
+            target = target,
+            orderingAttribute = orderingAttribute
         )
     }
+
+    private fun create(source: TSMetaRelation.TSMetaRelationElement, target: TSMetaRelation.TSMetaRelationElement): TSMetaRelation.TSMetaOrderingAttribute? {
+        if (target.isOrdered && source.cardinality == Cardinality.ONE && target.cardinality == Cardinality.MANY && source.qualifier != null) {
+            return create(target, target.retrieveDom()!!, source.qualifier!!)
+        }
+        if (source.isOrdered && source.cardinality == Cardinality.MANY && target.cardinality == Cardinality.ONE && target.qualifier != null) {
+            return create(source, source.retrieveDom()!!, target.qualifier!!)
+        }
+
+        return null;
+    }
+
+    private fun create(
+        owner: TSMetaRelation.TSMetaRelationElement,
+        dom: RelationElement,
+        qualifierPrefix: String
+    ) = TSMetaRelationImpl.TSMetaOrderingAttributeImpl(
+        dom = dom,
+        owner = owner,
+        module = myModule,
+        isCustom = myCustom,
+        qualifier = qualifierPrefix + HybrisConstants.TS_RELATION_ORDERING_POSTFIX
+    )
 
     private fun create(dom: RelationElement, end: TSMetaRelation.RelationEnd): TSMetaRelation.TSMetaRelationElement {
         return TSMetaRelationImpl.TSMetaRelationElementImpl(

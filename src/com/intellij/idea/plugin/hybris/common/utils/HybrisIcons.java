@@ -107,6 +107,7 @@ public final class HybrisIcons {
     public static final Icon TS_RELATION = getIcon("/icons/typeSystem/relation.svg");
     public static final Icon TS_CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg");
     public static final Icon TS_ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg");
+    public static final Icon TS_ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg");
     public static final Icon TS_RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg");
     public static final Icon TS_RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg");
     public static final Icon TS_COLLECTION = getIcon("/icons/typeSystem/collection.svg");

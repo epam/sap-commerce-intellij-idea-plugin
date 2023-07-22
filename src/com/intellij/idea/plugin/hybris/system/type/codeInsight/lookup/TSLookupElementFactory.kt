@@ -61,7 +61,13 @@ object TSLookupElementFactory {
         .withStrikeoutness(meta.isDeprecated)
         .withTypeText(meta.flattenType, true)
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
-        .withCaseSensitivity(true)
+        .withCaseSensitivity(false)
+
+    fun build(meta: TSMetaRelation.TSMetaOrderingAttribute) = LookupElementBuilder.create(meta.name)
+        .withTypeText(meta.flattenType, true)
+        .withTailText(" (1-to-m ordering attribute)")
+        .withIcon(HybrisIcons.TS_ORDERING_ATTRIBUTE)
+        .withCaseSensitivity(false)
 
     fun build(meta: TSMetaRelation.TSMetaRelationElement) = meta.qualifier
         ?.let {
@@ -86,14 +92,14 @@ object TSLookupElementFactory {
         )
         .withStrikeoutness(relationElement.isDeprecated)
         .withTypeText(relationElement.flattenType, true)
-        .withCaseSensitivity(true)
+        .withCaseSensitivity(false)
 
     fun build(meta: TSGlobalMetaEnum, lookupString: String?) = lookupString
         ?.let {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ENUM)
-                .withCaseSensitivity(true)
+                .withCaseSensitivity(false)
         }
 
     fun build(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
@@ -106,7 +112,7 @@ object TSLookupElementFactory {
     fun build(type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTypeText(type, true)
         .withIcon(HybrisIcons.TS_MAP)
-        .withCaseSensitivity(true)
+        .withCaseSensitivity(false)
 
     fun build(dom: EnumType) = dom.code.stringValue
         ?.let {
@@ -129,6 +135,6 @@ object TSLookupElementFactory {
 
     fun buildCustomProperty(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withIcon(HybrisIcons.TS_CUSTOM_PROPERTY)
-        .withCaseSensitivity(true)
+        .withCaseSensitivity(false)
 
 }

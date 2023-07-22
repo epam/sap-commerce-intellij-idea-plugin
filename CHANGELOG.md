@@ -1,5 +1,8 @@
 ## [2023.2.5]
 
+### Features
+- Added ordering attributes support for 1-to-m relations (those ending with `POS`) [#520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/520)
+
 ### `FlexibleSearch` enhancements
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 

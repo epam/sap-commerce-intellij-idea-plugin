@@ -113,6 +113,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override val relationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
 
     override val allAttributes = CaseInsensitiveConcurrentHashMap<String, TSGlobalMetaItem.TSGlobalMetaItemAttribute>()
+    override val allOrderingAttributes = CaseInsensitiveConcurrentHashMap<String, TSMetaRelation.TSMetaOrderingAttribute>()
     override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
     override val allCustomProperties = LinkedList<TSMetaCustomProperty>()
     override val allRelationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
