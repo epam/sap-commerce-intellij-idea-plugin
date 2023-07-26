@@ -52,7 +52,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getEclipseConfigurator(): EclipseConfigurator? = EclipseConfigurator.instance
     override fun getGradleConfigurator(): GradleConfigurator? = GradleConfigurator.instance
     override fun getSearchScopeConfigurator(): SearchScopeConfigurator = SearchScopeConfigurator.instance
-    override fun getDataSourcesConfigurator(): DataSourcesConfigurator = DataSourcesConfigurator.instance
+    override fun getDataSourcesConfigurator(): DataSourcesConfigurator? = DataSourcesConfigurator.instance
     override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.instance
     override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance

@@ -190,8 +190,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getDebugRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
-//        Optional.ofNullable(configuratorFactory.getDataSourcesConfigurator())
-//            .ifPresent(it -> it.configure(indicator, project));
 
         configureProjectIcon();
 

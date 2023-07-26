@@ -26,6 +26,6 @@ interface DataSourcesConfigurator {
     fun configure(project: Project)
 
     companion object {
-        val instance: DataSourcesConfigurator = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
+        val instance: DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
     }
 }
