@@ -61,6 +61,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -716,11 +717,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         Validate.notNull(moduleDescriptors);
 
         final var moduleDescriptorsMap = moduleDescriptors.stream()
+            .filter(distinctByKey(ModuleDescriptor::getName))
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         for (final var moduleDescriptor : moduleDescriptors) {
             final var dependencies = buildDependencies(moduleDescriptor, moduleDescriptorsMap);
             moduleDescriptor.addDirectDependencies(dependencies);
         }
+    }
+
+    public static <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {
+        final Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     private Set<ModuleDescriptor> buildDependencies(final ModuleDescriptor moduleDescriptor, final Map<String, ModuleDescriptor> moduleDescriptors) {
