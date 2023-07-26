@@ -7,7 +7,7 @@
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 
 ### Fixes
-- Do not register DataSource in Intellij Community [#528](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/528)
+- Do not register DataSource in Intellij Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
 - Unable to import project from existing sources since upgrading to Idea 2023.2 [#526](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/526)
 - Unable to import project in Intellij 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
 
