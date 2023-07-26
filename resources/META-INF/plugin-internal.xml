@@ -94,6 +94,8 @@
 
         <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
+
+        <iconProvider order="last" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
     </extensions>
 
     <project-components>
