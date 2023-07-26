@@ -6,6 +6,9 @@
 ### `FlexibleSearch` enhancements
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 
+### Fixes
+- Unable to import project in Intellij 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
+
 ### Other
 - Added custom icon for `hybris4intellij.properties` file [#525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/525)
 - Do not mark `ExtensibleItem`, `LocalizableItem` & `GenericItem` as not generated in `items.xml` [#522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/522)
