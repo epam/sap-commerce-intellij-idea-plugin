@@ -1,3 +1,8 @@
+## [2023.2.6]
+
+### Fixes
+- Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
+
 ## [2023.2.5]
 
 ### Features

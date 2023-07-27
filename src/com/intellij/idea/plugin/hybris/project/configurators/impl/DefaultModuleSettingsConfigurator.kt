@@ -32,6 +32,6 @@ class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
             || descriptorType === ModuleDescriptorType.EXT
         val readOnly = hasReadOnlySettings && isReadOnlyType
 
-        moduleDescriptor.readonly = readOnly
+        moduleDescriptor.extensionDescriptor().readonly = readOnly
     }
 }
