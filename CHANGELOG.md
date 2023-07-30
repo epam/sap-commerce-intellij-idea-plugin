@@ -1,5 +1,8 @@
 ## [2023.2.6]
 
+### Features
+- Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534) 
+
 ### Fixes
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
 

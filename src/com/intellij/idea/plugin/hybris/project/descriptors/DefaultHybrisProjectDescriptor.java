@@ -611,7 +611,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (!acceptOnlyHybrisModules) {
-            if (hybrisProjectService.isGradleModule(rootProjectDirectory)
+            if (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory)
                 && !rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
                 && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());

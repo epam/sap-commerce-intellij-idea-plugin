@@ -45,5 +45,7 @@ public interface HybrisProjectService {
 
     boolean isGradleModule(File file);
 
+    boolean isGradleKtsModule(File file);
+
     boolean hasVCS(File rootProjectDirectory);
 }

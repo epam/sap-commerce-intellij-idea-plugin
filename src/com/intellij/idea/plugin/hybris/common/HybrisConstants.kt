@@ -74,8 +74,10 @@ object HybrisConstants {
     const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
 
     const val DOT_PROJECT = ".project"
-    const val SETTINGS_GRADLE = "settings.gradle"
-    const val BUILD_GRADLE = "build.gradle"
+    const val GRADLE_SETTINGS = "settings.gradle"
+    const val GRADLE_SETTINGS_KTS = "settings.gradle.kts"
+    const val GRADLE_BUILD = "build.gradle"
+    const val GRADLE_BUILD_KTS = "build.gradle.kts"
     const val LOCAL_EXTENSIONS_XML = "localextensions.xml"
     const val EXTERNAL_DEPENDENCIES_XML = "external-dependencies.xml"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"

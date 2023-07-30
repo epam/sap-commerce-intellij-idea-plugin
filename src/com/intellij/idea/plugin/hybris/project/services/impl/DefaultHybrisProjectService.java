@@ -130,7 +130,16 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
-        return new File(file, HybrisConstants.SETTINGS_GRADLE).isFile();
+        return new File(file, HybrisConstants.GRADLE_SETTINGS).isFile();
+    }
+
+    @Override
+    public boolean isGradleKtsModule(final File file) {
+        Validate.notNull(file);
+        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+            return false;
+        }
+        return new File(file, HybrisConstants.GRADLE_SETTINGS_KTS).isFile();
     }
 
     @Override

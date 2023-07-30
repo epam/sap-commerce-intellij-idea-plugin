@@ -22,11 +22,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import java.io.File
 
-open class GradleModuleDescriptor(
+class GradleKtsModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
-
-}
+) : GradleModuleDescriptor(
+    moduleRootDirectory,
+    rootProjectDescriptor,
+    File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
+)

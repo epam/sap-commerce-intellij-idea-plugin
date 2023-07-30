@@ -109,6 +109,11 @@ object ModuleDescriptorFactory {
                 GradleModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
+            hybrisProjectService.isGradleKtsModule(resolvedFile) -> {
+                LOG.info("Creating gradle kts module for $path")
+                GradleKtsModuleDescriptor(resolvedFile, rootProjectDescriptor)
+            }
+
             hybrisProjectService.isMavenModule(resolvedFile) -> {
                 LOG.info("Creating maven module for $path")
                 MavenModuleDescriptor(resolvedFile, rootProjectDescriptor)
