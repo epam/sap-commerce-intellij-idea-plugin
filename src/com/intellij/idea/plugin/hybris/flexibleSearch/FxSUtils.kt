@@ -63,7 +63,10 @@ object FxSUtils {
         return addComma
     }
 
-    fun isFlexibleSearchQuery(expression: String) = expression.trim().startsWith("SELECT", true)
+    fun isFlexibleSearchQuery(expression: String) = expression.replace("\n", "")
+        .replace("\"\"\"", "")
+        .trim()
+        .startsWith("SELECT", true)
         && expression.contains(fxsKeywordsRegex)
         && expression.contains(fxsBracesRegex)
 
