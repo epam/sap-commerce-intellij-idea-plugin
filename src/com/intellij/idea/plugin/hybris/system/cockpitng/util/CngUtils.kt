@@ -27,6 +27,29 @@ import com.intellij.util.xml.DomManager
 
 object CngUtils {
 
+    private val operatorValues = setOf(
+        "equals",
+        "unequal",
+        "startsWith",
+        "endsWith",
+        "contains",
+        "doesNotContain",
+        "like",
+        "greater",
+        "greaterOrEquals",
+        "less",
+        "lessOrEquals",
+        "in",
+        "notIn",
+        "exists",
+        "notExists",
+        "isEmpty",
+        "isNotEmpty",
+        "or",
+        "and",
+        "match",
+    )
+
     fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
     fun getValidMergeByValues(project: Project) = CngMetaModelAccess.getInstance(project).getMetaModel()
@@ -34,4 +57,6 @@ object CngUtils {
         .keys
         // exclude itself
         .filter { Context.MERGE_BY != it }
+
+    fun getOperatorValues() = operatorValues
 }

@@ -1,5 +1,8 @@
 ## [2023.2.6]
 
+### `CockpitNG` enhancements
+- Added code completion for AdvancedSearch `operator` parameter [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
+
 ### Features
 - Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534) 
 

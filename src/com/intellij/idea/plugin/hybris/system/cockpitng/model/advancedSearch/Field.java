@@ -22,11 +22,9 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngMergeByConverter;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngOperatorConverter;
+import com.intellij.util.xml.*;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +53,7 @@ public interface Field extends DomElement, Positioned {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("operator")
+	@Convert(CngOperatorConverter.class)
 	GenericAttributeValue<String> getOperator();
 
 
