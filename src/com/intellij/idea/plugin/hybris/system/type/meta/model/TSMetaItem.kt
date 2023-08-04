@@ -83,7 +83,7 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
     val allExtends: Set<TSGlobalMetaItem>
 
     override fun documentation() = hybrisDoc {
-        title("Item", name ?: "?")
+        title("Item type", name ?: "?")
         subHeader(
             modifiersDocumentation(),
             "extends :: ${extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}",

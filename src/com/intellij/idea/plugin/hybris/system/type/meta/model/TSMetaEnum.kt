@@ -39,7 +39,7 @@ interface TSGlobalMetaEnum : TSMetaEnum, TSGlobalMetaClassifier<EnumType>, TSTyp
     override val declarations: MutableSet<TSMetaEnum>
 
     override fun documentation() = hybrisDoc {
-        title("Enum", name ?: "?")
+        title("Enum type", name ?: "?")
         subHeader(
             modifiersDocumentation(),
             description ?: "",

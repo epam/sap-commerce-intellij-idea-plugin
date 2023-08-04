@@ -80,7 +80,7 @@ interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation
     override val declarations: MutableSet<TSMetaRelation>
 
     override fun documentation() = hybrisDoc {
-        title("Relation", name ?: "?")
+        title("Relation type", name ?: "?")
         modifiersDocumentation()
             .takeIf { it.isNotBlank() }
             ?.let { subHeader(it) }
