@@ -11,7 +11,7 @@
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
 
 ### Other
-- Adjusted inline documentation for Type System [#538](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/538)
+- Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
 
 ## [2023.2.5]
 
