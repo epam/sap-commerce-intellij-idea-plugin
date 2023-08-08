@@ -71,7 +71,7 @@ List of all ever contributors can be found here: [CONTRIBUTING](CONTRIBUTING.md)
 
 Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
 
-Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as

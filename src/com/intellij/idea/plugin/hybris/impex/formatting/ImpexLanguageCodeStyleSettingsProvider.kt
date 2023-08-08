@@ -186,28 +186,29 @@ class ImpexLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider
             # Comment
             $lang = en
             $contentCatalog = projectContentCatalog
-            $contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = \$contentCatalog]),CatalogVersion.version[default = 'Staged'])[default = \$contentCatalog:Staged]
-            $macro = qwe;qwe,qwe,;qwe
-        
+            $contentResource = jar:SomeClass&/resources
+            $contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = $contentCatalog]), CatalogVersion.version[default = 'Staged'])[default = $contentCatalog:Staged]
+            $macro = qwe;qwe, qwe, ;qwe
+            
             #% impex.setLocale( Locale.GERMAN );
-        
-            INSERT_UPDATE SomeType ; \$contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss] ; uid[unique = true]          ; title[lang = \$lang]
-            Subtype                ;                                                                                ; account                     ; "Your Account"
-                                   ;                                                                                ; <ignore>                    ; "Add/Edit Address"
-                                   ;                                                                                ; key -> value | key -> value ; "Address Book"
-                                   ;                                                                                ; value1, value2, value3      ; 12345               ;
-        
-            INSERT Address[impex.legacy.mode = true, batchmode = true] ; firstname ; owner(Principal.uid | AbstractOrder.code)
-                                                                       ; Hans      ; admin
-        
-            UPDATE Address ; firstname ; owner(Principal.uid | AbstractOrder.code) ; &docId
-                           ; Hans      ; admin                                     ; id
-        
-            remove Address ; firstname ; owner(Principal.uid | AbstractOrder.code)
-                           ; Hans      ; admin
-        
-            INSERT_UPDATE Media ; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslato r] ; mime[default = 'image/png']
-                                ;                                                                               ; $contentResource/images/logo .png
+            
+            INSERT_UPDATE SomeType; $contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]          ; title[lang = $lang]
+            Subtype               ;                                                                               ; account                     ; "Your Account"
+                                  ;                                                                               ; <ignore>                    ; "Add/Edit Address"
+                                  ;                                                                               ; key -> value | key -> value ; "Address Book"
+                                  ;                                                                               ; value1, value2, value3      ; 12345
+            
+            INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code)
+                                                                      ; Hans     ; admin
+            
+            UPDATE Address; firstname; owner(Principal.uid | AbstractOrder.code); &docId
+                          ; Hans     ; admin                                    ; id
+            
+            remove Address; firstname; owner(Principal.uid | AbstractOrder.code)
+                          ; Hans     ; admin
+            
+            INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslator]; mime[default = 'image/png']
+                               ;                                                                             ; $contentResource/images/logo.png
             """.trimIndent()
     }
 }

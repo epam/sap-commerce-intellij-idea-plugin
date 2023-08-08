@@ -9,6 +9,7 @@
 ### Fixes
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
+- `ImpEx` Code Style Formatter is no configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
