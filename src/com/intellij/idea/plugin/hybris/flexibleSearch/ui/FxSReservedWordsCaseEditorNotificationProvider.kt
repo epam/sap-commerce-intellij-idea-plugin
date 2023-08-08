@@ -64,7 +64,6 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
 
                 EditorNotifications.getInstance(project).updateNotifications(file)
             }
-            panel.createActionLabel(message("hybris.fxs.notification.provider.keywords.action.settings"), "hybris.fxs.openSettings")
             panel
         }
     }

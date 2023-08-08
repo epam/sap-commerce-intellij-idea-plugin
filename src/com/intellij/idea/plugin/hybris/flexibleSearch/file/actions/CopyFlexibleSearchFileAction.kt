@@ -39,6 +39,6 @@ class CopyFlexibleSearchFileAction : AnAction(), DumbAware {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToHybrisConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 }

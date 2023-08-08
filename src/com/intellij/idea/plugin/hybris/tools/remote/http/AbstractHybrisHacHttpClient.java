@@ -81,12 +81,6 @@ public abstract class AbstractHybrisHacHttpClient {
 
     private final Map<HybrisRemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
-
-    public String login(final Project project) {
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
-        return login(project, settings);
-    }
-
     public String login(@NotNull final Project project, @NotNull final HybrisRemoteConnectionSettings settings) {
         final var hostHacURL = getHostHacURL(project, settings);
         retrieveCookies(hostHacURL, project, settings);
@@ -151,7 +145,7 @@ public abstract class AbstractHybrisHacHttpClient {
     ) {
         var cookies = cookiesPerSettings.get(settings);
         if (cookies == null || !cookies.containsKey(COOKIE_JSESSIONID)) {
-            final String errorMessage = login(project);
+            final String errorMessage = login(project, settings);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }

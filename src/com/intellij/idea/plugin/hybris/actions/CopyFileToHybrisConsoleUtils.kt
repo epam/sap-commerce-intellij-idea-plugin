@@ -36,15 +36,31 @@ import javax.swing.tree.TreePath
 
 object CopyFileToHybrisConsoleUtils {
 
-    fun copySelectedFilesToHybrisConsole(project: Project, consoleTitle: String, dialogTitle: String) {
+    fun copySelectedFilesToConsole(project: Project, consoleTitle: String, dialogTitle: String) {
         val console = HybrisToolWindowService.getInstance(project).consolesPanel.findConsole(consoleTitle) ?: return
         val query = getQueryFromSelectedFiles(project)
 
         if (getTextFromHybrisConsole(project, console).isNotEmpty()) {
             CopyFileToHybrisConsoleDialog(project, getDialogTitleFromProperties(dialogTitle))
-                .show { copyToHybrisConsole(project, consoleTitle, query) }
+                .show { copyQueryToConsole(project, consoleTitle, query) }
         } else {
-            copyToHybrisConsole(project, consoleTitle, query)
+            copyQueryToConsole(project, consoleTitle, query)
+        }
+    }
+
+    fun copyQueryToConsole(project: Project, consoleTitle: String, query: String) {
+        val panel = HybrisToolWindowService.getInstance(project).consolesPanel
+        val console = panel.findConsole(consoleTitle) ?: return
+
+        with(HybrisToolWindowService.getInstance(project)) {
+            this.activateToolWindow()
+            this.activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
+        }
+
+        with(console) {
+            panel.setActiveConsole(this)
+            this.clear()
+            this.setInputText(query)
         }
     }
 
@@ -91,22 +107,6 @@ object CopyFileToHybrisConsoleUtils {
     private fun getSelectedTreePaths(project: Project) = ProjectView.getInstance(project)
         .currentProjectViewPane
         .selectionPaths
-
-    private fun copyToHybrisConsole(project: Project, consoleTitle: String, query: String) {
-        val panel = HybrisToolWindowService.getInstance(project).consolesPanel
-        val console = panel.findConsole(consoleTitle) ?: return
-
-        with(HybrisToolWindowService.getInstance(project)) {
-            this.activateToolWindow()
-            this.activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
-        }
-
-        with(console) {
-            panel.setActiveConsole(this)
-            this.clear()
-            this.setInputText(query)
-        }
-    }
 
     private fun getDialogTitleFromProperties(fileExtension: String) = messageFallback(HybrisConstants.DIALOG_TITLE + fileExtension, fileExtension)
 }

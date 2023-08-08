@@ -20,6 +20,6 @@ class CopyImpexFileAction : AnAction(), DumbAware {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToHybrisConsole(project, IMPEX_CONSOLE_TITLE, IMPEX_FILE_EXTENSION);
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, IMPEX_CONSOLE_TITLE, IMPEX_FILE_EXTENSION);
     }
 }

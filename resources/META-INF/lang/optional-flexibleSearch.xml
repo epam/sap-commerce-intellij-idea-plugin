@@ -68,11 +68,14 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
     </extensions>
 
-
+    <projectListeners>
+        <listener class="com.intellij.idea.plugin.hybris.startup.event.FlexibleSearchFileEditorManagerListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
 
     <actions>
         <group>
-            <action id="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
+            <action id="hybris.fxs.CopyFlexibleSearchFileAction"
                     class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
                     icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.Y_LOGO_BLUE"
                     text="Copy to FlexibleSearch Console" description="Copy FlexibleSearch to SAP Commerce console">
@@ -99,7 +102,25 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.OpenFlexibleSearchSettingsAction"/>
+        <!-- START: FlexibleSearch toolbar actions -->
+
+        <group id="hybris.fxs.chooseSession" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchChooseSessionAction"/>
+        <action id="hybris.fxs.openQuery" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenQueryToConsoleAction"/>
+        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
+        <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.ExecuteFlexibleSearchQueryAction"
+                icon="AllIcons.Actions.Execute"
+                use-shortcut-of="Console.Execute.Multiline"/>
+
+        <group id="hybris.fxs.toolbar.left">
+            <reference id="hybris.fxs.openQuery"/>
+<!--            <reference id="hybris.fxs.execute"/>-->
+            <separator/>
+            <reference id="hybris.fxs.openSettings"/>
+        </group>
+        <group id="hybris.fxs.toolbar.right">
+            <reference id="hybris.fxs.chooseSession"/>
+        </group>
+        <!-- END:   FlexibleSearch toolbar actions -->
     </actions>
 
 </idea-plugin>

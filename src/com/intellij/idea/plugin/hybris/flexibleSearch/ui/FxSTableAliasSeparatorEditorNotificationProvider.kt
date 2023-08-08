@@ -70,7 +70,6 @@ class FxSTableAliasSeparatorEditorNotificationProvider : AbstractFxSEditorNotifi
 
                 EditorNotifications.getInstance(project).updateNotifications(file)
             }
-            panel.createActionLabel(message("hybris.fxs.notification.provider.tableAliasSeparator.action.settings"), "hybris.fxs.openSettings")
             panel
         }
     }
