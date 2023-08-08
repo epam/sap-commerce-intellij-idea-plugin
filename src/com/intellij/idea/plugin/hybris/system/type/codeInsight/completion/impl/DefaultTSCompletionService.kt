@@ -93,9 +93,9 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
 
         return metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             .filter { meta ->
-                meta.allExtends.find { it.name == referenceItemTypeName } != null
+                meta.allExtends.find { it.name.equals(referenceItemTypeName, true) } != null
                     // or itself, it will be highlighted as unnecessary via Inspection
-                    || meta.name == referenceItemTypeName
+                    || meta.name.equals(referenceItemTypeName, true)
             }
             .mapNotNull {
                 TSLookupElementFactory.build(it, suffix)

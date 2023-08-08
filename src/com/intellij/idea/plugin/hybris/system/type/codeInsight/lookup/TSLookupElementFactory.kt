@@ -37,24 +37,28 @@ object TSLookupElementFactory {
                 .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ITEM)
+                .withCaseSensitivity(false)
         }
 
     fun build(meta: TSGlobalMetaRelation) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_RELATION)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaCollection) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_COLLECTION)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaMap) = meta.name?.let {
         LookupElementBuilder.create(it)
             .withTypeText(meta.flattenType)
             .withIcon(HybrisIcons.TS_MAP)
+            .withCaseSensitivity(false)
     }
 
     fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = LookupElementBuilder.create(meta.name)
