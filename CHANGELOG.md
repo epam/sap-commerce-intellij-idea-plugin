@@ -4,7 +4,7 @@
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
 
 ### `ImpEx` enhancements
-- Ignore case for type in the reference header (e.g. `groups(customer.uid`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
+- Ignore case for type in the reference header (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
 
 ### `HAC` enhancements
 - Enhanced Cluster support, support node routing [#543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/543)
@@ -19,6 +19,7 @@
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
 - `ImpEx` Code Style Formatter is not configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540) 
+- `ImpEx` functional reference type validation does not work [#546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/546) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)

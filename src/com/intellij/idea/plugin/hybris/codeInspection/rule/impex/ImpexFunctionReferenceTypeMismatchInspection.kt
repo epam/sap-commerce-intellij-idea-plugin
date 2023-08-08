@@ -56,24 +56,22 @@ class ImpexFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
 
             when (referenceMeta) {
                 is TSGlobalMetaItem -> {
-                    metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-                        .any { meta ->
-                            meta.allExtends.find { it.name == inlineType } != null
-                                // or itself, it will be highlighted as unnecessary via Inspection
-                                || meta.name == inlineType
-                        }
-                        .takeUnless { it }
-                        ?.let {
-                            problemsHolder.registerProblemForReference(
-                                typeReference,
-                                ProblemHighlightType.ERROR,
-                                message("hybris.inspections.impex.ImpexMismatchFunctionTypeInspection.key",
-                                    inlineType,
-                                    expectedItemType,
-                                    parameter.referenceName ?: "?"
-                                ),
+                    val notExtends = metaModelAccess.findMetaItemByName(inlineType)
+                        ?.allExtends
+                        ?.contains(referenceMeta)
+                        ?: false
+                    if (!notExtends && !inlineType.equals(expectedItemType, true)) {
+                        problemsHolder.registerProblemForReference(
+                            typeReference,
+                            ProblemHighlightType.ERROR,
+                            message(
+                                "hybris.inspections.impex.ImpexMismatchFunctionTypeInspection.key",
+                                inlineType,
+                                expectedItemType,
+                                parameter.referenceName ?: "?"
                             )
-                        }
+                        )
+                    }
                 }
 
                 is TSGlobalMetaEnum -> registerProblemTypeMismatch(typeReference, inlineType, "Enum")
