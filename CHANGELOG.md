@@ -7,6 +7,7 @@
 - Enhanced Cluster support, support node routing [#543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/543)
 - Allow blank port for connection settings [#542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/542)
 - Respect `JSESSIONID` and cookies per `HAC` connection settings
+- Improved handling of the `Set-Cookie` header during login [#544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/544)
 
 ### Features
 - Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534) 

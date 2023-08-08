@@ -39,7 +39,7 @@ public class CookieParser {
     public String getSpecialCookie(final Header[] headers) {
         if(headers.length > 0) {
             for (final Header header : headers) {
-                if ("Set-Cookie".equals(header.getName())) {
+                if ("Set-Cookie".equalsIgnoreCase(header.getName())) {
                     final Matcher matcher = PATTERN.matcher(header.getValue());
                     if (matcher.find()) {
                         final String jsessionId = matcher.group(0);
