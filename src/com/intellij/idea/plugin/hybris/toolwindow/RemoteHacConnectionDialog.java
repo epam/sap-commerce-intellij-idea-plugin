@@ -154,12 +154,8 @@ public class RemoteHacConnectionDialog extends DialogWrapper {
     }
 
     private void validateParams() {
-        testConnectionButton
-                .setEnabled(!projectPortTextField.getText().isEmpty()
-                        && !projectIpTextField.getText().isEmpty());
-
-        getOKAction().setEnabled(!projectPortTextField.getText().isEmpty()
-                && !projectIpTextField.getText().isEmpty());
+        testConnectionButton.setEnabled(!projectIpTextField.getText().isEmpty());
+        getOKAction().setEnabled(!projectIpTextField.getText().isEmpty());
     }
 
     private void createUIComponents() {

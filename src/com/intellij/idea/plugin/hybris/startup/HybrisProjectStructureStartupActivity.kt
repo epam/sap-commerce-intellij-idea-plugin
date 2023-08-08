@@ -115,7 +115,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
     private fun fixBackOfficeJRebelSupport(project: Project) {
         Validate.notNull(project)
-        val jRebelPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.JREBEL_PLUGIN_ID))
+        val jRebelPlugin = PluginManagerCore.getPlugin(PluginId.getId(PluginCommon.JREBEL_PLUGIN_ID))
 
         if (jRebelPlugin == null || !jRebelPlugin.isEnabled) return
 

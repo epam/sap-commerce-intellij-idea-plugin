@@ -22,6 +22,7 @@ import com.intellij.openapi.extensions.PluginId
 
 object PluginCommon {
 
+    const val JREBEL_PLUGIN_ID = "JRebelPlugin"
     const val ANT_SUPPORT_PLUGIN_ID = "AntSupport"
     const val JAVA_PLUGIN_ID = "com.intellij.modules.java"
     const val JAVAEE_PLUGIN_ID = "com.intellij.javaee"

@@ -76,7 +76,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore, appSettings);
 
         if (moduleDescriptor instanceof final CCv2ModuleDescriptor yCCv2ModuleDescriptor) {
-            contentEntry.addExcludePattern("hybris");
+            contentEntry.addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY);
         }
         if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
             configureSubModule(ySubModuleDescriptor, contentEntry, dirsToIgnore);
