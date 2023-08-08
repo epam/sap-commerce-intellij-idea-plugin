@@ -7,8 +7,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -27,7 +27,6 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.http.ssl.TrustStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jsoup.Connection;
@@ -43,46 +42,67 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.apache.http.HttpHeaders.USER_AGENT;
-import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static org.apache.http.HttpStatus.SC_MOVED_TEMPORARILY;
-import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
+import static org.apache.http.HttpStatus.*;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
+    private static final String COOKIE_ROUTE = "ROUTE";
+    private static final String COOKIE_JSESSIONID = "JSESSIONID";
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
-    protected String sessionId;
+    private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
 
-    public String login(Project project) {
+        @Override
+        @Nullable
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+
+        @Override
+        public void checkClientTrusted(@NotNull final X509Certificate[] chain, final String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(@NotNull final X509Certificate[] chain, final String authType) {
+        }
+    };
+
+    private final Map<HybrisRemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
+
+
+    public String login(final Project project) {
         final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
         return login(project, settings);
     }
 
     public String login(@NotNull final Project project, @NotNull final HybrisRemoteConnectionSettings settings) {
-        final String hostHacURL = getHostHacURL(project, settings);
-        sessionId = getSessionId(hostHacURL, project, settings);
+        final var hostHacURL = getHostHacURL(project, settings);
+        retrieveCookies(hostHacURL, project, settings);
+        final var sessionId = Optional.ofNullable(cookiesPerSettings.get(settings))
+            .map(it -> it.get(COOKIE_JSESSIONID))
+            .orElse(null);
         if (sessionId == null) {
-            return "Unable to obtain sessionId for "+hostHacURL;
+            return "Unable to obtain sessionId for " + hostHacURL;
         }
-        final String csrfToken = getCsrfToken(hostHacURL, sessionId, project, settings);
-        final List<BasicNameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("j_username", settings.getHacLogin()));
-        params.add(new BasicNameValuePair("j_password", settings.getHacPassword()));
-        params.add(new BasicNameValuePair("_csrf", csrfToken));
-        final String loginURL = hostHacURL + "/j_spring_security_check";
+        final var csrfToken = getCsrfToken(hostHacURL, sessionId, project, settings);
+        final var params = List.of(
+            new BasicNameValuePair("j_username", settings.getHacLogin()),
+            new BasicNameValuePair("j_password", settings.getHacPassword()),
+            new BasicNameValuePair("_csrf", csrfToken)
+        );
+        final var loginURL = hostHacURL + "/j_spring_security_check";
         final HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
         if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
@@ -90,8 +110,10 @@ public abstract class AbstractHybrisHacHttpClient {
                 return "Wrong username/password. Set your credentials in [y] tool window.";
             }
         }
-        sessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
-        if (sessionId != null) {
+        final var newSessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
+        if (newSessionId != null) {
+            Optional.ofNullable(cookiesPerSettings.get(settings))
+                .ifPresent(cookies -> cookies.put(COOKIE_JSESSIONID, newSessionId));
             return StringUtils.EMPTY;
         }
         final int statusCode = response.getStatusLine().getStatusCode();
@@ -109,60 +131,62 @@ public abstract class AbstractHybrisHacHttpClient {
 
     @NotNull
     public final HttpResponse post(
-        @NotNull Project project,
-        @NotNull String actionUrl,
-        @NotNull List<BasicNameValuePair> params,
-        boolean canReLoginIfNeeded,
-        final long timeout
+        @NotNull final Project project,
+        @NotNull final String actionUrl,
+        @NotNull final List<BasicNameValuePair> params,
+        final boolean canReLoginIfNeeded
     ) {
-        return post(project, actionUrl, params, canReLoginIfNeeded, timeout, null);
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        return post(project, actionUrl, params, canReLoginIfNeeded, DEFAULT_HAC_TIMEOUT, settings);
     }
 
     @NotNull
     public final HttpResponse post(
-        @NotNull Project project,
-        @NotNull String actionUrl,
-        @NotNull List<BasicNameValuePair> params,
-        boolean canReLoginIfNeeded
-    ) {
-        return post(project, actionUrl, params, canReLoginIfNeeded, DEFAULT_HAC_TIMEOUT, null);
-    }
-
-    @NotNull
-    public final HttpResponse post(
-        @NotNull Project project,
-        @NotNull String actionUrl,
-        @NotNull List<BasicNameValuePair> params,
-        boolean canReLoginIfNeeded,
+        @NotNull final Project project,
+        @NotNull final String actionUrl,
+        @NotNull final List<BasicNameValuePair> params,
+        final boolean canReLoginIfNeeded,
         final long timeout,
-        HybrisRemoteConnectionSettings settings
+        final HybrisRemoteConnectionSettings settings
     ) {
-        if (sessionId == null) {
+        var cookies = cookiesPerSettings.get(settings);
+        if (cookies == null || !cookies.containsKey(COOKIE_JSESSIONID)) {
             final String errorMessage = login(project);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }
         }
+        cookies = cookiesPerSettings.get(settings);
+        final var sessionId = cookies.get(COOKIE_JSESSIONID);
         final String csrfToken = getCsrfToken(getHostHacURL(project), sessionId, project, settings);
         if (csrfToken == null) {
-            this.sessionId = null;
+            cookiesPerSettings.remove(settings);
+
             if (canReLoginIfNeeded) {
                 return post(project, actionUrl, params, false, timeout, settings);
             }
-            return createErrorResponse("Unable to obtain csrfToken for sessionId="+sessionId);
+            return createErrorResponse("Unable to obtain csrfToken for sessionId=" + sessionId);
         }
-        final HttpClient client = createAllowAllClient(timeout);
+        final var client = createAllowAllClient(timeout);
         if (client == null) {
             return createErrorResponse("Unable to create HttpClient");
         }
-        final HttpPost post = new HttpPost(actionUrl);
-        post.setHeader("User-Agent", USER_AGENT);
+        final var post = new HttpPost(actionUrl);
+        final var cookie = cookies.entrySet().stream()
+            .map(it -> it.getKey() + '=' + it.getValue())
+            .collect(Collectors.joining("; "));
+        post.setHeader("User-Agent", HttpHeaders.USER_AGENT);
         post.setHeader("X-CSRF-TOKEN", csrfToken);
-        post.setHeader("Cookie", "JSESSIONID=" + sessionId);
+        post.setHeader("Cookie", cookie);
+        post.setHeader("Accept", "application/json");
+        post.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        post.setHeader("Sec-Fetch-Dest", "empty");
+        post.setHeader("Sec-Fetch-Mode", "cors");
+        post.setHeader("Sec-Fetch-Site", "same-origin");
 
-        HttpResponse response;
+        final HttpResponse response;
         try {
-            post.setEntity(new UrlEncodedFormEntity(params, "utf-8"));
+            post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             response = client.execute(post);
         } catch (IOException e) {
             LOG.warn(e.getMessage(), e);
@@ -171,16 +195,16 @@ public abstract class AbstractHybrisHacHttpClient {
 
         boolean needsLogin = response.getStatusLine().getStatusCode() == SC_FORBIDDEN;
         if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
-            Header location = response.getFirstHeader("Location");
+            final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login")) {
                 needsLogin = true;
             }
         }
 
         if (needsLogin) {
-            this.sessionId = null;
+            cookiesPerSettings.remove(settings);
             if (canReLoginIfNeeded) {
-                return post(project, actionUrl, params, false);
+                return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
             }
         }
         return response;
@@ -206,48 +230,45 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     protected CloseableHttpClient createAllowAllClient(final long timeout) {
-        SSLContext sslcontext = null;
+        final SSLContext sslcontext;
         try {
-            sslcontext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
-
-                @Override
-                public boolean isTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
-                    return true;
-                }
-            }).build();
+            sslcontext = SSLContexts.custom().loadTrustMaterial(null, (chain, authType) -> true).build();
         } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
             LOG.warn(e.getMessage(), e);
             return null;
         }
-        SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, NoopHostnameVerifier.INSTANCE);
+        final SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslcontext, NoopHostnameVerifier.INSTANCE);
 
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+        final Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
             .register("http", PlainConnectionSocketFactory.getSocketFactory())
             .register("https", sslConnectionFactory)
             .build();
 
-        HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
-        HttpClientBuilder builder = HttpClients.custom();
+        final HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
+        final HttpClientBuilder builder = HttpClients.custom();
         builder.setConnectionManager(ccm);
-        RequestConfig config = RequestConfig.custom()
-                                            .setSocketTimeout((int) timeout)
-                                            .setConnectTimeout((int) timeout)
-                                            .build();
+        final RequestConfig config = RequestConfig.custom()
+            .setSocketTimeout((int) timeout)
+            .setConnectTimeout((int) timeout)
+            .build();
         builder.setDefaultRequestConfig(config);
         return builder.build();
     }
 
 
-    protected String getSessionId(
+    protected void retrieveCookies(
         final String hacURL,
         final @NotNull Project project,
         final @NotNull HybrisRemoteConnectionSettings settings
     ) {
-        final Response res = getResponseForUrl(hacURL, project, settings);
-        if (res == null) {
-            return null;
-        }
-        return res.cookie("JSESSIONID");
+        final var cookies = cookiesPerSettings.computeIfAbsent(settings, _settings -> new HashMap<>());
+        cookies.clear();
+
+        final var res = getResponseForUrl(hacURL, project, settings);
+
+        if (res == null) return;
+
+        cookies.putAll(res.cookies());
     }
 
     protected Response getResponseForUrl(
@@ -284,24 +305,10 @@ public abstract class AbstractHybrisHacHttpClient {
         return null;
     }
 
-    private Connection connect(@NotNull String url, final String sslProtocol) throws
-                                                                              NoSuchAlgorithmException,
-                                                                              KeyManagementException {
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+    private Connection connect(@NotNull final String url, final String sslProtocol) throws NoSuchAlgorithmException, KeyManagementException {
+        final TrustManager[] trustAllCerts = new TrustManager[]{X_509_TRUST_MANAGER};
 
-            @Nullable
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            public void checkClientTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) {
-            }
-
-            public void checkServerTrusted(@NotNull X509Certificate[] certs, @NotNull String authType) {
-            }
-        }};
-
-        SSLContext sc = SSLContext.getInstance(sslProtocol);
+        final SSLContext sc = SSLContext.getInstance(sslProtocol);
         sc.init(null, trustAllCerts, new SecureRandom());
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());

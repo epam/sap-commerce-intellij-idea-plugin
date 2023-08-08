@@ -41,7 +41,6 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.IMPEX_CONSOLE_TITLE, ImpexLanguage.getInstance()) {
 
@@ -63,11 +62,24 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     private val legacyModeCheckbox = JBCheckBox()
     private val legacyModeLabel = JBLabel("Legacy mode: ")
 
-    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
-
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
+    }
+
+    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
+    override fun title(): String = HybrisConstants.IMPEX
+    override fun tip(): String = "ImpEx Console"
+    override fun icon(): Icon = HybrisIcons.IMPEX_FILE
+
+    override fun execute(query: String): HybrisHttpResult {
+        val requestParams = getRequestParams(query)
+        return HybrisHacHttpClient.getInstance(project).importImpex(project, requestParams)
+    }
+
+    fun validate(query: String): HybrisHttpResult {
+        val requestParams = getRequestParams(query)
+        return HybrisHacHttpClient.getInstance(project).validateImpex(project, requestParams)
     }
 
     private fun createUI() {
@@ -90,36 +102,18 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         isEditable = true
     }
 
-    override fun execute(query: String): HybrisHttpResult {
-        val settings = mutableMapOf(
-                "scriptContent" to query,
-                "validationEnum" to "IMPORT_STRICT",
-                "encoding" to "UTF-8",
-                "maxThreads" to "4",
-                "_legacyMode" to "on"
+    private fun getRequestParams(query: String): MutableMap<String, String> {
+        val requestParams = mutableMapOf(
+            "scriptContent" to query,
+            "validationEnum" to "IMPORT_STRICT",
+            "encoding" to "UTF-8",
+            "maxThreads" to "4",
+            "_legacyMode" to "on"
         )
         if (legacyModeCheckbox.isSelected) {
-            settings["legacyMode"] = "true"
+            requestParams["legacyMode"] = "true"
         }
-        return HybrisHacHttpClient.getInstance(project).importImpex(project, settings)
-    }
-
-    override fun title(): String = HybrisConstants.IMPEX
-    override fun tip(): String = "ImpEx Console"
-    override fun icon(): Icon = HybrisIcons.IMPEX_FILE
-
-    fun validate(text: String): HybrisHttpResult {
-        val settings = mutableMapOf(
-                "scriptContent" to text,
-                "validationEnum" to "IMPORT_STRICT",
-                "encoding" to "UTF-8",
-                "maxThreads" to "4",
-                "_legacyMode" to "on"
-        )
-        if (legacyModeCheckbox.isSelected) {
-            settings["legacyMode"] = "true"
-        }
-        return HybrisHacHttpClient.getInstance(project).validateImpex(project, settings)
+        return requestParams
     }
 
     companion object {

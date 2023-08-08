@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.google.gson.Gson;
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
@@ -38,14 +40,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
-import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -61,7 +59,8 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     public @NotNull
     HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
-        final HttpResponse response = getHttpResponse(project, "/console/impex/import/validate", requestParams);
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final HttpResponse response = getHttpResponse(project, "/console/impex/import/validate", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -95,11 +94,13 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     private HttpResponse getHttpResponse(
         final Project project,
         final String urlSuffix,
-        Map<String, String> requestParams
-    ) {
+        final Map<String, String> requestParams,
+        final HybrisRemoteConnectionSettings settings
+
+        ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);
         final String actionUrl = getHostHacURL(project) + urlSuffix;
-        return post(project, actionUrl, params, false);
+        return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
     }
 
     private List<BasicNameValuePair> createParamsList(Map<String, String> requestParams) {
@@ -109,8 +110,9 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     public @NotNull
-    HybrisHttpResult importImpex(final Project project, final Map<String, String> settings) {
-        final HttpResponse response = getHttpResponse(project, "/console/impex/import", settings);
+    HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final HttpResponse response = getHttpResponse(project, "/console/impex/import", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -153,18 +155,21 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final String maxRows,
         final String content
     ) {
-
-        final List<BasicNameValuePair> params = asList(
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var params = Arrays.asList(
             new BasicNameValuePair("scriptType", "flexibleSearch"),
             new BasicNameValuePair("commit", BooleanUtils.toStringTrueFalse(shouldCommit)),
             new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "" : content),
             new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
-            new BasicNameValuePair("maxCount", maxRows)
+            new BasicNameValuePair("maxCount", maxRows),
+            new BasicNameValuePair("user", settings.getHacLogin())
+//            new BasicNameValuePair("dataSource", "master"),
+//            new BasicNameValuePair("locale", "en")
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
 
-        final HttpResponse response = post(project, actionUrl, params, true);
+        final HttpResponse response = post(project, actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
@@ -204,7 +209,8 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final Project project, final String content, final boolean isCommitMode, final int timeout
     ) {
 
-        final List<BasicNameValuePair> params = asList(
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var params = Arrays.asList(
             new BasicNameValuePair("scriptType", "groovy"),
             new BasicNameValuePair("commit", String.valueOf(isCommitMode)),
             new BasicNameValuePair("script", content)
@@ -212,7 +218,7 @@ public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
 
-        final HttpResponse response = post(project, actionUrl, params, true, timeout);
+        final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {

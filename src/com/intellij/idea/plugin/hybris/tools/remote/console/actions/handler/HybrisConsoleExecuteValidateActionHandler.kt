@@ -29,7 +29,7 @@ class HybrisConsoleExecuteValidateActionHandler(private val project: Project,
 
     private fun processLine(console: HybrisConsole, text: String) {
         ApplicationManager.getApplication().runReadAction {
-            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to Hybris...") {
+            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
