@@ -163,7 +163,9 @@
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
 
         <group id="hybris.impex.toolbar.left">
+            <reference id="hybris.impex.import"/>
             <reference id="hybris.impex.openQuery"/>
+            <reference id="hybris.impex.validate"/>
             <separator/>
             <reference id="hybris.impex.openSettings"/>
         </group>

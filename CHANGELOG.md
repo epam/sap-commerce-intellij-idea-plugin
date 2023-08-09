@@ -1,13 +1,14 @@
 ## [2023.2.6]
 
 ### `FlexibleSearch` enhancements
-- Introduced action header for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
-- Added actions for connection settings in the header [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)
-- Added `Execute` action to the header [#552](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/552)
+- Introduced actions toolbar for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
+- Added actions for connection settings in the toolbar [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)
+- Added `Execute` action to the toolbar [#552](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/552)
 
 ### `ImpEx` enhancements
-- Introduced action header for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
-- Ignore case for type in the reference header (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
+- Introduced actions toolbar for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
+- Ignore case for type in the reference type (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
+- Added `Execute` and `Validate` actions to the toolbar [#553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/553)
 
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
