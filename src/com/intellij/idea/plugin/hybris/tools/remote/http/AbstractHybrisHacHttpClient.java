@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -53,7 +54,6 @@ import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.apache.http.HttpStatus.*;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 public abstract class AbstractHybrisHacHttpClient {
@@ -98,7 +98,7 @@ public abstract class AbstractHybrisHacHttpClient {
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";
         final HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
-        if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {
                 return "Wrong username/password. Set your credentials in [y] tool window.";
@@ -187,13 +187,16 @@ public abstract class AbstractHybrisHacHttpClient {
             return createErrorResponse(e.getMessage());
         }
 
-        boolean needsLogin = response.getStatusLine().getStatusCode() == SC_FORBIDDEN;
-        if (response.getStatusLine().getStatusCode() == SC_MOVED_TEMPORARILY) {
-            final Header location = response.getFirstHeader("Location");
-            if (location != null && location.getValue().contains("login")) {
-                needsLogin = true;
+        final var statusCode = response.getStatusLine().getStatusCode();
+        final var needsLogin = switch (statusCode) {
+            case HttpStatus.SC_FORBIDDEN,
+                HttpStatus.SC_METHOD_NOT_ALLOWED -> true;
+            case HttpStatus.SC_MOVED_TEMPORARILY -> {
+                final var location = response.getFirstHeader("Location");
+                yield location != null && location.getValue().contains("login");
             }
-        }
+            default -> false;
+        };
 
         if (needsLogin) {
             cookiesPerSettings.remove(settings);
@@ -205,7 +208,7 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     protected HttpResponse createErrorResponse(final String reasonPhrase) {
-        return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, SC_SERVICE_UNAVAILABLE, reasonPhrase));
+        return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, HttpStatus.SC_SERVICE_UNAVAILABLE, reasonPhrase));
     }
 
     public String getHostHacURL(final Project project) {
