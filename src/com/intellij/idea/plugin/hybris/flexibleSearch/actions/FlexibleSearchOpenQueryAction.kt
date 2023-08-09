@@ -25,23 +25,22 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileTyp
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 
-class FlexibleSearchOpenQueryToConsoleAction : AnAction(
+class FlexibleSearchOpenQueryAction : AnAction(
     HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query"),
     HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description"),
     AllIcons.Actions.ChangeView
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        val query = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
             ?.firstOrNull()
             ?.takeIf { it.fileType is FlexibleSearchFileType }
             ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
+            ?.let { FileDocumentManager.getInstance().getDocument(it) }?.text
             ?: return
-
-        val query = VfsUtil.loadText(vf)
 
         CopyFileToHybrisConsoleUtils.copyQueryToConsole(
             project,

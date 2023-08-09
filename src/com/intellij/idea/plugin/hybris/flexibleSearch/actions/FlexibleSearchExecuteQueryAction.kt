@@ -27,7 +27,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil
 import com.intellij.psi.SingleRootFileViewProvider
 
-class ExecuteFlexibleSearchQueryAction : AnAction(
+class FlexibleSearchExecuteQueryAction : AnAction(
     message("hybris.fxs.actions.execute_query"),
     message("hybris.fxs.actions.execute_query.description"),
     AllIcons.Actions.Execute

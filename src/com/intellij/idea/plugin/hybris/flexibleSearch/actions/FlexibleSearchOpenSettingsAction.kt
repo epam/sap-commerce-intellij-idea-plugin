@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettingsConfigurableProvider
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -28,7 +28,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 class FlexibleSearchOpenSettingsAction : AnAction(
     message("hybris.fxs.actions.open_settings"),
     message("hybris.fxs.actions.open_settings.description"),
-    AllIcons.General.Settings
+    HybrisIcons.SETTINGS
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

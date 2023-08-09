@@ -51,6 +51,8 @@ public final class HybrisIcons {
     public static final Icon Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg");
     public static final Icon Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg");
     public static final Icon Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg");
+    public static final Icon Y_REMOTE = getIcon("/icons/hybrisRemote.svg");
+    public static final Icon Y_REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg");
     public static final Icon Y_FACET = Y_LOGO_GREEN;
     public static final Icon EXTENSION_INFO = getIcon("/icons/extensionInfo.svg");
     public static final Icon COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg");
@@ -61,9 +63,9 @@ public final class HybrisIcons {
     public static final Icon COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg");
     public static final Icon LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg");
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
-    public static final Icon HYBRIS_REMOTE = getIcon("/icons/hybrisRemoteIcon.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
+    public static final Icon SETTINGS = getIcon("/icons/settings.svg");
 
     public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
     public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
@@ -148,7 +150,7 @@ public final class HybrisIcons {
     public static final Icon TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property;
     public static final Icon TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object;
     public static final Icon TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg");
-    public static final Icon TS_DIAGRAM_SETTINGS = getIcon("/icons/typeSystem/diagram/settings.svg");
+    public static final Icon TS_DIAGRAM_SETTINGS = SETTINGS;
 
     public static final Icon FXS_TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg");
     public static final Icon FXS_COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg");

@@ -1,7 +1,8 @@
 ## [2023.2.6]
 
 ### `FlexibleSearch` enhancements
-- Introduced header for `.fxs` files, with: `Open in Console`, `Open Settings`, `Show Active Connection` [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
+- Introduced action header for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
+- Added actions for connection settings in the header [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)
 
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)

@@ -141,7 +141,7 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
             }
             group("Documentation") {
                 row {
-                    documentationEnableCheckBox = checkBox("Enable code folding")
+                    documentationEnableCheckBox = checkBox("Enable documentation")
                         .bindSelected(state.documentation::enabled)
                         .component
                 }
