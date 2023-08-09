@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,15 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
+package com.intellij.idea.plugin.hybris.impex.actions
 
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-class ImportImpexAction : AbstractExecuteAction() {
+class ImpExValidateAction : AbstractExecuteAction(
+    "Validate ImpEx",
+    "Validate ImpEx file via remote SAP Commerce instance",
+    AllIcons.Actions.Checked
+) {
+
+    override val extension = ImpexFileType.INSTANCE.defaultExtension
+    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override fun getExtension() = ImpexFileType.INSTANCE.defaultExtension
-    override fun getConsoleName() = HybrisConstants.IMPEX_CONSOLE_TITLE
+    override fun doExecute(consolePanel: HybrisConsolesPanel) {
+        consolePanel.validateImpex()
+    }
 }

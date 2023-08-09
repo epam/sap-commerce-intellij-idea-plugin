@@ -18,33 +18,19 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
-import com.intellij.psi.SingleRootFileViewProvider
 
-class ImpExExecuteQueryAction : AnAction(
+class ImpExExecuteAction : AbstractExecuteAction(
     message("hybris.impex.actions.execute_query"),
     message("hybris.impex.actions.execute_query.description"),
     AllIcons.Actions.Execute
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun actionPerformed(e: AnActionEvent) {
-        e.project ?: return
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-            ?.firstOrNull()
-            ?.takeIf { it.fileType is ImpexFileType }
-            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?: return
-
-        val query = LoadTextUtil.loadText(vf)
-
-//        ActionManager.getInstance().getAction("hybris.fxs.CopyFlexibleSearchFileAction").actionPerformed(e)
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+    override val extension = ImpexFileType.INSTANCE.defaultExtension
+    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
 }

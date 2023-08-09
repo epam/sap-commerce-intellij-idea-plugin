@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,33 +19,26 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
-import com.intellij.psi.SingleRootFileViewProvider
 
-class FlexibleSearchExecuteQueryAction : AnAction(
+class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     message("hybris.fxs.actions.execute_query"),
     message("hybris.fxs.actions.execute_query.description"),
     AllIcons.Actions.Execute
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override val extension = FlexibleSearchFileType.instance.defaultExtension
+    override val consoleName = HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE
 
-    override fun actionPerformed(e: AnActionEvent) {
-        e.project ?: return
-        val vf = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-            ?.firstOrNull()
-            ?.takeIf { it.fileType is FlexibleSearchFileType }
-            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?: return
-
-        val query = LoadTextUtil.loadText(vf)
-
-//        ActionManager.getInstance().getAction("hybris.fxs.CopyFlexibleSearchFileAction").actionPerformed(e)
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
+        val enabled = file != null && file.name.endsWith(".$extension")
+        e.presentation.isEnabledAndVisible = enabled
     }
 }

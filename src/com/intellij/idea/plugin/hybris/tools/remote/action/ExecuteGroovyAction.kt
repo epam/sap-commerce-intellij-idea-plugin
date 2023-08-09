@@ -15,23 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.tools.remote.action
 
-package com.intellij.idea.plugin.hybris.tools.remote.action;
+import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import org.jetbrains.plugins.groovy.GroovyFileType
 
-import org.jetbrains.plugins.groovy.GroovyFileType;
+class ExecuteGroovyAction : AbstractExecuteAction(
+    "Execute Groovy Script",
+    "Execute Groovy Script on a remote SAP Commerce instance",
+    AllIcons.Actions.Execute
+) {
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.GROOVY_CONSOLE_TITLE;
-
-public class ExecuteGroovyAction extends AbstractExecuteAction {
-
-    @Override
-    protected String getExtension() {
-        return GroovyFileType.GROOVY_FILE_TYPE.getDefaultExtension();
-    }
-
-    @Override
-    protected String getConsoleName() {
-        return GROOVY_CONSOLE_TITLE;
-    }
-
+    override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
+    override val consoleName = HybrisConstants.GROOVY_CONSOLE_TITLE
 }
