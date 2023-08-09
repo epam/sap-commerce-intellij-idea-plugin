@@ -66,10 +66,11 @@
                              provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettingsConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileHeaderInstaller"/>
     </extensions>
 
     <projectListeners>
-        <listener class="com.intellij.idea.plugin.hybris.startup.event.FlexibleSearchFileEditorManagerListener"
+        <listener class="com.intellij.idea.plugin.hybris.startup.event.HybrisFileEditorManagerListener"
                   topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </projectListeners>
 
@@ -102,9 +103,6 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <!-- START: FlexibleSearch toolbar actions -->
-
-        <group id="hybris.fxs.chooseConnection" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchChooseConnectionAction"/>
         <action id="hybris.fxs.openQuery" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenQueryAction"/>
         <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
         <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteQueryAction"
@@ -118,9 +116,8 @@
             <reference id="hybris.fxs.openSettings"/>
         </group>
         <group id="hybris.fxs.toolbar.right">
-            <reference id="hybris.fxs.chooseConnection"/>
+            <reference id="hybris.hac.chooseConnection"/>
         </group>
-        <!-- END:   FlexibleSearch toolbar actions -->
     </actions>
 
 </idea-plugin>

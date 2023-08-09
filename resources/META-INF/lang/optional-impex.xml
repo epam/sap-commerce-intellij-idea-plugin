@@ -112,6 +112,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileHeaderInstaller"/>
     </extensions>
 
 
@@ -165,6 +166,22 @@
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
+        <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
+        <action id="hybris.impex.execute" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteQueryAction"
+                icon="AllIcons.Actions.Execute"
+                use-shortcut-of="Console.Execute.Multiline"/>
+
+        <group id="hybris.impex.toolbar.left">
+            <reference id="hybris.impex.openQuery"/>
+            <!--            <reference id="hybris.impex.execute"/>-->
+            <separator/>
+            <reference id="hybris.impex.openSettings"/>
+        </group>
+        <group id="hybris.impex.toolbar.right">
+            <reference id="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

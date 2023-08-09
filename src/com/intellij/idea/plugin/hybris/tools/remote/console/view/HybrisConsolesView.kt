@@ -60,7 +60,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val panel = JPanel(BorderLayout())
 
-        val consoles = arrayOf(impexConsole, groovyConsole, monitorConsole, flexibleSearchConsole, solrSearchConsole)
+        val consoles = arrayOf(flexibleSearchConsole, impexConsole, groovyConsole, monitorConsole, solrSearchConsole)
         consoles.forEach { Disposer.register(this, it) }
         hybrisTabs = HybrisTabs(project, TOP, consoles, this)
 

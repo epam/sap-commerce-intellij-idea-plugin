@@ -304,6 +304,8 @@
                         use-shortcut-of="GotoDeclaration"/>
             </group>
         </group>
+
+        <group id="hybris.hac.chooseConnection" class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction"/>
     </actions>
 
 </idea-plugin>

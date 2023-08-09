@@ -15,43 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.startup.event
 
 import com.intellij.ide.actions.ToggleToolbarAction
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.impl.EditorHeaderComponent
-import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.SingleRootFileViewProvider
 import com.intellij.util.containers.JBIterable
-import javax.swing.JPanel
 
-class FlexibleSearchFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
+abstract class HybrisFileHeaderInstaller(val toolbarId: String, val leftGroupId: String, val rightGroupId: String) {
 
-    override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-        if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
-        if (file.fileType !is FlexibleSearchFileType) return
-
-        FileEditorManager.getInstance(project).getAllEditors(file)
-            .firstNotNullOfOrNull { EditorUtil.getEditorEx(it) }
-            ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { installHeader(project, it, file) }
-    }
-
-    private fun installHeader(project: Project, editor: EditorEx, vf: VirtualFile) {
+    fun install(project: Project, editor: EditorEx, vf: VirtualFile) {
         val actionManager = ActionManager.getInstance()
-        val leftGroup = actionManager.getAction("hybris.fxs.toolbar.left") as ActionGroup
-        val rightGroup = actionManager.getAction("hybris.fxs.toolbar.right") as ActionGroup
-        val headerComponent: JPanel = EditorHeaderComponent()
-        val leftToolbar = ActionManager.getInstance().createActionToolbar("EditorToolbar", leftGroup, true)
-        val rightToolbar = ActionManager.getInstance().createActionToolbar("EditorToolbar", rightGroup, true)
+        val headerComponent = EditorHeaderComponent()
+        val leftGroup = actionManager.getAction(leftGroupId) as ActionGroup
+        val rightGroup = actionManager.getAction(rightGroupId) as ActionGroup
+        val leftToolbar = actionManager.createActionToolbar("EditorToolbar", leftGroup, true)
+        val rightToolbar = actionManager.createActionToolbar("EditorToolbar", rightGroup, true)
         rightToolbar.setReservePlaceAutoPopupIcon(false)
         leftToolbar.targetComponent = editor.contentComponent
         rightToolbar.targetComponent = editor.contentComponent
@@ -62,7 +47,7 @@ class FlexibleSearchFileEditorManagerListener(private val project: Project) : Fi
         editor.headerComponent = headerComponent
 
         ToggleToolbarAction.setToolbarVisible(
-            "hybris.fxs.console",
+            toolbarId,
             PropertiesComponent.getInstance(project),
             JBIterable.of(headerComponent),
             null as Boolean?

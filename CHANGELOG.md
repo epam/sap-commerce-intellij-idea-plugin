@@ -4,11 +4,12 @@
 - Introduced action header for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
 - Added actions for connection settings in the header [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)
 
+### `ImpEx` enhancements
+- Introduced action header for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
+- Ignore case for type in the reference header (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
+
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
-
-### `ImpEx` enhancements
-- Ignore case for type in the reference header (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
 
 ### `HAC` enhancements
 - Enhanced Cluster support, support node routing [#543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/543)

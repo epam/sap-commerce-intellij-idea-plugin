@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.actions
+package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -41,7 +41,7 @@ import java.awt.event.InputEvent
 import javax.swing.Icon
 import javax.swing.JComponent
 
-class FlexibleSearchChooseConnectionAction : ActionGroup() {
+class HacChooseConnectionAction : ActionGroup() {
 
     init {
         isPopup = true
@@ -58,9 +58,10 @@ class FlexibleSearchChooseConnectionAction : ActionGroup() {
 
         val devSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
         val hacSettings = devSettings.getActiveHacRemoteConnectionSettings(project)
-        presentation.text = "Active Connection: $hacSettings"
+        presentation.text = "$hacSettings"
         presentation.isEnabledAndVisible = true
         presentation.icon = HybrisIcons.Y_REMOTE
+        presentation.description = "Switch active connection"
     }
 
     override fun actionPerformed(e: AnActionEvent) {
