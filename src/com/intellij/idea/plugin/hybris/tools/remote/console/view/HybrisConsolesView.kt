@@ -114,7 +114,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
     fun execute() = performAction(HybrisExecuteImmediatelyAction::class.java)
 
     private fun performAction(clazz: Class<out AnAction>) {
-        val action = actionToolbar.actions.first { clazz.isInstance(clazz) }
+        val action = actionToolbar.actions.first { clazz.isInstance(it) }
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
     }

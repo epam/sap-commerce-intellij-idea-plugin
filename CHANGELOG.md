@@ -26,6 +26,7 @@
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
 - `ImpEx` Code Style Formatter is not configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540) 
 - `ImpEx` functional reference type validation does not work [#546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/546) 
+- Fixed `ImpEx` context actions [#551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/551) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
