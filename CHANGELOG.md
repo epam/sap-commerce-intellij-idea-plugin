@@ -22,7 +22,7 @@
 
 ### Features
 - Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534)
-- Improved folding for Relation tags in the `items.xml` [#554](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/554)
+- Improved folding for Relation tags in the `items.xml` [#555](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/555)
 
 ### Fixes
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
