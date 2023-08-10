@@ -42,7 +42,7 @@ abstract class HybrisFileHeaderInstaller(val toolbarId: String, val leftGroupId:
         rightToolbar.targetComponent = editor.contentComponent
         headerComponent.add(leftToolbar.component, "Center")
         headerComponent.add(rightToolbar.component, "East")
-
+        leftToolbar.updateActionsImmediately()
         editor.permanentHeaderComponent = headerComponent
         editor.headerComponent = headerComponent
 

@@ -17,24 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 
-class ImpExValidateAction : AbstractExecuteAction(
-    "Validate ImpEx",
-    "Validate ImpEx file via remote SAP Commerce instance",
-    HybrisIcons.IMX_VALIDATE
+class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnAction(
+    "Insert Column Left",
+    "Insert new column left",
+    HybrisIcons.TABLE_COLUMN_INSERT_LEFT
 ) {
-
-    override val extension = ImpexFileType.INSTANCE.defaultExtension
-    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
-
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override fun doExecute(consolePanel: HybrisConsolesPanel) {
-        consolePanel.validateImpex()
+    override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
     }
+
 }

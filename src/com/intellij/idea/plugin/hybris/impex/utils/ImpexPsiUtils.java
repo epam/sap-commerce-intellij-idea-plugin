@@ -330,7 +330,6 @@ public final class ImpexPsiUtils {
 
             final PsiElement header = getHeaderForValueGroup(valueGroup);
             if (null != header) {
-
                 return header;
             }
         }
@@ -351,50 +350,14 @@ public final class ImpexPsiUtils {
             ImpexFullHeaderParameter.class
         );
         if (null != headerParameter) {
-
-            final PsiElement[] children = headerParameter.getParent().getChildren();
-            int i = -2;
-            for (final PsiElement child : children) {
-                if (!child.equals(headerParameter)) {
-                    i++;
-                } else {
-                    break;
-                }
-            }
-
-            final List<PsiElement> result = new ArrayList<>();
-            PsiElement psiElement = getNextSiblingOfAnyType(
-                PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
-                ImpexValueLine.class,
-                ImpexHeaderLine.class,
-                ImpexRootMacroUsage.class
-            );
-
-            while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
-                if (isImpexValueLine(psiElement)) {
-                    final PsiElement[] elements = psiElement.getChildren();
-                    if (elements.length > i) {
-                        result.add(elements[i]);
-                    }
-                }
-
-
-                psiElement = getNextSiblingOfAnyType(
-                    psiElement,
-                    ImpexValueLine.class,
-                    ImpexHeaderLine.class,
-                    ImpexRootMacroUsage.class
-                );
-            }
-
-            return result;
+            return getColumnForHeader(headerParameter);
         }
 
         return null;
     }
 
+    @NotNull
     public static List<PsiElement> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
-
         final PsiElement[] children = headerParameter.getParent().getChildren();
         int i = -2;
         for (final PsiElement child : children) {

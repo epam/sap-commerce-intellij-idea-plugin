@@ -7,6 +7,7 @@
 
 ### `ImpEx` enhancements
 - Introduced actions toolbar for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
+- Added new toolbar action `Remove Column` [#554](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/554)
 - Ignore case for type in the reference type (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
 - Added `Execute` and `Validate` actions to the toolbar [#553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/553)
 

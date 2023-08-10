@@ -17,24 +17,24 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 
-class ImpExValidateAction : AbstractExecuteAction(
-    "Validate ImpEx",
-    "Validate ImpEx file via remote SAP Commerce instance",
-    HybrisIcons.IMX_VALIDATE
+class ImpExTableRemoveAction : AbstractImpExTableAction(
+    "Remove Table",
+    "Remove current table",
+    HybrisIcons.TABLE_REMOVE
 ) {
 
-    override val extension = ImpexFileType.INSTANCE.defaultExtension
-    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
+    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = PsiTreeUtil
+        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java) != null
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override fun doExecute(consolePanel: HybrisConsolesPanel) {
-        consolePanel.validateImpex()
+    override fun actionPerformed(e: AnActionEvent) {
     }
 }

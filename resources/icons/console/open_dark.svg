@@ -1,0 +1,15 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .base{
+        stroke-width:1.5px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st0{ fill:#AFB1B3; }
+        .st1{ stroke:#3592C4; }
+        .st2{ stroke:#AFB1B3; }
+    </style>
+    <path class="st0" fill-rule="evenodd" clip-rule="evenodd" d="M 0.491 4.232 C 0.491 2.166 2.166 0.491 4.232 0.491 L 11.714 0.491 C 13.78 0.491 15.455 2.166 15.455 4.232 L 15.455 11.714 C 15.455 13.78 13.78 15.455 11.714 15.455 L 4.232 15.455 C 2.166 15.455 0.491 13.78 0.491 11.714 L 0.491 4.232 Z M 4.232 1.988 C 2.992 1.988 1.988 2.992 1.988 4.232 L 1.988 11.714 C 1.988 12.953 2.992 13.958 4.232 13.958 L 11.714 13.958 C 12.953 13.958 13.958 12.953 13.958 11.714 L 13.958 4.232 C 13.958 2.992 12.953 1.988 11.714 1.988 L 4.232 1.988 Z"/>
+    <polyline class="base st1" points="4.921 4.931 7.365 7.365 4.91 9.82"/>
+    <line class="base st2" x1="4.91" y1="11.8" x2="11.295" y2="11.784"/>
+</svg>

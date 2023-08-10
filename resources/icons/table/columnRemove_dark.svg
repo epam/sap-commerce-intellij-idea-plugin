@@ -1,0 +1,18 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .st0{
+        stroke:#AFB1B3;
+        stroke-width:2px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st1{
+        stroke:#C75450;
+        stroke-width:2px;
+        stroke-linecap:round;
+        }
+    </style>
+    <path class="st0"
+          d="M 4.527 14.239 L 3.847 14.239 C 3.094 14.239 2.485 13.63 2.485 12.877 L 2.485 3.35 C 2.485 2.597 3.094 1.988 3.847 1.988 L 5.207 1.988 C 5.96 1.988 6.569 2.597 6.569 3.35 L 6.569 7.434"/>
+    <line class="st1" x1="8.347" y1="11.293" x2="14.239" y2="11.293"/>
+</svg>

@@ -133,12 +133,6 @@
         </group>
 
         <group id="ImpExTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
-            <!-- This feature not ready for production. Temporary disabled.  -->
-            <!--<action id="ImpExTableFormatter.FormatAllTables"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableFormatAllAction"-->
-            <!--text="Format All"-->
-            <!--description="Formats table with pipe delimiters">-->
-            <!--</action>-->
             <!--<action id="ImpExTableFormatter.AddColumnBefore"-->
             <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
             <!--text="Add Column Before"-->
@@ -162,10 +156,23 @@
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
 
+        <group id="hybris.impex.table.actions">
+<!--            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>-->
+<!--            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>-->
+<!--            <separator/>-->
+<!--            <action id="hybris.impex.table.column.add.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertLeftAction"/>-->
+<!--            <action id="hybris.impex.table.column.add.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertRightAction"/>-->
+<!--            <separator/>-->
+            <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction"/>
+<!--            <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction"/>-->
+        </group>
+
         <group id="hybris.impex.toolbar.left">
             <reference id="hybris.impex.import"/>
             <reference id="hybris.impex.openQuery"/>
             <reference id="hybris.impex.validate"/>
+            <separator/>
+            <reference id="hybris.impex.table.actions"/>
             <separator/>
             <reference id="hybris.impex.openSettings"/>
         </group>

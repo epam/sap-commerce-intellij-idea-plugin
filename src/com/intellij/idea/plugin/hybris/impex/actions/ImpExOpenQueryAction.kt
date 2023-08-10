@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -31,7 +31,7 @@ import com.intellij.psi.SingleRootFileViewProvider
 class ImpExOpenQueryAction : AnAction(
     message("hybris.impex.actions.open_query"),
     message("hybris.impex.actions.open_query.description"),
-    AllIcons.Actions.ChangeView
+    HybrisIcons.CONSOLE_OPEN
 ) {
 
     override fun actionPerformed(e: AnActionEvent) {

@@ -1,0 +1,19 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .st0{
+        stroke:#AFB1B3;
+        stroke-width:2px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st1{
+        stroke:#499C54;
+        stroke-width:2px;
+        stroke-linecap:round;
+        }
+    </style>
+    <path class="st0" d="M 12.197 1.988 L 11.517 1.988 C 10.764 1.988 10.155 2.597 10.155 3.35 L 10.155 12.877 C 10.155 13.63 10.764 14.239 11.517 14.239 L 12.877 14.239 C 13.63 14.239 14.239 13.63 14.239 12.877 L 14.239 8.793"
+          style="transform-origin: 12.197px 8.1135px;" transform="matrix(-1, 0, 0, -1, -0.000001907349, 0)"/>
+    <line class="st1" x1="2.455" y1="11.293" x2="8.347" y2="11.293"/>
+    <line class="st1" x1="5.439" y1="14.239" x2="5.431" y2="8.347"/>
+</svg>

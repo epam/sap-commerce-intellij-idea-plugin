@@ -1,0 +1,22 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .st0{
+        stroke:#AFB1B3;
+        stroke-width:2px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st1{
+        stroke:#3592C4;
+        stroke-width:2px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+    </style>
+    <path class="st0"
+          d="M 11.784 1.964 L 10.311 1.964 C 9.572 1.964 8.838 2.709 8.838 3.437 L 8.838 12.766 C 8.838 13.519 9.558 14.239 10.311 14.239 L 11.784 14.239 C 12.537 14.239 13.257 13.519 13.257 12.766 L 13.257 3.437 C 13.257 2.712 12.473 1.964 11.784 1.964 Z"
+          style="transform-origin: 11.0475px 8.1015px;"
+          transform="matrix(-1, 0, 0, -1, 0.000001907349, -0.000003814697)"/>
+    <polyline class="st1" style="transform-origin: 3.6825px 8.347px;" points="1.964 11.784 5.401 8.347 1.964 4.91"
+              transform="matrix(-1, 0, 0, -1, -0.000001430511, 0)"/>
+</svg>

@@ -28,6 +28,7 @@ import javax.swing.*;
 
 /**
  * Please follow Intellij Platform UI style and naming convention for icons.
+ *
  * @see <a href="https://jetbrains.design/intellij/principles/icons/#style">styleguide</a>
  */
 public final class HybrisIcons {
@@ -163,9 +164,19 @@ public final class HybrisIcons {
     public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
     public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 
+    public static final Icon IMX_VALIDATE = getIcon("/icons/impex/validate.svg");
+
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
+    public static final Icon CONSOLE_OPEN = getIcon("/icons/console/open.svg");
+
+    public static final Icon TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg");
+    public static final Icon TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg");
+    public static final Icon TABLE_COLUMN_MOVE_LEFT = getIcon("/icons/table/columnMoveLeft.svg");
+    public static final Icon TABLE_COLUMN_MOVE_RIGHT = getIcon("/icons/table/columnMoveRight.svg");
+    public static final Icon TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg");
+    public static final Icon TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

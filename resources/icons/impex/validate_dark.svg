@@ -1,0 +1,15 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .base{
+        stroke-width:1.5px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st0{ stroke:#AFB1B3; }
+        .st1{ stroke:#F0A732; }
+        .st2{ stroke:#F0A732; }
+    </style>
+    <polyline class="base st0" points="14.73 4.91 8.349 11.269 4.912 7.832"/>
+    <line class="base st1" x1="10.802" y1="5.112" x2="8.336" y2="7.567"/>
+    <line class="base st2" x1="0.982" y1="7.816" x2="4.411" y2="11.293"/>
+</svg>

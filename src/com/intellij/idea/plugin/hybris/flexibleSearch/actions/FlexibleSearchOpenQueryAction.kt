@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -31,7 +31,7 @@ import com.intellij.psi.SingleRootFileViewProvider
 class FlexibleSearchOpenQueryAction : AnAction(
     HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query"),
     HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description"),
-    AllIcons.Actions.ChangeView
+    HybrisIcons.CONSOLE_OPEN
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

@@ -67,7 +67,7 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
 
         override fun createPanel() = panel {
             row {
-                icon(HybrisIcons.Y_REMOTE)
+                icon(HybrisIcons.Y_REMOTE_GREEN)
                 comboBox(
                     activeHacServerModel,
                     renderer = SimpleListCellRenderer.create("?") { it.toString() }
