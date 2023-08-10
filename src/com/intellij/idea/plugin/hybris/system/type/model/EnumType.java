@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 public interface EnumType extends DomElement {
 
     String CODE = "code";
+    String DYNAMIC = "dynamic";
 
     /**
      * Returns the value of the code child.
@@ -108,7 +109,7 @@ public interface EnumType extends DomElement {
      * @return the value of the dynamic child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("dynamic")
+    @com.intellij.util.xml.Attribute(DYNAMIC)
     FalseAttributeValue getDynamic();
 
 

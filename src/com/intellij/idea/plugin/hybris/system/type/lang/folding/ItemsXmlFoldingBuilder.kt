@@ -56,7 +56,21 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             EnumTypes.ENUMTYPE -> psi.getAttributeValue(EnumType.CODE)
-            Relations.RELATION -> psi.getAttributeValue(Relation.CODE)
+
+            Relations.RELATION -> {
+                val code = psi.getAttributeValue(Relation.CODE) ?: "?"
+                val source = psi.findFirstSubTag(Relation.SOURCE_ELEMENT)
+                val target = psi.findFirstSubTag(Relation.TARGET_ELEMENT)
+                val sourceType = source?.getAttributeValue(RelationElement.TYPE) ?: "?"
+                val targetType = target?.getAttributeValue(RelationElement.TYPE) ?: "?"
+
+                val sourceRelation = source?.getAttributeValue(RelationElement.CARDINALITY) ?: Cardinality.MANY.value
+                val targetRelation = source?.getAttributeValue(RelationElement.CARDINALITY) ?: Cardinality.MANY.value
+
+                "$code ($sourceType [$sourceRelation :: $targetRelation] $targetType)"
+
+            }
+
             Indexes.INDEX -> psi.getAttributeValue(Index.NAME)
             CustomProperties.PROPERTY -> psi.getAttributeValue(CustomProperty.NAME)
 
@@ -69,10 +83,10 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             CollectionTypes.COLLECTIONTYPE -> psi.getAttributeValue(CollectionType.CODE) + " : " +
                 psi.getAttributeValue(CollectionType.ELEMENTTYPE) + " : " +
-                (psi.getAttributeValue(CollectionType.TYPE) ?: Type.COLLECTION.name)
+                (psi.getAttributeValue(CollectionType.TYPE) ?: Type.COLLECTION.value)
 
             Relation.SOURCE_ELEMENT,
-            Relation.TARGET_ELEMENT -> (psi.getAttributeValue(RelationElement.CARDINALITY) ?: Cardinality.MANY.name) + " : " +
+            Relation.TARGET_ELEMENT -> (psi.getAttributeValue(RelationElement.CARDINALITY) ?: Cardinality.MANY.value) + " : " +
                 (psi.getAttributeValue(RelationElement.TYPE) ?: "") +
                 (psi.getAttributeValue(RelationElement.QUALIFIER)?.let { " : $it" } ?: "")
 
