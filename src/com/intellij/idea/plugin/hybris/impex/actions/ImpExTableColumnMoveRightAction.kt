@@ -22,11 +22,15 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
-class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnAction(
-    "Move Column Right",
-    "Move current column right",
-    HybrisIcons.TABLE_COLUMN_MOVE_RIGHT
-) {
+class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnAction() {
+
+    init {
+        with (templatePresentation) {
+            text = "Move Column Right"
+            description = "Move current column right"
+            icon = HybrisIcons.TABLE_COLUMN_MOVE_RIGHT
+        }
+    }
 
     override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
     }

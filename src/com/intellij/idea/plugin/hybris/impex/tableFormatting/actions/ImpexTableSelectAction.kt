@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,23 +16,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.actions
+package com.intellij.idea.plugin.hybris.impex.tableFormatting.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.ImpexTableEditor
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.handler.ImpexTableActionHandler
+import com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.operation.SelectImpexTableOperation
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 
-class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnAction() {
+class ImpexTableSelectAction : AbstractImpexTableFormatAction(object : ImpexTableActionHandler() {
+
+    override fun action(editor: Editor) = SelectImpexTableOperation(ImpexTableEditor(editor))
+}) {
 
     init {
-        with (templatePresentation) {
-            text = "Move Column Left"
-            description = "Move current column left"
-            icon = HybrisIcons.TABLE_COLUMN_MOVE_LEFT
+        with(templatePresentation) {
+            text = "Select ImpEx Statement"
+            description = "Select ImpEx statement"
+            icon = HybrisIcons.TABLE_SELECT
         }
-    }
-
-    override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
     }
 }

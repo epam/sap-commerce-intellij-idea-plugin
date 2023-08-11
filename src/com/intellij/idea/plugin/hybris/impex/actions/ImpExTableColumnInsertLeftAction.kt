@@ -22,11 +22,16 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
-class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnAction(
-    "Insert Column Left",
-    "Insert new column left",
-    HybrisIcons.TABLE_COLUMN_INSERT_LEFT
-) {
+class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnAction() {
+
+    init {
+        with (templatePresentation) {
+            text = "Insert Column Left"
+            description = "Insert new column left"
+            icon = HybrisIcons.TABLE_COLUMN_INSERT_LEFT
+        }
+    }
+
     override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
     }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -170,6 +170,7 @@ public final class HybrisIcons {
 
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
     public static final Icon CONSOLE_OPEN = getIcon("/icons/console/open.svg");
+    public static final Icon CONSOLE_EXECUTE = AllIcons.Actions.Execute;
 
     public static final Icon TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg");
     public static final Icon TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg");
@@ -177,6 +178,7 @@ public final class HybrisIcons {
     public static final Icon TABLE_COLUMN_MOVE_RIGHT = getIcon("/icons/table/columnMoveRight.svg");
     public static final Icon TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg");
     public static final Icon TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg");
+    public static final Icon TABLE_SELECT = getIcon("/icons/table/tableSelect.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

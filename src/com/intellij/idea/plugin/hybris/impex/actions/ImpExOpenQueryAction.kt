@@ -28,11 +28,15 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 
-class ImpExOpenQueryAction : AnAction(
-    message("hybris.impex.actions.open_query"),
-    message("hybris.impex.actions.open_query.description"),
-    HybrisIcons.CONSOLE_OPEN
-) {
+class ImpExOpenQueryAction : AnAction() {
+
+    init {
+        with (templatePresentation) {
+            text = message("hybris.impex.actions.open_query")
+            description = message("hybris.impex.actions.open_query.description")
+            icon = HybrisIcons.CONSOLE_OPEN
+        }
+    }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

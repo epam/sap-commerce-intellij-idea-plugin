@@ -27,11 +27,15 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
-class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction(
-    "Remove Column",
-    "Remove current column",
-    HybrisIcons.TABLE_COLUMN_REMOVE
-) {
+class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
+
+    init {
+        with(templatePresentation) {
+            text = "Remove Column"
+            description = "Remove current column"
+            icon = HybrisIcons.TABLE_COLUMN_REMOVE
+        }
+    }
 
     override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
         when (element) {

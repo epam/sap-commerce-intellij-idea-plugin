@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,16 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
 
-class ImpExOpenSettingsAction : AnAction(
-    message("hybris.impex.actions.open_settings"),
-    message("hybris.impex.actions.open_settings.description"),
-    HybrisIcons.SETTINGS
-) {
+class ImpExOpenSettingsAction : AnAction() {
+
+    init {
+        with (templatePresentation) {
+            text = message("hybris.impex.actions.open_settings")
+            description = message("hybris.impex.actions.open_settings.description")
+            icon = HybrisIcons.SETTINGS
+        }
+    }
+
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         ShowSettingsUtil.getInstance().showSettingsDialog(project, ImpexSettingsConfigurableProvider.SettingsConfigurable::class.java)

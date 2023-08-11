@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2014-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,15 +18,19 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.action
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import org.jetbrains.plugins.groovy.GroovyFileType
 
-class ExecuteGroovyAction : AbstractExecuteAction(
-    "Execute Groovy Script",
-    "Execute Groovy Script on a remote SAP Commerce instance",
-    AllIcons.Actions.Execute
-) {
+class ExecuteGroovyAction : AbstractExecuteAction() {
+
+    init {
+        with (templatePresentation) {
+            text = "Execute Groovy Script"
+            description = "Execute Groovy Script on a remote SAP Commerce instance"
+            icon = HybrisIcons.CONSOLE_EXECUTE
+        }
+    }
 
     override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
     override val consoleName = HybrisConstants.GROOVY_CONSOLE_TITLE

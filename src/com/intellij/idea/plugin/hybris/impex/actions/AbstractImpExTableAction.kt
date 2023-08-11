@@ -25,11 +25,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilBase
-import javax.swing.Icon
 
-abstract class AbstractImpExTableAction(text: String, description: String, icon: Icon) : AnAction(text, description, icon) {
+abstract class AbstractImpExTableAction : AnAction() {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         var actionAllowed = false

@@ -1,0 +1,42 @@
+<!--
+  - This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  - Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Lesser General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  - See the GNU Lesser General Public License for more details.
+  -
+  - You should have received a copy of the GNU Lesser General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .base{
+        stroke-width:1.5px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st0{
+        stroke:#AFB1B3;
+        }
+        .st1{
+        stroke:#3592C4;
+        }
+    </style>
+    <polyline class="base st0" points="12.28 0.96 14.73 0.982 14.73 3.437"/>
+    <polyline class="base st0" points="0.982 3.437 0.982 0.97 3.437 0.982"/>
+    <polyline class="base st0" points="14.73 12.502 14.73 14.957 12.275 14.957"/>
+    <polyline class="base st0" points="0.982 12.766 0.982 15.221 3.437 15.221"/>
+    <line class="base st0" x1="6.874" y1="14.981" x2="9.329" y2="14.981"/>
+    <line class="base st0" x1="6.874" y1="0.982" x2="9.329" y2="0.982"/>
+    <line class="base st0" x1="0.982" y1="6.874" x2="0.982" y2="9.329"/>
+    <line class="base st0" x1="14.73" y1="6.874" x2="14.73" y2="9.329"/>
+    <rect class="base st1" x="4.419" y="4.419" width="7.365" height="7.365"/>
+</svg>

@@ -27,17 +27,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilBase
-import javax.swing.Icon
 
-abstract class AbstractImpExTableColumnAction(text: String, description: String, icon: Icon) : AbstractImpExTableAction(text, description, icon) {
+abstract class AbstractImpExTableColumnAction() : AbstractImpExTableAction() {
 
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableImpExElement(element) != null
+    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         PsiUtilBase.getElementAtCaret(editor)
-            ?.let { getSuitableImpExElement(it) }
+            ?.let { getSuitableElement(it) }
             ?.let {
                 WriteCommandAction.runWriteCommandAction(project) {
                     actionPerformed(project, editor, it)
@@ -45,7 +44,7 @@ abstract class AbstractImpExTableColumnAction(text: String, description: String,
             }
     }
 
-    private fun getSuitableImpExElement(element: PsiElement) = PsiTreeUtil
+    private fun getSuitableElement(element: PsiElement) = PsiTreeUtil
         .getParentOfType(element, ImpexFullHeaderParameter::class.java, ImpexValueGroup::class.java)
 
     abstract fun actionPerformed(project: Project, editor: Editor, element: PsiElement)

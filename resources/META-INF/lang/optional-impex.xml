@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -133,21 +133,9 @@
         </group>
 
         <group id="ImpExTableFormat.Actions" class="com.intellij.idea.plugin.hybris.tools.remote.action.ImpexActionsGroup">
-            <!--<action id="ImpExTableFormatter.AddColumnBefore"-->
-            <!--class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableAddColumnBeforeAction"-->
-            <!--text="Add Column Before"-->
-            <!--description="Add Column Before">-->
-            <!--</action>-->
-            <action id="hybris.impex.selectTable"
-                    class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction"
-                    text="Select ImpEx"
-                    icon="/icons/hybrisIcon.svg"
-                    description="Select ImpEx">
+            <action id="hybris.impex.selectTable" class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction">
                 <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
             </action>
-
-            <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
-            <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
@@ -155,8 +143,12 @@
 
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
+        <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
+        <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
 
         <group id="hybris.impex.table.actions">
+            <reference id="hybris.impex.selectTable"/>
+            <separator/>
 <!--            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>-->
 <!--            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>-->
 <!--            <separator/>-->

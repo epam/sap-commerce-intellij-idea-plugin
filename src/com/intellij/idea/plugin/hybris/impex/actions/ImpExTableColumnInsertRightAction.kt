@@ -22,11 +22,15 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
-class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnAction(
-    "Insert Column Right",
-    "Insert new column right",
-    HybrisIcons.TABLE_COLUMN_INSERT_RIGHT
-) {
+class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnAction() {
+
+    init {
+        with (templatePresentation) {
+            text = "Insert Column Right"
+            description = "Insert new column right"
+            icon = HybrisIcons.TABLE_COLUMN_INSERT_RIGHT
+        }
+    }
 
     override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
     }

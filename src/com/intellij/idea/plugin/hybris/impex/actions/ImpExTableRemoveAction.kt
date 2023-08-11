@@ -26,11 +26,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
-class ImpExTableRemoveAction : AbstractImpExTableAction(
-    "Remove Table",
-    "Remove current table",
-    HybrisIcons.TABLE_REMOVE
-) {
+class ImpExTableRemoveAction : AbstractImpExTableAction() {
+
+    init {
+        with(templatePresentation) {
+            text = "Remove Table"
+            description = "Remove current table"
+            icon = HybrisIcons.TABLE_REMOVE
+        }
+    }
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = PsiTreeUtil
         .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java) != null

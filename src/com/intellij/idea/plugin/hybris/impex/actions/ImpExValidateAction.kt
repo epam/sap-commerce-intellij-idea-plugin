@@ -24,11 +24,15 @@ import com.intellij.idea.plugin.hybris.tools.remote.action.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-class ImpExValidateAction : AbstractExecuteAction(
-    "Validate ImpEx",
-    "Validate ImpEx file via remote SAP Commerce instance",
-    HybrisIcons.IMX_VALIDATE
-) {
+class ImpExValidateAction : AbstractExecuteAction() {
+
+    init {
+        with (templatePresentation) {
+            text = "Validate ImpEx"
+            description = "Validate ImpEx file via remote SAP Commerce instance"
+            icon = HybrisIcons.IMX_VALIDATE
+        }
+    }
 
     override val extension = ImpexFileType.INSTANCE.defaultExtension
     override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
