@@ -4,6 +4,7 @@
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
 - Added `Open Groovy Script` action
 - Added `Execute Groovy Script` action [#565](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/565)
+- Added Groovy settings pane and possibility to toggle actions toolbar visibility [#566](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/566)
 
 ### `FlexibleSearch` enhancements
 - Introduced actions toolbar for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)

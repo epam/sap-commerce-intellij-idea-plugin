@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettingsConfigurableProvider
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -29,14 +29,14 @@ class GroovyOpenSettingsAction : AnAction() {
 
     init {
         with (templatePresentation) {
-            text = message("hybris.impex.actions.open_settings")
-            description = message("hybris.impex.actions.open_settings.description")
+            text = message("hybris.groovy.actions.open_settings")
+            description = message("hybris.groovy.actions.open_settings.description")
             icon = HybrisIcons.SETTINGS
         }
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, ImpexSettingsConfigurableProvider.SettingsConfigurable::class.java)
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, GroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
     }
 }

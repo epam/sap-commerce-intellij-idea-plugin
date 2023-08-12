@@ -15,18 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.groovy.file
 
-import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.application.ApplicationManager
+package com.intellij.idea.plugin.hybris.groovy.settings
 
-class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
-    "hybris.groovy.console",
-    "hybris.groovy.toolbar.left",
-    "hybris.groovy.toolbar.right"
-) {
-
-    companion object {
-        val instance: GroovyFileToolbarInstaller? = ApplicationManager.getApplication().getService(GroovyFileToolbarInstaller::class.java)
-    }
-}
+data class GroovySettings(
+    var enableActionsToolbar: Boolean = true,
+)

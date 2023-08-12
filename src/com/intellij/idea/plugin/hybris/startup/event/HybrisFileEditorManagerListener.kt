@@ -23,23 +23,28 @@ import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.SingleRootFileViewProvider
+import org.jetbrains.plugins.groovy.GroovyFileType
 
 class HybrisFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
 
+        val settings = HybrisProjectSettingsComponent.getInstance(project).state
         val toolbarInstaller = when (file.fileType) {
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
             is ImpexFileType -> ImpExFileToolbarInstaller.instance
-            else -> if (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)) GroovyFileToolbarInstaller.instance
-            else null
+            else -> {
+                if (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID) && file.fileType is GroovyFileType && settings.groovySettings.enableActionsToolbar) GroovyFileToolbarInstaller.instance
+                else null
+            }
 
         } ?: return
 

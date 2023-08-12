@@ -23,6 +23,11 @@
 
         <languageInjector implementation="com.intellij.idea.plugin.hybris.psi.injector.GroovyLanguageInjector" />
 
+        <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             key="hybris.settings.project.groovy.title"
+                             provider="com.intellij.idea.plugin.hybris.groovy.settings.GroovySettingsConfigurableProvider"/>
+
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller"/>
     </extensions>
 
@@ -35,7 +40,7 @@
             <reference id="hybris.groovy.execute"/>
             <reference id="hybris.groovy.openQuery"/>
             <separator/>
-<!--            <reference id="hybris.groovy.openSettings"/>-->
+            <reference id="hybris.groovy.openSettings"/>
         </group>
         <group id="hybris.groovy.toolbar.right">
             <reference id="hybris.hac.chooseConnection"/>
