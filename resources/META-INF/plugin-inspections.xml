@@ -355,6 +355,11 @@
                          shortName="TSQualifierMustExistForNavigablePartInN2MRelation" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierMustExistForNavigablePartInN2MRelation"/>
 
+        <!-- OCC -->
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Omni Commerce Channel (OCCv2)"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.occ.OccUnresolvedOccPropertyMapping.key"
+                         shortName="OccUnresolvedOccPropertyMapping" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.occ.OccUnresolvedOccPropertyMapping"/>
     </extensions>
 
 </idea-plugin>
