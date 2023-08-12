@@ -19,11 +19,15 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsStart
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 
 class ImpExTableRemoveAction : AbstractImpExTableAction() {
 
@@ -35,15 +39,49 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
         }
     }
 
-    override fun actionPerformed(project: Project, editor: Editor, element: PsiElement) {
-        TODO("Not yet implemented")
+    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
+        val header = when (element) {
+            is ImpexHeaderLine -> element
+            is ImpexValueLine -> PsiTreeUtil.getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
+                ?: return
+
+            else -> return
+        }
+
+        val tableElements = ArrayDeque<PsiElement>()
+        var next = header.nextSibling
+
+        while (next != null) {
+            if (next is ImpexHeaderLine || next is ImpexUserRightsStart) {
+
+                // once all lines processed, we have to go back till last value line
+                var lastElement = tableElements.lastOrNull()
+                while (lastElement != null && lastElement !is ImpexValueLine) {
+                    tableElements.removeLastOrNull()
+                    lastElement = tableElements.lastOrNull()
+                }
+
+                next = null
+            } else {
+                // skip User Rights inside ImpEx statement
+                if (next !is ImpexUserRights) {
+                    tableElements.add(next)
+                }
+                next = next.nextSibling
+            }
+        }
+
+        val startOffset = header.startOffset
+        val endOffset = tableElements.lastOrNull()
+            ?.endOffset
+            ?: header.endOffset
+
+        editor.document.deleteString(startOffset, endOffset)
     }
 
-    override fun getSuitableElement(element: PsiElement): PsiElement? {
-        TODO("Not yet implemented")
-    }
+    override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
+        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java)
 
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java) != null
+    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
 }

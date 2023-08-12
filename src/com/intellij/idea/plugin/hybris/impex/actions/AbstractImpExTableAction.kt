@@ -55,13 +55,13 @@ abstract class AbstractImpExTableAction : AnAction() {
             ?.let {
                 WriteCommandAction.runWriteCommandAction(project) {
                     if (EditorModificationUtil.requestWriting(editor)) {
-                        actionPerformed(project, editor, it)
+                        performCommand(project, editor, it)
                     }
                 }
             }
     }
 
-    abstract fun actionPerformed(project: Project, editor: Editor, element: PsiElement)
+    abstract fun performCommand(project: Project, editor: Editor, element: PsiElement)
     abstract fun getSuitableElement(element: PsiElement): PsiElement?
     abstract fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean
 }

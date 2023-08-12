@@ -7,11 +7,12 @@
 
 ### `ImpEx` enhancements
 - Introduced actions toolbar for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
-- Added new toolbar action `Remove Column` [#556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/556)
+- Added `Execute` and `Validate` actions [#553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/553)
+- Added `Select Statement` action [#557](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/557)
+- Added `Remove Column` action [#556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/556)
+- Added `Remove Table` action [#559](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/559)
+- New Actions will respect readonly state of the files [#558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/558)
 - Ignore case for type in the reference type (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
-- Added `Execute` and `Validate` actions to the toolbar [#553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/553)
-- Added `Select Statement` action to the toolbar [#557](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/557)
-- Respect readonly state of the files [#558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/558)
 
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
