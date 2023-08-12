@@ -11,7 +11,8 @@
 - Added `Select Statement` action [#557](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/557)
 - Added `Remove Column` action [#556](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/556)
 - Added `Remove Table` action [#559](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/559)
-- New Actions will respect readonly state of the files [#558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/558)
+- Enabled removal of the UserRights block with `Remove Table` action [#560](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/560)
+- Ensure that Actions will respect readonly state of the files [#558](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/558)
 - Ignore case for type in the reference type (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
 
 ### `CockpitNG` enhancements

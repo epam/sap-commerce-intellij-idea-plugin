@@ -40,6 +40,11 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
     }
 
     override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
+        if (element is ImpexUserRights) {
+            element.delete()
+            return
+        }
+
         val header = when (element) {
             is ImpexHeaderLine -> element
             is ImpexValueLine -> PsiTreeUtil.getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
@@ -80,7 +85,7 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java)
+        .getParentOfType(element, ImpexValueLine::class.java, ImpexHeaderLine::class.java, ImpexUserRights::class.java)
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
