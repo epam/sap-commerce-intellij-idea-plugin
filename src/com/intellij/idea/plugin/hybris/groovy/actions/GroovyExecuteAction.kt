@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,17 +16,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
+package com.intellij.idea.plugin.hybris.groovy.actions
 
+import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.impl.ActionButton
+import org.jetbrains.plugins.groovy.GroovyFileType
 
-class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
+class GroovyExecuteAction : AbstractExecuteAction() {
 
     init {
-        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
-        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
-        templatePresentation.isHideGroupIfEmpty = true
+        with (templatePresentation) {
+            text = "Execute Groovy Script"
+            description = "Execute Groovy Script on a remote SAP Commerce instance"
+            icon = HybrisIcons.CONSOLE_EXECUTE
+        }
     }
+
+    override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
+    override val consoleName = HybrisConstants.GROOVY_CONSOLE_TITLE
 }

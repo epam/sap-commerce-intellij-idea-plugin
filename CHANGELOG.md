@@ -1,5 +1,9 @@
 ## [2023.2.6]
 
+### `Groovy Script` enhancements
+- Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
+- Added `Open Groovy Script` action
+
 ### `FlexibleSearch` enhancements
 - Introduced actions toolbar for `.fxs` files [#547](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/547)
 - Added actions for connection settings in the toolbar [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)

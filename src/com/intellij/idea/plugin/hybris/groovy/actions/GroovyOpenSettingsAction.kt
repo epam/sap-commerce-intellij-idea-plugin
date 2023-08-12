@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+package com.intellij.idea.plugin.hybris.groovy.actions
+
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsConfigurableProvider
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.options.ShowSettingsUtil
 
-class ImpExExecuteAction : AbstractExecuteAction() {
+class GroovyOpenSettingsAction : AnAction() {
 
     init {
         with (templatePresentation) {
-            text = message("hybris.impex.actions.execute_query")
-            description = message("hybris.impex.actions.execute_query.description")
-            icon = HybrisIcons.CONSOLE_EXECUTE
+            text = message("hybris.impex.actions.open_settings")
+            description = message("hybris.impex.actions.open_settings.description")
+            icon = HybrisIcons.SETTINGS
         }
     }
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override val extension = ImpexFileType.INSTANCE.defaultExtension
-    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, ImpexSettingsConfigurableProvider.SettingsConfigurable::class.java)
+    }
 }

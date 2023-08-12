@@ -112,7 +112,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileHeaderInstaller"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller"/>
     </extensions>
 
 

@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-package com.intellij.idea.plugin.hybris.diagram.module.node.graph
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.ActionButton
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.module.Module
+class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
 
-object ModuleDepGraphFactory {
-
-    fun buildNode(module: Module) = ModuleDepGraphNodeModule(
-        module,
-        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type,
-        module.yExtensionName()
-    )
+    init {
+        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
+        templatePresentation.putClientProperty(ActionButton.HIDE_DROPDOWN_ICON, true)
+        templatePresentation.isHideGroupIfEmpty = true
+    }
 }

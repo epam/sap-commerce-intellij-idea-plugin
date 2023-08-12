@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,35 +24,6 @@ import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.xml.XmlTag
 
 object PsiXmlUtils {
-
-    /**
-     * <tagName attributeName="XmlAttributeValue"/>
-     */
-    fun tagAttributeValuePatternInFile(
-        tagName: String,
-        attributeName: String,
-        fileName: String?
-    ) = XmlPatterns.xmlAttributeValue()
-        .withParent(
-            XmlPatterns.xmlAttribute(attributeName)
-                .withParent(XmlPatterns.xmlTag().withName(tagName))
-        )
-        .inside(insideTagPattern(tagName))
-        .inFile(getXmlFilePattern(fileName))
-
-    /**
-     * <tagName attributeName="XmlAttributeValue"/>
-     */
-    fun tagAttributeValuePatternInFile(
-        attributeName: String,
-        fileName: String?
-    ) = XmlPatterns.xmlAttributeValue()
-        .withParent(
-            XmlPatterns.xmlAttribute(attributeName)
-                .withParent(XmlPatterns.xmlTag())
-        )
-        .inside(PlatformPatterns.psiElement(XmlTag::class.java))
-        .inFile(getXmlFilePattern(fileName))
 
     /**
      * <tagName attributeName="XmlAttributeValue"/>
@@ -98,12 +70,6 @@ object PsiXmlUtils {
             )
     )
         .inFile(getXmlFilePattern(fileName))
-
-    fun attributeValuePattern(tagName: String, attributeName: String) = XmlPatterns.xmlAttributeValue()
-        .withParent(
-            XmlPatterns.xmlAttribute(attributeName)
-                .withParent(XmlPatterns.xmlTag().withName(tagName))
-        )
 
     fun insideTagPattern(insideTagName: String) = PlatformPatterns.psiElement(XmlTag::class.java)
         .withName(insideTagName)

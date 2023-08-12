@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,33 +15,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch.actions
+package com.intellij.idea.plugin.hybris.groovy.actions
 
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.psi.SingleRootFileViewProvider
+import org.jetbrains.plugins.groovy.GroovyFileType
 
-class FlexibleSearchExecuteQueryAction : AbstractExecuteAction() {
+class GroovyOpenQueryAction : AnAction() {
 
     init {
         with (templatePresentation) {
-            text = message("hybris.fxs.actions.execute_query")
-            description = message("hybris.fxs.actions.execute_query.description")
-            icon = HybrisIcons.CONSOLE_EXECUTE
+            text = message("hybris.groovy.actions.open_query")
+            description = message("hybris.groovy.actions.open_query.description")
+            icon = HybrisIcons.CONSOLE_OPEN
         }
     }
 
-    override val extension = FlexibleSearchFileType.instance.defaultExtension
-    override val consoleName = HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val query = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+            ?.firstOrNull()
+            ?.takeIf { it.fileType is GroovyFileType }
+            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
+            ?.let { FileDocumentManager.getInstance().getDocument(it) }?.text
+            ?: return
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-        val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
-        val enabled = file != null && file.name.endsWith(".$extension")
-        e.presentation.isEnabledAndVisible = enabled
+        CopyFileToHybrisConsoleUtils.copyQueryToConsole(
+            project,
+            HybrisConstants.GROOVY_CONSOLE_TITLE,
+            query
+        )
     }
+
 }

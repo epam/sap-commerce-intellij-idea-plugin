@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,18 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+package com.intellij.idea.plugin.hybris.codeInsight.patterns
 
-import com.intellij.idea.plugin.hybris.startup.event.HybrisFileHeaderInstaller
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.patterns.PatternCondition
+import com.intellij.util.ProcessingContext
 
-class FlexibleSearchFileHeaderInstaller : HybrisFileHeaderInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right"
-) {
+class CaseInsensitiveContainsPatternCondition(private val value: String) : PatternCondition<String>("containsIgnoreCase") {
 
-    companion object {
-        val instance: FlexibleSearchFileHeaderInstaller = ApplicationManager.getApplication().getService(FlexibleSearchFileHeaderInstaller::class.java)
-    }
+    override fun accepts(t: String, context: ProcessingContext?) = StringUtil.containsIgnoreCase(t, value)
 }

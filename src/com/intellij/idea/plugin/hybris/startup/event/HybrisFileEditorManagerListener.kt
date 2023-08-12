@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,10 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.startup.event
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileHeaderInstaller
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.idea.plugin.hybris.impex.file.ImpExFileHeaderInstaller
+import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -33,16 +35,18 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
 
-        val headerInstaller = when (file.fileType) {
-            is FlexibleSearchFileType -> FlexibleSearchFileHeaderInstaller.instance
-            is ImpexFileType -> ImpExFileHeaderInstaller.instance
-            else -> null
+        val toolbarInstaller = when (file.fileType) {
+            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
+            is ImpexFileType -> ImpExFileToolbarInstaller.instance
+            else -> if (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)) GroovyFileToolbarInstaller.instance
+            else null
+
         } ?: return
 
         FileEditorManager.getInstance(project).getAllEditors(file)
             .firstNotNullOfOrNull { EditorUtil.getEditorEx(it) }
             ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { headerInstaller.install(project, it, file) }
+            ?.let { toolbarInstaller.install(project, it, file) }
     }
 
 }

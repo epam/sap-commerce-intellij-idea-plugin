@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,22 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.action
+package com.intellij.idea.plugin.hybris.groovy.file
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import org.jetbrains.plugins.groovy.GroovyFileType
+import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
+import com.intellij.openapi.application.ApplicationManager
 
-class ExecuteGroovyAction : AbstractExecuteAction() {
+class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+    "hybris.groovy.console",
+    "hybris.groovy.toolbar.left",
+    "hybris.groovy.toolbar.right"
+) {
 
-    init {
-        with (templatePresentation) {
-            text = "Execute Groovy Script"
-            description = "Execute Groovy Script on a remote SAP Commerce instance"
-            icon = HybrisIcons.CONSOLE_EXECUTE
-        }
+    companion object {
+        val instance: GroovyFileToolbarInstaller = ApplicationManager.getApplication().getService(GroovyFileToolbarInstaller::class.java)
     }
-
-    override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
-    override val consoleName = HybrisConstants.GROOVY_CONSOLE_TITLE
 }

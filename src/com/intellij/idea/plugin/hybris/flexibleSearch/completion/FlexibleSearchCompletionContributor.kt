@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
 import com.intellij.codeInsight.completion.*
+import com.intellij.idea.plugin.hybris.codeInsight.patterns.CaseInsensitiveContainsPatternCondition
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
@@ -29,7 +30,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRe
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
-import com.intellij.idea.plugin.hybris.patterns.CaseInsensitiveContainsPatternCondition
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns

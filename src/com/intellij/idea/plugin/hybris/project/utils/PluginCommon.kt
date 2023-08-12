@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,7 @@ object PluginCommon {
     const val JAVAEE_WEB_PLUGIN_ID = "com.intellij.javaee.web"
     const val SPRING_PLUGIN_ID = "com.intellij.spring"
     const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
+    const val GROOVY_PLUGIN_ID = "org.intellij.groovy"
     const val SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup"
 
     @JvmStatic
