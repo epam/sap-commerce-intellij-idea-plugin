@@ -32,7 +32,7 @@
         <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
 
         <group id="hybris.groovy.toolbar.left">
-<!--            <reference id="hybris.groovy.execute"/>-->
+            <reference id="hybris.groovy.execute"/>
             <reference id="hybris.groovy.openQuery"/>
             <separator/>
 <!--            <reference id="hybris.groovy.openSettings"/>-->
