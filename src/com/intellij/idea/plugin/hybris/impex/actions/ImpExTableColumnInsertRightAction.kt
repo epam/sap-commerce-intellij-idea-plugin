@@ -18,6 +18,8 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -25,7 +27,7 @@ import com.intellij.psi.PsiElement
 class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnAction() {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = "Insert Column Right"
             description = "Insert new column right"
             icon = HybrisIcons.TABLE_COLUMN_INSERT_RIGHT

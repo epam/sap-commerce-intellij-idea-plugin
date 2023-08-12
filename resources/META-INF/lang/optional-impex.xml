@@ -143,9 +143,9 @@
         <group id="hybris.impex.table.actions">
             <reference id="hybris.impex.selectTable"/>
             <separator/>
-<!--            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>-->
-<!--            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>-->
-<!--            <separator/>-->
+            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>
+            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>
+            <separator/>
 <!--            <action id="hybris.impex.table.column.add.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertLeftAction"/>-->
 <!--            <action id="hybris.impex.table.column.add.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertRightAction"/>-->
 <!--            <separator/>-->

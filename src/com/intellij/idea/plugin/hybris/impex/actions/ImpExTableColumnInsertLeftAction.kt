@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement
 class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnAction() {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = "Insert Column Left"
             description = "Insert new column left"
             icon = HybrisIcons.TABLE_COLUMN_INSERT_LEFT

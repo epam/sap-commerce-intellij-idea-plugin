@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -81,6 +77,12 @@ public class ImpexFullHeaderParameterImpl extends ASTWrapperPsiElement implement
   @Nullable
   public ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier) {
     return ImpexPsiUtil.getAttribute(this, attributeModifier);
+  }
+
+  @Override
+  @NotNull
+  public List<ImpexValueGroup> getValueGroups() {
+    return ImpexPsiUtil.getValueGroups(this);
   }
 
 }
