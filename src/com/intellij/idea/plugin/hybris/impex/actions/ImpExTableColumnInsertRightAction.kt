@@ -18,13 +18,8 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 
-class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnAction() {
+class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnInsertAction(ImpExColumnPosition.RIGHT) {
 
     init {
         with(templatePresentation) {
@@ -34,6 +29,4 @@ class ImpExTableColumnInsertRightAction : AbstractImpExTableColumnAction() {
         }
     }
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-    }
 }

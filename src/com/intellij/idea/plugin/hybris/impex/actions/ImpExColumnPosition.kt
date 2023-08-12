@@ -15,18 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-
-class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnInsertAction(ImpExColumnPosition.LEFT) {
-
-    init {
-        with(templatePresentation) {
-            text = "Insert Column Left"
-            description = "Insert new column left"
-            icon = HybrisIcons.TABLE_COLUMN_INSERT_LEFT
-        }
-    }
-
+enum class ImpExColumnPosition(val step: Int) {
+    LEFT(-1), RIGHT(1)
 }

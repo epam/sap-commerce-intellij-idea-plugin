@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,21 @@ object ImpExElementFactory {
         .firstOrNull()
         ?.anyHeaderMode
         ?.firstChild
+
+    fun createParametersSeparator(project: Project) = createFile(project, "INSERT Product;")
+        .childrenOfType<ImpexHeaderLine>()
+        .firstOrNull()
+        ?.lastChild
+
+    fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
+     INSERT Product;
+                   ;$value
+    """.trimIndent()
+    )
+        .childrenOfType<ImpexValueLine>()
+        .firstOrNull()
+        ?.valueGroupList
+        ?.firstOrNull()
 
     private fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile

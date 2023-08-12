@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
@@ -27,7 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.suggested.startOffset
 
-abstract class AbstractImpExTableColumnMoveAction(private val direction: MoveDirection) : AbstractImpExTableColumnAction() {
+abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
     override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
         when (element) {
@@ -37,7 +36,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: MoveDir
         }
     }
 
-    private fun move(editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, direction: MoveDirection) {
+    private fun move(editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, direction: ImpExColumnPosition) {
         val headerLine = headerParameter.headerLine ?: return
         val column = headerParameter.columnNumber
 
@@ -57,7 +56,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: MoveDir
             }
     }
 
-    private fun moveHeaderParam(headerLine: ImpexHeaderLine, column: Int, direction: MoveDirection): ImpexFullHeaderParameter? {
+    private fun moveHeaderParam(headerLine: ImpexHeaderLine, column: Int, direction: ImpExColumnPosition): ImpexFullHeaderParameter? {
         val newColumn = column + direction.step
         val previous = headerLine.fullHeaderParameterList.getOrNull(newColumn)
             ?: return null
@@ -69,7 +68,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: MoveDir
         return headerLine.fullHeaderParameterList.getOrNull(newColumn)
     }
 
-    private fun moveValueGroups(valueLines: Collection<ImpexValueLine>, elementAtCaret: PsiElement, column: Int, direction: MoveDirection): PsiElement? {
+    private fun moveValueGroups(valueLines: Collection<ImpexValueLine>, elementAtCaret: PsiElement, column: Int, direction: ImpExColumnPosition): PsiElement? {
         val newColumn = column + direction.step
         var newElementAtCaret: PsiElement? = null
         valueLines.forEach {
@@ -95,61 +94,5 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: MoveDir
         second.replace(firstCopy)
     }
 
-    enum class MoveDirection(val step: Int) {
-        LEFT(-1), RIGHT(1)
-    }
 }
 
-class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnMoveAction(MoveDirection.LEFT) {
-
-    init {
-        with(templatePresentation) {
-            text = "Move Column Left"
-            description = "Move current column left"
-            icon = HybrisIcons.TABLE_COLUMN_MOVE_LEFT
-        }
-    }
-
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val suitableElement = getSuitableElement(element) ?: return false
-
-        return when (suitableElement) {
-            is ImpexFullHeaderParameter -> suitableElement.columnNumber > 0
-            is ImpexValueGroup -> suitableElement.columnNumber > 0
-            else -> false
-        }
-    }
-}
-
-class ImpExTableColumnMoveRightAction : AbstractImpExTableColumnMoveAction(MoveDirection.RIGHT) {
-
-    init {
-        with(templatePresentation) {
-            text = "Move Column Right"
-            description = "Move current column right"
-            icon = HybrisIcons.TABLE_COLUMN_MOVE_RIGHT
-        }
-    }
-
-    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean {
-        val suitableElement = getSuitableElement(element) ?: return false
-
-        return when (suitableElement) {
-            is ImpexFullHeaderParameter -> isNotLastColumn(suitableElement)
-
-            is ImpexValueGroup -> suitableElement.fullHeaderParameter
-                ?.let { isNotLastColumn(it) }
-                ?: false
-
-            else -> false
-        }
-    }
-
-    private fun isNotLastColumn(suitableElement: ImpexFullHeaderParameter): Boolean {
-        val totalColumns = suitableElement.headerLine
-            ?.fullHeaderParameterList
-            ?.size
-            ?: return false
-        return suitableElement.columnNumber < (totalColumns - 1)
-    }
-}

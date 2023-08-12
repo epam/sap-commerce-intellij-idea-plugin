@@ -15,18 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 
-class ImpExTableColumnInsertLeftAction : AbstractImpExTableColumnInsertAction(ImpExColumnPosition.LEFT) {
+class ImpExTableColumnMoveLeftAction : AbstractImpExTableColumnMoveAction(ImpExColumnPosition.LEFT) {
 
     init {
         with(templatePresentation) {
-            text = "Insert Column Left"
-            description = "Insert new column left"
-            icon = HybrisIcons.TABLE_COLUMN_INSERT_LEFT
+            text = "Move Column Left"
+            description = "Move current column left"
+            icon = HybrisIcons.TABLE_COLUMN_MOVE_LEFT
         }
     }
 
+    override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean {
+        val suitableElement = getSuitableElement(element) ?: return false
+
+        return when (suitableElement) {
+            is ImpexFullHeaderParameter -> suitableElement.columnNumber > 0
+            is ImpexValueGroup -> suitableElement.columnNumber > 0
+            else -> false
+        }
+    }
 }
