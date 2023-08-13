@@ -31,7 +31,6 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import java.util.stream.Collectors
 
 private const val ERROR_MSG_ONE_PROP_ILLEGAL = "hybris.inspections.occ.OccUnresolvedOccPropertyMapping.one.property.illegal.key"
 
@@ -46,64 +45,86 @@ class OccUnresolvedOccPropertyMapping : AbstractOccInspection() {
         val domManager = DomManager.getDomManager(project)
         val bsMetaModelAccess = BSMetaModelAccess.getInstance(project)
         PsiTreeUtil.findChildrenOfType(dom.xmlElement, XmlTag::class.java)
-            .filter { it.localName == "bean" }
-            .filter { it.getAttributeValue("parent") == "fieldSetLevelMapping" }
-            .mapNotNull {
-                val key = it.childrenOfType<XmlTag>()
-                    .filter { child -> child.getAttributeValue("name") == "dtoClass" }
-                    .mapNotNull { child -> child.getAttribute("value") }
-                    .firstNotNullOf { domManager.getDomElement(it) }
-                val value = it.childrenOfType<XmlTag>()
-                    .filter { child -> child.getAttributeValue("name") == "levelMapping" }
-                    .mapNotNull { it.childrenOfType<XmlTag>().firstOrNull() }
-                    .flatMap { it.childrenOfType<XmlTag>() }
-                    .mapNotNull { it.getAttribute("value") }
-                    .mapNotNull { domManager.getDomElement(it) }
-                key to value
+            .filter { it.filterByTagName("bean") }
+            .filter { it.filterByAttributeValue("parent", "fieldSetLevelMapping") }
+            .flatMap {
+                val dtoClass = domManager.findDtoClass(it)
+                val classAttributesXmlTags = domManager.findClassAttributesXmlTag(it)
+                val classAttributes = bsMetaModelAccess.findClassAttributesAsString(dtoClass.value.toString())
+                classAttributesXmlTags
+                    .mapNotNull { attributesXmlTag ->
+                        val illegalAttributes = findIllegalProperties(attributesXmlTag, classAttributes)
+                        if (illegalAttributes.isNotEmpty()) IllegalAttributeData(attributesXmlTag, illegalAttributes) else null
+                    }
             }
-            .forEach { inspect(it, holder, severity, bsMetaModelAccess) }
+            .forEach { inspect(it, holder, severity) }
     }
 
     private fun inspect(
-        pair: Pair<GenericAttributeValue<*>, List<GenericAttributeValue<*>>>,
+        data: IllegalAttributeData,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity,
-        bsMetaModelAccess: BSMetaModelAccess
+        severity: HighlightSeverity
     ) {
-        val wsDtoClazz = pair.first.value.toString()
-        val clazzProperties = bsMetaModelAccess.findClassProperties(wsDtoClazz)
-            .map { it.value }
-        val listedClazzProperties: List<GenericAttributeValue<*>> = pair.second
-        listedClazzProperties
-            .map {
-                val nonLegalAttributes = it.value.toString().split(",")
-                    .filter { beanProp -> clazzProperties.none { clazzProp -> clazzProp != null && beanProp.contains(clazzProp) } }
-                it to nonLegalAttributes
+        data.illegalAttributes
+            .forEach { illegalAttribute ->
+                holder.createProblem(
+                    data.xmlTag,
+                    severity,
+                    HybrisI18NBundleUtils.message(ERROR_MSG_ONE_PROP_ILLEGAL, illegalAttribute),
+                    textRange(data.xmlTag.value.toString(), illegalAttribute)
+                )
             }
-            .filter { it.second.isNotEmpty() }
-            .forEach {
-                val dom = it.first
-                val listedProperties = dom.value.toString()
-                it.second
-                    .forEach { illegalProperty ->
-                        val startPosition = listedProperties.indexOf(illegalProperty) + 1
-                        val endPosition = startPosition + illegalProperty.length
-                        holder.createProblem(
-                            dom,
-                            severity,
-                            HybrisI18NBundleUtils.message(ERROR_MSG_ONE_PROP_ILLEGAL, illegalProperty),
-                            TextRange(startPosition, endPosition)
-                        )
-                    }
-            }
+    }
+
+    private fun textRange(listedPropertiesAsString: String, illegalProperty: String): TextRange {
+        val startPosition = if (listedPropertiesAsString.endsWith(",$illegalProperty"))
+            listedPropertiesAsString.lastIndexOf(",$illegalProperty") + 2
+        else
+            listedPropertiesAsString.indexOf(",$illegalProperty,") + 2
+        val endPosition = startPosition + illegalProperty.length
+        return TextRange(startPosition, endPosition)
+    }
+
+    private fun findIllegalProperties(
+        classAttributesXmlTag: GenericAttributeValue<*>,
+        clazzProperties: List<String>
+    ) = classAttributesXmlTag.value.toString().split(",")
+        .filter {
+            val prop = if (it.contains("(")) it.substring(0, it.indexOf("(")) else it
+            !clazzProperties.contains(prop)
+        }
+
+    private fun XmlTag.filterByTagName(tagName: String): Boolean {
+        return localName == tagName
+    }
+
+    private fun XmlTag.filterByAttributeValue(attribute: String, attributeValue: String): Boolean {
+        return getAttributeValue(attribute) == attributeValue
+    }
+
+    private fun DomManager.findClassAttributesXmlTag(
+        xmlTag: XmlTag
+    ) = xmlTag.childrenOfType<XmlTag>()
+        .filter { child -> child.getAttributeValue("name") == "levelMapping" }
+        .mapNotNull { it.childrenOfType<XmlTag>().firstOrNull() }
+        .flatMap { it.childrenOfType<XmlTag>() }
+        .mapNotNull { it.getAttribute("value") }
+        .mapNotNull { getDomElement(it) }
+
+    private fun DomManager.findDtoClass(xmlTag: XmlTag) = xmlTag.childrenOfType<XmlTag>()
+        .filter { child -> child.getAttributeValue("name") == "dtoClass" }
+        .mapNotNull { child -> child.getAttribute("value") }
+        .firstNotNullOf { getDomElement(it) }
+
+    private fun BSMetaModelAccess.findClassAttributesAsString(clazz: String): List<String> {
+        return findMetaBeansByName(clazz)
+            .flatMap { it.retrieveAllDoms() }
+            .flatMap { it.properties.mapNotNull { p -> p.name } }
+            .mapNotNull { it.value }
     }
 }
 
-fun getTextRange(dom: DomElement) = dom.xmlElement
-    ?.let { TextRange.from(0, it.textLength) }
-
-fun BSMetaModelAccess.findClassProperties(clazz: String): List<GenericAttributeValue<String>> {
-    return findMetaBeansByName(clazz)
-        .flatMap { it.retrieveAllDoms() }
-        .flatMap { it.properties.stream().map { p -> p.name }.collect(Collectors.toList()) }
-}
+data class IllegalAttributeData(
+    val xmlTag: GenericAttributeValue<*>,
+    val illegalAttributes: List<String>
+)
