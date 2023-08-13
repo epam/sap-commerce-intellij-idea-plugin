@@ -94,13 +94,8 @@ class OccUnresolvedOccPropertyMapping : AbstractOccInspection() {
             !clazzProperties.contains(prop)
         }
 
-    private fun XmlTag.filterByTagName(tagName: String): Boolean {
-        return localName == tagName
-    }
-
-    private fun XmlTag.filterByAttributeValue(attribute: String, attributeValue: String): Boolean {
-        return getAttributeValue(attribute) == attributeValue
-    }
+    private fun XmlTag.filterByTagName(tagName: String): Boolean = localName == tagName
+    private fun XmlTag.filterByAttributeValue(attribute: String, attributeValue: String): Boolean = getAttributeValue(attribute) == attributeValue
 
     private fun DomManager.findClassAttributesXmlTag(
         xmlTag: XmlTag
@@ -116,15 +111,13 @@ class OccUnresolvedOccPropertyMapping : AbstractOccInspection() {
         .mapNotNull { child -> child.getAttribute("value") }
         .firstNotNullOf { getDomElement(it) }
 
-    private fun BSMetaModelAccess.findClassAttributesAsString(clazz: String): List<String> {
-        return findMetaBeansByName(clazz)
-            .flatMap { it.retrieveAllDoms() }
-            .flatMap { it.properties.mapNotNull { p -> p.name } }
-            .mapNotNull { it.value }
-    }
+    private fun BSMetaModelAccess.findClassAttributesAsString(clazz: String): List<String> = findMetaBeansByName(clazz)
+        .flatMap { it.retrieveAllDoms() }
+        .flatMap { it.properties.mapNotNull { p -> p.name } }
+        .mapNotNull { it.value }
 }
 
-data class IllegalAttributeData(
+private data class IllegalAttributeData(
     val xmlTag: GenericAttributeValue<*>,
     val illegalAttributes: List<String>
 )
