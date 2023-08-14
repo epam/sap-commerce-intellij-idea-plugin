@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@
 // DTD/Schema  :    null
 package com.intellij.idea.plugin.hybris.system.extensioninfo.model;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
@@ -119,7 +120,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@SubTagList(META)
-	@ApiStatus.AvailableSince("5.0")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_5_0)
 	List<Meta> getMetas();
 
 	/**
@@ -127,7 +128,7 @@ public interface Extension extends DomElement {
 	 * @return created child
 	 */
 	@SubTagList(META)
-	@ApiStatus.AvailableSince("5.0")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_5_0)
 	Meta addMeta();
 
 	/**
@@ -154,7 +155,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute(VERSION)
-	@ApiStatus.AvailableSince("5.0")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_5_0)
 	GenericAttributeValue<String> getVersion();
 
 	/**
@@ -206,7 +207,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute(REQUIREDBYALL)
-	@ApiStatus.AvailableSince("5.0")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_5_0)
 	FalseAttributeValue getRequiredByAll();
 
 	/**
@@ -257,7 +258,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute(USEMAVEN)
-	@ApiStatus.AvailableSince("5.2")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_5_2)
 	FalseAttributeValue getUseMaven();
 
 	/**
@@ -270,7 +271,7 @@ public interface Extension extends DomElement {
 	 */
 	@NotNull
 	@Attribute(JALO_LOGIC_FREE)
-	@ApiStatus.AvailableSince("1811")
+	@ApiStatus.AvailableSince(HybrisConstants.PLATFORM_VERSION_1811)
 	FalseAttributeValue getJaloLogicFree();
 
 }

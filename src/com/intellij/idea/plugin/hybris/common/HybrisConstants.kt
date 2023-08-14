@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,9 @@ import com.intellij.openapi.util.io.FileUtilRt
 
 object HybrisConstants {
 
-    const val PLATFORM_VERSION_1905_0 = "1905.0"
+    const val PLATFORM_VERSION_1811 = "1811"
+    const val PLATFORM_VERSION_5_0 = "5.0"
+    const val PLATFORM_VERSION_5_2 = "5.2"
 
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
@@ -471,14 +473,6 @@ object HybrisConstants {
     val BACKOFFICE_LIB_PATH = FileUtilRt.toSystemDependentName("backoffice/bin")
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
-    @JvmField
-    val BACKOFFICE_WEB_INF_LIB = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField
-    val BACKOFFICE_WEB_INF_LIB_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/lib")
-    @JvmField
-    val BACKOFFICE_WEB_INF_CLASSES = FileUtilRt.toSystemDependentName("/bin/ext-backoffice/backoffice/web/webroot/WEB-INF/classes")
-    @JvmField
-    val BACKOFFICE_WEB_INF_CLASSES_2019 = FileUtilRt.toSystemDependentName("/bin/modules/backoffice-framework/backoffice/web/webroot/WEB-INF/classes")
 
     @JvmField
     val QUERY_STORAGE_FOLDER_PATH = "consolestorage"

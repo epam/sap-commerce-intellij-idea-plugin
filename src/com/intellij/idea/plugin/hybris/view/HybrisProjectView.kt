@@ -24,11 +24,10 @@ import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
 import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.project.DumbAware
@@ -237,25 +236,14 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         onlyChildPsiDirectoryNode: PsiDirectoryNode,
         onlyChildVirtualFile: VirtualFile
     ) {
-        if (parentPsiDirectoryNode.presentation.coloredText.isNotEmpty()) {
-            val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
-                parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
-            )
-            onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
+        if (parentPsiDirectoryNode.presentation.coloredText.isEmpty()) {
+            onlyChildPsiDirectoryNode.presentation.addText(parentVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         } else {
             parentPsiDirectoryNode.presentation.coloredText
                 .forEach { onlyChildPsiDirectoryNode.presentation.addText(it) }
         }
-
-        val coloredFragment = PresentableNodeDescriptor.ColoredFragment(
-            File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES
-        )
-        val childColoredFragment = PresentableNodeDescriptor.ColoredFragment(
-            onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES
-        )
-
-        onlyChildPsiDirectoryNode.presentation.addText(coloredFragment)
-        onlyChildPsiDirectoryNode.presentation.addText(childColoredFragment)
+        onlyChildPsiDirectoryNode.presentation.addText(File.separator, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        onlyChildPsiDirectoryNode.presentation.addText(onlyChildVirtualFile.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
     private fun isFileInRoots(file: VirtualFile): Boolean {
