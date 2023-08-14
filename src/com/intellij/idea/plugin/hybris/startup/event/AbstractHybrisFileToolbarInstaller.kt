@@ -25,12 +25,11 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.impl.EditorHeaderComponent
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.JBIterable
 
 abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String, private val leftGroupId: String, private val rightGroupId: String) {
 
-    fun install(project: Project, editor: EditorEx, vf: VirtualFile) {
+    fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
         val headerComponent = EditorHeaderComponent()
         val leftGroup = actionManager.getAction(leftGroupId) as ActionGroup

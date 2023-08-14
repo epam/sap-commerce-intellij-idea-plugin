@@ -29,13 +29,13 @@ abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExC
 
     override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
         when (element) {
-            is ImpexFullHeaderParameter -> insert(project, editor, element, element, position)
+            is ImpexFullHeaderParameter -> insert(project, editor, element, position)
             is ImpexValueGroup -> element.fullHeaderParameter
-                ?.let { insert(project, editor, it, element, position) }
+                ?.let { insert(project, editor, it, position) }
         }
     }
 
-    private fun insert(project: Project, editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, position: ImpExColumnPosition) {
+    private fun insert(project: Project, editor: Editor, headerParameter: ImpexFullHeaderParameter, position: ImpExColumnPosition) {
         val headerLine = headerParameter.headerLine ?: return
         val column = headerParameter.columnNumber
 

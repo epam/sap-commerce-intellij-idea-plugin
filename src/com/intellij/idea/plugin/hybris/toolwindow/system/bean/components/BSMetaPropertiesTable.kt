@@ -31,7 +31,7 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_DEPRECATED, COLUMN_EQUALS)
     override fun select(item: BSMetaProperty) = selectRowWithValue(item.name, COLUMN_NAME)
-    override fun getItems(owner: BSGlobalMetaBean) = owner.properties.values.sortedWith(
+    override fun getItems(owner: BSGlobalMetaBean) = owner.allProperties.values.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.module.name },

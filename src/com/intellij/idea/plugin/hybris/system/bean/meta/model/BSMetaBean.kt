@@ -43,4 +43,6 @@ interface BSMetaBean : BSMetaClassifier<Bean> {
 
 interface BSGlobalMetaBean : BSMetaBean, BSGlobalMetaClassifier<Bean> {
     override val declarations: MutableSet<BSMetaBean>
+    val allProperties: Map<String, BSMetaProperty>
+    val allExtends: Set<BSGlobalMetaBean>
 }

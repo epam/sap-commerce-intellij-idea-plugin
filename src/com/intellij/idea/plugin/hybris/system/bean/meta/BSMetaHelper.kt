@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaBean
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.util.xml.DomElement
+import java.util.*
 
 object BSMetaHelper {
 
@@ -47,6 +47,28 @@ object BSMetaHelper {
 
     fun getBeanName(name: String) = getUnescapedName(name)
         .substringBefore("<")
+
+    fun getAllExtends(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): Set<BSGlobalMetaBean> {
+        val tempParents = LinkedHashSet<BSGlobalMetaBean>()
+        var metaItem = getExtendsMetaItem(metaModel, meta)
+
+        while (metaItem != null) {
+            tempParents.add(metaItem)
+            metaItem = getExtendsMetaItem(metaModel, metaItem)
+        }
+        return Collections.unmodifiableSet(tempParents)
+    }
+
+    private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): BSGlobalMetaBean? {
+        val extendsName = meta.extends
+            // prevent deadlock when type extends itself
+            ?.takeIf { it != meta.name }
+            ?: HybrisConstants.BS_TYPE_OBJECT
+
+        return metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)[extendsName]
+            ?: metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT)[extendsName]
+            ?: metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN)[extendsName]
+    }
 
     private fun getUnescapedName(name: String) = name
         .replace("&lt;", "<")

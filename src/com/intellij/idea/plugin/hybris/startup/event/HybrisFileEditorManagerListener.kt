@@ -51,7 +51,7 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
         FileEditorManager.getInstance(project).getAllEditors(file)
             .firstNotNullOfOrNull { EditorUtil.getEditorEx(it) }
             ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { toolbarInstaller.install(project, it, file) }
+            ?.let { toolbarInstaller.install(project, it) }
     }
 
 }

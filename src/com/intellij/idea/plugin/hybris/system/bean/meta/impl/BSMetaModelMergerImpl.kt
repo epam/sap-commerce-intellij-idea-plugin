@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,7 +46,12 @@ class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
         getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
         beans.keys.removeAll(wsBeans.keys)
 
-        Unit
+        // after merging all different declarations of the same time we may need to process properties which were declared via extends
+        val allBeans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values +
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values +
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values
+        allBeans
+            .forEach { (it as? BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
     }
 
     @Suppress("UNCHECKED_CAST")

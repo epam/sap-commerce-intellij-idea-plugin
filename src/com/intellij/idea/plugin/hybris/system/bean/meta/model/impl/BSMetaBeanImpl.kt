@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
@@ -57,7 +58,7 @@ internal class BSMetaBeanImpl(
 
 }
 
-internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSMetaSelfMerge<Bean, BSMetaBean>(localMeta), BSGlobalMetaBean {
+internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSelfMerge<Bean, BSMetaBean>(localMeta), BSGlobalMetaBean {
 
     override val hints = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaHint>()
     override val properties = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
@@ -78,6 +79,18 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSMetaSelfMerge<Bea
     override var isDeprecated = localMeta.isDeprecated
     override var isAbstract = localMeta.isAbstract
     override var isSuperEquals = localMeta.isSuperEquals
+
+    override val allProperties = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
+    override val allExtends = LinkedHashSet<BSGlobalMetaBean>()
+
+    override fun postMerge(globalMetaModel: BSGlobalMetaModel) {
+        val extends = BSMetaHelper.getAllExtends(globalMetaModel, this)
+
+        allExtends.addAll(extends)
+        extends.forEach {
+            allProperties.putAll(it.allProperties)
+        }
+    }
 
     override fun mergeInternally(localMeta: BSMetaBean) {
         template ?: let { template = localMeta.template }
@@ -101,6 +114,7 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSMetaSelfMerge<Bea
             .filterNot { properties.contains(it.name) }
             .forEach { properties[it.name] = it }
 
+        allProperties.putAll(localMeta.properties)
         imports.addAll(localMeta.imports)
         annotations.addAll(localMeta.annotations)
     }
