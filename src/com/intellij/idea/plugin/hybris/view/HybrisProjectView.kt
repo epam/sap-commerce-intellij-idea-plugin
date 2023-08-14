@@ -19,10 +19,7 @@ package com.intellij.idea.plugin.hybris.view
 
 import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
-import com.intellij.ide.projectView.impl.nodes.BasePsiNode
-import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode
-import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
-import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
+import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -52,6 +49,13 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
         commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
         ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
+    )
+    private val hideModuleLibraries = setOf(
+        "- Backoffice Classes",
+        "- Web Classes",
+        "- Common Web Classes",
+        "- Addon's Target Classes",
+        "- HAC Web Classes"
     )
 
     override fun modify(
@@ -141,13 +145,20 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
         for (child in children) {
-            if (child is PsiDirectoryNode) {
-                val virtualFile = child.virtualFile ?: continue
-                if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)) {
-                    treeNodes.add(child)
+            when (child) {
+                is PsiDirectoryNode -> {
+                    val virtualFile = child.virtualFile ?: continue
+                    if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)) {
+                        treeNodes.add(child)
+                    }
                 }
-            } else {
-                treeNodes.add(child)
+                is NamedLibraryElementNode -> {
+                    val libraryName = child.value.name
+                    if (hideModuleLibraries.none { libraryName.endsWith(it) }) {
+                        treeNodes.add(child)
+                    }
+                }
+                else -> treeNodes.add(child)
             }
         }
         return treeNodes

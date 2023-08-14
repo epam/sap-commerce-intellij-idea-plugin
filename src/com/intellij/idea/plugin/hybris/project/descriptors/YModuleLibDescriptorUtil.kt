@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -225,7 +225,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
-                name = "HAC Web Classes",
+                name = "${descriptor.name} - HAC Web Classes",
                 libraryFile = File(descriptor.rootProjectDescriptor.hybrisDistributionDirectory, HybrisConstants.HAC_WEB_INF_CLASSES),
                 directoryWithClasses = true
             )
@@ -297,6 +297,10 @@ object YModuleLibDescriptorUtil {
         val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
+            .toMutableList()
+        File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY)
+            .takeIf { it.isDirectory }
+            ?.let { sourceFiles.add(it) }
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - $libName Classes",
