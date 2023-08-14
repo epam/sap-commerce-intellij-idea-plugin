@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,6 +50,7 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
 
     @Volatile
     private var building: Boolean = false
+
     @Volatile
     private var initialized: Boolean = false
     private val semaphore = Semaphore(1)
@@ -116,27 +117,30 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
     override fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType) = getMetaModel().getMetaType<T>(metaType).values
 
     override fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
-    override fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> {
-        val name = BSMetaModelNameProvider.extract(dom) ?: return emptyList()
-        return findMetaBeansByName(name)
-    }
+    override fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = BSMetaModelNameProvider.extract(dom)
+        ?.let { findMetaBeansByName(it) }
+        ?: emptyList()
 
-    override fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean> {
-        return listOfNotNull(
-            findMetaByName(BSMetaType.META_BEAN, name),
-            findMetaByName(BSMetaType.META_WS_BEAN, name),
-            findMetaByName(BSMetaType.META_EVENT, name)
-        )
-    }
+    override fun findMetaBeanByName(name: String?) = listOfNotNull(
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
+        .map { it as? BSGlobalMetaBean }
+        .firstOrNull()
 
-    override fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> {
-        return listOfNotNull(
-            findMetaByName(BSMetaType.META_ENUM, name),
-            findMetaByName(BSMetaType.META_BEAN, name),
-            findMetaByName(BSMetaType.META_WS_BEAN, name),
-            findMetaByName(BSMetaType.META_EVENT, name)
-        )
-    }
+    override fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean> = listOfNotNull(
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
+
+    override fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> = listOfNotNull(
+        findMetaByName(BSMetaType.META_ENUM, name),
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
 
     override fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
 

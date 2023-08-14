@@ -125,7 +125,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
-                name = "Bin",
+                name = "${descriptor.name} - HMC Bin",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BIN_DIRECTORY),
                 exported = true
             )
@@ -136,7 +136,7 @@ object YModuleLibDescriptorUtil {
             ?.let {
                 libs.add(
                     JavaLibraryDescriptor(
-                        name = "Web Classes",
+                        name = "${descriptor.name} - Web Classes",
                         libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
                         directoryWithClasses = true
                     )
