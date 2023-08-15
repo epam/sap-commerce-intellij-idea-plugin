@@ -131,6 +131,7 @@ public final class HybrisIcons {
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");
+    public static final Icon BS_LEVEL_MAPPING = getIcon("/icons/beanSystem/levelMapping.svg");
 
     public static final Icon BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg");
     public static final Icon BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg");

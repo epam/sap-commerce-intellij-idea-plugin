@@ -249,6 +249,9 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl.DefaultBSCompletionService"/>
+
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.startup.HybrisStandalonePluginUpdateChecker"/>
 
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>

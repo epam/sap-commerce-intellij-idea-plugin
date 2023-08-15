@@ -15,34 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl
 
-package com.intellij.idea.plugin.hybris.system.bean.psi.reference
-
-import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
+import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
+import com.intellij.openapi.project.Project
 
-class OccBSBeanPropertyReference(
-    private val meta: BSGlobalMetaBean,
-    element: PsiElement,
-    range: TextRange
-) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
+class DefaultBSCompletionService(private val project: Project) : BSCompletionService {
 
-    override fun getVariants() = BSCompletionService.getInstance(element.project)
-        .getCompletions(meta)
-        .toTypedArray()
-
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertyName = value
-
-        return meta.allProperties[propertyName]
-            ?.let { BeanPropertyResolveResult(it) }
-            ?.let { arrayOf(it) }
-            ?: emptyArray()
+    // TODO: improve Level Mapping completions based on Global Meta Model for OCC beans
+    override fun getCompletions(meta: BSGlobalMetaBean): List<LookupElementBuilder> {
+        val properties = meta.allProperties.values
+            .mapNotNull { BSLookupElementFactory.build(it) }
+        val levelMappings = HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
+            .map { BSLookupElementFactory.buildLevelMapping(it) }
+        return properties + levelMappings
     }
+
 }

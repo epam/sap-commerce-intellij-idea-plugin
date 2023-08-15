@@ -356,6 +356,8 @@ object HybrisConstants {
     const val KOTLIN_COMPILER_FALLBACK_VERSION = "1.8.21"
     const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
+    val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
+
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
     @JvmField

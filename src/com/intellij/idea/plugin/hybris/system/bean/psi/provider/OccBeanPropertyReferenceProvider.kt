@@ -17,14 +17,18 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.psi.provider
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
+import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -32,35 +36,41 @@ import org.jetbrains.kotlin.psi.psiUtil.parents
 
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
-    // TODO: Add support of default level mapping
-    // TODO: Add support of current bean level mapping
-    // TODO: Add references to exact levelMapping key element, e.g.: `value="BASIC"` refers to key="BASIC", create new references at line 58
     // TODO*: Create new Global OCC Meta Model, which will contain list of levelMappings and properties per dtoClass
-    private val ignoredLevelMappings = setOf("BASIC", "DEFAULT", "FULL")
 
-
-    /*
-    OrderWsDTO -> has `reference` property
-    `reference` -> type of ProductWsDTO, it can be retrieved from BSMetaModelAccess -> get Bean for type
-     */
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
     ): Array<out PsiReference> {
         val attributeValue = element as? XmlAttributeValue ?: return emptyArray()
 
-        val meta = element.parents
+        val propertyXmlTags = element.parents
             .mapNotNull { it as? XmlTag }
-            .filter { it.localName == "bean"}
+            .filter { it.localName == "bean" }
             .firstOrNull()
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "property" }
-            ?.firstOrNull { it.getAttributeValue("name") == "dtoClass" }
+            ?: return emptyArray()
+        val currentLevelMappings = propertyXmlTags
+            .firstOrNull { it.getAttributeValue("name") == "levelMapping" }
+            ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
+            ?.map { it as XmlAttribute }
+            ?.mapNotNull { it.value }
+            ?: return emptyArray()
+
+        val meta = propertyXmlTags
+            .firstOrNull { it.getAttributeValue("name") == "dtoClass" }
             ?.let { BSMetaModelAccess.getInstance(element.project).findMetaBeanByName(it.getAttributeValue("value")) }
             ?: return emptyArray()
 
+        val levelMappings = currentLevelMappings + HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
+
         return processProperties(attributeValue.value)
-            .map { TextRange.from(it.key, it.value.length) }
-            .map { OccBSBeanPropertyReference(meta, attributeValue, it) }
+            .map {
+                val textRange = TextRange.from(it.key, it.value.length)
+
+                return@map if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, textRange)
+                else OccBSBeanPropertyReference(meta, attributeValue, textRange)
+            }
             .toTypedArray()
     }
 

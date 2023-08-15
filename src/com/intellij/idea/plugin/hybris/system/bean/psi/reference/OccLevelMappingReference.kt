@@ -22,12 +22,14 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.ResolveResult
+import com.intellij.psi.*
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.xml.XmlAttribute
+import com.intellij.psi.xml.XmlTag
+import org.jetbrains.kotlin.psi.psiUtil.parents
 
-class OccBSBeanPropertyReference(
+class OccLevelMappingReference(
     private val meta: BSGlobalMetaBean,
     element: PsiElement,
     range: TextRange
@@ -38,11 +40,20 @@ class OccBSBeanPropertyReference(
         .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertyName = value
+        val levelMapping = value
 
-        return meta.allProperties[propertyName]
-            ?.let { BeanPropertyResolveResult(it) }
-            ?.let { arrayOf(it) }
+        return element.parents
+            .mapNotNull { it as? XmlTag }
+            .filter { it.localName == "bean" }
+            .firstOrNull()
+            ?.childrenOfType<XmlTag>()
+            ?.filter { it.localName == "property" }
+            ?.firstOrNull { it.getAttributeValue("name") == "levelMapping" }
+            ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
+            ?.map { it as XmlAttribute }
+            ?.mapNotNull { it.valueElement }
+            ?.filter { it.value == levelMapping }
+            ?.let { PsiElementResolveResult.createResults(it) }
             ?: emptyArray()
     }
 }
