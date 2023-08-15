@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
@@ -30,9 +31,11 @@ object BSLookupElementFactory {
         ?.withIcon(HybrisIcons.BS_PROPERTY)
         ?.withCaseSensitivity(false)
 
-    fun buildLevelMapping(levelMapping: String) = LookupElementBuilder.create(levelMapping)
-        .withTypeText("Level Mapping", true)
-        .withIcon(HybrisIcons.BS_LEVEL_MAPPING)
-        .withCaseSensitivity(false)
+    fun buildLevelMapping(levelMapping: String) = PrioritizedLookupElement.withPriority(
+        LookupElementBuilder.create(levelMapping)
+            .withTypeText("Level Mapping", true)
+            .withIcon(HybrisIcons.BS_LEVEL_MAPPING)
+            .withCaseSensitivity(false), 1.0
+    )
 
 }

@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.openapi.project.Project
 
 interface BSCompletionService {
 
-    fun getCompletions(meta: BSGlobalMetaBean): List<LookupElementBuilder>
+    fun getCompletions(meta: BSGlobalMetaBean): List<LookupElement>
 
     companion object {
         fun getInstance(project: Project): BSCompletionService = project.getService(BSCompletionService::class.java)

@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl
 
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
@@ -27,7 +27,7 @@ import com.intellij.openapi.project.Project
 class DefaultBSCompletionService(private val project: Project) : BSCompletionService {
 
     // TODO: improve Level Mapping completions based on Global Meta Model for OCC beans
-    override fun getCompletions(meta: BSGlobalMetaBean): List<LookupElementBuilder> {
+    override fun getCompletions(meta: BSGlobalMetaBean): List<LookupElement> {
         val properties = meta.allProperties.values
             .mapNotNull { BSLookupElementFactory.build(it) }
         val levelMappings = HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS

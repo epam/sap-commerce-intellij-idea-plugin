@@ -46,9 +46,9 @@ class BSMetaModelMergerImpl(val myProject: Project) : BSMetaModelMerger {
         getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
         beans.keys.removeAll(wsBeans.keys)
 
-        // after merging all different declarations of the same time we may need to process properties which were declared via extends
-        val allBeans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values +
-            getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values +
+        // after merging all different declarations of the same bean we need to process properties which were declared via extends
+        val allBeans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).values +
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values +
             getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values
         allBeans
             .forEach { (it as? BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
