@@ -214,23 +214,14 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemsFileValidation"/>
 
-        <applicationService
-                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
-        <applicationService
-                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
-        <applicationService
-                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
-        <applicationService
-                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
-        <applicationService
-                serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
 
-        <xmlStructureViewBuilderProvider
-                implementation="com.intellij.idea.plugin.hybris.system.type.structureView.TSXmlStructureViewBuilderProvider"
-                order="first"/>
-        <xmlStructureViewBuilderProvider
-                implementation="com.intellij.idea.plugin.hybris.system.bean.structureView.BSXmlStructureViewBuilderProvider"
-                order="first"/>
+        <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
+        <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.bean.structureView.BSXmlStructureViewBuilderProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                                Bean System                                              -->
@@ -260,18 +251,14 @@
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.startup.HybrisStandalonePluginUpdateChecker"/>
 
-        <postStartupActivity order="first" id="hybrisProjectImport"
-                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport"
-                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport"
-                             implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
-        <backgroundPostStartupActivity
-                implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
-        <backgroundPostStartupActivity
-                implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
-        <backgroundPostStartupActivity
-                implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
+        <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
     </extensions>
 
     <actions>
