@@ -19,8 +19,11 @@
 package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
+import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import java.io.File
+
 
 class YWebSubModuleDescriptor(
     owner: YRegularModuleDescriptor,
@@ -28,4 +31,16 @@ class YWebSubModuleDescriptor(
     name: String = owner.name + "." + moduleRootDirectory.name,
     val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.WEB
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory, name) {
+
+    override fun addDirectDependencies(dependencies: Set<ModuleDescriptor>): Boolean {
+        dependencies
+            .filterIsInstance(YModuleDescriptor::class.java)
+            .flatMap { it.getAllDependencies() }
+            .filterIsInstance(YCustomRegularModuleDescriptor::class.java)
+            .flatMap { it.getSubModules() }
+            .filterIsInstance(YCommonWebSubModuleDescriptor::class.java)
+            .forEach { it.addDependantWebExtension(this) }
+        return super.addDirectDependencies(dependencies)
+    }
+}

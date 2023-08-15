@@ -311,6 +311,24 @@ object YModuleLibDescriptorUtil {
             )
         )
 
+        (descriptor as? YCommonWebSubModuleDescriptor)
+            ?.dependantWebExtensions
+            ?.forEach {
+                val webSourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+                    .map { File(descriptor.moduleRootDirectory, it) }
+                    .filter { it.isDirectory }
+                    .toMutableList()
+                libs.add(
+                    JavaLibraryDescriptor(
+                        name = "${it.name} - $libName Classes",
+                        libraryFile = File(it.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                        sourceFiles = webSourceFiles,
+                        exported = true,
+                        directoryWithClasses = true
+                    )
+                )
+
+            }
         val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
 
         libs.add(

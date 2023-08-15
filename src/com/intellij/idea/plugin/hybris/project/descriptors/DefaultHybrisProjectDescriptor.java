@@ -747,6 +747,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         for (final var moduleDescriptor : moduleDescriptors) {
             final var dependencies = buildDependencies(moduleDescriptor, moduleDescriptorsMap);
+            final Set<YCommonWebSubModuleDescriptor> dependantCommonweb = dependencies.stream()
+                .map(ModuleDescriptor::getAllDependencies)
+                .flatMap(Collection::stream)
+                .filter(YCommonWebSubModuleDescriptor.class::isInstance)
+                .map(YCommonWebSubModuleDescriptor.class::cast)
+                .collect(Collectors.toSet());
+            System.out.println(dependantCommonweb);
             moduleDescriptor.addDirectDependencies(dependencies);
         }
     }

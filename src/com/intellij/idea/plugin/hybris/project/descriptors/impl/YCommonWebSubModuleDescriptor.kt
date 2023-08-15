@@ -34,4 +34,11 @@ class YCommonWebSubModuleDescriptor(
     moduleRootDirectory: File,
     val webRoot: File = File(moduleRootDirectory, HybrisConstants.WEB_ROOT_DIRECTORY),
     override val subModuleDescriptorType: SubModuleDescriptorType = SubModuleDescriptorType.COMMON_WEB,
-) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory)
+) : AbstractYSubModuleDescriptor(owner, moduleRootDirectory) {
+
+    internal val dependantWebExtensions = mutableSetOf<YWebSubModuleDescriptor>()
+
+     fun addDependantWebExtension(dependantWebExtension: YWebSubModuleDescriptor) {
+        this.dependantWebExtensions.add(dependantWebExtension)
+    }
+}
