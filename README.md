@@ -1,4 +1,5 @@
 [![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com)
+[![slack](https://img.shields.io/badge/slack-join-blueviolet.svg?logo=slack)](https://join.slack.com/t/newworkspace-gnh9580/shared_invite/zt-216ofxbl2-vtEwJVBg71UtDz9y4oDfpg)
 ![Rating](https://img.shields.io/jetbrains/plugin/r/rating/12867-sap-commerce-developers-toolset)
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
 [![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)](https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset)
