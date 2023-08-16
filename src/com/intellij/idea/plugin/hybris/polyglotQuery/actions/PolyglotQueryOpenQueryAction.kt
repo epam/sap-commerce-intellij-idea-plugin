@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.options.ShowSettingsUtil
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.psi.SingleRootFileViewProvider
 
-class OpenPolyglotQuerySettingsAction : AnAction(
-    message("hybris.pgq.actions.open_settings"),
-    message("hybris.pgq.actions.open_settings.description"),
-    HybrisIcons.PGQ_FILE
+class PolyglotQueryOpenQueryAction : AnAction(
+    message("hybris.pgq.actions.open_query"),
+    message("hybris.pgq.actions.open_query.description"),
+    HybrisIcons.CONSOLE_OPEN
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, PolyglotQuerySettingsConfigurableProvider.SettingsConfigurable::class.java)
+        val query = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+            ?.firstOrNull()
+            ?.takeIf { it.fileType is PolyglotQueryFileType }
+            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
+            ?.let { FileDocumentManager.getInstance().getDocument(it) }?.text
+            ?: return
+
+        CopyFileToHybrisConsoleUtils.copyQueryToConsole(
+            project,
+            HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
+            query
+        )
     }
+
 }

@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileTyp
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
@@ -40,6 +42,7 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
         val settings = HybrisProjectSettingsComponent.getInstance(project).state
         val toolbarInstaller = when (file.fileType) {
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
+            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
             is ImpexFileType -> ImpExFileToolbarInstaller.instance
             else -> {
                 if (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID) && file.fileType is GroovyFileType && settings.groovySettings.enableActionsToolbar) GroovyFileToolbarInstaller.instance

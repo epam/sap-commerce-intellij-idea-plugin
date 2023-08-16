@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,7 @@
                              provider="com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettingsConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller"/>
     </extensions>
 
     <actions>
@@ -54,7 +55,19 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.OpenPolyglotQuerySettingsAction"/>
+        <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteQueryAction"/>
+        <action id="hybris.pgq.openQuery" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
+        <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
+
+        <group id="hybris.pgq.toolbar.left">
+            <reference id="hybris.pgq.execute"/>
+            <reference id="hybris.pgq.openQuery"/>
+            <separator/>
+            <reference id="hybris.pgq.openSettings"/>
+        </group>
+        <group id="hybris.pgq.toolbar.right">
+            <reference id="hybris.hac.chooseConnection"/>
+        </group>
     </actions>
 
 
