@@ -45,11 +45,18 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         if (node.parent !is ProjectViewModuleGroupNode || node.parent == null) return
         val module = ProjectRootManager.getInstance(node.project).fileIndex.getModuleForFile(vf) ?: return
 
-        val descriptorType = HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(module.project)
+        val descriptorType = projectSettings.getModuleSettings(module).type
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
             data.setIcon(KotlinIcons.SMALL_LOGO)
             return
+        }
+
+        if (!projectSettings.state.showFullModuleName) {
+            data.coloredText
+                .firstOrNull { it.text == "[${module.name}]" }
+                ?.let { data.coloredText.remove(it) }
         }
 
         when (descriptorType) {

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -55,6 +55,14 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .text(state.javadocUrl ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
+            }
+
+            group(message("hybris.settings.project.common.title")) {
+                row {
+                    checkBox("Show complete Module name in the Project View")
+                        .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>")
+                        .bindSelected(state::showFullModuleName)
+                }
             }
 
             group(message("hybris.settings.project.refresh.title")) {
