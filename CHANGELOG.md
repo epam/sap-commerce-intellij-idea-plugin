@@ -56,6 +56,7 @@
 - Use main config folder during project import [#576](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/576)
 - Fixed header text for Other modules step of the Project Import Wizard [#580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/580)
 - Register Web Facet for `commonweb` [#581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/581) 
+- Do not register `hmc` sub-modules if there is no `hmc` extension [#582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/582) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)

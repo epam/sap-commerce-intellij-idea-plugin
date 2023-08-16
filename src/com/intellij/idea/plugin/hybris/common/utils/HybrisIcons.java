@@ -86,9 +86,9 @@ public final class HybrisIcons {
     public static final Icon EXTENSION_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_COMMON_WEB = AllIcons.Nodes.WebFolder;
     public static final Icon EXTENSION_ADDON = AllIcons.Nodes.WebFolder;
-    public static final Icon EXTENSION_BACKOFFICE = Y_LOGO_BLUE;
-    public static final Icon EXTENSION_HMC = Y_LOGO_BLUE;
-    public static final Icon EXTENSION_HAC = Y_LOGO_BLUE;
+    public static final Icon EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder;
+    public static final Icon EXTENSION_HMC = AllIcons.Nodes.Folder;
+    public static final Icon EXTENSION_HAC = AllIcons.Nodes.Folder;
 
     public static final Icon TYPE_SYSTEM = getIcon("/icons/typeSystem.svg");
     public static final Icon SPRING_BEAN = getIcon("icons/springBean.svg");

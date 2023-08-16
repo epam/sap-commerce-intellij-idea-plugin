@@ -433,6 +433,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         buildDependencies(moduleDescriptors);
         final var addons = processAddons(moduleDescriptors);
         removeNotInstalledAddons(moduleDescriptors, addons);
+        removeHmcSubModules(moduleDescriptors);
 
         foundModules.addAll(moduleDescriptors);
     }
@@ -468,6 +469,30 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             });
 
         return addons;
+    }
+
+    private void removeHmcSubModules(final List<ModuleDescriptor> moduleDescriptors) {
+        final var hmcSubModules = new HashMap<YModuleDescriptor, YHmcSubModuleDescriptor>();
+        ModuleDescriptor hmcModule = null;
+
+        for (final var module : moduleDescriptors) {
+            if (HybrisConstants.EXTENSION_NAME_HMC.equals(module.getName())) {
+                hmcModule = module;
+            }
+            if (module instanceof final YModuleDescriptor yModule) {
+                yModule.getSubModules().stream()
+                    .filter(YHmcSubModuleDescriptor.class::isInstance)
+                    .map(YHmcSubModuleDescriptor.class::cast)
+                    .findAny()
+                    .ifPresent(hmcSubModule -> hmcSubModules.put(yModule, hmcSubModule));
+
+            }
+        }
+
+        if (hmcModule == null) {
+            hmcSubModules.forEach((yModule, yHmcSubModule) -> yModule.removeSubModule(yHmcSubModule));
+            moduleDescriptors.removeAll(hmcSubModules.values());
+        }
     }
 
     private void removeNotInstalledAddons(

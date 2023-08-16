@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -180,9 +180,9 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (item instanceof YPlatformExtModuleDescriptor) {
             return HybrisIcons.EXTENSION_EXT;
         }
-//        if (item instanceof YOotbRegularModuleDescriptor) {
-//            return HybrisIcons.EXTENSION_OOTB;
-//        }
+        if (item instanceof YOotbRegularModuleDescriptor) {
+            return HybrisIcons.EXTENSION_OOTB;
+        }
         if (item instanceof YWebSubModuleDescriptor) {
             return HybrisIcons.EXTENSION_WEB;
         }
@@ -192,18 +192,15 @@ public class SelectHybrisModulesToImportStep extends AbstractSelectModulesToImpo
         if (item instanceof YAcceleratorAddonSubModuleDescriptor) {
             return HybrisIcons.EXTENSION_ADDON;
         }
-//        if (item instanceof YBackofficeSubModuleDescriptor) {
-//            return HybrisIcons.EXTENSION_BACKOFFICE;
-//        }
-//        if (item instanceof YBackofficeSubModuleDescriptor) {
-//            return HybrisIcons.EXTENSION_BACKOFFICE;
-//        }
-//        if (item instanceof YHacSubModuleDescriptor) {
-//            return HybrisIcons.EXTENSION_HAC;
-//        }
-//        if (item instanceof YHmcSubModuleDescriptor) {
-//            return HybrisIcons.EXTENSION_HMC;
-//        }
+        if (item instanceof YBackofficeSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_BACKOFFICE;
+        }
+        if (item instanceof YHacSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_HAC;
+        }
+        if (item instanceof YHmcSubModuleDescriptor) {
+            return HybrisIcons.EXTENSION_HMC;
+        }
 
         return HybrisIcons.Y_LOGO_BLUE;
     }
