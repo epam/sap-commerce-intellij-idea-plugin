@@ -148,16 +148,20 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             when (child) {
                 is PsiDirectoryNode -> {
                     val virtualFile = child.virtualFile ?: continue
-                    if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)) {
+                    if (!HybrisConstants.CLASSES_DIRECTORY.equals(virtualFile.name, ignoreCase = true) &&
+                        !HybrisConstants.RESOURCES_DIRECTORY.equals(virtualFile.name, ignoreCase = true)
+                    ) {
                         treeNodes.add(child)
                     }
                 }
+
                 is NamedLibraryElementNode -> {
                     val libraryName = child.value.name
                     if (hideModuleLibraries.none { libraryName.endsWith(it) }) {
                         treeNodes.add(child)
                     }
                 }
+
                 else -> treeNodes.add(child)
             }
         }
