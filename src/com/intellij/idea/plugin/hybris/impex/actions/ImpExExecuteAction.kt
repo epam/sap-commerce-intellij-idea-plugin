@@ -36,5 +36,5 @@ class ImpExExecuteAction : AbstractExecuteAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
     override val extension = ImpexFileType.INSTANCE.defaultExtension
-    override val consoleName = HybrisConstants.IMPEX_CONSOLE_TITLE
+    override val consoleName = HybrisConstants.CONSOLE_TITLE_IMPEX
 }

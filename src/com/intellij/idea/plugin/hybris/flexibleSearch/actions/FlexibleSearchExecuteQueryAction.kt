@@ -37,7 +37,7 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction() {
     }
 
     override val extension = FlexibleSearchFileType.instance.defaultExtension
-    override val consoleName = HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE
+    override val consoleName = HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
 
     override fun update(e: AnActionEvent) {
         super.update(e)

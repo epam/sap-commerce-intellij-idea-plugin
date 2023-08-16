@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
     private val groovyConsole = HybrisGroovyConsole(project)
     private val monitorConsole = HybrisImpexMonitorConsole(project)
     private val flexibleSearchConsole = HybrisFlexibleSearchConsole(project)
+    private val polyglotQueryConsole = HybrisPolyglotQueryConsole(project)
     private val solrSearchConsole = HybrisSolrSearchConsole(project)
 
     private val actionToolbar: ActionToolbar
@@ -60,7 +61,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val panel = JPanel(BorderLayout())
 
-        val consoles = arrayOf(flexibleSearchConsole, impexConsole, groovyConsole, monitorConsole, solrSearchConsole)
+        val consoles = arrayOf(flexibleSearchConsole, impexConsole, groovyConsole, polyglotQueryConsole, monitorConsole, solrSearchConsole)
         consoles.forEach { Disposer.register(this, it) }
         hybrisTabs = HybrisTabs(project, TOP, consoles, this)
 

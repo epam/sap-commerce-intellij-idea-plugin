@@ -14,6 +14,9 @@
 - Added actions for connection settings in the toolbar [#549](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/549)
 - Added `Execute` action to the toolbar [#552](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/552)
 
+### `Polyglot Query` enhancements
+- Introduced new Console to enable execution of the Polyglot queries on a remote server [#585](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/585)
+
 ### `ImpEx` enhancements
 - Introduced actions toolbar for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)
 - Added `Execute` and `Validate` actions [#553](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/553)

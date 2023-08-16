@@ -34,5 +34,5 @@ class GroovyExecuteAction : AbstractExecuteAction() {
     }
 
     override val extension = GroovyFileType.GROOVY_FILE_TYPE.defaultExtension
-    override val consoleName = HybrisConstants.GROOVY_CONSOLE_TITLE
+    override val consoleName = HybrisConstants.CONSOLE_TITLE_GROOVY
 }

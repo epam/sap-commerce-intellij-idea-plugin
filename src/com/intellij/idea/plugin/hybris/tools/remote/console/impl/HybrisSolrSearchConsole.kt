@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,13 +48,12 @@ import org.apache.commons.collections4.CollectionUtils
 import org.apache.solr.client.solrj.SolrServerException
 import java.awt.BorderLayout
 import java.awt.Dimension
-import java.awt.Insets
 import java.io.Serial
 import java.util.*
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.SOLR_SEARCH_CONSOLE_TITLE, PlainTextLanguage.INSTANCE) {
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH, PlainTextLanguage.INSTANCE) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
@@ -69,7 +68,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     private val maxRowsLabel = JBLabel("Rows (max 500): ")
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
 
-    private val labelInsets = Insets(0, 10, 0, 1)
+    private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
     private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "SOLR")
 

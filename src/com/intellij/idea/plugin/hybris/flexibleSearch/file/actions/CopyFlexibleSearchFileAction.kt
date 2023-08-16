@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_CONSOLE_TITLE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -39,6 +39,6 @@ class CopyFlexibleSearchFileAction : AnAction(), DumbAware {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, FLEXIBLE_SEARCH_CONSOLE_TITLE, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_FLEXIBLE_SEARCH, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 }

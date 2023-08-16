@@ -49,7 +49,7 @@ class GroovyOpenQueryAction : AnAction() {
 
         CopyFileToHybrisConsoleUtils.copyQueryToConsole(
             project,
-            HybrisConstants.GROOVY_CONSOLE_TITLE,
+            HybrisConstants.CONSOLE_TITLE_GROOVY,
             query
         )
     }

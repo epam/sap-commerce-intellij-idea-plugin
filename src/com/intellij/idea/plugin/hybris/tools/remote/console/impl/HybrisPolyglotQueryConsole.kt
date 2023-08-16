@@ -22,7 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -40,33 +40,29 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage.INSTANCE) {
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage.instance) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
+    object MyConsoleRootType : ConsoleRootType(ID, null)
 
     private val panel = JPanel(WrappedFlowLayout(0, 0))
 
     private val commitCheckbox = JBCheckBox()
     private val commitLabel = JBLabel("Commit mode: ")
 
-    private val plainSqlCheckbox = JBCheckBox()
-    private val plainSqlLabel = JBLabel("SQL: ")
-
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
     private val maxRowsLabel = JBLabel("Rows (max 100): ")
 
     private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
-    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
+    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "POLYGLOT_QUERY")
 
     init {
         createUI()
-        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
+        ConsoleHistoryController(MyConsoleRootType, ID, this).install()
     }
 
     private fun createUI() {
         initCommitElements()
-        initPlainSqlElements()
         initMaxRowsElements()
 
         panel.add(queryConsolePanel)
@@ -80,12 +76,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         panel.add(commitCheckbox)
     }
 
-    private fun initPlainSqlElements() {
-        plainSqlLabel.border = EmptyBorder(labelInsets)
-        panel.add(plainSqlLabel)
-        panel.add(plainSqlCheckbox)
-    }
-
     private fun initMaxRowsElements() {
         maxRowsLabel.border = EmptyBorder(labelInsets)
         panel.add(maxRowsLabel)
@@ -94,21 +84,22 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     override fun execute(query: String): HybrisHttpResult {
         return HybrisHacHttpClient.getInstance(project)
-                .executeFlexibleSearch(
-                        project,
-                        commitCheckbox.isSelected,
-                        plainSqlCheckbox.isSelected,
-                        maxRowsSpinner.value.toString(),
-                        query
-                )
+            .executeFlexibleSearch(
+                project,
+                commitCheckbox.isSelected,
+                false,
+                maxRowsSpinner.value.toString(),
+                query
+            )
     }
 
-    override fun title(): String = "FlexibleSearch"
-    override fun tip(): String = "FlexibleSearch Console"
-    override fun icon(): Icon = HybrisIcons.FXS_FILE
+    override fun title(): String = "Polyglot Query"
+    override fun tip(): String = "Polyglot Persistence Query Language Console (available only for 1905+)"
+    override fun icon(): Icon = HybrisIcons.PGQ_FILE
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -112651125533211607L
+        private const val serialVersionUID: Long = -1330953384857131472L
+        const val ID = "hybris.polyglot.query.shell"
     }
 }
