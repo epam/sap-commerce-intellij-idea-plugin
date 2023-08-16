@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -152,6 +152,10 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDeclaration.key"
                          shortName="DuplicateBeanPropertyDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanPropertyDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordBeanPropertyDefinition.key"
+                         shortName="BSKeywordBeanPropertyDefinition" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordBeanPropertyDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
                          shortName="DuplicateEnumValueDefinition" level="ERROR"

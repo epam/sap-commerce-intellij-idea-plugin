@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -52,10 +52,10 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
         return isFileOutOfDateWithGeneratedClasses(file)
     }
 
-    override fun showNotification() {
+    override fun showNotification(file: VirtualFile?) {
         Notifications.create(
             NotificationType.WARNING,
-            message("hybris.notification.ts.validation.title"),
+            message("hybris.notification.ts.validation.title", file?.name ?: "items.xml"),
             message("hybris.notification.ts.validation.content")
         )
             .hideAfter(10)

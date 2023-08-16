@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteSolrInstancesListPanel
 import com.intellij.openapi.Disposable
@@ -42,7 +42,7 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
         val settingsConfigurable = SettingsConfigurable(project)
 
         project.messageBus
-            .connect(this)
+            .connect()
             .subscribe<HybrisDeveloperSpecificProjectSettingsListener>(HybrisDeveloperSpecificProjectSettingsListener.TOPIC,
                 object : HybrisDeveloperSpecificProjectSettingsListener {
                     override fun hacConnectionSettingsChanged() = settingsConfigurable.updateHacModel()

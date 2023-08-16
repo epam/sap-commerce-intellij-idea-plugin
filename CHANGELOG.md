@@ -49,6 +49,9 @@
 - Improved support of the Bean System `extends` and `generics` for beans [#570](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/570)
 - Bean System enhanced with support of the properties defined in parent beans [#571](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/571)
 
+### `beans.xml` inspection rules
+- Java keywords and reserved words cannot be used as Bean Property name [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)
+
 ### Fixes
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
@@ -479,8 +482,8 @@
 - Attribute modifier is unknown [#292](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/292)
 
 ### `items.xml` inspection rules
-  - Deployment tag must not be declared for one-to-many relation [#289](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289)
-  - Deployment table name must not exceed max length `deployment.tablename.maxlength` [#293](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/293)
+- Deployment tag must not be declared for one-to-many relation [#289](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/289)
+- Deployment table name must not exceed max length `deployment.tablename.maxlength` [#293](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/293)
 
 ### Fixes
 - Console is not releasing Document on Project dispose [#260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/260)
@@ -626,9 +629,9 @@
 - Dependency on the same Extension declared multiple times [#154](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/154)
 
 ### `beans.xml` inspection rules
-  - Duplicate Enum definition inspection [#88](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88)
-  - Duplicate Enum Value definition inspection
-  - Duplicate Bean Property definition inspection
+- Duplicate Enum definition inspection [#88](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/88)
+- Duplicate Enum Value definition inspection
+- Duplicate Bean Property definition inspection
 
 ### Fixes
 - [y] Tool Window Logo too dark for New UI [#95](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/95)
