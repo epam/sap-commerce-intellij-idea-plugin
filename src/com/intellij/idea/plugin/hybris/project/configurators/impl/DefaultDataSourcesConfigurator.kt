@@ -49,9 +49,9 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(ProjectPropertiesUtils.findMacroProperty(project, "db.url")?.value)
-            .withUser(ProjectPropertiesUtils.findMacroProperty(project, "db.username")?.value)
-            .withPassword(ProjectPropertiesUtils.findMacroProperty(project, "db.password")?.value)
+            .withUrl(ProjectPropertiesUtils.findProperty(project, "db.url"))
+            .withUser(ProjectPropertiesUtils.findProperty(project, "db.username"))
+            .withPassword(ProjectPropertiesUtils.findProperty(project, "db.password"))
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {

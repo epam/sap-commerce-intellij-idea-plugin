@@ -98,6 +98,10 @@ object ProjectPropertiesUtils {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
+    fun findProperty(project: Project, query: String): String? = findMacroProperty(project, query)
+        ?.value
+        ?.replace("\\", "")
+
     fun resolvePropertyValue(project: Project, value: String?): String {
         return resolvePropertyValue(project, value, HashMap())
     }

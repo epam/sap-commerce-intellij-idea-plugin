@@ -58,6 +58,7 @@
 - Register Web Facet for `commonweb` [#581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/581) 
 - Register Web Facet for `acceleratoraddon` [#583](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/583) 
 - Do not register `hmc` sub-modules if there is no `hmc` extension [#582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/582) 
+- DB Datasource cannot be configured due backslash [#583](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/583) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
