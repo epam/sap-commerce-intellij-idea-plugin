@@ -27,7 +27,7 @@ object BSLookupElementFactory {
 
     fun build(meta: BSMetaProperty) = meta.name
         ?.let { LookupElementBuilder.create(it) }
-        ?.withTypeText(meta.type, true)
+        ?.withTypeText(meta.flattenType, true)
         ?.withIcon(HybrisIcons.BS_PROPERTY)
         ?.withCaseSensitivity(false)
 

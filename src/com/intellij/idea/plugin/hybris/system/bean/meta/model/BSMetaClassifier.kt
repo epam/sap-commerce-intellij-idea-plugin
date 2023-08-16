@@ -38,3 +38,7 @@ interface BSGlobalMetaClassifier<DOM : DomElement> : BSMetaClassifier<DOM> {
         .map { it.domAnchor }
         .mapNotNull { it.retrieveDomElement() }
 }
+
+interface BSTypedClassifier {
+    var flattenType: String?
+}

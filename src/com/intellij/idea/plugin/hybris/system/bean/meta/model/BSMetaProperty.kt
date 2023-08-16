@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.bean.meta.model
 
 import com.intellij.idea.plugin.hybris.system.bean.model.Property
 
-interface BSMetaProperty : BSMetaClassifier<Property> {
+interface BSMetaProperty : BSMetaClassifier<Property>, BSTypedClassifier {
     val type: String?
     val description: String?
     val isEquals: Boolean

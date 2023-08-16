@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.meta.model.impl
 
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
@@ -40,6 +41,7 @@ internal class BSMetaPropertyImpl(
     override val description = dom.description.stringValue
     override val isEquals = dom.equals.value
     override val isDeprecated = dom.deprecated.value
+    override var flattenType: String? = BSMetaHelper.flattenType(this)
 
     override fun toString() = "Property(module=$module, name=$name, isCustom=$isCustom)"
 }
