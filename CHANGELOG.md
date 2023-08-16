@@ -53,8 +53,9 @@
 - Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572), [#573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/573) 
 - Added `hmc` sub-module dependency on `hmc.web` [#574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/574) 
 - Improved detection of the Gradle modules [#575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/575) 
-- Use main config folder during project import [#576](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/576) 
-- Fixed header text for Other modules step of the Project Import Wizard [#580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/580) 
+- Use main config folder during project import [#576](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/576)
+- Fixed header text for Other modules step of the Project Import Wizard [#580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/580)
+- Register Web Facet for `commonweb` [#581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/581) 
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)

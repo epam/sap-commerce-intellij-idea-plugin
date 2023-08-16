@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCommonWebSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
@@ -44,7 +45,11 @@ class WebFacetConfigurator : FacetConfigurator {
         javaModule: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
-        val yWebSubModuleDescriptor = moduleDescriptor as? YWebSubModuleDescriptor ?: return
+        val webRoot = when (moduleDescriptor) {
+            is YWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
+            is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
+            else -> return
+        }
 
         WriteAction.runAndWait<RuntimeException> {
             val webFacet = modifiableFacetModel.getFacetByType(WebFacet.ID)
@@ -59,9 +64,9 @@ class WebFacetConfigurator : FacetConfigurator {
                 ?: return@runAndWait
 
             webFacet.setWebSourceRoots(modifiableRootModel.getSourceRootUrls(false))
-            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(yWebSubModuleDescriptor.webRoot.absolutePath)), "/")
+            webFacet.addWebRootNoFire(VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(webRoot)), "/")
 
-            VfsUtil.findFileByIoFile(File(yWebSubModuleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH), true)
+            VfsUtil.findFileByIoFile(File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_WEB_XML_PATH), true)
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }
