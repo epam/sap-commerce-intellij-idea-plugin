@@ -55,6 +55,12 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
+        <group>
+            <action id="hybris.pgq.openFileInConsole" class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryCopyFileAction"/>
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
+        </group>
+
         <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteQueryAction"/>
         <action id="hybris.pgq.openQuery" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>

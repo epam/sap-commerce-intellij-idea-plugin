@@ -17,6 +17,7 @@
 ### `Polyglot Query` enhancements
 - Introduced new Console to enable execution of the Polyglot queries on a remote server [#585](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/585)
 - Introduced actions toolbar for `.pgq` files [#586](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/586)
+- Added `Copy to console` context action [#587](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/587)
 
 ### `ImpEx` enhancements
 - Introduced actions toolbar for `.impex` files [#550](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/550)

@@ -77,10 +77,7 @@
     <actions>
         <group>
             <action id="hybris.fxs.CopyFlexibleSearchFileAction"
-                    class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.CopyFlexibleSearchFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.Y_LOGO_BLUE"
-                    text="Copy to FlexibleSearch Console" description="Copy FlexibleSearch to SAP Commerce console">
-            </action>
+                    class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchCopyFileAction"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>

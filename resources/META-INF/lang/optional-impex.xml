@@ -123,11 +123,8 @@
         </action>
 
         <group>
-            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    class="com.intellij.idea.plugin.hybris.impex.file.actions.CopyImpexFileAction"
-                    icon="com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.Y_LOGO_BLUE"
-                    text="Copy to ImpEx Console" description="Copy ImpEx file to SAP Commerce Console">
-            </action>
+            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"
+                    class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>

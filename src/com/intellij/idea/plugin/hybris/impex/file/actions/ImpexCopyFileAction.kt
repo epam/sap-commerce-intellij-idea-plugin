@@ -16,29 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
+package com.intellij.idea.plugin.hybris.impex.file.actions;
 
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_IMPEX
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSION
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 
-class CopyFlexibleSearchFileAction : AnAction(), DumbAware {
+class ImpexCopyFileAction : AnAction(
+    "Copy to ImpEx Console",
+    "Copy ImpEx file to SAP Commerce Console",
+    HybrisIcons.CONSOLE_OPEN
+), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
-    override fun update(event :AnActionEvent) {
+    override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(project) && isRequiredSingleFileExtension(project, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(project) && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(project, IMPEX_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_FLEXIBLE_SEARCH, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_IMPEX, IMPEX_FILE_EXTENSION);
     }
 }
