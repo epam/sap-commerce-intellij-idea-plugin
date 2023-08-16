@@ -22,11 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.util.xml.DomElement
 import java.util.*
-import java.util.function.BiConsumer
-import java.util.function.BinaryOperator
-import java.util.function.Supplier
-import java.util.stream.Collector
-import java.util.function.Function
 
 object BSMetaHelper {
 
@@ -34,9 +29,9 @@ object BSMetaHelper {
         ?.replace("&lt;", "<")
         ?.replace("&gt;", ">")
         ?.reversed()
-        ?.chars()
-        ?.mapToObj { codePoint: Int -> Char(codePoint) }
-        ?.collect((ClassFlattenNameCollector()))
+        ?.asSequence()
+        ?.fold(ClassFlattenNameAccumulator()) { acc, el -> acc.accumulate(el) }
+        ?.toString()
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
@@ -88,45 +83,25 @@ object BSMetaHelper {
         .replace("&gt;", ">")
 }
 
-internal class ClassFlattenNameCollector : Collector<Char, MutableList<StringBuilder>, String> {
+internal class ClassFlattenNameAccumulator {
 
-    var ignoreMode: Boolean = false
-    override fun supplier(): Supplier<MutableList<StringBuilder>> {
-        return Supplier { ArrayList() }
-    }
-
-    override fun accumulator(): BiConsumer<MutableList<StringBuilder>, Char> {
-        return BiConsumer { stringBuilders: MutableList<StringBuilder>, c: Char ->
-            if (c == ' ' || c == '\n' || c == '.') {
-                stringBuilders.add(StringBuilder())
-                ignoreMode = true;
-            } else if (c == ',' || c == '<') {
-                ignoreMode = false;
-                val flattenClassName = stringBuilders.last()
-                flattenClassName.insert(0, c)
-            } else {
-                if (!ignoreMode) {
-                    if (stringBuilders.isEmpty()) {
-                        stringBuilders.add(StringBuilder())
-                    }
-                    val flattenClassName = stringBuilders.last()
-                    flattenClassName.insert(0, c)
-                }
+    var ignoreMode = false
+    val accumulator = StringBuilder()
+    fun accumulate(c: Char): ClassFlattenNameAccumulator {
+        if (c == ' ' || c == '\n' || c == '.') {
+            ignoreMode = true;
+        } else if (c == ',' || c == '<') {
+            ignoreMode = false;
+            accumulator.insert(0, c)
+        } else {
+            if (!ignoreMode) {
+                accumulator.insert(0, c)
             }
         }
+        return this
     }
 
-    override fun combiner(): BinaryOperator<MutableList<StringBuilder>> {
-        return BinaryOperator { left, _ -> left }
-    }
-
-    override fun finisher(): Function<MutableList<StringBuilder>, String> {
-        return Function { classNames ->
-            classNames.map { it.toString() }.filter { it.isNotEmpty() }.reversed().joinToString("")
-        }
-    }
-
-    override fun characteristics(): Set<Collector.Characteristics> {
-        return setOf(Collector.Characteristics.UNORDERED)
+    override fun toString(): String {
+        return accumulator.toString()
     }
 }
