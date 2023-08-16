@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCommonWebSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.javaee.DeploymentDescriptorsConstants
@@ -48,6 +49,7 @@ class WebFacetConfigurator : FacetConfigurator {
         val webRoot = when (moduleDescriptor) {
             is YWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
             is YCommonWebSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
+            is YAcceleratorAddonSubModuleDescriptor -> moduleDescriptor.webRoot.absolutePath
             else -> return
         }
 
