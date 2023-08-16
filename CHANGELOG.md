@@ -40,6 +40,7 @@
 - Respect `JSESSIONID` and cookies per `HAC` connection settings
 - Improved handling of the `Set-Cookie` header during login [#544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/544)
 - Automatically re-login in case of `405` response code [#548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/548)
+- Show connection URL in the tooltip for connection switcher [#588](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/588)
 
 ### Features
 - Added possibility to import Gradle KTS projects as modules [#534](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/534)
