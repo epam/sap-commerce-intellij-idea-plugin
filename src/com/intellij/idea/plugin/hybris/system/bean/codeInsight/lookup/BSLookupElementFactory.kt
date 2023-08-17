@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup
 
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
+import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 
 object BSLookupElementFactory {
 
@@ -37,5 +39,24 @@ object BSLookupElementFactory {
             .withIcon(HybrisIcons.BS_LEVEL_MAPPING)
             .withCaseSensitivity(false), 1.0
     )
+
+    fun build(bean: Bean): LookupElement? {
+        val clazz = bean.clazz.stringValue ?: return null
+        val lookupElement = LookupElementBuilder.create(clazz)
+            .withPresentableText(clazz.substringAfterLast("."))
+            .withTailText(if (bean.abstract.value) " abstract" else null, true)
+            .withIcon(HybrisIcons.BS_BEAN)
+        return if (bean.abstract.value) {
+            PrioritizedLookupElement.withGrouping(
+                PrioritizedLookupElement.withPriority(lookupElement, 1.0),
+                1
+            )
+        } else {
+            PrioritizedLookupElement.withGrouping(
+                PrioritizedLookupElement.withPriority(lookupElement, 2.0),
+                2
+            )
+        }
+    }
 
 }

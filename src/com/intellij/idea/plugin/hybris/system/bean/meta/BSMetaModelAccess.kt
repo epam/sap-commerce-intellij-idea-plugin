@@ -42,5 +42,7 @@ interface BSMetaModelAccess {
     fun findMetaBeanByName(name: String?): BSGlobalMetaBean?
     fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean>
     fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>>
+    fun getAllBeans(): Collection<BSGlobalMetaBean>
+    fun getAllEnums(): Collection<BSGlobalMetaEnum>
     fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T>
 }

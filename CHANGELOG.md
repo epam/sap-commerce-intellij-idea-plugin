@@ -45,6 +45,7 @@
 
 ### `beans.xml` enhancements
 - Navigate to Enum and Bean generated file via inlay hint for `class` attribute [#597](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/597)
+- Added code completion of all available Beans for `class` attribute [#598](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/598)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)

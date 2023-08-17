@@ -227,7 +227,7 @@
         <!--                                                Bean System                                              -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileMetaData rootTagName="beans" stubVersion="7"
+        <dom.fileMetaData rootTagName="beans" stubVersion="8"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
         <codeInsight.lineMarkerProvider language="XML"

@@ -114,7 +114,13 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         throw ProcessCanceledException()
     }
 
-    override fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType) = getMetaModel().getMetaType<T>(metaType).values
+    override fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
+        getAll(BSMetaType.META_WS_BEAN) +
+        getAll(BSMetaType.META_EVENT)
+
+    override fun getAllEnums() = getAll<BSGlobalMetaEnum>(BSMetaType.META_ENUM)
+
+    override fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T> = getMetaModel().getMetaType<T>(metaType).values
 
     override fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
     override fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = BSMetaModelNameProvider.extract(dom)
