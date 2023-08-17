@@ -1,7 +1,8 @@
 ## [2023.2.6]
 
 ### `OCC` enhancements
-- Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)  
+- Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
+- Display a flatten type for an item in the code completion menu for Level Mapping tags [#592] (https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
 
 ### `Groovy Script` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
