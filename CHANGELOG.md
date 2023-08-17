@@ -44,7 +44,7 @@
 - Show connection URL in the tooltip for connection switcher [#588](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/588)
 
 ### `beans.xml` enhancements
-- Navigate to Enum and Bean generated file via inlay hint for `class` attribute [#593](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/593)
+- Navigate to Enum and Bean generated file via inlay hint for `class` attribute [#597](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/597)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)
