@@ -24,15 +24,10 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 
 object BSMetaHelper {
-    val flattenTypeRegex = Regex("""\w+\.""")
+    private val flattenTypeRegex = Regex("""\w+\.""")
 
-    fun flattenType(meta: BSMetaProperty) = meta.type
-        ?.replace(flattenTypeRegex, "")
-        ?.replace("&lt;", "<")
-        ?.replace("&gt;", ">")
-        ?.replace(" ", "")
-        ?.replace(",", ", ")
-
+    fun flattenType(meta: BSMetaProperty) = flattenType(meta.type)
+    fun flattenType(meta: BSMetaBean) = flattenType(meta.fullName)
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
@@ -68,7 +63,7 @@ object BSMetaHelper {
         return Collections.unmodifiableSet(tempParents)
     }
 
-    fun getEscapesName(name: String) = name
+    fun getEscapedName(name: String) = name
         .replace("<", "&lt;")
         .replace(">", "&gt;")
 
@@ -86,4 +81,11 @@ object BSMetaHelper {
     private fun getUnescapedName(name: String) = name
         .replace("&lt;", "<")
         .replace("&gt;", ">")
+
+    private fun flattenType(type: String?) = type
+        ?.replace(flattenTypeRegex, "")
+        ?.replace("&lt;", "<")
+        ?.replace("&gt;", ">")
+        ?.replace(" ", "")
+        ?.replace(",", ", ")
 }

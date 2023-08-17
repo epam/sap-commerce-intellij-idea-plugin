@@ -16,20 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion
+package com.intellij.idea.plugin.hybris.system.bean.psi.reference.result
 
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
-import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaBean
+import com.intellij.psi.PsiElement
+import com.intellij.psi.ResolveResult
 
-interface BSCompletionService {
+class BeanResolveResult(
+    val meta: BSMetaBean
+) : ResolveResult {
+    private val myDom = meta.retrieveDom()
 
-    fun getCompletions(meta: BSGlobalMetaBean): List<LookupElement>
+    override fun getElement(): PsiElement? = myDom
+        ?.clazz
+        ?.xmlAttributeValue
 
-    fun getCompletions(vararg types: BSMetaType): List<LookupElement>
-
-    companion object {
-        fun getInstance(project: Project): BSCompletionService = project.getService(BSCompletionService::class.java)
-    }
+    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
 }

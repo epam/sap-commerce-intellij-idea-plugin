@@ -79,6 +79,7 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSel
     override var isDeprecated = localMeta.isDeprecated
     override var isAbstract = localMeta.isAbstract
     override var isSuperEquals = localMeta.isSuperEquals
+    override var flattenType: String? = BSMetaHelper.flattenType(this)
 
     override val allProperties = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
     override val allExtends = LinkedHashSet<BSGlobalMetaBean>()

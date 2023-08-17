@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.bean.psi.reference
+package com.intellij.idea.plugin.hybris.system.bean.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.psi.PsiElement

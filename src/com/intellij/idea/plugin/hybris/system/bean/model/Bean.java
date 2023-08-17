@@ -63,7 +63,6 @@ public interface Bean extends DomElement, AbstractPojo {
      */
     @NotNull
     @Attribute(EXTENDS)
-    @Convert(BSBeanClassResolvingConverter.class)
     GenericAttributeValue<String> getExtends();
 
 

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.bean.meta.model
 
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.BeanType
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSTypedClassifier
 
 interface BSMetaBean : BSMetaClassifier<Bean> {
     val type: BeanType
@@ -41,7 +42,7 @@ interface BSMetaBean : BSMetaClassifier<Bean> {
 
 }
 
-interface BSGlobalMetaBean : BSMetaBean, BSGlobalMetaClassifier<Bean> {
+interface BSGlobalMetaBean : BSMetaBean, BSGlobalMetaClassifier<Bean>, TSTypedClassifier {
     override val declarations: MutableSet<BSMetaBean>
     val allProperties: Map<String, BSMetaProperty>
     val allExtends: Set<BSGlobalMetaBean>

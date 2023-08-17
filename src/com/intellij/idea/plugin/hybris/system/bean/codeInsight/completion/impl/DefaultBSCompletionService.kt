@@ -21,7 +21,10 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.project.Project
 
 class DefaultBSCompletionService(private val project: Project) : BSCompletionService {
@@ -33,6 +36,32 @@ class DefaultBSCompletionService(private val project: Project) : BSCompletionSer
         val levelMappings = HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
             .map { BSLookupElementFactory.buildLevelMapping(it) }
         return properties + levelMappings
+    }
+
+    override fun getCompletions(vararg types: BSMetaType) = with(BSMetaModelAccess.getInstance(project)) {
+        types
+            .map { metaType ->
+                when (metaType) {
+                    BSMetaType.META_ENUM -> this
+                        .getAll<BSGlobalMetaEnum>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it) }
+
+                    BSMetaType.META_BEAN -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
+
+                    BSMetaType.META_WS_BEAN -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
+
+                    BSMetaType.META_EVENT -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
+
+                    else -> emptyList()
+                }
+            }
+            .flatten()
     }
 
 }

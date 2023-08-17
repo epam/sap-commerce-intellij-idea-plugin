@@ -18,14 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.psi
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
 
 object BSPatterns {
 
-    private val beansXmlFile = XmlPatterns.xmlTag()
+    private val springBeansXmlFile = XmlPatterns.xmlTag()
         .withLocalName("beans")
         .withNamespace("http://www.springframework.org/schema/beans")
+
+    private val beansXmlFile = PlatformPatterns.psiFile()
+        .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING))
 
     val OCC_LEVEL_MAPPING_PROPERTY: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
         .withSuperParent(
@@ -42,6 +49,13 @@ object BSPatterns {
                                 .withAttributeValue("name", "dtoClass")
                         )
                 )
+        )
+        .inside(springBeansXmlFile)
+
+    val BEAN_EXTENDS: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Bean.EXTENDS)
+        .withParent(
+            XmlPatterns.xmlAttribute()
+                .withLocalName("extends")
         )
         .inside(beansXmlFile)
 }

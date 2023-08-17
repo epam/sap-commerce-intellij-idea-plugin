@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.bean.psi.contributor
 
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSPatterns
+import com.intellij.idea.plugin.hybris.system.bean.psi.provider.BeanExtendsReferenceProvider
 import com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
@@ -28,6 +29,10 @@ class BSReferenceContributor : PsiReferenceContributor() {
         registrar.registerReferenceProvider(
             BSPatterns.OCC_LEVEL_MAPPING_PROPERTY,
             OccBeanPropertyReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
+            BSPatterns.BEAN_EXTENDS,
+            BeanExtendsReferenceProvider.instance
         )
     }
 }

@@ -23,11 +23,42 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 
 object BSLookupElementFactory {
+
+    fun build(meta: BSGlobalMetaEnum) = meta.name
+        ?.let { LookupElementBuilder.create(it) }
+        ?.withPresentableText(BSMetaHelper.getShortName(meta.name) ?: "?")
+        ?.withTailText(if (meta.isDeprecated) " deprecated" else null)
+        ?.withTypeText(meta.name, true)
+        ?.withIcon(HybrisIcons.BS_ENUM)
+        ?.withCaseSensitivity(true)
+
+    fun build(meta: BSGlobalMetaBean, metaType: BSMetaType) = meta.fullName
+        ?.let { LookupElementBuilder.create(BSMetaHelper.getEscapedName(it)) }
+        ?.withPresentableText(meta.flattenType ?: "?")
+        ?.withTailText(
+            listOfNotNull(
+                if (meta.isAbstract) "abstract" else null,
+                if (meta.isDeprecated) "deprecated" else null
+            ).joinToString(",", " ")
+        )
+        ?.withTypeText(meta.name, true)
+        ?.withIcon(
+            when (metaType) {
+                BSMetaType.META_BEAN -> HybrisIcons.BS_BEAN
+                BSMetaType.META_WS_BEAN -> HybrisIcons.BS_WS_BEAN
+                BSMetaType.META_EVENT -> HybrisIcons.BS_EVENT_BEAN
+                else -> HybrisIcons.BS_BEAN
+            }
+        )
+        ?.withCaseSensitivity(true)
 
     fun build(meta: BSMetaProperty) = meta.name
         ?.let { LookupElementBuilder.create(it) }
@@ -48,7 +79,7 @@ object BSLookupElementFactory {
             if (bean.abstract.value) "abstract" else null,
             if (bean.deprecated.value) "deprecated" else null
         ).joinToString(",", " ")
-        val lookupElement = LookupElementBuilder.create(BSMetaHelper.getEscapesName(clazz))
+        val lookupElement = LookupElementBuilder.create(BSMetaHelper.getEscapedName(clazz))
             .withPresentableText(clazz.substringAfterLast("."))
             .withTailText(tail, true)
             .withTypeText(clazz, true)

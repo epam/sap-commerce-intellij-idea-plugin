@@ -262,6 +262,7 @@
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BeanExtendsReferenceProvider"/>
     </extensions>
 
     <actions>

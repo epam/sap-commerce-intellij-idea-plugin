@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.bean.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.openapi.util.TextRange
@@ -54,6 +55,7 @@ class OccLevelMappingReference(
             ?.mapNotNull { it.valueElement }
             ?.filter { it.value == levelMapping }
             ?.let { PsiElementResolveResult.createResults(it) }
+            ?.let { PsiUtils.getValidResults(it) }
             ?: emptyArray()
     }
 }
