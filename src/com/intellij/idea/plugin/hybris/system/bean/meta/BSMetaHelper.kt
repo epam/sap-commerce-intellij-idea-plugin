@@ -24,14 +24,15 @@ import com.intellij.util.xml.DomElement
 import java.util.*
 
 object BSMetaHelper {
+    val flattenTypeRegex = Regex("""\w+\.""")
 
     fun flattenType(meta: BSMetaProperty) = meta.type
+        ?.replace(flattenTypeRegex, "")
         ?.replace("&lt;", "<")
         ?.replace("&gt;", ">")
-        ?.reversed()
-        ?.asSequence()
-        ?.fold(ClassFlattenNameAccumulator()) { acc, el -> acc.accumulate(el) }
-        ?.toString()
+        ?.replace(" ", "")
+        ?.replace(",", ", ")
+
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
@@ -81,27 +82,4 @@ object BSMetaHelper {
     private fun getUnescapedName(name: String) = name
         .replace("&lt;", "<")
         .replace("&gt;", ">")
-}
-
-internal class ClassFlattenNameAccumulator {
-
-    var ignoreMode = false
-    val accumulator = StringBuilder()
-    fun accumulate(c: Char): ClassFlattenNameAccumulator {
-        if (c == ' ' || c == '\n' || c == '.') {
-            ignoreMode = true;
-        } else if (c == ',' || c == '<') {
-            ignoreMode = false;
-            accumulator.insert(0, c)
-        } else {
-            if (!ignoreMode) {
-                accumulator.insert(0, c)
-            }
-        }
-        return this
-    }
-
-    override fun toString(): String {
-        return accumulator.toString()
-    }
 }
