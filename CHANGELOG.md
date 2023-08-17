@@ -54,6 +54,7 @@
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)
 - Unescaped `<` sign usage is not allowed in the Bean property **type** [#594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/594)
 - Escape `>` sign in the Bean property **type** [#595](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/595)
+- Escape `>` and `<` sign in the Bean attribute **class** [#604](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/604)
 - Common `java.lang` package can be omitted in the Bean property **type** [#596](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/596)
 - Validate DOM structure and references [#601](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/601)
 

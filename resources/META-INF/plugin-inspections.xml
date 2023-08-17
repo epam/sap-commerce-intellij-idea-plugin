@@ -173,6 +173,10 @@
                          shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.key"
+                         shortName="BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
                          shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSOmitJavaLangPackageInBeanPropertyType"/>
