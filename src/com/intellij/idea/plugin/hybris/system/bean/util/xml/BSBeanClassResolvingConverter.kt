@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.bean.util.xml
 
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.util.xml.ConvertContext
@@ -28,10 +29,11 @@ class BSBeanClassResolvingConverter : ResolvingConverter<Bean>() {
 
     override fun toString(element: Bean?, context: ConvertContext?) = element?.clazz?.stringValue
 
-    override fun fromString(name: String?, context: ConvertContext?) = context
-        ?.project
-        ?.let { BSMetaModelAccess.getInstance(it).findMetaBeanByName(name) }
-        ?.retrieveDom()
+    override fun fromString(name: String?, context: ConvertContext?): Bean? {
+        if (context == null || name == null) return null
+        return BSMetaModelAccess.getInstance(context.project).findMetaBeanByName(BSMetaHelper.getBeanName(name))
+            ?.retrieveDom()
+    }
 
     override fun getVariants(context: ConvertContext?) = context
         ?.project

@@ -68,6 +68,10 @@ object BSMetaHelper {
         return Collections.unmodifiableSet(tempParents)
     }
 
+    fun getEscapesName(name: String) = name
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+
     private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): BSGlobalMetaBean? {
         val extendsName = meta.extends
             // prevent deadlock when type extends itself

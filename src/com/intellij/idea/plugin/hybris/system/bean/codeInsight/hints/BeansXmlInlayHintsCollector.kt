@@ -40,6 +40,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.OpenSourceUtil
+import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 import java.awt.Cursor
 import javax.swing.Icon
 
@@ -62,6 +63,13 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         if (element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN) return true
         val parent = element.parentOfType<XmlTag>() ?: return true
         val attribute = element.parentOfType<XmlAttribute>()?.name ?: return true
+
+        val previousSibling = element.getPrevSiblingIgnoringWhitespaceAndComments()
+            ?.text
+            ?: ""
+        if (previousSibling == HybrisConstants.BS_SIGN_LESS_THAN || previousSibling == HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED) {
+            return true;
+        }
 
         retrievePresentation(parent, attribute, project, element)
             ?.let {

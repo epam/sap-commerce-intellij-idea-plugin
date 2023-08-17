@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
@@ -47,7 +48,7 @@ object BSLookupElementFactory {
             if (bean.abstract.value) "abstract" else null,
             if (bean.deprecated.value) "deprecated" else null
         ).joinToString(",", " ")
-        val lookupElement = LookupElementBuilder.create(clazz)
+        val lookupElement = LookupElementBuilder.create(BSMetaHelper.getEscapesName(clazz))
             .withPresentableText(clazz.substringAfterLast("."))
             .withTailText(tail, true)
             .withTypeText(clazz, true)
