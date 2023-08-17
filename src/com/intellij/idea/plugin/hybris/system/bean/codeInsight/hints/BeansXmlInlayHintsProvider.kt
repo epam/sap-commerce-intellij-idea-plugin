@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.codeInsight.hints
+package com.intellij.idea.plugin.hybris.system.bean.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -23,10 +23,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import javax.swing.JPanel
 
-class ItemsXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
+class BeansXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
-    override val key: SettingsKey<NoSettings> = SettingsKey("ItemsXml")
-    override val name: String = "items.xml"
+    override val key: SettingsKey<NoSettings> = SettingsKey("HybrisBeansXml")
+    override val name: String = "beans.xml"
     override val group = InlayGroup.TYPES_GROUP
     override val previewText: String? = null
     override val isVisibleInSettings: Boolean = false
@@ -41,6 +41,6 @@ class ItemsXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(
         file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink
-    ) = if (file.name.endsWith(name) && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) ItemsXmlInlayHintsCollector(editor)
+    ) = if (file.name.endsWith(name) && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) BeansXmlInlayHintsCollector(editor)
     else null
 }
