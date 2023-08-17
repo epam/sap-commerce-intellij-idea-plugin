@@ -20,26 +20,26 @@ package com.intellij.idea.plugin.hybris.system.bean.util.xml
 
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 
-class BSBeanClassResolvingConverter : ResolvingConverter<Bean>() {
+class BSEnumClassResolvingConverter : ResolvingConverter<Enum>() {
 
-    override fun toString(element: Bean?, context: ConvertContext?) = element?.clazz?.stringValue
+    override fun toString(element: Enum?, context: ConvertContext?) = element?.clazz?.stringValue
 
     override fun fromString(name: String?, context: ConvertContext?) = context
         ?.project
-        ?.let { BSMetaModelAccess.getInstance(it).findMetaBeanByName(name) }
+        ?.let { BSMetaModelAccess.getInstance(it).findMetaEnumByName(name) }
         ?.retrieveDom()
 
     override fun getVariants(context: ConvertContext?) = context
         ?.project
-        ?.let { BSMetaModelAccess.getInstance(it).getAllBeans() }
+        ?.let { BSMetaModelAccess.getInstance(it).getAllEnums() }
         ?.mapNotNull { it.retrieveDom() }
         ?.toMutableList()
         ?: mutableListOf()
 
-    override fun createLookupElement(element: Bean?) = element
+    override fun createLookupElement(element: Enum?) = element
         ?.let { BSLookupElementFactory.build(it) }
 }

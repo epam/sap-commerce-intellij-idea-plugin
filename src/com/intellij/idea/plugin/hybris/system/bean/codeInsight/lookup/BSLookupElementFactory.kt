@@ -24,6 +24,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 
 object BSLookupElementFactory {
 
@@ -42,11 +43,36 @@ object BSLookupElementFactory {
 
     fun build(bean: Bean): LookupElement? {
         val clazz = bean.clazz.stringValue ?: return null
+        val tail = listOfNotNull(
+            if (bean.abstract.value) "abstract" else null,
+            if (bean.deprecated.value) "deprecated" else null
+        ).joinToString(",", " ")
         val lookupElement = LookupElementBuilder.create(clazz)
             .withPresentableText(clazz.substringAfterLast("."))
-            .withTailText(if (bean.abstract.value) " abstract" else null, true)
+            .withTailText(tail, true)
+            .withTypeText(clazz, true)
             .withIcon(HybrisIcons.BS_BEAN)
         return if (bean.abstract.value) {
+            PrioritizedLookupElement.withGrouping(
+                PrioritizedLookupElement.withPriority(lookupElement, 1.0),
+                1
+            )
+        } else {
+            PrioritizedLookupElement.withGrouping(
+                PrioritizedLookupElement.withPriority(lookupElement, 2.0),
+                2
+            )
+        }
+    }
+
+    fun build(enum: Enum): LookupElement? {
+        val clazz = enum.clazz.stringValue ?: return null
+        val lookupElement = LookupElementBuilder.create(clazz)
+            .withPresentableText(clazz.substringAfterLast("."))
+            .withTailText(if (enum.deprecated.value) " deprecated" else null, true)
+            .withTypeText(clazz, true)
+            .withIcon(HybrisIcons.BS_ENUM)
+        return if (enum.deprecated.value) {
             PrioritizedLookupElement.withGrouping(
                 PrioritizedLookupElement.withPriority(lookupElement, 1.0),
                 1

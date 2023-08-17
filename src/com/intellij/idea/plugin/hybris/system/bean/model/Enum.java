@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.model;
 
+import com.intellij.idea.plugin.hybris.system.bean.util.xml.BSEnumClassResolvingConverter;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,7 @@ public interface Enum extends DomElement, AbstractPojo {
     @Required
     @Stubbed
     @NameValue
+    @Convert(BSEnumClassResolvingConverter.class)
     GenericAttributeValue<String> getClazz();
 
     /**
