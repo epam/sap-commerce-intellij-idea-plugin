@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class BSKeywordBeanPropertyDefinition : AbstractBSInspection() {
+class BSKeywordIsNotAllowedAsBeanPropertyName : AbstractBSInspection() {
 
     private val javaKeywords = hashSetOf(
         "abstract",
@@ -112,22 +112,22 @@ class BSKeywordBeanPropertyDefinition : AbstractBSInspection() {
     ) {
         dom.beans
             .flatMap { it.properties }
-            .forEach { inspect(it, holder, severity, project) }
+            .map { it.name }
+            .forEach { inspect(it, holder, severity) }
     }
 
     private fun inspect(
-        dom: Property,
+        dom: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity,
-        project: Project
+        severity: HighlightSeverity
     ) {
-        val propertyName = dom.name.xmlAttributeValue?.value ?: return
+        val propertyName = dom.xmlAttributeValue?.value ?: return
 
         if (javaKeywords.contains(propertyName)) {
             holder.createProblem(
-                dom.name,
+                dom,
                 severity,
-                HybrisI18NBundleUtils.message("hybris.inspections.bs.BSKeywordBeanPropertyDefinition.message", propertyName),
+                HybrisI18NBundleUtils.message("hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.message", propertyName),
                 XmlDeleteTagQuickFix()
             )
         }

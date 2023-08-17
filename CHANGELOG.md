@@ -51,6 +51,7 @@
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean Property name [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)
+- Unescaped `<` sign usage is not allowed in Bean property type [#594](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/594)
 
 ### Fixes
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)

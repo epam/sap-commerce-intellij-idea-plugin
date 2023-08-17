@@ -210,6 +210,10 @@ object HybrisConstants {
     const val ANT_STACK_SIZE_MB = 128
 
     const val BS_TYPE_OBJECT = "java.lang.Object"
+    const val BS_SIGN_LESS_THAN = "<"
+    const val BS_SIGN_GREATER_THAN = ">"
+    const val BS_SIGN_LESS_THAN_ESCAPED = "&lt;"
+    const val BS_SIGN_GREATER_THAN_ESCAPED = "&gt;"
 
     const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"

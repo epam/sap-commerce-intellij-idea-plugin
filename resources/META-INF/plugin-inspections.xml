@@ -153,13 +153,17 @@
                          shortName="DuplicateBeanPropertyDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanPropertyDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordBeanPropertyDefinition.key"
-                         shortName="BSKeywordBeanPropertyDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordBeanPropertyDefinition"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
                          shortName="DuplicateEnumValueDefinition" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumValueDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.key"
+                         shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordIsNotAllowedAsBeanPropertyName"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSLessThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSLessThanSignIsNotAllowedInBeanPropertyType"/>
 
         <!-- Type System  -->
         <!-- Weak Warnings -->
