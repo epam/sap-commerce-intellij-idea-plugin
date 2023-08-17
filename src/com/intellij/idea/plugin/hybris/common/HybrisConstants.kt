@@ -209,11 +209,14 @@ object HybrisConstants {
     const val ANT_HEAP_SIZE_MB = 512
     const val ANT_STACK_SIZE_MB = 128
 
+    private const val JAVA_LANG_PREFIX = "java.lang."
+
     const val BS_TYPE_OBJECT = "java.lang.Object"
     const val BS_SIGN_LESS_THAN = "<"
     const val BS_SIGN_GREATER_THAN = ">"
     const val BS_SIGN_LESS_THAN_ESCAPED = "&lt;"
     const val BS_SIGN_GREATER_THAN_ESCAPED = "&gt;"
+    const val BS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX
 
     const val TS_MAX_RECURSION_LEVEL = 2
     const val TS_TYPE_OBJECT = "java.lang.Object"
@@ -229,7 +232,7 @@ object HybrisConstants {
     const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
-    const val TS_JAVA_LANG_PREFIX = "java.lang."
+    const val TS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
