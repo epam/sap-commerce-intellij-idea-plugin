@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,7 +35,8 @@ object CngPsiHelper {
     fun resolveContextTypeForNewItemInWizardFlow(element: PsiElement): String? {
         val newItemName = element.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "property-list" }
-            ?.getAttributeValue("root") ?: return null
+            ?.getAttributeValue("root")
+            ?: return resolveContextType(element)
         val newItemType = element.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "flow" }
             ?.childrenOfType<XmlTag>()
@@ -43,7 +44,7 @@ object CngPsiHelper {
             ?.childrenOfType<XmlTag>()
             ?.find { it.localName == "initialize" && it.getAttributeValue("property") == newItemName }
             ?.getAttributeValue("type")
-            ?: return null
+            ?: return resolveContextType(element)
 
         return if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) resolveContextType(element)
         else newItemType
