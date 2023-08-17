@@ -28,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class BSLessThanSignIsNotAllowedInBeanPropertyType : AbstractBSInspection() {
+class BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType : AbstractBSInspection() {
 
     override fun inspect(
         project: Project,
@@ -50,13 +50,13 @@ class BSLessThanSignIsNotAllowedInBeanPropertyType : AbstractBSInspection() {
         val propertyName = dom.name.xmlAttributeValue?.value ?: return
         val propertyType = dom.type.xmlAttributeValue
             ?.value
-            ?.takeIf { it.contains(HybrisConstants.BS_SIGN_LESS_THAN) }
+            ?.takeIf { it.contains(HybrisConstants.BS_SIGN_GREATER_THAN) }
             ?: return
 
         holder.createProblem(
             dom.type,
             severity,
-            HybrisI18NBundleUtils.message("hybris.inspections.bs.BSLessThanSignIsNotAllowedInBeanPropertyType.message", propertyName),
+            HybrisI18NBundleUtils.message("hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.message", propertyName),
             XmlUpdateAttributeQuickFix(
                 Property.TYPE,
                 propertyType

@@ -161,9 +161,13 @@
                          shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordIsNotAllowedAsBeanPropertyName"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSLessThanSignIsNotAllowedInBeanPropertyType.key"
-                         shortName="BSLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSLessThanSignIsNotAllowedInBeanPropertyType"/>
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
 
         <!-- Type System  -->
         <!-- Weak Warnings -->
