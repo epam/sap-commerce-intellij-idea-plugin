@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.ASTNode
@@ -64,6 +65,7 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             Bean.PROPERTY -> psi.getAttributeValue(Property.NAME) + " : " +
                 (BSMetaHelper.flattenType(psi.getAttributeValue(Property.TYPE)) ?: "?")
 
+            Enum.VALUE -> psi.value.trimmedText
             else -> FALLBACK_PLACEHOLDER
         }
 
@@ -72,7 +74,8 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            Bean.PROPERTY -> true
+            Bean.PROPERTY,
+            Enum.VALUE -> true
 
             else -> false
         }

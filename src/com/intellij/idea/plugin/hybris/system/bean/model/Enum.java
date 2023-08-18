@@ -38,6 +38,8 @@ public interface Enum extends DomElement, AbstractPojo {
     String DEPRECATED = "deprecated";
     String DEPRECATED_SINCE = "deprecatedSince";
 
+    String VALUE = "value";
+
     /**
      * Returns the value of the class child.
      *

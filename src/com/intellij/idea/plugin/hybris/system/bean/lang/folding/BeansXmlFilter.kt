@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.bean.lang.folding
 
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
@@ -26,7 +27,9 @@ import com.intellij.psi.xml.XmlTag
 class BeansXmlFilter : PsiElementFilter {
     override fun isAccepted(element: PsiElement) = when (element) {
         is XmlTag -> when (element.localName) {
-            Bean.PROPERTY -> true
+            Bean.PROPERTY,
+            Enum.VALUE -> true
+
             else -> false
         }
 
