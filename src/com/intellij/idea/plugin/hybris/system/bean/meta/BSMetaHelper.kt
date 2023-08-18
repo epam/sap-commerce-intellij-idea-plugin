@@ -82,7 +82,7 @@ object BSMetaHelper {
         .replace("&lt;", "<")
         .replace("&gt;", ">")
 
-    private fun flattenType(type: String?) = type
+    fun flattenType(type: String?) = type
         ?.replace(flattenTypeRegex, "")
         ?.replace("&lt;", "<")
         ?.replace("&gt;", ">")

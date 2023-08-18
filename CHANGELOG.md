@@ -51,6 +51,7 @@
 - Added reference resolution and advanced code completion for Bean `extends` attribute [#603](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/603)
 - Added advanced code completion for Bean `type` property attribute [#605](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/605)
 - Added reference resolution for Bean `type` property attribute [#606](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/606)
+- Added folding for bean properties [#607] (https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/607)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)

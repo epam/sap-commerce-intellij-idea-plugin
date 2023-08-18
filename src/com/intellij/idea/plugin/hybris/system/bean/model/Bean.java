@@ -41,6 +41,7 @@ public interface Bean extends DomElement, AbstractPojo {
     String DEPRECATED = "deprecated";
     String TYPE = "type";
     String EXTENDS = "extends";
+    String PROPERTY = "property";
 
     /**
      * Returns the value of the class child.
