@@ -228,7 +228,7 @@
         <!--                                                Bean System                                              -->
         <!-- ####################################################################################################### -->
 
-        <dom.fileMetaData rootTagName="beans" stubVersion="8"
+        <dom.fileMetaData rootTagName="beans" stubVersion="9"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
         <completion.contributor language="XML"

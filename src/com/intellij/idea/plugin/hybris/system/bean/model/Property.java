@@ -30,6 +30,8 @@ import java.util.List;
 /**
  * null:property interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface Property extends DomElement {
 
     String NAME = "name";
@@ -45,6 +47,8 @@ public interface Property extends DomElement {
     @NotNull
     @Required
     @Attribute(NAME)
+    @Stubbed
+    @NameValue
     //NOTE: We have to avoid @Convert since PsiField is in the read-only file and thus can't be renamed by platform
     //NOTE: Instead we are renaming the attribute value itself, see BeansRenamePsiElementProcessor
     //@Convert(soft = true, value = BeansPropertyNameConverter.class)
