@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
-import com.intellij.idea.plugin.hybris.system.bean.psi.reference.result.BeanResolveResult
+import com.intellij.idea.plugin.hybris.system.bean.psi.reference.result.EnumResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -32,13 +32,13 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class BSBeanReference(
+class BSEnumReference(
     element: PsiElement,
     range: TextRange
-) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
+) : PsiReferenceBase.Poly<PsiElement>(element, range, true), PsiPolyVariantReference, HighlightedReference {
 
     override fun getVariants() = BSCompletionService.getInstance(element.project)
-        .getCompletions(BSMetaType.META_BEAN, BSMetaType.META_WS_BEAN, BSMetaType.META_EVENT)
+        .getCompletions(BSMetaType.META_ENUM)
         .toTypedArray()
 
     override fun multiResolve(p0: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
@@ -46,13 +46,13 @@ class BSBeanReference(
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        fun cacheKey(postfix: String) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, BSBeanReference>>("HYBRIS_BS_CACHED_REFERENCE_" + postfix)
+        fun cacheKey(postfix: String) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, BSEnumReference>>("HYBRIS_BS_CACHED_REFERENCE_" + postfix)
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSBeanReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSEnumReference> { ref ->
             val metaModelAccess = BSMetaModelAccess.getInstance(ref.element.project)
             val classFQN = ref.value
-            val result: Array<ResolveResult> = metaModelAccess.findMetaBeanByName(classFQN)
-                ?.let { BeanResolveResult(it) }
+            val result: Array<ResolveResult> = metaModelAccess.findMetaEnumByName(classFQN)
+                ?.let { EnumResolveResult(it) }
                 ?.let { arrayOf(it) }
                 ?: emptyArray()
 

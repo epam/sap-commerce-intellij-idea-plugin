@@ -18,7 +18,10 @@
 package com.intellij.idea.plugin.hybris.system.bean.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSBeanReference
+import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSEnumReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -27,7 +30,7 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
-class BeanExtendsReferenceProvider : PsiReferenceProvider() {
+class BSBeanExtendsReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
@@ -39,11 +42,17 @@ class BeanExtendsReferenceProvider : PsiReferenceProvider() {
             .replace(HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED, "    ")
             .replace(HybrisConstants.BS_SIGN_GREATER_THAN, " ")
 
+        val metaModelAccess = BSMetaModelAccess.getInstance(element.project)
+
         return process(text)
-            .map {
+            .filter { metaModelAccess.findMetasByName(it.value).isNotEmpty() }
+            .mapNotNull {
+                val meta = metaModelAccess.findMetasByName(it.value).firstOrNull() ?: return@mapNotNull null
+
                 val textRange = TextRange.from(it.key, it.value.length)
 
-                return@map BSBeanReference(element, textRange)
+                return@mapNotNull if (meta is BSMetaEnum) BSEnumReference(element, textRange)
+                else BSBeanReference(element, textRange)
             }
             .toTypedArray()
     }
@@ -73,6 +82,6 @@ class BeanExtendsReferenceProvider : PsiReferenceProvider() {
     }
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(BeanExtendsReferenceProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(BSBeanExtendsReferenceProvider::class.java)
     }
 }

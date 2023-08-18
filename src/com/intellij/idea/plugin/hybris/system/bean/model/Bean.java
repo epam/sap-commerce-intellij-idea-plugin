@@ -21,7 +21,6 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.model;
 
-import com.intellij.idea.plugin.hybris.system.bean.util.xml.BSBeanClassResolvingConverter;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +52,6 @@ public interface Bean extends DomElement, AbstractPojo {
     @Required
     @Stubbed
     @NameValue
-    @Convert(BSBeanClassResolvingConverter.class)
     GenericAttributeValue<String> getClazz();
 
     /**

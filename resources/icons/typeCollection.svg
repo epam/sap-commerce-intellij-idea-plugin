@@ -1,0 +1,45 @@
+<!--
+  - This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  - Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Lesser General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  - See the GNU Lesser General Public License for more details.
+  -
+  - You should have received a copy of the GNU Lesser General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            .base{
+            stroke-width:1.95;
+            stroke-linecap:butt;
+            stroke-linejoin:miter;
+            stroke-miterlimit:10;
+            fill:none;
+            }
+            .st1{
+            stroke-width:1.0;
+            stroke:#389FD6;
+            }
+            .y{
+            stroke: #6E6E6E;
+            }
+        </style>
+    </defs>
+    <path class="base y"
+          d="M 8.757 22.518 L 3.336 22.518 C 2.229 22.518 1.668 21.534 1.668 20.433 L 1.668 3.753 C 1.6909999999999998 2.669 2.252 1.668 3.336 1.668 L 20.433 1.668 C 21.54 1.668 22.518 2.652 22.518 3.753 L 22.518 20.85 C 22.518 21.951 21.54 22.518 20.433 22.518 L 8.757 22.518 Z"
+          transform="matrix(0.6666669845581055, 0, 0, 0.6666669845581055, 0, 8.881784197001252e-16)" style=""/>
+    <path class="base st1" d="M 6.394 3.892 L 3.892 3.892 L 3.892 12.232 L 6.394 12.232" style=""
+          transform="matrix(1, 0, 0, 1, 0, 8.881784197001252e-16)"/>
+    <path class="base st1" d="M 9.73 3.892 L 12.232 3.892 L 12.232 12.232 L 9.73 12.232" style=""
+          transform="matrix(1, 0, 0, 1, 0, 8.881784197001252e-16)"/>
+</svg>

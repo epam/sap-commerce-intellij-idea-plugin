@@ -49,6 +49,7 @@
 - Added code completion of all available Beans for `extends` attribute [#600](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/600)
 - Added code completion of all available Enums for `class` attribute [#599](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/599)
 - Added reference resolution and advanced code completion for Bean `extends` attribute [#603](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/603)
+- Added advanced code completion for Bean `type` property attribute [#604](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/604)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)

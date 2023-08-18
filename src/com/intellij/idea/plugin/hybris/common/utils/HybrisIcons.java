@@ -98,6 +98,12 @@ public final class HybrisIcons {
 
     public static final Icon INTERCEPTOR = getIcon("/icons/interceptor.svg");
 
+    public static final Icon TYPE_PRIMITIVE = getIcon("/icons/typePrimitive.svg");
+    public static final Icon TYPE_BOXED = getIcon("/icons/typeBoxed.svg");
+    public static final Icon TYPE_OBJECT = getIcon("/icons/typeObject.svg");
+    public static final Icon TYPE_COLLECTION = getIcon("/icons/typeCollection.svg");
+    public static final Icon TYPE_MAP = getIcon("/icons/typeMap.svg");
+
     public static final Icon TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg");
     public static final Icon TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg");
     public static final Icon TS_GROUP_COLLECTION = getIcon("/icons/typeSystem/groupByCollection.svg");

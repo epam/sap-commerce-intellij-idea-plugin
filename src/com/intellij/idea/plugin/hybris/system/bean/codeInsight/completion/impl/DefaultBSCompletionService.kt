@@ -57,8 +57,6 @@ class DefaultBSCompletionService(private val project: Project) : BSCompletionSer
                     BSMetaType.META_EVENT -> this
                         .getAll<BSGlobalMetaBean>(metaType)
                         .mapNotNull { BSLookupElementFactory.build(it, metaType) }
-
-                    else -> emptyList()
                 }
             }
             .flatten()

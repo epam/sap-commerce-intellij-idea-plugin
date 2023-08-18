@@ -230,6 +230,9 @@
         <dom.fileMetaData rootTagName="beans" stubVersion="8"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
+        <completion.contributor language="XML"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
+
         <codeInsight.lineMarkerProvider language="XML"
                                         implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML"
@@ -262,7 +265,11 @@
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BeanExtendsReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BSBeanExtendsReferenceProvider"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider"/>
     </extensions>
 
     <actions>
