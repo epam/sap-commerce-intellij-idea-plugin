@@ -58,8 +58,6 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             .toDistinctTypedArray()
     }
 
-    // property : Type
-    // name       type
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             Bean.PROPERTY -> psi.getAttributeValue(Property.NAME) + " : " +
