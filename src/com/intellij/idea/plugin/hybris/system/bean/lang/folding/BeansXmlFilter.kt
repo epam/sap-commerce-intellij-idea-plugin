@@ -18,17 +18,31 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.lang.folding
 
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlToken
 
 class BeansXmlFilter : PsiElementFilter {
     override fun isAccepted(element: PsiElement) = when (element) {
         is XmlTag -> when (element.localName) {
             Bean.PROPERTY,
-            Enum.VALUE -> true
+            Enum.VALUE,
+            Beans.BEAN,
+            Beans.ENUM,
+            AbstractPojo.DESCRIPTION,
+            Hints.HINT,
+            Bean.HINTS -> true
+
+            else -> false
+        }
+
+        is XmlToken -> when (element.text) {
+            HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED,
+            HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> true
 
             else -> false
         }

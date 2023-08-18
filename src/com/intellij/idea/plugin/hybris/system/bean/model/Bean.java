@@ -34,14 +34,12 @@ import java.util.List;
 @StubbedOccurrence
 public interface Bean extends DomElement, AbstractPojo {
 
-    String CLASS = "class";
     String SUPER_EQUALS = "superEquals";
     String ABSTRACT = "abstract";
-    String DEPRECATED_SINCE = "deprecatedSince";
-    String DEPRECATED = "deprecated";
     String TYPE = "type";
     String EXTENDS = "extends";
     String PROPERTY = "property";
+    String HINTS = "hints";
 
     /**
      * Returns the value of the class child.
@@ -117,7 +115,7 @@ public interface Bean extends DomElement, AbstractPojo {
     FalseAttributeValue getSuperEquals();
 
     @NotNull
-    @SubTag("hints")
+    @SubTag(HINTS)
     Hints getHints();
 
     /**

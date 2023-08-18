@@ -29,11 +29,13 @@ import java.util.List;
 
 public interface Hints extends DomElement {
 
+    String HINT = "hint";
+
     @NotNull
-    @SubTagList("hint")
+    @SubTagList(HINT)
     List<Hint> getHints();
 
-    @SubTagList("hint")
+    @SubTagList(HINT)
     Hint addHint();
 
 }

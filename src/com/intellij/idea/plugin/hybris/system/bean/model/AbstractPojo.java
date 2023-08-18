@@ -29,7 +29,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface AbstractPojo extends DomElement {
 
+    String CLASS = "class";
+    String DEPRECATED = "deprecated";
+    String DEPRECATED_SINCE = "deprecatedSince";
     String TEMPLATE = "template";
+    String DESCRIPTION = "description";
 
     /**
      * Returns the value of the template child.

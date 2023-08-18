@@ -34,10 +34,6 @@ import java.util.List;
 @StubbedOccurrence
 public interface Enum extends DomElement, AbstractPojo {
 
-    String CLASS = "class";
-    String DEPRECATED = "deprecated";
-    String DEPRECATED_SINCE = "deprecatedSince";
-
     String VALUE = "value";
 
     /**

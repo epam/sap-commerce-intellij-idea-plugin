@@ -21,11 +21,8 @@ import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean
-import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.bean.model.Property
-import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -37,9 +34,14 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlToken
 import com.intellij.util.xml.DomManager
 
 class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
+
+    private val foldHints = "[hints]"
+    private val foldEnum = "[enum] "
+    private val foldAbstract = "[abstract] "
 
     private val filter = BeansXmlFilter()
 
@@ -64,7 +66,39 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 (BSMetaHelper.flattenType(psi.getAttributeValue(Property.TYPE)) ?: "?")
 
             Enum.VALUE -> psi.value.trimmedText
+            AbstractPojo.DESCRIPTION -> "-- ${psi.value.trimmedText} --"
+
+            Beans.BEAN -> (psi.getAttributeValue(Bean.ABSTRACT)
+                ?.takeIf { "true".equals(it, true) }
+                ?.let { foldAbstract }
+                ?: "") +
+                BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS)) +
+                (BSMetaHelper.flattenType(psi.getAttributeValue(Bean.EXTENDS))
+                    ?.let { " : $it" }
+                    ?: "")
+
+            Beans.ENUM -> foldEnum + BSMetaHelper.flattenType(psi.getAttributeValue(AbstractPojo.CLASS))
+
+            Hints.HINT -> psi.getAttributeValue(Hint.NAME) +
+                (psi.value.trimmedText
+                    .takeIf { it.isNotBlank() }
+                    ?.let { " : $it" } ?: "")
+
+            Bean.HINTS -> psi.subTags
+                .map { it.getAttributeValue(Hint.NAME) }
+                .joinToString()
+                .takeIf { it.isNotBlank() }
+                ?.let { "$foldHints : $it" }
+                ?: foldHints
+
             else -> FALLBACK_PLACEHOLDER
+        }
+
+        is XmlToken -> when (val text = psi.text) {
+            HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED -> HybrisConstants.BS_SIGN_LESS_THAN
+            HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> HybrisConstants.BS_SIGN_GREATER_THAN
+
+            else -> text
         }
 
         else -> FALLBACK_PLACEHOLDER
@@ -73,7 +107,17 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             Bean.PROPERTY,
-            Enum.VALUE -> true
+            Enum.VALUE,
+            AbstractPojo.DESCRIPTION,
+            Hints.HINT,
+            Bean.HINTS -> true
+
+            else -> false
+        }
+
+        is XmlToken -> when (psi.text) {
+            HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED,
+            HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED -> true
 
             else -> false
         }

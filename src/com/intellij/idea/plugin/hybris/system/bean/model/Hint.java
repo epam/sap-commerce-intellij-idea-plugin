@@ -12,8 +12,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Hint extends DomElement, MutableGenericValue<String> {
 
+    String NAME = "name";
+
     @NotNull
-    @Attribute("name")
+    @Attribute(NAME)
     @Required
     GenericAttributeValue<String> getName();
 

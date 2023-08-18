@@ -17,6 +17,9 @@ import java.util.List;
 @StubbedOccurrence
 public interface Beans extends DomElement {
 
+    String BEAN = "bean";
+    String ENUM = "enum";
+
     /**
      * Returns the list of bean children.
      *
