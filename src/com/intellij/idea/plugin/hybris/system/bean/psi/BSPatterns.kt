@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.bean.psi
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
@@ -65,6 +66,14 @@ object BSPatterns {
             2,
             XmlPatterns.xmlTag()
                 .withLocalName("bean")
+        )
+        .inside(beansXmlFile)
+
+    val ENUM_CLASS: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Enum.CLASS)
+        .withSuperParent(
+            2,
+            XmlPatterns.xmlTag()
+                .withLocalName("enum")
         )
         .inside(beansXmlFile)
 
