@@ -56,8 +56,8 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
     }
 
     companion object {
-        val objects = setOf("String", "Object")
-        val boxed = setOf("Boolean", "Short", "Integer", "Double", "Float", "Number", "Byte", "Character")
+        val objects = setOf("String", "Number", "Object")
+        val boxed = setOf("Boolean", "Short", "Integer", "Double", "Float", "Byte", "Character")
         val primitives = setOf("boolean", "int", "long", "float", "double", "char", "short", "byte")
         val maps = setOf("java.util.Map", "java.util.SortedMap")
         val collections = setOf("java.util.Collection", "java.util.Set", "java.util.List", "java.util.Enumeration")

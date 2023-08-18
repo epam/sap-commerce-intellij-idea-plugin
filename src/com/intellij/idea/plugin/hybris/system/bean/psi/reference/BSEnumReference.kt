@@ -35,7 +35,7 @@ import com.intellij.psi.util.*
 class BSEnumReference(
     element: PsiElement,
     range: TextRange
-) : PsiReferenceBase.Poly<PsiElement>(element, range, true), PsiPolyVariantReference, HighlightedReference {
+) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
 
     override fun getVariants() = BSCompletionService.getInstance(element.project)
         .getCompletions(BSMetaType.META_ENUM)

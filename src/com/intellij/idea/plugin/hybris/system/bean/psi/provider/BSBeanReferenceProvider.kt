@@ -30,7 +30,7 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
-class BSBeanExtendsReferenceProvider : PsiReferenceProvider() {
+class BSBeanReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
@@ -82,6 +82,6 @@ class BSBeanExtendsReferenceProvider : PsiReferenceProvider() {
     }
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(BSBeanExtendsReferenceProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(BSBeanReferenceProvider::class.java)
     }
 }
