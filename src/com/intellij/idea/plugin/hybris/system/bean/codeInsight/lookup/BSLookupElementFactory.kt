@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import javax.swing.Icon
 
 object BSLookupElementFactory {
 
@@ -117,4 +118,15 @@ object BSLookupElementFactory {
         }
     }
 
+    fun buildWsHint(hint: String) = LookupElementBuilder.create(hint)
+        .withIcon(HybrisIcons.BS_WS_HINT)
+        .withTypeText("WS Hint", true)
+
+    fun buildPropertyType(lookupString: String, priority: Double, group: Int, icon: Icon, typeText: String) = PrioritizedLookupElement.withGrouping(
+        PrioritizedLookupElement.withPriority(
+            LookupElementBuilder.create(lookupString)
+                .withIcon(icon)
+                .withTypeText(typeText, true), priority
+        ), group
+    )
 }

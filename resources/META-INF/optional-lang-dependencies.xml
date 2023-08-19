@@ -272,6 +272,7 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSEnumClassCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSHintNameCompletionProvider"/>
     </extensions>
 
     <actions>

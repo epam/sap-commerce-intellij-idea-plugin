@@ -53,6 +53,7 @@
 - Added reference resolution for Bean `type` property attribute [#606](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/606)
 - Added folding for `beans.xml` files [#607](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/607)
 - Added find usages for bean properties [#608](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/608)
+- Added code completion for Hint `name` attribute [#609](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/609)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)

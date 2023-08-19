@@ -23,6 +23,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSEnumClassCompletionProvider
+import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSHintNameCompletionProvider
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSPatterns
 import com.intellij.patterns.PlatformPatterns
 
@@ -48,6 +49,11 @@ class BSCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.BEAN_PROPERTY_TYPE),
             BSBeanPropertyTypeCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(BSPatterns.HINT_NAME),
+            BSHintNameCompletionProvider.instance
         )
     }
 }

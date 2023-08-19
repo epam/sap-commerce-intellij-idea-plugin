@@ -136,6 +136,7 @@ public final class HybrisIcons {
     public static final Icon BS_BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
     public static final Icon BS_EVENT_BEAN = BS_BEAN;
     public static final Icon BS_WS_BEAN = BS_BEAN;
+    public static final Icon BS_WS_HINT = AllIcons.Actions.QuickfixOffBulb;
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");
     public static final Icon BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg");

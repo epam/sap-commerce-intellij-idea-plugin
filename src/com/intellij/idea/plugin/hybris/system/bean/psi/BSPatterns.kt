@@ -19,9 +19,8 @@
 package com.intellij.idea.plugin.hybris.system.bean.psi
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
@@ -65,7 +64,7 @@ object BSPatterns {
         .withSuperParent(
             2,
             XmlPatterns.xmlTag()
-                .withLocalName("bean")
+                .withLocalName(Beans.BEAN)
         )
         .inside(beansXmlFile)
 
@@ -73,7 +72,7 @@ object BSPatterns {
         .withSuperParent(
             2,
             XmlPatterns.xmlTag()
-                .withLocalName("enum")
+                .withLocalName(Beans.ENUM)
         )
         .inside(beansXmlFile)
 
@@ -81,11 +80,19 @@ object BSPatterns {
         .withSuperParent(
             2,
             XmlPatterns.xmlTag()
-                .withLocalName("property")
+                .withLocalName(Bean.PROPERTY)
                 .withParent(
                     XmlPatterns.xmlTag()
-                        .withLocalName("bean")
+                        .withLocalName(Beans.BEAN)
                 )
+        )
+        .inside(beansXmlFile)
+
+    val HINT_NAME: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Hint.NAME)
+        .withSuperParent(
+            2,
+            XmlPatterns.xmlTag()
+                .withLocalName(Hints.HINT)
         )
         .inside(beansXmlFile)
 

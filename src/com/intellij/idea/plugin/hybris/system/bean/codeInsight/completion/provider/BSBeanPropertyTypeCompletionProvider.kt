@@ -21,30 +21,20 @@ package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provi
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.completion.PrioritizedLookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
-import javax.swing.Icon
 
 class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private val additionalLookupElements by lazy {
-        primitives.map { lookupElement(it, 5.0, 5, HybrisIcons.TYPE_PRIMITIVE, "Primitive") } +
-            objects.map { lookupElement(it, 4.0, 4, HybrisIcons.TYPE_OBJECT, "Object") } +
-            boxed.map { lookupElement(it, 3.0, 3, HybrisIcons.TYPE_BOXED, "Boxed") } +
-            collections.map { lookupElement(it, 2.0, 2, HybrisIcons.TYPE_COLLECTION, "Collection") } +
-            maps.map { lookupElement(it, 1.0, 1, HybrisIcons.TYPE_MAP, "Map") }
+        primitives.map { BSLookupElementFactory.buildPropertyType(it, 5.0, 5, HybrisIcons.TYPE_PRIMITIVE, "Primitive") } +
+            objects.map { BSLookupElementFactory.buildPropertyType(it, 4.0, 4, HybrisIcons.TYPE_OBJECT, "Object") } +
+            boxed.map { BSLookupElementFactory.buildPropertyType(it, 3.0, 3, HybrisIcons.TYPE_BOXED, "Boxed") } +
+            collections.map { BSLookupElementFactory.buildPropertyType(it, 2.0, 2, HybrisIcons.TYPE_COLLECTION, "Collection") } +
+            maps.map { BSLookupElementFactory.buildPropertyType(it, 1.0, 1, HybrisIcons.TYPE_MAP, "Map") }
     }
-
-    private fun lookupElement(lookupString: String, priority: Double, group: Int, icon: Icon, typeText: String) = PrioritizedLookupElement.withGrouping(
-        PrioritizedLookupElement.withPriority(
-            LookupElementBuilder.create(lookupString)
-                .withIcon(icon)
-                .withTypeText(typeText, true), priority
-        ), group
-    )
 
     override fun addCompletions(
         parameters: CompletionParameters,
