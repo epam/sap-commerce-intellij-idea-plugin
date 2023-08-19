@@ -129,6 +129,7 @@ public final class HybrisIcons {
     public static final Icon TS_INDEX_REMOVE = getIcon("/icons/typeSystem/indexRemove.svg");
     public static final Icon TS_IMPORT = AllIcons.ToolbarDecorator.Import;
     public static final Icon TS_ANNOTATION = AllIcons.Nodes.Annotationtype;
+    public static final Icon TS_HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg");
 
     public static final Icon BS_GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupByDTO.svg");
     public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg");

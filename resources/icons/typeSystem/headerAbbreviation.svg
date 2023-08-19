@@ -1,0 +1,24 @@
+<!--
+  - This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  - Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Lesser General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  - See the GNU Lesser General Public License for more details.
+  -
+  - You should have received a copy of the GNU Lesser General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <path fill="#389FD6"
+          d="M 12 12 L 11 12 L 11 4 L 12 4 L 12 3 C 11 3 10 3.5 10 3.5 C 10 3.5 9 3 8 3 L 8 4 L 9 4 L 9 12 L 8 12 L 8 13 C 9 13 10 12.5 10 12.5 C 10 12.5 11 13 12 13 L 12 12 Z M 4 9 L 8 9 L 8 7 L 4 7 L 4 9 Z"/>
+    <path fill="#6E6E6E"
+          d="M 11.992 4.98 L 11.992 5.98 L 12.992 5.98 L 12.992 9.98 L 11.992 9.98 L 11.992 10.98 L 13.992 10.98 L 13.992 4.98 L 11.992 4.98 Z M 7.992 10.98 L 7.992 9.98 L 2.992 9.98 L 2.992 5.98 L 7.992 5.98 L 7.992 4.98 L 1.992 4.98 L 1.992 10.98 L 7.992 10.98 Z"/>
+</svg>
