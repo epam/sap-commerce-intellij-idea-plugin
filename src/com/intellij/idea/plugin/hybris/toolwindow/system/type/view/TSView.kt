@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,10 +50,18 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     init {
         installToolbar()
 
-        if (DumbService.isDumb(myProject)) {
-            val panel = JBPanel<JBPanel<*>>(GridBagLayout())
-            panel.add(JBLabel(message("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
-            setContent(panel)
+        when {
+            DumbService.isDumb(myProject) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(message("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                setContent(this)
+            }
+
+            !TSMetaModelAccess.getInstance(myProject).isInitialized() -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(message("hybris.toolwindow.ts.suspended.text", message("hybris.toolwindow.ts.suspended.initializing.text"))))
+                setContent(this)
+            }
+
+            else -> refreshContent(TSViewSettings.ChangeType.FULL)
         }
 
         Disposer.register(this, myTreePane)
@@ -77,19 +85,21 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         with(myProject.messageBus.connect(this)) {
             subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
-                    myTreePane.update(TSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+                    refreshContent(changeType)
                 }
             })
             subscribe(TSMetaModelAccess.TOPIC, object : TSChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshContent(globalMetaModel)
+                    refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
                 }
             })
         }
     }
 
-    private fun refreshContent(globalMetaModel: TSGlobalMetaModel) {
-        myTreePane.update(globalMetaModel, TSViewSettings.ChangeType.FULL)
+    private fun refreshContent(changeType: TSViewSettings.ChangeType) = refreshContent(TSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+
+    private fun refreshContent(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
+        myTreePane.update(globalMetaModel, changeType)
 
         if (content != myTreePane) {
             setContent(myTreePane)

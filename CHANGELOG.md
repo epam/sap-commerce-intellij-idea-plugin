@@ -72,6 +72,7 @@
 - Bean System enhanced with support of the properties defined in parent beans [#571](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/571)
 
 ### Fixes
+- Type and Bean System preview is not always displayed [#611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/611) 
 - Type is not detected for CockpitNG Wizard when there is no `initialize` section [#602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/602) 
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)

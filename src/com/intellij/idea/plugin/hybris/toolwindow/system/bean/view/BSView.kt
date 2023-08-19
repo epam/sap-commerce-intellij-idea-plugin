@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,10 +50,18 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     init {
         installToolbar()
 
-        if (DumbService.isDumb(myProject)) {
-            val panel = JBPanel<JBPanel<*>>(GridBagLayout())
-            panel.add(JBLabel(message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
-            setContent(panel)
+        when {
+            DumbService.isDumb(myProject) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                setContent(this)
+            }
+
+            !BSMetaModelAccess.getInstance(myProject).isInitialized() -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+                add(JBLabel(message("hybris.toolwindow.bs.suspended.text", message("hybris.toolwindow.bs.suspended.initializing.text"))))
+                setContent(this)
+            }
+
+            else -> refreshContent(BSViewSettings.ChangeType.FULL)
         }
 
         Disposer.register(this, myTreePane)
@@ -77,19 +85,21 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         with(myProject.messageBus.connect(this)) {
             subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
                 override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
-                    myTreePane.update(BSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+                    refreshContent(changeType)
                 }
             })
             subscribe(BSMetaModelAccess.TOPIC, object : BSChangeListener {
                 override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
-                    refreshContent(globalMetaModel)
+                    refreshContent(globalMetaModel, BSViewSettings.ChangeType.FULL)
                 }
             })
         }
     }
 
-    private fun refreshContent(globalMetaModel: BSGlobalMetaModel) {
-        myTreePane.update(globalMetaModel, BSViewSettings.ChangeType.FULL)
+    private fun refreshContent(changeType: BSViewSettings.ChangeType) = refreshContent(BSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+
+    private fun refreshContent(globalMetaModel: BSGlobalMetaModel, changeType: BSViewSettings.ChangeType) {
+        myTreePane.update(globalMetaModel, changeType)
 
         if (content != myTreePane) {
             setContent(myTreePane)

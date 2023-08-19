@@ -34,6 +34,7 @@ interface BSMetaModelAccess {
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 
+    fun isInitialized(): Boolean
     fun initMetaModel()
     fun getMetaModel(): BSGlobalMetaModel
     fun findMetaEnumByName(name: String?): BSGlobalMetaEnum?

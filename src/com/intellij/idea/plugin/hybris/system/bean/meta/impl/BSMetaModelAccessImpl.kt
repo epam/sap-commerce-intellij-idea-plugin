@@ -97,6 +97,8 @@ class BSMetaModelAccessImpl(private val myProject: Project) : BSMetaModelAccess 
         }
     }
 
+    override fun isInitialized() = initialized
+
     override fun initMetaModel() {
         building = true
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
