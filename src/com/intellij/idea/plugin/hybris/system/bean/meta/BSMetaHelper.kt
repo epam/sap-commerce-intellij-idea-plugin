@@ -49,6 +49,10 @@ object BSMetaHelper {
         else null
     }
 
+    fun getGenerics(name: String?) = getGenericName(name)
+        ?.split(",")
+        ?.map { it.trim() }
+
     fun getBeanName(name: String) = getUnescapedName(name)
         .substringBefore("<")
 

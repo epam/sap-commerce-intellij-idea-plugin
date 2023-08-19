@@ -45,9 +45,9 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
         val metaModelAccess = BSMetaModelAccess.getInstance(element.project)
 
         return process(text)
-            .filter { metaModelAccess.findMetasByName(it.value).isNotEmpty() }
             .mapNotNull {
-                val meta = metaModelAccess.findMetasByName(it.value).firstOrNull() ?: return@mapNotNull null
+                val meta = metaModelAccess.findMetasByName(it.value).firstOrNull()
+                    ?: return@mapNotNull null
 
                 val textRange = TextRange.from(it.key, it.value.length)
 

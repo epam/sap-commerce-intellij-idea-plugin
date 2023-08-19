@@ -103,6 +103,7 @@ public final class HybrisIcons {
     public static final Icon TYPE_OBJECT = getIcon("/icons/typeObject.svg");
     public static final Icon TYPE_COLLECTION = getIcon("/icons/typeCollection.svg");
     public static final Icon TYPE_MAP = getIcon("/icons/typeMap.svg");
+    public static final Icon TYPE_GENERIC = AllIcons.Nodes.AbstractClass;
 
     public static final Icon TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg");
     public static final Icon TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg");

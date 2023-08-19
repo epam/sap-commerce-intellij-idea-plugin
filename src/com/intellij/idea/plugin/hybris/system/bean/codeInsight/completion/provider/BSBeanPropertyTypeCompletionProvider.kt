@@ -23,12 +23,17 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
+import com.intellij.idea.plugin.hybris.system.bean.model.AbstractPojo
+import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.psi.util.parentsOfType
+import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 
 class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    private val additionalLookupElements by lazy {
+    private val staticLookupElements by lazy {
         primitives.map { BSLookupElementFactory.buildPropertyType(it, 5.0, 5, HybrisIcons.TYPE_PRIMITIVE, "Primitive") } +
             objects.map { BSLookupElementFactory.buildPropertyType(it, 4.0, 4, HybrisIcons.TYPE_OBJECT, "Object") } +
             boxed.map { BSLookupElementFactory.buildPropertyType(it, 3.0, 3, HybrisIcons.TYPE_BOXED, "Boxed") } +
@@ -41,7 +46,16 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        result.addAllElements(additionalLookupElements)
+        result.addAllElements(staticLookupElements)
+
+        // Generics defined at Bean level
+        parameters.position.parentsOfType<XmlTag>()
+            .firstOrNull { it.localName == Beans.BEAN }
+            ?.getAttributeValue(AbstractPojo.CLASS)
+            ?.let { BSMetaHelper.getGenerics(it) }
+            ?.map { BSLookupElementFactory.buildPropertyType(it, 6.0, 6, HybrisIcons.TYPE_GENERIC, "Bean Generic") }
+            ?.let { result.addAllElements(it) }
+
         BSClassCompletionProvider.instance.addCompletionVariants(parameters, context, result)
     }
 
