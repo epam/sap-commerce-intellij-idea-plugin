@@ -33,8 +33,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.GlobalSearchScope.everythingScope
-import com.intellij.psi.search.GlobalSearchScope.getScopeRestrictedByFileTypes
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -53,6 +51,7 @@ object ProjectPropertiesUtils {
         val configModule = obtainConfigModule(project) ?: return emptyList()
         val platformModule = obtainPlatformModule(project) ?: return emptyList()
         val scope = createSearchScope(project, configModule, platformModule)
+        var envPropsFile: PropertiesFile? = null
         var advancedPropsFile: PropertiesFile? = null
         var localPropsFile: PropertiesFile? = null
 
@@ -61,7 +60,7 @@ object ProjectPropertiesUtils {
             .mapNotNull { it as? PropertiesFile }
             .forEach { file ->
                 when (file.name) {
-                    "env.properties" -> advancedPropsFile = file
+                    "env.properties" -> envPropsFile = file
                     "advanced.properties" -> advancedPropsFile = file
                     "local.properties" -> localPropsFile = file
                     else -> {
@@ -73,6 +72,7 @@ object ProjectPropertiesUtils {
                     }
                 }
             }
+        addPropertyFile(result, envPropsFile)
         addPropertyFile(result, advancedPropsFile)
         addPropertyFile(result, localPropsFile)
 
@@ -177,16 +177,13 @@ object ProjectPropertiesUtils {
     }
 
     private fun createSearchScope(project: Project, configModule: Module, platformModule: Module): GlobalSearchScope {
-        val projectPropertiesScope = getScopeRestrictedByFileTypes(everythingScope(project), PropertiesFileType.INSTANCE)
+        val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
             .filter { it.name == "project.properties" }
         val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == "env.properties" }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == "advanced.properties" }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == "local.properties" }
 
-        return projectPropertiesScope
-            .or(envPropertiesScope)
-            .or(advancedPropertiesScope)
-            .or(localPropertiesScope)
+        return projectPropertiesScope.or(envPropertiesScope.or(advancedPropertiesScope.or(localPropertiesScope)))
     }
 
     private fun obtainConfigModule(project: Project) =
