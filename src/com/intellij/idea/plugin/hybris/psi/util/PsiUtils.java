@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,8 +26,8 @@ import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
@@ -93,19 +93,21 @@ public final class PsiUtils {
         return ModuleDescriptorType.CUSTOM;
     }
 
-    public static boolean shouldCreateNewReference(final @Nullable PsiReferenceBase<? extends PsiElement> reference, final String text) {
-        return reference == null
-               || (text != null
-                   && (
-                       text.length() != reference.getRangeInElement().getLength()
-                       || !text.equals(reference.getValue()))
-               );
+    public static boolean shouldCreateNewReference(final @Nullable PsiReference reference, final String text) {
+        if (reference == null) return true;
+
+        if (reference instanceof final PsiReferenceBase psiReferenceBase) {
+            return text != null
+                && (text.length() != reference.getRangeInElement().getLength() || !text.equals(psiReferenceBase.getValue()));
+        } else {
+            return false;
+        }
     }
 
     @NotNull
     public static ResolveResult[] getValidResults(final ResolveResult[] resolveResults) {
         return Arrays.stream(resolveResults)
-                     .filter(ResolveResult::isValidResult)
-                     .toArray(ResolveResult[]::new);
+            .filter(ResolveResult::isValidResult)
+            .toArray(ResolveResult[]::new);
     }
 }

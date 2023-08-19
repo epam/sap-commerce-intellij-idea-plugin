@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
+import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -101,6 +102,17 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
                 TSLookupElementFactory.build(it, suffix)
             }
     }
+
+    override fun getHeaderAbbreviationCompletions() = ProjectPropertiesUtils.findAutoCompleteProperties(project, HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        .mapNotNull { it.value }
+        .mapNotNull { abbreviation ->
+            abbreviation
+                .split("...")
+                .takeIf { it.size == 2 }
+                ?.map { it.trim() }
+        }
+        .mapNotNull { it.firstOrNull() }
+        .map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
         if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()

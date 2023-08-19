@@ -21,9 +21,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.util.PsiTreeUtil
@@ -45,22 +43,10 @@ class ImpexHeaderItemTypeAttributeNameCompletionProvider : CompletionProvider<Co
             ?.text
             ?: return
 
-        // See: https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations
-
-        ProjectPropertiesUtils.findAutoCompleteProperties(project, "impex.header.replacement")
-            .mapNotNull { it.value }
-            .mapNotNull { abbreviation ->
-                abbreviation
-                    .split("...")
-                    .takeIf { it.size == 2 }
-                    ?.map { it.trim() }
-            }
-            .mapNotNull { it.firstOrNull() }
-            .map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
-            .forEach { result.addElement(it) }
-
-        val completions = TSCompletionService.getInstance(project).getCompletions(typeCode, TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
-        result.caseInsensitive().addAllElements(completions)
+        with(TSCompletionService.getInstance(project)) {
+            result.addAllElements(getHeaderAbbreviationCompletions())
+            result.caseInsensitive().addAllElements(getCompletions(typeCode, TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION))
+        }
     }
 
     companion object {
