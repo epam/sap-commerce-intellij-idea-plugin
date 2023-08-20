@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.psi.reference
 
 import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
@@ -40,16 +39,19 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun getVariants() = PropertiesService.getInstance(element.project).getLanguages()
-        .map { LookupElementFactory.buildLanguage(it) }
-        .toTypedArray()
+    override fun getVariants() = PropertiesService.getInstance(element.project)
+        ?.getLanguages()
+        ?.map { LookupElementFactory.buildLanguage(it) }
+        ?.toTypedArray()
+        ?: emptyArray()
 
     companion object {
         val CACHE_KEY =
             Key.create<ParameterizedCachedValue<Array<ResolveResult>, LanguageReference>>("HYBRIS_LANGUAGE_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, LanguageReference> { ref ->
-            val result: Array<ResolveResult> = ProjectPropertiesUtils.findMacroProperty(ref.element.project, HybrisConstants.PROPERTY_LANG_PACKS)
+            val result: Array<ResolveResult> = PropertiesService.getInstance(ref.element.project)
+                ?.findMacroProperty(ref.element.project, HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement
                         ?: PomService.convertToPsi(it as PsiTarget)

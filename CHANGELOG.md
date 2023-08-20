@@ -2,7 +2,7 @@
 
 ### `OCC` enhancements
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
-- Display a flatten type for an item in the code completion menu for Level Mapping tags [#592] (https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
+- Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
 
 ### `Groovy Script` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
@@ -97,6 +97,7 @@
 - Some classes are not visible from `storefrontcommons` if searchable class is in read-only storefrontcommons [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
 - Properties defined in the `advanced.properties` are not available [#612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/612)
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
+- Ensure that `Properties` Plugin dependant code works only when corresponding Plugin is enabled [#618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/618)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)

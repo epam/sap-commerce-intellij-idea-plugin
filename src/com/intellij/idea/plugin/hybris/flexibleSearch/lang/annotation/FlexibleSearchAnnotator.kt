@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -120,7 +120,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
             COLUMN_LOCALIZED_NAME -> {
                 val language = element.text.trim()
 
-                val propertiesService = PropertiesService.getInstance(element.project)
+                val propertiesService = PropertiesService.getInstance(element.project) ?: return
                 val supportedLanguages = propertiesService.getLanguages()
 
                 if (!propertiesService.containsLanguage(language, supportedLanguages)) {

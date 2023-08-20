@@ -44,7 +44,7 @@ class ImpexHeaderItemTypeAttributeNameCompletionProvider : CompletionProvider<Co
             ?: return
 
         with(TSCompletionService.getInstance(project)) {
-            result.addAllElements(getHeaderAbbreviationCompletions())
+            result.addAllElements(getHeaderAbbreviationCompletions(project))
             result.caseInsensitive().addAllElements(getCompletions(typeCode, TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION))
         }
     }

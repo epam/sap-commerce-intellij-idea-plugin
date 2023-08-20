@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.deployments
@@ -48,7 +48,10 @@ class TSDeploymentTableNameLengthShouldBeValid : AbstractCustomOnlyTSInspection(
         severity: HighlightSeverity
     ) {
         val tableName = dom.table.stringValue ?: return
-        val maxLength = ProjectPropertiesUtils.findMacroProperty(project, HybrisConstants.PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH)?.value?.toIntOrNull()
+        val maxLength = PropertiesService.getInstance(project)
+            ?.findMacroProperty(project, HybrisConstants.PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH)
+            ?.value
+            ?.toIntOrNull()
             ?: HybrisConstants.DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH
 
         if (tableName.length > maxLength) {

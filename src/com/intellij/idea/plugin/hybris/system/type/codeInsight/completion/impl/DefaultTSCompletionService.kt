@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -103,16 +103,18 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             }
     }
 
-    override fun getHeaderAbbreviationCompletions() = ProjectPropertiesUtils.findAutoCompleteProperties(project, HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-        .mapNotNull { it.value }
-        .mapNotNull { abbreviation ->
+    override fun getHeaderAbbreviationCompletions(project: Project) = PropertiesService.getInstance(project)
+        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        ?.mapNotNull { it.value }
+        ?.mapNotNull { abbreviation ->
             abbreviation
                 .split("...")
                 .takeIf { it.size == 2 }
                 ?.map { it.trim() }
         }
-        .mapNotNull { it.firstOrNull() }
-        .map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
+        ?.mapNotNull { it.firstOrNull() }
+        ?.map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
+        ?: emptyList()
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
         if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()

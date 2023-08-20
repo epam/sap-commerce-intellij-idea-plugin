@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.references.*
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -79,18 +79,20 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
         return result
     }
 
-    private fun isHeaderAbbreviation() = ProjectPropertiesUtils.findAutoCompleteProperties(project, HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-        .asSequence()
-        .mapNotNull { it.value }
-        .mapNotNull { abbreviation ->
+    private fun isHeaderAbbreviation() = PropertiesService.getInstance(project)
+        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        ?.asSequence()
+        ?.mapNotNull { it.value }
+        ?.mapNotNull { abbreviation ->
             abbreviation
                 .split("...")
                 .takeIf { it.size == 2 }
                 ?.map { it.trim() }
         }
-        .mapNotNull { it.firstOrNull() }
-        .map { it.replace("\\\\", "\\") }
-        .any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }
+        ?.mapNotNull { it.firstOrNull() }
+        ?.map { it.replace("\\\\", "\\") }
+        ?.any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }
+        ?: false
 
     companion object {
         @Serial

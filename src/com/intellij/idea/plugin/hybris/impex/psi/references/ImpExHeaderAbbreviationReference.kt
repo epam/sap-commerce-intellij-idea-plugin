@@ -22,9 +22,8 @@ import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.lang.properties.IProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -34,25 +33,26 @@ import com.intellij.psi.ResolveResult
 
 class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = findHeaderAbbreviation(element.project, value.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED))
-        ?.psiElement
-        ?.let { PsiElementResolveResult.createResults(it) }
-        ?.let { PsiUtils.getValidResults(it) }
-        ?: emptyArray()
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> =
+        findHeaderAbbreviation(element.project, value.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED))
+            ?.psiElement
+            ?.let { PsiElementResolveResult.createResults(it) }
+            ?.let { PsiUtils.getValidResults(it) }
+            ?: emptyArray()
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
-    private fun findHeaderAbbreviation(project: Project, currentText: String): IProperty? =
-        ProjectPropertiesUtils.findAutoCompleteProperties(project, HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-            .firstOrNull { property ->
-                property.value
-                    ?.split("...")
-                    ?.takeIf { it.size == 2 }
-                    ?.map { it.trim() }
-                    ?.map { it.replace("\\\\", "\\") }
-                    ?.any { currentText.matches(it.toRegex()) }
-                    ?: false
-            }
+    private fun findHeaderAbbreviation(project: Project, currentText: String) = PropertiesService.getInstance(project)
+        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        ?.firstOrNull { property ->
+            property.value
+                ?.split("...")
+                ?.takeIf { it.size == 2 }
+                ?.map { it.trim() }
+                ?.map { it.replace("\\\\", "\\") }
+                ?.any { currentText.matches(it.toRegex()) }
+                ?: false
+        }
 
     override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
 

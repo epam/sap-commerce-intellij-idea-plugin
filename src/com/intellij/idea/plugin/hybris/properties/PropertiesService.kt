@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.properties
 
+import com.intellij.lang.properties.IProperty
 import com.intellij.openapi.project.Project
 
 interface PropertiesService {
@@ -26,8 +27,13 @@ interface PropertiesService {
 
     fun containsLanguage(language: String, supportedLanguages: Set<String>): Boolean
 
-    companion object {
-        fun getInstance(project: Project): PropertiesService = project.getService(PropertiesService::class.java)
-    }
+    fun findProperty(query: String): String?
 
+    fun findMacroProperty(project: Project, query: String): IProperty?
+
+    fun findAutoCompleteProperties(query: String): List<IProperty>
+
+    companion object {
+        fun getInstance(project: Project): PropertiesService? = project.getService(PropertiesService::class.java)
+    }
 }

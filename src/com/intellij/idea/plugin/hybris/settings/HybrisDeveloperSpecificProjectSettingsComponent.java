@@ -1,8 +1,26 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
+import com.intellij.idea.plugin.hybris.properties.PropertiesService;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -57,8 +75,8 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
     ) {
         if (getState() == null) return Collections.emptyList();
         return getState().getRemoteConnectionSettingsList().stream()
-                         .filter(it -> it.getType() == type)
-                         .collect(Collectors.toList());
+            .filter(it -> it.getType() == type)
+            .collect(Collectors.toList());
     }
 
     public HybrisRemoteConnectionSettings getActiveHacRemoteConnectionSettings(final Project project) {
@@ -73,9 +91,9 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         final String id = state.getActiveRemoteConnectionID();
 
         return instances.stream()
-                         .filter(e -> Objects.equals(id, e.getUuid()))
-                         .findFirst()
-                         .orElseGet(() -> instances.get(0));
+            .filter(e -> Objects.equals(id, e.getUuid()))
+            .findFirst()
+            .orElseGet(() -> instances.get(0));
     }
 
     public HybrisRemoteConnectionSettings getActiveSolrRemoteConnectionSettings(final Project project) {
@@ -90,9 +108,9 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         final String id = state.getActiveSolrConnectionID();
 
         return instances.stream()
-                       .filter(e -> Objects.equals(id, e.getUuid()))
-                       .findFirst()
-                       .orElseGet(() -> instances.get(0));
+            .filter(e -> Objects.equals(id, e.getUuid()))
+            .findFirst()
+            .orElseGet(() -> instances.get(0));
     }
 
     @NotNull
@@ -152,8 +170,8 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         }
         final var newInstances = new ArrayList<>(instances);
         getState().getRemoteConnectionSettingsList().stream()
-                  .filter(it -> it.getType() != type)
-                  .forEach(newInstances::add);
+            .filter(it -> it.getType() != type)
+            .forEach(newInstances::add);
         getState().setRemoteConnectionSettingsList(newInstances);
         switch (type) {
             case Hybris -> myMessageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC).hacConnectionSettingsChanged();
@@ -162,8 +180,9 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
     }
 
     private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
-        return Optional.ofNullable(ProjectPropertiesUtils.INSTANCE.findMacroProperty(project, key))
-                       .map(IProperty::getValue)
-                       .orElse(fallback);
+        return Optional.ofNullable(PropertiesService.Companion.getInstance(project))
+            .map(it -> it.findMacroProperty(project, key))
+            .map(IProperty::getValue)
+            .orElse(fallback);
     }
 }

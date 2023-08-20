@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils;
+import com.intellij.idea.plugin.hybris.properties.PropertiesService;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -215,8 +215,14 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
             final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
-            final var iProperty = ProjectPropertiesUtils.INSTANCE.findMacroProperty(macroUsage.getProject(), propertyName);
+            final var propertiesService = PropertiesService.Companion.getInstance(macroUsage.getProject());
+
+            if (propertiesService == null) return;
+
+            final var iProperty = propertiesService.findMacroProperty(macroUsage.getProject(), propertyName);
+
             if (iProperty == null) return;
+
             final var propertyKey = HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + iProperty.getKey();
 
             descriptor = new ImpexMacroDescriptor(propertyKey, iProperty.getValue(), iProperty.getPsiElement());

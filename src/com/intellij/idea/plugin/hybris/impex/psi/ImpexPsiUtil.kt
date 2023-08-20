@@ -23,7 +23,7 @@ package com.intellij.idea.plugin.hybris.impex.psi
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.text.StringUtil
@@ -116,14 +116,15 @@ fun getFullHeaderParameter(element: ImpexHeaderLine, parameterName: String): Imp
 fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
     if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null
 
+    val project = element.project
     val propertyKey = element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 
     if (propertyKey.isBlank()) return null
 
-    return if (DumbService.isDumb(element.project)) {
+    return if (DumbService.isDumb(project)) {
         element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
-    } else ProjectPropertiesUtils
-        .findMacroProperty(element.project, propertyKey)
+    } else PropertiesService.getInstance(project)
+        ?.findMacroProperty(project, propertyKey)
         ?.key
         ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 }

@@ -29,8 +29,8 @@ import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -43,15 +43,17 @@ import com.intellij.util.ui.classpath.SingleRootClasspathElement
 class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
     override fun configure(project: Project) {
+        val propertiesService = PropertiesService.getInstance(project) ?: return
+
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
         dataSourceRegistry.setImportedFlag(false)
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(ProjectPropertiesUtils.findProperty(project, "db.url"))
-            .withUser(ProjectPropertiesUtils.findProperty(project, "db.username"))
-            .withPassword(ProjectPropertiesUtils.findProperty(project, "db.password"))
+            .withUrl(propertiesService.findProperty("db.url"))
+            .withUser(propertiesService.findProperty("db.username"))
+            .withPassword(propertiesService.findProperty("db.password"))
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {

@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.utils.ProjectPropertiesUtils
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache
 import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -48,7 +48,8 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
             .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
         if (!hasKotlinnatureExtension) return
 
-        val compilerVersion = ProjectPropertiesUtils.findMacroProperty(project, HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
+        val compilerVersion = PropertiesService.getInstance(project)
+            ?.findMacroProperty(project, HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
             ?.value
             ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
         setKotlinCompilerVersion(project, compilerVersion)
