@@ -27,10 +27,10 @@ import com.intellij.openapi.components.BaseState
 import java.util.*
 
 class HybrisProjectSettings : BaseState() {
-    var flexibleSearchSettings: FlexibleSearchSettings = FlexibleSearchSettings()
-    var polyglotQuerySettings: PolyglotQuerySettings = PolyglotQuerySettings()
-    var impexSettings: ImpexSettings = ImpexSettings()
-    var groovySettings: GroovySettings = GroovySettings()
+    var flexibleSearchSettings by property(FlexibleSearchSettings()) { false }
+    var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
+    var impexSettings by property(ImpexSettings()) { false }
+    var groovySettings by property(GroovySettings()) { false }
 
     var customDirectory by string(null)
     var hybrisDirectory by string(null)
@@ -50,10 +50,9 @@ class HybrisProjectSettings : BaseState() {
     var excludeTestSources by property(false)
     var importCustomAntBuildFiles by property(false)
     var showFullModuleName by property(false)
-    var completeSetOfAvailableExtensionsInHybris: Set<String> = mutableSetOf()
-    var unusedExtensions: Set<String> = mutableSetOf()
-    var modulesOnBlackList: Set<String> = mutableSetOf()
-    var availableExtensions: MutableMap<String, ExtensionDescriptor> = TreeMap<String, ExtensionDescriptor> { a, b ->
-        a.compareTo(b, true)
-    }
+    var completeSetOfAvailableExtensionsInHybris by stringSet()
+    var unusedExtensions by stringSet()
+    var modulesOnBlackList by stringSet()
+    var availableExtensions by property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
+
 }

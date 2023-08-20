@@ -49,7 +49,7 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
         if (!hasKotlinnatureExtension) return
 
         val compilerVersion = PropertiesService.getInstance(project)
-            ?.findMacroProperty(project, HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
+            ?.findMacroProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
             ?.value
             ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
         setKotlinCompilerVersion(project, compilerVersion)

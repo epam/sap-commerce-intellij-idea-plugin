@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,18 +18,19 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
+import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
 
-private const val SYNC_PROJECT_SETTINGS = "hybrisProjectImportSyncProjectSettings"
 private const val FINALIZE_PROJECT_IMPORT = "hybrisProjectImportFinalize"
 
 class HybrisProjectImportStartupActivity : ProjectActivity {
@@ -40,14 +41,10 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
             HybrisToolWindowService.getInstance(project).activateToolWindow()
 
-            project.getUserData(syncProjectSettingsKey)
-                ?.let {
-                    project.removeUserData(syncProjectSettingsKey)
-                    syncProjectSettingsForProject(project)
-                }
             project.getUserData(finalizeProjectImportKey)
                 ?.let {
                     project.removeUserData(finalizeProjectImportKey)
+                    syncProjectSettingsForProject(project)
 
                     PostImportConfigurator.getInstance(project).configure(
                         it.first,
@@ -60,6 +57,10 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
     }
 
     private fun syncProjectSettingsForProject(project: Project) {
+        runReadAction {
+            CommonIdeaService.instance.fixRemoteConnectionSettings(project)
+        }
+
         with (project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
             hacConnectionSettingsChanged()
             solrConnectionSettingsChanged()
@@ -68,7 +69,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
 
     companion object {
-        val syncProjectSettingsKey: Key<Boolean> = Key.create(SYNC_PROJECT_SETTINGS);
         val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
     }
 }

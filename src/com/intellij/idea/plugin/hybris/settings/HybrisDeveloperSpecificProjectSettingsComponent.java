@@ -181,7 +181,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
 
     private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
         return Optional.ofNullable(PropertiesService.Companion.getInstance(project))
-            .map(it -> it.findMacroProperty(project, key))
+            .map(it -> it.getProperty(key))
             .map(IProperty::getValue)
             .orElse(fallback);
     }

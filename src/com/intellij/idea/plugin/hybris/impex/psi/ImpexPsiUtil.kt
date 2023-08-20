@@ -124,7 +124,7 @@ fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
     return if (DumbService.isDumb(project)) {
         element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
     } else PropertiesService.getInstance(project)
-        ?.findMacroProperty(project, propertyKey)
+        ?.findMacroProperty(propertyKey)
         ?.key
         ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 }

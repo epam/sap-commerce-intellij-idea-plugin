@@ -50,7 +50,7 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
             ?: return emptyArray()
 
         return getPropertyKey()
-            ?.let { propertiesService.findMacroProperty(element.project, it) }
+            ?.let { propertiesService.findMacroProperty(it) }
             ?.let { PsiElementResolveResult.createResults(it.psiElement) }
             ?: ResolveResult.EMPTY_ARRAY
     }

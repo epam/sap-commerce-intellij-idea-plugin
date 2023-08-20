@@ -51,7 +51,7 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, LanguageReference> { ref ->
             val result: Array<ResolveResult> = PropertiesService.getInstance(ref.element.project)
-                ?.findMacroProperty(ref.element.project, HybrisConstants.PROPERTY_LANG_PACKS)
+                ?.findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement
                         ?: PomService.convertToPsi(it as PsiTarget)

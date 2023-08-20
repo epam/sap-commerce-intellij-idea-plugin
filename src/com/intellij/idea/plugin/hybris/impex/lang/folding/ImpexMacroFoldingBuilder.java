@@ -219,7 +219,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
 
             if (propertiesService == null) return;
 
-            final var iProperty = propertiesService.findMacroProperty(macroUsage.getProject(), propertyName);
+            final var iProperty = propertiesService.findMacroProperty(propertyName);
 
             if (iProperty == null) return;
 

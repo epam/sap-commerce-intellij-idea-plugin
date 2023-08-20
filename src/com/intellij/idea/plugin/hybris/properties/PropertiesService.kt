@@ -29,11 +29,13 @@ interface PropertiesService {
 
     fun findProperty(query: String): String?
 
-    fun findMacroProperty(project: Project, query: String): IProperty?
+    fun findMacroProperty(query: String): IProperty?
 
     fun findAutoCompleteProperties(query: String): List<IProperty>
 
     companion object {
         fun getInstance(project: Project): PropertiesService? = project.getService(PropertiesService::class.java)
     }
+
+    fun getProperty(key: String): IProperty?
 }

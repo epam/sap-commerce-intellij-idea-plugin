@@ -47,7 +47,7 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
     override fun getLanguages(): Set<String> {
-        val languages = findMacroProperty(project, HybrisConstants.PROPERTY_LANG_PACKS)
+        val languages = findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
             ?.value
             ?.split(",")
             ?.map { it.trim() }
@@ -64,10 +64,13 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     override fun containsLanguage(language: String, supportedLanguages: Set<String>) = supportedLanguages
         .contains(language.lowercase())
 
-    override fun findAutoCompleteProperties(query: String): List<IProperty> =
-        findAllProperties().filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
+    override fun findAutoCompleteProperties(query: String): List<IProperty> = findAllProperties()
+        .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
 
-    override fun findMacroProperty(project: Project, query: String): IProperty? {
+    override fun getProperty(key: String): IProperty? = findAllProperties()
+        .firstOrNull { it.key != null && it.key == key }
+
+    override fun findMacroProperty(query: String): IProperty? {
         val allProps = findAllProperties()
         if (allProps.isEmpty()) {
             return null;
@@ -80,11 +83,11 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-    override fun findProperty(query: String): String? = findMacroProperty(project, query)
+    override fun findProperty(query: String): String? = findMacroProperty(query)
         ?.value
         ?.replace("\\", "")
 
-    private fun resolvePropertyValue(project: Project, value: String?): String {
+    private fun resolvePropertyValue(value: String?): String {
         return resolvePropertyValue(value, HashMap())
     }
 
@@ -104,9 +107,9 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
                 if (resolvedValue != null) {
                     sb.append(resolvedValue)
                 } else {
-                    val property = findMacroProperty(project, propertyKey)
+                    val property = findMacroProperty(propertyKey)
                     if (property != null) {
-                        resolvedValue = resolvePropertyValue(project, property.value)
+                        resolvedValue = resolvePropertyValue(property.value)
                         sb.append(resolvedValue)
                         resolvedProperties[propertyKey] = resolvedValue
                     } else {

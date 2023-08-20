@@ -49,7 +49,7 @@ class TSDeploymentTableNameLengthShouldBeValid : AbstractCustomOnlyTSInspection(
     ) {
         val tableName = dom.table.stringValue ?: return
         val maxLength = PropertiesService.getInstance(project)
-            ?.findMacroProperty(project, HybrisConstants.PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH)
+            ?.findMacroProperty(HybrisConstants.PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH)
             ?.value
             ?.toIntOrNull()
             ?: HybrisConstants.DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH
