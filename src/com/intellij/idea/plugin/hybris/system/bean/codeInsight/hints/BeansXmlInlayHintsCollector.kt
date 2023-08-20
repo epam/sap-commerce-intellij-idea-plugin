@@ -40,6 +40,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.OpenSourceUtil
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 import java.awt.Cursor
 import javax.swing.Icon
@@ -48,6 +49,9 @@ import javax.swing.Icon
  * use com.intellij.codeInsight.hints.presentation.PresentationFactory#referenceOnHover and show popup from clickListener
  */
 class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
+
+    val fileLabel = "Navigate to the Generated File"
+    val propertyLabel = "Navigate to the Generated Property"
 
     val unknown: InlayPresentation by lazy {
         val icon = factory.icon(AllIcons.General.ExclMark)
@@ -82,12 +86,12 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     private fun retrievePresentation(parent: XmlTag, attribute: String, project: Project, element: XmlToken) = when {
         parent.name == "enum" && attribute == "class" -> finEnumClass(project, element.text)
             ?.let { arrayOf(it) }
-            ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it) }
+            ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it, fileLabel) }
             ?: unknown
 
         parent.name == "bean" && attribute == "class" -> findItemClass(project, element.text)
             ?.let { arrayOf(it) }
-            ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it) }
+            ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it, fileLabel) }
             ?: unknown
 
         parent.name == "value" -> parent.parentOfType<XmlTag>()
@@ -96,16 +100,26 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
             ?.let { finEnumClass(project, it) }
             ?.let { it.allFields.find { field -> field.name.equals(element.text, true) } }
             ?.let { arrayOf(it) }
-            ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it) }
+            ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it, fileLabel) }
+            ?: unknown
+
+        parent.name == "property" && attribute == "name" -> element.parentOfType<XmlTag>()
+            ?.getParentOfType<XmlTag>(true)
+            ?.getAttributeValue("class")
+            ?.let { findItemClass(project, it) }
+            ?.allFields
+            ?.find { it.name == parent.getAttributeValue("name") }
+            ?.let { arrayOf(it) }
+            ?.let { inlayPresentation(HybrisIcons.BS_PROPERTY, it, propertyLabel) }
             ?: unknown
 
         else -> null
     }
 
-    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
+    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>, label: String): InlayPresentation {
         val icon = factory.icon(i)
         val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
+        val tooltip = factory.withTooltip(label, inset)
 
         return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(*navigatables) }
     }
