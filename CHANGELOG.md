@@ -39,6 +39,7 @@
 
 ### `ImpEx` inspection rules
 - Ensure that all macros required by `Header Abbreviation` are declared [#619](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/619)
+- Do not inspect special parameter for uniqueness [#621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/621)
 
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)

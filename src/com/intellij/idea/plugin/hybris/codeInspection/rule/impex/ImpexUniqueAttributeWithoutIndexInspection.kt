@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,13 +45,18 @@ private class ParameterChecker(val holder: ProblemsHolder) : ImpexVisitor() {
             .filter { it.anyAttributeName.stringList.isEmpty() }
             .filter { it.anyAttributeName.firstChild == it.anyAttributeName.lastChild }
             .filter { it.anyAttributeName.text == "unique" }
-            .firstOrNull() ?: return
+            .firstOrNull()
+            ?: return
+        val attribute = param.anyHeaderParameterName.text
+
+        // no need to validate special parameters
+        if (attribute.startsWith('@')) return
 
         val typeName = PsiTreeUtil.getParentOfType(param, ImpexHeaderLine::class.java)
             ?.fullHeaderType
             ?.headerTypeName
-            ?.text ?: return
-        val attribute = param.anyHeaderParameterName.text
+            ?.text
+            ?: return
 
         val hasIndex = TSMetaModelAccess.getInstance(param.project).findMetaItemByName(typeName)
             ?.allIndexes

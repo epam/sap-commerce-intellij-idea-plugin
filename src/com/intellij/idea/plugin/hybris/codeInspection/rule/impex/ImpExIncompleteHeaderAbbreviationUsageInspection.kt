@@ -56,7 +56,7 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                 ?.value
                 ?: return
 
-            val missingExpectedMacros = headerAbbreviationValue.split("...", " ", "'", "\\\\")
+            val missingExpectedMacros = headerAbbreviationValue.split("...", " ", "'", "\\\\", "]", "[", ":")
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
                 .filter { it.startsWith('$') }
