@@ -103,6 +103,7 @@
 - Properties defined in the `advanced.properties` are not available [#612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/612)
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
 - Ensure that `Properties` Plugin dependant code works only when corresponding Plugin is enabled [#618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/618)
+- Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
