@@ -123,9 +123,9 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 
-<!--        <localInspection groupPath="SAP Commerce" shortName="ImpExIncompleteHeaderAbbreviationUsageInspection" displayName="[y] Incomplete header abbreviation usage"-->
-<!--                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>-->
+        <localInspection groupPath="SAP Commerce" shortName="ImpExIncompleteHeaderAbbreviationUsageInspection" displayName="[y] Incomplete header abbreviation usage"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"

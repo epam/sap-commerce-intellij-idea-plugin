@@ -20,62 +20,55 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.impex
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference
-import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
-import com.intellij.psi.PsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
+import com.intellij.lang.properties.IProperty
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.PsiTreeUtil
 
 class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
 
+    private val cachedMacros = mutableSetOf<String>()
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder)
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexHeaderLineVisitor(holder, cachedMacros)
+    override fun inspectionStarted(session: LocalInspectionToolSession, isOnTheFly: Boolean) {
+        cachedMacros.clear()
 
-    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
+        PsiTreeUtil.findChildrenOfAnyType(session.file, ImpexMacroDeclaration::class.java)
+            .map { it.firstChild.text }
+            .let { cachedMacros.addAll(it) }
+    }
 
-        override fun visitParameter(parameter: ImpexParameter) {
-            if (parameter.firstChild is ImpexMacroUsageDec || (parameter.firstChild as? LeafPsiElement)?.elementType == DOCUMENT_ID) return
-
-            parameter.references
-                .find { it is ImpexFunctionTSAttributeReference }
-                ?.let { it as? ImpexFunctionTSAttributeReference }
-                ?.takeIf { it.multiResolve(false).isEmpty() }
-                ?.let { ref ->
-                    parameter.itemTypeName
-                        ?.let { registerProblem(ref, it) }
-                }
-                ?: return
-        }
+    private class ImpexHeaderLineVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: Set<String>) : ImpexVisitor() {
 
         override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-            if (parameter.firstChild is ImpexMacroUsageDec || (parameter.firstChild as? LeafPsiElement)?.elementType == DOCUMENT_ID) return
+            val reference = parameter.reference as? ImpExHeaderAbbreviationReference ?: return
 
-            parameter.references
-                .find { it is ImpexTSAttributeReference }
-                ?.let { it as? ImpexTSAttributeReference }
-                ?.takeIf { it.multiResolve(false).isEmpty() }
-                ?.let { ref ->
-                    parameter.headerItemTypeName
-                        ?.text
-                        ?.let { registerProblem(ref, it) }
-                }
+            val headerAbbreviationValue = reference
+                .resolve()
+                ?.let { it as IProperty }
+                ?.value
                 ?: return
-        }
 
-        private fun registerProblem(reference: TSReferenceBase<out PsiElement>, typeName: String) {
+            val missingExpectedMacros = headerAbbreviationValue.split("...", " ", "'", "\\\\")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .filter { it.startsWith('$') }
+                .filterNot { cachedMacros.contains(it) }
+                .takeIf { it.isNotEmpty() }
+                ?: return
+
+
             problemsHolder.registerProblemForReference(
                 reference,
                 ProblemHighlightType.ERROR,
-                message("hybris.inspections.UnknownTypeAttributeInspection.key", reference.value, typeName),
+                message("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
             )
         }
     }

@@ -48,9 +48,11 @@ class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : Psi
             property.value
                 ?.split("...")
                 ?.takeIf { it.size == 2 }
-                ?.map { it.trim() }
-                ?.map { it.replace("\\\\", "\\") }
-                ?.any { currentText.matches(it.toRegex()) }
+                ?.firstOrNull()
+                ?.trim()
+                ?.replace("\\\\", "\\")
+                ?.toRegex()
+                ?.let { currentText.matches(it) }
                 ?: false
         }
 
