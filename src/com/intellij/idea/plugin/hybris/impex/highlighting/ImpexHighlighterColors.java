@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -82,6 +82,7 @@ public final class ImpexHighlighterColors {
     public static final TextAttributesKey DOCUMENT_ID = key("DOCUMENT_ID", STATIC_FIELD);
     public static final TextAttributesKey WARNINGS_ATTRIBUTES = key("IMPEX_WARNING_ATTRIBUTES", CodeInsightColors.WARNINGS_ATTRIBUTES);
     public static final TextAttributesKey FUNCTION_CALL = key("IMPEX_FUNCTION_CALL", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey ATTRIBUTE_HEADER_ABBREVIATION = key("IMPEX_ATTRIBUTE_HEADER_ABBREVIATION", KEYWORD);
     public static final TextAttributesKey USER_RIGHTS = key("IMPEX_USER_RIGHTS", STATIC_FIELD);
     public static final TextAttributesKey USER_RIGHTS_HEADER_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_PARAMETER", HEADER_PARAMETER_NAME);
     public static final TextAttributesKey USER_RIGHTS_HEADER_MANDATORY_PARAMETER = key("IMPEX_USER_RIGHTS_HEADER_MANDATORY_PARAMETER", USER_RIGHTS_HEADER_PARAMETER);

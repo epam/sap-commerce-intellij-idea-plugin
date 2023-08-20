@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
@@ -161,6 +162,16 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                         holder,
                         element,
                         range = TextRange.from(element.textRange.startOffset, textLength)
+                    )
+                }
+            }
+
+            ImpexTypes.HEADER_PARAMETER_NAME -> {
+                if (element.parent.reference is ImpExHeaderAbbreviationReference) {
+                    highlight(
+                        ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION,
+                        holder,
+                        element,
                     )
                 }
             }

@@ -33,6 +33,7 @@
 - Ignore case for type in the reference type (e.g. `groups(customer.uid)`) [#545](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/545)
 - Added code completion of the [Header Abbreviations](https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations) [#613](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/613)
 - Added reference resolution for `Header Abbreviations` [#615](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/615)
+- Added own color scheme for `Header Abbreviations` [#617](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/617)
 - Adjusted Lexer to enable support of the `@` character for `Header Parameter` [#616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/616)
 
 ### `CockpitNG` enhancements

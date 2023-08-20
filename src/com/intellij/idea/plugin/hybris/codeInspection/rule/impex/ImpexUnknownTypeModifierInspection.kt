@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 
 class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WARNING
+    override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WEAK_WARNING
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexTypeModifierVisitor(holder)
 
     private class ImpexTypeModifierVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
@@ -43,7 +43,7 @@ class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
                 problemsHolder.registerProblem(
                     attribute,
                     HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeModifierInspection.key", attribute.text),
-                    ProblemHighlightType.WARNING
+                    ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
                 )
             }
         }
