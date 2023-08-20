@@ -18,8 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
@@ -146,5 +149,23 @@ object TSLookupElementFactory {
         LookupElementBuilder.create(lookupString)
             .withTypeText("Header Abbreviation", true)
             .withIcon(HybrisIcons.TS_HEADER_ABBREVIATION)
-        , 2.0)
+            .withInsertHandler(lookupString.contains('@')
+                .takeIf { it }
+                ?.let {
+                    object : AutoPopupInsertHandler() {
+                        override fun handle(context: InsertionContext, item: LookupElement) {
+                            lookupString.indexOf('@')
+                                .takeIf { it >= 0 }
+                                ?.let { index ->
+                                    val cursorOffset = context.editor.caretModel.offset
+                                    val moveBackTo = lookupString.length - index - 1
+                                    val offset = cursorOffset - moveBackTo
+                                    context.editor.caretModel.moveToOffset(offset)
+                                    context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
+                                }
+                        }
+                    }
+                }
+            ), 2.0
+    )
 }
