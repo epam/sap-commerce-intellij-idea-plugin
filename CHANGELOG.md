@@ -64,6 +64,7 @@
 - Added find usages for bean properties [#608](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/608)
 - Added code completion for Hint `name` attribute [#609](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/609)
 - Added Bean Generics code completion for Property `type` attribute [#610](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/610)
+- Added navigation from a declared bean property to the generated java property [#624](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/624)
 
 ### `beans.xml` inspection rules
 - Java keywords and reserved words cannot be used as Bean property **name** [#591](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/591)
