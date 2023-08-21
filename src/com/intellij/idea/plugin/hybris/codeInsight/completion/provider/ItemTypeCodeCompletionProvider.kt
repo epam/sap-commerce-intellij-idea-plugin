@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
@@ -36,8 +37,14 @@ open class ItemTypeCodeCompletionProvider : CompletionProvider<CompletionParamet
     ) {
         val project = parameters.editor.project ?: return
         val resultCaseInsensitive = result.caseInsensitive()
-        TSMetaModelAccess.getInstance(project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .mapNotNull { TSLookupElementFactory.build(it) }
+        TSMetaModelAccess.getInstance(project).getAllOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
+            .mapNotNull {
+                when (it) {
+                    is TSGlobalMetaItem -> TSLookupElementFactory.build(it)
+                    is TSGlobalMetaEnum -> TSLookupElementFactory.build(it, it.name)
+                    else -> null
+                }
+            }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 

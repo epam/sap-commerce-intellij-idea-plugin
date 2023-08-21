@@ -130,7 +130,13 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     }
 
     override fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = getMetaModel().getMetaType<T>(metaType).values
-    override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.values()
+    override fun getAllOf(vararg metaTypes: TSMetaType): Collection<TSGlobalMetaClassifier<*>> = (metaTypes
+        .takeIf { it.isNotEmpty() }
+        ?: TSMetaType.entries.toTypedArray()
+        )
+        .flatMap { getAll(it) }
+
+    override fun getAll(): Collection<TSGlobalMetaClassifier<*>> = TSMetaType.entries
         .flatMap { getAll(it) }
 
     override fun findMetaForDom(dom: ItemType) = findMetaItemByName(TSMetaModelNameProvider.extract(dom))

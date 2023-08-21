@@ -513,6 +513,8 @@ object HybrisConstants {
         """.trimIndent()
     @JvmField
     val DICTIONARY_WORDS = setOf(
+            "creationtime",
+            "modifiedtime",
             "argumenttype",
             "atomictype",
             "autocreate",

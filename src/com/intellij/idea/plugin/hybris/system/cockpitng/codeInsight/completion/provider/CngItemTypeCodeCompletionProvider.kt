@@ -22,11 +22,13 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.application.ApplicationManager
@@ -63,10 +65,11 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
             ?.let { metaModelAccess.findMetaClassifierByName(it) }
             ?: return super.addCompletions(parameters, context, result)
 
-        val allItems = metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+        val allItems = metaModelAccess.getAllOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM)
 
         val boostedItems = getBoostedItems(currentAttributeName, anotherAttributeValue, allItems)
             ?.takeIf { it.isNotEmpty() }
+            ?.toSet()
             ?: return super.addCompletions(parameters, context, result)
 
         addContextSpecificCompletions(currentAttributeName, anotherAttributeValue, result, boostedItems, allItems)
@@ -76,8 +79,8 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
         currentAttributeName: String,
         anotherAttributeValue: TSGlobalMetaClassifier<out DomElement>,
         result: CompletionResultSet,
-        boostedItems: Collection<TSGlobalMetaItem>,
-        allItems: Collection<TSGlobalMetaItem>
+        boostedItems: Collection<TSGlobalMetaClassifier<*>>,
+        allItems: Collection<TSGlobalMetaClassifier<*>>
     ) {
         val resultCaseInsensitive = result.caseInsensitive()
 
@@ -88,7 +91,11 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
                     Context.PARENT -> " parent of ${anotherAttributeValue.name}"
                     else -> null
                 }
-                TSLookupElementFactory.build(it)
+                when (it) {
+                    is TSGlobalMetaItem -> TSLookupElementFactory.build(it)
+                    is TSGlobalMetaEnum -> TSLookupElementFactory.build(it, it.name)
+                    else -> null
+                }
                     ?.withTypeIconRightAligned(true)
                     ?.withTypeText(typeText, true)
                     ?.withBoldness(true)
@@ -99,20 +106,40 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
 
         allItems
             .filterNot { boostedItems.contains(it) }
-            .mapNotNull { TSLookupElementFactory.build(it) }
+            .mapNotNull {
+                when (it) {
+                    is TSGlobalMetaItem -> TSLookupElementFactory.build(it)
+                    is TSGlobalMetaEnum -> TSLookupElementFactory.build(it, it.name)
+                    else -> null
+                }
+            }
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 
     private fun getBoostedItems(
         currentAttributeName: String,
-        anotherAttributeValue: TSGlobalMetaClassifier<out DomElement>,
-        allItems: Collection<TSGlobalMetaItem>
+        anotherAttributeMeta: TSGlobalMetaClassifier<out DomElement>,
+        allItems: Collection<TSGlobalMetaClassifier<*>>
     ) = when (currentAttributeName) {
         Context.TYPE -> allItems
-            .filter { meta -> meta.allExtends.find { it == anotherAttributeValue } != null }
+            .filter { meta ->
+                when (meta) {
+                    is TSGlobalMetaItem -> meta.allExtends.find { it == anotherAttributeMeta } != null
+                    is TSGlobalMetaEnum -> anotherAttributeMeta.name == HybrisConstants.TS_TYPE_ENUMERATION_VALUE
+                    else -> false
+                }
+            }
 
-        Context.PARENT -> (anotherAttributeValue as? TSGlobalMetaItem)
-            ?.allExtends
+        Context.PARENT -> when (anotherAttributeMeta) {
+            is TSGlobalMetaItem -> anotherAttributeMeta.allExtends
+            is TSGlobalMetaEnum -> allItems
+                .find { it.name == HybrisConstants.TS_TYPE_ENUMERATION_VALUE }
+                ?.let { listOf(it) }
+                ?: emptyList()
+
+            else -> emptyList()
+        }
+
 
         else -> null
     }

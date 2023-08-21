@@ -47,4 +47,5 @@ interface TSMetaModelAccess {
     fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType): Collection<T>
     fun getAll(): Collection<TSGlobalMetaClassifier<*>>
     fun getNextAvailableTypeCode(): Int
+    fun getAllOf(vararg metaTypes: TSMetaType): Collection<TSGlobalMetaClassifier<*>>
 }
