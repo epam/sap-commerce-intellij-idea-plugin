@@ -24,6 +24,10 @@ import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.model.Bean
+import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
@@ -84,18 +88,18 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     }
 
     private fun retrievePresentation(parent: XmlTag, attribute: String, project: Project, element: XmlToken) = when {
-        parent.name == "enum" && attribute == "class" -> finEnumClass(project, element.text)
+        parent.name == Beans.ENUM && attribute == Bean.CLASS -> finEnumClass(project, element.text)
             ?.let { arrayOf(it) }
             ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it, fileLabel) }
             ?: unknown
 
-        parent.name == "bean" && attribute == "class" -> findItemClass(project, element.text)
+        parent.name == Beans.BEAN && attribute == Bean.CLASS -> findItemClass(project, element.text)
             ?.let { arrayOf(it) }
             ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it, fileLabel) }
             ?: unknown
 
-        parent.name == "value" -> parent.parentOfType<XmlTag>()
-            ?.takeIf { it.name == "enum" }
+        parent.name == Enum.VALUE -> parent.parentOfType<XmlTag>()
+            ?.takeIf { it.name == Beans.ENUM }
             ?.getAttributeValue(EnumType.CODE)
             ?.let { finEnumClass(project, it) }
             ?.let { it.allFields.find { field -> field.name.equals(element.text, true) } }
@@ -103,12 +107,12 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
             ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it, fileLabel) }
             ?: unknown
 
-        parent.name == "property" && attribute == "name" -> element.parentOfType<XmlTag>()
+        parent.name == Bean.PROPERTY && attribute == Property.NAME -> element.parentOfType<XmlTag>()
             ?.getParentOfType<XmlTag>(true)
-            ?.getAttributeValue("class")
+            ?.getAttributeValue(Bean.CLASS)
             ?.let { findItemClass(project, it) }
             ?.allFields
-            ?.find { it.name == parent.getAttributeValue("name") }
+            ?.find { it.name == parent.getAttributeValue(Property.NAME) }
             ?.let { arrayOf(it) }
             ?.let { inlayPresentation(HybrisIcons.BS_PROPERTY, it, propertyLabel) }
             ?: unknown
