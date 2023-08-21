@@ -109,6 +109,7 @@
 - Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
 - CockpitNG DOM inspection is not properly validating `AbstractActionType` type [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
 - CockpitNG DOM inspection is not properly validating `Essentials` type [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
+- CockpitNG `CngContextParentIsNotValid` inspection should ignore `merge-by="type"` [#630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/630)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
