@@ -60,6 +60,10 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextParentIsNotValid.key"
                          shortName="CngContextParentIsNotValid" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngContextMergeByTypeParentIsNotValid.key"
+                         shortName="CngContextMergeByTypeParentIsNotValid" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextMergeByTypeParentIsNotValid"/>
 
         <!-- Impex -->
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageIsNotSupportedInspection" displayName="[y] Language is not supported"

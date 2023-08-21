@@ -46,6 +46,12 @@
 - Improved `qualifier` reference handling in case of set `spring-bean` for `lv:column` [#628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/628)
 - Added code completion and reference resolution for Enum attributes [#629](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/629)
 
+### `CockpitNG` inspection rules
+- Validate `parent` value according to `type` value of the `context` tag in case of `merge-by="type"` mode [#631](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/631)
+- Adjusted DOM inspection fpr `AbstractActionType` tag [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
+- Adjusted DOM inspection for `Essentials` tag [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
+- Adjusted `CngContextParentIsNotValid` inspection to ignore `merge-by="type"` [#630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/630)
+
 ### `HAC` enhancements
 - Enhanced Cluster support, support node routing [#543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/543)
 - Allow blank port for connection settings [#542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/542)
@@ -107,9 +113,6 @@
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
 - Ensure that `Properties` Plugin dependant code works only when corresponding Plugin is enabled [#618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/618)
 - Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
-- CockpitNG DOM inspection is not properly validating `AbstractActionType` type [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
-- CockpitNG DOM inspection is not properly validating `Essentials` type [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
-- CockpitNG `CngContextParentIsNotValid` inspection should ignore `merge-by="type"` [#630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/630)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
