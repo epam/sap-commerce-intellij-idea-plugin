@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,8 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.util.Key
@@ -54,14 +56,20 @@ abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSRe
             val metaModel = metaModelAccess.getMetaModel()
 
             val type = ref.resolveType(ref.element) ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
-            val meta = metaModelAccess.findMetaItemByName(type)
-                ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+
+            val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
+                is TSGlobalMetaItem -> meta
+                is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                    ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+
+                else -> return@ParameterizedCachedValueProvider emptyResult(metaModel)
+            }
 
             val originalValue = ref.value
-            val result = metaItemService.findAttributesByName(meta, originalValue, true)
+            val result = metaItemService.findAttributesByName(metaItem, originalValue, true)
                 ?.firstOrNull()
                 ?.let { PsiUtils.getValidResults(arrayOf(AttributeResolveResult(it))) }
-                ?: metaItemService.findRelationEndsByQualifier(meta, originalValue, true)
+                ?: metaItemService.findRelationEndsByQualifier(metaItem, originalValue, true)
                     ?.firstOrNull()
                     ?.let { PsiUtils.getValidResults(arrayOf(RelationEndResolveResult(it))) }
                 ?: emptyArray()

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,11 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provi
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
@@ -37,24 +40,31 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        val meta = TSMetaModelAccess.getInstance(project).findMetaItemByName(type)
-        meta
-            ?.allAttributes
-            ?.values
-            ?.map { TSLookupElementFactory.build(it) }
-            ?.forEach { resultCaseInsensitive.addElement(it) }
+        val metaModelAccess = TSMetaModelAccess.getInstance(project)
+        val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
+            is TSGlobalMetaItem -> meta
+            is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
+                ?: return
 
-        meta
-            ?.allOrderingAttributes
-            ?.values
-            ?.map { TSLookupElementFactory.build(it) }
-            ?.forEach { resultCaseInsensitive.addElement(it) }
+            else -> return
+        }
+        metaItem
+            .allAttributes
+            .values
+            .map { TSLookupElementFactory.build(it) }
+            .forEach { resultCaseInsensitive.addElement(it) }
 
-        meta
-            ?.allRelationEnds
-            ?.filter { it.qualifier != null }
-            ?.mapNotNull { TSLookupElementFactory.build(it) }
-            ?.forEach { resultCaseInsensitive.addElement(it) }
+        metaItem
+            .allOrderingAttributes
+            .values
+            .map { TSLookupElementFactory.build(it) }
+            .forEach { resultCaseInsensitive.addElement(it) }
+
+        metaItem
+            .allRelationEnds
+            .filter { it.qualifier != null }
+            .mapNotNull { TSLookupElementFactory.build(it) }
+            .forEach { resultCaseInsensitive.addElement(it) }
     }
 
     protected abstract fun resolveType(element: PsiElement): String?
