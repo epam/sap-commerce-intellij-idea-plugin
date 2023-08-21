@@ -45,6 +45,7 @@
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
 - Improved `qualifier` reference handling in case of set `spring-bean` for `lv:column` [#628](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/628)
 - Added code completion and reference resolution for Enum attributes [#629](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/629)
+- Improved code completion for `context` tag by boosting most suitable types [#632](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/632)
 
 ### `CockpitNG` inspection rules
 - Validate `parent` value according to `type` value of the `context` tag in case of `merge-by="type"` mode [#631](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/631)

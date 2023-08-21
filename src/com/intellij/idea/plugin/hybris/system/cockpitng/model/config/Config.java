@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 @Stubbed
 @StubbedOccurrence
 public interface Config extends DomElement {
+
+    String CONTEXT = "context";
 
     /**
      * Returns the value of the required-parameters child.
@@ -69,7 +71,7 @@ public interface Config extends DomElement {
      * @return the list of context children.
      */
     @NotNull
-    @SubTagList("context")
+    @SubTagList(CONTEXT)
     java.util.List<Context> getContexts();
 
     /**
@@ -77,7 +79,7 @@ public interface Config extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("context")
+    @SubTagList(CONTEXT)
     Context addContext();
 
 
