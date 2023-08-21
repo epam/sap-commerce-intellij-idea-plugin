@@ -105,7 +105,8 @@
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
 - Ensure that `Properties` Plugin dependant code works only when corresponding Plugin is enabled [#618](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/618)
 - Also hide full Module name for `web` sub-module in the Project View [#622](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/622)
-- CockpitNG DOM inspection is not properly validating Create Wizard Navigation xml tag [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
+- CockpitNG DOM inspection is not properly validating `AbstractActionType` type [#626](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/626)
+- CockpitNG DOM inspection is not properly validating `Essentials` type [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
 
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
