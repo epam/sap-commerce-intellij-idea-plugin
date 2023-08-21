@@ -579,7 +579,7 @@
 - Added completion and navigation for Index attributes within `items.xml` [#207](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/207)
 - Added completion for meta tags within `extensioninfo.xml` [#230](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/230)
 - Added listing of references for `id` attribute within Business Process definition [#214](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/214)
-- Added listing of references for multiple Cockpitng definitions [#216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/216)
+- Added listing of references for multiple CockpitNG definitions [#216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/216)
 - Added completion and navigation for `onError` attribute within Business Process definition [#215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/215)
 - Improved representation of the available extensions listing [#234](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/234)
 - Improved project startup performance [#210](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/210)
@@ -600,7 +600,7 @@
 
 ### Features - IDEA Ultimate
 - Added navigation to TypeCode Interceptor declaration(s) [#188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/188)
-- Added code completion and navigation for Cockpitng 'spring-bean' element [#184](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/184)
+- Added code completion and navigation for CockpitNG 'spring-bean' element [#184](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/184)
 - Added highlighting if Spring bean used in Business Process is not available [#170](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/170)
 - Register `-backoffice-spring.xml` files, Project re-import is required [#183](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/183)
 - Introduced new `items.xml` Annotator for Attribute Handler [#117](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/117)
@@ -632,7 +632,7 @@
 - Added navigation to `beans.xml` Enum values declaration from generated classes [#111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/111)
 - Added navigation to `beans.xml` Bean property declaration from generated classes [#112](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/112)
 - Added navigation to alternative declarations of the beans within `beans.xml` [#78](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/78)
-- Added navigation to `items.xml` for Types used in the Cockpitng configuration files [#166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166)
+- Added navigation to `items.xml` for Types used in the CockpitNG configuration files [#166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/166)
 - Added code completion for ImpEx `translator` modifier [#158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/158)
 - Added code completion for ImpEx `cell-decorator` modifier [#159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/159)
 - Added code completion and enriched navigation within Business Process [#171](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/171)
@@ -644,7 +644,7 @@
 - Added `localextensions.xml` DOM model and custom Icon [#155](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/155)
 - Added `extensioninfo.xml` DOM model and custom Icon [#147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147)
 - Added `process.xml` DOM model and custom Icon [#148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148)
-- Added Cockpitng files (widgets, config, definition) support, Model, completion and navigation [#165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165),
+- Added CockpitNG files (widgets, config, definition) support, Model, completion and navigation [#165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165),
 [#174](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/174),
 [#169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169),
 [#172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172),
