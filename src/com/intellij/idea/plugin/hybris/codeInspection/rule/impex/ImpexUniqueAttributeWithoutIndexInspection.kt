@@ -60,8 +60,8 @@ private class ParameterChecker(val holder: ProblemsHolder) : ImpexVisitor() {
 
         val hasIndex = TSMetaModelAccess.getInstance(param.project).findMetaItemByName(typeName)
             ?.allIndexes
-            ?.map { it.keys }
-            ?.any { it.contains(attribute) }
+            ?.flatMap { it.keys }
+            ?.any { it.equals(attribute, true) }
             ?: true
 
         if (!hasIndex) {

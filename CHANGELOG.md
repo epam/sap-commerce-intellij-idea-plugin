@@ -43,6 +43,7 @@
 - Ensure that all macros required by `Header Abbreviation` are declared [#619](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/619)
 - Show distinct required macros required by `Header Abbreviation` inspection [#635](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/635)
 - Do not inspect special parameter for uniqueness [#621](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/621)
+- Ignore case for parameter for unique column without an index inspection [#637](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/637)
 
 ### `CockpitNG` enhancements
 - Added code completion for AdvancedSearch `operator` parameter [#537](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/537)
