@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.documentation.renderer.impexDoc
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.model.Pointer
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -423,6 +424,37 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
                 else -> null
             }
+        }
+
+        ImpexTypes.HEADER_PARAMETER_NAME -> {
+            element.parent.reference
+                ?.let { it as? ImpExHeaderAbbreviationReference }
+                ?.let {
+                    impexDoc {
+                        headerAbbreviation(element.text)
+                        externalLink(
+                            "Using Header Abbreviations",
+                            "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations"
+                        )
+                        texts(
+                            "ImpEx provides a way to shorten length column declarations by using regexp patterns and replacements.",
+                            "Although the ImpEx header definition language provides a most flexible way of using custom column translators, their declaration can grow long.",
+                            "You can shorten them using the ImpEx alias syntax.",
+                            "The following example shows how to use this syntax to shorten classification columns declaration by giving them a new syntax.",
+                            "Put this into your SAP Commerce Cloud platform local.properties file:"
+                        )
+                        example("impex.header.replacement.1 = C@(\\\\w+) ... @$1[system='\\\\${'$'}systemName', version='\\\\${'$'}systemVersion', translator='de...ClassificationAttributeTranslator']")
+                        texts(
+                            "Note the Java string notation has to be used, that's why there are double '\\'s.",
+                            "All parameters starting with impex.header.replacement are parsed as ImpEx column replacement rules.",
+                            "The parameter has to end with a number that defines the priority of the rule. This way ambiguous rules can be sorted.",
+                            "So what's this for? The first part of the property C@(\\\\w+) defines the new abbreviation pattern to be used to declare classification attribute columns with.",
+                            "The second part is the replacement text including the attribute qualifier match group ${'$'}1.",
+                            "In fact, it contains the original special column declaration. Both parts are to be separated by '...'."
+                        )
+                    }.build()
+                }
+
         }
 
         else -> null
