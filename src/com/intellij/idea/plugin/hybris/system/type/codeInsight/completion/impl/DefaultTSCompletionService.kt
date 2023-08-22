@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
@@ -77,7 +79,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             .flatten()
     }
 
-    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder> {
+    override fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {
         val completion = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
@@ -100,7 +102,10 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             }
             .mapNotNull {
                 TSLookupElementFactory.build(it, suffix)
+                    ?.withTypeText(" child of $referenceItemTypeName", true)
             }
+            .map { PrioritizedLookupElement.withPriority(it, 2.0) }
+            .map { PrioritizedLookupElement.withGrouping(it, 2) }
     }
 
     override fun getHeaderAbbreviationCompletions(project: Project) = PropertiesService.getInstance(project)

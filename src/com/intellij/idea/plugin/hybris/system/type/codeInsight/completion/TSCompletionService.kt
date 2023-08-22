@@ -34,7 +34,7 @@ interface TSCompletionService {
 
     fun getCompletions(vararg types: TSMetaType): List<LookupElementBuilder>
 
-    fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElementBuilder>
+    fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement>
 
     /**
      * See: https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations

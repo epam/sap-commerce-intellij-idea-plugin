@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -41,7 +41,7 @@ class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<Impe
         ?.let { TextRange.from(0, it.length) }
         ?: super.calculateDefaultRangeInElement()
 
-    override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
+    override fun getVariants(): Array<LookupElement> = TSCompletionService.getInstance(element.project)
         .getImpexInlineTypeCompletions(element.project, element)
         .toTypedArray()
 

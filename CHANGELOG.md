@@ -36,6 +36,7 @@
 - Added own color scheme for `Header Abbreviations` [#617](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/617)
 - Preselect special part of the `Header Abbreviation` starting with `@` character [#620](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/620)
 - Adjusted Lexer to enable support of the `@` character for `Header Parameter` [#616](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/616)
+- Boost child types code completion for inline header parameter [#634](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/634)
 
 ### `ImpEx` inspection rules
 - Ensure that all macros required by `Header Abbreviation` are declared [#619](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/619)
