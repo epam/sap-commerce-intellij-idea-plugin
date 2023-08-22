@@ -60,6 +60,7 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
                 .filter { it.startsWith('$') }
+                .distinct()
                 .filterNot { cachedMacros.contains(it) }
                 .takeIf { it.isNotEmpty() }
                 ?: return
