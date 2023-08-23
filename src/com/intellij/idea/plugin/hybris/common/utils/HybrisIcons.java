@@ -66,6 +66,7 @@ public final class HybrisIcons {
     public static final Icon BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg");
     public static final Icon MONITORING = getIcon("/icons/monitoring.svg");
     public static final Icon EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg");
+    public static final Icon UNMANAGED_DEPENDENCIES = getIcon("/icons/unmanagedDependencies.svg");
     public static final Icon SETTINGS = getIcon("/icons/settings.svg");
 
     public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;

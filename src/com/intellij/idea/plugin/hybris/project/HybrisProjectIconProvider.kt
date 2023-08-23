@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,14 @@ import javax.swing.Icon
 
 class HybrisProjectIconProvider : IconProvider() {
 
-    override fun getIcon(p0: PsiElement, p1: Int): Icon? {
-        val file = p0.containingFile ?: return null
-        if (file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME)) {
-            return HybrisIcons.PLUGIN_SETTINGS
+    override fun getIcon(element: PsiElement, p1: Int): Icon? {
+        val file = element.containingFile ?: return null
+
+        return when {
+            file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UNMANAGED_DEPENDENCIES
+            file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.EXTERNAL_DEPENDENCIES
+            file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME) -> HybrisIcons.PLUGIN_SETTINGS
+            else -> null
         }
-        return null
     }
 }

@@ -1,3 +1,8 @@
+## [2023.2.7]
+
+### Other
+- Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
+
 ## [2023.2.6]
 
 ### `OCC` enhancements
