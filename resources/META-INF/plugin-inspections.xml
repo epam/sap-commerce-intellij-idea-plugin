@@ -133,6 +133,9 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExMissingValueGroupInspection" displayName="[y] Missing value groups"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMissingValueGroupInspection"/>
+        <localInspection groupPath="SAP Commerce" shortName="ImpExMissingHeaderParameterInspection" displayName="[y] Missing header parameter name"
+                         groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMissingHeaderParameterInspection"/>
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
