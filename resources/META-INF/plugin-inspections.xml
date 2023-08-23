@@ -131,7 +131,7 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ImpExMissingValueGroupInspection" displayName="[y] Missing value groups"
-                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMissingValueGroupInspection"/>
 
         <!-- Extension Info  -->
