@@ -24,14 +24,29 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
-class ImpExDeleteParametersSeparatorFix(
-    modifier: PsiElement,
-) : LocalQuickFixOnPsiElement(modifier) {
+open class ImpExDeletePsiElementFix internal constructor(
+    element: PsiElement,
+    private val myFamilyName: String,
+    private val myText: String,
+) : LocalQuickFixOnPsiElement(element) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.impex.DeleteParametersSeparator")
-    override fun getText() = message("hybris.inspections.fix.impex.DeleteParametersSeparator")
+    override fun getFamilyName() = myFamilyName
+    override fun getText() = myText
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         startElement.delete()
     }
 }
+
+class ImpExDeleteParametersSeparatorFix(element: PsiElement) : ImpExDeletePsiElementFix(
+    element,
+    message("hybris.inspections.fix.impex.DeleteParametersSeparator"),
+    message("hybris.inspections.fix.impex.DeleteParametersSeparator")
+)
+
+class ImpExDeleteValueGroupFix(element: PsiElement, valueGroupPreview: String) : ImpExDeletePsiElementFix(
+    element,
+    message("hybris.inspections.fix.impex.DeleteValueGroup"),
+    message("hybris.inspections.fix.impex.DeleteValueGroup.key", valueGroupPreview
+    )
+)

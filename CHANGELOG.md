@@ -2,7 +2,8 @@
 
 ### `ImpEx` inspection rules
 - Add missing value groups for value lines [#641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/641)
-- Remove blank header parameter [#642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/642)
+- Delete blank header parameter [#642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/642)
+- Delete orphan value group [#643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/643)
 
 ### Other
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
