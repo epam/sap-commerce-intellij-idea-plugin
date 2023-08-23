@@ -1,5 +1,8 @@
 ## [2023.2.7]
 
+### `ImpEx` inspection rules
+- Add missing value groups for value lines [#641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/641)
+
 ### Other
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
 
