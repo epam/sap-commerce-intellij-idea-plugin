@@ -53,8 +53,7 @@ class HybrisClearAllAction : DumbAwareAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
-
-        activeConsole.clear()
+        HybrisConsoleService.getInstance(project).getActiveConsole()
+            ?.clear()
     }
 }
