@@ -16,25 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.externalDependencies
+package com.intellij.idea.plugin.hybris.codeInspection.rule.externalDependencies
 
+import com.intellij.idea.plugin.hybris.codeInspection.rule.AbstractInspection
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
-import org.jetbrains.idea.maven.dom.MavenDomProjectModelDescription
-import javax.swing.Icon
+import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
 
-class EDDomFileDescription : MavenDomProjectModelDescription() {
+abstract class AbstractEdInspection : AbstractInspection<MavenDomProjectModel>(MavenDomProjectModel::class.java) {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTERNAL_DEPENDENCIES
-
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.virtualFile != null
-        && file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+    override fun canProcess(project: Project, file: XmlFile) = file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
 
 }

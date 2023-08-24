@@ -5,6 +5,9 @@
 - Delete blank header parameter [#642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/642)
 - Delete orphan value group [#643](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/643)
 
+### `External Dependencies` inspection rules
+- Inspect is declared dependency downloaded [#644](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/644)
+
 ### Other
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
 

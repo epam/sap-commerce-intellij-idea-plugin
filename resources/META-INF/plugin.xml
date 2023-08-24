@@ -29,10 +29,10 @@
     </vendor>
 
     <depends optional="true" config-file="optional-junit-dependencies.xml">JUnit</depends>
-    <depends optional="true" config-file="optional-support-ant-dependencies.xml">AntSupport</depends>
-    <depends optional="true" config-file="optional-support-maven-dependencies.xml">org.jetbrains.idea.maven</depends>
-    <depends optional="true" config-file="optional-support-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
-    <depends optional="true" config-file="optional-support-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="optional-ant-dependencies.xml">AntSupport</depends>
+    <depends optional="true" config-file="optional-maven-dependencies.xml">org.jetbrains.idea.maven</depends>
+    <depends optional="true" config-file="optional-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
+    <depends optional="true" config-file="optional-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
     <depends optional="true" config-file="optional-lang-dependencies.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="lang/optional-polyglot-query.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="lang/optional-flexibleSearch.xml">com.intellij.modules.lang</depends>
