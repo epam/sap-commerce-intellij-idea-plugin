@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.view.impl
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.JavaProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
+import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -53,6 +54,16 @@ class HybrisProjectViewDirectoryHelper(project: Project) : ProjectViewDirectoryH
     override fun skipDirectory(directory: PsiDirectory?) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
         javaProjectViewDirectoryHelper.skipDirectory(directory)
     else super.skipDirectory(directory)
+
+    override fun canRepresent(element: VirtualFile, directory: PsiDirectory, owner: PsiDirectory, settings: ViewSettings?) =
+        if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
+            javaProjectViewDirectoryHelper.canRepresent(element, directory, owner, settings)
+        else super.canRepresent(element, directory, owner, settings)
+
+    override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean, filter: PsiFileSystemItemFilter?) =
+        if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
+            javaProjectViewDirectoryHelper.isEmptyMiddleDirectory(directory, strictlyEmpty, filter)
+        else super.isEmptyMiddleDirectory(directory, strictlyEmpty, filter)
 
     override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
         javaProjectViewDirectoryHelper.isEmptyMiddleDirectory(directory, strictlyEmpty)

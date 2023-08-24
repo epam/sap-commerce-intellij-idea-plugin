@@ -10,6 +10,7 @@
 
 ### Fixes
 - Bus is already disposed for consoles [#645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/645)
+- Compact middle packages not working [#646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/646)
 
 ### Other
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
