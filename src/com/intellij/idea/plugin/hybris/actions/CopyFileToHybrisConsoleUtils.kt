@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messageFallback
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
@@ -37,7 +38,7 @@ import javax.swing.tree.TreePath
 object CopyFileToHybrisConsoleUtils {
 
     fun copySelectedFilesToConsole(project: Project, consoleTitle: String, dialogTitle: String) {
-        val console = HybrisToolWindowService.getInstance(project).consolesPanel.findConsole(consoleTitle) ?: return
+        val console = HybrisConsoleService.getInstance(project).findConsole(consoleTitle) ?: return
         val query = getQueryFromSelectedFiles(project)
 
         if (getTextFromHybrisConsole(project, console).isNotEmpty()) {
@@ -49,8 +50,8 @@ object CopyFileToHybrisConsoleUtils {
     }
 
     fun copyQueryToConsole(project: Project, consoleTitle: String, query: String) {
-        val panel = HybrisToolWindowService.getInstance(project).consolesPanel
-        val console = panel.findConsole(consoleTitle) ?: return
+        val hybrisConsoleService = HybrisConsoleService.getInstance(project)
+        val console = hybrisConsoleService.findConsole(consoleTitle) ?: return
 
         with(HybrisToolWindowService.getInstance(project)) {
             this.activateToolWindow()
@@ -58,7 +59,7 @@ object CopyFileToHybrisConsoleUtils {
         }
 
         with(console) {
-            panel.setActiveConsole(this)
+            hybrisConsoleService.setActiveConsole(this)
             this.clear()
             this.setInputText(query)
         }

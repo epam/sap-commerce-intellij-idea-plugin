@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,20 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.impl
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindowManager
 
 class HybrisToolWindowServiceImpl(val project: Project) : HybrisToolWindowService {
-
-    override val consolesPanel: HybrisConsolesPanel by lazy { HybrisConsolesPanel(project) }
-    override val tsViewPanel: TSView by lazy { TSView(project) }
-    override val bsViewPanel: BSView by lazy { BSView(project) }
 
     override fun activateToolWindow() {
         hybrisToolWindow()
@@ -53,6 +47,12 @@ class HybrisToolWindowServiceImpl(val project: Project) : HybrisToolWindowServic
                     }
             }
     }
+
+    override fun finConsolesView() = hybrisToolWindow()
+        ?.contentManager
+        ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
+        ?.component
+        ?.let { it as? HybrisConsolesView }
 
     private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
 

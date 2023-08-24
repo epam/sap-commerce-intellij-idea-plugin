@@ -28,15 +28,12 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
-import com.intellij.ui.JBTabsPaneImpl
-import com.intellij.ui.tabs.impl.JBEditorTabs
-import com.intellij.util.asSafely
 import java.awt.BorderLayout
-import javax.swing.Icon
+import java.io.Serial
 import javax.swing.JPanel
 import javax.swing.SwingConstants.TOP
 
-class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
         //NOP
@@ -50,7 +47,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
     private val solrSearchConsole = HybrisSolrSearchConsole(project)
 
     private val actionToolbar: ActionToolbar
-    private val hybrisTabs: HybrisTabs
+    private val hybrisTabs: HybrisConsoleTabs
 
     init {
         layout = BorderLayout()
@@ -63,7 +60,7 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val consoles = arrayOf(flexibleSearchConsole, impexConsole, groovyConsole, polyglotQueryConsole, monitorConsole, solrSearchConsole)
         consoles.forEach { Disposer.register(this, it) }
-        hybrisTabs = HybrisTabs(project, TOP, consoles, this)
+        hybrisTabs = HybrisConsoleTabs(project, TOP, consoles, this)
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
         actionToolbar.targetComponent = hybrisTabs.component
@@ -71,26 +68,22 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
 
         val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
         val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
-        val executeAction = HybrisExecuteImmediatelyAction(hybrisTabs, actionHandler)
+        val executeAction = HybrisExecuteImmediatelyAction(actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
         val choseInstanceAction = HybrisChooseInstanceAction()
 
-        toolbarActions.add(choseInstanceAction)
-        toolbarActions.add(executeAction)
-        toolbarActions.add(HybrisSuspendAction(hybrisTabs, actionHandler))
-        toolbarActions.add(HybrisImpexValidateAction(hybrisTabs, validateHandler))
+        with(toolbarActions) {
+            add(choseInstanceAction)
+            add(executeAction)
+            add(HybrisSuspendAction(actionHandler))
+            add(HybrisImpexValidateAction(validateHandler))
+        }
 
         val actions = impexConsole.createConsoleActions()
-        actions[5] = HybrisClearAllAction(hybrisTabs)
+        actions[5] = HybrisClearAllAction()
         toolbarActions.addAll(*actions)
         add(panel)
-    }
-
-    override fun getComponent() = super.getComponent()!!
-
-    fun sendTextToConsole(console: HybrisConsole, text: String) {
-        console.setInputText(text)
     }
 
     fun setActiveConsole(console: HybrisConsole) {
@@ -115,40 +108,14 @@ class HybrisConsolesPanel(val project: Project) : SimpleToolWindowPanel(true), D
     fun execute() = performAction(HybrisExecuteImmediatelyAction::class.java)
 
     private fun performAction(clazz: Class<out AnAction>) {
-        val action = actionToolbar.actions.first { clazz.isInstance(it) }
+        val action = actionToolbar.actions.firstOrNull { clazz.isInstance(it) } ?: return
         val event = AnActionEvent.createFromDataContext("unknown", action.templatePresentation, actionToolbar.toolbarDataContext)
         action.actionPerformed(event)
     }
 
     companion object {
+        @Serial
         private const val serialVersionUID: Long = 5761094275961283320L
     }
 }
 
-class HybrisTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
-
-    private val consoles = arrayListOf<HybrisConsole>()
-
-    init {
-        defaultConsoles.forEach {
-            addConsoleTab(it.title(), it.icon(), it, it.tip())
-        }
-
-        addChangeListener {
-            it.source.asSafely<JBEditorTabs>()
-                    ?.selectedInfo
-                    ?.component.asSafely<HybrisConsole>()
-                    ?.onSelection()
-        }
-    }
-
-    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole, tip: String) {
-        insertTab(title, icon, console.component, tip, consoles.size)
-        consoles.add(console)
-    }
-
-    fun activeConsole() = consoles[selectedIndex]
-    fun setActiveConsole(console: HybrisConsole) {
-        selectedIndex = consoles.indexOf(console);
-    }
-}

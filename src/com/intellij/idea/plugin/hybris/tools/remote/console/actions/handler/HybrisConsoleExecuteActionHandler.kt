@@ -1,3 +1,21 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
 
 
@@ -6,9 +24,9 @@ import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.json.JsonFileType
@@ -90,14 +108,11 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
         ConsoleViewUtil.printAsFileType(console, output, fileType)
     }
 
-    fun runExecuteAction(tabbedPane: HybrisTabs) {
+    fun runExecuteAction() {
+        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
 
-        val console = tabbedPane.activeConsole()
-        val consoleHistoryModel = ConsoleHistoryController.getController(console)
-
-        if (consoleHistoryModel != null) {
-            execute(console, consoleHistoryModel)
-        }
+        ConsoleHistoryController.getController(activeConsole)
+            ?.let { execute(activeConsole, it) }
     }
 
     private fun execute(console: HybrisConsole,

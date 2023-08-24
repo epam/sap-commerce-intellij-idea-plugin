@@ -25,18 +25,18 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 
-class PolyglotQueryExecuteQueryAction : AbstractExecuteAction() {
+class PolyglotQueryExecuteQueryAction : AbstractExecuteAction(
+    PolyglotQueryFileType.instance.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY
+) {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = HybrisI18NBundleUtils.message("hybris.pgq.actions.execute_query")
             description = HybrisI18NBundleUtils.message("hybris.pgq.actions.execute_query.description")
             icon = HybrisIcons.CONSOLE_EXECUTE
         }
     }
-
-    override val extension = PolyglotQueryFileType.instance.defaultExtension
-    override val consoleName = HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY
 
     override fun update(e: AnActionEvent) {
         super.update(e)

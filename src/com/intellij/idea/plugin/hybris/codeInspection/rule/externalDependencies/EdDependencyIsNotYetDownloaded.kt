@@ -23,14 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
-import org.jetbrains.idea.maven.indices.archetype.MavenCatalog
-import java.io.File
-import java.io.FileOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
 
@@ -61,51 +54,5 @@ class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
                     )
                 }
             }
-//
-//        val groupId = "com.example"
-//        val artifactId = "your-artifact-id"
-//        val version = "1.0.0"
-//        val targetModulePath = "/path/to/your/module"
-//
-//        downloadMavenDependencyWithSources(groupId, artifactId, version, targetModulePath)
-
-    }
-
-    fun downloadFile(url: String, targetFile: File) {
-        val connection = URL(url).openConnection() as HttpURLConnection
-        connection.connect()
-
-        val inputStream = connection.inputStream
-        val outputStream = FileOutputStream(targetFile)
-
-        inputStream.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
-            }
-        }
-    }
-
-    fun downloadMavenDependencyWithSources(
-        groupId: String,
-        artifactId: String,
-        version: String,
-        targetModulePath: String
-    ) {
-        val repositoryUrl = MavenCatalog.System.MavenCentral.url
-        val jarUrl = "$repositoryUrl/${groupId.replace('.', '/')}/$artifactId/$version/$artifactId-$version.jar"
-        val sourcesUrl = "$repositoryUrl/${groupId.replace('.', '/')}/$artifactId/$version/$artifactId-$version-sources.jar"
-
-        val libFolder = File("$targetModulePath/lib")
-        libFolder.mkdirs()
-
-        runBlocking(Dispatchers.IO) {
-            val jarFile = File(libFolder, "$artifactId-$version.jar")
-            val sourcesFile = File(libFolder, "$artifactId-$version-sources.jar")
-
-            downloadFile(jarUrl, jarFile)
-            downloadFile(sourcesUrl, sourcesFile)
-
-            println("Dependency downloaded and copied to lib folder.")
-        }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.openapi.project.DumbAware
@@ -36,9 +36,9 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         project: Project, toolWindow: ToolWindow
     ) {
         arrayOf(
-            createTSContent(toolWindow, HybrisToolWindowService.getInstance(project).tsViewPanel),
-            createBSContent(toolWindow, HybrisToolWindowService.getInstance(project).bsViewPanel),
-            createConsolesContent(toolWindow, project, HybrisToolWindowService.getInstance(project).consolesPanel),
+            createTSContent(toolWindow, TSView(project)),
+            createBSContent(toolWindow, BSView(project)),
+            createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
@@ -63,7 +63,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         this
     }
 
-    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesPanel) = with(toolWindow.contentManager.factory.createContent(panel.component, CONSOLES_ID, true)) {
+    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesView) = with(toolWindow.contentManager.factory.createContent(panel, CONSOLES_ID, true)) {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 

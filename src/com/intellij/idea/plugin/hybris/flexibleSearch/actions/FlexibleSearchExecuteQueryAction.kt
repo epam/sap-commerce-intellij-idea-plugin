@@ -18,15 +18,18 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
+import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 
-class FlexibleSearchExecuteQueryAction : AbstractExecuteAction() {
+class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
+    FlexibleSearchFileType.instance.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
+) {
 
     init {
         with (templatePresentation) {
@@ -35,9 +38,6 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction() {
             icon = HybrisIcons.CONSOLE_EXECUTE
         }
     }
-
-    override val extension = FlexibleSearchFileType.instance.defaultExtension
-    override val consoleName = HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
 
     override fun update(e: AnActionEvent) {
         super.update(e)

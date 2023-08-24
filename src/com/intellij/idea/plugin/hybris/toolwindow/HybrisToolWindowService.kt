@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.openapi.project.Project
 
 interface HybrisToolWindowService {
@@ -29,10 +27,7 @@ interface HybrisToolWindowService {
         fun getInstance(project: Project): HybrisToolWindowService = project.getService(HybrisToolWindowService::class.java)
     }
 
-    val consolesPanel: HybrisConsolesPanel
-    val tsViewPanel: TSView
-    val bsViewPanel: BSView
-
     fun activateToolWindow()
     fun activateToolWindowTab(id: String)
+    fun finConsolesView(): HybrisConsolesView?
 }

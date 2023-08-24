@@ -19,35 +19,40 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisTabs
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class HybrisImpexValidateAction(
-    private val tabbedPane: HybrisTabs,
     private val executeValidationActionHandler: HybrisConsoleExecuteValidateActionHandler
 ) : AnAction(
-    HybrisI18NBundleUtils.message("action.console.hybris.impex.validate.message.text"),
-    HybrisI18NBundleUtils.message("action.console.hybris.impex.validate.message.title"),
+    message("action.console.hybris.impex.validate.message.text"),
+    message("action.console.hybris.impex.validate.message.title"),
     HybrisIcons.IMX_VALIDATE
 ) {
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun actionPerformed(e: AnActionEvent) {
-        executeValidationActionHandler.runExecuteAction(tabbedPane)
+        executeValidationActionHandler.runExecuteAction()
     }
 
     override fun update(e: AnActionEvent) {
-        val editor = tabbedPane.activeConsole().consoleEditor
+        val project = e.project ?: return
+        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
+
+        val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
         e.presentation.isEnabled = !executeValidationActionHandler.isProcessRunning &&
-            (lookup == null || !lookup.isCompletion) && tabbedPane.activeConsole() is HybrisImpexConsole
+            (lookup == null || !lookup.isCompletion) && activeConsole is HybrisImpexConsole
 
-        e.presentation.isVisible = tabbedPane.activeConsole() is HybrisImpexConsole
+        e.presentation.isVisible = activeConsole is HybrisImpexConsole
     }
 
 }

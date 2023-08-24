@@ -69,7 +69,7 @@
 
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
-                             key="hybris.settings.project.impex.title"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"
                              provider="com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsConfigurableProvider"/>
 
         <!-- ####################################################################################################### -->

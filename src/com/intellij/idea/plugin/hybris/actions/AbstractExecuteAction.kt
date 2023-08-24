@@ -18,21 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAware
 
-abstract class AbstractExecuteAction : AnAction(), DumbAware {
+abstract class AbstractExecuteAction(
+    internal val extension: String,
+    private val consoleName: String
+) : AnAction(), DumbAware {
 
-    protected abstract val extension: String
-    protected abstract val consoleName: String
-    protected open fun doExecute(consolePanel: HybrisConsolesPanel) {
-        consolePanel.execute()
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    protected open fun doExecute(consoleService: HybrisConsoleService) {
+        consoleService.executeStatement()
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -45,22 +49,20 @@ abstract class AbstractExecuteAction : AnAction(), DumbAware {
             content = editor.document.text
         }
 
-        val toolWindowService = HybrisToolWindowService.getInstance(project)
-        with(toolWindowService) {
-            this.activateToolWindow()
-            this.activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
+        with(HybrisToolWindowService.getInstance(project)) {
+            activateToolWindow()
+            activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
         }
 
-        val consolesPanel = toolWindowService.consolesPanel
-        val console = consolesPanel.findConsole(consoleName)
+        val consoleService = HybrisConsoleService.getInstance(project)
+        val console = consoleService.findConsole(consoleName)
         if (console == null) {
             LOG.warn("unable to find console $consoleName")
             return
         }
-        consolesPanel.setActiveConsole(console)
-        consolesPanel.sendTextToConsole(console, content)
-        toolWindowService.activateToolWindow()
-        doExecute(consolesPanel)
+        consoleService.setActiveConsole(console)
+        console.setInputText(content)
+        doExecute(consoleService)
     }
 
     override fun update(e: AnActionEvent) {

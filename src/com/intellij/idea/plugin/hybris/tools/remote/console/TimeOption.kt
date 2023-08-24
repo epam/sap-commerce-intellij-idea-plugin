@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import org.jetbrains.plugins.groovy.GroovyFileType
+package com.intellij.idea.plugin.hybris.tools.remote.console
 
-class GroovyExecuteAction : AbstractExecuteAction(
-    GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_GROOVY
-) {
+import java.util.concurrent.TimeUnit
 
-    init {
-        with(templatePresentation) {
-            text = "Execute Groovy Script"
-            description = "Execute Groovy Script on a remote SAP Commerce instance"
-            icon = HybrisIcons.CONSOLE_EXECUTE
-        }
-    }
-
-}
+data class TimeOption(val name: String, val value: Int, val unit: TimeUnit)

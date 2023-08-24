@@ -8,6 +8,9 @@
 ### `External Dependencies` inspection rules
 - Inspect is declared dependency downloaded [#644](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/644)
 
+### Fixes
+- Bus is already disposed for consoles [#645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/645)
+
 ### Other
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
 

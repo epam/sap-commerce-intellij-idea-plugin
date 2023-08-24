@@ -17,28 +17,28 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
+import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesPanel
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-class ImpExValidateAction : AbstractExecuteAction() {
+class ImpExValidateAction : AbstractExecuteAction(
+    ImpexFileType.INSTANCE.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_IMPEX
+) {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = "Validate ImpEx"
             description = "Validate ImpEx file via remote SAP Commerce instance"
             icon = HybrisIcons.IMX_VALIDATE
         }
     }
 
-    override val extension = ImpexFileType.INSTANCE.defaultExtension
-    override val consoleName = HybrisConstants.CONSOLE_TITLE_IMPEX
-
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
-    override fun doExecute(consolePanel: HybrisConsolesPanel) {
-        consolePanel.validateImpex()
+    override fun doExecute(consoleService: HybrisConsoleService) {
+        consoleService.validateImpex()
     }
 }
