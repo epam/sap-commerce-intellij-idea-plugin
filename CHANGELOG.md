@@ -11,6 +11,7 @@
 ### Fixes
 - Bus is already disposed for consoles [#645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/645)
 - Compact middle packages not working [#646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/646)
+- Remove required sub-tags validation for Business Process `wait` node [#648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/648)
 
 ### Other
 - Added custom icons Bean System [#647](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/647)
