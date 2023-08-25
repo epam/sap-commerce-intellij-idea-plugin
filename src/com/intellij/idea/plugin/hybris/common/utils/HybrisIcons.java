@@ -40,7 +40,7 @@ public final class HybrisIcons {
     public static final Icon IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg");
     public static final Icon FXS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg");
     public static final Icon PGQ_FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg");
-    public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/beanIcon.svg");
+    public static final Icon BEAN_FILE = getIcon("/icons/beanSystem/bean.svg");
 
     public static final Icon PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg");
 
@@ -136,9 +136,9 @@ public final class HybrisIcons {
     public static final Icon BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg");
     public static final Icon BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg");
     public static final Icon BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg");
-    public static final Icon BS_BEAN = getIcon("/icons/beanSystem/beanIcon.svg");
-    public static final Icon BS_EVENT_BEAN = BS_BEAN;
-    public static final Icon BS_WS_BEAN = BS_BEAN;
+    public static final Icon BS_BEAN = getIcon("/icons/beanSystem/bean.svg");
+    public static final Icon BS_EVENT_BEAN = getIcon("/icons/beanSystem/eventBean.svg");
+    public static final Icon BS_WS_BEAN = getIcon("/icons/beanSystem/wsBean.svg");
     public static final Icon BS_WS_HINT = AllIcons.Actions.QuickfixOffBulb;
     public static final Icon BS_PROPERTY = getIcon("/icons/beanSystem/property.svg");
     public static final Icon BS_ENUM = getIcon("/icons/beanSystem/enum.svg");

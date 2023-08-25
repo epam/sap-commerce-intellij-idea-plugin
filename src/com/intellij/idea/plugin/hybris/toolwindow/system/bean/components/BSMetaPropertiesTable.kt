@@ -69,7 +69,7 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
             ),
             createColumn(
                 name = COLUMN_TYPE,
-                valueProvider = { attr -> attr.type }
+                valueProvider = { attr -> attr.flattenType }
             )
         )
 

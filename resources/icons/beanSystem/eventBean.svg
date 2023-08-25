@@ -15,7 +15,10 @@
   - You should have received a copy of the GNU Lesser General Public License
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="8" cy="8" r="6.5" fill="#FAF5FF" stroke="#389FD6"/>
-  <path fill="#EDA000" opacity=".8" fill-rule="evenodd" clip-rule="evenodd" d="M5 6C4.72386 6 4.5 6.22386 4.5 6.5C4.5 6.77614 4.72386 7 5 7H11C11.2761 7 11.5 6.77614 11.5 6.5C11.5 6.22386 11.2761 6 11 6H5ZM5.00002 8.99999C4.72388 8.99999 4.50002 9.22385 4.50002 9.49999C4.50002 9.77614 4.72388 9.99999 5.00002 9.99999H11C11.2762 9.99999 11.5 9.77614 11.5 9.49999C11.5 9.22385 11.2762 8.99999 11 8.99999H5.00002Z"/>
+
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+	<g fill="none" fill-rule="evenodd">
+		<path fill="#935E2D" fill-opacity=".8" d="M9.06065145,8 L3.3735,2.3134 C6.1755,0.0574 9.7675,0.8624 12.4525,3.5484 C13.7823455,4.87824548 14.651157,6.4309977 14.9149195,8 L9.06065145,8 Z M6,14.2514228 C5.13568714,13.8195738 4.30545465,13.2113546 3.5475,12.4534 C0.8635,9.7694 0.0575,6.1774 2.3135,3.3754 L6.9381,8 L6,8 L6,14.2514228 Z"/>
+		<path fill="#6E6E6E" fill-opacity=".8" d="M7,9 L16,9 L16,16 L7,16 L7,9 Z M15,11.2 L15,10 L11.5,12.25 L8,10 L8,11.2 L11.5,13.45 L15,11.2 Z"/>
+	</g>
 </svg>

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,17 +21,24 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class BSMetaBeanNode(val parent: BSNode, meta: BSGlobalMetaBean) : BSMetaNode<BSGlobalMetaBean>(parent, meta) {
+class BSMetaBeanNode(val parent: BSNode,  meta: BSGlobalMetaBean) : BSMetaNode<BSGlobalMetaBean>(parent, meta) {
 
     override fun getName() = meta.shortName ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.BS_BEAN)
+        presentation.setIcon(
+            when (meta.metaType) {
+                BSMetaType.META_EVENT -> HybrisIcons.BS_EVENT_BEAN
+                BSMetaType.META_WS_BEAN -> HybrisIcons.BS_WS_BEAN
+                else -> HybrisIcons.BS_BEAN
+            }
+        )
         if (meta.isDeprecated) {
             presentation.locationString = "deprecated"
         }

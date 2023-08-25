@@ -83,6 +83,7 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSel
 
     override val allProperties = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
     override val allExtends = LinkedHashSet<BSGlobalMetaBean>()
+    override var metaType = BSMetaType.META_BEAN
 
     override fun postMerge(globalMetaModel: BSGlobalMetaModel) {
         val extends = BSMetaHelper.getAllExtends(globalMetaModel, this)

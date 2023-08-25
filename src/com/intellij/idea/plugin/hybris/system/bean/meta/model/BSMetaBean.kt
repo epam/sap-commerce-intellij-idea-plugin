@@ -46,4 +46,5 @@ interface BSGlobalMetaBean : BSMetaBean, BSGlobalMetaClassifier<Bean>, TSTypedCl
     override val declarations: MutableSet<BSMetaBean>
     val allProperties: Map<String, BSMetaProperty>
     val allExtends: Set<BSGlobalMetaBean>
+    var metaType: BSMetaType
 }

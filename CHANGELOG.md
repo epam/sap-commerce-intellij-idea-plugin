@@ -13,6 +13,7 @@
 - Compact middle packages not working [#646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/646)
 
 ### Other
+- Added custom icons Bean System [#647](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/647)
 - Added custom icon for `unmanaged-dependencies.txt` [#640](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/640)
 
 ## [2023.2.6]
