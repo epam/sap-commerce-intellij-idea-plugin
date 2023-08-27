@@ -21,6 +21,8 @@
         <dom.fileMetaData rootTagName="process" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription"/>
 
+        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
+
         <projectConfigurable id="hybris.project.bp.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bp.title"
