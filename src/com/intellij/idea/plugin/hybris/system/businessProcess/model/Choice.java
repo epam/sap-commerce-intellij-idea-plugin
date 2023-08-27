@@ -32,12 +32,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Choice extends NavigableElement {
 
+	String THEN = "then";
+
 	/**
 	 * Returns the value of the then child.
 	 * @return the value of the then child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("then")
+	@com.intellij.util.xml.Attribute (THEN)
 	@Required
 	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getThen();

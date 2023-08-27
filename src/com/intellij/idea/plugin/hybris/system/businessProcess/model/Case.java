@@ -30,12 +30,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Case extends DomElement {
 
+	String CHOICE = "choice";
+	String EVENT = "event";
+
 	/**
 	 * Returns the value of the event child.
 	 * @return the value of the event child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("event")
+	@com.intellij.util.xml.Attribute (EVENT)
 	@Required
 	GenericAttributeValue<String> getEvent();
 
@@ -45,13 +48,13 @@ public interface Case extends DomElement {
 	 * @return the list of choice children.
 	 */
 	@NotNull
-	@SubTagList ("choice")
+	@SubTagList (CHOICE)
 	java.util.List<Choice> getChoices();
 	/**
 	 * Adds new child to the list of choice children.
 	 * @return created child
 	 */
-	@SubTagList ("choice")
+	@SubTagList (CHOICE)
 	Choice addChoice();
 
 
