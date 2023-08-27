@@ -35,13 +35,21 @@ public interface Process extends DomElement {
 
 	String DEFAULT_NODE_GROUP = "defaultNodeGroup";
 	String PROCESS_CLASS = "processClass";
+	String END = "end";
+	String NAME = "name";
+	String START = "start";
+	String ON_ERROR = "onError";
+	String ACTION = "action";
+	String SCRIPT_ACTION = "scriptAction";
+	String SPLIT = "split";
+	String WAIT = "wait";
 
 	/**
 	 * Returns the value of the name child.
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("name")
+	@com.intellij.util.xml.Attribute (NAME)
 	@Required
 	GenericAttributeValue<String> getName();
 
@@ -51,7 +59,7 @@ public interface Process extends DomElement {
 	 * @return the value of the start child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("start")
+	@com.intellij.util.xml.Attribute (START)
 	@Required
 	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getStart();
@@ -62,7 +70,7 @@ public interface Process extends DomElement {
 	 * @return the value of the onError child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("onError")
+	@com.intellij.util.xml.Attribute (ON_ERROR)
 	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getOnError();
 
@@ -105,13 +113,13 @@ public interface Process extends DomElement {
 	 * @return the list of action children.
 	 */
 	@NotNull
-	@SubTagList ("action")
+	@SubTagList (ACTION)
 	java.util.List<Action> getActions();
 	/**
 	 * Adds new child to the list of action children.
 	 * @return created child
 	 */
-	@SubTagList ("action")
+	@SubTagList (ACTION)
 	Action addAction();
 
 
@@ -120,13 +128,13 @@ public interface Process extends DomElement {
 	 * @return the list of scriptAction children.
 	 */
 	@NotNull
-	@SubTagList ("scriptAction")
+	@SubTagList (SCRIPT_ACTION)
 	java.util.List<ScriptAction> getScriptActions();
 	/**
 	 * Adds new child to the list of scriptAction children.
 	 * @return created child
 	 */
-	@SubTagList ("scriptAction")
+	@SubTagList (SCRIPT_ACTION)
 	ScriptAction addScriptAction();
 
 
@@ -135,13 +143,13 @@ public interface Process extends DomElement {
 	 * @return the list of split children.
 	 */
 	@NotNull
-	@SubTagList ("split")
+	@SubTagList (SPLIT)
 	java.util.List<Split> getSplits();
 	/**
 	 * Adds new child to the list of split children.
 	 * @return created child
 	 */
-	@SubTagList ("split")
+	@SubTagList (SPLIT)
 	Split addSplit();
 
 
@@ -150,13 +158,13 @@ public interface Process extends DomElement {
 	 * @return the list of wait children.
 	 */
 	@NotNull
-	@SubTagList ("wait")
+	@SubTagList (WAIT)
 	java.util.List<Wait> getWaits();
 	/**
 	 * Adds new child to the list of wait children.
 	 * @return created child
 	 */
-	@SubTagList ("wait")
+	@SubTagList (WAIT)
 	Wait addWait();
 
 
@@ -165,13 +173,13 @@ public interface Process extends DomElement {
 	 * @return the list of end children.
 	 */
 	@NotNull
-	@SubTagList ("end")
+	@SubTagList (END)
 	java.util.List<End> getEnds();
 	/**
 	 * Adds new child to the list of end children.
 	 * @return created child
 	 */
-	@SubTagList ("end")
+	@SubTagList (END)
 	End addEnd();
 
 

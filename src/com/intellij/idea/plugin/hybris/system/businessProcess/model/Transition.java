@@ -31,12 +31,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Transition extends DomElement {
 
+	String NAME = "name";
+	String TO = "to";
+
 	/**
 	 * Returns the value of the name child.
 	 * @return the value of the name child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("name")
+	@com.intellij.util.xml.Attribute (NAME)
 	@Required
 	GenericAttributeValue<String> getName();
 
@@ -46,7 +49,7 @@ public interface Transition extends DomElement {
 	 * @return the value of the to child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("to")
+	@com.intellij.util.xml.Attribute (TO)
 	@Required
 	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getTo();

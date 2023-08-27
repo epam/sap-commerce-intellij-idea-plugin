@@ -31,13 +31,17 @@ import org.jetbrains.annotations.NotNull;
 public interface Wait extends NavigableElement {
 
 	String PREPEND_PROCESS_CODE = "prependProcessCode";
+	String THEN = "then";
+	String TIMEOUT = "timeout";
+	String EVENT = "event";
+	String CASE = "case";
 
 	/**
 	 * Returns the value of the then child.
 	 * @return the value of the then child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("then")
+	@com.intellij.util.xml.Attribute (THEN)
 	@Convert(BpNavigableElementConverter.class)
 	GenericAttributeValue<String> getThen();
 
@@ -56,7 +60,7 @@ public interface Wait extends NavigableElement {
 	 * @return the value of the timeout child.
 	 */
 	@NotNull
-	@SubTag ("timeout")
+	@SubTag (TIMEOUT)
 	Timeout getTimeout();
 
 
@@ -65,7 +69,7 @@ public interface Wait extends NavigableElement {
 	 * @return the value of the event child.
 	 */
 	@NotNull
-	@SubTag ("event")
+	@SubTag (EVENT)
 	GenericDomValue<String> getEvent();
 
 
@@ -74,7 +78,7 @@ public interface Wait extends NavigableElement {
 	 * @return the value of the case child.
 	 */
 	@NotNull
-	@SubTag ("case")
+	@SubTag (CASE)
 	Case getCase();
 
 

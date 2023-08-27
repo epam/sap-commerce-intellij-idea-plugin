@@ -24,11 +24,15 @@ import com.intellij.util.xml.*
 @StubbedOccurrence
 interface NavigableElement : DomElement {
 
+    companion object {
+        const val ID = "id"
+    }
+
     /**
      * Returns the value of the id child.
      * @return the value of the id child.
      */
-    @Attribute("id")
+    @Attribute(ID)
     @Required
     @Stubbed
     @NameValue

@@ -37,6 +37,7 @@ public interface Action extends NavigableElement {
 	String NODE_GROUP = "nodeGroup";
 	String NODE = "node";
 	String BEAN = "bean";
+	String TRANSITION = "transition";
 
 	/**
 	 * Returns the value of the bean child.
@@ -96,14 +97,14 @@ public interface Action extends NavigableElement {
 	 * @return the list of transition children.
 	 */
 	@NotNull
-	@SubTagList ("transition")
+	@SubTagList (TRANSITION)
 	@Required
 	java.util.List<Transition> getTransitions();
 	/**
 	 * Adds new child to the list of transition children.
 	 * @return created child
 	 */
-	@SubTagList ("transition")
+	@SubTagList (TRANSITION)
 	Transition addTransition();
 
 

@@ -41,6 +41,7 @@
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.ItemsXmlFoldingBuilder"/>
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.lang.folding.CngConfigFoldingBuilder"/>
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.lang.folding.BeansXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
