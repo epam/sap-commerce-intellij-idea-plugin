@@ -12,7 +12,7 @@
 - Bus is already disposed for consoles [#645](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/645)
 - Compact middle packages not working [#646](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/646)
 - Remove required sub-tags validation for Business Process `wait` node [#649](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/649)
-- Unable to load the Plugin when Gradle plugin is disabled [#650](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/650)
+- Unable to load the Plugin when Gradle plugin is disabled [#652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/652)
 
 ### Other
 - Added custom icons Bean System [#648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/648)
