@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.ReflectionUtil;
 import icons.GradleIcons;
@@ -72,7 +73,9 @@ public final class HybrisIcons {
     public static final Icon MODULE_ECLIPSE = AllIcons.Providers.Eclipse;
     public static final Icon MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo;
     public static final Icon MODULE_CONFLICT = AllIcons.Actions.Cancel;
-    public static final Icon MODULE_GRADLE = GradleIcons.Gradle;
+    public static final Icon MODULE_GRADLE = PluginCommon.isPluginActive(PluginCommon.GRADLE_PLUGIN_ID)
+        ? GradleIcons.Gradle
+        : AllIcons.Nodes.Module;
     public static final Icon MODULE_CCV2 = getIcon("/icons/module/cloud.svg");
     public static final Icon MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg");
     public static final Icon MODULE_COMMERCE_GROUP = Y_LOGO_GREEN;

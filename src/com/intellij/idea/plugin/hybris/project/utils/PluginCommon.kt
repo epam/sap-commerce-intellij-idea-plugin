@@ -30,6 +30,7 @@ object PluginCommon {
     const val SPRING_PLUGIN_ID = "com.intellij.spring"
     const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
     const val GROOVY_PLUGIN_ID = "org.intellij.groovy"
+    const val GRADLE_PLUGIN_ID = "org.jetbrains.plugins.gradle"
     const val SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup"
 
     @JvmStatic
