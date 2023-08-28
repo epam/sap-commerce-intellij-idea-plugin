@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,15 +42,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -119,13 +116,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             FileChooserDescriptorFactory.createSingleFolderDescriptor()
         );
 
-        this.storeModuleFilesInCheckBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected());
-            }
-        });
+        this.storeModuleFilesInCheckBox.addActionListener(e -> storeModuleFilesInChooser.setEnabled(((JCheckBox) e.getSource()).isSelected()));
 
         this.storeModuleFilesInLabel.addMouseListener(new MouseAdapter() {
 
@@ -137,13 +128,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
         this.sourceCodeFilesInChooser.setVisible(false);
 
-        this.sourceCodeCheckBox.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                sourceCodeFilesInChooser.setVisible(((JCheckBox) e.getSource()).isSelected());
-            }
-        });
+        this.sourceCodeCheckBox.addActionListener(e -> sourceCodeFilesInChooser.setVisible(((JCheckBox) e.getSource()).isSelected()));
 
         this.sourceCodeLabel.addMouseListener(new MouseAdapter() {
 
@@ -464,13 +449,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             return null;
         }
         if (sourceZipList.size() > 1) {
-            sort(sourceZipList, new Comparator<File>() {
-
-                @Override
-                public int compare(final File zip1, final File zip2) {
-                    return getPatch(zip1, hybrisApiVersion).compareTo(getPatch(zip2, hybrisApiVersion));
-                }
-            });
+            sort(sourceZipList, (zip1, zip2) -> getPatch(zip1, hybrisApiVersion).compareTo(getPatch(zip2, hybrisApiVersion)));
             reverse(sourceZipList);
         }
         return sourceZipList.get(0);

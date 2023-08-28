@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,16 +31,10 @@ public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<
     @Override
     public boolean shouldContinue(final List<File> t) {
         if (!t.isEmpty()) {
-            ApplicationManager.getApplication().invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    Messages.showErrorDialog(
-                        HybrisI18NBundleUtils.message("hybris.project.import.scan.failed", t),
-                        HybrisI18NBundleUtils.message("hybris.project.error")
-                    );
-                }
-            });
+            ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(
+                HybrisI18NBundleUtils.message("hybris.project.import.scan.failed", t),
+                HybrisI18NBundleUtils.message("hybris.project.error")
+            ));
         }
 
         return false;

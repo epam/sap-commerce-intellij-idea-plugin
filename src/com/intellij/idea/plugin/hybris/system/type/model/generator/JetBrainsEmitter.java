@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,15 +32,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
+import java.util.*;
 
 public class JetBrainsEmitter implements Emitter {
 
@@ -264,12 +257,7 @@ public class JetBrainsEmitter implements Emitter {
             if (fields.length == 0) {
                 Util.logwarn("no fields in: " + td.xsName);
             }
-            Arrays.sort(fields, new Comparator<FieldDesc>() {
-
-                public int compare(FieldDesc o1, FieldDesc o2) {
-                    return o1.realIndex - o2.realIndex;
-                }
-            });
+            Arrays.sort(fields, (o1, o2) -> o1.realIndex - o2.realIndex);
             out.println("");
             for (FieldDesc field : fields) {
                 String tagName = field.tagName;
@@ -603,12 +591,7 @@ public class JetBrainsEmitter implements Emitter {
 
             for (TypeDesc td : jtList) {
                 ArrayList<FieldDesc> fields = new ArrayList<FieldDesc>(td.fdMap.values());
-                Collections.sort(fields, new Comparator<FieldDesc>() {
-
-                    public int compare(FieldDesc o1, FieldDesc o2) {
-                        return o1.realIndex - o2.realIndex;
-                    }
-                });
+                Collections.sort(fields, (o1, o2) -> o1.realIndex - o2.realIndex);
                 int guessPriority = 0;
                 FieldDesc guessedField = null;
                 for (FieldDesc fd : fields) {

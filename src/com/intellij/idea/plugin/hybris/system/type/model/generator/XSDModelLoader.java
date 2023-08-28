@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,41 +33,15 @@ import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.impl.xs.XSParticleDecl;
 import org.apache.xerces.impl.xs.util.XSObjectListImpl;
 import org.apache.xerces.xni.parser.XMLEntityResolver;
-import org.apache.xerces.xs.StringList;
-import org.apache.xerces.xs.XSAnnotation;
-import org.apache.xerces.xs.XSAttributeDeclaration;
-import org.apache.xerces.xs.XSAttributeUse;
-import org.apache.xerces.xs.XSComplexTypeDefinition;
-import org.apache.xerces.xs.XSConstants;
-import org.apache.xerces.xs.XSElementDeclaration;
-import org.apache.xerces.xs.XSFacet;
-import org.apache.xerces.xs.XSImplementation;
-import org.apache.xerces.xs.XSLoader;
-import org.apache.xerces.xs.XSModel;
-import org.apache.xerces.xs.XSModelGroup;
-import org.apache.xerces.xs.XSModelGroupDefinition;
-import org.apache.xerces.xs.XSNamedMap;
-import org.apache.xerces.xs.XSObject;
-import org.apache.xerces.xs.XSObjectList;
-import org.apache.xerces.xs.XSParticle;
-import org.apache.xerces.xs.XSSimpleTypeDefinition;
-import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xerces.xs.*;
 import org.w3c.dom.DOMConfiguration;
-import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
 import org.w3c.dom.TypeInfo;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 
 import javax.xml.namespace.QName;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 public class XSDModelLoader implements ModelLoader {
 
@@ -164,19 +139,16 @@ public class XSDModelLoader implements ModelLoader {
         DOMConfiguration config = schemaLoader.getConfig();
 
         // create Error Handler
-        DOMErrorHandler errorHandler = new DOMErrorHandler() {
-
-            public boolean handleError(DOMError domError) {
-                Util.log("DOMError: " + domError.getMessage());
-                Object relatedException = domError.getRelatedException();
-                if (relatedException != null) {
-                    Util.log("DOMError: " + relatedException);
-                    if (relatedException instanceof Throwable) {
-                        ((Throwable) relatedException).printStackTrace(System.out);
-                    }
+        DOMErrorHandler errorHandler = domError -> {
+            Util.log("DOMError: " + domError.getMessage());
+            Object relatedException = domError.getRelatedException();
+            if (relatedException != null) {
+                Util.log("DOMError: " + relatedException);
+                if (relatedException instanceof Throwable) {
+                    ((Throwable) relatedException).printStackTrace(System.out);
                 }
-                return false;
             }
+            return false;
         };
         // set error handler
         config.setParameter("error-handler", errorHandler);

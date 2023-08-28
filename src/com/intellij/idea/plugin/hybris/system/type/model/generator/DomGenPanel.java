@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,8 +39,6 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ArrayUtil;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -70,36 +69,32 @@ public class DomGenPanel {
             new FileTypeDescriptor(title, "xsd", "dtd")
         );
         mySchemaLocation.getTextField().setEditable(false);
-        mySchemaLocation.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final File file = new File(mySchemaLocation.getText());
-                if (file.exists() && file.getName().toLowerCase().endsWith(".xsd")) {
-                    final VirtualFile vf = LocalFileSystem.getInstance().findFileByIoFile(file);
-                    if (vf != null) {
-                        final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(vf);
-                        if (psiFile instanceof XmlFile) {
-                            final XmlDocument xml = ((XmlFile) psiFile).getDocument();
-                            if (xml != null) {
-                                final XmlTag rootTag = xml.getRootTag();
-                                if (rootTag != null) {
-                                    String target = null;
-                                    ArrayList<String> ns = new ArrayList<String>();
-                                    for (XmlAttribute attr : rootTag.getAttributes()) {
-                                        if ("targetNamespace".equals(attr.getName())) {
-                                            target = attr.getValue();
-                                        } else if (attr.getName().startsWith("xmlns")) {
-                                            ns.add(attr.getValue());
-                                        }
+        mySchemaLocation.addActionListener(e -> {
+            final File file = new File(mySchemaLocation.getText());
+            if (file.exists() && file.getName().toLowerCase().endsWith(".xsd")) {
+                final VirtualFile vf = LocalFileSystem.getInstance().findFileByIoFile(file);
+                if (vf != null) {
+                    final PsiFile psiFile = PsiManager.getInstance(myProject).findFile(vf);
+                    if (psiFile instanceof XmlFile) {
+                        final XmlDocument xml = ((XmlFile) psiFile).getDocument();
+                        if (xml != null) {
+                            final XmlTag rootTag = xml.getRootTag();
+                            if (rootTag != null) {
+                                String target = null;
+                                ArrayList<String> ns = new ArrayList<String>();
+                                for (XmlAttribute attr : rootTag.getAttributes()) {
+                                    if ("targetNamespace".equals(attr.getName())) {
+                                        target = attr.getValue();
+                                    } else if (attr.getName().startsWith("xmlns")) {
+                                        ns.add(attr.getValue());
                                     }
-
-                                    ns.remove(target);
-                                    if (target != null) {
-                                        myNamespace.setText(target);
-                                    }
-                                    mySkipSchemas.setText(StringUtil.join(ArrayUtil.toStringArray(ns), "\n"));
                                 }
+
+                                ns.remove(target);
+                                if (target != null) {
+                                    myNamespace.setText(target);
+                                }
+                                mySkipSchemas.setText(StringUtil.join(ArrayUtil.toStringArray(ns), "\n"));
                             }
                         }
                     }
