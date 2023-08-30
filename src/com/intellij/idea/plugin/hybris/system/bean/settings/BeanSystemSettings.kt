@@ -24,5 +24,5 @@ data class BeanSystemSettings(
 
 data class BeanSystemFoldingSettings(
     var enabled: Boolean = true,
-    var tableLikeProperties: Boolean = true,
+    var tablifyProperties: Boolean = true,
 )

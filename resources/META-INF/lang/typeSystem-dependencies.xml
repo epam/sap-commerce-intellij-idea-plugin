@@ -50,6 +50,11 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemsFileValidation"/>
 
+        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
+                             provider="com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemConfigurableProvider"/>
+
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>

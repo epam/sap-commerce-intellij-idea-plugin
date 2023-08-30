@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +35,13 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface Items extends DomElement {
 
+    String ATOMICTYPES = "atomictypes";
+    String COLLECTIONTYPES = "collectiontypes";
+    String ENUMTYPES = "enumtypes";
+    String MAPTYPES = "maptypes";
+    String RELATIONS = "relations";
+    String ITEMTYPES = "itemtypes";
+
     /**
      * Returns the value of the atomictypes child.
      * <pre>
@@ -44,7 +52,7 @@ public interface Items extends DomElement {
      * @return the value of the atomictypes child.
      */
     @NotNull
-    @SubTag("atomictypes")
+    @SubTag(ATOMICTYPES)
     AtomicTypes getAtomicTypes();
 
 
@@ -58,7 +66,7 @@ public interface Items extends DomElement {
      * @return the value of the collectiontypes child.
      */
     @NotNull
-    @SubTag("collectiontypes")
+    @SubTag(COLLECTIONTYPES)
     CollectionTypes getCollectionTypes();
 
 
@@ -72,7 +80,7 @@ public interface Items extends DomElement {
      * @return the value of the enumtypes child.
      */
     @NotNull
-    @SubTag("enumtypes")
+    @SubTag(ENUMTYPES)
     EnumTypes getEnumTypes();
 
 
@@ -86,7 +94,7 @@ public interface Items extends DomElement {
      * @return the value of the maptypes child.
      */
     @NotNull
-    @SubTag("maptypes")
+    @SubTag(MAPTYPES)
     MapTypes getMapTypes();
 
 
@@ -100,7 +108,7 @@ public interface Items extends DomElement {
      * @return the value of the relations child.
      */
     @NotNull
-    @SubTag("relations")
+    @SubTag(RELATIONS)
     Relations getRelations();
 
 
@@ -114,7 +122,7 @@ public interface Items extends DomElement {
      * @return the value of the itemtypes child.
      */
     @NotNull
-    @SubTag("itemtypes")
+    @SubTag(ITEMTYPES)
     ItemTypes getItemTypes();
 
 

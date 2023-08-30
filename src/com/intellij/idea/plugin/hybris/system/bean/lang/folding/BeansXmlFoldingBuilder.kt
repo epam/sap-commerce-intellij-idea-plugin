@@ -63,7 +63,7 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             return emptyArray()
         }
 
-        root.putUserData(foldTableLikeProperties, foldingSettings.tableLikeProperties)
+        root.putUserData(foldTableLikeProperties, foldingSettings.tablifyProperties)
 
         return SyntaxTraverser.psiTraverser(root)
             .filter { filter.isAccepted(it) }
@@ -79,7 +79,7 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             Bean.PROPERTY -> psi.getAttributeValue(Property.NAME)
                 ?.let {
                     if (psi.getParentOfType<XmlFile>(false)?.getUserData(foldTableLikeProperties) == true) {
-                        val propertyNamePostfix = " ".repeat(getLongestPropertyLength(psi) - it.length)
+                        val propertyNamePostfix = " ".repeat(getLongestPropertyLength(psi, it.length) - it.length)
                         it + propertyNamePostfix
                     } else {
                         it
@@ -147,11 +147,11 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         else -> false
     }
 
-    private fun getLongestPropertyLength(psi: PsiElement) = psi.parent.childrenOfType<XmlTag>()
+    private fun getLongestPropertyLength(psi: PsiElement, fallbackLength: Int) = psi.parent.childrenOfType<XmlTag>()
         .filter { it.localName == Bean.PROPERTY }
         .mapNotNull { it.getAttributeValue(Property.NAME) }
         .maxOfOrNull { it.length }
-        ?: 0
+        ?: fallbackLength
 
     companion object {
         private const val GROUP_NAME = "BeansXml"

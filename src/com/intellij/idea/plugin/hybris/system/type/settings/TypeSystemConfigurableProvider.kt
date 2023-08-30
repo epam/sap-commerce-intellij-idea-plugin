@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.bean.settings
+package com.intellij.idea.plugin.hybris.system.type.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -29,16 +29,16 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class TypeSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.bs.title"), "[y] SAP Commerce plugin Bean System configuration."
+        message("hybris.settings.project.ts.title"), "[y] SAP Commerce plugin Type System configuration."
     ) {
 
-        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.beanSystemSettings
+        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.typeSystemSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -50,8 +50,28 @@ class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvide
                         .component
                 }
                 row {
-                    checkBox("Use table-like folding for properties")
-                        .bindSelected(settings.folding::tablifyProperties)
+                    checkBox("Use table-like folding for Atomics")
+                        .bindSelected(settings.folding::tablifyAtomics)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Use table-like folding for Collections")
+                        .bindSelected(settings.folding::tablifyCollections)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Use table-like folding for Maps")
+                        .bindSelected(settings.folding::tablifyMaps)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Use table-like folding for Relations")
+                        .bindSelected(settings.folding::tablifyRelations)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
+                row {
+                    checkBox("Use table-like folding for Item attributes")
+                        .bindSelected(settings.folding::tablifyItemAttributes)
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
             }

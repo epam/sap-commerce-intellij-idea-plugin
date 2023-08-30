@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -49,6 +50,7 @@ public interface ItemType extends DomElement {
     String ABSTRACT = "abstract";
     String META_TYPE = "metatype";
     String DESCRIPTION = "description";
+    String ATTRIBUTES = "attributes";
 
     /**
      * Returns the value of the simple content.
@@ -266,7 +268,7 @@ public interface ItemType extends DomElement {
      * @return the value of the attributes child.
      */
     @NotNull
-    @SubTag("attributes")
+    @SubTag(ATTRIBUTES)
     Attributes getAttributes();
 
 
