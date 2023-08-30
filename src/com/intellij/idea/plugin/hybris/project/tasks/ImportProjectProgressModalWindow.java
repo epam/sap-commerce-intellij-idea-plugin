@@ -138,6 +138,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var allYModules = allModules.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
+            .distinct()
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
         final var allModuleDescriptors = allModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
