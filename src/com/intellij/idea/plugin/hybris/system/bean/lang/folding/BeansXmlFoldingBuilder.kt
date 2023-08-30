@@ -30,6 +30,8 @@ import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
@@ -38,6 +40,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.util.xml.DomManager
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
@@ -46,13 +49,21 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val foldAbstract = "[abstract] "
 
     private val filter = BeansXmlFilter()
+    private val foldTableLikeProperties: Key<Boolean> = Key.create("hybris_fold_table_like_properties")
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
         if (root !is XmlFile) return emptyArray()
         DomManager.getDomManager(root.project).getFileElement(root, Beans::class.java)
             ?: return emptyArray()
-        if (!HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.beanSystemSettings.folding.enabled) return emptyArray()
+        val foldingSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.beanSystemSettings.folding
+
+        if (!foldingSettings.enabled) {
+            root.removeUserData(foldTableLikeProperties)
+            return emptyArray()
+        }
+
+        root.putUserData(foldTableLikeProperties, foldingSettings.tableLikeProperties)
 
         return SyntaxTraverser.psiTraverser(root)
             .filter { filter.isAccepted(it) }
@@ -67,7 +78,7 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         is XmlTag -> when (psi.localName) {
             Bean.PROPERTY -> psi.getAttributeValue(Property.NAME)
                 ?.let {
-                    if (HybrisDeveloperSpecificProjectSettingsComponent.getInstance(psi.project).state.beanSystemSettings.folding.tableLikeProperties) {
+                    if (psi.getParentOfType<XmlFile>(false)?.getUserData(foldTableLikeProperties) == true) {
                         val propertyNamePostfix = " ".repeat(getLongestPropertyLength(psi) - it.length)
                         it + propertyNamePostfix
                     } else {
