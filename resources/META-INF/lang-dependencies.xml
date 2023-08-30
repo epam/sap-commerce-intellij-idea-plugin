@@ -1,0 +1,76 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+
+    <applicationListeners>
+        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.BSBulkFileListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </applicationListeners>
+
+    <projectListeners>
+        <listener class="com.intellij.idea.plugin.hybris.startup.event.ItemsXmlFileEditorManagerListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+        <listener class="com.intellij.idea.plugin.hybris.startup.event.HybrisConsoleProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- ####################################################################################################### -->
+        <!--                                        Run Contributors                                                 -->
+        <!-- ####################################################################################################### -->
+        <runLineMarkerContributor language="XML"
+                                  implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                        Completion Providers                                             -->
+        <!-- ####################################################################################################### -->
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                            Facet                                                        -->
+        <!-- ####################################################################################################### -->
+        
+        <facetType implementation="com.intellij.idea.plugin.hybris.facet.YFacetType"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.YFacetConfigurator"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.startup.HybrisStandalonePluginUpdateChecker"/>
+
+        <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
+        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
+    </extensions>
+
+    <actions>
+        <action id="File.yRefresh" class="com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction"
+                text="Refresh SAP Commerce Project"
+                description="Re-imports the current hybris project with default values">
+            <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
+        </action>
+
+        <group id="hybris.hac.chooseConnection" class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction"/>
+    </actions>
+
+</idea-plugin>

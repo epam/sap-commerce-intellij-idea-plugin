@@ -1,0 +1,73 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+
+        <dom.fileMetaData rootTagName="beans" stubVersion="9"
+                          implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
+
+        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.lang.folding.BeansXmlFoldingBuilder"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.bean.structureView.BSXmlStructureViewBuilderProvider"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelProcessor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelProcessorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelCollector"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelCollectorImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl.DefaultBSCompletionService"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BSBeanReferenceProvider"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSEnumClassCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSHintNameCompletionProvider"/>
+    </extensions>
+
+    <actions>
+        <group id="BSView.ToolWindow">
+            <group id="BSView.ToolWindow.TreePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationBSNodeAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+
+            <group id="BSView.ToolWindow.TablePopup">
+                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions.GoToDeclarationBSTableAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+        </group>
+    </actions>
+
+</idea-plugin>

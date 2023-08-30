@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.system.bean.settings
 
-import com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemSettings
+data class BeanSystemSettings(
+    var folding: BeanSystemFoldingSettings = BeanSystemFoldingSettings(),
+)
 
-data class HybrisDeveloperSpecificProjectSettings(
-    var activeRemoteConnectionID: String? = null,
-    var activeSolrConnectionID: String? = null,
-    var remoteConnectionSettingsList: MutableList<HybrisRemoteConnectionSettings> = mutableListOf(),
-    var typeSystemDiagramSettings: TSDiagramSettings = TSDiagramSettings(),
-    var beanSystemSettings: BeanSystemSettings = BeanSystemSettings(),
+data class BeanSystemFoldingSettings(
+    var enabled: Boolean = true,
+    var tableLikeProperties: Boolean = true,
 )

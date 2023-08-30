@@ -1,5 +1,8 @@
 ## [2023.2.7]
 
+### `beans.xml` enhancements
+- Added configurable table-like folding for Bean properties [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659) 
+
 ### `ImpEx` inspection rules
 - Add missing value groups for value lines [#641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/641)
 - Delete blank header parameter [#642](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/642)

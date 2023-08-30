@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.bean.lang.folding
 
 import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.*
@@ -32,6 +33,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
@@ -50,6 +52,7 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         if (root !is XmlFile) return emptyArray()
         DomManager.getDomManager(root.project).getFileElement(root, Beans::class.java)
             ?: return emptyArray()
+        if (!HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.beanSystemSettings.folding.enabled) return emptyArray()
 
         return SyntaxTraverser.psiTraverser(root)
             .filter { filter.isAccepted(it) }
@@ -60,9 +63,17 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             .toDistinctTypedArray()
     }
 
-    override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
+    override fun getPlaceholderText(node: ASTNode): String = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            Bean.PROPERTY -> psi.getAttributeValue(Property.NAME) + " : " +
+            Bean.PROPERTY -> psi.getAttributeValue(Property.NAME)
+                ?.let {
+                    if (HybrisDeveloperSpecificProjectSettingsComponent.getInstance(psi.project).state.beanSystemSettings.folding.tableLikeProperties) {
+                        val propertyNamePostfix = " ".repeat(getLongestPropertyLength(psi) - it.length)
+                        it + propertyNamePostfix
+                    } else {
+                        it
+                    }
+                } + " : " +
                 (BSMetaHelper.flattenType(psi.getAttributeValue(Property.TYPE)) ?: "?")
 
             Enum.VALUE -> psi.value.trimmedText
@@ -124,6 +135,12 @@ class BeansXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
         else -> false
     }
+
+    private fun getLongestPropertyLength(psi: PsiElement) = psi.parent.childrenOfType<XmlTag>()
+        .filter { it.localName == Bean.PROPERTY }
+        .mapNotNull { it.getAttributeValue(Property.NAME) }
+        .maxOfOrNull { it.length }
+        ?: 0
 
     companion object {
         private const val GROUP_NAME = "BeansXml"

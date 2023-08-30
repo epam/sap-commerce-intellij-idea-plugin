@@ -28,15 +28,23 @@
         EPAM_Systems
     </vendor>
 
+    <depends config-file="lang-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/beanSystem-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/businessProcess-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/ccv2-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/cockpitng-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/extensioninfo-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/flexibleSearch-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/impex-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/localextensions-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/polyglot-query-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="lang/typeSystem-dependencies.xml">com.intellij.modules.lang</depends>
+
     <depends optional="true" config-file="optional-junit-dependencies.xml">JUnit</depends>
     <depends optional="true" config-file="optional-ant-dependencies.xml">AntSupport</depends>
     <depends optional="true" config-file="optional-maven-dependencies.xml">org.jetbrains.idea.maven</depends>
     <depends optional="true" config-file="optional-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="optional-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
-    <depends optional="true" config-file="optional-lang-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="lang/optional-polyglot-query.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="lang/optional-flexibleSearch.xml">com.intellij.modules.lang</depends>
-    <depends optional="true" config-file="lang/optional-impex.xml">com.intellij.modules.lang</depends>
     <depends optional="true" config-file="optional-spring-dependencies.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="optional-javaee-web-dependencies.xml">com.intellij.javaee.web</depends>
     <depends optional="true" config-file="optional-java-dependencies.xml">com.intellij.modules.java</depends>
