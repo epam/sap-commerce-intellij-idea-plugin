@@ -137,6 +137,9 @@ tasks {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
 
@@ -152,4 +155,5 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpcore")
         exclude("org.apache.httpcomponents", "httpmime")
     }
+    testImplementation(kotlin("test"))
 }

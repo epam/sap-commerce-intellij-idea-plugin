@@ -18,51 +18,85 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.util
 
+import kotlinx.collections.immutable.persistentMapOf
+
 object BpHelper {
 
-    val timeNames = mapOf(
+    val dateTimeDelimeter = "T"
+
+    val dateNames = persistentMapOf(
         'Y' to "year",
         'M' to "month",
-        'D' to "day",
+        'D' to "day"
+    )
+
+    val timeNames = persistentMapOf(
         'H' to "hour",
-        'M' to "month",
+        'M' to "minute",
         'S' to "second"
     )
 
     fun parseDuration(duration: String): String {
-        val map = mapOf(
-            'S' to StringBuilder(),
+        val dateDuration = if (duration.contains(dateTimeDelimeter)) duration.split(dateTimeDelimeter)[0] else duration
+        val timeDuration = if (duration.contains(dateTimeDelimeter)) duration.split(dateTimeDelimeter)[1] else ""
+
+        val dateTime = ArrayList<String>()
+        dateDuration.takeIf { it.isNotEmpty() }
+            ?.let { dateTime.addAll(parseDateDuration(it)) }
+        timeDuration.takeIf { it.isNotEmpty() }
+            ?.let { dateTime.addAll(parseTimeDuration(it)) }
+        return dateTime.joinToString(" ")
+
+    }
+
+    private fun parseDateDuration(dateDuration: String): Collection<String> {
+        val dateStorage = mapOf(
+            'Y' to StringBuilder(),
             'M' to StringBuilder(),
-            'H' to StringBuilder(),
             'D' to StringBuilder(),
-            'M' to StringBuilder(),
-            'Y' to StringBuilder()
         )
+        return parseDuration(dateDuration, dateStorage, dateNames)
+    }
+
+    private fun parseTimeDuration(timeDuration: String): Collection<String> {
+        val timeStorage = mapOf(
+            'H' to StringBuilder(),
+            'M' to StringBuilder(),
+            'S' to StringBuilder()
+        )
+        return parseDuration(timeDuration, timeStorage, timeNames)
+    }
+
+    private fun parseDuration(duration: String, durationStorage: Map<Char, StringBuilder>, durationNames: Map<Char, String>): List<String> {
         val reversedDuration = duration.reversed()
-        var currentTimeToken = reversedDuration.last()
-        var currentResult = map[currentTimeToken]
+        var currentDurationToken = reversedDuration.last()
+        var currentResult = durationStorage[currentDurationToken]
 
         for (i in reversedDuration.indices) {
             val c = reversedDuration[i]
 
-            if (c.isLetter()) {
-                if (c == currentTimeToken) continue
-                else {
-                    val time = map[currentTimeToken]
-                    val postfix = if (time.contentEquals("1")) "" else "s"
-                    time?.append(" ${timeNames[currentTimeToken]}$postfix")
-                }
-                currentTimeToken = c
-                currentResult = map[c]
-            }
-            if (c.isDigit()) {
+            if (c.isDigit() || c == '.') {
                 currentResult?.insert(0, c)
             }
+
+            if (c.isLetter() || i == reversedDuration.length - 1) {
+                if (c == currentDurationToken) continue
+                else {
+                    val tokenStorage = durationStorage[currentDurationToken]
+                    if (tokenStorage.contentEquals("0")) {
+                        tokenStorage?.setLength(0)
+                    } else {
+                        val postfix = if (tokenStorage.contentEquals("1")) "" else "s"
+                        tokenStorage?.append(" ${durationNames[currentDurationToken]}$postfix")
+                    }
+                }
+                currentDurationToken = c
+                currentResult = durationStorage[c]
+            }
+
         }
-        return map.map { it.value }
+        return durationStorage.values
             .filter { it.isNotBlank() }
-            .joinToString(" ")
-            .takeIf { it.isNotBlank() }
-            ?: "?"
+            .map { it.toString() }
     }
 }
