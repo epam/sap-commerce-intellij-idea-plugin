@@ -1,7 +1,7 @@
 ## [2023.2.7]
 
 ### `items.xml` enhancements
-- Added configurable table-like folding for various tags [#670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/670) 
+- Added configurable table-like folding for various tags [#660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/660) 
 
 ### `beans.xml` enhancements
 - Added configurable table-like folding for Bean properties [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659) 
