@@ -653,18 +653,19 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (!acceptOnlyHybrisModules) {
-            if ((hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory))
-                && !rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
-                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)) {
+            if (!rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+                && (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory))
+                && !hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
             }
 
-            if (hybrisProjectService.isMavenModule(rootProjectDirectory) && !FileUtil.filesEqual(
-                rootProjectDirectory,
-                rootDirectory
-            )) {
+            if (hybrisProjectService.isMavenModule(rootProjectDirectory)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+                && !hybrisProjectService.isCCv2Module(rootProjectDirectory)
+            ) {
                 LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;
@@ -673,10 +674,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
                 LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
-            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory) && !FileUtil.filesEqual(
-                rootProjectDirectory,
-                rootDirectory
-            )) {
+            } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)
+                && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
+            ) {
                 LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
                 return;

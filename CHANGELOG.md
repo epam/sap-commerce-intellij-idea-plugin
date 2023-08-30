@@ -16,6 +16,7 @@
 - Block project import if `Platform` module is not detected [#654](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/654)
 - Distinct modules to import by name [#656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/656)
 - Unable to import project in some circumstances [#657](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/657)
+- Do not identify `core-customize`, `js-storefront` and `datahub` CCv2 folders as Gradle or Maven modules [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659)
 
 ### Other
 - Added custom icons Bean System [#648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/648)

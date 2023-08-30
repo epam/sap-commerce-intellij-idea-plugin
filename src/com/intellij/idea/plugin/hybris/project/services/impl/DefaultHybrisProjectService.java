@@ -146,16 +146,9 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     }
 
     @Override
-    public boolean hasVCS(final File dir) {
-        if (new File(dir, ".git").isDirectory()) {
-            return true;
-        }
-        if (new File(dir, ".hg").isDirectory()) {
-            return true;
-        }
-        if (new File(dir, ".svn").isDirectory()) {
-            return true;
-        }
-        return false;
+    public boolean hasVCS(final File rootProjectDirectory) {
+        return new File(rootProjectDirectory, ".git").isDirectory()
+            || new File(rootProjectDirectory, ".svn").isDirectory()
+            || new File(rootProjectDirectory, ".hg").isDirectory();
     }
 }
