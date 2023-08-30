@@ -15,6 +15,7 @@
 - Unable to load the Plugin when Gradle plugin is disabled [#652](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/652)
 - Block project import if `Platform` module is not detected [#654](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/654)
 - Distinct modules to import by name [#656](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/656)
+- Unable to import project in some circumstances [#657](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/657)
 
 ### Other
 - Added custom icons Bean System [#648](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/648)
