@@ -41,7 +41,6 @@ class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvide
         private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.beanSystemSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
-        private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
             group("Code Folding") {
