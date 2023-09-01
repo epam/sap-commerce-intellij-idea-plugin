@@ -6,7 +6,7 @@
 - Improved folding for `custom-properties`:`property` tags [#664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/664)
 
 ### Other
-- Added VCS issue navigation for Intellij [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
+- Added VCS issue navigation for IntelliJ [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
 
 ## [2023.2.7]
 
@@ -176,9 +176,9 @@
 - Inject language only if query starts with `SELECT` [#519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/519)
 
 ### Fixes
-- Do not register DataSource in Intellij Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
+- Do not register DataSource in IntelliJ Community [#530](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/530)
 - Unable to import project from existing sources since upgrading to Idea 2023.2 [#526](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/526)
-- Unable to import project in Intellij 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
+- Unable to import project in IntelliJ 2023.2 Community Version [#527](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/527)
 
 ### Other
 - Added custom icon for `hybris4intellij.properties` file [#525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/525)
@@ -228,7 +228,7 @@
 - New documentation settings added to the Project Settings
 
 ### Fixes
-- Fix UI freeze due new Intellij IDEA startup activity API [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
+- Fix UI freeze due new IntelliJ IDEA startup activity API [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
 - Improve disposing of the `ImpEx` Editor listeners [#504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/504)
 - Ensure that console storage is under `.idea` folder [#503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/503)
 - Fix UI freeze due legacy `items.xml` analysis [#502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/502)
@@ -297,7 +297,7 @@
 ## [2023.2.0]
 
 ### Features
-- Added 2023.2 Intellij IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
+- Added 2023.2 IntelliJ IDEA support [#405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/405)
 - Improved code completion and reference resolution for Enum attributes in impex/fxs/pgq files [#414](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/414)
 - Added Node.js version 18 to the CCv2 js-storefront manifest file [#413](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/413)
 - Migrated change log to `gradle-changelog-plugin` [#429](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/429)
@@ -760,7 +760,7 @@
 ## [2022.3.0]
 
 ### Features
-- Added 2022.3 Intellij IDEA support
+- Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
 - Added support of the Enum completion in ImpEx/FSQ
@@ -779,6 +779,6 @@
 ## [2022.2]
 
 ### Features
-- Added 2022.2 Intellij IDEA support
+- Added 2022.2 IntelliJ IDEA support
 - Feature Add inline actions for ImpEx & FlexibleSearch files [#53](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/53)
 - Do not index `node_modules` directories [#52](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/52)
