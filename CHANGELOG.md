@@ -1,3 +1,8 @@
+## [2023.2.8]
+
+### `items.xml` enhancements
+- Improved folding for `columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
+
 ## [2023.2.7]
 
 ### `items.xml` enhancements

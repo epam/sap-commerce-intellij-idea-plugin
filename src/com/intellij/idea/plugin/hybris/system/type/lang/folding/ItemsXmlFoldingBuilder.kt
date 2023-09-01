@@ -34,15 +34,47 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
+import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
-    private val filter = ItemsXmlFilter()
+    // it can be: EnumValue, ColumnType, but not CustomProperty
+    private val valueName = "value"
+
+    private val filter = PsiElementFilter {
+        when (it) {
+            is XmlTag -> when (it.localName) {
+                CustomProperties.PROPERTY,
+                MapTypes.MAPTYPE,
+                AtomicTypes.ATOMICTYPE,
+                EnumTypes.ENUMTYPE,
+                Persistence.COLUMNTYPE,
+                CollectionTypes.COLLECTIONTYPE,
+                Relations.RELATION,
+                Relation.SOURCE_ELEMENT,
+                Relation.TARGET_ELEMENT,
+                ItemTypes.ITEMTYPE,
+                ItemType.DEPLOYMENT,
+                ItemType.DESCRIPTION,
+                Attributes.ATTRIBUTE,
+                Indexes.INDEX -> true
+
+                valueName -> it.parentOfType<XmlTag>()
+                    ?.takeIf { parent -> parent.localName == EnumTypes.ENUMTYPE || parent.localName == Persistence.COLUMNTYPE } != null
+
+                else -> false
+            }
+
+            else -> false
+        }
+    }
     private val cachedFoldingSettings: Key<TypeSystemFoldingSettings> = Key.create("hybris_folding_settings")
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
@@ -70,9 +102,22 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
+            valueName -> {
+                when (psi.parentOfType<XmlTag>()?.localName) {
+                    EnumTypes.ENUMTYPE -> psi.getAttributeValue(EnumValue.CODE) +
+                        (psi.getSubTagText(EnumValue.DESCRIPTION)?.let { " - $it" } ?: "")
+
+                    Persistence.COLUMNTYPE -> psi.value.trimmedText
+                    else -> FALLBACK_PLACEHOLDER
+                }
+            }
+
             EnumTypes.ENUMTYPE -> psi.getAttributeValue(EnumType.CODE)
-            EnumType.VALUE -> psi.getAttributeValue(EnumValue.CODE) +
-                (psi.getSubTagText(EnumValue.DESCRIPTION)?.let { " - $it" } ?: "")
+
+            Persistence.COLUMNTYPE -> "[type] " + (psi.getAttributeValue(ColumnType.DATABASE)?.let { "$it : " } ?: "") + (psi.getChildOfType<XmlTag>()
+                ?.value
+                ?.trimmedText
+                ?: "")
 
             Relations.RELATION -> {
                 val code = psi.getAttributeValue(Relation.CODE) ?: "?"
@@ -143,8 +188,10 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
             CustomProperties.PROPERTY,
             Relation.SOURCE_ELEMENT,
             Relation.TARGET_ELEMENT,
-            EnumType.VALUE,
-            Indexes.INDEX -> true
+            Indexes.INDEX,
+            Persistence.COLUMNTYPE -> true
+
+            valueName -> true
 
             else -> false
         }

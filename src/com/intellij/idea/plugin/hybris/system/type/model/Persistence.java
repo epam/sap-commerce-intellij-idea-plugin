@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,6 +38,7 @@ public interface Persistence extends DomElement {
     String TYPE = "type";
     String QUALIFIER = "qualifier";
     String ATTRIBUTE_HANDLER = "attributeHandler";
+    String COLUMNTYPE = "columntype";
 
     /**
      * Returns the value of the type child.
@@ -93,7 +95,7 @@ public interface Persistence extends DomElement {
      * @return the list of columntype children.
      */
     @NotNull
-    @SubTagList("columntype")
+    @SubTagList(COLUMNTYPE)
     java.util.List<ColumnType> getColumnTypes();
 
     /**
@@ -101,7 +103,7 @@ public interface Persistence extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("columntype")
+    @SubTagList(COLUMNTYPE)
     ColumnType addColumnType();
 
 

@@ -84,9 +84,11 @@ fun computeValue(element: ImpexValueGroup): String? {
         ?: element.fullHeaderParameter
             ?.getAttribute(AttributeModifier.DEFAULT)
             ?.anyAttributeValue
-            ?.stringList
-            ?.firstOrNull()
-            ?.text
+            ?.let {
+                it.stringList.firstOrNull()
+                    ?.text
+                    ?: it.text
+            }
     return computedValue
         ?.let { StringUtil.unquoteString(it) }
         ?.trim()

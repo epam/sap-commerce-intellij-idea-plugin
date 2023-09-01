@@ -33,6 +33,7 @@
 
         <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
+
         <lang.parserDefinition language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
         <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
@@ -47,19 +48,6 @@
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
         <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
 
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
@@ -108,6 +96,20 @@
         <postStartupActivity order="after hybrisProjectImport"
                              implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener"/>
+
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
+
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultImpexFoldingPlaceholderBuilder"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartImpexFoldingPlaceholderBuilder"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.simple.DefaultFoldingBlocksFilter"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.smart.SmartFoldingBlocksFilter"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiManager"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
