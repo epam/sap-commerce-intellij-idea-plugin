@@ -74,6 +74,11 @@ class TypeSystemConfigurableProvider(val project: Project) : ConfigurableProvide
                         .bindSelected(settings.folding::tablifyItemAttributes)
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
+                row {
+                    checkBox("Use table-like folding for Item indexes")
+                        .bindSelected(settings.folding::tablifyItemIndexes)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
             }
         }
     }

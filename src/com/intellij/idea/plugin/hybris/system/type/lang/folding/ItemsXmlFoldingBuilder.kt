@@ -133,7 +133,11 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             }
 
-            Indexes.INDEX -> psi.getAttributeValue(Index.NAME)
+            Indexes.INDEX -> (psi.getAttributeValue(Index.NAME)
+                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemIndexes, Indexes.INDEX, Index.NAME) }
+                ?: FALLBACK_PLACEHOLDER) + psi.childrenOfType<XmlTag>()
+                .mapNotNull { it.getAttributeValue(IndexKey.ATTRIBUTE) }
+                .joinToString(", ", " : ")
             CustomProperties.PROPERTY -> psi.getAttributeValue(CustomProperty.NAME)
 
             AtomicTypes.ATOMICTYPE -> psi.getAttributeValue(AtomicType.CLASS)
@@ -141,16 +145,16 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 (psi.getAttributeValue(AtomicType.EXTENDS)?.let { " : $it" } ?: "")
 
             MapTypes.MAPTYPE -> psi.getAttributeValue(MapType.CODE)
-                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemAttributes, MapTypes.MAPTYPE, MapType.CODE) } +
+                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyMaps, MapTypes.MAPTYPE, MapType.CODE) } +
                 " : " + psi.getAttributeValue(MapType.ARGUMENTTYPE)
-                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemAttributes, MapTypes.MAPTYPE, MapType.ARGUMENTTYPE, prepend = true) } +
+                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyMaps, MapTypes.MAPTYPE, MapType.ARGUMENTTYPE, prepend = true) } +
                 " <-> " + psi.getAttributeValue(MapType.RETURNTYPE)
 
             CollectionTypes.COLLECTIONTYPE -> psi.getAttributeValue(CollectionType.CODE)
-                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemAttributes, CollectionTypes.COLLECTIONTYPE, CollectionType.CODE) } +
+                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyCollections, CollectionTypes.COLLECTIONTYPE, CollectionType.CODE) } +
                 " : " +
                 psi.getAttributeValue(CollectionType.ELEMENTTYPE)
-                    ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemAttributes, CollectionTypes.COLLECTIONTYPE, CollectionType.ELEMENTTYPE) } +
+                    ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyCollections, CollectionTypes.COLLECTIONTYPE, CollectionType.ELEMENTTYPE) } +
                 " : " + (psi.getAttributeValue(CollectionType.TYPE)
                 ?: Type.COLLECTION.value)
 

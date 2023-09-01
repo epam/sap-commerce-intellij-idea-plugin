@@ -29,4 +29,5 @@ data class TypeSystemFoldingSettings(
     var tablifyMaps: Boolean = true,
     var tablifyRelations: Boolean = true,
     var tablifyItemAttributes: Boolean = true,
+    var tablifyItemIndexes: Boolean = true,
 )

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,6 +41,7 @@ public interface Index extends DomElement {
     String REPLACE = "replace";
     String UNIQUE = "unique";
     String NAME = "name";
+    String KEY = "key";
 
     /**
      * Returns the value of the name child.
@@ -126,7 +127,7 @@ public interface Index extends DomElement {
      * @return the list of key children.
      */
     @NotNull
-    @SubTagList("key")
+    @SubTagList(KEY)
     java.util.List<IndexKey> getKeys();
 
     /**
@@ -134,7 +135,7 @@ public interface Index extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("key")
+    @SubTagList(KEY)
     IndexKey addKey();
 
     /**
