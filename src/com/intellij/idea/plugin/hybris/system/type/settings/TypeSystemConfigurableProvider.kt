@@ -49,35 +49,32 @@ class TypeSystemConfigurableProvider(val project: Project) : ConfigurableProvide
                         .bindSelected(settings.folding::enabled)
                         .component
                 }
-                row {
-                    checkBox("Use table-like folding for Atomics")
-                        .bindSelected(settings.folding::tablifyAtomics)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Use table-like folding for Collections")
-                        .bindSelected(settings.folding::tablifyCollections)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Use table-like folding for Maps")
-                        .bindSelected(settings.folding::tablifyMaps)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Use table-like folding for Relations")
-                        .bindSelected(settings.folding::tablifyRelations)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Use table-like folding for Item attributes")
-                        .bindSelected(settings.folding::tablifyItemAttributes)
-                        .enabledIf(foldingEnableCheckBox.selected)
-                }
-                row {
-                    checkBox("Use table-like folding for Item indexes")
-                        .bindSelected(settings.folding::tablifyItemIndexes)
-                        .enabledIf(foldingEnableCheckBox.selected)
+                group("Table-Like Folding", true) {
+                    row {
+                        checkBox("Atomics")
+                            .bindSelected(settings.folding::tablifyAtomics)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Collections")
+                            .bindSelected(settings.folding::tablifyCollections)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Maps")
+                            .bindSelected(settings.folding::tablifyMaps)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Relations")
+                            .bindSelected(settings.folding::tablifyRelations)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                    }
+                    row {
+                        checkBox("Item attributes")
+                            .bindSelected(settings.folding::tablifyItemAttributes)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Item indexes")
+                            .bindSelected(settings.folding::tablifyItemIndexes)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Item custom properties")
+                            .bindSelected(settings.folding::tablifyItemCustomProperties)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                    }
                 }
             }
         }

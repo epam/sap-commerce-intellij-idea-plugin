@@ -1,8 +1,9 @@
 ## [2023.2.8]
 
 ### `items.xml` enhancements
-- Improved folding for `columntype` Persistence tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
-- Improved folding for `key` Index tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
+- Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
+- Improved folding for `index`:`key` tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
+- Improved folding for `custom-properties`:`property` tags [#664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/664)
 
 ## [2023.2.7]
 

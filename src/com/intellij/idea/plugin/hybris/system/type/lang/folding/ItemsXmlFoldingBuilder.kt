@@ -130,7 +130,6 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 val targetRelation = source?.getAttributeValue(RelationElement.CARDINALITY) ?: Cardinality.MANY.value
 
                 "$code ($sourceType [$sourceRelation :: $targetRelation] $targetType)"
-
             }
 
             Indexes.INDEX -> (psi.getAttributeValue(Index.NAME)
@@ -138,7 +137,15 @@ class ItemsXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?: FALLBACK_PLACEHOLDER) + psi.childrenOfType<XmlTag>()
                 .mapNotNull { it.getAttributeValue(IndexKey.ATTRIBUTE) }
                 .joinToString(", ", " : ")
-            CustomProperties.PROPERTY -> psi.getAttributeValue(CustomProperty.NAME)
+
+            CustomProperties.PROPERTY -> (psi.getAttributeValue(CustomProperty.NAME)
+                ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyItemCustomProperties, CustomProperties.PROPERTY, CustomProperty.NAME) }
+                ?: FALLBACK_PLACEHOLDER) +
+                (psi.getChildOfType<XmlTag>()
+                    ?.value
+                    ?.trimmedText
+                    ?.let { " : " + if (it.length > 50) it.substring(0, 50) + "..." else it }
+                    ?: "")
 
             AtomicTypes.ATOMICTYPE -> psi.getAttributeValue(AtomicType.CLASS)
                 ?.let { tablify(psi, it, getCurrentFoldingSettings(psi)?.tablifyAtomics, AtomicTypes.ATOMICTYPE, AtomicType.CLASS) } +

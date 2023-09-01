@@ -30,4 +30,5 @@ data class TypeSystemFoldingSettings(
     var tablifyRelations: Boolean = true,
     var tablifyItemAttributes: Boolean = true,
     var tablifyItemIndexes: Boolean = true,
+    var tablifyItemCustomProperties: Boolean = true,
 )
