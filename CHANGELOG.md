@@ -5,6 +5,9 @@
 - Improved folding for `index`:`key` tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
 - Improved folding for `custom-properties`:`property` tags [#664](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/664)
 
+### Other
+- Added VCS issue navigation for Intellij [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
+
 ## [2023.2.7]
 
 ### `items.xml` enhancements
