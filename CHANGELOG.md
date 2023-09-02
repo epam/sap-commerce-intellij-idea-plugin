@@ -1,6 +1,7 @@
 ## [2023.2.8]
 
 ### `ImpEx` enhancements
+- Introduced inlay hint to display default value in value lines [#670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/670)
 - Added colorization for `odd` and `even` value lines [#667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/667)
 
 ### `items.xml` enhancements

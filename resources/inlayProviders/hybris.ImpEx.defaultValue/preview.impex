@@ -1,0 +1,5 @@
+INSERT Product; code[unique = true]; approvalStatus(code)[default = 'approved']
+              ; 00011              ;/*<# approved #>*/
+              ; 00012              ; unapporved
+              ; 00013              ;/*<# approved #>*/
+              ; 00014              ; check

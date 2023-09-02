@@ -97,6 +97,14 @@
                              implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener"/>
 
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.defaultValue"
+                                              bundle="i18n/HybrisBundle"
+                                              nameKey="hybris.editor.impex.inlay_provider.default_value.name"
+                                              descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
                         serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
@@ -116,7 +124,6 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller"/>
     </extensions>
-
 
     <actions>
         <action id="ImpEx.NewImpExFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
