@@ -54,6 +54,12 @@ ${"$"}macro = qwe;qwe, qwe, ;qwe
 
 #% impex.setLocale( Locale.GERMAN );
 
+INSERT SomeType; param; param2; param3
+<vlo>; value; value; another value</vlo>
+<vle>; value; value; another value</vle>
+<vlo>; value; value; another value</vlo>
+<vle>; value; value; another value</vle>
+
 INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]; title[lang = ${"$"}lang]; ${attributeHeaderAbbreviation("C@someAttribute")}
 Subtype ; ; account                ; "Your Account"
         ; ; <ignore>               ; "Add/Edit Address"
@@ -69,16 +75,17 @@ UPDATE Address; firstname; owner(Principal.uid | AbstractOrder.code); &docId
 remove Address; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin
 
 INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslator]; mime[default = 'image/png']
-; ; ${"$"}contentResource/images/logo .png
+; ; ${"$"}contentResource/images/logo.png
 
 @@@@@
 """
     }
 
-
     private val customTags = with (RainbowHighlighter.createRainbowHLM()) {
         put("permission_inherited", ImpexHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
         put("attribute_header_abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION)
+        put("vle", ImpexHighlighterColors.VALUE_LINE_EVEN)
+        put("vlo", ImpexHighlighterColors.VALUE_LINE_ODD)
         this
     }
     private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
@@ -86,44 +93,58 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 
     private val descriptors = arrayOf(
         AttributesDescriptor("Comment line", ImpexHighlighterColors.PROPERTY_COMMENT),
-        AttributesDescriptor("Macro name declaration", ImpexHighlighterColors.MACRO_NAME_DECLARATION),
-        AttributesDescriptor("Macro value", ImpexHighlighterColors.MACRO_VALUE),
-        AttributesDescriptor("Macro usage", ImpexHighlighterColors.MACRO_USAGE),
-        AttributesDescriptor("Assign value", ImpexHighlighterColors.ASSIGN_VALUE),
-        AttributesDescriptor("Insert", ImpexHighlighterColors.HEADER_MODE_INSERT),
-        AttributesDescriptor("Update", ImpexHighlighterColors.HEADER_MODE_UPDATE),
-        AttributesDescriptor("Insert or update", ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE),
-        AttributesDescriptor("Remove", ImpexHighlighterColors.HEADER_MODE_REMOVE),
-        AttributesDescriptor("Function call", ImpexHighlighterColors.FUNCTION_CALL),
-        AttributesDescriptor("Header type", ImpexHighlighterColors.HEADER_TYPE),
-        AttributesDescriptor("Value sub-type", ImpexHighlighterColors.VALUE_SUBTYPE),
-        AttributesDescriptor("Field value separator", ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
-        AttributesDescriptor("List item separator", ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
-        AttributesDescriptor("Field value", ImpexHighlighterColors.FIELD_VALUE),
-        AttributesDescriptor("Single string", ImpexHighlighterColors.SINGLE_STRING),
-        AttributesDescriptor("Double string", ImpexHighlighterColors.DOUBLE_STRING),
-        AttributesDescriptor("Ignore value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
-        AttributesDescriptor("Bean Shell marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
-        AttributesDescriptor("Bean Shell body", ImpexHighlighterColors.BEAN_SHELL_BODY),
-        AttributesDescriptor("Square brackets", ImpexHighlighterColors.SQUARE_BRACKETS),
-        AttributesDescriptor("Round brackets", ImpexHighlighterColors.ROUND_BRACKETS),
-        AttributesDescriptor("Attribute name", ImpexHighlighterColors.ATTRIBUTE_NAME),
-        AttributesDescriptor("Attribute value", ImpexHighlighterColors.ATTRIBUTE_VALUE),
-        AttributesDescriptor("Attribute separator", ImpexHighlighterColors.ATTRIBUTE_SEPARATOR),
-        AttributesDescriptor("Attribute header abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION),
-        AttributesDescriptor("Boolean", ImpexHighlighterColors.BOOLEAN),
-        AttributesDescriptor("Digit", ImpexHighlighterColors.DIGIT),
+
+        AttributesDescriptor("Macro//Name declaration", ImpexHighlighterColors.MACRO_NAME_DECLARATION),
+        AttributesDescriptor("Macro//Value", ImpexHighlighterColors.MACRO_VALUE),
+        AttributesDescriptor("Macro//Usage", ImpexHighlighterColors.MACRO_USAGE),
+        AttributesDescriptor("Macro//Assign value", ImpexHighlighterColors.ASSIGN_VALUE),
+
+        AttributesDescriptor("Mode//Insert", ImpexHighlighterColors.HEADER_MODE_INSERT),
+        AttributesDescriptor("Mode//Update", ImpexHighlighterColors.HEADER_MODE_UPDATE),
+        AttributesDescriptor("Mode//Insert or update", ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE),
+        AttributesDescriptor("Mode//Remove", ImpexHighlighterColors.HEADER_MODE_REMOVE),
+
+        AttributesDescriptor("Type//Header type", ImpexHighlighterColors.HEADER_TYPE),
+        AttributesDescriptor("Type//Value sub-type", ImpexHighlighterColors.VALUE_SUBTYPE),
+
+        AttributesDescriptor("Separator//Field value", ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
+        AttributesDescriptor("Separator//List item", ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
+
+        AttributesDescriptor("Value line//Even", ImpexHighlighterColors.VALUE_LINE_EVEN),
+        AttributesDescriptor("Value line//Odd", ImpexHighlighterColors.VALUE_LINE_ODD),
+
+        AttributesDescriptor("Value//Field value", ImpexHighlighterColors.FIELD_VALUE),
+        AttributesDescriptor("Value//Single string", ImpexHighlighterColors.SINGLE_STRING),
+        AttributesDescriptor("Value//Double string", ImpexHighlighterColors.DOUBLE_STRING),
+        AttributesDescriptor("Value//Ignore value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
+        AttributesDescriptor("Value//Boolean", ImpexHighlighterColors.BOOLEAN),
+        AttributesDescriptor("Value//Digit", ImpexHighlighterColors.DIGIT),
+
+        AttributesDescriptor("Bean shell//Marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
+        AttributesDescriptor("Bean shell//Body", ImpexHighlighterColors.BEAN_SHELL_BODY),
+
+        AttributesDescriptor("Brackets//Square brackets", ImpexHighlighterColors.SQUARE_BRACKETS),
+        AttributesDescriptor("Brackets//Round brackets", ImpexHighlighterColors.ROUND_BRACKETS),
+
+        AttributesDescriptor("Attribute//Name", ImpexHighlighterColors.ATTRIBUTE_NAME),
+        AttributesDescriptor("Attribute//Value", ImpexHighlighterColors.ATTRIBUTE_VALUE),
+        AttributesDescriptor("Attribute//Separator", ImpexHighlighterColors.ATTRIBUTE_SEPARATOR),
+        AttributesDescriptor("Attribute//Header abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION),
+
+        AttributesDescriptor("Parameter//Document id", ImpexHighlighterColors.DOCUMENT_ID),
+        AttributesDescriptor("Parameter//Parameter name", ImpexHighlighterColors.HEADER_PARAMETER_NAME),
+        AttributesDescriptor("Parameter//Special parameter name", ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
+        AttributesDescriptor("Parameter//Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
+        AttributesDescriptor("Parameter//Function call", ImpexHighlighterColors.FUNCTION_CALL),
+
         AttributesDescriptor("Alternative map delimiter", ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER),
         AttributesDescriptor("Default key-value delimiter", ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER),
         AttributesDescriptor("Default path delimiter", ImpexHighlighterColors.DEFAULT_PATH_DELIMITER),
-        AttributesDescriptor("Parameter name", ImpexHighlighterColors.HEADER_PARAMETER_NAME),
-        AttributesDescriptor("Special parameter name", ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
-        AttributesDescriptor("Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
         AttributesDescriptor("Comma", ImpexHighlighterColors.COMMA),
         AttributesDescriptor("Alternative pattern", ImpexHighlighterColors.ALTERNATIVE_PATTERN),
-        AttributesDescriptor("Document id", ImpexHighlighterColors.DOCUMENT_ID),
         AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
         AttributesDescriptor("Warnings", ImpexHighlighterColors.WARNINGS_ATTRIBUTES),
+
         AttributesDescriptor("User rights", ImpexHighlighterColors.USER_RIGHTS),
         AttributesDescriptor("User rights//Parameter name", ImpexHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
         AttributesDescriptor("User rights//Mandatory parameter name", ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER),

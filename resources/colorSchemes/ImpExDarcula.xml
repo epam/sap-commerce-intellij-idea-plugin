@@ -139,4 +139,9 @@
             <option name="FONT_TYPE" value="2"/>
         </value>
     </option>
+    <option name="IMPEX_VALUE_LINE_EVEN">
+        <value>
+            <option name="BACKGROUND" value="28292C"/>
+        </value>
+    </option>
 </list>
