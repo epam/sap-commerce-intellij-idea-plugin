@@ -38,8 +38,10 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        if (!projectSettings.isHybrisProject()) return
 
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val settings = projectSettings.state
         val toolbarInstaller = when (file.fileType) {
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
             is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
