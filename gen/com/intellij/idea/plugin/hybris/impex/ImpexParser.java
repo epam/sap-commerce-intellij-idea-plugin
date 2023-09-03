@@ -1,6 +1,10 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -342,10 +346,14 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
+  // //    | LEFT_BRACE
+  // //    | RIGHT_BRACE
+  // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | BOOLEAN
   //     | DIGIT
   //     | FIELD_VALUE_IGNORE
+  // //    | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -374,10 +382,14 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
+  // //    | LEFT_BRACE
+  // //    | RIGHT_BRACE
+  // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | BOOLEAN
   //     | DIGIT
   //     | FIELD_VALUE_IGNORE
+  // //    | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -402,10 +414,14 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
+  // //    | LEFT_BRACE
+  // //    | RIGHT_BRACE
+  // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | BOOLEAN
   //     | DIGIT
   //     | FIELD_VALUE_IGNORE
+  // //    | FIELD_VALUE_NULL
   //     | COMMA
   //     | HEADER_MODE_INSERT
   //     | HEADER_MODE_UPDATE
@@ -1504,6 +1520,57 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // (   COLLECTION_APPEND_PREFIX
+  //             | COLLECTION_REMOVE_PREFIX
+  //             | COLLECTION_MERGE_PREFIX
+  //     )? (((  FIELD_VALUE
+  //              | FIELD_VALUE_URL
+  //              | BOOLEAN
+  //              | DIGIT
+  //              | string
+  //              | macro_usage_dec
+  //              | FIELD_LIST_ITEM_SEPARATOR
+  //              | DEFAULT_PATH_DELIMITER
+  //              | DEFAULT_KEY_VALUE_DELIMITER
+  //              | ALTERNATIVE_MAP_DELIMITER
+  //             )+
+  //            )
+  //             | (  FIELD_VALUE_IGNORE
+  // //               | FIELD_VALUE_NULL
+  //            )
+  //          )
+  public static boolean value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
+    r = value_0(b, l + 1);
+    r = r && value_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (   COLLECTION_APPEND_PREFIX
+  //             | COLLECTION_REMOVE_PREFIX
+  //             | COLLECTION_MERGE_PREFIX
+  //     )?
+  private static boolean value_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_0")) return false;
+    value_0_0(b, l + 1);
+    return true;
+  }
+
+  // COLLECTION_APPEND_PREFIX
+  //             | COLLECTION_REMOVE_PREFIX
+  //             | COLLECTION_MERGE_PREFIX
+  private static boolean value_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, COLLECTION_APPEND_PREFIX);
+    if (!r) r = consumeToken(b, COLLECTION_REMOVE_PREFIX);
+    if (!r) r = consumeToken(b, COLLECTION_MERGE_PREFIX);
+    return r;
+  }
+
   // ((  FIELD_VALUE
   //              | FIELD_VALUE_URL
   //              | BOOLEAN
@@ -1515,14 +1582,17 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //              | DEFAULT_KEY_VALUE_DELIMITER
   //              | ALTERNATIVE_MAP_DELIMITER
   //             )+
-  //            ) | FIELD_VALUE_IGNORE
-  public static boolean value(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value")) return false;
+  //            )
+  //             | (  FIELD_VALUE_IGNORE
+  // //               | FIELD_VALUE_NULL
+  //            )
+  private static boolean value_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_1")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
-    r = value_0(b, l + 1);
+    Marker m = enter_section_(b);
+    r = value_1_0(b, l + 1);
     if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1537,15 +1607,15 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //              | DEFAULT_KEY_VALUE_DELIMITER
   //              | ALTERNATIVE_MAP_DELIMITER
   //             )+
-  private static boolean value_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_0")) return false;
+  private static boolean value_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = value_0_0(b, l + 1);
+    r = value_1_0_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!value_0_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "value_0", c)) break;
+      if (!value_1_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "value_1_0", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
@@ -1561,8 +1631,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //              | DEFAULT_PATH_DELIMITER
   //              | DEFAULT_KEY_VALUE_DELIMITER
   //              | ALTERNATIVE_MAP_DELIMITER
-  private static boolean value_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_0_0")) return false;
+  private static boolean value_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_1_0_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
     if (!r) r = consumeToken(b, FIELD_VALUE_URL);

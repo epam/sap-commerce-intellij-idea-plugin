@@ -3,6 +3,7 @@
 ### `ImpEx` enhancements
 - Introduced inlay hint to display default value in value lines [#670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/670)
 - Added colorization for `odd` and `even` value lines [#667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/667)
+- Added inline collection merge modes: `(+)`, `(-)`, `(+?)` [#671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/671)
 
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)

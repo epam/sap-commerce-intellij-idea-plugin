@@ -1,6 +1,10 @@
 /*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,6 +75,9 @@ public interface ImpexTypes {
   IElementType BEAN_SHELL_BODY = new ImpexTokenType("BEAN_SHELL_BODY");
   IElementType BEAN_SHELL_MARKER = new ImpexTokenType("BEAN_SHELL_MARKER");
   IElementType BOOLEAN = new ImpexTokenType("BOOLEAN");
+  IElementType COLLECTION_APPEND_PREFIX = new ImpexTokenType("COLLECTION_APPEND_PREFIX");
+  IElementType COLLECTION_MERGE_PREFIX = new ImpexTokenType("COLLECTION_MERGE_PREFIX");
+  IElementType COLLECTION_REMOVE_PREFIX = new ImpexTokenType("COLLECTION_REMOVE_PREFIX");
   IElementType COMMA = new ImpexTokenType("COMMA");
   IElementType CRLF = new ImpexTokenType("CRLF");
   IElementType DEFAULT_KEY_VALUE_DELIMITER = new ImpexTokenType("DEFAULT_KEY_VALUE_DELIMITER");

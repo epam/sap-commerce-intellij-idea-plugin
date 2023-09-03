@@ -54,9 +54,8 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
                     val dataMap = mutableMapOf<String, List<PsiElement>>()
                     keyAttrsGroupedByName.forEach { (name, attrs) ->
                         dataMap[name] = attrs
-                            .flatMap { it ->
-                                ImpexPsiUtils.getColumnForHeader(it).map { it.lastChild }
-                            }
+                            .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
+                            .map { it.lastChild }
                     }
 
                     if (distinctCommonAttrsNames.isEmpty()) {

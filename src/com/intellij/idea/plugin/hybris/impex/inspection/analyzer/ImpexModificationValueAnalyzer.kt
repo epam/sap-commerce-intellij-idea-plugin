@@ -2,11 +2,9 @@ package com.intellij.idea.plugin.hybris.impex.inspection.analyzer
 
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
@@ -111,6 +109,13 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                         attrsValues.filter { it.text == av }
                                 .filter { hasNoAppendModeModifier(it) }
                                 .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
+                                .filterIsInstance<ImpexValueGroup>()
+                                .filter { it.value != null }
+                                .filter { PsiTreeUtilExt.getLeafsOfAnyElementType(it.value!!,
+                                    ImpexTypes.COLLECTION_APPEND_PREFIX,
+                                    ImpexTypes.COLLECTION_REMOVE_PREFIX,
+                                    ImpexTypes.COLLECTION_MERGE_PREFIX
+                                ).isEmpty() }
                                 .filter {
                                     val commonContext = PsiTreeUtil.findCommonContext(keyValue.keys.first(), it)
                                     commonContext != null && commonContext !is ImpexFile

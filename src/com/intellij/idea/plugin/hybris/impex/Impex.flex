@@ -36,11 +36,14 @@ import com.intellij.psi.CustomHighlighterTokenType;
 %eof}
 %ignorecase
 
+// See SAP Commerce sources: ImpExConstants
+
 identifier  = [a-zA-Z0-9_-]
 
 crlf        = (([\n])|([\r])|(\r\n))
 not_crlf    = [^\r\n]
 white_space = [ \t\f]
+//backslash   = [\\]
 
 line_comment = [#][^\r\n]*
 
@@ -52,10 +55,12 @@ single_string = ['](('')|([^'\r\n])*)[']
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
 macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
+//macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
 macro_usage            = [$](config-)?({identifier}({dot})?)+
 macro_config_usage     = [$](config-)({identifier}({dot})?)+
 macro_value            = ({not_crlf}|({identifier}({dot})?)+)
+//macro_value            = ({identifier}({dot})?|({backslash}\s*))+
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -63,10 +68,20 @@ right_square_bracket = [\]]
 left_round_bracket  = [\(]
 right_round_bracket = [\)]
 
-semicolon    = [;]
-comma        = [,]
-dot          = [.]
-assign_value = [=]
+//left_brace          = [{]
+//right_brace         = [}]
+
+semicolon     = [;]
+comma         = [,]
+dot           = [.]
+assign_value  = [=]
+//question_mark = [\?]
+
+// See - CollectionValueTranslator
+// value must start with this prefix
+collection_append_prefix = "(+)"
+collection_remove_prefix = "(-)"
+collection_merge_prefix  = "(+?)"
 
 default_path_delimiter      = [:]
 default_key_value_delimiter = "->"
@@ -96,6 +111,7 @@ value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
 field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
+//field_value_null   = "<null>"
 //user_rights_type   = [^]{white_space}*TYPE{white_space}*;
 
 start_userrights                  = [$]START_USERRIGHTS
@@ -107,7 +123,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state HEADER_LINE
 %state FIELD_VALUE
 %state BEAN_SHELL
-%state MODYFIERS_BLOCK
+%state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
 %state HEADER_PARAMETERS
 %state MACRO_USAGE
@@ -212,6 +228,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
+//    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
 //    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
@@ -220,6 +237,10 @@ end_userrights                    = [$]END_USERRIGHTS
     {default_path_delimiter}                                { return ImpexTypes.DEFAULT_PATH_DELIMITER; }
     {alternative_map_delimiter}                             { return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
     {default_key_value_delimiter}                           { return ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER; }
+
+    {collection_append_prefix}                              { return ImpexTypes.COLLECTION_APPEND_PREFIX; }
+    {collection_remove_prefix}                              { return ImpexTypes.COLLECTION_REMOVE_PREFIX; }
+    {collection_merge_prefix}                               { return ImpexTypes.COLLECTION_MERGE_PREFIX; }
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
 
@@ -253,12 +274,12 @@ end_userrights                    = [$]END_USERRIGHTS
     {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
     {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
-    {left_square_bracket}                                   { yybegin(MODYFIERS_BLOCK); return ImpexTypes.LEFT_SQUARE_BRACKET; }
+    {left_square_bracket}                                   { yybegin(MODIFIERS_BLOCK); return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
 
-<MODYFIERS_BLOCK> {
+<MODIFIERS_BLOCK> {
     {attribute_name}                                        { return ImpexTypes.ATTRIBUTE_NAME; }
 
     {assign_value}                                          { yybegin(WAITING_ATTR_OR_PARAM_VALUE); return ImpexTypes.ASSIGN_VALUE; }
@@ -270,7 +291,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {comma}                                                 { return ImpexTypes.ATTRIBUTE_SEPARATOR; }
 
-    {alternative_map_delimiter}                             { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
+    {alternative_map_delimiter}                             { yybegin(MODIFIERS_BLOCK); return ImpexTypes.ALTERNATIVE_MAP_DELIMITER; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
@@ -282,7 +303,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 //    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
-    {comma}                                                 { yybegin(MODYFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
+    {comma}                                                 { yybegin(MODIFIERS_BLOCK); return ImpexTypes.ATTRIBUTE_SEPARATOR; }
     {attribute_value}                                       { return ImpexTypes.ATTRIBUTE_VALUE; }
     {right_square_bracket}                                  { yybegin(HEADER_LINE); return ImpexTypes.RIGHT_SQUARE_BRACKET; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
@@ -303,6 +324,13 @@ end_userrights                    = [$]END_USERRIGHTS
     {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
     {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
+//    {left_brace}                                            { return ImpexTypes.LEFT_BRACE; }
+//    {right_brace}                                           { return ImpexTypes.RIGHT_BRACE; }
+
+    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
+
+//    {question_mark}                                         { return ImpexTypes.QUESTION_MARK; }
+
     {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
 
@@ -311,6 +339,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
+//    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
 
     {comma}                                                 { return ImpexTypes.COMMA; }
 

@@ -187,10 +187,14 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     | RIGHT_ROUND_BRACKET
     | LEFT_SQUARE_BRACKET
     | RIGHT_SQUARE_BRACKET
+//    | LEFT_BRACE
+//    | RIGHT_BRACE
+//    | QUESTION_MARK
     | ASSIGN_VALUE
     | BOOLEAN
     | DIGIT
     | FIELD_VALUE_IGNORE
+//    | FIELD_VALUE_NULL
     | COMMA
     | HEADER_MODE_INSERT
     | HEADER_MODE_UPDATE
@@ -222,7 +226,10 @@ value_group ::= FIELD_VALUE_SEPARATOR value?
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= (((  FIELD_VALUE
+value ::= (   COLLECTION_APPEND_PREFIX
+            | COLLECTION_REMOVE_PREFIX
+            | COLLECTION_MERGE_PREFIX
+    )? (((  FIELD_VALUE
              | FIELD_VALUE_URL
              | BOOLEAN
              | DIGIT
@@ -233,7 +240,10 @@ value ::= (((  FIELD_VALUE
              | DEFAULT_KEY_VALUE_DELIMITER
              | ALTERNATIVE_MAP_DELIMITER
             )+
-           ) | FIELD_VALUE_IGNORE
+           )
+            | (  FIELD_VALUE_IGNORE
+//               | FIELD_VALUE_NULL
+           )
          )
 
 macro_usage_dec::=MACRO_USAGE
