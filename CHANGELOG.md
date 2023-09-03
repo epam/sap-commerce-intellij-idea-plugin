@@ -11,6 +11,9 @@
 - Detect all allowed by `AtomicValueTranslator` boolean tokens [#676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/676)
 - Adjust Lexer in a way it will support multi-line (separated by ` \ `) macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 
+### `ImpEx` inspection rules
+- Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
+
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
 - Improved folding for `index`:`key` tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
