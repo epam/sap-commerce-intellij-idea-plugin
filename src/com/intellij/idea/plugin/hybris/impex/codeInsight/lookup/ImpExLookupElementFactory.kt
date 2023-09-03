@@ -63,6 +63,7 @@ object ImpExLookupElementFactory {
     fun buildMode(mode: String) = LookupElementBuilder.create("$mode ")
         .withPresentableText(mode)
         .withIcon(HybrisIcons.IMPEX_MODE)
+        .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     private fun build(element: PsiElement, modifierName: String, completionSettings: ImpexCompletionSettings) =
         if (completionSettings.addEqualsAfterModifier && !hasAssignValueLeaf(element))
