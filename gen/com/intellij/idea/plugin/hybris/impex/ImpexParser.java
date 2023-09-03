@@ -346,9 +346,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
-  // //    | LEFT_BRACE
-  // //    | RIGHT_BRACE
-  // //    | QUESTION_MARK
+  //     | LEFT_BRACE
+  //     | RIGHT_BRACE
+  //     | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | DIGIT
   //     | BOOLEAN
@@ -382,9 +382,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
-  // //    | LEFT_BRACE
-  // //    | RIGHT_BRACE
-  // //    | QUESTION_MARK
+  //     | LEFT_BRACE
+  //     | RIGHT_BRACE
+  //     | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | DIGIT
   //     | BOOLEAN
@@ -414,9 +414,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | RIGHT_ROUND_BRACKET
   //     | LEFT_SQUARE_BRACKET
   //     | RIGHT_SQUARE_BRACKET
-  // //    | LEFT_BRACE
-  // //    | RIGHT_BRACE
-  // //    | QUESTION_MARK
+  //     | LEFT_BRACE
+  //     | RIGHT_BRACE
+  //     | QUESTION_MARK
   //     | ASSIGN_VALUE
   //     | DIGIT
   //     | BOOLEAN
@@ -438,6 +438,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RIGHT_ROUND_BRACKET);
     if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, RIGHT_SQUARE_BRACKET);
+    if (!r) r = consumeToken(b, LEFT_BRACE);
+    if (!r) r = consumeToken(b, RIGHT_BRACE);
+    if (!r) r = consumeToken(b, QUESTION_MARK);
     if (!r) r = consumeToken(b, ASSIGN_VALUE);
     if (!r) r = consumeToken(b, DIGIT);
     if (!r) r = consumeToken(b, BOOLEAN);

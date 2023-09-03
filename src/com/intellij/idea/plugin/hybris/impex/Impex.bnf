@@ -187,9 +187,9 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     | RIGHT_ROUND_BRACKET
     | LEFT_SQUARE_BRACKET
     | RIGHT_SQUARE_BRACKET
-//    | LEFT_BRACE
-//    | RIGHT_BRACE
-//    | QUESTION_MARK
+    | LEFT_BRACE
+    | RIGHT_BRACE
+    | QUESTION_MARK
     | ASSIGN_VALUE
     | DIGIT
     | BOOLEAN

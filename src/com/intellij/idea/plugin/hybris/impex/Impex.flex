@@ -54,13 +54,11 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-//macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
 macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
 macro_usage            = [$](config-)?({identifier}({dot})?)+
 macro_config_usage     = [$](config-)({identifier}({dot})?)+
-macro_value            = ({not_crlf}|({identifier}({dot})?)+)
-//macro_value            = ({identifier}({dot})?|({backslash}\s*))+
+macro_value            = ({identifier}({dot})?|({backslash}\s*))+
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
@@ -68,14 +66,14 @@ right_square_bracket = [\]]
 left_round_bracket  = [\(]
 right_round_bracket = [\)]
 
-//left_brace          = [{]
-//right_brace         = [}]
+left_brace          = [{]
+right_brace         = [}]
 
 semicolon     = [;]
 comma         = [,]
 dot           = [.]
 assign_value  = [=]
-//question_mark = [\?]
+question_mark = [\?]
 
 // see - CollectionValueTranslator
 // value must start with this prefix
@@ -325,17 +323,15 @@ end_userrights                    = [$]END_USERRIGHTS
     {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
     {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
-//    {left_brace}                                            { return ImpexTypes.LEFT_BRACE; }
-//    {right_brace}                                           { return ImpexTypes.RIGHT_BRACE; }
+    {left_brace}                                            { return ImpexTypes.LEFT_BRACE; }
+    {right_brace}                                           { return ImpexTypes.RIGHT_BRACE; }
 
     {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
 
-//    {question_mark}                                         { return ImpexTypes.QUESTION_MARK; }
+    {question_mark}                                         { return ImpexTypes.QUESTION_MARK; }
 
     {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }
-
-//    {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
 
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }

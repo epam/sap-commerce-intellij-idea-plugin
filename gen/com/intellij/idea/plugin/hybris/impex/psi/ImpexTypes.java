@@ -101,6 +101,7 @@ public interface ImpexTypes {
   IElementType HEADER_PARAMETER_NAME = new ImpexTokenType("HEADER_PARAMETER_NAME");
   IElementType HEADER_SPECIAL_PARAMETER_NAME = new ImpexTokenType("HEADER_SPECIAL_PARAMETER_NAME");
   IElementType HEADER_TYPE = new ImpexTokenType("HEADER_TYPE");
+  IElementType LEFT_BRACE = new ImpexTokenType("LEFT_BRACE");
   IElementType LEFT_ROUND_BRACKET = new ImpexTokenType("LEFT_ROUND_BRACKET");
   IElementType LEFT_SQUARE_BRACKET = new ImpexTokenType("LEFT_SQUARE_BRACKET");
   IElementType LINE_COMMENT = new ImpexTokenType("LINE_COMMENT");
@@ -113,6 +114,8 @@ public interface ImpexTypes {
   IElementType PERMISSION = new ImpexTokenType("PERMISSION");
   IElementType PERMISSION_ALLOWED = new ImpexTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new ImpexTokenType("PERMISSION_DENIED");
+  IElementType QUESTION_MARK = new ImpexTokenType("QUESTION_MARK");
+  IElementType RIGHT_BRACE = new ImpexTokenType("RIGHT_BRACE");
   IElementType RIGHT_ROUND_BRACKET = new ImpexTokenType("RIGHT_ROUND_BRACKET");
   IElementType RIGHT_SQUARE_BRACKET = new ImpexTokenType("RIGHT_SQUARE_BRACKET");
   IElementType SINGLE_STRING = new ImpexTokenType("SINGLE_STRING");

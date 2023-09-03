@@ -10,6 +10,7 @@
 - Automatically trigger code completion after choosing the mode [#675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/675)
 - Detect all allowed by `AtomicValueTranslator` boolean tokens [#676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/676)
 - Adjust Lexer in a way it will support multi-line (separated by ` \ `) macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
+- Adjust Lexer in a way it will support multi-line (separated by ` \ `) macro values [#678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/678)
 
 ### `ImpEx` inspection rules
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
