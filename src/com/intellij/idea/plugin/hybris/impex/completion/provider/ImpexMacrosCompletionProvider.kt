@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
@@ -37,7 +38,8 @@ class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>()
 
         PsiTreeUtil.findChildrenOfType(originalFile, ImpexMacroDeclaration::class.java)
             .map { it.firstChild }
-            .map { ImpExLookupElementFactory.buildMacro(it.text) }
+            .map { ImpexMacroReference.escapeName(it.text) }
+            .map { ImpExLookupElementFactory.buildMacro(it) }
             .let { result.addAllElements(it) }
     }
 

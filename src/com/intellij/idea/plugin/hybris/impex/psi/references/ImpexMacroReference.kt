@@ -20,13 +20,16 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.PsiTreeUtil
 
 class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
     override fun calculateDefaultRangeInElement() = findMacroDeclaration()
-        ?.let { TextRange.from(0, it.macroNameDec.textLength) }
+        ?.let { TextRange.from(0, escapeName(it.macroNameDec.text).length) }
         ?: TextRange.from(0, element.textLength)
 
     override fun getVariants(): Array<ResolveResult> = ResolveResult.EMPTY_ARRAY
@@ -40,8 +43,13 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
         ImpexMacroDeclaration::class.java
     )
         .reversed()
-        .find { element.text.startsWith(it.macroNameDec.text) }
+        .find { element.text.startsWith(escapeName(it.macroNameDec.text)) }
 
     override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
 
+    companion object {
+        fun escapeName(macroName: String) = macroName
+            .replace("\\", "")
+            .replace("\n", "")
+    }
 }

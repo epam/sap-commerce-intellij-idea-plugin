@@ -139,6 +139,9 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpExOrphanValueGroupInspection" displayName="[y] Orphan value group"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExOrphanValueGroupInspection"/>
+        <localInspection groupPath="SAP Commerce" shortName="ImpExMultilineMacroNameInspection" displayName="[y] Multi-line macro name"
+                         groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMultilineMacroNameInspection"/>
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"

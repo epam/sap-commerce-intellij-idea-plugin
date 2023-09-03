@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroUtils
 import com.intellij.idea.plugin.hybris.impex.psi.*
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -42,16 +43,21 @@ class ImpexUnknownMacrosInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = UnknownMacrosVisitor(holder, cachedMacros)
     override fun inspectionStarted(session: LocalInspectionToolSession, isOnTheFly: Boolean) {
         cachedMacros.clear()
-        val declarations = PsiTreeUtil.findChildrenOfAnyType(session.file, ImpexMacroDeclaration::class.java)
-        declarations.forEach { declaration -> cachedMacros[declaration.firstChild.text] = true }
+        PsiTreeUtil.findChildrenOfAnyType(session.file, ImpexMacroDeclaration::class.java)
+            .map { ImpexMacroReference.escapeName(it.firstChild.text) }
+            .forEach { cachedMacros[it] = true }
     }
 }
 
 private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder, private val cachedMacros: HashMap<String, Boolean>) : ImpexVisitor() {
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
-        if (usage.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
-        val macroName = usage.text.takeIf { it.isNotEmpty() } ?: return
+        val text = usage.text
+        if (text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
+        val macroName = text
+            .takeIf { it.isNotEmpty() }
+            ?.let { ImpexMacroReference.escapeName(it) }
+            ?: return
 
         val isDeclarationExists = cachedMacros[macroName]
         if (isDeclarationExists == true) return

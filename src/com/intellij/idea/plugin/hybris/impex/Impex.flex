@@ -43,7 +43,7 @@ identifier  = [a-zA-Z0-9_-]
 crlf        = (([\n])|([\r])|(\r\n))
 not_crlf    = [^\r\n]
 white_space = [ \t\f]
-//backslash   = [\\]
+backslash   = [\\]
 
 line_comment = [#][^\r\n]*
 
@@ -54,8 +54,8 @@ single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
-//macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
+//macro_name_declaration = [$](([a-zA-Z0-9_-]|(config-)))+{white_space}*[=]
+macro_name_declaration = [$](([\w\d-]|{white_space})+({backslash}\s*)*)+[=]
 root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
 macro_usage            = [$](config-)?({identifier}({dot})?)+
 macro_config_usage     = [$](config-)({identifier}({dot})?)+

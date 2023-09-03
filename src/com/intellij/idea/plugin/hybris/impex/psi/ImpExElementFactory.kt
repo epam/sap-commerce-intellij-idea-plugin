@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.childrenOfType
+import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 
 object ImpExElementFactory {
 
@@ -36,6 +37,10 @@ object ImpExElementFactory {
         .childrenOfType<ImpexHeaderLine>()
         .firstOrNull()
         ?.lastChild
+
+    fun createMacroName(project: Project, value: String) = createFile(project, "$value = dummy")
+        .getChildOfType<ImpexMacroDeclaration>()
+        ?.getChildOfType<ImpexMacroNameDec>()
 
     fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
      INSERT Product;

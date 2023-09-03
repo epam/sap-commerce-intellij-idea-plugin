@@ -9,6 +9,7 @@
 - Automatically add `=` after type and attribute modifier and trigger code completion [#674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/674)
 - Automatically trigger code completion after choosing the mode [#675](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/675)
 - Detect all allowed by `AtomicValueTranslator` boolean tokens [#676](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/676)
+- Adjust Lexer in a way it will support multi-line (separated by ` \ `) macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
