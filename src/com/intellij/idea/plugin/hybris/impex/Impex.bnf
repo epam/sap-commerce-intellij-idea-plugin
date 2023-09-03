@@ -191,8 +191,8 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
 //    | RIGHT_BRACE
 //    | QUESTION_MARK
     | ASSIGN_VALUE
-    | BOOLEAN
     | DIGIT
+    | BOOLEAN
     | FIELD_VALUE_IGNORE
     | FIELD_VALUE_NULL
     | COMMA
@@ -320,8 +320,8 @@ any_attribute_name ::= (ATTRIBUTE_NAME | string)+
 
 any_attribute_value ::= (
   ATTRIBUTE_VALUE
-  | BOOLEAN
   | DIGIT
+  | BOOLEAN
   | string
   | macro_usage_dec
 )+

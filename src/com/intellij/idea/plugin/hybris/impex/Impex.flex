@@ -88,7 +88,7 @@ default_key_value_delimiter = "->"
 alternative_map_delimiter   = [|]
 
 // see - AtomicValueTranslator
-boolean = ("true"|"false")
+boolean = ("true"|"false"|"ja"|"nein"|"wahr"|"falsch"|"y"|"n"|-|\+)
 
 digit   = [-+]?[0-9]+([.][0-9]+)?
 //class_with_package = ({identifier}+[.]{identifier}+)+

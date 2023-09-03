@@ -87,8 +87,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // (
   //   ATTRIBUTE_VALUE
-  //   | BOOLEAN
   //   | DIGIT
+  //   | BOOLEAN
   //   | string
   //   | macro_usage_dec
   // )+
@@ -107,16 +107,16 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   // ATTRIBUTE_VALUE
-  //   | BOOLEAN
   //   | DIGIT
+  //   | BOOLEAN
   //   | string
   //   | macro_usage_dec
   private static boolean any_attribute_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_attribute_value_0")) return false;
     boolean r;
     r = consumeToken(b, ATTRIBUTE_VALUE);
-    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = string(b, l + 1);
     if (!r) r = macro_usage_dec(b, l + 1);
     return r;
@@ -350,8 +350,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   // //    | RIGHT_BRACE
   // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
   //     | FIELD_VALUE_NULL
   //     | COMMA
@@ -386,8 +386,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   // //    | RIGHT_BRACE
   // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
   //     | FIELD_VALUE_NULL
   //     | COMMA
@@ -418,8 +418,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   // //    | RIGHT_BRACE
   // //    | QUESTION_MARK
   //     | ASSIGN_VALUE
-  //     | BOOLEAN
   //     | DIGIT
+  //     | BOOLEAN
   //     | FIELD_VALUE_IGNORE
   //     | FIELD_VALUE_NULL
   //     | COMMA
@@ -439,8 +439,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, LEFT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, RIGHT_SQUARE_BRACKET);
     if (!r) r = consumeToken(b, ASSIGN_VALUE);
-    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
+    if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, FIELD_VALUE_IGNORE);
     if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
     if (!r) r = consumeToken(b, COMMA);
