@@ -317,9 +317,9 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                     )
                     texts("Specifies the modification mode for Collection instances.")
                     list(
-                        "mode=append: In the append mode, references to elements of the Collection value are added to the existing resolved Collection. You can also use (+) instead of mode=append.",
-                        "mode=remove: In the remove mode, references to elements of the Collection value are removed from the resolved Collection. You can also use (-) instead of mode=remove",
-                        "mode=merge: In the merge mode, references to elements of the Collection value are added to the existing resolved Collection only if they already aren't part of the Collection. You can also use (+?) instead of mode=merge",
+                        "mode=append: In the append mode, references to elements of the Collection value are added to the existing resolved Collection.<br>You can also use <strong>(+)</strong instead of mode=append.",
+                        "mode=remove: In the remove mode, references to elements of the Collection value are removed from the resolved Collection.<br>You can also use <strong>(-)</strong? instead of mode=remove",
+                        "mode=merge: In the merge mode, references to elements of the Collection value are added to the existing resolved Collection only if they already aren't part of the Collection.<br>You can also use <strong>(+?)</strong> instead of mode=merge",
                     )
                 }.build()
 

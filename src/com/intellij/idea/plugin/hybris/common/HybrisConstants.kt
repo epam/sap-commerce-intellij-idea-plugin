@@ -369,8 +369,6 @@ object HybrisConstants {
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")
-    @JvmField
-    val IMPEX_MODIFIER_MODE_VALUES = setOf("append", "remove")
 
     @JvmField
     val DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES = FileUtilRt.toSystemDependentName("/.idea/idea-modules")

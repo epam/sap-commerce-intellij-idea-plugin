@@ -70,10 +70,20 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                     checkBox("Automatically add '.' char after inline type")
                         .comment(
                             """
-                            When enabled and there is '.' char is not present, it will be injected automatically
+                            When enabled and '.' char is not present, it will be injected automatically
                             """.trimIndent()
                         )
                         .bindSelected(state.completion::addCommaAfterInlineType)
+                }
+                row {
+                    checkBox("Automatically add '=' char after type and attribute modifier")
+                        .comment(
+                            """
+                            When enabled and '=' char is not present, it will be injected automatically.<br>
+                            In addition to that, code completion will be automatically triggered for modifier values.
+                            """.trimIndent()
+                        )
+                        .bindSelected(state.completion::addEqualsAfterModifier)
                 }
             }
             group("Documentation") {

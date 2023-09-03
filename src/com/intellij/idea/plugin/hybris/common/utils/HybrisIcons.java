@@ -180,7 +180,8 @@ public final class HybrisIcons {
     public static final Icon FXS_TABLE_SUFFIX = AllIcons.General.Filter;
     public static final Icon FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg");
 
-    public static final Icon IMX_VALIDATE = getIcon("/icons/impex/validate.svg");
+    public static final Icon IMPEX_VALIDATE = getIcon("/icons/impex/validate.svg");
+    public static final Icon IMPEX_MODE = AllIcons.Nodes.Function;
 
     public static final Icon GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg");
 

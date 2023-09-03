@@ -6,6 +6,7 @@
 - Added inline collection merge modes: `(+)`, `(-)`, `(+?)` [#671](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/671)
 - Added colorization for `(+)`, `(-)` and `(+?)` inline collection merge modes [#672](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/672)
 - Added support of the `<null>` special value [#673](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/673)
+- Automatically add `=` after type and attribute modifier and trigger code completion [#674](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/674)
 
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)

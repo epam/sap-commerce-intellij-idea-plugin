@@ -40,4 +40,5 @@ data class ImpexDocumentationSettings(
 class ImpexCompletionSettings : BaseState() {
     var showInlineTypes by property(true)
     var addCommaAfterInlineType by property(true)
+    var addEqualsAfterModifier by property(true)
 }

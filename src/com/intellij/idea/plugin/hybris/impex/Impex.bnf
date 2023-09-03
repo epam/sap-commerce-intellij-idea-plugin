@@ -226,25 +226,22 @@ value_group ::= FIELD_VALUE_SEPARATOR value?
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= (((  FIELD_VALUE
-             | FIELD_VALUE_URL
-             | BOOLEAN
-             | DIGIT
-             | string
-             | macro_usage_dec
-             | FIELD_LIST_ITEM_SEPARATOR
-             | DEFAULT_PATH_DELIMITER
-             | DEFAULT_KEY_VALUE_DELIMITER
-             | ALTERNATIVE_MAP_DELIMITER
-             | COLLECTION_APPEND_PREFIX
-             | COLLECTION_REMOVE_PREFIX
-             | COLLECTION_MERGE_PREFIX
-            )+
-           )
-            | (  FIELD_VALUE_IGNORE
-               | FIELD_VALUE_NULL
-           )
-         )
+value ::= value_dec+
+    | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
+
+private value_dec ::= FIELD_VALUE
+    | FIELD_VALUE_URL
+    | BOOLEAN
+    | DIGIT
+    | string
+    | macro_usage_dec
+    | FIELD_LIST_ITEM_SEPARATOR
+    | DEFAULT_PATH_DELIMITER
+    | DEFAULT_KEY_VALUE_DELIMITER
+    | ALTERNATIVE_MAP_DELIMITER
+    | COLLECTION_APPEND_PREFIX
+    | COLLECTION_REMOVE_PREFIX
+    | COLLECTION_MERGE_PREFIX
 
 macro_usage_dec::=MACRO_USAGE
 {

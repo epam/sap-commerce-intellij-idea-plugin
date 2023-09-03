@@ -21,29 +21,21 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
-private val keywords = mutableListOf(
-    "INSERT ",
-    "UPDATE ",
-    "INSERT_UPDATE ",
-    "REMOVE "
-)
-
 class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        keywords
-            .map {
-                LookupElementBuilder.create(it)
-                    .withPresentableText(it.trim())
-                    .withIcon(AllIcons.Nodes.Function)
-            }
-            .forEach { result.addElement(it) }
+    private val keywords = listOf(
+        "INSERT",
+        "UPDATE",
+        "INSERT_UPDATE",
+        "REMOVE"
+    )
 
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        result.addAllElements(keywords.map { ImpExLookupElementFactory.buildMode(it) })
     }
 
     companion object {

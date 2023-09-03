@@ -18,8 +18,7 @@
 package com.intellij.idea.plugin.hybris.impex.completion.impl
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
@@ -36,11 +35,10 @@ class ImpexImplementationClassCompletionContributorImpl(val myProject: Project) 
         return ClassInheritorsSearch
             .search(clazz, GlobalSearchScope.allScope(myProject), true)
             .findAll()
-            .filter { it.qualifiedName != null && it.name != null }
-            .map {
-                LookupElementBuilder.create(it.qualifiedName!!)
-                    .withPresentableText(it.name!!)
-                    .withIcon(AllIcons.FileTypes.JavaClass)
+            .mapNotNull {
+                val fqn = it.qualifiedName ?: return@mapNotNull null
+                val name = it.name ?: return@mapNotNull null
+                ImpExLookupElementFactory.buildJavaClass(fqn, name)
             }
             .toSet()
     }

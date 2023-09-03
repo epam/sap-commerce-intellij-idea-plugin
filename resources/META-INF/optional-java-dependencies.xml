@@ -70,6 +70,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
+
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultPostImportConfigurator"/>
 

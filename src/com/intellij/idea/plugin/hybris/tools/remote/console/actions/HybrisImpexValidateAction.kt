@@ -33,7 +33,7 @@ class HybrisImpexValidateAction(
 ) : AnAction(
     message("action.console.hybris.impex.validate.message.text"),
     message("action.console.hybris.impex.validate.message.title"),
-    HybrisIcons.IMX_VALIDATE
+    HybrisIcons.IMPEX_VALIDATE
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

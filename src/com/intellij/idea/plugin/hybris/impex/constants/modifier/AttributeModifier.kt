@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.impex.constants.modifier
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.openapi.project.Project
 
@@ -29,7 +29,7 @@ import com.intellij.openapi.project.Project
  */
 enum class AttributeModifier(
     override val modifierName: String,
-    modifierValues: Set<String> = emptySet()
+    private val modifierValues: Set<String> = emptySet()
 ) : ImpexModifier {
 
     UNIQUE("unique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
@@ -38,7 +38,15 @@ enum class AttributeModifier(
     IGNORE_KEY_CASE("ignoreKeyCase", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     IGNORE_NULL("ignorenull", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     VIRTUAL("virtual", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
-    MODE("mode", HybrisConstants.IMPEX_MODIFIER_MODE_VALUES),
+    MODE("mode") {
+        override fun getLookupElements(project: Project) = mapOf(
+            "append" to "(+)",
+            "remove" to "(-)",
+            "merge" to "(+?)"
+        )
+            .map { ImpExLookupElementFactory.buildModifierValue(it.key, it.value) }
+            .toSet()
+    },
     ALIAS("alias"),
     COLLECTION_DELIMITER("collection-delimiter"),
     DATE_FORMAT("dateformat"),
@@ -51,18 +59,18 @@ enum class AttributeModifier(
     POS("pos"),
     CELL_DECORATOR("cellDecorator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_CELL_DECORATOR)
+            ?.getImplementationsForClass(HybrisConstants.CLASS_IMPEX_CELL_DECORATOR)
+            ?: emptySet()
     },
     TRANSLATOR("translator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_TRANSLATOR)
+            ?.getImplementationsForClass(HybrisConstants.CLASS_IMPEX_TRANSLATOR)
+            ?: emptySet()
     };
 
-    private val lookupElements = modifierValues
-        .map { LookupElementBuilder.create(it) }
+    override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues
+        .map { ImpExLookupElementFactory.buildModifierValue(it) }
         .toSet()
-
-    override fun getLookupElements(project: Project): Set<LookupElement> = lookupElements
 
     companion object {
         private val CACHE = entries.associateBy { it.modifierName }

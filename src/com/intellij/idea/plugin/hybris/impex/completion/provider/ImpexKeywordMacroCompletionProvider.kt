@@ -21,31 +21,17 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
 class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val userRightsStart = "\$START_USERRIGHTS"
-        val userRightsEnd = "\$END_USERRIGHTS"
-        result.addElement(LookupElementBuilder.create(
-            """
-            $userRightsStart
-            Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
-                ;   ;              ;        ;      ;    ;      ;      ;      ;
-            $userRightsEnd
-        """.trimIndent()
-        )
-            .withPresentableText("\$START_USERRIGHTS")
-            .withIcon(HybrisIcons.MACROS)
-        )
+        result.addElement(ImpExLookupElementFactory.buildUserRights())
     }
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ImpexKeywordMacroCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ImpexKeywordMacroCompletionProvider::class.java)
     }
 }

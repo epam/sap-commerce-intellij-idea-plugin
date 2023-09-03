@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.impex.constants.modifier
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.openapi.project.Project
 
@@ -30,7 +30,7 @@ import com.intellij.openapi.project.Project
  */
 enum class TypeModifier(
     override val modifierName: String,
-    modifierValues: Set<String> = emptySet()
+    private val modifierValues: Set<String> = emptySet()
 ) : ImpexModifier {
 
     BATCH_MODE("batchmode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
@@ -39,17 +39,16 @@ enum class TypeModifier(
     IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     PROCESSOR("processor") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            .getImplementationsForClass(HybrisConstants.CLASS_IMPEX_PROCESSOR)
+            ?.getImplementationsForClass(HybrisConstants.CLASS_IMPEX_PROCESSOR)
+            ?: emptySet()
     };
 
-    private val lookupElements = modifierValues
-        .map { LookupElementBuilder.create(it) }
+    override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues
+        .map { ImpExLookupElementFactory.buildModifierValue(it) }
         .toSet()
 
-    override fun getLookupElements(project: Project): Set<LookupElement> = lookupElements
-
     companion object {
-        private val CACHE = values().associateBy { it.modifierName }
+        private val CACHE = entries.associateBy { it.modifierName }
 
         fun getByModifierName(modifierName: String) = CACHE[modifierName]
     }

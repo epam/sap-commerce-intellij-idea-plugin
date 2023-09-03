@@ -21,8 +21,9 @@ package com.intellij.idea.plugin.hybris.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
@@ -33,10 +34,13 @@ class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<Co
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        val element = parameters.position
+        val completionSettings = HybrisProjectSettingsComponent.getInstance(element.project).state
+            .impexSettings
+            .completion
         AttributeModifier.entries
-            .map { it.modifierName }
-            .map { LookupElementBuilder.create(it) }
-            .forEach { result.addElement(it) }
+            .map { ImpExLookupElementFactory.build(element, it, completionSettings) }
+            .let { result.addAllElements(it) }
     }
 
     companion object {

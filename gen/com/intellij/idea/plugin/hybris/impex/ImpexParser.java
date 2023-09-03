@@ -1521,24 +1521,8 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ((  FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
-  //              | COLLECTION_APPEND_PREFIX
-  //              | COLLECTION_REMOVE_PREFIX
-  //              | COLLECTION_MERGE_PREFIX
-  //             )+
-  //            )
-  //             | (  FIELD_VALUE_IGNORE
-  //                | FIELD_VALUE_NULL
-  //            )
+  // value_dec+
+  //     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -1549,49 +1533,46 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (  FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
-  //              | COLLECTION_APPEND_PREFIX
-  //              | COLLECTION_REMOVE_PREFIX
-  //              | COLLECTION_MERGE_PREFIX
-  //             )+
+  // value_dec+
   private static boolean value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = value_0_0(b, l + 1);
+    r = value_dec(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!value_0_0(b, l + 1)) break;
+      if (!value_dec(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_0", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
   }
 
+  // FIELD_VALUE_IGNORE | FIELD_VALUE_NULL
+  private static boolean value_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_1")) return false;
+    boolean r;
+    r = consumeToken(b, FIELD_VALUE_IGNORE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
+    return r;
+  }
+
+  /* ********************************************************** */
   // FIELD_VALUE
-  //              | FIELD_VALUE_URL
-  //              | BOOLEAN
-  //              | DIGIT
-  //              | string
-  //              | macro_usage_dec
-  //              | FIELD_LIST_ITEM_SEPARATOR
-  //              | DEFAULT_PATH_DELIMITER
-  //              | DEFAULT_KEY_VALUE_DELIMITER
-  //              | ALTERNATIVE_MAP_DELIMITER
-  //              | COLLECTION_APPEND_PREFIX
-  //              | COLLECTION_REMOVE_PREFIX
-  //              | COLLECTION_MERGE_PREFIX
-  private static boolean value_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_0_0")) return false;
+  //     | FIELD_VALUE_URL
+  //     | BOOLEAN
+  //     | DIGIT
+  //     | string
+  //     | macro_usage_dec
+  //     | FIELD_LIST_ITEM_SEPARATOR
+  //     | DEFAULT_PATH_DELIMITER
+  //     | DEFAULT_KEY_VALUE_DELIMITER
+  //     | ALTERNATIVE_MAP_DELIMITER
+  //     | COLLECTION_APPEND_PREFIX
+  //     | COLLECTION_REMOVE_PREFIX
+  //     | COLLECTION_MERGE_PREFIX
+  static boolean value_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_dec")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
     if (!r) r = consumeToken(b, FIELD_VALUE_URL);
@@ -1606,16 +1587,6 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, COLLECTION_APPEND_PREFIX);
     if (!r) r = consumeToken(b, COLLECTION_REMOVE_PREFIX);
     if (!r) r = consumeToken(b, COLLECTION_MERGE_PREFIX);
-    return r;
-  }
-
-  // FIELD_VALUE_IGNORE
-  //                | FIELD_VALUE_NULL
-  private static boolean value_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_1")) return false;
-    boolean r;
-    r = consumeToken(b, FIELD_VALUE_IGNORE);
-    if (!r) r = consumeToken(b, FIELD_VALUE_NULL);
     return r;
   }
 

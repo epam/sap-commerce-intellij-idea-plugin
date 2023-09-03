@@ -25,7 +25,7 @@ interface ImpexImplementationClassCompletionContributor {
     fun getImplementationsForClass(qualifiedName: String): Set<LookupElement>
 
     companion object {
-        fun getInstance(project: Project): ImpexImplementationClassCompletionContributor =
+        fun getInstance(project: Project): ImpexImplementationClassCompletionContributor? =
             project.getService(ImpexImplementationClassCompletionContributor::class.java)
     }
 }

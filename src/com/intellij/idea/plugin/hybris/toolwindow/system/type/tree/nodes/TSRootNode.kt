@@ -32,7 +32,7 @@ class TSRootNode(tree: TSTree) : TSNode(tree.myProject) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getNewChildren(): Map<String, TSNode> = TSMetaType.values()
+    override fun getNewChildren(): Map<String, TSNode> = TSMetaType.entries
         .map { TSMetaTypeNode(this, it) }
         .associateBy { it.name }
 

@@ -77,7 +77,7 @@ dot           = [.]
 assign_value  = [=]
 //question_mark = [\?]
 
-// See - CollectionValueTranslator
+// see - CollectionValueTranslator
 // value must start with this prefix
 collection_append_prefix = "(+)"
 collection_remove_prefix = "(-)"
@@ -87,7 +87,9 @@ default_path_delimiter      = [:]
 default_key_value_delimiter = "->"
 alternative_map_delimiter   = [|]
 
-boolean = (("true")|("false"))
+// see - AtomicValueTranslator
+boolean = ("true"|"false")
+
 digit   = [-+]?[0-9]+([.][0-9]+)?
 //class_with_package = ({identifier}+[.]{identifier}+)+
 
