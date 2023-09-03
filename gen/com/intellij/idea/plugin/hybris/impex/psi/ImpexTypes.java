@@ -109,6 +109,7 @@ public interface ImpexTypes {
   IElementType MACRO_USAGE = new ImpexTokenType("MACRO_USAGE");
   IElementType MACRO_VALUE = new ImpexTokenType("MACRO_VALUE");
   IElementType MEMBEROFGROUPS = new ImpexTokenType("MEMBEROFGROUPS");
+  IElementType MULTILINE_SEPARATOR = new ImpexTokenType("MULTILINE_SEPARATOR");
   IElementType PARAMETERS_SEPARATOR = new ImpexTokenType("PARAMETERS_SEPARATOR");
   IElementType PASSWORD = new ImpexTokenType("PASSWORD");
   IElementType PERMISSION = new ImpexTokenType("PERMISSION");

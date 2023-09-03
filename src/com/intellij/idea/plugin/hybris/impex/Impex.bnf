@@ -79,7 +79,7 @@ private recover_root ::= !(
 )
 
 private not_line_break ::= !(CRLF)
-private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR)
+private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
 private recover_parameter_name ::= !(LEFT_SQUARE_BRACKET | LEFT_ROUND_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_header_type ::= !(LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR | CRLF)
 private recover_parameters ::= !(CRLF | LEFT_SQUARE_BRACKET | PARAMETERS_SEPARATOR)
@@ -167,7 +167,7 @@ private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
 
 root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 
-header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
 {
     pin = 1
     methods=[getFullHeaderParameter getValueLines]

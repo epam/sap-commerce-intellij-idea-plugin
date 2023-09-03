@@ -267,7 +267,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // any_header_mode full_header_type ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+  // any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
   public static boolean header_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line")) return false;
     boolean r, p;
@@ -280,7 +280,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ((PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR)*
+  // ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
   private static boolean header_line_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2")) return false;
     while (true) {
@@ -291,7 +291,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (PARAMETERS_SEPARATOR full_header_parameter) | PARAMETERS_SEPARATOR
+  // (PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR
   private static boolean header_line_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2_0")) return false;
     boolean r;
@@ -302,15 +302,23 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // PARAMETERS_SEPARATOR full_header_parameter
+  // PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter
   private static boolean header_line_2_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_line_2_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PARAMETERS_SEPARATOR);
+    r = r && header_line_2_0_0_1(b, l + 1);
     r = r && full_header_parameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // MULTILINE_SEPARATOR?
+  private static boolean header_line_2_0_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_line_2_0_0_1")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
+    return true;
   }
 
   /* ********************************************************** */
@@ -567,7 +575,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(CRLF | PARAMETERS_SEPARATOR)
+  // !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
   static boolean not_line_break_or_parameters_separator(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break_or_parameters_separator")) return false;
     boolean r;
@@ -577,12 +585,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // CRLF | PARAMETERS_SEPARATOR
+  // CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR
   private static boolean not_line_break_or_parameters_separator_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "not_line_break_or_parameters_separator_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, PARAMETERS_SEPARATOR);
+    if (!r) r = consumeToken(b, MULTILINE_SEPARATOR);
     return r;
   }
 

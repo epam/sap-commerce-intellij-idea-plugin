@@ -45,6 +45,8 @@ not_crlf    = [^\r\n]
 white_space = [ \t\f]
 backslash   = [\\]
 
+multiline_separator   = {backslash}{crlf}
+
 line_comment = [#][^\r\n]*
 
 bean_shell_marker = [#][%]
@@ -255,6 +257,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <HEADER_LINE> {
     {semicolon}                                             { return ImpexTypes.PARAMETERS_SEPARATOR; }
+    {multiline_separator}                                   { return ImpexTypes.MULTILINE_SEPARATOR; }
     {comma}                                                 { return ImpexTypes.COMMA; }
     {dot}                                                   { return ImpexTypes.DOT; }
 
