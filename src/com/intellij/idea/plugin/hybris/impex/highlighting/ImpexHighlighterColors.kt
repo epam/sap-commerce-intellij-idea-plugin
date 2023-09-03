@@ -75,6 +75,9 @@ object ImpexHighlighterColors {
     val USER_RIGHTS_PERMISSION_INHERITED = key("IMPEX_USER_RIGHTS_PERMISSION_INHERITED", HighlighterColors.TEXT)
     val VALUE_LINE_ODD = key("IMPEX_VALUE_LINE_ODD", HighlighterColors.NO_HIGHLIGHTING)
     val VALUE_LINE_EVEN = key("IMPEX_VALUE_LINE_EVEN", HighlighterColors.NO_HIGHLIGHTING)
+    val COLLECTION_APPEND_PREFIX = key("IMPEX_COLLECTION_APPEND_PREFIX", HighlighterColors.TEXT)
+    val COLLECTION_REMOVE_PREFIX = key("IMPEX_COLLECTION_REMOVE_PREFIX", HighlighterColors.TEXT)
+    val COLLECTION_MERGE_PREFIX = key("IMPEX_COLLECTION_MERGE_PREFIX", HighlighterColors.TEXT)
 
     private fun key(externalName: String, fallbackAttributeKey: TextAttributesKey) = TextAttributesKey.createTextAttributesKey(externalName, fallbackAttributeKey)
 }

@@ -54,6 +54,11 @@ ${"$"}macro = qwe;qwe, qwe, ;qwe
 
 #% impex.setLocale( Locale.GERMAN );
 
+UPDATE Language ; isoCode[unique=true]; fallbackLanguages(isoCode)
+; en ; (+) de
+; en ; (+?) zh
+; en ; (-) fr
+
 INSERT SomeType; param; param2; param3
 <vlo>; value; value; another value</vlo>
 <vle>; value; value; another value</vle>
@@ -125,6 +130,10 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 
         AttributesDescriptor("Brackets//Square brackets", ImpexHighlighterColors.SQUARE_BRACKETS),
         AttributesDescriptor("Brackets//Round brackets", ImpexHighlighterColors.ROUND_BRACKETS),
+
+        AttributesDescriptor("Collection prefix//Append", ImpexHighlighterColors.COLLECTION_APPEND_PREFIX),
+        AttributesDescriptor("Collection prefix//Remove", ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX),
+        AttributesDescriptor("Collection prefix//Merge", ImpexHighlighterColors.COLLECTION_MERGE_PREFIX),
 
         AttributesDescriptor("Attribute//Name", ImpexHighlighterColors.ATTRIBUTE_NAME),
         AttributesDescriptor("Attribute//Value", ImpexHighlighterColors.ATTRIBUTE_VALUE),

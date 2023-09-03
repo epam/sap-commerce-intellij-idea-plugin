@@ -231,4 +231,22 @@
             <option name="BACKGROUND" value="FAFAFA"/>
         </value>
     </option>
+    <option name="IMPEX_COLLECTION_APPEND_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="2F8D5E"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_REMOVE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="960702"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_MERGE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="2F858D"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
 </list>

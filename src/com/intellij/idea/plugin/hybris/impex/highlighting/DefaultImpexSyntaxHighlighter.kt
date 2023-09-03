@@ -87,6 +87,10 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.PERMISSION_ALLOWED -> USER_RIGHTS_PERMISSION_ALLOWED_KEYS
             ImpexTypes.PERMISSION_DENIED -> USER_RIGHTS_PERMISSION_DENIED_KEYS
 
+            ImpexTypes.COLLECTION_APPEND_PREFIX -> COLLECTION_APPEND_PREFIX
+            ImpexTypes.COLLECTION_REMOVE_PREFIX -> COLLECTION_REMOVE_PREFIX
+            ImpexTypes.COLLECTION_MERGE_PREFIX -> COLLECTION_MERGE_PREFIX
+
             TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
             else -> EMPTY_KEYS
         }
@@ -96,6 +100,9 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val instance: DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
 
         val PROPERTY_COMMENT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.PROPERTY_COMMENT)
+        val COLLECTION_APPEND_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX)
+        val COLLECTION_REMOVE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX)
+        val COLLECTION_MERGE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX)
         val MACRO_NAME_DECLARATION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION)
         val MACRO_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_VALUE)
         val MACRO_USAGE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_USAGE)

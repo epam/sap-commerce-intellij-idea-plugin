@@ -144,4 +144,22 @@
             <option name="BACKGROUND" value="28292C"/>
         </value>
     </option>
+    <option name="IMPEX_COLLECTION_APPEND_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="94ECBD"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_REMOVE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="F87773"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_COLLECTION_MERGE_PREFIX">
+        <value>
+            <option name="FOREGROUND" value="82CAD3"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
 </list>
