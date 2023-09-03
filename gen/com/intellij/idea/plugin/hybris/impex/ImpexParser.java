@@ -1603,7 +1603,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR value?
+  // FIELD_VALUE_SEPARATOR MULTILINE_SEPARATOR? value?
   public static boolean value_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group")) return false;
     if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
@@ -1611,14 +1611,22 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, VALUE_GROUP, null);
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
-    r = r && value_group_1(b, l + 1);
+    r = r && report_error_(b, value_group_1(b, l + 1));
+    r = p && value_group_2(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // value?
+  // MULTILINE_SEPARATOR?
   private static boolean value_group_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group_1")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
+    return true;
+  }
+
+  // value?
+  private static boolean value_group_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_group_2")) return false;
     value(b, l + 1);
     return true;
   }

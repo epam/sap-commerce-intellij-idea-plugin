@@ -227,6 +227,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <FIELD_VALUE> {
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
+    {multiline_separator}                                   { return ImpexTypes.MULTILINE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
     {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }

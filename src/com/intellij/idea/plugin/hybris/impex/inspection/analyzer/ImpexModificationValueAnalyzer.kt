@@ -2,6 +2,7 @@ package com.intellij.idea.plugin.hybris.impex.inspection.analyzer
 
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
@@ -16,8 +17,9 @@ fun fullParametersList(headerLines: List<ImpexHeaderLine>) = headerLines.flatMap
 
 fun keyAttrsName(it: ImpexHeaderLine) = it.fullHeaderParameterList.filter { keyAttrPredicate(it) }.map { it.text }
 
-fun keyAttrPredicate(param: ImpexFullHeaderParameter) =
-        param.modifiersList.flatMap { it.attributeList }.find { it.anyAttributeName.text == "unique" && it.anyAttributeValue?.text == "true" } != null
+fun keyAttrPredicate(param: ImpexFullHeaderParameter) = param.modifiersList
+    .flatMap { it.attributeList }
+    .find { it.anyAttributeName.text == AttributeModifier.UNIQUE.modifierName && it.anyAttributeValue?.text == "true" } != null
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 
@@ -69,7 +71,8 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                             val row2Element = row2.valueGroup[idx]
 
                             if ((row1Element != null && row1Element.text.replace(";", "").isNotBlank()) &&
-                                    (row2Element != null && row2Element.text.replace(";", "").isNotBlank())) {
+                                (row2Element != null && row2Element.text.replace(";", "").isNotBlank())
+                            ) {
                                 if (az == 1.toByte()) {
                                     if (!errorBag.contains(row2Element) && !warningBag.contains(row2Element))
                                         warningBag.add(row2Element)
@@ -89,13 +92,15 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
 
         warningBag.forEach {
             problemsHolder.registerProblem(
-                    it, "This value will override the value above",
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                it, "This value will override the value above",
+                ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+            )
         }
         errorBag.forEach {
             problemsHolder.registerProblem(
-                    it, "This value is overridden by a value below",
-                    ProblemHighlightType.GENERIC_ERROR)
+                it, "This value is overridden by a value below",
+                ProblemHighlightType.GENERIC_ERROR
+            )
         }
     }
 
@@ -106,20 +111,23 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
             val row = Row(keyValue, bitSet, arrayOfNulls(attrs.size))
             attrs.forEach { av ->
                 val valueGroups =
-                        attrsValues.filter { it.text == av }
-                                .filter { hasNoAppendModeModifier(it) }
-                                .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
-                                .filterIsInstance<ImpexValueGroup>()
-                                .filter { it.value != null }
-                                .filter { PsiTreeUtilExt.getLeafsOfAnyElementType(it.value!!,
-                                    ImpexTypes.COLLECTION_APPEND_PREFIX,
-                                    ImpexTypes.COLLECTION_REMOVE_PREFIX,
-                                    ImpexTypes.COLLECTION_MERGE_PREFIX
-                                ).isEmpty() }
-                                .filter {
-                                    val commonContext = PsiTreeUtil.findCommonContext(keyValue.keys.first(), it)
-                                    commonContext != null && commonContext !is ImpexFile
-                                }
+                    attrsValues.filter { it.text == av }
+                        .filter { hasNoAppendModeModifier(it) }
+                        .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
+                        .filterIsInstance<ImpexValueGroup>()
+                        .filter { it.value != null }
+                        .filter {
+                            PsiTreeUtilExt.getLeafsOfAnyElementType(
+                                it.value!!,
+                                ImpexTypes.COLLECTION_APPEND_PREFIX,
+                                ImpexTypes.COLLECTION_REMOVE_PREFIX,
+                                ImpexTypes.COLLECTION_MERGE_PREFIX
+                            ).isEmpty()
+                        }
+                        .filter {
+                            val commonContext = PsiTreeUtil.findCommonContext(keyValue.keys.first(), it)
+                            commonContext != null && commonContext !is ImpexFile
+                        }
 
                 if (valueGroups.isNotEmpty()) {
                     valueGroups.forEach { valueGroup ->
@@ -146,10 +154,12 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
         }
     }
 
-    private fun hasNoAppendModeModifier(headerParameter: ImpexFullHeaderParameter) =
-            !headerParameter.modifiersList
-                    .flatMap { it.attributeList }
-                    .any { attr -> attr.anyAttributeName.text == "mode" && attr.anyAttributeValue?.text == "append" }
+    private fun hasNoAppendModeModifier(headerParameter: ImpexFullHeaderParameter) = !headerParameter.modifiersList
+        .flatMap { it.attributeList }
+        .any {
+            it.anyAttributeName.text == AttributeModifier.LANG.modifierName
+                || (it.anyAttributeName.text == AttributeModifier.MODE.modifierName && it.anyAttributeValue?.text == "append")
+        }
 
 }
 
