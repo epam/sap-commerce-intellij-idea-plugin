@@ -46,6 +46,7 @@ object ImpexHighlighterColors {
     val SINGLE_STRING = key("SINGLE_STRING", DefaultLanguageHighlighterColors.STRING)
     val DOUBLE_STRING = key("DOUBLE_STRING", DefaultLanguageHighlighterColors.STRING)
     val FIELD_VALUE_IGNORE = key("FIELD_VALUE_IGNORE", DefaultLanguageHighlighterColors.KEYWORD)
+    val FIELD_VALUE_NULL = key("FIELD_VALUE_NULL", FIELD_VALUE_IGNORE)
     val BEAN_SHELL_MARKER = key("BEAN_SHELL_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
     val BEAN_SHELL_BODY = key("BEAN_SHELL_BODY", HighlighterColors.TEXT)
     val SQUARE_BRACKETS = key("SQUARE_BRACKETS", DefaultLanguageHighlighterColors.KEYWORD)

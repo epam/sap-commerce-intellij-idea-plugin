@@ -111,8 +111,7 @@ value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
 field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
-//field_value_null   = "<null>"
-//user_rights_type   = [^]{white_space}*TYPE{white_space}*;
+field_value_null   = "<null>"
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -228,7 +227,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
-//    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
+    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
 //    {class_with_package}                                    { return ImpexTypes.CLASS_WITH_PACKAGE; }
@@ -339,7 +338,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {boolean}                                               { return ImpexTypes.BOOLEAN; }
     {digit}                                                 { return ImpexTypes.DIGIT; }
     {field_value_ignore}                                    { return ImpexTypes.FIELD_VALUE_IGNORE; }
-//    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
+    {field_value_null}                                      { return ImpexTypes.FIELD_VALUE_NULL; }
 
     {comma}                                                 { return ImpexTypes.COMMA; }
 

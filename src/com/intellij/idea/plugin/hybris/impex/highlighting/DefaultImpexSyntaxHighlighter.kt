@@ -49,6 +49,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.FIELD_LIST_ITEM_SEPARATOR -> FIELD_LIST_ITEM_SEPARATOR_KEYS
             ImpexTypes.FIELD_VALUE -> FIELD_VALUE_KEYS
             ImpexTypes.FIELD_VALUE_IGNORE -> FIELD_VALUE_IGNORE_KEYS
+            ImpexTypes.FIELD_VALUE_NULL -> FIELD_VALUE_NULL_KEYS
             ImpexTypes.FIELD_VALUE_SEPARATOR -> FIELD_VALUE_SEPARATOR_KEYS
             ImpexTypes.HEADER_MODE_INSERT -> HEADER_MODE_INSERT_KEYS
             ImpexTypes.HEADER_MODE_INSERT_UPDATE -> HEADER_MODE_INSERT_UPDATE_KEYS
@@ -120,6 +121,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val SINGLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SINGLE_STRING)
         val DOUBLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOUBLE_STRING)
         val FIELD_VALUE_IGNORE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
+        val FIELD_VALUE_NULL_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
         val BEAN_SHELL_MARKER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_MARKER)
         val BEAN_SHELL_BODY_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_BODY)
         val SQUARE_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SQUARE_BRACKETS)

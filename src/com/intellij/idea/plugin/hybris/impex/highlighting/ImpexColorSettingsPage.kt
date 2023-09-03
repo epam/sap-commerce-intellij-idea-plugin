@@ -68,6 +68,7 @@ INSERT SomeType; param; param2; param3
 INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]; title[lang = ${"$"}lang]; ${attributeHeaderAbbreviation("C@someAttribute")}
 Subtype ; ; account                ; "Your Account"
         ; ; <ignore>               ; "Add/Edit Address"
+        ; ; <null>                 ;
         ; ; key -> vaue | key ->
 vaue                               ; "Address Book"
         ; ; value1, value2, value3 ; 12345 ; com.domain.Class ; qwe : asd
@@ -121,9 +122,10 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Value//Field value", ImpexHighlighterColors.FIELD_VALUE),
         AttributesDescriptor("Value//Single string", ImpexHighlighterColors.SINGLE_STRING),
         AttributesDescriptor("Value//Double string", ImpexHighlighterColors.DOUBLE_STRING),
-        AttributesDescriptor("Value//Ignore value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
         AttributesDescriptor("Value//Boolean", ImpexHighlighterColors.BOOLEAN),
         AttributesDescriptor("Value//Digit", ImpexHighlighterColors.DIGIT),
+        AttributesDescriptor("Value//<null> value", ImpexHighlighterColors.FIELD_VALUE_NULL),
+        AttributesDescriptor("Value//<ignore> value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
 
         AttributesDescriptor("Bean shell//Marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
         AttributesDescriptor("Bean shell//Body", ImpexHighlighterColors.BEAN_SHELL_BODY),
