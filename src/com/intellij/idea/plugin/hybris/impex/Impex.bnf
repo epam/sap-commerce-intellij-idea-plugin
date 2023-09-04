@@ -170,7 +170,7 @@ root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
 {
     pin = 1
-    methods=[getFullHeaderParameter getValueLines getTableRange]
+    methods=[getFullHeaderParameter getValueLines getTableRange getUniqueFullHeaderParameters]
 }
 
 comment ::= LINE_COMMENT
@@ -217,7 +217,7 @@ string ::= SINGLE_STRING | DOUBLE_STRING
 
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
-    methods=[getHeaderLine getValueGroup]
+    methods=[getHeaderLine getValueGroup addValueGroups]
 }
 
 value_group ::= FIELD_VALUE_SEPARATOR value?

@@ -47,4 +47,7 @@ public interface ImpexHeaderLine extends PsiElement {
   @NotNull
   TextRange getTableRange();
 
+  @NotNull
+  List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters();
+
 }

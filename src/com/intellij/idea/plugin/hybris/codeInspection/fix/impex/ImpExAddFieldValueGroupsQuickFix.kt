@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.codeInspection.fix.impex
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.psi.ImpExElementFactory
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -28,18 +27,14 @@ import com.intellij.psi.PsiFile
 
 class ImpExAddFieldValueGroupsQuickFix(
     element: ImpexValueLine,
-    private val valueGroups: List<String>
+    private val valueGroups: Int
 ) : LocalQuickFixOnPsiElement(element) {
 
     override fun getFamilyName() = message("hybris.inspections.fix.impex.ImpExMissingValueGroupInspection")
-    override fun getText() = message("hybris.inspections.fix.impex.ImpExMissingValueGroupInspection.key", valueGroups.size)
+    override fun getText() = message("hybris.inspections.fix.impex.ImpExMissingValueGroupInspection.key", valueGroups)
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        val valueLine = (endElement as? ImpexValueLine)
-            ?: return
-
-        valueGroups
-            .mapNotNull { ImpExElementFactory.createValueGroup(project, it) }
-            .forEach { valueLine.addAfter(it, valueLine.valueGroupList.lastOrNull()) }
+        (endElement as? ImpexValueLine)
+            ?.addValueGroups(valueGroups)
     }
 }

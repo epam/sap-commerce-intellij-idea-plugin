@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils.getColumnForHeader
+import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -47,7 +47,7 @@ private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder)
 
         val set = HashSet<String>()
         val impexFullHeaderParameter = parameter.parent as? ImpexFullHeaderParameter ?: return
-        getColumnForHeader(impexFullHeaderParameter)
+        ImpexPsiUtils.getColumnForHeader(impexFullHeaderParameter)
             .forEach {
                 if (!set.add(it.text)) {
                     val qualifier = (it as ImpexValueGroup)

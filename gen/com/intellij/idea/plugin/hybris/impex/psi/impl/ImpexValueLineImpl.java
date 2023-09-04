@@ -71,4 +71,9 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
     return ImpexPsiUtil.getValueGroup(this, columnNumber);
   }
 
+  @Override
+  public void addValueGroups(int groupsToAdd) {
+    ImpexPsiUtil.addValueGroups(this, groupsToAdd);
+  }
+
 }

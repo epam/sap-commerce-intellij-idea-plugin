@@ -39,4 +39,6 @@ public interface ImpexValueLine extends PsiElement {
   @Nullable
   ImpexValueGroup getValueGroup(int columnNumber);
 
+  void addValueGroups(int groupsToAdd);
+
 }

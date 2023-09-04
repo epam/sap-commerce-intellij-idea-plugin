@@ -85,4 +85,10 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
     return ImpexPsiUtil.getTableRange(this);
   }
 
+  @Override
+  @NotNull
+  public List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters() {
+    return ImpexPsiUtil.getUniqueFullHeaderParameters(this);
+  }
+
 }

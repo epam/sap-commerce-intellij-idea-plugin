@@ -42,14 +42,11 @@ class ImpExMissingValueGroupInspection : LocalInspectionTool() {
 
             val missingValueGroups = headerParameters.size - valueGroups.size
             if (missingValueGroups > 0) {
-                val newValueGroups = ";".repeat(missingValueGroups - 1)
-                    .split(";")
-
                 holder.registerProblem(
                     valueLine,
                     message("hybris.inspections.impex.ImpExMissingValueGroupInspection.key", missingValueGroups),
                     ProblemHighlightType.WARNING,
-                    ImpExAddFieldValueGroupsQuickFix(valueLine, newValueGroups)
+                    ImpExAddFieldValueGroupsQuickFix(valueLine, missingValueGroups)
                 )
             }
         }

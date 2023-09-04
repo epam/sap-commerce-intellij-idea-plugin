@@ -77,6 +77,9 @@ fun getValueLines(element: ImpexHeaderLine): Collection<ImpexValueLine> {
     return valueLines
 }
 
+fun getUniqueFullHeaderParameters(element: ImpexHeaderLine) = element.fullHeaderParameterList
+    .filter { it.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.textMatches("true") ?: false }
+
 fun getTableRange(element: ImpexHeaderLine): TextRange {
     val tableElements = ArrayDeque<PsiElement>()
     var next = element.nextSibling
@@ -106,6 +109,15 @@ fun getTableRange(element: ImpexHeaderLine): TextRange {
         ?: element.endOffset
 
     return TextRange.create(element.startOffset, endOffset)
+}
+
+fun addValueGroups(element: ImpexValueLine, groupsToAdd: Int) {
+    if (groupsToAdd <= 0) return
+
+    repeat(groupsToAdd) {
+        ImpExElementFactory.createValueGroup(element.project)
+            ?.let { element.addAfter(it, element.valueGroupList.lastOrNull()) }
+    }
 }
 
 /**

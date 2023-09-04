@@ -114,7 +114,6 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                     attrsValues.filter { it.text == av }
                         .filter { hasNoAppendModeModifier(it) }
                         .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
-                        .filterIsInstance<ImpexValueGroup>()
                         .filter { it.value != null }
                         .filter {
                             PsiTreeUtilExt.getLeafsOfAnyElementType(

@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -324,63 +323,16 @@ public final class ImpexPsiUtils {
         return getHeaderForValueGroup(valueGroup);
     }
 
-    public static List<PsiElement> getColumnOfHeaderUnderCaret(@NotNull final Editor editor) {
-        Validate.notNull(editor);
+    public static @Nullable ImpexFullHeaderParameter getFullHeaderParameterUnderCaret(@NotNull final Editor editor) {
+        final var psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
+        if (psiElementUnderCaret == null) return null;
 
-        final PsiElement psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
-        if (null == psiElementUnderCaret) {
-            return null;
-        }
-
-        final ImpexFullHeaderParameter headerParameter = PsiTreeUtil.getParentOfType(
-            psiElementUnderCaret,
-            ImpexFullHeaderParameter.class
-        );
-        if (null != headerParameter) {
-            return getColumnForHeader(headerParameter);
-        }
-
-        return null;
+        return PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexFullHeaderParameter.class);
     }
 
     @NotNull
-    public static List<PsiElement> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
-        final PsiElement[] children = headerParameter.getParent().getChildren();
-        int i = -2;
-        for (final PsiElement child : children) {
-            if (!child.equals(headerParameter)) {
-                i++;
-            } else {
-                break;
-            }
-        }
-
-        final List<PsiElement> result = new ArrayList<>();
-        PsiElement psiElement = getNextSiblingOfAnyType(
-            PsiTreeUtil.getParentOfType(headerParameter, ImpexHeaderLine.class),
-            ImpexValueLine.class,
-            ImpexHeaderLine.class,
-            ImpexRootMacroUsage.class
-        );
-
-        while (psiElement != null && !isHeaderLine(psiElement) && !isUserRightsMacros(psiElement)) {
-            if (isImpexValueLine(psiElement)) {
-                final PsiElement[] elements = psiElement.getChildren();
-                if (elements.length > i) {
-                    result.add(elements[i]);
-                }
-            }
-
-
-            psiElement = getNextSiblingOfAnyType(
-                psiElement,
-                ImpexValueLine.class,
-                ImpexHeaderLine.class,
-                ImpexRootMacroUsage.class
-            );
-        }
-
-        return result;
+    public static List<ImpexValueGroup> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
+        return headerParameter.getValueGroups();
     }
 
     @Nullable

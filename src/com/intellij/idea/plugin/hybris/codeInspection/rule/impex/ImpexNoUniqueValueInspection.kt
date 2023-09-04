@@ -23,7 +23,6 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.*
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
@@ -55,7 +54,6 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
                         .associate { (name, attrs) ->
                             name to attrs
                                 .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
-                                .filterIsInstance<ImpexValueGroup>()
                                 .mapNotNull { it.value }
                         }
 
