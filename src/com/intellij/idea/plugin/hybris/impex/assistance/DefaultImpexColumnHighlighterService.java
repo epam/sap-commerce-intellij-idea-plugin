@@ -31,7 +31,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
@@ -47,7 +46,7 @@ public class DefaultImpexColumnHighlighterService
     extends AbstractImpexHighlighterService
     implements ImpexColumnHighlighterService {
 
-    private final static Key<List<SmartPsiElementPointer<ImpexValue>>> CACHE_KEY = Key.create("IMPEX_COLUMN_HIGHLIGHT_CACHE");
+    private final static Key<List<ImpexValue>> CACHE_KEY = Key.create("IMPEX_COLUMN_HIGHLIGHT_CACHE");
 
     @Override
     @Contract
@@ -63,30 +62,25 @@ public class DefaultImpexColumnHighlighterService
             return;
         }
 
-        final var columns = headerParameter.getValueGroups().stream()
+        final var values = headerParameter.getValueGroups().stream()
             .map(ImpexValueGroup::getValue)
             .filter(Objects::nonNull)
             .toList();
 
-        if (columns.isEmpty()) {
+        if (values.isEmpty()) {
             clearHighlightedArea(editor);
         } else if (editor.getProject() != null) {
             final var pointerManager = SmartPointerManager.getInstance(editor.getProject());
-            final var pointers = columns.stream()
-                .map(pointerManager::createSmartPsiElementPointer)
-                .toList();
-            highlightArea(editor, pointers);
+            highlightArea(editor, values);
         }
     }
 
     @Contract
     protected void highlightArea(
         @NotNull final Editor editor,
-        final List<SmartPsiElementPointer<ImpexValue>> column
+        final List<ImpexValue> values
     ) {
-        Validate.notNull(column);
-
-        if (isAlreadyHighlighted(editor, column)) {
+        if (isAlreadyHighlighted(editor, values)) {
             return;
         }
 
@@ -97,8 +91,8 @@ public class DefaultImpexColumnHighlighterService
                 modifyHighlightedArea(editor, currentHighlightedElement, true);
             }
 
-            editor.putUserData(CACHE_KEY, column);
-            modifyHighlightedArea(editor, column, false);
+            editor.putUserData(CACHE_KEY, values);
+            modifyHighlightedArea(editor, values, false);
         });
     }
 
@@ -114,15 +108,15 @@ public class DefaultImpexColumnHighlighterService
     @Contract
     protected boolean isAlreadyHighlighted(
         @NotNull final Editor editor,
-        final List<SmartPsiElementPointer<ImpexValue>> column
+        final List<ImpexValue> ranges
     ) {
-        return Objects.equals(editor.getUserData(CACHE_KEY), column);
+        return Objects.equals(editor.getUserData(CACHE_KEY), ranges);
     }
 
     @Contract
     protected void modifyHighlightedArea(
         @NotNull final Editor editor,
-        final List<SmartPsiElementPointer<ImpexValue>> column,
+        final List<ImpexValue> column,
         final boolean clear
     ) {
         Validate.notNull(column);
@@ -141,9 +135,6 @@ public class DefaultImpexColumnHighlighterService
         // https://hybris-integration.atlassian.net/browse/IIP-11
         final List<TextRange> ranges = column
             .stream()
-            .filter(Objects::nonNull)
-            .map(SmartPsiElementPointer::getElement)
-            .filter(Objects::nonNull)
             .map(PsiElement::getTextRange)
             .filter(textRange -> !FoldingUtil.isTextRangeFolded(editor, textRange))
             // Do not use Collectors.toList() here because:

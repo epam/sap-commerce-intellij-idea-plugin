@@ -1,0 +1,36 @@
+<!--
+  - This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  - Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Lesser General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  - See the GNU Lesser General Public License for more details.
+  -
+  - You should have received a copy of the GNU Lesser General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style type="text/css">
+        .st0{
+        stroke:#AFB1B3;
+        stroke-width:1.2px;
+        stroke-linecap:round;
+        stroke-linejoin:round;
+        }
+        .st1{
+        stroke:#3592C4;
+        stroke-width:2px;
+        stroke-linecap:round;
+        }
+    </style>
+    <path class="st0" d="M 5.695 3.714 L 5.695 6.536 M 5.695 3.714 L 2.986 3.714 C 2.354 3.714 2.037 3.714 1.796 3.838 C 1.584 3.945 1.411 4.118 1.304 4.33 C 1.18 4.571 1.18 4.888 1.18 5.52 L 1.18 6.536 M 5.695 3.714 L 5.695 6.536 M 1.18 6.536 L 1.18 9.922 M 1.18 6.536 L 5.695 6.536 M 1.18 9.922 L 1.18 10.937 C 1.18 11.571 1.18 11.887 1.304 12.128 C 1.411 12.34 1.584 12.512 1.796 12.62 C 2.037 12.744 2.353 12.744 2.984 12.744 L 5.695 12.744 L 5.695 6.536 M 1.18 9.922 L 5.695 9.922" style=""/>
+    <line class="st1" x1="8.024" y1="14.16" x2="8.024" y2="2.36" style=""/>
+    <path class="st0" d="M 14.899 12.744 L 14.899 9.922 M 14.899 12.744 L 12.19 12.744 C 11.558 12.744 11.24 12.744 11 12.62 C 10.788 12.513 10.615 12.34 10.508 12.128 C 10.384 11.887 10.384 11.57 10.384 10.938 L 10.384 9.922 M 14.899 12.744 L 14.899 9.922 M 10.384 9.922 L 10.384 6.536 M 10.384 9.922 L 14.899 9.922 M 10.384 6.536 L 10.384 5.521 C 10.384 4.887 10.384 4.571 10.508 4.33 C 10.615 4.118 10.788 3.946 11 3.838 C 11.24 3.714 11.557 3.714 12.188 3.714 L 14.899 3.714 L 14.899 9.922 M 10.384 6.536 L 14.899 6.536" style="transform-origin: 12.6415px 8.229px;" transform="matrix(-1, 0, 0, -1, 0, 0)"/>
+</svg>

@@ -196,6 +196,7 @@ public final class HybrisIcons {
     public static final Icon TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg");
     public static final Icon TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg");
     public static final Icon TABLE_SELECT = getIcon("/icons/table/tableSelect.svg");
+    public static final Icon TABLE_SPLIT_VERTICALLY = getIcon("/icons/table/tableSplitVertically.svg");
 
     static Icon getIcon(final String path) {
         final Class<?> callerClass = ReflectionUtil.getGrandCallerClass();

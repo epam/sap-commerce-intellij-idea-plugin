@@ -56,7 +56,6 @@ abstract class AbstractImpExTableAction : AnAction() {
             ?.let {
                 WriteCommandAction.runWriteCommandAction(project) {
                     if (EditorModificationUtil.requestWriting(editor)) {
-                        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
                         performCommand(project, editor, it)
                     }
                 }
