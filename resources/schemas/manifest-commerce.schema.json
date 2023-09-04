@@ -8,8 +8,6 @@
   "properties": {
     "commerceSuiteVersion": {
       "description": "Defines the major version of the SAP Commerce Cloud artifact to download. The latest patch is automatically included.\nIf you need a specific patch version, you can add the string as '<major_version>.<patch_version>', but this is not a best practice.",
-      "examples": [
-      ],
       "oneOf": [
         {
           "type": "string"
@@ -156,31 +154,65 @@
         "type": "string"
       }
     },
+
     "storefrontAddons": {
       "type": "array",
       "description": "The AddOns installed by the Platform during the build process.",
       "items": {
-        "type": "object",
-        "required": [
-          "addon",
-          "storefront",
-          "template"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "addon": {
-            "type": "string",
-            "description": "The AddOn name."
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "addon",
+              "storefront",
+              "template"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "addon": {
+                "type": "string",
+                "description": "The AddOn name."
+              },
+              "storefront": {
+                "type": "string",
+                "description": "The storefront extension name."
+              },
+              "template": {
+                "type": "string",
+                "description": "The storefront template extension name."
+              }
+            }
           },
-          "storefront": {
-            "type": "string",
-            "description": "The storefront extension name."
-          },
-          "template": {
-            "type": "string",
-            "description": "The storefront template extension name."
+          {
+            "type": "object",
+            "required": [
+              "addons",
+              "storefronts",
+              "template"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "addons": {
+                "type": "array",
+                "description": "The AddOn names.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "storefronts": {
+                "type": "array",
+                "description": "The storefront extension names.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "template": {
+                "type": "string",
+                "description": "The storefront template extension name."
+              }
+            }
           }
-        }
+        ]
       }
     },
     "properties": {

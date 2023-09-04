@@ -1,5 +1,8 @@
 ## [2023.2.8]
 
+### `CCv2` enhancements
+- Improved CCv2 SAP Commerce Cloud `manifest.json` schema support [#685](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/685)
+
 ### `ImpEx` enhancements
 - Introduced inlay hint to display default value in value lines [#670](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/670)
 - Added colorization for `odd` and `even` value lines [#667](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/667)
