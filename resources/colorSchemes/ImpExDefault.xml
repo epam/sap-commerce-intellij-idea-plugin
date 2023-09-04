@@ -128,6 +128,12 @@
             <option name="FOREGROUND" value="000000"/>
         </value>
     </option>
+    <option name="HEADER_UNIQUE_PARAMETER_NAME">
+        <value>
+            <option name="FOREGROUND" value="000000"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
     <option name="HEADER_SPECIAL_PARAMETER_NAME">
         <value>
             <option name="FOREGROUND" value="6A598D"/>

@@ -1533,7 +1533,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_dec+
+  // (MULTILINE_SEPARATOR? value_dec)+
   //     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
@@ -1545,19 +1545,37 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // value_dec+
+  // (MULTILINE_SEPARATOR? value_dec)+
   private static boolean value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = value_dec(b, l + 1);
+    r = value_0_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!value_dec(b, l + 1)) break;
+      if (!value_0_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "value_0", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // MULTILINE_SEPARATOR? value_dec
+  private static boolean value_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_0_0_0(b, l + 1);
+    r = r && value_dec(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // MULTILINE_SEPARATOR?
+  private static boolean value_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value_0_0_0")) return false;
+    consumeToken(b, MULTILINE_SEPARATOR);
+    return true;
   }
 
   // FIELD_VALUE_IGNORE | FIELD_VALUE_NULL
@@ -1603,7 +1621,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
+  // FIELD_VALUE_SEPARATOR value?
   public static boolean value_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group")) return false;
     if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
@@ -1611,8 +1629,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, VALUE_GROUP, null);
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
-    r = r && report_error_(b, value_group_1(b, l + 1));
-    r = p && value_group_2(b, l + 1) && r;
+    r = r && value_group_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -1621,13 +1638,6 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   private static boolean value_group_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group_1")) return false;
     value(b, l + 1);
-    return true;
-  }
-
-  // MULTILINE_SEPARATOR?
-  private static boolean value_group_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "value_group_2")) return false;
-    consumeToken(b, MULTILINE_SEPARATOR);
     return true;
   }
 

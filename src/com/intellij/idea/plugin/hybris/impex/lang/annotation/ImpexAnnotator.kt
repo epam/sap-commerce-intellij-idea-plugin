@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
@@ -30,6 +31,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
 
@@ -189,6 +191,18 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                         holder,
                         element,
                     )
+                } else {
+                    element.parentOfType<ImpexFullHeaderParameter>()
+                        ?.getAttribute(AttributeModifier.UNIQUE)
+                        ?.anyAttributeValue
+                        ?.takeIf { it.textMatches("true") }
+                        ?.let {
+                            highlight(
+                                ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME,
+                                holder,
+                                element
+                            )
+                        }
                 }
             }
         }

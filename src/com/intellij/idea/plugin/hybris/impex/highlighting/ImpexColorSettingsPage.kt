@@ -54,7 +54,7 @@ ${"$"}macro = qwe;qwe, qwe, ;qwe
 
 #% impex.setLocale( Locale.GERMAN );
 
-UPDATE Language ; isoCode[unique=true]; fallbackLanguages(isoCode)
+UPDATE Language ; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode)
 ; en ; (+) de
 ; en ; (+?) zh
 ; en ; (-) fr
@@ -65,7 +65,7 @@ INSERT SomeType; param; param2; param3
 <vlo>; value; value; another value</vlo>
 <vle>; value; value; another value</vle>
 
-INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; uid[unique = true]; title[lang = ${"$"}lang]; ${attributeHeaderAbbreviation("C@someAttribute")}
+INSERT_UPDATE SomeType; ${"$"}contentCV[unique = true][map-delimiter = |][dateformat = yyyy-MM-dd HH:mm:ss]; ${unique("uid")}[unique = true]; title[lang = ${"$"}lang]; ${attributeHeaderAbbreviation("C@someAttribute")}
 Subtype ; ; account                ; "Your Account"
         ; ; <ignore>               ; "Add/Edit Address"
         ; ; <null>                 ;
@@ -92,10 +92,12 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         put("attribute_header_abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION)
         put("vle", ImpexHighlighterColors.VALUE_LINE_EVEN)
         put("vlo", ImpexHighlighterColors.VALUE_LINE_ODD)
+        put("unique", ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME)
         this
     }
     private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
     private fun attributeHeaderAbbreviation(abbreviation : String) = "<attribute_header_abbreviation>${"$$abbreviation"}</attribute_header_abbreviation>"
+    private fun unique(parameterName : String) = "<unique>${parameterName}</unique>"
 
     private val descriptors = arrayOf(
         AttributesDescriptor("Comment line", ImpexHighlighterColors.PROPERTY_COMMENT),
@@ -144,6 +146,7 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 
         AttributesDescriptor("Parameter//Document id", ImpexHighlighterColors.DOCUMENT_ID),
         AttributesDescriptor("Parameter//Parameter name", ImpexHighlighterColors.HEADER_PARAMETER_NAME),
+        AttributesDescriptor("Parameter//Unique parameter name", ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Special parameter name", ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
         AttributesDescriptor("Parameter//Function call", ImpexHighlighterColors.FUNCTION_CALL),

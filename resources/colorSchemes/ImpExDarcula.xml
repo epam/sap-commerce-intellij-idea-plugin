@@ -73,6 +73,12 @@
             <option name="FOREGROUND" value="FFF9F1"/>
         </value>
     </option>
+    <option name="HEADER_UNIQUE_PARAMETER_NAME">
+        <value>
+            <option name="FOREGROUND" value="FFF9F1"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
     <option name="IMPEX_ATTRIBUTE_NAME">
         <value>
             <option name="FOREGROUND" value="757575"/>

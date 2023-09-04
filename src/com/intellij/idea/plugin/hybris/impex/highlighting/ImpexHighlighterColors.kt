@@ -60,6 +60,7 @@ object ImpexHighlighterColors {
     val DEFAULT_KEY_VALUE_DELIMITER = key("DEFAULT_KEY_VALUE_DELIMITER", DefaultLanguageHighlighterColors.KEYWORD)
     val DEFAULT_PATH_DELIMITER = key("DEFAULT_PATH_DELIMITER", DefaultLanguageHighlighterColors.KEYWORD)
     val HEADER_PARAMETER_NAME = key("HEADER_PARAMETER_NAME", HighlighterColors.TEXT)
+    val HEADER_UNIQUE_PARAMETER_NAME = key("HEADER_UNIQUE_PARAMETER_NAME", HEADER_PARAMETER_NAME)
     val HEADER_SPECIAL_PARAMETER_NAME = key("HEADER_SPECIAL_PARAMETER_NAME", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
     val PARAMETERS_SEPARATOR = key("PARAMETERS_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
     val COMMA = key("COMMA", DefaultLanguageHighlighterColors.KEYWORD)

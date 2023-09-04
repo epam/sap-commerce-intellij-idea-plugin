@@ -220,13 +220,13 @@ value_line ::= (sub_type_name value_group*) | (value_group+) {
     methods=[getHeaderLine getValueGroup]
 }
 
-value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
+value_group ::= FIELD_VALUE_SEPARATOR value?
 {
     pin=1
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
-value ::= value_dec+
+value ::= (MULTILINE_SEPARATOR? value_dec)+
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 
 private value_dec ::= FIELD_VALUE

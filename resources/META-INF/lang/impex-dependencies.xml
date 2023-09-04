@@ -154,6 +154,7 @@
             <separator/>
             <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction"/>
             <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction"/>
+<!--            <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction"/>-->
         </group>
 
         <group id="hybris.impex.toolbar.left">
