@@ -28,13 +28,12 @@ import com.intellij.openapi.project.Project
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 
     override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = HybrisProjectSettingsComponent.getInstance(project)
-            .getAvailableExtensions()
-            .values
-            .filter { it.extGenTemplateExtension }
-            .toList()
+        .getAvailableExtensions()
+        .values
+        .filter { it.extGenTemplateExtension }
+        .toList()
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-                ApplicationManager.getApplication().getService(TemplateExtensionNameCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(TemplateExtensionNameCompletionProvider::class.java)
     }
 }

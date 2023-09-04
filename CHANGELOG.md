@@ -36,6 +36,7 @@
 
 ### Other
 - Added VCS issue navigation for IntelliJ [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
+- New UI Tool Window Icons ([sdk docs](https://plugins.jetbrains.com/docs/intellij/work-with-icons-and-images.html#new-ui-tool-window-icons)) [#688](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/688)
 
 ## [2023.2.7]
 

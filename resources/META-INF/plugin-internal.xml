@@ -95,7 +95,7 @@
                              key="hybris.settings.project.remote_instances.title"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
 
-        <toolWindow id="SAP Commerce" icon="/icons/toolWindowHybrisIcon.svg" anchor="bottom"
+        <toolWindow id="SAP Commerce" icon="/icons/toolWindow.svg" anchor="bottom"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator"/>

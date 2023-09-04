@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
@@ -25,11 +26,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
 object EiSLookupElementFactory {
 
-    fun build(it: ExtensionDescriptor) = LookupElementBuilder.create(it.name)
-        .withTailText(tail(it), true)
-        .withTypeText(it.type.name, true)
+    fun build(ed: ExtensionDescriptor) = LookupElementBuilder.create(ed.name)
+        .withTailText(tail(ed), true)
+        .withTypeText(ed.type.name, true)
         .withIcon(
-            when (it.type) {
+            when (ed.type) {
                 ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
                 ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
                 ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
@@ -38,6 +39,18 @@ object EiSLookupElementFactory {
                 else -> null
             }
         )
+        .let {
+            PrioritizedLookupElement.withPriority(
+                it,
+                when (ed.type) {
+                    ModuleDescriptorType.CUSTOM -> 5.0
+                    ModuleDescriptorType.CCV2 -> 4.0
+                    ModuleDescriptorType.OOTB -> 3.0
+                    ModuleDescriptorType.EXT -> 2.0
+                    else -> 1.0
+                }
+            )
+        }
 
     private fun tail(extensionDescriptor: ExtensionDescriptor): String? {
         val tail = listOfNotNull(
