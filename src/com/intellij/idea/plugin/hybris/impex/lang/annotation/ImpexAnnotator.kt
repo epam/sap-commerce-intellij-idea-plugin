@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHigh
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
@@ -168,7 +169,9 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                 } else if (element.text.startsWith("$")) {
                     val textLength = element.parent.reference
                         ?.resolve()
-                        ?.textLength
+                        ?.text
+                        ?.let { ImpexMacroReference.escapeName(it) }
+                        ?.length
                         ?: element.textLength
                     highlight(
                         ImpexHighlighterColors.MACRO_USAGE_DEC,

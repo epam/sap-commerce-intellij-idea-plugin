@@ -26,6 +26,7 @@
 - Fixed preview of the inlay hint for Dynamic attributes [#668](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/668)
 - Enable custom action toolbars only for SAP Commerce projects [#669](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/669)
 - Fixed `ImpEx` unique value inspection to support multi-line ` \ ` separator [#681](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/681)
+- Fixed `ImpEx` macro-declaration Annotator to support multi-line ` \ ` separator [#682](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/682)
 
 ### Other
 - Added VCS issue navigation for IntelliJ [#665](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/665)
