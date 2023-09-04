@@ -24,6 +24,7 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
 
 public interface ImpexHeaderLine extends PsiElement {
@@ -42,5 +43,8 @@ public interface ImpexHeaderLine extends PsiElement {
 
   @NotNull
   Collection<ImpexValueLine> getValueLines();
+
+  @NotNull
+  TextRange getTableRange();
 
 }

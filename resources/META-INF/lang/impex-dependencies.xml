@@ -139,12 +139,12 @@
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
         <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
-        <action id="hybris.impex.selectTable" class="com.intellij.idea.plugin.hybris.impex.tableFormatting.actions.ImpexTableSelectAction">
+        <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
         </action>
 
         <group id="hybris.impex.table.actions">
-            <reference id="hybris.impex.selectTable"/>
+            <reference id="hybris.impex.table.select"/>
             <separator/>
             <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction"/>
             <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction"/>

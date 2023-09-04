@@ -19,6 +19,7 @@
 - Added support of the multi-line ` \ ` separator for **macro values** [#678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/678)
 - Added support of the multi-line ` \ ` separator for **header parameters** [#679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/679)
 - Added support of the multi-line ` \ ` separator for **value groups** [#680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/680)
+- Adjusted Table selection logic [#689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/689)
 
 ### `ImpEx` inspection rules
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)

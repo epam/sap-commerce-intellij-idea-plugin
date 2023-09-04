@@ -26,13 +26,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 
-class ImpExTableRemoveAction : AbstractImpExTableAction() {
+class ImpExTableSelectAction : AbstractImpExTableAction() {
 
     init {
         with(templatePresentation) {
-            text = "Remove Table"
-            description = "Remove current table"
-            icon = HybrisIcons.TABLE_REMOVE
+            text = "Select ImpEx Statement"
+            description = "Select ImpEx statement"
+            icon = HybrisIcons.TABLE_SELECT
         }
     }
 
@@ -50,9 +50,9 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
             else -> return
         }
 
-        val tableRange = header.tableRange
-
-        editor.document.deleteString(tableRange.startOffset, tableRange.endOffset)
+        with(header.tableRange) {
+            editor.selectionModel.setSelection(startOffset, endOffset)
+        }
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil

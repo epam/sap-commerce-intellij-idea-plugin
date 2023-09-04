@@ -52,6 +52,6 @@ object ImpExElementFactory {
         ?.valueGroupList
         ?.firstOrNull()
 
-    private fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
+    fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
         .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
 }
