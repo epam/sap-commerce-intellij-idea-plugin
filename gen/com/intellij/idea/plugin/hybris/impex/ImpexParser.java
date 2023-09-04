@@ -1603,7 +1603,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR MULTILINE_SEPARATOR? value?
+  // FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
   public static boolean value_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group")) return false;
     if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
@@ -1617,17 +1617,17 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // MULTILINE_SEPARATOR?
+  // value?
   private static boolean value_group_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group_1")) return false;
-    consumeToken(b, MULTILINE_SEPARATOR);
+    value(b, l + 1);
     return true;
   }
 
-  // value?
+  // MULTILINE_SEPARATOR?
   private static boolean value_group_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value_group_2")) return false;
-    value(b, l + 1);
+    consumeToken(b, MULTILINE_SEPARATOR);
     return true;
   }
 

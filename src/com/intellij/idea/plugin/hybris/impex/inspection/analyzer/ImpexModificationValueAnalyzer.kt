@@ -23,7 +23,7 @@ fun keyAttrPredicate(param: ImpexFullHeaderParameter) = param.modifiersList
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 
-fun createDataTable(dataMap: MutableMap<String, List<PsiElement>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
+fun createDataTable(dataMap: Map<String, List<PsiElement>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
     val countKeyAttrs = dataMap.entries.size
     val countRows = dataMap.values.first().size
 
@@ -32,7 +32,7 @@ fun createDataTable(dataMap: MutableMap<String, List<PsiElement>>, distinctCommo
     return DataTable(keyRows, distinctCommonAttrsNames, notKeyAttrsList)
 }
 
-fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: MutableMap<String, List<PsiElement>>): MutableList<Key> {
+fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: Map<String, List<PsiElement>>): MutableList<Key> {
     val keyRows = mutableListOf<Key>()
     for (i in 0 until countRows) {
         val k = mutableListOf<PsiElement>()
