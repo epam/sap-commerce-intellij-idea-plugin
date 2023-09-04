@@ -48,16 +48,22 @@ class ManifestCommerceTemplateExtensionInspection : LocalInspectionTool() {
             val parent = o.parent
             if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
-                        o,
-                        HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownTemplateExtensionInspection.message", o.value)
+                    o,
+                    HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownTemplateExtensionInspection.message", o.value)
                 )
             }
         }
 
-        private fun isApplicable(parent: PsiElement?, o: JsonStringLiteral) = parent is JsonProperty
-                && JsonPsiUtil.isPropertyValue(o)
-                && parent.name == "template"
-                && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons"
+        private fun isApplicable(parent: PsiElement, o: JsonStringLiteral) = (parent is JsonProperty
+            && JsonPsiUtil.isPropertyValue(o)
+            && parent.name == "template"
+            && parent.parentOfType<JsonProperty>()?.name == "storefrontAddons")
+            || (JsonPsiUtil.isArrayElement(o)
+            && parent.parentOfType<JsonProperty>()
+            ?.takeIf { it.name == "addons" || it.name == "storefronts" }
+            ?.parentOfType<JsonProperty>()
+            ?.name == "storefrontAddons"
+            )
 
     }
 }
