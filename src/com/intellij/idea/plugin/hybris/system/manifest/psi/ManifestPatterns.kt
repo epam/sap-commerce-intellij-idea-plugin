@@ -32,41 +32,49 @@ object ManifestPatterns {
     private inline fun <reified T : PsiElement> PsiElementPattern<*, *>.withParent() = this.withParent(T::class.java)
 
     private fun jsonStringValue() = PlatformPatterns.psiElement(JsonElementTypes.DOUBLE_QUOTED_STRING)
-            .withParent<JsonStringLiteral>()
+        .withParent<JsonStringLiteral>()
 
     val EXTENSION_NAME = StandardPatterns.or(
-            jsonStringValue()
-                    .withSuperParent(2,
-                            StandardPatterns.or(
-                                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("addon"),
-                                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefront"),
-                            )
-                    )
-                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefrontAddons")),
+        jsonStringValue()
+            .withSuperParent(
+                2,
+                StandardPatterns.or(
+                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("addon"),
+                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefront"),
+                    PlatformPatterns.psiElement(JsonArray::class.java).withParent(
+                        StandardPatterns.or(
+                            PlatformPatterns.psiElement(JsonProperty::class.java).withName("addons"),
+                            PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefronts"),
+                        )
+                    ),
+                )
+            )
+            .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefrontAddons")),
 
-            jsonStringValue()
-                    .withSuperParent(2, PlatformPatterns.psiElement(JsonArray::class.java))
-                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("extensions")),
+        jsonStringValue()
+            .withSuperParent(2, PlatformPatterns.psiElement(JsonArray::class.java))
+            .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("extensions")),
 
-            jsonStringValue()
-                    .withSuperParent(2, PlatformPatterns.psiElement(JsonProperty::class.java).withName("name"))
-                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("webapps"))
+        jsonStringValue()
+            .withSuperParent(2, PlatformPatterns.psiElement(JsonProperty::class.java).withName("name"))
+            .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("webapps"))
     )
 
     val TEMPLATE_EXTENSION_NAME = StandardPatterns.or(
-            jsonStringValue()
-                    .withSuperParent(2,
-                            StandardPatterns.or(
-                                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("template"),
-                            )
-                    )
-                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefrontAddons")),
+        jsonStringValue()
+            .withSuperParent(
+                2,
+                StandardPatterns.or(
+                    PlatformPatterns.psiElement(JsonProperty::class.java).withName("template"),
+                )
+            )
+            .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("storefrontAddons")),
     )
 
     val EXTENSION_PACK_NAME = StandardPatterns.or(
-            jsonStringValue()
-                    .withSuperParent(2, PlatformPatterns.psiElement(JsonProperty::class.java).withName("name"))
-                    .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("extensionPacks"))
+        jsonStringValue()
+            .withSuperParent(2, PlatformPatterns.psiElement(JsonProperty::class.java).withName("name"))
+            .inside(PlatformPatterns.psiElement(JsonProperty::class.java).withName("extensionPacks"))
     )
 
 }
