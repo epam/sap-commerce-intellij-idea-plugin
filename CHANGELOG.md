@@ -25,6 +25,7 @@
 - Added folding for `zip:` file load translator prefix [#692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/692)
 - Added folding for `file:` file load translator prefix [#693](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/693)
 - Adjusted folding for `jar:` file load translator prefix [#694](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/694)
+- Improved folding for all file load translator prefixes [#695](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/695)
 
 ### `ImpEx` inspection rules
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
