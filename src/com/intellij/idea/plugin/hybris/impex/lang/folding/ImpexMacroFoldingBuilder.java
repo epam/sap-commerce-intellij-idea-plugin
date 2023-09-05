@@ -291,18 +291,30 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             } else if (resolvedValue.startsWith("zip:")) {
                 final var blocks = resolvedValue.split("&");
                 if (blocks.length == 2) {
-                    var fileName = blocks[0];
-                    final var backslashIndex = fileName.lastIndexOf('\\');
-                    if (backslashIndex >= 0) fileName = fileName.substring(backslashIndex);
-                    final var slashIndex = blocks[0].lastIndexOf('/');
-                    if (slashIndex >= 0) fileName = fileName.substring(slashIndex);
-                    return "zip:.." + fileName + '&' + blocks[1];
+                    final var zipName = getFileName(blocks[0]);
+                    return "zip:.." + zipName + '&' + blocks[1];
+                }
+            } else if (resolvedValue.startsWith("file:")) {
+                final var blocks = resolvedValue.split(":");
+                if (blocks.length == 2) {
+                    final var fileName = getFileName(blocks[1]);
+                    return "file:.." + fileName;
                 }
             }
 
             return resolvedValue;
         }
         return node.getText();
+    }
+
+    @NotNull
+    private static String getFileName(final String fileName) {
+        var name = fileName;
+        final var backslashIndex = name.lastIndexOf('\\');
+        if (backslashIndex >= 0) name = name.substring(backslashIndex);
+        final var slashIndex = name.lastIndexOf('/');
+        if (slashIndex >= 0) name = name.substring(slashIndex);
+        return name;
     }
 
     @Override
