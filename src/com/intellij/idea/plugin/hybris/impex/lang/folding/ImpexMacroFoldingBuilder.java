@@ -285,8 +285,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                     final var loaderClass = blocks[0];
                     return "jar:"
                         + loaderClass.substring(loaderClass.lastIndexOf('.') + 1)
-                        + '&'
-                        + blocks[1];
+                        + "&.."
+                        + getFileName(blocks[1]);
                 }
             } else if (resolvedValue.startsWith("zip:")) {
                 final var blocks = resolvedValue.split("&");
