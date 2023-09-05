@@ -288,6 +288,16 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                         + '&'
                         + blocks[1];
                 }
+            } else if (resolvedValue.startsWith("zip:")) {
+                final var blocks = resolvedValue.split("&");
+                if (blocks.length == 2) {
+                    var fileName = blocks[0];
+                    final var backslashIndex = fileName.lastIndexOf('\\');
+                    if (backslashIndex >= 0) fileName = fileName.substring(backslashIndex);
+                    final var slashIndex = blocks[0].lastIndexOf('/');
+                    if (slashIndex >= 0) fileName = fileName.substring(slashIndex);
+                    return "zip:.." + fileName + '&' + blocks[1];
+                }
             }
 
             return resolvedValue;

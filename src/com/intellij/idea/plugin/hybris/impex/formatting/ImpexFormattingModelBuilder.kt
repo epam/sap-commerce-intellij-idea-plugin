@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,82 +19,19 @@
 package com.intellij.idea.plugin.hybris.impex.formatting
 
 import com.intellij.formatting.*
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 
 class ImpexFormattingModelBuilder : FormattingModelBuilder {
 
-    private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
-        val impexSettings = settings.getCustomSettings(ImpexCodeStyleSettings::class.java)
-
-        return SpacingBuilder(settings, ImpexLanguage.getInstance())
-            .before(ImpexTypes.VALUE_GROUP)
-            .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
-
-            .after(ImpexTypes.FIELD_VALUE_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_AFTER_FIELD_VALUE_SEPARATOR)
-
-            .before(ImpexTypes.PARAMETERS_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_BEFORE_PARAMETERS_SEPARATOR)
-
-            .after(ImpexTypes.PARAMETERS_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_AFTER_PARAMETERS_SEPARATOR)
-
-            .before(ImpexTypes.ATTRIBUTE_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_BEFORE_ATTRIBUTE_SEPARATOR)
-
-            .after(ImpexTypes.COMMA)
-            .spaceIf(impexSettings.SPACE_AFTER_COMMA)
-
-            .before(ImpexTypes.COMMA)
-            .spaceIf(impexSettings.SPACE_BEFORE_COMMA)
-
-            .after(ImpexTypes.ATTRIBUTE_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_AFTER_ATTRIBUTE_SEPARATOR)
-
-            .before(ImpexTypes.FIELD_LIST_ITEM_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_BEFORE_FIELD_LIST_ITEM_SEPARATOR)
-
-            .after(ImpexTypes.FIELD_LIST_ITEM_SEPARATOR)
-            .spaceIf(impexSettings.SPACE_AFTER_FIELD_LIST_ITEM_SEPARATOR)
-
-            .after(ImpexTypes.ASSIGN_VALUE)
-            .spaceIf(impexSettings.SPACE_AFTER_ASSIGN_VALUE)
-
-            .before(ImpexTypes.ASSIGN_VALUE)
-            .spaceIf(impexSettings.SPACE_BEFORE_ASSIGN_VALUE)
-
-            .after(ImpexTypes.LEFT_ROUND_BRACKET)
-            .spaceIf(impexSettings.SPACE_AFTER_LEFT_ROUND_BRACKET)
-
-            .before(ImpexTypes.RIGHT_ROUND_BRACKET)
-            .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_ROUND_BRACKET)
-
-            .after(ImpexTypes.LEFT_SQUARE_BRACKET)
-            .spaceIf(impexSettings.SPACE_AFTER_LEFT_SQUARE_BRACKET)
-
-            .before(ImpexTypes.RIGHT_SQUARE_BRACKET)
-            .spaceIf(impexSettings.SPACE_BEFORE_RIGHT_SQUARE_BRACKET)
-
-            .after(ImpexTypes.ALTERNATIVE_PATTERN)
-            .spaceIf(impexSettings.SPACE_AFTER_ALTERNATIVE_PATTERN)
-
-            .before(ImpexTypes.ALTERNATIVE_PATTERN)
-            .spaceIf(impexSettings.SPACE_BEFORE_ALTERNATIVE_PATTERN)
-    }
-
-    override fun createModel(formattingContext: FormattingContext) = createModelInternally(
-        formattingContext.psiElement, formattingContext.codeStyleSettings)
-
-    private fun createModelInternally(element: PsiElement, settings: CodeStyleSettings): FormattingModel {
+    override fun createModel(formattingContext: FormattingContext): FormattingModel {
+        val element = formattingContext.psiElement
+        val settings = formattingContext.codeStyleSettings
         val impexBlock = ImpexBlock(
-            node =  element.node,
+            node = element.node,
             alignment = Alignment.createAlignment(),
-            spacingBuilder = createSpaceBuilder(settings),
+            spacingBuilder = ImpExSpacingBuilder(settings, settings.getCustomSettings(ImpexCodeStyleSettings::class.java)),
             codeStyleSettings = settings,
             alignmentStrategy = getAlignmentStrategy(settings)
         )
@@ -102,11 +39,11 @@ class ImpexFormattingModelBuilder : FormattingModelBuilder {
         return FormattingModelProvider.createFormattingModelForPsiFile(element.containingFile, impexBlock, settings)
     }
 
-    private fun getAlignmentStrategy(settings: CodeStyleSettings): AlignmentStrategy {
+    private fun getAlignmentStrategy(settings: CodeStyleSettings): ImpExAlignmentStrategy {
         val impexCodeStyleSettings = settings.getCustomSettings(ImpexCodeStyleSettings::class.java)
 
-        return if (impexCodeStyleSettings.TABLIFY) TableAlignmentStrategy()
-        else ColumnsAlignmentStrategy()
+        return if (impexCodeStyleSettings.TABLIFY) ImpExTableAlignmentStrategy()
+        else ImpExColumnsAlignmentStrategy()
     }
 
     override fun getRangeAffectingIndent(file: PsiFile, offset: Int, elementAtOffset: ASTNode?) = null

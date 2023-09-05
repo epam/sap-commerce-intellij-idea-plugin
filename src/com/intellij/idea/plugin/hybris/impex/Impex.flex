@@ -68,14 +68,10 @@ right_square_bracket = [\]]
 left_round_bracket  = [\(]
 right_round_bracket = [\)]
 
-left_brace          = [{]
-right_brace         = [}]
-
 semicolon     = [;]
 comma         = [,]
 dot           = [.]
 assign_value  = [=]
-question_mark = [\?]
 
 // see - CollectionValueTranslator
 // value must start with this prefix
@@ -327,12 +323,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {left_round_bracket}                                    { return ImpexTypes.LEFT_ROUND_BRACKET; }
     {right_round_bracket}                                   { return ImpexTypes.RIGHT_ROUND_BRACKET; }
 
-    {left_brace}                                            { return ImpexTypes.LEFT_BRACE; }
-    {right_brace}                                           { return ImpexTypes.RIGHT_BRACE; }
-
     {assign_value}                                          { return ImpexTypes.ASSIGN_VALUE; }
-
-    {question_mark}                                         { return ImpexTypes.QUESTION_MARK; }
 
     {left_square_bracket}                                   { return ImpexTypes.LEFT_SQUARE_BRACKET; }
     {right_square_bracket}                                  { return ImpexTypes.RIGHT_SQUARE_BRACKET; }

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
-import com.intellij.idea.plugin.hybris.impex.lang.folding.smart.ImpexFoldingLinesFilter;
+import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExFoldingLinesFilter;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -107,7 +107,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
         if (root == null) {
             return Collections.emptyList();
         }
-        final var filter = new ImpexFoldingLinesFilter();
+        final var filter = new ImpExFoldingLinesFilter();
         return SyntaxTraverser.psiTraverser(root)
                        .filter(filter::isAccepted)
                        .toList();
@@ -118,7 +118,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
     public String getPlaceholderText(@NotNull final ASTNode node) {
         Validate.notNull(node);
 
-        return ImpexFoldingPlaceholderBuilderFactory.getPlaceholderBuilder(node.getPsi().getProject()).getPlaceholder(node.getPsi());
+        return ImpexFoldingPlaceholderBuilderFactory.INSTANCE.getPlaceholderBuilder(node.getPsi().getProject()).getPlaceholder(node.getPsi());
     }
 
     @Override
