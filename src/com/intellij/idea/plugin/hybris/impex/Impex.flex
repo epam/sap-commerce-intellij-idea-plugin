@@ -61,7 +61,6 @@ root_macro_usage       = [$]([\.\(\)a-zA-Z0-9_-])+
 macro_usage            = [$](config-)?({identifier}({dot})?)+
 macro_config_usage     = [$](config-)({identifier}({dot})?)+
 macro_value            = ({not_crlf}|({identifier}({dot})?)+|({backslash}\s*)+)
-//macro_value            = ({identifier}({dot})?|({backslash}\s*)|{not_crlf})+
 
 left_square_bracket  = [\[]
 right_square_bracket = [\]]
