@@ -31,10 +31,14 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
+import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
+
+
+
 
 class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
@@ -44,8 +48,30 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val foldCase = "[case] "
     private val foldEvent = "[event] "
     private val foldNA = "n/a"
+    private val actionPrefix = "[action] "
+    private val waitPrefix = "[wait]   "
+    private val delimiter = " : "
+    private val then = " then "
+    private val arrowDelimiter = " -> "
 
-    private val filter = BpXmlFilter()
+    private val filter = PsiElementFilter {
+        when (it) {
+            is XmlTag -> when (it.localName) {
+                Action.TRANSITION,
+                Process.END,
+                Case.CHOICE,
+                Wait.CASE,
+                Wait.TIMEOUT,
+                Wait.EVENT,
+                Process.ACTION,
+                Process.WAIT -> true
+
+                else -> false
+            }
+
+            else -> false
+        }
+    }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
@@ -72,12 +98,12 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             Wait.TIMEOUT -> foldTimeout +
                 BpHelper.parseDuration(psi.getAttributeValue(Timeout.DELAY) ?: "?") +
-                " then " +
+                then +
                 psi.getAttributeValue(Timeout.THEN)
 
             Wait.CASE -> foldCase +
                 psi.getAttributeValue(Case.EVENT) +
-                " : " +
+                delimiter +
                 (psi.subTags
                     .map { it.getAttributeValue(NavigableElement.ID) }
                     .joinToString()
@@ -85,10 +111,10 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             Wait.EVENT -> foldEvent + psi.value.trimmedText
 
-            Process.ACTION -> "[action] " +
+            Process.ACTION -> actionPrefix +
                 psi.getAttributeValue(NavigableElement.ID)
 
-            Process.WAIT -> "[wait]   " +
+            Process.WAIT -> waitPrefix +
                 psi.getAttributeValue(NavigableElement.ID)
 
             else -> FALLBACK_PLACEHOLDER
@@ -100,7 +126,7 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private fun fold(psi: XmlTag, attr1: String, attr2: String, tagName: String, prefix: String = "") = prefix +
         psi.getAttributeValue(attr1)
             ?.let { tablify(psi, it, true, tagName, attr1) } +
-        " -> " +
+        arrowDelimiter +
         psi.getAttributeValue(attr2)
             ?.let { tablify(psi, it, true, tagName, attr2) }
 

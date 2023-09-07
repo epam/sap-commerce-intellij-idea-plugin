@@ -20,32 +20,35 @@ package com.intellij.idea.plugin.hybris.system.businessProcess.util
 
 import kotlinx.collections.immutable.persistentMapOf
 
+
+
 object BpHelper {
+    private const val SEPARATOR = " "
+    private const val DATETIME_DELIMITER = "T"
 
-    val dateTimeDelimeter = "T"
-
-    val dateNames = persistentMapOf(
+    private val dateNames = persistentMapOf(
         'Y' to "year",
         'M' to "month",
         'D' to "day"
     )
 
-    val timeNames = persistentMapOf(
+    private val timeNames = persistentMapOf(
         'H' to "hour",
         'M' to "minute",
         'S' to "second"
     )
 
     fun parseDuration(duration: String): String {
-        val dateDuration = if (duration.contains(dateTimeDelimeter)) duration.split(dateTimeDelimeter)[0] else duration
-        val timeDuration = if (duration.contains(dateTimeDelimeter)) duration.split(dateTimeDelimeter)[1] else ""
+        val dateTimeDelimiterPresent = duration.contains(DATETIME_DELIMITER)
+        val dateDuration = if (dateTimeDelimiterPresent) duration.split(DATETIME_DELIMITER)[0] else duration
+        val timeDuration = if (dateTimeDelimiterPresent) duration.split(DATETIME_DELIMITER)[1] else ""
 
         val dateTime = ArrayList<String>()
         dateDuration.takeIf { it.isNotEmpty() }
             ?.let { dateTime.addAll(parseDateDuration(it)) }
         timeDuration.takeIf { it.isNotEmpty() }
             ?.let { dateTime.addAll(parseTimeDuration(it)) }
-        return dateTime.joinToString(" ")
+        return dateTime.joinToString(SEPARATOR)
 
     }
 
