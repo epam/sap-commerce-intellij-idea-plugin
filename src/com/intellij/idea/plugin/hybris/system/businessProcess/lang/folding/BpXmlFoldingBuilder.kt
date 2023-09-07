@@ -37,9 +37,6 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
 
-
-
-
 class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val foldEnd = "[end]    "
