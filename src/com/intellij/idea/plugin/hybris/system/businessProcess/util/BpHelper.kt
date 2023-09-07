@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.system.businessProcess.util
 import kotlinx.collections.immutable.persistentMapOf
 
 
-
 object BpHelper {
     private const val SEPARATOR = " "
     private const val DATETIME_DELIMITER = "T"
@@ -38,21 +37,20 @@ object BpHelper {
         'S' to "second"
     )
 
-    fun parseDuration(duration: String): String {
-        val dateTimeDelimiterPresent = duration.contains(DATETIME_DELIMITER)
-        val dateDuration = if (dateTimeDelimiterPresent) duration.split(DATETIME_DELIMITER)[0] else duration
-        val timeDuration = if (dateTimeDelimiterPresent) duration.split(DATETIME_DELIMITER)[1] else ""
-
-        val dateTime = ArrayList<String>()
-        dateDuration.takeIf { it.isNotEmpty() }
-            ?.let { dateTime.addAll(parseDateDuration(it)) }
-        timeDuration.takeIf { it.isNotEmpty() }
-            ?.let { dateTime.addAll(parseTimeDuration(it)) }
-        return dateTime.joinToString(SEPARATOR)
-
+    fun parseDuration(duration: String) = buildList {
+        if (duration.contains(DATETIME_DELIMITER)) {
+            val splitDuration = duration.split(DATETIME_DELIMITER)
+            this.addAll(parseDateDuration(splitDuration[0]))
+            this.addAll(parseTimeDuration(splitDuration[1]))
+        } else {
+            parseDateDuration(duration)
+        }
     }
+        .joinToString(" ")
+
 
     private fun parseDateDuration(dateDuration: String): Collection<String> {
+        if (dateDuration.isEmpty()) return emptyList()
         val dateStorage = mapOf(
             'Y' to StringBuilder(),
             'M' to StringBuilder(),
@@ -62,6 +60,7 @@ object BpHelper {
     }
 
     private fun parseTimeDuration(timeDuration: String): Collection<String> {
+        if (timeDuration.isEmpty()) return emptyList()
         val timeStorage = mapOf(
             'H' to StringBuilder(),
             'M' to StringBuilder(),
