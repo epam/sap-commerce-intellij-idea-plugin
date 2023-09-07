@@ -22,7 +22,6 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class BpHelperTest {
     private val helper = BpHelper
 

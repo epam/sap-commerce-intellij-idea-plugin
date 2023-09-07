@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.system.businessProcess.util
 
 import kotlinx.collections.immutable.persistentMapOf
 
-
 object BpHelper {
     private const val SEPARATOR = " "
     private const val DATETIME_DELIMITER = "T"
