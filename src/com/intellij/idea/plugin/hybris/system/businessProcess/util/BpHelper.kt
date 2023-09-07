@@ -42,7 +42,7 @@ object BpHelper {
             this.addAll(parseDateDuration(splitDuration[0]))
             this.addAll(parseTimeDuration(splitDuration[1]))
         } else {
-            parseDateDuration(duration)
+            this.addAll(parseDateDuration(duration))
         }
     }
         .joinToString(" ")
