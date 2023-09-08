@@ -18,19 +18,19 @@
 
 <templateSet group="Java">
     <template name="log4j2"
-              value="private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager.getLogger($CLASS$.class)"
-              description="Define Log4j 2 Logger" toReformat="true" toShortenFQNames="true" >
+              value="private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager.getLogger($CLASS$.class);"
+              description="Define Log4j 2 Logger" toReformat="true" toShortenFQNames="true">
         <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
         <context>
-            <option name="JAVA_DECLARATION" value="true" />
+            <option name="JAVA_DECLARATION" value="true"/>
         </context>
     </template>
     <template name="slf4j"
               value="private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger($CLASS$.class);"
-              description="Define Simple Logging Facade (SLF4J) Logger" toReformat="true" toShortenFQNames="true" >
+              description="Define Simple Logging Facade (SLF4J) Logger" toReformat="true" toShortenFQNames="true">
         <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
         <context>
-            <option name="JAVA_DECLARATION" value="true" />
+            <option name="JAVA_DECLARATION" value="true"/>
         </context>
     </template>
 </templateSet>
