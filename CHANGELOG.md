@@ -1,5 +1,8 @@
 ## [2023.2.8]
 
+### Features
+- Introduced pre-built `log4j2` and `slf4j` live templates for Java [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
+
 ### `CCv2` enhancements
 - Improved CCv2 SAP Commerce Cloud `manifest.json` schema support [#685](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/685)
 - Added code completion for `addons` and `storefronts` in the `manifest.json` schema [#686](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/686)

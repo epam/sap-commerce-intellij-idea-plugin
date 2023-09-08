@@ -19,6 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <defaultLiveTemplates file="liveTemplates/Java.xml"/>
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
