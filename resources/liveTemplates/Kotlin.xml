@@ -1,0 +1,36 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<templateSet group="Kotlin">
+    <template name="log4j2"
+              value="private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager.getLogger($CLASS$.class);"
+              description="Define Log4j 2 Logger" toReformat="true" toShortenFQNames="true">
+        <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
+        <context>
+            <option name="KOTLIN_CLASS" value="true"/>
+        </context>
+    </template>
+    <template name="slf4j"
+              value="private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger($CLASS$.class);"
+              description="Define Simple Logging Facade (SLF4J) Logger" toReformat="true" toShortenFQNames="true">
+        <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
+        <context>
+            <option name="KOTLIN_CLASS" value="true"/>
+        </context>
+    </template>
+</templateSet>
