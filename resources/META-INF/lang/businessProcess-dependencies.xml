@@ -26,6 +26,6 @@
         <projectConfigurable id="hybris.project.bp.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bp.title"
-                             provider="com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpConfigurableProvider"/>
     </extensions>
 </idea-plugin>

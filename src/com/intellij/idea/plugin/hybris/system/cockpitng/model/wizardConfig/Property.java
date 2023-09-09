@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,12 +31,25 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Property extends DomElement {
 
+	String QUALIFIER = "qualifier";
+	String LABEL = "label";
+	String DESCRIPTION = "description";
+	String TYPE = "type";
+	String VALIDATE = "validate";
+	String READONLY = "readonly";
+	String ID = "id";
+	String MERGE_MODE = "merge-mode";
+	String EDITOR = "editor";
+	String POSITION = "position";
+	String EXCLUDE = "exclude";
+	String EDITOR_PARAMETER = "editor-parameter";
+
 	/**
 	 * Returns the value of the qualifier child.
 	 * @return the value of the qualifier child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("qualifier")
+	@com.intellij.util.xml.Attribute (QUALIFIER)
 	@Required
 	GenericAttributeValue<String> getQualifier();
 
@@ -50,7 +59,7 @@ public interface Property extends DomElement {
 	 * @return the value of the label child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("label")
+	@com.intellij.util.xml.Attribute (LABEL)
 	GenericAttributeValue<String> getLabel();
 
 
@@ -59,7 +68,7 @@ public interface Property extends DomElement {
 	 * @return the value of the description child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("description")
+	@com.intellij.util.xml.Attribute (DESCRIPTION)
 	GenericAttributeValue<String> getDescription();
 
 
@@ -68,7 +77,7 @@ public interface Property extends DomElement {
 	 * @return the value of the type child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("type")
+	@com.intellij.util.xml.Attribute (TYPE)
 	GenericAttributeValue<String> getType();
 
 
@@ -77,7 +86,7 @@ public interface Property extends DomElement {
 	 * @return the value of the validate child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("validate")
+	@com.intellij.util.xml.Attribute (VALIDATE)
 	GenericAttributeValue<Boolean> getValidate();
 
 
@@ -86,7 +95,7 @@ public interface Property extends DomElement {
 	 * @return the value of the readonly child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("readonly")
+	@com.intellij.util.xml.Attribute (READONLY)
 	GenericAttributeValue<Boolean> getReadonly();
 
 
@@ -95,7 +104,7 @@ public interface Property extends DomElement {
 	 * @return the value of the id child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
+	@com.intellij.util.xml.Attribute (ID)
 	GenericAttributeValue<String> getId();
 
 
@@ -104,7 +113,7 @@ public interface Property extends DomElement {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<String> getMergeMode();
 
 
@@ -113,7 +122,7 @@ public interface Property extends DomElement {
 	 * @return the value of the editor child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("editor")
+	@com.intellij.util.xml.Attribute (EDITOR)
 	GenericAttributeValue<String> getEditor();
 
 
@@ -122,7 +131,7 @@ public interface Property extends DomElement {
 	 * @return the value of the position child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("position")
+	@com.intellij.util.xml.Attribute (POSITION)
 	GenericAttributeValue<Integer> getPosition();
 
 
@@ -131,7 +140,7 @@ public interface Property extends DomElement {
 	 * @return the value of the exclude child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("exclude")
+	@com.intellij.util.xml.Attribute (EXCLUDE)
 	GenericAttributeValue<Boolean> getExclude();
 
 
@@ -140,13 +149,13 @@ public interface Property extends DomElement {
 	 * @return the list of editor-parameter children.
 	 */
 	@NotNull
-	@SubTagList ("editor-parameter")
+	@SubTagList (EDITOR_PARAMETER)
 	java.util.List<Parameter> getEditorParameters();
 	/**
 	 * Adds new child to the list of editor-parameter children.
 	 * @return created child
 	 */
-	@SubTagList ("editor-parameter")
+	@SubTagList (EDITOR_PARAMETER)
 	Parameter addEditorParameter();
 
 

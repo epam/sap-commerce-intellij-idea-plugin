@@ -18,11 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.settings
 
+import com.intellij.idea.plugin.hybris.settings.FoldingSettings
+
 data class BeanSystemSettings(
     var folding: BeanSystemFoldingSettings = BeanSystemFoldingSettings(),
 )
 
 data class BeanSystemFoldingSettings(
-    var enabled: Boolean = true,
+    override var enabled: Boolean = true,
     var tablifyProperties: Boolean = true,
-)
+) : FoldingSettings

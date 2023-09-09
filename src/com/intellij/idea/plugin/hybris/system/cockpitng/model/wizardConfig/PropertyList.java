@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,12 +34,24 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface PropertyList extends DomElement {
 
+	String ROOT = "root";
+	String READONLY = "readonly";
+	String VALIDATE = "validate";
+	String ID = "id";
+	String MERGE_MODE = "merge-mode";
+	String POSITION = "position";
+	String INCLUDE_NON_DECLARED_MANDATORY = "include-non-declared-mandatory";
+	String INCLUDE_NON_DECLARED_UNIQUE = "include-non-declared-unique";
+	String INCLUDE_NON_DECLARED_WRITABLE_ON_CREATION = "include-non-declared-writable-on-creation";
+	String ENABLE_NON_DECLARED_INCLUDES = "enable-non-declared-includes";
+	String PROPERTY = "property";
+
 	/**
 	 * Returns the value of the root child.
 	 * @return the value of the root child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("root")
+	@com.intellij.util.xml.Attribute (ROOT)
 	GenericAttributeValue<String> getRoot();
 
 
@@ -48,7 +60,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the readonly child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("readonly")
+	@com.intellij.util.xml.Attribute (READONLY)
 	GenericAttributeValue<Boolean> getReadonly();
 
 
@@ -57,7 +69,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the validate child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("validate")
+	@com.intellij.util.xml.Attribute (VALIDATE)
 	GenericAttributeValue<Boolean> getValidate();
 
 
@@ -66,7 +78,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the id child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("id")
+	@com.intellij.util.xml.Attribute (ID)
 	GenericAttributeValue<String> getId();
 
 
@@ -75,7 +87,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<String> getMergeMode();
 
 
@@ -84,7 +96,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the position child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("position")
+	@com.intellij.util.xml.Attribute (POSITION)
 	GenericAttributeValue<Integer> getPosition();
 
 
@@ -93,7 +105,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the include-non-declared-mandatory child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("include-non-declared-mandatory")
+	@com.intellij.util.xml.Attribute (INCLUDE_NON_DECLARED_MANDATORY)
 	GenericAttributeValue<Boolean> getIncludeNonDeclaredMandatory();
 
 
@@ -102,7 +114,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the include-non-declared-unique child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("include-non-declared-unique")
+	@com.intellij.util.xml.Attribute (INCLUDE_NON_DECLARED_UNIQUE)
 	GenericAttributeValue<Boolean> getIncludeNonDeclaredUnique();
 
 
@@ -111,7 +123,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the include-non-declared-writable-on-creation child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("include-non-declared-writable-on-creation")
+	@com.intellij.util.xml.Attribute (INCLUDE_NON_DECLARED_WRITABLE_ON_CREATION)
 	GenericAttributeValue<Boolean> getIncludeNonDeclaredWritableOnCreation();
 
 
@@ -120,7 +132,7 @@ public interface PropertyList extends DomElement {
 	 * @return the value of the enable-non-declared-includes child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("enable-non-declared-includes")
+	@com.intellij.util.xml.Attribute (ENABLE_NON_DECLARED_INCLUDES)
 	GenericAttributeValue<Boolean> getEnableNonDeclaredIncludes();
 
 
@@ -129,13 +141,13 @@ public interface PropertyList extends DomElement {
 	 * @return the list of property children.
 	 */
 	@NotNull
-	@SubTagList ("property")
+	@SubTagList (PROPERTY)
 	java.util.List<Property> getProperties();
 	/**
 	 * Adds new child to the list of property children.
 	 * @return created child
 	 */
-	@SubTagList ("property")
+	@SubTagList (PROPERTY)
 	Property addProperty();
 
 

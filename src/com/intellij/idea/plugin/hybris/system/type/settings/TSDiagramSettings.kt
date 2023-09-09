@@ -18,19 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.system.type.settings
 
-import com.intellij.idea.plugin.hybris.settings.FoldingSettings
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 
-data class TypeSystemSettings(
-    var folding: TypeSystemFoldingSettings = TypeSystemFoldingSettings(),
+data class TSDiagramSettings(
+    var nodesCollapsedByDefault: Boolean = true,
+    var showOOTBMapNodes: Boolean = false,
+    var showCustomAtomicNodes: Boolean = false,
+    var showCustomCollectionNodes: Boolean = false,
+    var showCustomEnumNodes: Boolean = false,
+    var showCustomMapNodes: Boolean = false,
+    var showCustomRelationNodes: Boolean = false,
+    var excludedTypeNames: MutableSet<String> = mutableSetOf(
+        HybrisConstants.TS_TYPE_ITEM,
+        HybrisConstants.TS_TYPE_GENERIC_ITEM,
+        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
+        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM,
+        HybrisConstants.TS_TYPE_CRON_JOB
+    )
 )
-
-data class TypeSystemFoldingSettings(
-    override var enabled: Boolean = true,
-    var tablifyAtomics: Boolean = true,
-    var tablifyCollections: Boolean = true,
-    var tablifyMaps: Boolean = true,
-    var tablifyRelations: Boolean = true,
-    var tablifyItemAttributes: Boolean = true,
-    var tablifyItemIndexes: Boolean = true,
-    var tablifyItemCustomProperties: Boolean = true,
-): FoldingSettings

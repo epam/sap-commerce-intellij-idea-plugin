@@ -41,6 +41,13 @@
 
 ### `Business Process` enhancements
 - Added folding for business process files [#698](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/698)
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+
+### `Bean System` enhancements
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+
+### `CockpitNG` enhancements
+- Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
 
 ### Fixes
 - Disable reference and code completion for `order` property of the Spring Interceptor bean declaration [#697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/697)

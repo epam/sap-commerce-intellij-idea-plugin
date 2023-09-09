@@ -49,12 +49,10 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                         .bindSelected(state.folding::enabled)
                         .component
                 }
-                group {
-                    row {
-                        checkBox("Use smart folding")
-                            .bindSelected(state.folding::useSmartFolding)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
+                row {
+                    checkBox("Use smart folding")
+                        .bindSelected(state.folding::useSmartFolding)
+                        .enabledIf(foldingEnableCheckBox.selected)
                 }
             }
             group("Code Completion") {

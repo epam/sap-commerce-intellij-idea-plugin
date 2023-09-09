@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.bean.settings
+package com.intellij.idea.plugin.hybris.system.cockpitng.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -29,16 +29,16 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.bs.title"), "[y] SAP Commerce plugin Bean System configuration."
+        message("hybris.settings.project.cng.title"), "[y] SAP Commerce plugin Cockpit NG configuration."
     ) {
 
-        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.beanSystemSettings
+        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.cngSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -51,8 +51,8 @@ class BeanSystemConfigurableProvider(val project: Project) : ConfigurableProvide
                 }
                 group("Table-Like Folding", true) {
                     row {
-                        checkBox("Properties")
-                            .bindSelected(settings.folding::tablifyProperties)
+                        checkBox("Wizard properties")
+                            .bindSelected(settings.folding::tablifyWizardProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }

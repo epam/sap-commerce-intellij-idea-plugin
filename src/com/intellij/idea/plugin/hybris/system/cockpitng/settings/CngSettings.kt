@@ -16,21 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.settings
+package com.intellij.idea.plugin.hybris.system.cockpitng.settings
 
 import com.intellij.idea.plugin.hybris.settings.FoldingSettings
 
-data class TypeSystemSettings(
-    var folding: TypeSystemFoldingSettings = TypeSystemFoldingSettings(),
+data class CngSettings(
+    var folding: CngFoldingSettings = CngFoldingSettings(),
 )
 
-data class TypeSystemFoldingSettings(
+data class CngFoldingSettings(
     override var enabled: Boolean = true,
-    var tablifyAtomics: Boolean = true,
-    var tablifyCollections: Boolean = true,
-    var tablifyMaps: Boolean = true,
-    var tablifyRelations: Boolean = true,
-    var tablifyItemAttributes: Boolean = true,
-    var tablifyItemIndexes: Boolean = true,
-    var tablifyItemCustomProperties: Boolean = true,
+    var tablifyWizardProperties: Boolean = true,
 ): FoldingSettings

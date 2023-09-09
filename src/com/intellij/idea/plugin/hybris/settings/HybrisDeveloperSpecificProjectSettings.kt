@@ -19,6 +19,9 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemSettings
+import com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpSettings
+import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngSettings
+import com.intellij.idea.plugin.hybris.system.type.settings.TSDiagramSettings
 import com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemSettings
 
 data class HybrisDeveloperSpecificProjectSettings(
@@ -28,4 +31,6 @@ data class HybrisDeveloperSpecificProjectSettings(
     var typeSystemDiagramSettings: TSDiagramSettings = TSDiagramSettings(),
     var beanSystemSettings: BeanSystemSettings = BeanSystemSettings(),
     var typeSystemSettings: TypeSystemSettings = TypeSystemSettings(),
+    var cngSettings: CngSettings = CngSettings(),
+    var bpSettings: BpSettings = BpSettings(),
 )

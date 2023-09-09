@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,21 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-
-data class TSDiagramSettings(
-    var nodesCollapsedByDefault: Boolean = true,
-    var showOOTBMapNodes: Boolean = false,
-    var showCustomAtomicNodes: Boolean = false,
-    var showCustomCollectionNodes: Boolean = false,
-    var showCustomEnumNodes: Boolean = false,
-    var showCustomMapNodes: Boolean = false,
-    var showCustomRelationNodes: Boolean = false,
-    var excludedTypeNames: MutableSet<String> = mutableSetOf(
-        HybrisConstants.TS_TYPE_ITEM,
-        HybrisConstants.TS_TYPE_GENERIC_ITEM,
-        HybrisConstants.TS_TYPE_LOCALIZABLE_ITEM,
-        HybrisConstants.TS_TYPE_EXTENSIBLE_ITEM,
-        HybrisConstants.TS_TYPE_CRON_JOB
-    )
-)
+interface FoldingSettings {
+    var enabled: Boolean
+}

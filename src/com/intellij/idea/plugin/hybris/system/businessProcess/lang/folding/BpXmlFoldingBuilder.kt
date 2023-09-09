@@ -18,40 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding
 
-import ai.grazie.utils.toDistinctTypedArray
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
+import com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpFoldingSettings
 import com.intellij.idea.plugin.hybris.system.businessProcess.util.BpHelper
 import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.FoldingBuilderEx
-import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.openapi.project.DumbAware
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.SyntaxTraverser
+import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
-import com.intellij.util.xml.DomManager
 
-class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
+class BpXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BpFoldingSettings, Process>(Process::class.java), DumbAware {
 
-    private val foldEnd = "[end]    "
-    private val foldChoice = "[choice] "
-    private val foldTimeout = "[timeout] wait for "
-    private val foldCase = "[case] "
-    private val foldEvent = "[event] "
-    private val foldNA = "n/a"
-    private val actionPrefix = "[action] "
-    private val waitPrefix = "[wait]   "
-    private val delimiter = " : "
-    private val then = " then "
-    private val arrowDelimiter = " -> "
-
-    private val filter = PsiElementFilter {
+    override val filter = PsiElementFilter {
         when (it) {
             is XmlTag -> when (it.localName) {
                 Action.TRANSITION,
@@ -70,48 +50,38 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         }
     }
 
-    override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
-        if (root !is XmlFile) return emptyArray()
-        DomManager.getDomManager(root.project).getFileElement(root, Process::class.java)
-            ?: return emptyArray()
-
-        return SyntaxTraverser.psiTraverser(root)
-            .filter { filter.isAccepted(it) }
-            .mapNotNull {
-                if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
-                FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
-            }
-            .toDistinctTypedArray()
-    }
+    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        .bpSettings
+        .folding
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            Action.TRANSITION -> fold(psi, Transition.NAME, Transition.TO, Action.TRANSITION)
+            Action.TRANSITION -> fold(psi, Transition.NAME, Transition.TO, Action.TRANSITION, tablify = getCachedFoldingSettings(psi)?.tablifyActionTransitions)
 
-            Process.END -> fold(psi, NavigableElement.ID, End.STATE, Process.END, foldEnd)
+            Process.END -> fold(psi, NavigableElement.ID, End.STATE, Process.END, "[end]    ", tablify = getCachedFoldingSettings(psi)?.tablifyEnds)
 
-            Case.CHOICE -> fold(psi, NavigableElement.ID, Choice.THEN, Case.CHOICE, foldChoice)
+            Case.CHOICE -> fold(psi, NavigableElement.ID, Choice.THEN, Case.CHOICE, "[choice] ", tablify = getCachedFoldingSettings(psi)?.tablifyCaseChoices)
 
-            Wait.TIMEOUT -> foldTimeout +
+            Wait.TIMEOUT -> "[timeout] wait for " +
                 BpHelper.parseDuration(psi.getAttributeValue(Timeout.DELAY) ?: "?") +
-                then +
+                " then " +
                 psi.getAttributeValue(Timeout.THEN)
 
-            Wait.CASE -> foldCase +
+            Wait.CASE -> "[case] " +
                 psi.getAttributeValue(Case.EVENT) +
-                delimiter +
+                TYPE_SEPARATOR +
                 (psi.subTags
                     .map { it.getAttributeValue(NavigableElement.ID) }
                     .joinToString()
-                    .takeIf { it.isNotBlank() } ?: foldNA)
+                    .takeIf { it.isNotBlank() }
+                    ?: "n/a")
 
-            Wait.EVENT -> foldEvent + psi.value.trimmedText
+            Wait.EVENT -> "[event] " + psi.value.trimmedText
 
-            Process.ACTION -> actionPrefix +
+            Process.ACTION -> "[action] " +
                 psi.getAttributeValue(NavigableElement.ID)
 
-            Process.WAIT -> waitPrefix +
+            Process.WAIT -> "[wait]   " +
                 psi.getAttributeValue(NavigableElement.ID)
 
             else -> FALLBACK_PLACEHOLDER
@@ -120,12 +90,11 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         else -> FALLBACK_PLACEHOLDER
     }
 
-    private fun fold(psi: XmlTag, attr1: String, attr2: String, tagName: String, prefix: String = "") = prefix +
+    private fun fold(psi: XmlTag, attr1: String, attr2: String, tagName: String, prefix: String = "", tablify: Boolean?) = prefix +
         psi.getAttributeValue(attr1)
-            ?.let { tablify(psi, it, true, tagName, attr1) } +
-        arrowDelimiter +
+            ?.let { tablify(psi, it, tablify, tagName, attr1) } +
+        " -> " +
         psi.getAttributeValue(attr2)
-            ?.let { tablify(psi, it, true, tagName, attr2) }
 
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
@@ -139,23 +108,5 @@ class BpXmlFoldingBuilder : FoldingBuilderEx(), DumbAware {
         }
 
         else -> false
-    }
-
-    private fun tablify(psi: PsiElement, value: String, tablify: Boolean?, tagName: String, attributeName: String, prepend: Boolean = false) = if (tablify == true) {
-        val propertyNamePostfix = " ".repeat(getLongestLength(psi, tagName, attributeName, value.length) - value.length)
-        if (prepend) propertyNamePostfix + value else value + propertyNamePostfix
-    } else {
-        value
-    }
-
-    private fun getLongestLength(psi: PsiElement, tagName: String, attributeName: String, fallbackLength: Int) = psi.parent.childrenOfType<XmlTag>()
-        .filter { it.localName == tagName }
-        .mapNotNull { it.getAttributeValue(attributeName) }
-        .maxOfOrNull { it.length }
-        ?: fallbackLength
-
-    companion object {
-        private const val GROUP_NAME = "BusinessProcessXml"
-        private const val FALLBACK_PLACEHOLDER = "..."
     }
 }
