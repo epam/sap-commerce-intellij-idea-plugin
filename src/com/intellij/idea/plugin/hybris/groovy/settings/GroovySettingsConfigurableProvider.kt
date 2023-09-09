@@ -25,6 +25,8 @@ import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.layout.selected
+import javax.swing.JCheckBox
 
 class GroovySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
@@ -36,18 +38,21 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
     ) {
 
         private val state = HybrisProjectSettingsComponent.getInstance(project).state.groovySettings
+        private lateinit var enableActionToolbar: JCheckBox
 
         override fun createPanel() = panel {
             group("Language") {
                 row {
-                    checkBox("Enable actions toolbar for each Groovy file")
+                    enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
                         .bindSelected(state::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
+                        .component
                 }
                 row {
                     checkBox("Enable actions toolbar for a Test Groovy file")
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
+                        .enabledIf(enableActionToolbar.selected)
                 }
 
             }
