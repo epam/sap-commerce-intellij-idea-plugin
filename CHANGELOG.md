@@ -48,6 +48,7 @@
 
 ### `Cockpit NG` enhancements
 - Added folding configuration [#701](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/701)
+- Added table-like folding for `type-node` [#702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/702)
 
 ### Fixes
 - Disable reference and code completion for `order` property of the Spring Interceptor bean declaration [#697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/697)

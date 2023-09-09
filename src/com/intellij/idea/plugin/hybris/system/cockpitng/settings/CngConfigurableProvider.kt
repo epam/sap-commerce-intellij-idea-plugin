@@ -54,6 +54,9 @@ class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
                         checkBox("Wizard properties")
                             .bindSelected(settings.folding::tablifyWizardProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Navigation nodes")
+                            .bindSelected(settings.folding::tablifyNavigationNodes)
+                            .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }

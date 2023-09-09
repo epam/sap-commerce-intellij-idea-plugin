@@ -76,7 +76,8 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                     ?: ""
                 )
 
-            ExplorerTree.TYPE_NODE -> psi.getAttributeValue(TypeNode.ID) + (
+            ExplorerTree.TYPE_NODE -> psi.getAttributeValue(TypeNode.ID)
+                ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyNavigationNodes, ExplorerTree.TYPE_NODE, TypeNode.ID) } + (
                 psi.getAttributeValue(TypeNode.CODE)
                     ?.let { TYPE_SEPARATOR + it }
                     ?: ""
