@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,10 +22,12 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.listView;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
-import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Namespace;
+import com.intellij.util.xml.Referencing;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,6 +37,18 @@ import org.jetbrains.annotations.NotNull;
 public interface ListColumn extends DomElement, Positioned {
 
 	String QUALIFIER = "qualifier";
+	String AUTO_EXTRACT = "auto-extract";
+	String LABEL = "label";
+	String TYPE = "type";
+	String SORTABLE = "sortable";
+	String CLASS = "class";
+	String WIDTH = "width";
+	String HFLEX = "hflex";
+	String SPRING_BEAN = "spring-bean";
+	String MERGE_MODE = "merge-mode";
+	String MAX_CHAR = "maxChar";
+	String LINK = "link";
+	String LINK_VALUE = "link-value";
 
 	/**
 	 * Returns the value of the qualifier child.
@@ -50,7 +64,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the auto-extract child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("auto-extract")
+	@com.intellij.util.xml.Attribute (AUTO_EXTRACT)
 	GenericAttributeValue<Boolean> getAutoExtract();
 
 
@@ -59,7 +73,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the label child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("label")
+	@com.intellij.util.xml.Attribute (LABEL)
 	GenericAttributeValue<String> getLabel();
 
 
@@ -68,7 +82,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the type child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("type")
+	@com.intellij.util.xml.Attribute (TYPE)
 	GenericAttributeValue<String> getType();
 
 
@@ -77,7 +91,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the sortable child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("sortable")
+	@com.intellij.util.xml.Attribute (SORTABLE)
 	GenericAttributeValue<Boolean> getSortable();
 
 
@@ -86,7 +100,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the class child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("class")
+	@com.intellij.util.xml.Attribute (CLASS)
 	GenericAttributeValue<String> getClazz();
 
 
@@ -95,7 +109,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the width child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("width")
+	@com.intellij.util.xml.Attribute (WIDTH)
 	GenericAttributeValue<String> getWidth();
 
 
@@ -104,7 +118,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the hflex child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("hflex")
+	@com.intellij.util.xml.Attribute (HFLEX)
 	GenericAttributeValue<String> getHflex();
 
 
@@ -113,7 +127,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the spring-bean child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("spring-bean")
+	@com.intellij.util.xml.Attribute (SPRING_BEAN)
 	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getSpringBean();
 
@@ -123,7 +137,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<String> getMergeMode();
 
 
@@ -132,7 +146,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the maxChar child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("maxChar")
+	@com.intellij.util.xml.Attribute (MAX_CHAR)
 	GenericAttributeValue<Integer> getMaxChar();
 
 
@@ -141,7 +155,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the link child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("link")
+	@com.intellij.util.xml.Attribute (LINK)
 	GenericAttributeValue<Boolean> getLink();
 
 
@@ -150,7 +164,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 * @return the value of the link-value child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("link-value")
+	@com.intellij.util.xml.Attribute (LINK_VALUE)
 	GenericAttributeValue<String> getLinkValue();
 
 }

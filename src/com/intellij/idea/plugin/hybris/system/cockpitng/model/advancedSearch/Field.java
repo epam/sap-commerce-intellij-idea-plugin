@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,10 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngMergeByConverter;
-import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngOperatorConverter;
-import com.intellij.util.xml.*;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngOperatorConverter;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,6 +35,14 @@ import org.jetbrains.annotations.NotNull;
 public interface Field extends DomElement, Positioned {
 
 	String NAME = "name";
+	String OPERATOR = "operator";
+	String SELECTED = "selected";
+	String EDITOR = "editor";
+	String SORTABLE = "sortable";
+	String DISABLED = "disabled";
+	String MANDATORY = "mandatory";
+	String MERGE_MODE = "merge-mode";
+	String EDITOR_PARAMETER = "editor-parameter";
 
 	/**
 	 * Returns the value of the name child.
@@ -52,7 +59,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the operator child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("operator")
+	@com.intellij.util.xml.Attribute (OPERATOR)
 	@Convert(CngOperatorConverter.class)
 	GenericAttributeValue<String> getOperator();
 
@@ -62,7 +69,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the selected child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("selected")
+	@com.intellij.util.xml.Attribute (SELECTED)
 	GenericAttributeValue<Boolean> getSelected();
 
 
@@ -71,7 +78,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the editor child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("editor")
+	@com.intellij.util.xml.Attribute (EDITOR)
 	GenericAttributeValue<String> getEditor();
 
 
@@ -80,7 +87,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the sortable child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("sortable")
+	@com.intellij.util.xml.Attribute (SORTABLE)
 	GenericAttributeValue<Boolean> getSortable();
 
 
@@ -89,7 +96,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the disabled child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("disabled")
+	@com.intellij.util.xml.Attribute (DISABLED)
 	GenericAttributeValue<Boolean> getDisabled();
 
 
@@ -98,7 +105,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the mandatory child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("mandatory")
+	@com.intellij.util.xml.Attribute (MANDATORY)
 	GenericAttributeValue<Boolean> getMandatory();
 
 
@@ -107,7 +114,7 @@ public interface Field extends DomElement, Positioned {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<MergeMode> getMergeMode();
 
 
@@ -116,13 +123,13 @@ public interface Field extends DomElement, Positioned {
 	 * @return the list of editor-parameter children.
 	 */
 	@NotNull
-	@SubTagList ("editor-parameter")
+	@SubTagList (EDITOR_PARAMETER)
 	java.util.List<Parameter> getEditorParameters();
 	/**
 	 * Adds new child to the list of editor-parameter children.
 	 * @return created child
 	 */
-	@SubTagList ("editor-parameter")
+	@SubTagList (EDITOR_PARAMETER)
 	Parameter addEditorParameter();
 
 

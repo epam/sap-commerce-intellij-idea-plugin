@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,34 +22,11 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.util.xml.Namespace;
 
 /**
  * http://www.hybris.com/cockpitng/config/advancedsearch:Parameter interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Parameter extends DomElement {
-
-	/**
-	 * Returns the value of the name child.
-	 * @return the value of the name child.
-	 */
-	@NotNull
-	@SubTag ("name")
-	@Required
-	GenericDomValue<String> getName();
-
-
-	/**
-	 * Returns the value of the value child.
-	 * @return the value of the value child.
-	 */
-	@NotNull
-	@SubTag ("value")
-	@Required
-	GenericDomValue<String> getValue();
-
-
+public interface Parameter extends com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Parameter {
 }

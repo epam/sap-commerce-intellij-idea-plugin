@@ -28,4 +28,7 @@ data class CngFoldingSettings(
     override var enabled: Boolean = true,
     var tablifyWizardProperties: Boolean = true,
     var tablifyNavigationNodes: Boolean = true,
+    var tablifySearchFields: Boolean = true,
+    var tablifyListColumns: Boolean = true,
+    var tablifyParameters: Boolean = true,
 ): FoldingSettings

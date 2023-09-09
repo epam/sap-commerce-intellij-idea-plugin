@@ -57,6 +57,17 @@ class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
                         checkBox("Navigation nodes")
                             .bindSelected(settings.folding::tablifyNavigationNodes)
                             .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Search fields")
+                            .bindSelected(settings.folding::tablifySearchFields)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                    }
+                    row {
+                        checkBox("List columns")
+                            .bindSelected(settings.folding::tablifyListColumns)
+                            .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Parameters")
+                            .bindSelected(settings.folding::tablifyParameters)
+                            .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }

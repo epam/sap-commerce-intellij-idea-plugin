@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,8 +22,9 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Namespace;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,12 +33,15 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface AdditionalParam extends DomElement {
 
+	String KEY = "key";
+	String VALUE = "value";
+
 	/**
 	 * Returns the value of the key child.
 	 * @return the value of the key child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("key")
+	@com.intellij.util.xml.Attribute (KEY)
 	GenericAttributeValue<String> getKey();
 
 
@@ -46,7 +50,7 @@ public interface AdditionalParam extends DomElement {
 	 * @return the value of the value child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("value")
+	@com.intellij.util.xml.Attribute (VALUE)
 	GenericAttributeValue<String> getValue();
 
 

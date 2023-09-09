@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,12 +31,16 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface ComposedHandler extends DomElement {
 
+	String HANDLER_BEAN = "handlerBean";
+	String HANDLER_ID = "handlerId";
+	String ADDITIONAL_PARAMS = "additionalParams";
+
 	/**
 	 * Returns the value of the handlerBean child.
 	 * @return the value of the handlerBean child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("handlerBean")
+	@com.intellij.util.xml.Attribute (HANDLER_BEAN)
 	@Required
 	GenericAttributeValue<String> getHandlerBean();
 
@@ -50,7 +50,7 @@ public interface ComposedHandler extends DomElement {
 	 * @return the value of the handlerId child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("handlerId")
+	@com.intellij.util.xml.Attribute (HANDLER_ID)
 	@Required
 	GenericAttributeValue<String> getHandlerId();
 
@@ -60,14 +60,14 @@ public interface ComposedHandler extends DomElement {
 	 * @return the list of additionalParams children.
 	 */
 	@NotNull
-	@SubTagList ("additionalParams")
+	@SubTagList (ADDITIONAL_PARAMS)
 	@Required
 	java.util.List<AdditionalParam> getAdditionalParamses();
 	/**
 	 * Adds new child to the list of additionalParams children.
 	 * @return created child
 	 */
-	@SubTagList ("additionalParams")
+	@SubTagList (ADDITIONAL_PARAMS)
 	AdditionalParam addAdditionalParams();
 
 

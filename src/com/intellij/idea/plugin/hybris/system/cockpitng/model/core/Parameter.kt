@@ -16,13 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Wed Jan 18 00:35:36 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpitng/config/fulltextsearch
+package com.intellij.idea.plugin.hybris.system.cockpitng.model.core
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
+import com.intellij.util.xml.DomElement
+import com.intellij.util.xml.GenericDomValue
+import com.intellij.util.xml.Required
+import com.intellij.util.xml.SubTag
 
-/**
- * http://www.hybris.com/cockpitng/config/fulltextsearch:Parameter interface.
- */
-public interface Parameter extends com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Parameter {
+interface Parameter : DomElement {
+    @get:Required
+    @get:SubTag(NAME)
+    val name: GenericDomValue<String?>
+
+    @get:Required
+    @get:SubTag(VALUE)
+    val value: GenericDomValue<String?>
+
+    companion object {
+        const val TAG_NAME = "parameter"
+        const val NAME = "name"
+        const val VALUE = "value"
+    }
 }
+

@@ -22,12 +22,15 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.Field
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.FieldList
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Parameter
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Attribute
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Section
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColumn
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListView
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerTree
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.TypeNode
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AdditionalParam
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.ComposedHandler
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Property
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.PropertyList
 import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngFoldingSettings
@@ -46,7 +49,10 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                 Section.ATTRIBUTE,
                 ExplorerTree.TYPE_NODE,
                 ListView.COLUMN,
-                PropertyList.PROPERTY -> true
+                PropertyList.PROPERTY,
+                Property.EDITOR_PARAMETER,
+                ComposedHandler.ADDITIONAL_PARAMS,
+                Parameter.TAG_NAME -> true
 
                 else -> false
             }
@@ -61,33 +67,85 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
 
     override fun getPlaceholderText(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
-            FieldList.FIELD -> psi.getAttributeValue(Field.NAME)
-            ListView.COLUMN -> psi.getAttributeValue(ListColumn.QUALIFIER)
-
-            Section.ATTRIBUTE -> psi.getAttributeValue(Attribute.QUALIFIER) + (
-                psi.getAttributeValue(Attribute.READONLY)
-                    ?.takeIf { "true".equals(it, true) }
-                    ?.let { TYPE_SEPARATOR + "readonly" }
+            ComposedHandler.ADDITIONAL_PARAMS -> fold(psi, ComposedHandler.ADDITIONAL_PARAMS, AdditionalParam.KEY,
+                getCachedFoldingSettings(psi)?.tablifyParameters,
+                psi.getAttributeValue(AdditionalParam.VALUE)
+                    ?.let { " = $it" }
                     ?: ""
-                ) + (
-                psi.getAttributeValue(Attribute.VISIBLE)
-                    ?.takeIf { "false".equals(it, true) }
-                    ?.let { TYPE_SEPARATOR + "non-visible" }
-                    ?: ""
-                )
+            )
 
-            ExplorerTree.TYPE_NODE -> psi.getAttributeValue(TypeNode.ID)
-                ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyNavigationNodes, ExplorerTree.TYPE_NODE, TypeNode.ID) } + (
+            Parameter.TAG_NAME,
+            Property.EDITOR_PARAMETER -> {
+                val subTags = psi.subTags.associateBy { it.localName }
+
+                // TODO : add tablify
+
+                val name = subTags[Parameter.NAME]
+                    ?.value
+                    ?.trimmedText
+                    ?: "?"
+                val value = subTags[Parameter.VALUE]
+                    ?.value
+                    ?.trimmedText
+                    ?.let { " = $it"}
+                    ?: "?"
+
+                name + value
+            }
+
+            FieldList.FIELD -> fold(psi, FieldList.FIELD, Field.NAME,
+                getCachedFoldingSettings(psi)?.tablifySearchFields,
+                computeExtraAttributes(
+                    psi.getAttributeValue(Field.MERGE_MODE)?.lowercase(),
+                    psi.getAttributeValue(Field.OPERATOR),
+                    psi.getAttributeValue(Field.SELECTED)
+                        ?.takeIf { it == "true" }
+                        ?.let { "pre-selected" }
+                ))
+
+            ListView.COLUMN -> fold(psi, ListView.COLUMN, ListColumn.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyListColumns,
+                computeExtraAttributes(
+                    psi.getAttributeValue(ListColumn.SPRING_BEAN),
+                    psi.getAttributeValue(ListColumn.SORTABLE)
+                        ?.takeIf { it == "true" }
+                        ?.let { "sortable" }
+                ))
+
+            Section.ATTRIBUTE -> fold(psi, Section.ATTRIBUTE, Attribute.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyListColumns,
+                computeExtraAttributes(
+                    psi.getAttributeValue(Attribute.READONLY)
+                        ?.takeIf { "true".equals(it, true) }
+                        ?.let { "readonly" },
+                    psi.getAttributeValue(Attribute.VISIBLE)
+                        ?.takeIf { "false".equals(it, true) }
+                        ?.let { "non-visible" }
+                ))
+
+            ExplorerTree.TYPE_NODE -> fold(psi, ExplorerTree.TYPE_NODE, TypeNode.ID,
+                getCachedFoldingSettings(psi)?.tablifyNavigationNodes,
                 psi.getAttributeValue(TypeNode.CODE)
                     ?.let { TYPE_SEPARATOR + it }
                     ?: ""
-                )
+            )
 
-            PropertyList.PROPERTY -> psi.getAttributeValue(Property.QUALIFIER)
-                ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyWizardProperties, PropertyList.PROPERTY, Property.QUALIFIER) } +
+            PropertyList.PROPERTY -> fold(psi, PropertyList.PROPERTY, Property.QUALIFIER,
+                getCachedFoldingSettings(psi)?.tablifyWizardProperties,
                 (psi.getAttributeValue(Property.TYPE)
                     ?.let { TYPE_SEPARATOR + it }
-                    ?: "")
+                    ?: "") +
+                    (computeExtraAttributes(
+                        psi.getAttributeValue(Property.POSITION),
+                        psi.getAttributeValue(Property.MERGE_MODE)?.lowercase(),
+                        psi.getAttributeValue(Property.READONLY)
+                            ?.takeIf { "true".equals(it, true) }
+                            ?.let { "readonly" },
+                    )
+                        .takeIf { it.isNotEmpty() }
+                        ?.let { " $it" }
+                        ?: "")
+            )
 
             else -> FALLBACK_PLACEHOLDER
         }
@@ -95,13 +153,34 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
         else -> FALLBACK_PLACEHOLDER
     }
 
+    private fun fold(psi: XmlTag, wrapperTagName: String, tagName: String, tablify: Boolean?, extraAttributes: String) = fallbackAttributeValue(psi, tagName)
+        .let {
+            if (extraAttributes.isNotEmpty()) tablify(psi, it, tablify, wrapperTagName, tagName)
+            else it
+        } + extraAttributes
+
+    private fun fallbackAttributeValue(psi: XmlTag, fieldName: String, fallback: String = "?"): String = psi.getAttributeValue(fieldName)
+        ?.takeIf { it.isNotEmpty() }
+        ?: fallback
+
+    private fun computeExtraAttributes(vararg extraAttributes: String?) = extraAttributes
+        .filterNotNull()
+        .filter { it.isNotEmpty() }
+        .takeIf { it.isNotEmpty() }
+        ?.joinToString(" | ", "[", "]")
+        ?.let { " $it" }
+        ?: ""
+
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             FieldList.FIELD,
             Section.ATTRIBUTE,
             ExplorerTree.TYPE_NODE,
             ListView.COLUMN,
-            PropertyList.PROPERTY -> true
+            PropertyList.PROPERTY,
+            Property.EDITOR_PARAMETER,
+            ComposedHandler.ADDITIONAL_PARAMS,
+            Parameter.TAG_NAME -> true
 
             else -> false
         }
