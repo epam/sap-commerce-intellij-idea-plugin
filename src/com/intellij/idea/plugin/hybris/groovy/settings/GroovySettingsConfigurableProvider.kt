@@ -44,6 +44,11 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                         .bindSelected(state::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
                 }
+                row {
+                    checkBox("Enable actions toolbar for a Test Groovy file")
+                        .bindSelected(state::enableActionsToolbarForGroovyTest)
+                        .comment("Enables Actions toolbar for the groovy files with 'Test' in the file name or files that uses ManualTest annotation.")
+                }
 
             }
         }

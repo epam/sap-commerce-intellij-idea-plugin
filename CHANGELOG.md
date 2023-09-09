@@ -34,6 +34,9 @@
 ### `ImpEx` inspection rules
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 
+### `Groovy Script` enhancements
+- Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
+
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)
 - Improved folding for `index`:`key` tags [#663](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/663)
