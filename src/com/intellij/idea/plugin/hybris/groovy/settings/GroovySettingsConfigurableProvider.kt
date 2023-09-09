@@ -47,7 +47,7 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                 row {
                     checkBox("Enable actions toolbar for a Test Groovy file")
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
-                        .comment("Enables Actions toolbar for the groovy files with 'Test' in the file name or files that uses ManualTest annotation.")
+                        .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
                 }
 
             }

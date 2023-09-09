@@ -42,7 +42,7 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
         if (!projectSettings.isHybrisProject()) return
 
         val settings = projectSettings.state
-        val isTestFile = file.name.contains("test") || String(file.contentsToByteArray()).contains("de.hybris.bootstrap.annotations.ManualTest", true)
+        val isTestFile = file.path.contains("testsrc", true)
         val enabledForGroovyTestOrAllGroovyFiles = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
         val toolbarInstaller = when (file.fileType) {
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
