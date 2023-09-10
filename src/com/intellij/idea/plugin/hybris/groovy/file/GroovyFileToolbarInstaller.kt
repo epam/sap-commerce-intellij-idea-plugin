@@ -29,7 +29,8 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.groovy.console",
     "hybris.groovy.toolbar.left",
-    "hybris.groovy.toolbar.right"
+    "hybris.groovy.toolbar.right",
+    GroovyFileType.GROOVY_FILE_TYPE
 ) {
 
     companion object {
@@ -46,6 +47,4 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
             && settings.groovySettings.enableActionsToolbar
             && enabledForGroovyTestOrAllGroovyFiles)
     }
-
-    override fun isSupportedFileType(fileType: FileType) = fileType is GroovyFileType
 }

@@ -27,7 +27,8 @@ import com.intellij.openapi.project.Project
 class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.fxs.console",
     "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right"
+    "hybris.fxs.toolbar.right",
+    FlexibleSearchFileType.instance
 ) {
 
     companion object {
@@ -35,5 +36,4 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
-    override fun isSupportedFileType(fileType: FileType) = fileType is FlexibleSearchFileType
 }

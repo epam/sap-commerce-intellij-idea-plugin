@@ -30,11 +30,14 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.util.containers.JBIterable
 
-abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String, private val leftGroupId: String, private val rightGroupId: String) {
+abstract class AbstractHybrisFileToolbarInstaller(
+    private val toolbarId: String,
+    private val leftGroupId: String,
+    private val rightGroupId: String,
+    private val type: FileType
+) {
 
     abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
-    abstract fun isSupportedFileType(fileType: FileType): Boolean
-
     fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
         val headerComponent = EditorHeaderComponent()
@@ -61,7 +64,7 @@ abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String,
 
     fun toggleToolbarForAllEditors(project: Project) {
         FileEditorManager.getInstance(project).allEditors
-            .filter { isSupportedFileType(it.file.fileType) }
+            .filter { type == it.file.fileType }
             .mapNotNull { EditorUtil.getEditorEx(it) }
             .forEach {
                 toggleToolbar(project, it)
@@ -69,19 +72,13 @@ abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String,
     }
 
     fun toggleToolbar(project: Project, editor: EditorEx) {
-        if (isToolbarEnabled(project, editor)) {
-            enableToolbar(project, editor)
-        } else {
-            toggle(editor, false)
-        }
+        if (isToolbarEnabled(project, editor)) enableToolbar(project, editor)
+        else toggle(editor, false)
     }
 
     private fun enableToolbar(project: Project, editor: EditorEx) {
-        if (editor.permanentHeaderComponent == null) {
-            install(project, editor)
-        } else {
-            toggle(editor, true)
-        }
+        if (editor.permanentHeaderComponent == null) install(project, editor)
+        else toggle(editor, true)
     }
 
     private fun toggle(editor: EditorEx, visible: Boolean) = with(editor) {

@@ -27,7 +27,8 @@ import com.intellij.openapi.project.Project
 class ImpExFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.impex.console",
     "hybris.impex.toolbar.left",
-    "hybris.impex.toolbar.right"
+    "hybris.impex.toolbar.right",
+    ImpexFileType.INSTANCE
 ) {
 
     companion object {
@@ -35,6 +36,4 @@ class ImpExFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
-
-    override fun isSupportedFileType(fileType: FileType) = fileType is ImpexFileType
 }

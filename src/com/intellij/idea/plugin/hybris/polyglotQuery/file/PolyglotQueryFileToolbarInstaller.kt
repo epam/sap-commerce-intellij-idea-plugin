@@ -27,7 +27,8 @@ import com.intellij.openapi.project.Project
 class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.pgq.console",
     "hybris.pgq.toolbar.left",
-    "hybris.pgq.toolbar.right"
+    "hybris.pgq.toolbar.right",
+    PolyglotQueryFileType.instance
 ) {
 
     companion object {
@@ -35,6 +36,4 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
-
-    override fun isSupportedFileType(fileType: FileType) = fileType is PolyglotQueryFileType
 }
