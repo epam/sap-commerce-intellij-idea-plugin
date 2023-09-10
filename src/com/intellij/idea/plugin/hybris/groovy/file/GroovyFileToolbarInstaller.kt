@@ -42,9 +42,9 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
         val file = editor.virtualFile
         val isTestFile = file.path.contains("testsrc", true)
         val enabledForGroovyTestOrAllGroovyFiles = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
-        return (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
+        return PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
             && file.fileType is GroovyFileType
             && settings.groovySettings.enableActionsToolbar
-            && enabledForGroovyTestOrAllGroovyFiles)
+            && enabledForGroovyTestOrAllGroovyFiles
     }
 }
