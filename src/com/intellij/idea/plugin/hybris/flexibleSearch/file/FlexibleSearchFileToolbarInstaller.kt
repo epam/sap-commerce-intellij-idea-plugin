@@ -18,8 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
+import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.project.Project
 
 class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.fxs.console",
@@ -30,4 +34,6 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     companion object {
         val instance: FlexibleSearchFileToolbarInstaller = ApplicationManager.getApplication().getService(FlexibleSearchFileToolbarInstaller::class.java)
     }
+
+    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }

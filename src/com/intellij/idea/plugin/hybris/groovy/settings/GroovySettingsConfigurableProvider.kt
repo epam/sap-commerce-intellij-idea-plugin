@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.groovy.settings
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -64,19 +63,8 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                             FileEditorManager.getInstance(project).allEditors
                                 .filter { it.file.fileType is GroovyFileType }
                                 .forEach {
-                                    val editorEx = EditorUtil.getEditorEx(it)
-                                    if (isGroovyFileToolbarEnabled(it.file, state.enableActionsToolbar, state.enableActionsToolbarForGroovyTest)) {
-                                        editorEx
-                                            ?.takeIf { it.permanentHeaderComponent == null }
-                                            ?.let { GroovyFileToolbarInstaller.instance?.install(project, it) }
-                                    } else {
-                                        editorEx
-                                            ?.takeIf { it.permanentHeaderComponent != null }
-                                            ?.let {
-                                                it.permanentHeaderComponent = null
-                                                it.headerComponent = null
-                                            }
-                                    }
+                                    val editorEx = EditorUtil.getEditorEx(it) ?: return@forEach
+                                    GroovyFileToolbarInstaller.instance?.toggleToolbar(project, editorEx)
                                 }
                         }
                 }
@@ -84,17 +72,5 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
             }
         }
 
-        private fun isGroovyFileToolbarEnabled(
-            file: VirtualFile,
-            enableActionsToolbar: Boolean,
-            enableActionsToolbarForGroovyTest: Boolean
-        ): Boolean {
-            val isTestFile = file.path.contains("testsrc", true)
-            val enabledForGroovyTestOrAllGroovyFiles = enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
-            return (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
-                && file.fileType is GroovyFileType
-                && enableActionsToolbar
-                && enabledForGroovyTestOrAllGroovyFiles)
-        }
     }
 }

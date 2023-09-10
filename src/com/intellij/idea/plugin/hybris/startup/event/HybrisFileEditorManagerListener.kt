@@ -24,8 +24,6 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -42,33 +40,17 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
         val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return
 
-        val settings = projectSettings.state
-
-        val toolbarInstaller = when {
-            file.fileType is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
-            file.fileType is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
-            file.fileType is ImpexFileType -> ImpExFileToolbarInstaller.instance
-            isGroovyFileToolbarEnabled(file, settings) -> GroovyFileToolbarInstaller.instance
+        val toolbarInstaller = when (file.fileType) {
+            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
+            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
+            is ImpexFileType -> ImpExFileToolbarInstaller.instance
+            is GroovyFileType -> GroovyFileToolbarInstaller.instance
             else -> null
-
         } ?: return
 
         FileEditorManager.getInstance(project).getAllEditors(file)
             .firstNotNullOfOrNull { EditorUtil.getEditorEx(it) }
             ?.takeIf { it.permanentHeaderComponent == null }
-            ?.let { toolbarInstaller.install(project, it) }
+            ?.let { toolbarInstaller.toggleToolbar(project, it) }
     }
-
-    private fun isGroovyFileToolbarEnabled(
-        file: VirtualFile,
-        settings: HybrisProjectSettings
-    ): Boolean {
-        val isTestFile = file.path.contains("testsrc", true)
-        val enabledForGroovyTestOrAllGroovyFiles = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
-        return (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
-            && file.fileType is GroovyFileType
-            && settings.groovySettings.enableActionsToolbar
-            && enabledForGroovyTestOrAllGroovyFiles)
-    }
-
 }

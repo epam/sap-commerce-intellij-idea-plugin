@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.project.Project
 
 class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.pgq.console",
@@ -30,4 +32,6 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     companion object {
         val instance: PolyglotQueryFileToolbarInstaller = ApplicationManager.getApplication().getService(PolyglotQueryFileToolbarInstaller::class.java)
     }
+
+    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }

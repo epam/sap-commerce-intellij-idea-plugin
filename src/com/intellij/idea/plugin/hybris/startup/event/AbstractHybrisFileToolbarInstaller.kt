@@ -52,4 +52,28 @@ abstract class AbstractHybrisFileToolbarInstaller(private val toolbarId: String,
             null as Boolean?
         )
     }
+
+    fun toggleToolbar(project: Project, editor: EditorEx) {
+        if (isToolbarEnabled(project, editor)) {
+            enableToolbar(project, editor)
+        } else {
+            hideToolbar(editor)
+        }
+    }
+
+    private fun enableToolbar(project: Project, editor: EditorEx) {
+        if (editor.permanentHeaderComponent == null) {
+            install(project, editor)
+        } else {
+            editor.permanentHeaderComponent?.isVisible = true
+            editor.headerComponent?.isVisible = true
+        }
+    }
+
+    private fun hideToolbar(editor: EditorEx) {
+        editor.permanentHeaderComponent?.isVisible = false
+        editor.headerComponent?.isVisible = false
+    }
+
+    abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
 }
