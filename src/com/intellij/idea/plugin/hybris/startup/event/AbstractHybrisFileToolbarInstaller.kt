@@ -34,7 +34,7 @@ abstract class AbstractHybrisFileToolbarInstaller(
     private val toolbarId: String,
     private val leftGroupId: String,
     private val rightGroupId: String,
-    private val type: FileType
+    internal val fileType: FileType
 ) {
 
     abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
@@ -64,7 +64,7 @@ abstract class AbstractHybrisFileToolbarInstaller(
 
     fun toggleToolbarForAllEditors(project: Project) {
         FileEditorManager.getInstance(project).allEditors
-            .filter { type == it.file.fileType }
+            .filter { fileType == it.file.fileType }
             .mapNotNull { EditorUtil.getEditorEx(it) }
             .forEach {
                 toggleToolbar(project, it)
