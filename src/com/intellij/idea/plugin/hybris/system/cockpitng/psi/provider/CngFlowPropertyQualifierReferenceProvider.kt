@@ -17,10 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.psi.reference.JavaClassReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 
@@ -28,10 +32,16 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
-        ?.takeUnless { it.contains(".") }
-        ?.let { arrayOf(CngFlowTSItemAttributeReference(element)) }
-        ?: emptyArray()
+    ): Array<PsiReference> {
+        val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+            ?: return emptyArray()
+
+        return if (type.contains(".")
+            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
+            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
+        ) arrayOf(JavaClassReference(element, type))
+        else arrayOf(CngFlowTSItemAttributeReference(element))
+    }
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyQualifierReferenceProvider::class.java)

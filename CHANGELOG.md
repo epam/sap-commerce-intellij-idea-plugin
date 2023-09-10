@@ -54,6 +54,7 @@
 - Added table-like folding for `type-node` [#702](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/702)
 - Added table-like folding for `list`:`column`, `parameter`, `search`:`field` [#703](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/703)
 - Adjusted reference resolution for wizards using POJO [#706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/706)
+- Enabled field level reference resolution for wizards using POJO [#707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/707)
 
 ### Fixes
 - Disable reference and code completion for `order` property of the Spring Interceptor bean declaration [#697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/697)

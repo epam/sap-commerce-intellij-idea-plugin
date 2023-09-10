@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
@@ -30,7 +31,7 @@ class CngFlowTypeReferenceProvider : PsiReferenceProvider() {
         element: PsiElement, context: ProcessingContext
     ) = (element as? XmlAttributeValue)
         // type may point to Java class
-        ?.takeUnless { it.value.contains(".") }
+        ?.takeUnless { it.value.contains(".") && it.value != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE }
         ?.let { arrayOf(CngFlowTSItemReference(element)) }
         ?: emptyArray()
 
