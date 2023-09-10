@@ -18,13 +18,12 @@
 package com.intellij.idea.plugin.hybris.groovy.file
 
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.plugins.groovy.GroovyFileType
 
 class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
@@ -47,4 +46,6 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
             && settings.groovySettings.enableActionsToolbar
             && enabledForGroovyTestOrAllGroovyFiles)
     }
+
+    override fun isSupportedFileType(fileType: FileType) = fileType is GroovyFileType
 }

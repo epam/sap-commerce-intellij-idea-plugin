@@ -18,11 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
-import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 
 class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
@@ -36,4 +35,5 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
+    override fun isSupportedFileType(fileType: FileType) = fileType is FlexibleSearchFileType
 }

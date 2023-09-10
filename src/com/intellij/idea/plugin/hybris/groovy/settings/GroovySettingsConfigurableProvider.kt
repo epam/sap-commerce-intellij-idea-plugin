@@ -52,6 +52,7 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                     enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
                         .bindSelected(state::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
+                        .onApply { GroovyFileToolbarInstaller.instance?.toggleToolbarForAllEditors(project) }
                         .component
                 }
                 row {
@@ -59,18 +60,9 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
                         .enabledIf(enableActionToolbar.selected)
-                        .onApply {
-                            FileEditorManager.getInstance(project).allEditors
-                                .filter { it.file.fileType is GroovyFileType }
-                                .forEach {
-                                    val editorEx = EditorUtil.getEditorEx(it) ?: return@forEach
-                                    GroovyFileToolbarInstaller.instance?.toggleToolbar(project, editorEx)
-                                }
-                        }
+                        .onApply { GroovyFileToolbarInstaller.instance?.toggleToolbarForAllEditors(project) }
                 }
-
             }
         }
-
     }
 }
