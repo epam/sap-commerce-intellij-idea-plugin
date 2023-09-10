@@ -36,6 +36,7 @@
 
 ### `Groovy Script` enhancements
 - Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
+- Dynamically show/hide the actions toolbar for the opened `.groovy` files in case of settings change [#705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/705)
 
 ### `items.xml` enhancements
 - Improved folding for `persistence`:`columntype` tags [#662](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/662)

@@ -19,13 +19,20 @@
 package com.intellij.idea.plugin.hybris.groovy.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.openapi.editor.ex.util.EditorUtil
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
+import org.jetbrains.plugins.groovy.GroovyFileType
 import javax.swing.JCheckBox
 
 class GroovySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
@@ -53,9 +60,41 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
                         .enabledIf(enableActionToolbar.selected)
+                        .onApply {
+                            FileEditorManager.getInstance(project).allEditors
+                                .filter { it.file.fileType is GroovyFileType }
+                                .forEach {
+                                    val editorEx = EditorUtil.getEditorEx(it)
+                                    if (isGroovyFileToolbarEnabled(it.file, state.enableActionsToolbar, state.enableActionsToolbarForGroovyTest)) {
+                                        editorEx
+                                            ?.takeIf { it.permanentHeaderComponent == null }
+                                            ?.let { GroovyFileToolbarInstaller.instance?.install(project, it) }
+                                    } else {
+                                        editorEx
+                                            ?.takeIf { it.permanentHeaderComponent != null }
+                                            ?.let {
+                                                it.permanentHeaderComponent = null
+                                                it.headerComponent = null
+                                            }
+                                    }
+                                }
+                        }
                 }
 
             }
+        }
+
+        private fun isGroovyFileToolbarEnabled(
+            file: VirtualFile,
+            enableActionsToolbar: Boolean,
+            enableActionsToolbarForGroovyTest: Boolean
+        ): Boolean {
+            val isTestFile = file.path.contains("testsrc", true)
+            val enabledForGroovyTestOrAllGroovyFiles = enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
+            return (PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
+                && file.fileType is GroovyFileType
+                && enableActionsToolbar
+                && enabledForGroovyTestOrAllGroovyFiles)
         }
     }
 }
