@@ -35,7 +35,9 @@ class JavaClassReference(element: PsiElement, private val className: String) : P
         return JavaPsiFacade.getInstance(project)
             .findClass(className, GlobalSearchScope.allScope(project))
             ?.let { psiClass ->
-                return psiClass.findFieldByName(value, false)
+                val field = psiClass.findFieldByName(value, false)
+                return@let if (psiClass.isRecord) field
+                else field
                     ?.takeIf { hasGetter(psiClass, it) && hasSetter(psiClass, it) }
             }
     }
