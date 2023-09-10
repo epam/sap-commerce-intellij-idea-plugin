@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.ProcessingContext
 
-class CngFlowItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
+class CngFlowTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         result.addElement(
@@ -41,6 +41,6 @@ class CngFlowItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
 
     companion object {
         val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(CngFlowItemTypeCodeCompletionProvider::class.java)
+            ApplicationManager.getApplication().getService(CngFlowTypeCodeCompletionProvider::class.java)
     }
 }

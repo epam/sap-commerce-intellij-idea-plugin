@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
+package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemReference
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReferenceProvider
-import com.intellij.util.ProcessingContext
 
-class CngFlowTSItemReferenceProvider : PsiReferenceProvider() {
+class CngFlowPropertyQualifierCompletionProvider : AttributeDeclarationCompletionProvider() {
 
-    override fun getReferencesByElement(
-        element: PsiElement, context: ProcessingContext
-    ) = arrayOf(CngFlowTSItemReference(element))
+    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowTSItemReferenceProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> =
+            ApplicationManager.getApplication().getService(CngFlowPropertyQualifierCompletionProvider::class.java)
     }
 }

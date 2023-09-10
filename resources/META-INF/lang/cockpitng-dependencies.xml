@@ -41,9 +41,9 @@
                              provider="com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngContextParentNonItemTypeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemTypeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngItemAttributeCodeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowItemAttributeCodeCompletionProvider"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngFlowPropertyQualifierCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngEditorDefinitionCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngActionDefinitionCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider.CngWidgetDefinitionCompletionProvider"/>

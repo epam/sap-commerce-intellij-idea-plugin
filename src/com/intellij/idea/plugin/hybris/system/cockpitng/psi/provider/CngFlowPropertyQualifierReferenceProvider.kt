@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider
+package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.util.ProcessingContext
 
-class CngFlowItemAttributeCodeCompletionProvider : AttributeDeclarationCompletionProvider() {
+class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+    override fun getReferencesByElement(
+        element: PsiElement, context: ProcessingContext
+    ) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+        ?.takeUnless { it.contains(".") }
+        ?.let { arrayOf(CngFlowTSItemAttributeReference(element)) }
+        ?: emptyArray()
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(CngFlowItemAttributeCodeCompletionProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyQualifierReferenceProvider::class.java)
     }
 }

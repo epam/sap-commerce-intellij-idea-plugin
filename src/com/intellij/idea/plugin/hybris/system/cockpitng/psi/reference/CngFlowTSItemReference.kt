@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,19 +26,13 @@ import com.intellij.psi.ResolveResult
 
 class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) {
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val lookingForName = value
-
-        if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(lookingForName, true)) {
-            return CngPsiHelper.resolveContextTag(element)
-                ?.getAttribute("type")
-                ?.valueElement
-                ?.navigationElement
-                ?.let { arrayOf(PsiElementResolveResult(it)) }
-                ?: emptyArray()
-        }
-
-        return super.multiResolve(incompleteCode)
-    }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> =
+        if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(value, true)) CngPsiHelper.resolveContextTag(element)
+            ?.getAttribute("type")
+            ?.valueElement
+            ?.navigationElement
+            ?.let { arrayOf(PsiElementResolveResult(it)) }
+            ?: emptyArray()
+        else super.multiResolve(incompleteCode)
 
 }
