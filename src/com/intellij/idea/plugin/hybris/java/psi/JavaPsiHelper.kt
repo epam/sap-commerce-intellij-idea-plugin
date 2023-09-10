@@ -16,33 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.psi.reference
+package com.intellij.idea.plugin.hybris.java.psi
 
-import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiModifier
 
-class JavaClassReference(element: PsiElement, private val className: String) : PsiReferenceBase<PsiElement>(element), HighlightedReference {
+object JavaPsiHelper {
 
-    override fun calculateDefaultRangeInElement(): TextRange =
-        if (element.textLength == 0) super.calculateDefaultRangeInElement()
-        else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
-
-    override fun resolve(): PsiElement? {
-        val project = element.project
-        return JavaPsiFacade.getInstance(project)
-            .findClass(className, GlobalSearchScope.allScope(project))
-            ?.let { psiClass ->
-                val field = psiClass.findFieldByName(value, false)
-                return@let if (psiClass.isRecord) field
-                else field
-                    ?.takeIf { hasGetter(psiClass, it) && hasSetter(psiClass, it) }
-            }
-    }
-
-    private fun hasGetter(psiClass: PsiClass, psiField: PsiField): Boolean {
+    fun hasGetter(psiClass: PsiClass, psiField: PsiField): Boolean {
         val name = getFieldName(psiField)
         val getterMethod = psiClass.findMethodsByName("get$name", false)
             .any { it.hasModifierProperty(PsiModifier.PUBLIC) && it.returnType == psiField.type }
@@ -53,7 +35,7 @@ class JavaClassReference(element: PsiElement, private val className: String) : P
             .any { it.hasModifierProperty(PsiModifier.PUBLIC) && it.returnType == psiField.type }
     }
 
-    private fun hasSetter(psiClass: PsiClass, psiField: PsiField): Boolean {
+    fun hasSetter(psiClass: PsiClass, psiField: PsiField): Boolean {
         val name = getFieldName(psiField)
         return psiClass.findMethodsByName("set$name", false)
             .any {

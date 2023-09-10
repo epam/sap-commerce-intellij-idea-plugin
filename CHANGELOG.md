@@ -57,6 +57,7 @@
 - Adjusted reference resolution for wizards using POJO [#706](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/706)
 - Enabled field level reference resolution for wizards using POJO [#707](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/707)
 - Enabled field level reference resolution for wizards using Java 14 Record [#708](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/708)
+- Added field level code contribution for wizards using POJO & Java 14 Record [#709](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/709)
 
 ### Fixes
 - Disable reference and code completion for `order` property of the Spring Interceptor bean declaration [#697](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/697)

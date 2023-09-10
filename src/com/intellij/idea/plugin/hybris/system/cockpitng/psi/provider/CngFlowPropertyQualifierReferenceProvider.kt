@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.psi.reference.JavaClassReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
