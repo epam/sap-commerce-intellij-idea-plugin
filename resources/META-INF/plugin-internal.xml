@@ -100,19 +100,11 @@
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator"/>
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
+
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.DefaultSolrHttpClient"/>
     </extensions>
-
-    <project-components>
-        <component>
-            <implementation-class>com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient</implementation-class>
-        </component>
-
-        <component>
-            <interface-class>com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient</interface-class>
-            <implementation-class>com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.DefaultSolrHttpClient</implementation-class>
-        </component>
-
-    </project-components>
 
     <actions>
         <group id="HybrisToolsActions"

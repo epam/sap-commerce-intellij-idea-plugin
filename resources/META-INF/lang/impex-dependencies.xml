@@ -128,13 +128,8 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group>
-            <action id="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"
-                    class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
-
+        <action id="hybris.impex.openFileInConsole"
+                class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
@@ -143,6 +138,11 @@
             <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
         </action>
 
+        <group id="hybris.impex.context.actions">
+            <reference id="hybris.impex.openFileInConsole"/>
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
+        </group>
         <group id="hybris.impex.table.actions">
             <reference id="hybris.impex.table.select"/>
             <separator/>

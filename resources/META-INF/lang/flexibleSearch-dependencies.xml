@@ -75,19 +75,20 @@
     </projectListeners>
 
     <actions>
-        <group>
-            <action id="hybris.fxs.CopyFlexibleSearchFileAction"
-                    class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchCopyFileAction"/>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
 
+        <action id="hybris.fxs.openFileInConsole"
+                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchCopyFileAction"/>
         <action id="FlexibleSearch.NewFlexibleSearchFile"
                 class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
                 text="FlexibleSearch File" description="Create new FlexibleSearch file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
+        <group id="hybris.fxs.context.actions">
+            <reference id="hybris.fxs.openFileInConsole"/>
+            <separator/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
+        </group>
         <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchActionsGroup">
             <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteQueryAction"/>
 

@@ -88,7 +88,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                     ?.value
                     ?.trimmedText
                     ?.let { " = $it"}
-                    ?: "?"
+                    ?: " ?"
 
                 name + value
             }
