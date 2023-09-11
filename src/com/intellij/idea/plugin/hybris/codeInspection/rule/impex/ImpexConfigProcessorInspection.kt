@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,16 +20,19 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.impex
 
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
+import com.intellij.idea.plugin.hybris.impex.psi.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
@@ -64,8 +67,34 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
             problemsHolder.registerProblem(
                 macroValue,
                 HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexConfigProcessorInspection.key", HybrisConstants.IMPEX_CONFIG_PREFIX),
-                ProblemHighlightType.ERROR)
+                ProblemHighlightType.ERROR,
+                LocalFix(macroValue)
+            )
         }
     }
+
+    private class LocalFix(el: PsiElement) : LocalQuickFixOnPsiElement(el) {
+
+        override fun getFamilyName() = "[y] ImpEx configuration"
+        override fun getText() = "Inject Config import processor"
+
+        override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+            val config = ImpExElementFactory.createFile(
+                project, """
+                UPDATE GenericItem[processor = ${HybrisConstants.CLASS_CONFIG_IMPORT_PROCESSOR}]; pk[unique = true]
+
+
+            """.trimIndent()
+            )
+
+            val firstChild = file.firstChild
+            val insertBefore = if (firstChild !is PsiComment && firstChild !is LeafPsiElement) firstChild
+            else PsiTreeUtil.skipSiblingsForward(firstChild, PsiComment::class.java, LeafPsiElement::class.java)
+
+            insertBefore
+                ?.let { it.addBefore(config, it) }
+        }
+    }
+
 }
 
