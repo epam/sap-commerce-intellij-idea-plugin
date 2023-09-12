@@ -83,6 +83,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
 
     override fun icon(): Icon = JetgroovyIcons.Groovy.Groovy_16x16
 
+    fun updateCommitMode(commitMode: Boolean) {
+        commitCheckbox.isSelected = commitMode
+    }
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3858827004057439840L

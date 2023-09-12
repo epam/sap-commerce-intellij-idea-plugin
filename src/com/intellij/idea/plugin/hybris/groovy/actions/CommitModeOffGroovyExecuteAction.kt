@@ -18,22 +18,12 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import org.jetbrains.plugins.groovy.GroovyFileType
 
-class GroovyExecuteAction : AbstractExecuteAction(
-    GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_GROOVY
+class CommitModeOffGroovyExecuteAction : AbstractGroovyExecuteAction(
+    "Execute: Commit Mode OFF",
+    "Execute Groovy Script on a remote SAP Commerce instance",
+    HybrisIcons.CONSOLE_EXECUTE
 ) {
-
-    init {
-        with(templatePresentation) {
-            text = "Execute Groovy Script"
-            description = "Execute Groovy Script on a remote SAP Commerce instance"
-            icon = HybrisIcons.CONSOLE_EXECUTE
-        }
-    }
-
+    override fun commitMode() = false
 }
