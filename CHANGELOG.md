@@ -25,6 +25,7 @@
 - Added support of the multi-line ` \ ` separator for **macro values** [#678](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/678)
 - Added support of the multi-line ` \ ` separator for **header parameters** [#679](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/679)
 - Added support of the multi-line ` \ ` separator for **value groups** [#680](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/680)
+- Allow multi-line ` \ ` separator for **value groups** as a last character [#714](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/714)
 - Adjusted Table selection logic [#689](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/689)
 - Improved Column highlighting logic [#690](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/690)
 - Added folding for `zip:` file load translator prefix [#692](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/692)

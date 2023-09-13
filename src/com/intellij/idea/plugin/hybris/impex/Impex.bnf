@@ -217,7 +217,7 @@ value_line ::= (sub_type_name value_group*) | (value_group+) {
     methods=[getHeaderLine getValueGroup addValueGroups]
 }
 
-value_group ::= FIELD_VALUE_SEPARATOR value?
+value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 {
     pin=1
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
