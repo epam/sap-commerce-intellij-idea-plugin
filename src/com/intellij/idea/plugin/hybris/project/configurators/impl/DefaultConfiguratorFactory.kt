@@ -18,6 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
@@ -57,7 +58,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance
 
-    private fun shouldBeTreatedAsReadOnly(moduleDescriptor: ModuleDescriptor) = if (moduleDescriptor.descriptorType === ModuleDescriptorType.CUSTOM) {
-        false
-    } else moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
+    private fun shouldBeTreatedAsReadOnly(moduleDescriptor: ModuleDescriptor) = if (moduleDescriptor.descriptorType === ModuleDescriptorType.CUSTOM
+        || HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES == moduleDescriptor.name) false
+    else moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
 }

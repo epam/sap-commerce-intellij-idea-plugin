@@ -99,6 +99,7 @@ object HybrisConstants {
     const val EXTENSION_NAME_HMC = "hmc"
     const val EXTENSION_NAME_HAC = "hac"
     const val EXTENSION_NAME_PLATFORM = "platform"
+    const val EXTENSION_NAME_PLATFORM_SERVICES = "platformservices"
     const val EXTENSION_NAME_ADDONSUPPORT = "addonsupport"
     const val EXTENSION_NAME_KOTLIN_NATURE = "kotlinnature"
 
