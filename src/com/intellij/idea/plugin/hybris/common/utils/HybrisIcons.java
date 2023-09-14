@@ -188,7 +188,7 @@ public final class HybrisIcons {
     public static final Icon CONSOLE_SOLR = getIcon("/icons/console/solr.svg");
     public static final Icon CONSOLE_OPEN = getIcon("/icons/console/open.svg");
     public static final Icon CONSOLE_EXECUTE = AllIcons.Actions.Execute;
-    public static final Icon CONSOLE_EXECUTE_COMMIT_MODE_ON = getIcon("/icons/console/execute_with_commit_mode_on.svg");
+    public static final Icon CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg");
 
     public static final Icon TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg");
     public static final Icon TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg");

@@ -25,11 +25,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyCon
 import org.jetbrains.plugins.groovy.GroovyFileType
 import javax.swing.Icon
 
-abstract class AbstractGroovyExecuteAction(controlText: String, controlDescription: String, controlIcon: Icon?) : AbstractExecuteAction(
+abstract class AbstractGroovyExecuteAction(controlText: String, controlDescription: String, controlIcon: Icon, val commitMode: Boolean) : AbstractExecuteAction(
     GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_GROOVY
 ) {
-
     init {
         with(templatePresentation) {
             text = controlText
@@ -39,13 +38,11 @@ abstract class AbstractGroovyExecuteAction(controlText: String, controlDescripti
     }
 
     override fun doExecute(consoleService: HybrisConsoleService) {
-        val hybrisConsole = consoleService.getActiveConsole() ?: return
-        if (hybrisConsole is HybrisGroovyConsole) {
-            hybrisConsole.updateCommitMode(commitMode())
-        }
-        super.doExecute(consoleService)
+        consoleService.getActiveConsole()
+            ?.let { it as? HybrisGroovyConsole }
+            ?.also {
+                it.updateCommitMode(commitMode)
+                super.doExecute(consoleService)
+            }
     }
-
-    abstract fun commitMode(): Boolean
-
 }

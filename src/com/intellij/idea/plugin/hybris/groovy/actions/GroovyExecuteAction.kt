@@ -20,10 +20,15 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 
-class CommitModeOffGroovyExecuteAction : AbstractGroovyExecuteAction(
-    "Execute: Commit Mode OFF",
+class GroovyExecuteInCommitModeOnAction : AbstractGroovyExecuteAction(
+    "Execute<br/> Commit Mode <strong><font color='#57965C'>ON</font></strong>",
     "Execute Groovy Script on a remote SAP Commerce instance",
-    HybrisIcons.CONSOLE_EXECUTE
-) {
-    override fun commitMode() = false
-}
+    HybrisIcons.CONSOLE_EXECUTE,
+    true
+)
+class GroovyExecuteInCommitModeOffAction : AbstractGroovyExecuteAction(
+    "Execute<br/> Commit Mode <strong><font color='#C75450'>OFF</font></strong>",
+    "Execute Groovy Script on a remote SAP Commerce instance",
+    HybrisIcons.CONSOLE_EXECUTE_COMMIT_MODE_OFF,
+    false
+)

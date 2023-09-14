@@ -32,14 +32,14 @@
     </extensions>
 
     <actions>
-        <action id="hybris.groovy.execute.commit.mode.off" class="com.intellij.idea.plugin.hybris.groovy.actions.CommitModeOffGroovyExecuteAction"/>
-        <action id="hybris.groovy.execute.commit.mode.on" class="com.intellij.idea.plugin.hybris.groovy.actions.CommitModeOnGroovyExecuteAction"/>
+        <action id="hybris.groovy.execute.commit.mode.on" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOnAction"/>
+        <action id="hybris.groovy.execute.commit.mode.off" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOffAction"/>
         <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
         <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
 
         <group id="hybris.groovy.toolbar.left">
-            <reference id="hybris.groovy.execute.commit.mode.off"/>
             <reference id="hybris.groovy.execute.commit.mode.on"/>
+            <reference id="hybris.groovy.execute.commit.mode.off"/>
             <reference id="hybris.groovy.openQuery"/>
             <separator/>
             <reference id="hybris.groovy.openSettings"/>
