@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.RegionEntity
@@ -30,23 +31,19 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.liste
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.util.IconLoader
-import com.intellij.util.ReflectionUtil
 import com.intellij.util.ui.JBUI
 import java.awt.Dimension
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import javax.swing.DefaultComboBoxModel
-import javax.swing.Icon
 import javax.swing.JButton
 import javax.swing.JPanel
-import javax.swing.border.EmptyBorder
 
 class HybrisConsoleQueryPanel(private val project: Project, private val console: HybrisConsole, region: String) : JPanel() {
 
-    private val saveButton = JButton(getIcon("/icons/menu-saveall.svg"))
-    private val loadButton = JButton(getIcon("/icons/upload.svg"))
-    private val removeButton = JButton(getIcon("/icons/delete.svg"))
+    private val saveButton = JButton(HybrisIcons.SAVE_ALL)
+    private val loadButton = JButton(HybrisIcons.UPLOAD)
+    private val removeButton = JButton(HybrisIcons.CANCEL)
 
     private val regionEntityService = RegionEntityService.getInstance(project)
     private val regionService = RegionService.getInstance(project)
@@ -189,10 +186,4 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
             addRegionEntitiesToComboBox()
         }
     }
-
-    fun getIcon(path: String?): Icon {
-        val callerClass = ReflectionUtil.getGrandCallerClass() ?: error(path!!)
-        return IconLoader.getIcon(path!!, callerClass)
-    }
-
 }

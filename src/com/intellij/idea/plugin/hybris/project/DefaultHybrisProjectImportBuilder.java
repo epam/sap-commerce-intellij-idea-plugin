@@ -227,7 +227,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public Icon getIcon() {
-        return HybrisIcons.Y_LOGO_BLUE;
+        return HybrisIcons.INSTANCE.getY_LOGO_BLUE();
     }
 
     @Override

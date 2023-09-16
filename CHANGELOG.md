@@ -1,5 +1,10 @@
 ## [2023.2.8]
 
+### `Project Import` enhancements
+- Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
+
+## [2023.2.8]
+
 ### Features
 - Introduced pre-built `log4j2` and `slf4j` live templates for Java [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
 - Introduced pre-built `log4j2` and `slf4j` live templates for Kotlin [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)

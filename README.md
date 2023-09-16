@@ -36,8 +36,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 - Enhanced project view tree.
 - Execution of FlexibleSearch queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.
 - Execution of queries on remote Solr instances.
-- Override module grouping via `hybris4intellij.properties`
-- And much more, complete change log can be found [here](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md).
+- Override module grouping via `hybris4intellij.properties`.
 
 ## Contribution guidelines ##
 

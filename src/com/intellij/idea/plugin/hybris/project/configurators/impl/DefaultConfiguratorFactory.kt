@@ -18,10 +18,8 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 
 class DefaultConfiguratorFactory : ConfiguratorFactory {
 
@@ -37,7 +35,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
         ?: SpringConfigurator.dummyInstance
 
     override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator =
-        if (shouldBeTreatedAsReadOnly(moduleDescriptor)) ContentRootConfigurator.readOnlyInstance
+        if (shouldBeTreatedAsReadOnly()) ContentRootConfigurator.readOnlyInstance
         else ContentRootConfigurator.instance
 
     override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.instance
@@ -58,7 +56,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance
 
-    private fun shouldBeTreatedAsReadOnly(moduleDescriptor: ModuleDescriptor) = if (moduleDescriptor.descriptorType === ModuleDescriptorType.CUSTOM
-        || HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES == moduleDescriptor.name) false
-    else moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
+    // always register sources directories, even in readonly mode
+    // in case of readonly mode HybrisWritingAccessProvider will ensure that files are not modifiable based on corresponding module flag
+    private fun shouldBeTreatedAsReadOnly() = false
 }

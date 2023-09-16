@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -91,7 +91,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
             configureSubModule(ySubModuleDescriptor, contentEntry, dirsToIgnore, appSettings);
         }
 
-        configurePlatformRoots(moduleDescriptor, contentEntry);
+        configurePlatformRoots(moduleDescriptor, contentEntry, dirsToIgnore, appSettings);
     }
 
     protected void configureSubModule(
@@ -234,8 +234,9 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
     protected void configurePlatformRoots(
         @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
-    ) {
+        @NotNull final ContentEntry contentEntry,
+        final List<File> dirsToIgnore,
+        final HybrisApplicationSettings appSettings) {
         if (!HybrisConstants.EXTENSION_NAME_PLATFORM.equalsIgnoreCase(moduleDescriptor.getName())) {
             return;
         }
@@ -250,6 +251,14 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
                 JavaResourceRootType.RESOURCE
             );
         }
+        // Only when bootstrap gensrc registered as source folder we can properly build the Class Hierarchy
+        addSourceFolderIfNotIgnored(
+            contentEntry,
+            new File(platformBootstrapDirectory, GEN_SRC_DIRECTORY),
+            JavaSourceRootType.SOURCE,
+            JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
+            dirsToIgnore, appSettings
+        );
 
         excludeDirectory(contentEntry, new File(platformBootstrapDirectory, PLATFORM_MODEL_CLASSES_DIRECTORY));
 
