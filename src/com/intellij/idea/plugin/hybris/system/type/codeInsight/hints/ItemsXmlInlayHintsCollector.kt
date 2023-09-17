@@ -96,7 +96,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 ?.code
                 ?.xmlAttributeValue
                 ?.let { it as? Navigatable }
-                ?.let { inlayPresentation(HybrisIcons.TS_RELATION, arrayOf(it)) }
+                ?.let { inlayPresentation(HybrisIcons.TS_RELATION, arrayOf(it), "Navigate to Relation declaration") }
                 ?: findItemClass(project, name)
                     .takeIf { it.isNotEmpty() }
                     ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
@@ -117,10 +117,10 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         return null
     }
 
-    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>): InlayPresentation {
+    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>, tooltip: String = "Navigate to the Generated File"): InlayPresentation {
         val icon = factory.icon(i)
         val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Navigate to the Generated File", inset)
+        val tooltip = factory.withTooltip(tooltip, inset)
 
         return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(*navigatables) }
     }
