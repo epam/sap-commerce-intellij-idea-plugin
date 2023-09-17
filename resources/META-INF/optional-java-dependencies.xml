@@ -37,8 +37,6 @@
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>
 

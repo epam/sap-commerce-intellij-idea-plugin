@@ -34,10 +34,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.instance
         ?: SpringConfigurator.dummyInstance
 
-    override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator =
-        if (shouldBeTreatedAsReadOnly()) ContentRootConfigurator.readOnlyInstance
-        else ContentRootConfigurator.instance
-
+    override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator = ContentRootConfigurator.instance
     override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.instance
     override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.instance
     override fun getLibRootsConfigurator(): LibRootsConfigurator = LibRootsConfigurator.instance
@@ -55,8 +52,4 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.instance
     override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance
-
-    // always register sources directories, even in readonly mode
-    // in case of readonly mode HybrisWritingAccessProvider will ensure that files are not modifiable based on corresponding module flag
-    private fun shouldBeTreatedAsReadOnly() = false
 }

@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.configurators.impl.ReadOnlyContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
@@ -37,6 +36,5 @@ interface ContentRootConfigurator {
 
     companion object {
         val instance: ContentRootConfigurator = ApplicationManager.getApplication().getService(RegularContentRootConfigurator::class.java)
-        val readOnlyInstance: ContentRootConfigurator = ApplicationManager.getApplication().getService(ReadOnlyContentRootConfigurator::class.java)
     }
 }
