@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
+import com.intellij.database.util.common.removeIf
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
@@ -71,11 +72,20 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
                     ?.let { orderingAttribute ->
                         val type = orderingAttribute.owner.type
                         getMetaItem(type)
-                            ?.let { metaItem -> metaItem as? TSGlobalMetaItemImpl}
+                            ?.let { metaItem -> metaItem as? TSGlobalMetaItemImpl }
                             ?.let { metaItem ->
                                 metaItem.allOrderingAttributes[orderingAttribute.qualifier] = orderingAttribute
                             }
                     }
+            }
+
+        // it is possible to declare many-to-many Relation as Item to declare custom indexes
+        // in such a case we have to remove such Item types
+        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+            .removeIf {
+                getMetaRelation(it.key)
+                    ?.let { relation -> relation.deployment != null }
+                    ?: false
             }
     }
 
