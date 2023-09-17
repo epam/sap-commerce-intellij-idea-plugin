@@ -49,7 +49,7 @@
 
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.ItemsXmlReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.impl.HybrisToolWindowServiceImpl"/>

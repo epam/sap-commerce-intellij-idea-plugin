@@ -20,11 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provi
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
@@ -40,31 +36,7 @@ abstract class AttributeDeclarationCompletionProvider : CompletionProvider<Compl
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        val metaModelAccess = TSMetaModelAccess.getInstance(project)
-        val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
-            is TSGlobalMetaItem -> meta
-            is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
-                ?: return
-
-            else -> return
-        }
-        metaItem
-            .allAttributes
-            .values
-            .map { TSLookupElementFactory.build(it) }
-            .forEach { resultCaseInsensitive.addElement(it) }
-
-        metaItem
-            .allOrderingAttributes
-            .values
-            .map { TSLookupElementFactory.build(it) }
-            .forEach { resultCaseInsensitive.addElement(it) }
-
-        metaItem
-            .allRelationEnds
-            .filter { it.qualifier != null }
-            .mapNotNull { TSLookupElementFactory.build(it) }
-            .forEach { resultCaseInsensitive.addElement(it) }
+        resultCaseInsensitive.addAllElements(TSCompletionService.getInstance(project).getCompletions(type))
     }
 
     protected abstract fun resolveType(element: PsiElement): String?
