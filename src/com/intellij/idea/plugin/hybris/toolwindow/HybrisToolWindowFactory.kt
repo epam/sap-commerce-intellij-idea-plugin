@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -36,21 +35,11 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
     ) {
-        try {
-            toolWindow.contentManager.addContent(createTSContent(toolWindow, TSView(project)))
-        } catch (e: Exception) {
-            LOG.error(e)
-        }
-        try {
-            toolWindow.contentManager.addContent(createBSContent(toolWindow, BSView(project)))
-        } catch (e: Exception) {
-            LOG.error(e)
-        }
-        try {
-            toolWindow.contentManager.addContent(createConsolesContent(toolWindow, project, HybrisConsolesView(project)))
-        } catch (e: Exception) {
-            LOG.error(e)
-        }
+        arrayOf(
+            createTSContent(toolWindow, TSView(project)),
+            createBSContent(toolWindow, BSView(project)),
+            createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
+        ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
     override fun isApplicable(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
@@ -87,6 +76,5 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
-        private val LOG = Logger.getInstance(HybrisToolWindowFactory::class.java)
     }
 }
