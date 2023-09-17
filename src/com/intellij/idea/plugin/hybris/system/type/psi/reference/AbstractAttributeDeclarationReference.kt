@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.util.Key
@@ -59,6 +60,8 @@ abstract class AbstractAttributeDeclarationReference(element: PsiElement) : TSRe
 
             val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
                 is TSGlobalMetaItem -> meta
+                is TSGlobalMetaRelation -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
+                    ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
                 is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
                     ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
 

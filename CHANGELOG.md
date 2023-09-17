@@ -1,8 +1,9 @@
 ## [2023.2.9]
 
 ### `items.xml` enhancements
-- Resolve many-to-many Relation in item declaration [#720](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/720)
-- Skip many-to-many Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
+- Resolve `many-to-many` Relation in item declaration [#720](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/720)
+- Skip `many-to-many` Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
+- Resolve Index attributes for `many-to-many` Relation declared as Item type [#722](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/722)
 
 ### `Project Import` enhancements
 - Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
@@ -10,8 +11,8 @@
 ## [2023.2.8]
 
 ### Features
-- Introduced pre-built `log4j2` and `slf4j` live templates for Java [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
-- Introduced pre-built `log4j2` and `slf4j` live templates for Kotlin [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)
+- Introduced pre-built `log4j2` and `slf4j` live templates for **Java** [#699](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/699)
+- Introduced pre-built `log4j2` and `slf4j` live templates for **Kotlin** [#700](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/700)
 
 ### `Project Import` enhancements
 - Register `platformservices` source directories to improve compilation due missing `bin/<>.jar` [#715](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/715)
