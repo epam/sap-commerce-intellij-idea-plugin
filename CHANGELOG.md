@@ -1,7 +1,7 @@
 ## [2023.2.9]
 
 ### `items.xml` enhancements
-- Resolve many-to-many Relation in item declaration [#719](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/719)
+- Resolve many-to-many Relation in item declaration [#720](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/720)
 
 ### `Project Import` enhancements
 - Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
