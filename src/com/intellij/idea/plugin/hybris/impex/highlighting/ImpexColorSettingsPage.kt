@@ -75,8 +75,12 @@ vaue                               ; "Address Book"
 
 INSERT Address[impex.legacy.mode = true, batchmode = true]; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin
 
-UPDATE Address; firstname; owner(Principal.uid | AbstractOrder.code); &docId
-; Hans ; admin ; id
+UPDATE Address; firstname\
+              ; owner(Principal.uid | AbstractOrder.code)\
+              ; &docId
+              ; Hans \
+              ; admin \
+              ; id
 
 remove Address; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admin
 
@@ -115,8 +119,10 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Type//Header type", ImpexHighlighterColors.HEADER_TYPE),
         AttributesDescriptor("Type//Value sub-type", ImpexHighlighterColors.VALUE_SUBTYPE),
 
-        AttributesDescriptor("Separator//Field value", ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
-        AttributesDescriptor("Separator//List item", ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
+        AttributesDescriptor("Separators//Field value separator", ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
+        AttributesDescriptor("Separators//List item separator", ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
+        AttributesDescriptor("Separators//Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
+        AttributesDescriptor("Separators//Multi-line separator", ImpexHighlighterColors.MULTI_LINE_SEPARATOR),
 
         AttributesDescriptor("Value line//Even", ImpexHighlighterColors.VALUE_LINE_EVEN),
         AttributesDescriptor("Value line//Odd", ImpexHighlighterColors.VALUE_LINE_ODD),
@@ -148,12 +154,12 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Parameter//Parameter name", ImpexHighlighterColors.HEADER_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Unique parameter name", ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME),
         AttributesDescriptor("Parameter//Special parameter name", ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
-        AttributesDescriptor("Parameter//Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
         AttributesDescriptor("Parameter//Function call", ImpexHighlighterColors.FUNCTION_CALL),
 
-        AttributesDescriptor("Alternative map delimiter", ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER),
-        AttributesDescriptor("Default key-value delimiter", ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER),
-        AttributesDescriptor("Default path delimiter", ImpexHighlighterColors.DEFAULT_PATH_DELIMITER),
+        AttributesDescriptor("Delimiters//Alternative map delimiter", ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER),
+        AttributesDescriptor("Delimiters//Default key-value delimiter", ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER),
+        AttributesDescriptor("Delimiters//Default path delimiter", ImpexHighlighterColors.DEFAULT_PATH_DELIMITER),
+
         AttributesDescriptor("Comma", ImpexHighlighterColors.COMMA),
         AttributesDescriptor("Alternative pattern", ImpexHighlighterColors.ALTERNATIVE_PATTERN),
         AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),

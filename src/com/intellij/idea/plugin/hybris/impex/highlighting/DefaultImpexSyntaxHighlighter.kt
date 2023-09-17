@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         return when (tokenType) {
+            ImpexTypes.MULTILINE_SEPARATOR -> MULTI_LINE_SEPARATOR
             ImpexTypes.ALTERNATIVE_MAP_DELIMITER -> ALTERNATIVE_MAP_DELIMITER_KEYS
             ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER -> DEFAULT_KEY_VALUE_DELIMITER_KEYS
             ImpexTypes.ASSIGN_VALUE -> ASSIGN_VALUE_KEYS
@@ -131,6 +132,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val ATTRIBUTE_SEPARATOR_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ATTRIBUTE_SEPARATOR)
         val BOOLEAN_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BOOLEAN)
         val DIGIT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DIGIT)
+        val MULTI_LINE_SEPARATOR: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MULTI_LINE_SEPARATOR)
         val ALTERNATIVE_MAP_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER)
         val DEFAULT_KEY_VALUE_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER)
         val DEFAULT_PATH_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DEFAULT_PATH_DELIMITER)

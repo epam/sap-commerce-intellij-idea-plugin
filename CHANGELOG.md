@@ -1,5 +1,8 @@
 ## [2023.2.9]
 
+### `ImpEx` enhancements
+- Added custom color setting for multi-line ` \ ` separator [#727](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/727)
+
 ### `items.xml` enhancements
 - Resolve `many-to-many` Relation in item declaration [#720](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/720)
 - Skip `many-to-many` Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
