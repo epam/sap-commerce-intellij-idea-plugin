@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -109,6 +109,10 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val sourceDirAttached = vfsSourceFiles.isNotEmpty()
         vfsSourceFiles.forEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
+        javaLibraryDescriptor.sourceJarDirectories
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .forEach { libraryModifiableModel.addJarDirectory(it, true, OrderRootType.SOURCES) }
+
         if (sourceCodeRoot != null
             && !sourceDirAttached
             && javaLibraryDescriptor.libraryFile.name.endsWith(HybrisConstants.HYBRIS_PLATFORM_CODE_SERVER_JAR_SUFFIX)
@@ -199,7 +203,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         moduleDescriptor: ModuleDescriptor,
         progressIndicator: ProgressIndicator
     ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType) {
-        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().getState())
+        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().state)
     } else emptyList()
 
     private fun resolveStandardProvidedSources(

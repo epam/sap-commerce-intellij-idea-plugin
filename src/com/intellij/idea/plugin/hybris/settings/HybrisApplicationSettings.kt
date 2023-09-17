@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ data class HybrisApplicationSettings(
     var withMavenSources: Boolean = false,
     var withMavenJavadocs: Boolean = false,
     var ignoreNonExistingSourceDirectories: Boolean = false,
-    var withStandardProvidedSources: Boolean = false,
+    var withStandardProvidedSources: Boolean = true,
     var scanThroughExternalModule: Boolean = true,
     var excludeTestSources: Boolean = false,
     var importCustomAntBuildFiles: Boolean = false,

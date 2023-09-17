@@ -8,6 +8,7 @@
 
 ### `Project Import` enhancements
 - Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
+- Register jar sources in the `doc/sources` for module libraries [#724](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/724)
 
 ## [2023.2.8]
 

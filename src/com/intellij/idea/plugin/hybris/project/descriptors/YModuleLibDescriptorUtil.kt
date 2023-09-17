@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
@@ -186,12 +187,21 @@ object YModuleLibDescriptorUtil {
         val sourceFiles = sourceDirNames
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
+            .toMutableList()
+
+        // Attach standard sources to server jar
+        val sourceJarDirectories = if (HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+            val sourcesDirectory = File(descriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
+            if (sourcesDirectory.exists() && sourcesDirectory.isDirectory) arrayListOf(sourcesDirectory)
+            else emptyList()
+        } else emptyList()
 
         for (serverJar in serverJars) {
             libs.add(
                 JavaLibraryDescriptor(
                     libraryFile = serverJar,
                     sourceFiles = sourceFiles,
+                    sourceJarDirectories = sourceJarDirectories,
                     exported = true,
                     directoryWithClasses = true
                 )
