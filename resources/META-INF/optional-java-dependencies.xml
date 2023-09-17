@@ -35,7 +35,7 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.CompilerOutputPathsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultCompilerOutputPathsConfigurator"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.RegularContentRootConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultContentRootConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>

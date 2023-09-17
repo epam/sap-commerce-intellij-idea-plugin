@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 
-public class RegularContentRootConfigurator implements ContentRootConfigurator {
+public class DefaultContentRootConfigurator implements ContentRootConfigurator {
 
     // module name -> relative paths
     private static final Map<String, List<String>> ROOTS_TO_IGNORE = new HashMap<>();
@@ -109,7 +109,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final HybrisApplicationSettings appSettings
     ) {
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
-        if (moduleDescriptor instanceof YCustomRegularModuleDescriptor
+        if (isCustomModuleDescriptor(moduleDescriptor)
             || EXTENSION_NAME_PLATFORM_SERVICES.equals(moduleDescriptor.getName())
             || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
             addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
@@ -125,7 +125,7 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
 
         addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
 
-        if (!(moduleDescriptor instanceof YCustomRegularModuleDescriptor) && rootProjectDescriptor.isExcludeTestSources()) {
+        if (!isCustomModuleDescriptor(moduleDescriptor) && rootProjectDescriptor.isExcludeTestSources()) {
             excludeDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), TEST_SRC_DIR_NAMES);
         }
 
@@ -348,6 +348,11 @@ public class RegularContentRootConfigurator implements ContentRootConfigurator {
         ) {
             excludeDirectory(contentEntry, new File(rootDirectory, WEBROOT_WEBINF_CLASSES_PATH));
         }
+    }
+
+    private static boolean isCustomModuleDescriptor(final @NotNull ModuleDescriptor moduleDescriptor) {
+        return moduleDescriptor instanceof YCustomRegularModuleDescriptor
+            || (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor && ySubModuleDescriptor.getOwner() instanceof YCustomRegularModuleDescriptor);
     }
 
     private void addResourcesDirectory(final @NotNull ContentEntry contentEntry, final File platformBootstrapDirectory) {
