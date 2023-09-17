@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreeP
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -56,10 +57,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                 setContent(this)
             }
 
-            !TSMetaModelAccess.getInstance(myProject).isInitialized() -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                add(JBLabel(message("hybris.toolwindow.ts.suspended.text", message("hybris.toolwindow.ts.suspended.initializing.text"))))
-                setContent(this)
-            }
+            !TSMetaModelAccess.getInstance(myProject).isInitialized() -> setContentInitializing()
 
             else -> refreshContent(TSViewSettings.ChangeType.FULL)
         }
@@ -96,13 +94,26 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         }
     }
 
-    private fun refreshContent(changeType: TSViewSettings.ChangeType) = refreshContent(TSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+    private fun refreshContent(changeType: TSViewSettings.ChangeType) {
+        try {
+            refreshContent(TSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+        } catch (e: ProcessCanceledException) {
+            setContentInitializing()
+        }
+    }
 
     private fun refreshContent(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
         myTreePane.update(globalMetaModel, changeType)
 
         if (content != myTreePane) {
             setContent(myTreePane)
+        }
+    }
+
+    private fun setContentInitializing() {
+        with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+            add(JBLabel(message("hybris.toolwindow.ts.suspended.text", message("hybris.toolwindow.ts.suspended.initializing.text"))))
+            setContent(this)
         }
     }
 
