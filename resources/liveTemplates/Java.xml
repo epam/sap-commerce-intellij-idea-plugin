@@ -33,4 +33,15 @@
             <option name="JAVA_DECLARATION" value="true"/>
         </context>
     </template>
+    <template name="ysri"
+              value="@javax.annotation.Resource(name = &quot;$BEAN_NAME$&quot;)
+              private $CLASS_NAME$ $BEAN_PROP_NAME$;"
+              description="Inject a Spring dependency annotated via @Resource annotation" toReformat="true" toShortenFQNames="true">
+        <variable name="CLASS_NAME" alwaysStopAt="true"/>
+        <variable name="BEAN_PROP_NAME" expression="suggestVariableName()" alwaysStopAt="true"/>
+        <variable name="BEAN_NAME" expression="complete()" defaultValue="BEAN_PROP_NAME" alwaysStopAt="true"/>
+        <context>
+            <option name="JAVA_DECLARATION" value="true"/>
+        </context>
+    </template>
 </templateSet>

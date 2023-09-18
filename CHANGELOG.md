@@ -1,5 +1,8 @@
 ## [2023.2.9]
 
+### Features
+- Introduced pre-built `ysri` live template for **Java** [#730](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/730)
+
 ### `ImpEx` enhancements
 - Added custom color setting for multi-line ` \ ` separator [#727](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/727)
 
