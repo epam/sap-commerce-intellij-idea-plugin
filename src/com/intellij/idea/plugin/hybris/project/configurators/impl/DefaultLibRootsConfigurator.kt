@@ -28,6 +28,8 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorU
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -72,7 +74,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                 if (moduleDescriptor.hasBackofficeModule) {
                     val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
                     if (backofficeJarDirectory.exists()) {
-                        YModuleLibDescriptorUtil.createGlobalLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
+                        YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
                     }
                 }
                 if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
@@ -104,14 +106,8 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), OrderRootType.CLASSES)
 
-        val vfsSourceFiles = javaLibraryDescriptor.sourceFiles
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
-        val sourceDirAttached = vfsSourceFiles.isNotEmpty()
-        vfsSourceFiles.forEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
-
-        javaLibraryDescriptor.sourceJarDirectories
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
-            .forEach { libraryModifiableModel.addJarDirectory(it, true, OrderRootType.SOURCES) }
+        val sourceDirAttached = attachSourceFiles(javaLibraryDescriptor, libraryModifiableModel).isNotEmpty()
+        attachSourceJarDirectories(javaLibraryDescriptor, libraryModifiableModel)
 
         if (sourceCodeRoot != null
             && !sourceDirAttached
@@ -147,9 +143,8 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
             libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(it), OrderRootType.CLASSES)
         }
 
-        javaLibraryDescriptor.sourceFiles
-            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
-            .forEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
+        attachSourceFiles(javaLibraryDescriptor, libraryModifiableModel)
+        attachSourceJarDirectories(javaLibraryDescriptor, libraryModifiableModel)
 
         if (javaLibraryDescriptor.exported) {
             setLibraryEntryExported(modifiableRootModel, library)
@@ -158,10 +153,8 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
 
         val mavenSources = resolveMavenSources(modifiableRootModel, javaLibraryDescriptor, moduleDescriptor, progressIndicator)
-        val standardSources = resolveStandardProvidedSources(javaLibraryDescriptor, moduleDescriptor)
-        val resultLibs = mavenSources + standardSources
 
-        for (resultLib in resultLibs) {
+        for (resultLib in mavenSources) {
             libraryModifiableModel.addRoot("jar://$resultLib!/", OrderRootType.SOURCES)
         }
     }
@@ -182,18 +175,11 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         }
     }
 
-    private fun setLibraryEntryExported(
-        modifiableRootModel: ModifiableRootModel,
-        library: Library
-    ) {
+    private fun setLibraryEntryExported(modifiableRootModel: ModifiableRootModel, library: Library) {
         findOrderEntryForLibrary(modifiableRootModel, library).isExported = true
     }
 
-    private fun setLibraryEntryScope(
-        modifiableRootModel: ModifiableRootModel,
-        library: Library,
-        scope: DependencyScope
-    ) {
+    private fun setLibraryEntryScope(modifiableRootModel: ModifiableRootModel, library: Library, scope: DependencyScope) {
         findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
     }
 
@@ -202,23 +188,24 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         javaLibraryDescriptor: JavaLibraryDescriptor,
         moduleDescriptor: ModuleDescriptor,
         progressIndicator: ProgressIndicator
-    ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType) {
+    ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType && PluginCommon.isPluginActive(PluginCommon.MAVEN_PLUGIN_ID)) {
         MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().state)
     } else emptyList()
 
-    private fun resolveStandardProvidedSources(
+    private fun attachSourceFiles(
         javaLibraryDescriptor: JavaLibraryDescriptor,
-        moduleDescriptor: ModuleDescriptor
-    ): List<String> {
-        if (!HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) return emptyList()
-        if (LibraryDescriptorType.WEB_INF_LIB != javaLibraryDescriptor.descriptorType) return emptyList()
+        libraryModifiableModel: Library.ModifiableModel
+    ) = javaLibraryDescriptor.sourceFiles
+        .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+        .onEach { libraryModifiableModel.addRoot(it, OrderRootType.SOURCES) }
 
-        val sourcesDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
-        return sourcesDirectory
-            .list { _, name -> name.endsWith("-sources.jar") }
-            ?.map { File(sourcesDirectory, it) }
-            ?.map { it.absolutePath }
-            ?: emptyList()
+    private fun attachSourceJarDirectories(
+        javaLibraryDescriptor: JavaLibraryDescriptor,
+        libraryModifiableModel: Library.ModifiableModel
+    ) {
+        javaLibraryDescriptor.sourceJarDirectories
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .forEach { libraryModifiableModel.addJarDirectory(it, true, OrderRootType.SOURCES) }
     }
 
     // Workaround of using Library.equals in findLibraryOrderEntry, which doesn't work here, because all empty libs are equal. Use == instead.

@@ -46,23 +46,24 @@ object YModuleLibDescriptorUtil {
         else -> emptyList()
     }
 
-    fun createGlobalLibrary(
+    fun addRootProjectLibrary(
         modifiableModelsProvider: IdeModifiableModelsProvider,
         libraryDirRoot: File,
-        libraryName: String
+        libraryName: String,
+        addJarDirectory: Boolean = true
     ) {
         val libraryTableModifiableModel = modifiableModelsProvider.modifiableProjectLibrariesModel
         val library = libraryTableModifiableModel.getLibraryByName(libraryName)
             ?: libraryTableModifiableModel.createLibrary(libraryName)
 
         if (libraryTableModifiableModel is LibrariesModifiableModel) {
-            libraryTableModifiableModel
-                .getLibraryEditor(library)
-                .addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES)
+            val libraryEditor = libraryTableModifiableModel.getLibraryEditor(library)
+            if (addJarDirectory) libraryEditor.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true, OrderRootType.CLASSES)
+            else libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
         } else {
-            modifiableModelsProvider
-                .getModifiableLibraryModel(library)
-                .addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
+            val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
+            if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
+            else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
         }
     }
 
@@ -192,11 +193,7 @@ object YModuleLibDescriptorUtil {
             .toMutableList()
 
         // Attach standard sources to server jar
-        val sourceJarDirectories = if (HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
-            val sourcesDirectory = File(descriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
-            if (sourcesDirectory.exists() && sourcesDirectory.isDirectory) arrayListOf(sourcesDirectory)
-            else emptyList()
-        } else emptyList()
+        val sourceJarDirectories = getStandardSourceJarDirectory(descriptor)
 
         for (serverJar in serverJars) {
             libs.add(
@@ -332,6 +329,7 @@ object YModuleLibDescriptorUtil {
                 jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
                     ?.toSet()
                     ?: emptySet(),
+                sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
                 exported = true,
                 descriptorType = LibraryDescriptorType.WEB_INF_LIB
             )
@@ -383,4 +381,13 @@ object YModuleLibDescriptorUtil {
 
     private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
         ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
+
+    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (HybrisApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+        val rootDescriptor = if (descriptor is YSubModuleDescriptor) descriptor.owner
+        else descriptor
+
+        val sourcesDirectory = File(rootDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_JAR_PATH)
+        if (sourcesDirectory.exists() && sourcesDirectory.isDirectory) arrayListOf(sourcesDirectory)
+        else emptyList()
+    } else emptyList()
 }
