@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
@@ -86,7 +87,8 @@ object YModuleLibDescriptorUtil {
                             libraryFile = File(yModule.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
                             sourceFiles = if (attachSources) sourceFiles
                             else emptyList(),
-                            directoryWithClasses = true
+                            directoryWithClasses = true,
+                            scope = DependencyScope.PROVIDED
                         )
                     )
                 }
