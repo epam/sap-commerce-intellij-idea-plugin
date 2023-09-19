@@ -34,7 +34,7 @@ object YModuleLibDescriptorUtil {
 
     fun getLibraryDescriptors(descriptor: ModuleDescriptor, allYModules: Map<String, YModuleDescriptor>): List<JavaLibraryDescriptor> = when (descriptor) {
         is YRegularModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor, "Web")
+        is YWebSubModuleDescriptor -> getWebLibraryDescriptors(descriptor)
         is YCommonWebSubModuleDescriptor -> getCommonWebSubModuleDescriptor(descriptor)
         is YBackofficeSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is YAcceleratorAddonSubModuleDescriptor -> getLibraryDescriptors(descriptor, allYModules)
@@ -310,15 +310,17 @@ object YModuleLibDescriptorUtil {
             ?.listFiles { it: File -> it.isDirectory }
             ?.forEach { sourceFiles.add(it) }
 
-        libs.add(
-            JavaLibraryDescriptor(
-                name = "${descriptor.name} - $libName Classes",
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
-                sourceFiles = sourceFiles,
-                exported = true,
-                directoryWithClasses = true
+        if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - $libName Classes",
+                    libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH),
+                    sourceFiles = sourceFiles,
+                    exported = true,
+                    directoryWithClasses = true
+                )
             )
-        )
+        }
 
         val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
 

@@ -18,6 +18,7 @@
 - Improved IDE compilation and navigation in the Platform code [#726](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/726)
 - Change scope to `provided` for `Backoffice Classes` library [#731](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/731)
 - Attach standard sources in the `doc/sources` for web inf libraries [#732](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/732)
+- Include `backoffice.web` classes in the `Backoffice Library` (**depends** on [IDEA-332845](https://youtrack.jetbrains.com/issue/IDEA-332845/Project-Library-ignores-classes-in-the-folders)) [#733](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/733)
 
 ### Fixes
 - `SAP Commerce` tool window sometimes appears without any content [#725](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/725)
