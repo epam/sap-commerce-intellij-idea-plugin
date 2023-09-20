@@ -301,6 +301,7 @@ object YModuleLibDescriptorUtil {
         addServerLibs(descriptor, libs)
         addRootLib(descriptor, libs)
 
+        val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
         val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
@@ -320,22 +321,20 @@ object YModuleLibDescriptorUtil {
                     directoryWithClasses = true
                 )
             )
-        }
 
-        val libFolder = File(descriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
-
-        libs.add(
-            JavaLibraryDescriptor(
-                name = "${descriptor.name} - $libName Library",
-                libraryFile = libFolder,
-                jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
-                    ?.toSet()
-                    ?: emptySet(),
-                sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
-                exported = true,
-                descriptorType = LibraryDescriptorType.WEB_INF_LIB
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - $libName Library",
+                    libraryFile = libFolder,
+                    jarFiles = libFolder.listFiles { _, name: String -> name.endsWith(".jar") }
+                        ?.toSet()
+                        ?: emptySet(),
+                    sourceJarDirectories = getStandardSourceJarDirectory(descriptor),
+                    exported = true,
+                    descriptorType = LibraryDescriptorType.WEB_INF_LIB
+                )
             )
-        )
+        }
 
         return libs
     }

@@ -83,8 +83,10 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
             }
             is YWebSubModuleDescriptor -> {
                 if (moduleDescriptor.owner.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
-                    val path = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
-                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, path, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, false)
+                    val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
+                    val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
+                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, classes, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, false)
+                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP,)
                 }
             }
         }
