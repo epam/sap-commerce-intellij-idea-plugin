@@ -144,9 +144,19 @@ class DefaultSpringConfigurator : SpringConfigurator {
                             .dropLastWhile { it.isEmpty() }
                             .toTypedArray()
                             .filterNot { addSpringXmlFile(moduleDescriptorMap, relevantModule, getResourceDir(relevantModule), it) }
-                            .forEach {
+                            .forEach { fileName ->
                                 val dir = hackGuessLocation(relevantModule)
-                                addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, it)
+                                if (!addSpringXmlFile(moduleDescriptorMap, relevantModule, dir, fileName)) {
+                                    // otherwise we can scan in all other extensions, HybrisContextFactory does the same in the getResource() methods
+                                    // it is the case for `common` extension which has `common-spring.xml` in the `platformservices` extension
+
+                                    moduleDescriptorMap.entries
+                                        .filter { it.key != moduleName }
+                                        .firstOrNull {
+                                            val anotherModule = it.value
+                                            addSpringXmlFile(moduleDescriptorMap, anotherModule, getResourceDir(anotherModule), fileName)
+                                        }
+                                }
                             }
                     }
             }
@@ -279,9 +289,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptor: ModuleDescriptor,
         resourceDirectory: File,
         file: String
-    ) = if (StringUtils.startsWith(file, "/")) {
-        addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file)
-    } else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file)
+    ) = if (StringUtils.startsWith(file, "/")) addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, getResourceDir(moduleDescriptor), file)
+    else addSpringExternalXmlFile(moduleDescriptorMap, moduleDescriptor, resourceDirectory, file)
 
     private fun getResourceDir(moduleToSearch: ModuleDescriptor) = File(
         moduleToSearch.moduleRootDirectory,
