@@ -25,6 +25,7 @@
 ### Fixes
 - `SAP Commerce` tool window sometimes appears without any content [#725](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/725)
 - Register sub-modules source directories for custom modules [#728](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/728)
+- Register test source directories for custom backoffice modules [#736](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/736)
 
 ## [2023.2.8]
 

@@ -219,7 +219,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
 
         addSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore, appSettings, TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
 
-        if (moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
+        if (!isCustomModuleDescriptor(moduleDescriptor) && moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
             excludeDirectories(contentEntry, backOfficeModuleDirectory, TEST_SRC_DIR_NAMES);
         }
 
