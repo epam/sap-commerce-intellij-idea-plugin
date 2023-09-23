@@ -20,11 +20,12 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -33,6 +34,7 @@ import com.intellij.psi.search.scope.packageSet.*;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +63,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         NamedScope hybrisScope = null;
 
         if (groupExists(model, customGroupName)) {
-            customScope = createScope(customGroupName);
+            customScope = createScope(HybrisIcons.INSTANCE.getEXTENSION_CUSTOM(), customGroupName);
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
@@ -78,19 +80,19 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             ));
         }
         if (groupExists(model, platformGroupName)) {
-            platformScope = createScope(platformGroupName);
+            platformScope = createScope(HybrisIcons.INSTANCE.getMODULE_PLATFORM_GROUP(), platformGroupName);
             newScopes.add(platformScope);
         }
         if (groupExists(model, commerceGroupName)) {
-            commerceScope = createScope(commerceGroupName);
+            commerceScope = createScope(HybrisIcons.INSTANCE.getMODULE_COMMERCE_GROUP(), commerceGroupName);
             newScopes.add(commerceScope);
         }
         if (platformScope != null && commerceScope != null) {
-            hybrisScope = createScopeFor2Groups(platformGroupName, commerceGroupName);
+            hybrisScope = createScopeFor2Groups(HybrisIcons.INSTANCE.getEXTENSION_PLATFORM(), platformGroupName, commerceGroupName);
             newScopes.add(hybrisScope);
         }
         if (groupExists(model, nonHybrisGroupName)) {
-            newScopes.add(createScope(nonHybrisGroupName));
+            newScopes.add(createScope(AllIcons.Ide.LocalScope, nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
             HybrisI18NBundleUtils.message("hybris.scope.editable.all.ts.files"),
@@ -151,21 +153,25 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     private static boolean groupExists(@NotNull final ModifiableModuleModel model, final String groupName) {
         return !new ModuleGroup(List.of(groupName))
-            .modulesInGroup(model.getProject())
+            .modulesInGroup(model.getProject(), true)
             .isEmpty();
     }
 
     @NotNull
-    private static NamedScope createScope(@NotNull final String groupName) {
+    private static NamedScope createScope(final Icon icon, @NotNull final String groupName) {
         final FilePatternPackageSet filePatternPackageSet = new FilePatternPackageSet(
             groupName + '*',
             "*//*"
         );
-        return new NamedScope(SEARCH_SCOPE_Y_PREFIX + ' ' + groupName, filePatternPackageSet);
+        return new NamedScope(
+            SEARCH_SCOPE_Y_PREFIX + ' ' + groupName,
+            icon,
+            filePatternPackageSet
+        );
     }
 
     @NotNull
-    private static NamedScope createScopeFor2Groups(@NotNull final String firstGroupName, @NotNull final String secondGroupName) {
+    private static NamedScope createScopeFor2Groups(final Icon icon, @NotNull final String firstGroupName, @NotNull final String secondGroupName) {
         final FilePatternPackageSet firstFilePatternPackageSet = new FilePatternPackageSet(
             firstGroupName + '*',
             "*//*"
@@ -179,7 +185,8 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             secondFilePatternPackageSet
         );
         return new NamedScope(
-            SEARCH_SCOPE_Y_PREFIX + ' ' + firstGroupName + ' ' + secondGroupName,
+            SEARCH_SCOPE_Y_PREFIX + ' ' + firstGroupName + " & " + secondGroupName,
+            icon,
             unionPackageSet
         );
     }
