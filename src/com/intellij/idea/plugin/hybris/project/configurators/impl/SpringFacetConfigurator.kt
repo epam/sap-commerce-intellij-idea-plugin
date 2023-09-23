@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -76,6 +76,9 @@ class SpringFacetConfigurator : FacetConfigurator {
 
             additionalFileSet
                 .mapNotNull { VfsUtil.findFileByIoFile(File(it), true) }
+                .forEach { springFileSet.addFile(it) }
+            additionalFileSet
+                .filter { it.startsWith("jar://") }
                 .forEach { springFileSet.addFile(it) }
 
             val setting = springFacet.findSetting(LocalXmlModel.PROCESS_EXPLICITLY_ANNOTATED)

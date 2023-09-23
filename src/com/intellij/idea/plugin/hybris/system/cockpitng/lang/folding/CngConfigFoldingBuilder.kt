@@ -120,7 +120,9 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                         ?.let { "readonly" },
                     psi.getAttributeValue(Attribute.VISIBLE)
                         ?.takeIf { "false".equals(it, true) }
-                        ?.let { "non-visible" }
+                        ?.let { "non-visible" },
+                    psi.getAttributeValue(Attribute.MERGE_MODE)
+                        ?.lowercase()
                 ))
 
             ExplorerTree.TYPE_NODE -> fold(psi, ExplorerTree.TYPE_NODE, TypeNode.ID,

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -40,6 +36,7 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	String QUALIFIER = "qualifier";
 	String READONLY = "readonly";
 	String VISIBLE = "visible";
+	String MERGE_MODE = "merge-mode";
 
 	/**
 	 * Returns the value of the qualifier child.
@@ -92,7 +89,7 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<String> getMergeMode();
 
 
