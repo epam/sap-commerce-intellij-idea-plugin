@@ -38,6 +38,10 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngFlowTypeReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
+            CngPatterns.FLOW_PROPERTY_LIST_ROOT,
+            CngFlowInitializePropertyReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
             CngPatterns.EDITOR_DEFINITION,
             CngEditorDefinitionReferenceProvider.instance
         )

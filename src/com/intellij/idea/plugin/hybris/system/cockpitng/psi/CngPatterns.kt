@@ -155,6 +155,15 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
+    val FLOW_PROPERTY_LIST_ROOT = attributeValue(
+        "root",
+        "property-list",
+        "content",
+        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+        .inFile(cngConfigFile)
+
     val CONTEXT_PARENT_NON_ITEM_TYPE = XmlPatterns.xmlAttributeValue()
         .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
         .withParent(
