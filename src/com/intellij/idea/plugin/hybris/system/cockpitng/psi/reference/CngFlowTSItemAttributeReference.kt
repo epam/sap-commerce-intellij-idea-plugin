@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.AbstractAttributeDeclarationReference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -29,5 +30,14 @@ class CngFlowTSItemAttributeReference : AbstractAttributeDeclarationReference {
     constructor(element: PsiElement, textRange: TextRange) : super(element, textRange)
 
     override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+
+    override fun getVariants(): Array<Any> {
+        val type = resolveType(element) ?: return emptyArray()
+        val project = element.project
+
+        return TSCompletionService.getInstance(project)
+            .getCompletions(type)
+            .toTypedArray()
+    }
 
 }

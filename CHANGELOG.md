@@ -13,7 +13,8 @@
 - Added reference resolution for `wz:property-list` : `root` [#743](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/743)
 - Added code completion for `wz:property-list` : `root` [#744](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/744)
 - Added reference resolution for `wz:content` : `wz:property` : `qualifier` [#746](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/746)
-- Added code completion for `wz:content` : `wz:property` : `qualifier` init property [#747](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/747)
+- Added code completion for `wz:content` : `wz:property` : `qualifier` init part [#747](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/747)
+- Added code completion and reference resolution for `wz:content` : `wz:property` : `qualifier` attr part [#748](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/748)
 
 ### `Spring Framework` enhancements
 - Resolve Spring xml configuration files defined in `META-INF` directory in jar files located in the`WEB-INF/lib` [#737](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/737)

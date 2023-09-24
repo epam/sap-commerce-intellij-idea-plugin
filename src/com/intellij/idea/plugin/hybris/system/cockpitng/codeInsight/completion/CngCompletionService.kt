@@ -38,6 +38,7 @@ class CngCompletionService {
         ?.filter { it.localName == "initialize" }
         ?.mapNotNull { CngLookupElementFactory.buildInitializeProperty(it) }
         ?.toTypedArray()
+        ?.takeIf { it.isNotEmpty() }
         ?: arrayOf(
             CngLookupElementFactory.buildInitializeProperty(CngInitializePropertyReference.NEW_OBJECT)
         )

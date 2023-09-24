@@ -143,6 +143,9 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                         psi.getAttributeValue(Property.READONLY)
                             ?.takeIf { "true".equals(it, true) }
                             ?.let { "readonly" },
+                        psi.getAttributeValue(Property.EXCLUDE)
+                            ?.takeIf { "true".equals(it, true) }
+                            ?.let { "exclude" },
                     )
                         .takeIf { it.isNotEmpty() }
                         ?.let { " $it" }

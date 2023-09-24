@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.java.psi.reference
 
+import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.JavaPsiHelper
@@ -27,11 +28,34 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 
-class JavaClassReference(element: PsiElement, private val className: String) : PsiReferenceBase<PsiElement>(element), HighlightedReference {
+class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
+
+    private val className: String
+
+    constructor(element: PsiElement, className: String) : super(element) {
+        this.className = className
+    }
+
+    constructor(element: PsiElement, textRange: TextRange, className: String) : super(element, textRange) {
+        this.className = className
+    }
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
         else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+
+    override fun getVariants() = JavaPsiFacade.getInstance(element.project)
+        .findClass(className, GlobalSearchScope.allScope(element.project))
+        ?.let { psiClass ->
+            val fields = psiClass.fields
+
+            return@let if (psiClass.isRecord) fields.toList()
+            else fields
+                .filter { JavaPsiHelper.hasGetter(psiClass, it) && JavaPsiHelper.hasSetter(psiClass, it) }
+        }
+        ?.map { JavaLookupElementBuilder.forField(it) }
+        ?.toTypedArray()
+        ?: emptyArray()
 
     override fun resolve(): PsiElement? {
         val project = element.project

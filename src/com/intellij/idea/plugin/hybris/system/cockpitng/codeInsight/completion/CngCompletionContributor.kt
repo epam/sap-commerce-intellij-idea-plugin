@@ -41,11 +41,6 @@ class CngCompletionContributor : CompletionContributor() {
             PlatformPatterns.psiElement().inside(CngPatterns.FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER),
             CngFlowPropertyListPropertyQualifierCompletionProvider.instance
         )
-//        extend(
-//            CompletionType.BASIC,
-//            PlatformPatterns.psiElement().inside(CngPatterns.FLOW_STEP_CONTENT_PROPERTY_QUALIFIER),
-//            CngFlowPropertyQualifierCompletionProvider.instance
-//        )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.FLOW_INITIALIZE_TYPE),

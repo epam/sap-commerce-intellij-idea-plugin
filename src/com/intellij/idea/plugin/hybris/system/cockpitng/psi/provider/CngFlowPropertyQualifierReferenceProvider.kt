@@ -17,6 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
 import com.intellij.openapi.application.ApplicationManager
@@ -41,10 +45,20 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
             ?.let {
                 val initializeProperty = it[0]
                 val qualifier = it[1]
-                arrayOf(
+                val attrReference: PsiReference? = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+                    ?.let { type ->
+                        if (type.contains(".")
+                            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
+                            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
+                        ) JavaClassReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length), type)
+                        else CngFlowTSItemAttributeReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length))
+                    }
+
+                listOfNotNull(
                     CngInitializePropertyReference(element, TextRange.from(1, initializeProperty.length)),
-                    CngFlowTSItemAttributeReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length))
+                    attrReference
                 )
+                    .toTypedArray()
             }
             ?: arrayOf(
                 CngInitializePropertyReference(element)

@@ -54,7 +54,6 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
             ?.let { PsiUtils.getValidResults(it.toTypedArray()) }
             ?.takeIf { it.isNotEmpty() }
             ?: CngPsiHelper.resolveContextTag(element)
-                ?.takeIf { text == NEW_OBJECT }
                 ?.getAttribute("type")
                 ?.valueElement
                 ?.let { PsiUtils.getValidResults(arrayOf(PsiElementResolveResult(it))) }
