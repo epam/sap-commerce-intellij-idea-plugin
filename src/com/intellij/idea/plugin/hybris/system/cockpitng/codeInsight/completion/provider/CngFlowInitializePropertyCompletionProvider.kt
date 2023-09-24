@@ -30,11 +30,9 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 
 @Service
-class CngFlowInitializePropertyCompletionProvider: CompletionProvider<CompletionParameters>() {
+class CngFlowInitializePropertyCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val project = parameters.editor.project ?: return
-
         parameters.position.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "flow" }
             ?.childrenOfType<XmlTag>()
