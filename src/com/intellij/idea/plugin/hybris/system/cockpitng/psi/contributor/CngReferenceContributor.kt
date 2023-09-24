@@ -30,6 +30,10 @@ class CngReferenceContributor : PsiReferenceContributor() {
             CngTSItemReferenceProvider.instance
         )
         registrar.registerReferenceProvider(
+            CngPatterns.FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER,
+            CngFlowPropertyListPropertyQualifierReferenceProvider.instance
+        )
+        registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_QUALIFIER,
             CngFlowPropertyQualifierReferenceProvider.instance
         )

@@ -55,4 +55,7 @@ object CngLookupElementFactory {
         )
         ?.withIcon(HybrisIcons.COCKPIT_NG_INITIALIZE_PROPERTY)
 
+    fun buildInitializeProperty(property: String) = LookupElementBuilder.create(property)
+        .withIcon(HybrisIcons.COCKPIT_NG_INITIALIZE_PROPERTY)
+
 }

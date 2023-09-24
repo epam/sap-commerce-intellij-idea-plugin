@@ -22,6 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.util.childrenOfType
@@ -33,15 +34,19 @@ import com.intellij.util.ProcessingContext
 class CngFlowInitializePropertyCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        parameters.position.parentsOfType<XmlTag>()
+        val lookupElements = parameters.position.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "flow" }
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "prepare" }
             ?.flatMap { it.childrenOfType<XmlTag>() }
-            ?.asSequence()
             ?.filter { it.localName == "initialize" }
             ?.mapNotNull { CngLookupElementFactory.buildInitializeProperty(it) }
-            ?.forEach { result.addElement(it) }
+
+        lookupElements?.let { result.addAllElements(it.toList()) }
+
+        if (lookupElements.isNullOrEmpty()) {
+            result.addElement(CngLookupElementFactory.buildInitializeProperty(CngInitializePropertyReference.NEW_OBJECT))
+        }
     }
 
     companion object {

@@ -126,25 +126,23 @@ object CngPatterns {
             .inFile(cngConfigFile)
     )
 
-    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = XmlPatterns.or(
-        attributeValue(
-            "qualifier",
-            "property",
-            "property-list",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
-        )
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
-            .inFile(cngConfigFile),
-
-        attributeValue(
-            "qualifier",
-            "property",
-            "content",
-            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
-        )
-            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
-            .inFile(cngConfigFile)
+    val FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER = attributeValue(
+        "qualifier",
+        "property",
+        "property-list",
+        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
     )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+        .inFile(cngConfigFile)
+
+    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValue(
+        "qualifier",
+        "property",
+        "content",
+        CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+    )
+        .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+        .inFile(cngConfigFile)
 
     val FLOW_INITIALIZE_TYPE = attributeValue(
         "type",

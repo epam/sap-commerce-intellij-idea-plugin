@@ -17,39 +17,35 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
 @Service
-class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
+class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
     ): Array<PsiReference> {
-        return (element as? XmlAttributeValue)
-            ?.value
-            ?.split(".")
-            ?.takeIf { it.size == 2 }
-            ?.let {
-                val initializeProperty = it[0]
-                val qualifier = it[1]
-                arrayOf(
-                    CngInitializePropertyReference(element, TextRange.from(1, initializeProperty.length)),
-                    CngFlowTSItemAttributeReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length))
-                )
-            }
-            ?: emptyArray()
+        val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
+            ?: return emptyArray()
+
+        return if (type.contains(".")
+            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
+            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
+        ) arrayOf(JavaClassReference(element, type))
+        else arrayOf(CngFlowTSItemAttributeReference(element))
     }
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyQualifierReferenceProvider::class.java)
+        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyListPropertyQualifierReferenceProvider::class.java)
     }
 }

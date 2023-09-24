@@ -39,7 +39,6 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTypeReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowPropertyQualifierReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngEditorDefinitionReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngActionDefinitionReferenceProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetDefinitionReferenceProvider"/>

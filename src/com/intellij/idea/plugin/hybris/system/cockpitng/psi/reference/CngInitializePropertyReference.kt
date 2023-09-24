@@ -20,12 +20,17 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 
-class CngInitializePropertyReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element, true), PsiPolyVariantReference, HighlightedReference {
+class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPolyVariantReference, HighlightedReference {
+
+    constructor(element: PsiElement) : super(element)
+    constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val text = value
@@ -43,6 +48,16 @@ class CngInitializePropertyReference(element: PsiElement) : PsiReferenceBase.Pol
             ?.map { PsiElementResolveResult(it) }
             ?.toList()
             ?.let { PsiUtils.getValidResults(it.toTypedArray()) }
+            ?.takeIf { it.isNotEmpty() }
+            ?: CngPsiHelper.resolveContextTag(element)
+                ?.takeIf { text == NEW_OBJECT }
+                ?.getAttribute("type")
+                ?.valueElement
+                ?.let { PsiUtils.getValidResults(arrayOf(PsiElementResolveResult(it))) }
             ?: emptyArray()
+    }
+
+    companion object {
+        const val NEW_OBJECT = "newObject"
     }
 }
