@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.startup.event
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -34,6 +36,9 @@ import com.intellij.openapi.vfs.VirtualFile
 class ItemsXmlFileEditorManagerListener(private val project: Project) : FileEditorManagerListener {
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return
+
         val task = object : Task.Backgroundable(project, HybrisI18NBundleUtils.message("hybris.startupActivity.itemsXmlValidation.progress.title")) {
             override fun run(indicator: ProgressIndicator) {
                 ApplicationManager.getApplication().runReadAction {

@@ -24,7 +24,7 @@
 
 ### `Project Import` enhancements
 - Register spring xml files set via properties file, but available in another extension (see `HybrisContextFactory`) [#735](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/735)
-- Register `bootstrap/gensrc` and other `src` directories as source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
+- Register `bootstrap/gensrc` and other `src` directories as **source directories with respect of readonly state [#718](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/718)
 - Register jar sources in the `doc/sources` for module libraries [#724](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/724)
 - Improved IDE compilation and navigation in the Platform code [#726](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/726)
 - Change scope to `provided` for `Backoffice Classes` library [#731](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/731)
@@ -37,6 +37,7 @@
 - Register sub-modules source directories for custom modules [#728](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/728)
 - Register test source directories for custom backoffice modules [#736](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/736)
 - Not all custom search scopes registered [#738](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/738)
+- Do not validate `items.xml` for non-SAP Commerce projects [#745](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/745)
 
 ## [2023.2.8]
 
