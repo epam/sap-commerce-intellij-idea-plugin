@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,8 +22,10 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.*;
 import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Namespace;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Content extends DomElement {
+
+	String PROPERTY_LIST = "property-list";
 
 	/**
 	 * Returns the value of the id child.
@@ -94,13 +98,13 @@ public interface Content extends DomElement {
 	 * @return the list of property-list children.
 	 */
 	@NotNull
-	@SubTagList ("property-list")
+	@SubTagList (PROPERTY_LIST)
 	java.util.List<PropertyList> getPropertyLists();
 	/**
 	 * Adds new child to the list of property-list children.
 	 * @return created child
 	 */
-	@SubTagList ("property-list")
+	@SubTagList (PROPERTY_LIST)
 	PropertyList addPropertyList();
 
 
