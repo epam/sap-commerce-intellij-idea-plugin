@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionService
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -31,6 +32,9 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
 
     constructor(element: PsiElement) : super(element)
     constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
+
+    override fun getVariants() = CngCompletionService.getInstance(element.project)
+        .getInitializeProperties(element)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val text = value

@@ -135,7 +135,7 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
-    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValue(
+    val FLOW_STEP_CONTENT_PROPERTY_QUALIFIER = attributeValueExact(
         "qualifier",
         "property",
         "content",
@@ -237,10 +237,11 @@ object CngPatterns {
                 )
         )
 
-    private fun attributeValue(
+    private fun attributeValueExact(
         attribute: String,
         tag: String,
         wrappingTag: String,
+        namespace: String
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
             XmlPatterns.xmlAttribute()
@@ -248,8 +249,9 @@ object CngPatterns {
                 .withParent(
                     XmlPatterns.xmlTag()
                         .withLocalName(tag)
-                        .inside(
+                        .withParent(
                             XmlPatterns.xmlTag()
+                                .withNamespace(namespace)
                                 .withLocalName(wrappingTag)
                         )
                 )

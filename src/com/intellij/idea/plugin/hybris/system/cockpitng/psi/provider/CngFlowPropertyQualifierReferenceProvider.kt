@@ -46,7 +46,9 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
                     CngFlowTSItemAttributeReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length))
                 )
             }
-            ?: emptyArray()
+            ?: arrayOf(
+                CngInitializePropertyReference(element)
+            )
     }
 
     companion object {

@@ -21,32 +21,19 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.parentsOfType
-import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 
 @Service
 class CngFlowInitializePropertyCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val lookupElements = parameters.position.parentsOfType<XmlTag>()
-            .firstOrNull { it.localName == "flow" }
-            ?.childrenOfType<XmlTag>()
-            ?.filter { it.localName == "prepare" }
-            ?.flatMap { it.childrenOfType<XmlTag>() }
-            ?.filter { it.localName == "initialize" }
-            ?.mapNotNull { CngLookupElementFactory.buildInitializeProperty(it) }
+        val lookupElements = CngCompletionService.getInstance(parameters.position.project)
+            .getInitializeProperties(parameters.position)
 
-        lookupElements?.let { result.addAllElements(it.toList()) }
-
-        if (lookupElements.isNullOrEmpty()) {
-            result.addElement(CngLookupElementFactory.buildInitializeProperty(CngInitializePropertyReference.NEW_OBJECT))
-        }
+        lookupElements.let { result.addAllElements(it.toList()) }
     }
 
     companion object {
