@@ -6,6 +6,9 @@
 ### `ImpEx` enhancements
 - Added custom color setting for multi-line ` \ ` separator [#727](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/727)
 
+### `Cockpit NG` enhancements
+- Resolve Spring reference declared via `wz:initialize` : `template-bean` [#739](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/739)
+
 ### `Spring Framework` enhancements
 - Resolve Spring xml configuration files defined in `META-INF` directory in jar files located in the`WEB-INF/lib` [#737](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/737)
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,8 +22,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,12 +32,17 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Initialize extends DomElement {
 
+	String TEMPLATE_BEAN = "template-bean";
+	String TYPE = "type";
+	String PROPERTY = "property";
+	String MERGE_MODE = "merge-mode";
+
 	/**
 	 * Returns the value of the property child.
 	 * @return the value of the property child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("property")
+	@com.intellij.util.xml.Attribute (PROPERTY)
 	@Required
 	GenericAttributeValue<String> getProperty();
 
@@ -47,7 +52,7 @@ public interface Initialize extends DomElement {
 	 * @return the value of the type child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("type")
+	@com.intellij.util.xml.Attribute (TYPE)
 	GenericAttributeValue<String> getType();
 
 
@@ -56,7 +61,8 @@ public interface Initialize extends DomElement {
 	 * @return the value of the template-bean child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("template-bean")
+	@com.intellij.util.xml.Attribute (TEMPLATE_BEAN)
+	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getTemplateBean();
 
 
@@ -65,7 +71,7 @@ public interface Initialize extends DomElement {
 	 * @return the value of the merge-mode child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
+	@com.intellij.util.xml.Attribute (MERGE_MODE)
 	GenericAttributeValue<String> getMergeMode();
 
 
