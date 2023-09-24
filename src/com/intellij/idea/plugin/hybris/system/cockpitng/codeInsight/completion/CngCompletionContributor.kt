@@ -48,6 +48,11 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.FLOW_PROPERTY_LIST_ROOT),
+            CngFlowInitializePropertyCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.ITEM_ATTRIBUTE),
             CngItemAttributeCodeCompletionProvider.instance
         )

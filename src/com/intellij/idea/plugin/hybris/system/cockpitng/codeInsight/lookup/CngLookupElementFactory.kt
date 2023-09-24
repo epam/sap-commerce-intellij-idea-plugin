@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
+import com.intellij.psi.xml.XmlTag
 
 object CngLookupElementFactory {
 
@@ -43,5 +44,15 @@ object CngLookupElementFactory {
     fun build(meta: CngMetaWidget) = LookupElementBuilder.create(meta.id)
         .withTailText(meta.name?.let { name -> " $name" }, true)
         .withIcon(HybrisIcons.COCKPIT_NG_WIDGET)
+
+    fun buildInitializeProperty(tag: XmlTag) = tag.getAttributeValue("property")
+        ?.let { LookupElementBuilder.create(it) }
+        ?.withTypeText(
+            tag.getAttributeValue("type")
+                ?.substringAfterLast(".")
+                ?: tag.getAttributeValue("template-bean"),
+            true
+        )
+        ?.withIcon(HybrisIcons.COCKPIT_NG_INITIALIZE_PROPERTY)
 
 }

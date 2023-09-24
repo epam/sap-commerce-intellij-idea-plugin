@@ -64,9 +64,7 @@ class CngFlowPropertyQualifierCompletionProvider : AttributeDeclarationCompletio
             ?.forEach { result.addElement(it) }
     }
 
-
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(CngFlowPropertyQualifierCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(CngFlowPropertyQualifierCompletionProvider::class.java)
     }
 }

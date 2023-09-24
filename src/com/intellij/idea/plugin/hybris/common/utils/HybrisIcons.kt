@@ -58,6 +58,7 @@ object HybrisIcons {
     val COCKPIT_NG_WIDGET_DEFINITION = getIcon("/icons/cockpitNG/widgetDefinition.svg")
     val COCKPIT_NG_ACTION_DEFINITION = getIcon("/icons/cockpitNG/actionDefinition.svg")
     val COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg")
+    val COCKPIT_NG_INITIALIZE_PROPERTY = AllIcons.Nodes.PropertyWrite
     val LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg")
     val BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg")
     val MONITORING = getIcon("/icons/monitoring.svg")
