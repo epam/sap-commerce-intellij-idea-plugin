@@ -200,6 +200,10 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
                          shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSOmitJavaLangPackageInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSNotWSBeanInspection.key"
+                         shortName="BSNotWSBeanInspection" level="INFO"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSNotWSBeanInspection"/>
 
         <!-- Type System  -->
         <!-- Weak Warnings -->

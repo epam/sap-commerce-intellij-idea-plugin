@@ -71,6 +71,9 @@
 - Include `backoffice.web` classes in the `Backoffice Library` (**depends** on [IDEA-332845](https://youtrack.jetbrains.com/issue/IDEA-332845/Project-Library-ignores-classes-in-the-folders)) [#733](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/733)
 - Include `backoffice.web` libraries in the `Backoffice Library` [#734](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/734)
 
+### `beans.xml` inspection rules
+- new inspection that suggests to add the hint "wsRelated" for generating Swagger documentation annotation [#752](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/752)
+
 ### Fixes
 - `SAP Commerce` tool window sometimes appears without any content [#725](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/725)
 - Register sub-modules source directories for custom modules [#728](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/728)
