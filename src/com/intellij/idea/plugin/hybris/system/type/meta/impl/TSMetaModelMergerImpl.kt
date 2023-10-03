@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
-import com.intellij.database.util.common.removeIf
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
@@ -48,17 +47,18 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .associate { it.name!! to (it as TSTypedClassifier) }
 
         // after merging all different declarations of the same time we may need to process properties which can be overridden via extends
-        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+        val metaItems = getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
+        metaItems.values
             .forEach { (it as? TSGlobalMetaItemSelfMerge<*, *>)?.postMerge(this) }
 
-        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+        metaItems.values
             .flatMap { it.allAttributes.values }
             .filter { it.type != null }
             .forEach { it.flattenType = TSMetaHelper.flattenType(it.type!!, allTypes) }
 
         // to properly propagate `isCustom` flag we need to check every relation end defined for non directly modified Item Types
         // if at least one relation end is custom Item Type will be marked as custom too
-        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM).values
+        metaItems.values
             .filterNot { it.isCustom }
             .filter { it.allRelationEnds.any { relationEnd -> relationEnd.isCustom } }
             .forEach { it.isCustom = true }
@@ -81,12 +81,13 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
 
         // it is possible to declare many-to-many Relation as Item to declare custom indexes
         // in such a case we have to remove such Item types
-        getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .removeIf {
-                getMetaRelation(it.key)
+        metaItems.keys
+            .filter {
+                getMetaRelation(it)
                     ?.let { relation -> relation.deployment != null }
                     ?: false
             }
+            .forEach { metaItems.remove(it) }
     }
 
     @Suppress("UNCHECKED_CAST")
