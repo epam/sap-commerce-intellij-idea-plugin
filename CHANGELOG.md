@@ -50,6 +50,7 @@
 - Skip `many-to-many` Relation declared as Item type [#721](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/721)
 - Resolve Index attributes for `many-to-many` Relation declared as Item type [#722](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/722)
 - Added code completion of the Index attributes for `many-to-many` Relation declared as Item type [#723](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/723)
+- Suggest a getter method for a boolean property (starts with 'is') in the `*-items.xml` files [#755](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/755)
 
 ### `Project Import` enhancements
 - Register spring xml files set via properties file, but available in another extension (see `HybrisContextFactory`) [#735](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/735)
