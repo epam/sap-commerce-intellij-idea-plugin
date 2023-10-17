@@ -1,3 +1,8 @@
+## [2023.2.10]
+
+### Other
+- Make the Plugin incompatible with other plugins [#755](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/755)
+
 ## [2023.2.9.1]
 
 ### Fixes
