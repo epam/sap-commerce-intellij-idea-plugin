@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,8 +35,14 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
+        && hasNamespace(file)
         && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && file.name.endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML, true)
+
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+        ?.attributes
+        ?.mapNotNull { it.value }
+        ?.any { it == HybrisConstants.SCHEMA_COCKPIT_NG_CONFIG }
+        ?: false
 
     override fun initializeFileDescription() {
         super.initializeFileDescription()

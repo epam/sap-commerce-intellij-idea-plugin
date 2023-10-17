@@ -38,9 +38,10 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
         && hasNamespace(file)
         && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
-    private fun hasNamespace(file: XmlFile) = (file.rootTag?.attributes
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+        ?.attributes
         ?.mapNotNull { it.value }
-        ?.any { it.contains(HybrisConstants.SCHEMA_COCKPIT_NG_WIDGETS) }
-        ?: false)
+        ?.any { it == HybrisConstants.SCHEMA_COCKPIT_NG_WIDGETS }
+        ?: false
 
 }

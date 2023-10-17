@@ -1,6 +1,7 @@
 ## [2023.2.10]
 
 ### `Cockpit NG` enhancements
+- Improved detection of the `config` files [#760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/760)
 - Improved detection of the `widgets` files [#759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/759)
 
 ### Other

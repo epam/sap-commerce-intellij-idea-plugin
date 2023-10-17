@@ -85,7 +85,6 @@ object HybrisConstants {
     const val UNMANAGED_DEPENDENCIES_TXT = "unmanaged-dependencies.txt"
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
-    const val COCKPIT_NG_CONFIG_XML = "-config.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
 
     const val HYBRIS_DIRECTORY = "hybris"
@@ -324,6 +323,7 @@ object HybrisConstants {
     const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
+    const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
