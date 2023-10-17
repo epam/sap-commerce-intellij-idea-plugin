@@ -30,6 +30,12 @@ class ImpExSpacingBuilder(
 
     init {
         this
+            .between(
+                ImpexTypes.ANY_HEADER_MODE,
+                ImpexTypes.FULL_HEADER_TYPE
+            )
+            .spaces(1)
+
             .before(ImpexTypes.VALUE_GROUP)
             .spaceIf(impexSettings.SPACE_BEFORE_FIELD_VALUE_SEPARATOR)
 
