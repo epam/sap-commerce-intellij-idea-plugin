@@ -23,10 +23,8 @@ import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.MergeAttrTypeKnown
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.StandardPatterns
-import com.intellij.patterns.XmlAttributeValuePattern
-import com.intellij.patterns.XmlPatterns
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
+import com.intellij.patterns.*
 
 object CngPatterns {
     const val CONFIG_ROOT = "config"
@@ -34,8 +32,7 @@ object CngPatterns {
     private const val CONFIG_CONTEXT = "context"
     private val cngConfigFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_CONFIG_XML))
-    private val cngWidgetsFile = PlatformPatterns.psiFile()
-        .withName(StandardPatterns.string().endsWith(HybrisConstants.COCKPIT_NG_WIDGETS_XML))
+    private val cngWidgetsFile = DomPatterns.inDomFile(Widgets::class.java)
 
     val WIDGET_SETTING = widgetPattern("key", "setting")
 
