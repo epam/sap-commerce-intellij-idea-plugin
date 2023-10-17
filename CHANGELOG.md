@@ -1,6 +1,7 @@
 ## [2023.2.10]
 
 ### Other
+- Upgraded Gradle `8.2.1` -> `8.4` [#758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/758)
 - Make the Plugin incompatible with other plugins [#757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/757)
 
 ## [2023.2.9.1]
