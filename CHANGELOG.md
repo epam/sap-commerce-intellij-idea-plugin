@@ -1,5 +1,8 @@
 ## [2023.2.10]
 
+### `Project Import` enhancements
+- Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
+
 ### `ImpEx` enhancements
 - Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
 
