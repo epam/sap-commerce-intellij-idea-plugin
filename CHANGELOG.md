@@ -16,6 +16,7 @@
 - Make the Plugin incompatible with other plugins [#757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/757)
 
 ### Fixes
+- Fixed NPE during project import [#765](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/765)
 - Fixed possibility to attach sources and javadocs to jars in the custom library [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
 
 ## [2023.2.9.1]
