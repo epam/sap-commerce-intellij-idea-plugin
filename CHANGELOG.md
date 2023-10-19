@@ -2,6 +2,7 @@
 
 ### `Project Import` enhancements
 - Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
+- Use custom library names for all custom libraries [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
 
 ### `ImpEx` enhancements
 - Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
@@ -13,6 +14,9 @@
 ### Other
 - Upgraded Gradle `8.2.1` -> `8.4` [#758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/758)
 - Make the Plugin incompatible with other plugins [#757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/757)
+
+### Fixes
+- Fixed possibility to attach sources and javadocs to jars in the custom library [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
 
 ## [2023.2.9.1]
 

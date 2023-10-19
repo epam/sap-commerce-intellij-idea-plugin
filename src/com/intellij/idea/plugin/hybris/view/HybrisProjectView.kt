@@ -55,7 +55,12 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         "- Web Classes",
         "- Common Web Classes",
         "- Addon's Target Classes",
-        "- HAC Web Classes"
+        "- HAC Web Classes",
+        "- lib",
+        "- Backoffice lib",
+        "- compiler output",
+        "- resources",
+        "- server",
     )
 
     override fun modify(

@@ -104,6 +104,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
+                name = "${descriptor.name} - lib",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.LIB_DIRECTORY),
                 exported = true,
                 descriptorType = LibraryDescriptorType.LIB
@@ -117,6 +118,7 @@ object YModuleLibDescriptorUtil {
     ) {
         libs.add(
             JavaLibraryDescriptor(
+                name = "${descriptor.name} - Backoffice lib",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_LIB_PATH),
                 exported = true
             )
@@ -162,6 +164,7 @@ object YModuleLibDescriptorUtil {
 
         libs.add(
             JavaLibraryDescriptor(
+                name = "${descriptor.name} - compiler output",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
                 sourceFiles = sourceFiles,
                 exported = true,
@@ -170,6 +173,7 @@ object YModuleLibDescriptorUtil {
         )
         libs.add(
             JavaLibraryDescriptor(
+                name = "${descriptor.name} - resources",
                 libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.RESOURCES_DIRECTORY),
                 exported = true,
                 directoryWithClasses = true
@@ -198,6 +202,7 @@ object YModuleLibDescriptorUtil {
         for (serverJar in serverJars) {
             libs.add(
                 JavaLibraryDescriptor(
+                    name = "${descriptor.name} - server",
                     libraryFile = serverJar,
                     sourceFiles = sourceFiles,
                     sourceJarDirectories = sourceJarDirectories,
