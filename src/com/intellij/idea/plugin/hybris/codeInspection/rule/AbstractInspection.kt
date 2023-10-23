@@ -70,7 +70,7 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
     protected fun getTextRange(xmlElement: XmlElement?) = xmlElement
         ?.let { TextRange.from(0, it.textLength) }
 
-    private fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)
+    protected fun getProblemHighlightType(file: PsiFile) = HighlightDisplayKey.find(shortName)
         ?.let {
             val profile = ProjectInspectionProfileManager.getInstance(file.project).currentProfile
             InspectionProfileWrapper(profile).getErrorLevel(it, file)

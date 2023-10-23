@@ -19,14 +19,48 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddTagQuickFix
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomFileElement
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
+import com.intellij.util.xml.highlighting.DomElementAnnotationsManager
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
 class BSNotWSBeanInspection : AbstractBSInspection() {
+
+    override fun checkFileElement(domFileElement: DomFileElement<Beans>, holder: DomElementAnnotationHolder) {
+        val file = domFileElement.file
+        val project = file.project
+        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (!canProcess(project, file)) return
+
+        val helper = DomElementAnnotationsManager.getInstance(project).highlightingHelper
+        val problemHighlightType = getProblemHighlightType(file)
+        val dom = domFileElement.rootElement
+
+        if (!canProcess(dom, project)) return
+
+        inspect(project, dom, holder, helper, problemHighlightType.severity)
+    }
+
+    private fun canProcess(dom: Beans, project: Project): Boolean {
+        if (!canProcess(dom)) return false
+
+        val beanShortNames = dom.beans
+            .mapNotNull { BSMetaModelAccess.getInstance(project).findMetasForDom(it).firstOrNull() }
+            .map { it.shortName }
+        return BSMetaModelAccess.getInstance(project)
+            .getAll<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN)
+            .any { globalWsBean -> beanShortNames.any { fileBeanShortNames -> globalWsBean.shortName == fileBeanShortNames } }
+    }
+
     override fun inspect(
         project: Project,
         dom: Beans,
@@ -48,7 +82,7 @@ class BSNotWSBeanInspection : AbstractBSInspection() {
                 dom,
                 severity,
                 displayName,
-                XmlAddTagQuickFix("hints", "<hint name=\"wsRelated\"/>", null, null)
+                XmlAddTagQuickFix("hints", "<hint name=\"${HybrisConstants.WS_RELATED}\"/>", null, null)
             )
         } else if (dom.hints.exists() && dom.hints.hints.none { it.name.value == "wsRelated" }) {
             holder.createProblem(
