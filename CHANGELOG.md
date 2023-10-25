@@ -341,6 +341,7 @@
 - Fixed deadlock when ItemType name equals to its extends [#513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/513)
 - Refactored `ImportProjectProgressModalWindow` so that is calls so that project state retrieved only once [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
 - Changed generated `*.iml` file name when grouping is not selected so file name does not start with a dot [#512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/512)
+- Updated Gradle plugin to 1.16.0 due to the exception NoClassDefFoundError: org/gradle/api/publish/ivy/internal/publication/DefaultIvyPublicationIdentity in Gradle 8.4 [#767](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/767)
 
 ### Other
 - Updated Kotlin to 1.9.0

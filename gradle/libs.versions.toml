@@ -29,7 +29,7 @@ solrSolrj = "8.11.2"
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 kotlin = "1.9.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.intellij
-gradleIntelliJPlugin = "1.15.0"
+gradleIntelliJPlugin = "1.16.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.1.2"
 
