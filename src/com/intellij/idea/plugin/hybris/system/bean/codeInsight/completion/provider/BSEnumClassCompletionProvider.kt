@@ -20,8 +20,10 @@ package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provi
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import java.util.*
 
+@Service
 class BSEnumClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_ENUM)) {
     companion object {
         val instance: BSEnumClassCompletionProvider = ApplicationManager.getApplication().getService(BSEnumClassCompletionProvider::class.java)

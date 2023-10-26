@@ -64,9 +64,6 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.fxs.title"
                              provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettingsConfigurableProvider"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileToolbarInstaller"/>
     </extensions>
 
     <projectListeners>

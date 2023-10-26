@@ -21,8 +21,10 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding.util
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
+import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 
+@Service
 class ImpExSmartFoldingBlocksFilter : AbstractImpExFoldingFilter() {
 
     override fun isFoldable(element: PsiElement) = isSupportedType(element)

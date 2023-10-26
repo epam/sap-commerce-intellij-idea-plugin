@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSBeanReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSEnumReference
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -30,6 +31,7 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
+@Service
 class BSBeanReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,8 +23,10 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
+@Service
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 
     override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = HybrisProjectSettingsComponent.getInstance(project)

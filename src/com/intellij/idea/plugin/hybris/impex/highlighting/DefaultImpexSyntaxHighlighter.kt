@@ -20,12 +20,14 @@ package com.intellij.idea.plugin.hybris.impex.highlighting
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 
+@Service
 class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ImpexLexerAdapter()

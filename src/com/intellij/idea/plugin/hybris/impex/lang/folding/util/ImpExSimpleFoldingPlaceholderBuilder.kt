@@ -20,8 +20,10 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding.util
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 
+@Service
 class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
 
     override fun getPlaceholder(psiElement: PsiElement): String = with(psiElement.text) {

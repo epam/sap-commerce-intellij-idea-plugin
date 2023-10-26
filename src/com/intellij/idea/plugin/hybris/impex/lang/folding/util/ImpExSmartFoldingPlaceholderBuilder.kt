@@ -26,10 +26,12 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import org.apache.commons.lang3.StringUtils
 import java.util.regex.Pattern
 
+@Service
 class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
 
     override fun getPlaceholder(psiElement: PsiElement): String = when (psiElement) {

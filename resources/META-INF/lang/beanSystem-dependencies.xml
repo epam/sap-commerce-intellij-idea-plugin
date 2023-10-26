@@ -51,14 +51,7 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl.DefaultBSCompletionService"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.OccBeanPropertyReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.psi.provider.BSBeanReferenceProvider"/>
-
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSEnumClassCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSBeanPropertyTypeCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSHintNameCompletionProvider"/>
     </extensions>
 
     <actions>

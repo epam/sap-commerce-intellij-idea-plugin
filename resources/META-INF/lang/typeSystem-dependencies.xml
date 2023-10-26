@@ -55,13 +55,6 @@
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
                              provider="com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemConfigurableProvider"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.TSAttributeDeclarationCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.RelationValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.EnumTypeClassValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemTypeClassValidation"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.type.psi.provider.TSItemReferenceProvider"/>
-
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
     </extensions>
 

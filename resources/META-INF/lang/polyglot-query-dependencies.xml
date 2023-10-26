@@ -44,9 +44,6 @@
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
                              provider="com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettingsConfigurableProvider"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller"/>
     </extensions>
 
     <actions>

@@ -25,8 +25,10 @@ import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupEleme
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.util.ProcessingContext
 
+@Service
 class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(

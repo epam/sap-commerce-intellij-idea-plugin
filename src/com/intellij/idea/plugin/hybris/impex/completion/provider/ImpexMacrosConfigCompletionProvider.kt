@@ -26,10 +26,12 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
+@Service
 class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

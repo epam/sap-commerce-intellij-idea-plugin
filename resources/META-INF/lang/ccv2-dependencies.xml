@@ -25,12 +25,5 @@
     <extensions defaultExtensionNs="com.intellij">
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
-
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider"/>
-
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider"/>
     </extensions>
 </idea-plugin>

@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 
+@Service
 class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.fxs.console",
     "hybris.fxs.toolbar.left",

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,10 @@ package com.intellij.idea.plugin.hybris.system.type.validation.impl
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumValue
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import org.apache.commons.lang3.StringUtils
 
+@Service
 class EnumTypeClassValidation : AbstractClassesValidation<EnumType, EnumValue>() {
 
     override fun buildGeneratedClassName(itemType: EnumType) = itemType.code.stringValue

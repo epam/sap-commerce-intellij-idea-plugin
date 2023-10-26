@@ -66,16 +66,6 @@
 
         <completion.contributor language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderTypeModifierValueCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderAttributeModifierValueCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeAttributeNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexHeaderItemTypeParameterNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosConfigCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexMacrosCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordMacroCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.provider.ImpexKeywordModeCompletionProvider"/>
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.impl.DefaultTSCompletionService"/>
 
@@ -110,16 +100,6 @@
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiManager"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHeaderHighlightingCaretListener"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexColumnHighlightingCaretListener"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller"/>
     </extensions>
 
     <actions>

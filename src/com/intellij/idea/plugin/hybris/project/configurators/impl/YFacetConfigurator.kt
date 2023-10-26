@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,12 +24,14 @@ import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 
 /**
  * Main [y] SAP Commerce Facet, acts as a holder for all Module specific configurations and settings.
  */
+@Service
 class YFacetConfigurator : FacetConfigurator {
 
     override fun configure(

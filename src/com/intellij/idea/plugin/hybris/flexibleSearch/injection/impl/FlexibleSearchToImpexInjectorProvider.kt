@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,12 +29,14 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.parentOfType
 import java.util.*
 
+@Service
 class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
 
     override val language: Language = ImpexLanguage.getInstance()

@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -34,6 +35,7 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import org.jetbrains.kotlin.psi.psiUtil.parents
 
+@Service
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
     // TODO*: Create new Global OCC Meta Model, which will contain list of levelMappings and properties per dtoClass

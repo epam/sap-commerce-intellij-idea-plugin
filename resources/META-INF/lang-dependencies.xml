@@ -45,16 +45,12 @@
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Facet                                                        -->
         <!-- ####################################################################################################### -->
         
         <facetType implementation="com.intellij.idea.plugin.hybris.facet.YFacetType"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.YFacetConfigurator"/>
-
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.startup.HybrisStandalonePluginUpdateChecker"/>
 
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>

@@ -38,16 +38,6 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngFlowTypeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngTSItemAttributeReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngEditorDefinitionReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngActionDefinitionReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetDefinitionReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetSettingReferenceProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.CngWidgetConnectionWidgetIdReferenceProvider"/>
-
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
@@ -56,9 +46,6 @@
                         serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.impl.HybrisToolWindowServiceImpl"/>
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisConsoleServiceImpl"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent"/>
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService"
@@ -99,7 +86,6 @@
         <toolWindow id="SAP Commerce" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator"/>
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
 
         <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient"/>

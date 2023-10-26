@@ -26,16 +26,16 @@ import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "HybrisProjectSettings", storages = [Storage(STORAGE_HYBRIS_PROJECT_SETTINGS)])
+@State(name = "HybrisProjectSettings")
+@Storage(value = STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)
+@Service
 class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSettings> {
     private val hybrisProjectSettings = HybrisProjectSettings()
 

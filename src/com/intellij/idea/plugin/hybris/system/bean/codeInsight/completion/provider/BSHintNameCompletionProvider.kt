@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupEl
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -32,6 +33,7 @@ import com.intellij.util.ProcessingContext
 /**
  * See Swagger Documentation Annotations https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc53579866910149472ccbef0222ec5.html#swagger-documentation-annotations
  */
+@Service
 class BSHintNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private val classLevelNameLookupElements = classLevelName.map { BSLookupElementFactory.buildWsHint(it) }

@@ -27,10 +27,12 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.AbstractPojo
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 
+@Service
 class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private val staticLookupElements by lazy {

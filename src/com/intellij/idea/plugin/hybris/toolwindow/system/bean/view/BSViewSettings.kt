@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,18 +19,16 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.view
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.SettingsCategory
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "[y] Bean System View settings", category = SettingsCategory.PLUGINS)
-@Storage(HybrisConstants.STORAGE_HYBRIS_BS_VIEW)
-class BSViewSettings(private val myProject: Project) : PersistentStateComponent<BSViewSettings.Settings> {
+@Storage(value = HybrisConstants.STORAGE_HYBRIS_BS_VIEW, roamingType = RoamingType.DISABLED)
+@Service(Service.Level.PROJECT)
+class BSViewSettings(myProject: Project) : PersistentStateComponent<BSViewSettings.Settings> {
 
     private val myMessageBus: MessageBus
     private val mySettings: Settings
