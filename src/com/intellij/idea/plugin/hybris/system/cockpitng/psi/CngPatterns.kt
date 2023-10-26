@@ -74,11 +74,21 @@ object CngPatterns {
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile),
+
         attributeValue(
             "editor",
             "attribute",
             "editorArea",
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "property",
+            "flow",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)

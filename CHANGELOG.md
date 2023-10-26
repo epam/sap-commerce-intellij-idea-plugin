@@ -10,6 +10,7 @@
 ### `Cockpit NG` enhancements
 - Improved detection of the `config` files [#760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/760)
 - Improved detection of the `widgets` files [#759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/759)
+- Added code completion and reference resolution for `wz:property` : `editor` [#769](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/769)
 
 ### Other
 - Upgraded Gradle `8.2.1` -> `8.4` [#758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/758)
