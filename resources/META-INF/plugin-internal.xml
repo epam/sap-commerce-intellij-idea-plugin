@@ -26,6 +26,8 @@
 
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
+        <indexedRootsProvider implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
+
         <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
         <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectViewNodeDecorator"/>
