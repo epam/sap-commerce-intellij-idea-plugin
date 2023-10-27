@@ -16,7 +16,7 @@
 - Upgraded Gradle `8.2.1` -> `8.4` [#758](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/758)
 - Make the Plugin incompatible with other plugins [#757](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/757)
 - Migrate to [Light Services](https://plugins.jetbrains.com/docs/intellij/plugin-services.html#light-services) [#768](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/768)
-- Index project root files at `All Scope` [#768](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/769)
+- Index project root files at `All Scope` [#770](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/770)
 
 ### Fixes
 - Fixed NPE during project import [#765](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/765)
