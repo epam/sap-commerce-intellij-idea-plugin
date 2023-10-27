@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.lang.folding
 
-import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.settings.FoldingSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.folding.FoldingBuilderEx
@@ -65,7 +64,8 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
                 if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
                 FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(groupName))
             }
-            .toDistinctTypedArray()
+            .toSet()
+            .toTypedArray()
     }
 
     internal abstract fun initSettings(project: Project): S

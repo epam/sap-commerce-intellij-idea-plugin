@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
-import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -53,7 +52,8 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                     if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
                     FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
                 }
-                .toDistinctTypedArray()
+                .toSet()
+                .toTypedArray()
 
             CachedValueProvider.Result.create(
                 results,

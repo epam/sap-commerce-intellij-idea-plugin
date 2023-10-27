@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
-import ai.grazie.utils.toDistinctTypedArray
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.ASTNode
@@ -51,7 +50,8 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                     if (it is PsiErrorElement || it.textRange.isEmpty) return@mapNotNull null
                     FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(GROUP_NAME))
                 }
-                .toDistinctTypedArray()
+                .toSet()
+                .toTypedArray()
 
             CachedValueProvider.Result.create(
                 results,
