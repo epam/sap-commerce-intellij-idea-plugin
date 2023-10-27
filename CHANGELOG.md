@@ -4,6 +4,9 @@
 - Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
 - Use custom library names for all custom libraries [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
 
+### `items.xml` inspection rules
+- Improved detailed message for `TSDeploymentTableMustNotBeRedeclaredInChildTypes` [#772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/772)
+
 ### `ImpEx` enhancements
 - Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
 

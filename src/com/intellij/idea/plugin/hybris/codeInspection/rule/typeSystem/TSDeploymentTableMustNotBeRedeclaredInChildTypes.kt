@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteSubTagQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -27,7 +28,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import org.apache.commons.lang3.StringUtils
 
 class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() {
 
@@ -51,19 +51,26 @@ class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() 
             ?: return
 
         val currentMetaTypeCode = metaItem.deployment?.typeCode
+            ?.takeIf { it.isNotBlank() }
+            ?: return
 
-        if (StringUtils.isBlank(currentMetaTypeCode)) return
-
-        val countDeploymentTablesInParents = metaItem.allExtends
+        val metaItemParent = metaItem.allExtends
             .flatMap { it.declarations }
-            .count { StringUtils.isNotBlank(it.deployment?.typeCode) }
+            .firstOrNull { it.deployment?.typeCode?.isNotBlank() ?: false }
+            ?: return
 
-        if (countDeploymentTablesInParents == 0) return
+        val message = message(
+            "hybris.inspections.ts.DeploymentTableMustNotBeRedeclaredInChildTypes.problem.key",
+            metaItem.name ?: "?",
+            currentMetaTypeCode,
+            metaItemParent.name ?: "?",
+            metaItemParent.deployment?.typeCode ?: "?"
+        )
 
         holder.createProblem(
             dom,
             severity,
-            displayName,
+            message,
             getTextRange(dom),
             XmlDeleteSubTagQuickFix(ItemType.DEPLOYMENT)
         )
