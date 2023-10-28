@@ -34,6 +34,7 @@ class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParamet
     }
 
     companion object {
+        @JvmStatic
         val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ImpexKeywordMacroCompletionProvider::class.java)
     }
 }

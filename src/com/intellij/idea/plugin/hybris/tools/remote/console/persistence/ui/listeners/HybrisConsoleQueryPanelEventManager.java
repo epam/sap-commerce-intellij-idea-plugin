@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,25 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners;
 
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HybrisConsoleQueryPanelEventManager {
+@Service(Service.Level.PROJECT)
+public final class HybrisConsoleQueryPanelEventManager {
 
-    private List<HybrisConsoleEventListener> listeners = new ArrayList<>();
+    private final List<HybrisConsoleEventListener> listeners = new ArrayList<>();
 
-    public static HybrisConsoleQueryPanelEventManager getInstance(@NotNull Project project) {
+    public static HybrisConsoleQueryPanelEventManager getInstance(@NotNull final Project project) {
         return project.getService(HybrisConsoleQueryPanelEventManager.class);
     }
 
-    public void addListener(HybrisConsoleEventListener listener) {
+    public void addListener(final HybrisConsoleEventListener listener) {
         this.listeners.add(listener);
     }
 
-    public void removeListener(HybrisConsoleEventListener listener) {
+    public void removeListener(final HybrisConsoleEventListener listener) {
         this.listeners.remove(listener);
     }
 

@@ -30,8 +30,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.Hybri
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project

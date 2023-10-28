@@ -69,6 +69,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
 
     companion object {
+        @JvmStatic
         val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
     }
 }

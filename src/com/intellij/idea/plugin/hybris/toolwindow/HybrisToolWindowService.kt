@@ -19,15 +19,44 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindowManager
 
-interface HybrisToolWindowService {
+@Service(Service.Level.PROJECT)
+class HybrisToolWindowService(val project: Project) {
+
+    fun activateToolWindow() {
+        hybrisToolWindow()
+            ?.let {
+                ApplicationManager.getApplication().invokeLater {
+                    it.isAvailable = true
+                    it.activate(null, true)
+                }
+            }
+    }
+
+    fun activateToolWindowTab(id: String) {
+        hybrisToolWindow()
+            ?.let {
+                val contentManager = it.contentManager
+                contentManager.findContent(id)
+                    ?.let { tab ->
+                        contentManager.setSelectedContent(tab);
+                    }
+            }
+    }
+
+    fun finConsolesView() = hybrisToolWindow()
+        ?.contentManager
+        ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
+        ?.component
+        ?.let { it as? HybrisConsolesView }
+
+    private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
 
     companion object {
         fun getInstance(project: Project): HybrisToolWindowService = project.getService(HybrisToolWindowService::class.java)
     }
-
-    fun activateToolWindow()
-    fun activateToolWindowTab(id: String)
-    fun finConsolesView(): HybrisConsolesView?
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -140,10 +140,10 @@ public class TSMetaItemView {
     }
 
     private void createUIComponents() {
-        myAttributes = TSMetaItemAttributesTable.Companion.getInstance(myProject);
-        myCustomProperties = TSMetaItemCustomPropertiesTable.Companion.getInstance(myProject);
-        myIndexes = TSMetaItemIndexesTable.Companion.getInstance(myProject);
-        myRelations = TSMetaRelationElementsTable.Companion.getInstance(myProject);
+        myAttributes = TSMetaItemAttributesTable.getInstance(myProject);
+        myCustomProperties = TSMetaItemCustomPropertiesTable.getInstance(myProject);
+        myIndexes = TSMetaItemIndexesTable.getInstance(myProject);
+        myRelations = TSMetaRelationElementsTable.getInstance(myProject);
         myDetailsPane = new JBPanel();
         myDeploymentPane = new JBPanel();
         myFlagsPane = new JBPanel();

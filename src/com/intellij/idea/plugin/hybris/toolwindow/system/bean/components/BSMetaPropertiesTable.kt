@@ -86,6 +86,7 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
         private const val COLUMN_NAME = "Name"
         private const val COLUMN_TYPE = "Type"
 
+        @JvmStatic
         fun getInstance(project: Project): BSMetaPropertiesTable = with(BSMetaPropertiesTable(project)) {
             init()
 

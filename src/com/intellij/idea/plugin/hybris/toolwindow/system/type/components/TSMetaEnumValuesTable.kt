@@ -70,6 +70,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
         private const val COLUMN_VALUE = "Value"
         private const val COLUMN_DESCRIPTION = "Description"
 
+        @JvmStatic
         fun getInstance(project: Project): TSMetaEnumValuesTable = with(TSMetaEnumValuesTable(project)) {
             init()
 

@@ -30,9 +30,9 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.RunConfigurationConfigurator;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -93,7 +93,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull HybrisConfiguratorCache cache
     ) {
-        final CommonIdeaService commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService.class);
+        final var commonIdeaService = CommonIdeaService.getInstance();
         final ConfigModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
         String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
 

@@ -46,6 +46,7 @@ class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<Co
     }
 
     companion object {
+        @JvmStatic
         val instance: CompletionProvider<CompletionParameters> =
             ApplicationManager.getApplication().getService(ImpexHeaderAttributeModifierNameCompletionProvider::class.java)
     }

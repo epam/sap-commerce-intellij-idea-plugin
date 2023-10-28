@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,35 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl;
+package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.Optional;
 
-public class JsonIOUtil {
+@Service(Service.Level.PROJECT)
+public final class JsonIOService {
 
-    private static final Logger LOG = Logger.getInstance(DefaultJsonRegionPersistenceService.class);
+    private static final Logger LOG = Logger.getInstance(RegionPersistenceService.class);
 
     private final ObjectMapper mapper;
 
-    private JsonIOUtil() {
+    private JsonIOService() {
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    static JsonIOUtil getInstance(@NotNull Project project) {
-        return project.getService(JsonIOUtil.class);
+    public static JsonIOService getInstance(@NotNull Project project) {
+        return project.getService(JsonIOService.class);
     }
 
     public <T> void persistData(@NotNull final Path destination, @NotNull final T data) {
@@ -56,18 +58,19 @@ public class JsonIOUtil {
         }
     }
 
-    public <T> Optional<T> loadPersistedData(@NotNull final Path source, final Class<T> clazz) {
+    @Nullable
+    public <T> T loadPersistedData(@NotNull final Path source, final Class<T> clazz) {
         if (Files.exists(source)) {
             try {
-                return Optional.of(readDataFromFile(source, clazz));
+                return readDataFromFile(source, clazz);
             } catch (IOException e) {
                 throw new IllegalStateException(String.format(
                     "Path [ %s ] is not valid source file path",
                     source
-                ));
+                ), e);
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     private <T> T readDataFromFile(@NotNull final Path filePath, final Class<T> clazz) throws IOException {

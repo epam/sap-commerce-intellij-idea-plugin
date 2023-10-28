@@ -23,9 +23,7 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.properties.PropertiesService;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
 import com.intellij.lang.properties.IProperty;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -36,8 +34,9 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS;
 
-@State(name = "HybrisDeveloperSpecificProjectSettings", storages = {@Storage(STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS)})
-public class HybrisDeveloperSpecificProjectSettingsComponent implements PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
+@State(name = "HybrisDeveloperSpecificProjectSettings", storages = {@Storage(value = STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)})
+@Service(Service.Level.PROJECT)
+public final class HybrisDeveloperSpecificProjectSettingsComponent implements PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
 
     private final MessageBus myMessageBus;
     private final HybrisDeveloperSpecificProjectSettings state = new HybrisDeveloperSpecificProjectSettings();
@@ -125,7 +124,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setHacPassword("nimda");
         item.setSsl(true);
         item.setSslProtocol(HybrisConstants.DEFAULT_SSL_PROTOCOL);
-        item.setGeneratedURL(CommonIdeaService.Companion.getInstance().getHostHacUrl(project, item));
+        item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
         return item;
     }
 
@@ -141,7 +140,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
         item.setAdminLogin(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"));
         item.setAdminPassword(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123"));
         item.setSsl(true);
-        item.setGeneratedURL(CommonIdeaService.Companion.getInstance().getSolrUrl(project, item));
+        item.setGeneratedURL(CommonIdeaService.getInstance().getSolrUrl(project, item));
         return item;
     }
 
@@ -180,7 +179,7 @@ public class HybrisDeveloperSpecificProjectSettingsComponent implements Persiste
     }
 
     private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
-        return Optional.ofNullable(PropertiesService.Companion.getInstance(project))
+        return Optional.ofNullable(PropertiesService.getInstance(project))
             .map(it -> it.getProperty(key))
             .map(IProperty::getValue)
             .orElse(fallback);

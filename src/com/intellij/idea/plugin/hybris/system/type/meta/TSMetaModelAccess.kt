@@ -28,6 +28,7 @@ interface TSMetaModelAccess {
 
     companion object {
         val TOPIC = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
+        @JvmStatic
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 

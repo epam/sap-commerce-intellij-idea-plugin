@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,23 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo
 
-package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services;
+import java.io.Serial
 
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+class RegionEntityFIFOCache<T>(private val maxNumberEntities: Int) : LinkedHashMap<String, RegionEntity<T>>() {
 
-import java.io.IOException;
-import java.nio.file.Path;
+    // required for deserialization
+    constructor() : this(-1)
 
-public interface RegionPersistenceService {
+    override fun removeEldestEntry(eldest: Map.Entry<String, RegionEntity<T>>) = if (maxNumberEntities < 0) false
+    else this.size > maxNumberEntities
 
-    static RegionPersistenceService getInstance(@NotNull Project project) {
-        return project.getService(RegionPersistenceService.class);
+    companion object {
+        @Serial
+        private const val serialVersionUID = 2873734604163564844L
     }
-
-    void writeRegionData(Path destination, String regionName);
-
-    void loadRegionData(Path source, String regionName) throws IOException;
-
 }

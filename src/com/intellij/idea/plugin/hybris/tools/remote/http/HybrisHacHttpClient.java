@@ -24,8 +24,9 @@ import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSe
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient;
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.BooleanUtils;
@@ -50,7 +51,8 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.jsoup.Jsoup.parse;
 
-public class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
+@Service(Service.Level.PROJECT)
+public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(HybrisHacHttpClient.class);
 

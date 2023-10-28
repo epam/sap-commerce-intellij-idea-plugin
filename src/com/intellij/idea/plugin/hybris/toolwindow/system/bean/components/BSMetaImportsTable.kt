@@ -74,6 +74,7 @@ class BSMetaImportsTable private constructor(myProject: Project) :
         private const val COLUMN_MODULE = "Module"
         private const val COLUMN_TYPE = "Type"
 
+        @JvmStatic
         fun getInstance(project: Project): BSMetaImportsTable = with(BSMetaImportsTable(project)) {
             init()
 

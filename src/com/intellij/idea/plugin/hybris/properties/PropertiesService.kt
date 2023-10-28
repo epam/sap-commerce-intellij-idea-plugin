@@ -34,6 +34,7 @@ interface PropertiesService {
     fun findAutoCompleteProperties(query: String): List<IProperty>
 
     companion object {
+        @JvmStatic
         fun getInstance(project: Project): PropertiesService? = project.getService(PropertiesService::class.java)
     }
 

@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -60,7 +60,7 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
     public void run(@NotNull final ProgressIndicator indicator) {
         Validate.notNull(indicator);
 
-        final VirtualFileSystemService virtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService.class);
+        final var virtualFileSystemService = VirtualFileSystemService.getInstance();
 
         final File hybrisServerShellScriptFile;
         try {

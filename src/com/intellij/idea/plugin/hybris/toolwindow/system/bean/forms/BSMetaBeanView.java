@@ -103,10 +103,10 @@ public class BSMetaBeanView {
     }
 
     private void createUIComponents() {
-        myProperties = BSMetaPropertiesTable.Companion.getInstance(myProject);
-        myHints = BSMetaHintsTable.Companion.getInstance(myProject);
-        myImports = BSMetaImportsTable.Companion.getInstance(myProject);
-        myAnnotations = BSMetaAnnotationsTable.Companion.getInstance(myProject);
+        myProperties = BSMetaPropertiesTable.getInstance(myProject);
+        myHints = BSMetaHintsTable.getInstance(myProject);
+        myImports = BSMetaImportsTable.getInstance(myProject);
+        myAnnotations = BSMetaAnnotationsTable.getInstance(myProject);
 
         myPropertiesPane = ToolbarDecorator.createDecorator(myProperties)
             .setRemoveAction(anActionButton -> Optional.ofNullable(myProperties.getCurrentItem())

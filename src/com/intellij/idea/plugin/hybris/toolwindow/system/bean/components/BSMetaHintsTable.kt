@@ -72,6 +72,7 @@ class BSMetaHintsTable private constructor(myProject: Project) :
         private const val COLUMN_NAME = "Name"
         private const val COLUMN_VALUE = "Value"
 
+        @JvmStatic
         fun getInstance(project: Project): BSMetaHintsTable = with(BSMetaHintsTable(project)) {
             init()
 

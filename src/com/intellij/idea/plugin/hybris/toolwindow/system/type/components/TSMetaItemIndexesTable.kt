@@ -110,6 +110,7 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
         private const val COLUMN_INCLUDES = "Includes"
         private const val COLUMN_MODULE = "Module"
 
+        @JvmStatic
         fun getInstance(project: Project): TSMetaItemIndexesTable = with(TSMetaItemIndexesTable(project)) {
             init()
 

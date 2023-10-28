@@ -47,6 +47,7 @@ class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>()
     }
 
     companion object {
+        @JvmStatic
         val instance: CompletionProvider<CompletionParameters> =
             ApplicationManager.getApplication().getService(ImpexMacrosCompletionProvider::class.java)
     }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,12 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage.Companion.INSTANCE
 import com.intellij.psi.tree.IElementType
 import org.jetbrains.annotations.NonNls
 import java.util.regex.Pattern
 
-class FlexibleSearchTokenType(debugName: @NonNls String) : IElementType(debugName, INSTANCE) {
+class FlexibleSearchTokenType(debugName: @NonNls String) : IElementType(debugName, FlexibleSearchLanguage.INSTANCE) {
 
     override fun toString() = super.toString()
         .takeIf { it.isNotBlank() }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,34 +15,150 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.common.services
 
-package com.intellij.idea.plugin.hybris.common.services;
-
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 
-interface CommonIdeaService {
+@Service
+class CommonIdeaService {
+    private val commandProcessor: CommandProcessor = CommandProcessor.getInstance()
+    fun isTypingActionInProgress(): Boolean {
+        val currentCommandName = commandProcessor.currentCommandName ?: return false
 
-    fun isTypingActionInProgress(): Boolean
+        return HybrisConstants.TYPING_EDITOR_ACTIONS.any {
+            currentCommandName.equals(it, true)
+        } || HybrisConstants.UNDO_REDO_EDITOR_ACTIONS.any {
+            currentCommandName.startsWith(it)
+        }
+    }
 
-    fun isPotentiallyHybrisProject(project: Project): Boolean
+    fun isPotentiallyHybrisProject(project: Project): Boolean {
+        val modules = ModuleManager.getInstance(project).modules
+        if (modules.isEmpty()) return false
 
-    fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor): PlatformModuleDescriptor?
+        val moduleNames = modules
+            .map { it.yExtensionName() }
 
-    fun getActiveHacUrl(project: Project): String
+        val acceleratorNames = listOf("*cockpits", "*core", "*facades", "*storefront")
+        if (matchAllModuleNames(acceleratorNames, moduleNames)) return true
 
-    fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String
+        val webservicesNames = listOf(
+            "*${HybrisConstants.EXTENSION_NAME_HMC}",
+            HybrisConstants.EXTENSION_NAME_HMC,
+            HybrisConstants.EXTENSION_NAME_PLATFORM
+        )
 
-    fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String
+        return matchAllModuleNames(webservicesNames, moduleNames)
+    }
 
-    fun fixRemoteConnectionSettings(project: Project)
+    private fun matchAllModuleNames(namePatterns: Collection<String>, moduleNames: Collection<String>) = namePatterns
+        .all { matchModuleName(it, moduleNames) }
 
-    fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?): String
+    fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor
+        .foundModules
+        .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
+
+    fun getActiveHacUrl(project: Project) = getUrl(getActiveHacRemoteConnectionSettings(project))
+
+    fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
+        ?.sslProtocol
+        ?: HybrisConstants.DEFAULT_SSL_PROTOCOL
+
+    fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
+        .let(::getUrl)
+
+    private fun getProjectSettings(project: Project, settings: HybrisRemoteConnectionSettings?) = settings
+        ?: getActiveHacRemoteConnectionSettings(project)
+
+    private fun getActiveHacRemoteConnectionSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        .getActiveHacRemoteConnectionSettings(project)
+
+    fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
+        val currentSettings = settings ?: HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+            .getActiveSolrRemoteConnectionSettings(project)
+
+        return buildString {
+            if (currentSettings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
+            append(currentSettings.hostIP)
+            append(":")
+            append(currentSettings.port)
+            append("/")
+            append(currentSettings.solrWebroot)
+        }
+    }
+
+    fun fixRemoteConnectionSettings(project: Project) {
+        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
+        val state = settings.state
+        val connectionList = state.remoteConnectionSettingsList
+        connectionList.forEach {
+            prepareSslRemoteConnectionSettings(it)
+        }
+
+        if (settings.hacRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settings.getDefaultHacRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeRemoteConnectionID = newSettings.uuid
+        }
+
+        if (settings.solrRemoteConnectionSettings.isEmpty()) {
+            val newSettings = settings.getDefaultSolrRemoteConnectionSettings(project)
+            connectionList.add(newSettings)
+            state.activeSolrConnectionID = newSettings.uuid
+        }
+    }
+
+    private fun prepareSslRemoteConnectionSettings(connectionSettings: HybrisRemoteConnectionSettings) {
+        connectionSettings.isSsl = connectionSettings.generatedURL
+            ?.startsWith(HybrisConstants.HTTPS_PROTOCOL)
+            ?: false
+
+        cleanUpRemoteConnectionSettingsHostIp(connectionSettings)
+    }
+
+    private fun cleanUpRemoteConnectionSettingsHostIp(connectionSettings: HybrisRemoteConnectionSettings) {
+        connectionSettings.hostIP = connectionSettings.hostIP
+            ?.replace(regex, "")
+    }
+
+    private fun matchModuleName(pattern: String, moduleNames: Collection<String>) = moduleNames
+        .any { it.matches(Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))) }
+
+    private fun getUrl(settings: HybrisRemoteConnectionSettings) = buildString {
+        if (settings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
+        append(settings.hostIP)
+
+        settings.port
+            ?.takeIf { it.isNotBlank() }
+            ?.let {
+                append(HybrisConstants.URL_PORT_DELIMITER)
+                append(settings.port)
+            }
+
+        settings.hacWebroot
+            ?.takeUnless { it.isBlank() }
+            ?.let {
+                append('/')
+                append(
+                    it.trimStart(' ', '/')
+                        .trimEnd(' ', '/')
+                )
+            }
+    }
 
     companion object {
+        private val regex = Regex("https?://")
+        @JvmStatic
         val instance: CommonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
     }
 }

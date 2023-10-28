@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
@@ -50,7 +49,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        val commonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        val commonIdeaService = CommonIdeaService.instance
         val settingsComponent = HybrisProjectSettingsComponent.getInstance(project)
         val isHybrisProject = settingsComponent.isHybrisProject()
 

@@ -215,7 +215,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
             final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
-            final var propertiesService = PropertiesService.Companion.getInstance(macroUsage.getProject());
+            final var propertiesService = PropertiesService.getInstance(macroUsage.getProject());
 
             if (propertiesService == null) return;
 

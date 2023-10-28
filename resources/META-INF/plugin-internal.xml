@@ -26,30 +26,15 @@
 
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
-<!--        <workspaceModel.fileIndexContributor implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectFileIndexContributor"/>-->
         <indexedRootsProvider implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
 
         <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectView"/>
 
         <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.view.HybrisProjectViewNodeDecorator"/>
         
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.CommonIdeaService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultCommonIdeaService"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.common.services.impl.DefaultVirtualFileSystemService"/>
-
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.toolwindow.impl.HybrisToolWindowServiceImpl"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisConsoleServiceImpl"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent"/>
 
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionService"/>
@@ -57,12 +42,8 @@
                         serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionEntityService"/>
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache"
                         serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.impl.HybrisConsoleInMemoryRegionsCache"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionPersistenceService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultJsonRegionPersistenceService"/>
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultConsolePersistenceService"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.JsonIOUtil"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.listeners.HybrisConsoleQueryPanelEventManager"/>
 
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.view.impl.HybrisProjectViewDirectoryHelper"
@@ -90,10 +71,6 @@
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
-
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.DefaultSolrHttpClient"/>
     </extensions>
 
     <actions>

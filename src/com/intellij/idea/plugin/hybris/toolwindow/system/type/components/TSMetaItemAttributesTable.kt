@@ -128,6 +128,7 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
         private const val COLUMN_QUALIFIER = "Qualifier"
         private const val COLUMN_MODULE = "Module"
 
+        @JvmStatic
         fun getInstance(project: Project): TSMetaItemAttributesTable = with(TSMetaItemAttributesTable(project)) {
             init()
 

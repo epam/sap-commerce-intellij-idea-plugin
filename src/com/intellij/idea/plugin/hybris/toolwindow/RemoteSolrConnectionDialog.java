@@ -1,10 +1,28 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.toolwindow;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrHttpClient;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient;
 import com.intellij.idea.plugin.hybris.toolwindow.document.filter.UnsignedIntegerDocumentFilter;
 import com.intellij.idea.plugin.hybris.toolwindow.document.listener.SimpleDocumentListener;
 import com.intellij.notification.NotificationType;
@@ -111,7 +129,7 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
         String message;
         NotificationType type;
         try {
-            SolrHttpClient.getInstance(myProject).listOfCores(myProject, setting);
+            SolrHttpClient.getInstance(myProject).listOfCores(setting);
             message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR" , setting.getGeneratedURL());
             type = NotificationType.INFORMATION;
         } catch (Exception e) {
@@ -133,7 +151,7 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
         mySettings.setSolrWebroot(solrWebrootTextField.getText());
         mySettings.setAdminLogin(loginTextField.getText());
         mySettings.setAdminPassword(new String(passwordField.getPassword()));
-        final String previewUrl = CommonIdeaService.Companion.getInstance().getSolrUrl(myProject, mySettings);
+        final String previewUrl = CommonIdeaService.getInstance().getSolrUrl(myProject, mySettings);
         projectUrlPreviewValueLabel.setText(previewUrl);
         mySettings.setGeneratedURL(previewUrl);
     }

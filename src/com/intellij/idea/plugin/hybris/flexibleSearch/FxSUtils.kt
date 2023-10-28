@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor.Companion.DUMMY_IDENTIFIER
+import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
@@ -45,7 +45,7 @@ object FxSUtils {
 
     fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
         var addComma = false
-        if (fxsSettings.completion.injectCommaAfterExpression && element.text == DUMMY_IDENTIFIER) {
+        if (fxsSettings.completion.injectCommaAfterExpression && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
             addComma = PsiTreeUtil
                 .getParentOfType(
                     element,
@@ -54,7 +54,7 @@ object FxSUtils {
                     FlexibleSearchGroupByClause::class.java,
                 )
                 ?.text
-                ?.substringAfter(DUMMY_IDENTIFIER)
+                ?.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
                 ?.trim()
                 ?.takeUnless { it.startsWith(",") }
                 ?.isNotEmpty()

@@ -165,9 +165,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         ).queue();
 
         if (refresh) {
-            PostImportConfigurator.Companion.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
+            PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
         } else {
-            project.putUserData(HybrisProjectImportStartupActivity.Companion.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+            project.putUserData(HybrisProjectImportStartupActivity.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
         }
         notifyImportNotFinishedYet(project);
         return modules;
@@ -196,7 +196,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         Collections.sort(alreadyExistingModuleFiles);
 
         try {
-            ApplicationManager.getApplication().getService(VirtualFileSystemService.class).removeAllFiles(alreadyExistingModuleFiles);
+            VirtualFileSystemService.getInstance().removeAllFiles(alreadyExistingModuleFiles);
         } catch (IOException e) {
             LOG.error("Can not remove old module files.", e);
         }

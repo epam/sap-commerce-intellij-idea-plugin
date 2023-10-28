@@ -15,37 +15,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.console
+package com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services
 
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.pojo.Region
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import java.nio.file.Files
+import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)
-class HybrisConsoleService(private val project: Project) {
+class RegionPersistenceService(private val project: Project) {
 
-    fun findConsole(consoleTitle: String) = HybrisToolWindowService.getInstance(project).finConsolesView()
-        ?.findConsole(consoleTitle)
-
-    fun setActiveConsole(console: HybrisConsole) {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
-            ?.setActiveConsole(console)
+    fun writeRegionData(destination: Path, regionName: String) {
+        JsonIOService.getInstance(project).persistData(destination, RegionService.getInstance(project).findOrCreate(regionName))
     }
 
-    fun getActiveConsole() = HybrisToolWindowService.getInstance(project).finConsolesView()
-        ?.getActiveConsole()
+    fun loadRegionData(source: Path) {
+        if (!Files.exists(source)) return
+        if (!Files.isRegularFile(source)) return
 
-    fun validateImpex() {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
-            ?.validateImpex()
-    }
-
-    fun executeStatement() {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
-            ?.execute()
+        JsonIOService.getInstance(project)
+            .loadPersistedData(source, Region::class.java)
+            ?.let { RegionService.getInstance(project).save(it) }
     }
 
     companion object {
-        fun getInstance(project: Project): HybrisConsoleService = project.getService(HybrisConsoleService::class.java)
+        @JvmStatic
+        fun getInstance(project: Project): RegionPersistenceService = project.getService(RegionPersistenceService::class.java)
     }
 }

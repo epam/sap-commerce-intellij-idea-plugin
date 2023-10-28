@@ -67,6 +67,7 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
         private const val COLUMN_MODULE = "Module"
         private const val COLUMN_VALUE = "Value"
 
+        @JvmStatic
         fun getInstance(project: Project): BSMetaEnumValuesTable = with(BSMetaEnumValuesTable(project)) {
             init()
 

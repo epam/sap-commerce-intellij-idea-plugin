@@ -41,6 +41,7 @@ class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParamete
     }
 
     companion object {
+        @JvmStatic
         val instance: CompletionProvider<CompletionParameters> =
             ApplicationManager.getApplication().getService(ImpexKeywordModeCompletionProvider::class.java)
     }

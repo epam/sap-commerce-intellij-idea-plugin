@@ -1,3 +1,21 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
@@ -212,18 +230,18 @@ public abstract class AbstractHybrisHacHttpClient {
     }
 
     public String getHostHacURL(final Project project) {
-        return CommonIdeaService.Companion.getInstance().getActiveHacUrl(project);
+        return CommonIdeaService.getInstance().getActiveHacUrl(project);
     }
 
     public String getSslProtocol(
         final Project project,
         final @Nullable HybrisRemoteConnectionSettings settings
     ) {
-        return CommonIdeaService.Companion.getInstance().getActiveSslProtocol(project, settings);
+        return CommonIdeaService.getInstance().getActiveSslProtocol(project, settings);
     }
 
     public String getHostHacURL(final Project project, final HybrisRemoteConnectionSettings settings) {
-        return CommonIdeaService.Companion.getInstance().getHostHacUrl(project, settings);
+        return CommonIdeaService.getInstance().getHostHacUrl(project, settings);
     }
 
     protected CloseableHttpClient createAllowAllClient(final long timeout) {

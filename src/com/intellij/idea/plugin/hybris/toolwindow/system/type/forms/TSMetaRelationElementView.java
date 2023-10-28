@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementCustomPropertiesTable;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier;
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation;
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality;
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement;
 import com.intellij.idea.plugin.hybris.system.type.model.Type;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.AbstractTSMetaCustomPropertiesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSMetaRelationElementCustomPropertiesTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
@@ -115,7 +115,7 @@ public class TSMetaRelationElementView {
     private void createUIComponents() {
         myCardinality = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Cardinality.values())));
         myCollectionType = new ComboBox<>(new CollectionComboBoxModel<>(Arrays.asList(Type.values())));
-        myCustomProperties = TSMetaRelationElementCustomPropertiesTable.Companion.getInstance(myProject);
+        myCustomProperties = TSMetaRelationElementCustomPropertiesTable.getInstance(myProject);
         myDetailsPane = new JBPanel<>();
         myModifiersPane = new JBPanel<>();
         myFlagsPane = new JBPanel<>();
