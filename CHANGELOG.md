@@ -3,6 +3,7 @@
 ### `Project Import` enhancements
 - Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
 - Use custom library names for all custom libraries [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
+- Ignore non-`[y]` project roots if they will affect project import [#774](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/774)
 
 ### `items.xml` inspection rules
 - Improved detailed message for `TSDeploymentTableMustNotBeRedeclaredInChildTypes` [#772](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/772)

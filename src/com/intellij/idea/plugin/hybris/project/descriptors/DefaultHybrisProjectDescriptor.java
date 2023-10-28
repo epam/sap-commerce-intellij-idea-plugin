@@ -537,7 +537,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for higher priority modules");
             for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
                 final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-                this.scanSubdirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
+                scanSubdirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
                 final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
@@ -659,7 +659,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 && !hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-                return;
+//                return;
             }
 
             if (hybrisProjectService.isMavenModule(rootProjectDirectory)
@@ -668,7 +668,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-                return;
+//                return;
             }
 
             if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
@@ -679,7 +679,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
-                return;
+//                return;
             }
 
             if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
@@ -724,8 +724,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return !Files.isSymbolicLink(file) || followSymlink;
         });
         if (files != null) {
-            for (Path file : files) {
-                this.findModuleRoots(moduleRootMap, acceptOnlyHybrisModules, file.toFile(), progressListenerProcessor);
+            for (final var file : files) {
+                findModuleRoots(moduleRootMap, acceptOnlyHybrisModules, file.toFile(), progressListenerProcessor);
             }
             files.close();
         }
