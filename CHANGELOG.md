@@ -1,6 +1,7 @@
 ## [2023.2.10]
 
 ### `Project Import` enhancements
+- Register web spring files available due `ext.?.extension.webmodule.webroot` property [#776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/776)
 - Do not register SAP javadocs for custom extensions [#763](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/763)
 - Use custom library names for all custom libraries [#764](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/764)
 - Ignore non-`[y]` project roots if they will affect project import [#774](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/774)

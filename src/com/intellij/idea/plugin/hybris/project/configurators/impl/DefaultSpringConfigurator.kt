@@ -45,6 +45,7 @@ import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipFile
+import kotlin.io.path.exists
 
 class DefaultSpringConfigurator : SpringConfigurator {
 
@@ -129,6 +130,20 @@ class DefaultSpringConfigurator : SpringConfigurator {
             LOG.error("", e)
             return
         }
+
+        // specifci case for OCC like extensions, usually, they have web-spring.xml files in the corresponding resources folder
+        projectProperties.getProperty("ext.${moduleDescriptor.name}.extension.webmodule.webroot")
+            ?.let { if (it.startsWith("/")) it.removePrefix("/") else it }
+            ?.let {
+                getResourceDir(moduleDescriptor).toPath()
+                    .resolve(it)
+                    .resolve(moduleDescriptor.name)
+                    .resolve("web")
+                    .resolve("spring")
+            }
+            ?.takeIf { it.exists() }
+            ?.let { addSpringXmlFile(moduleDescriptorMap, moduleDescriptor, it.toFile(), moduleDescriptor.name + "-web-spring.xml") }
+
         projectProperties.stringPropertyNames()
             .filter {
                 it.endsWith(HybrisConstants.APPLICATION_CONTEXT_SPRING_FILES)
