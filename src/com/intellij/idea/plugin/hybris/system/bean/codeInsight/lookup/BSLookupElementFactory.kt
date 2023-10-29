@@ -59,7 +59,7 @@ object BSLookupElementFactory {
                 else -> HybrisIcons.BS_BEAN
             }
         )
-        ?.withCaseSensitivity(true)
+        ?.withCaseSensitivity(false)
 
     fun build(meta: BSMetaProperty) = meta.name
         ?.let { LookupElementBuilder.create(it) }

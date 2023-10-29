@@ -13,6 +13,9 @@
 - Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
 - Added shortcut `control + alt + backspace` for remove column action [#775](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/775)
 
+### `OCC` enhancements
+- Added code completion `dtoClass` Level Mapping tags [#777](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/777)
+
 ### `Cockpit NG` enhancements
 - Improved detection of the `config` files [#760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/760)
 - Improved detection of the `widgets` files [#759](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/759)

@@ -21,10 +21,8 @@ package com.intellij.idea.plugin.hybris.system.bean.psi
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.StandardPatterns
-import com.intellij.patterns.XmlAttributeValuePattern
-import com.intellij.patterns.XmlPatterns
+import com.intellij.patterns.*
+import com.intellij.psi.xml.XmlAttributeValue
 
 object BSPatterns {
 
@@ -60,13 +58,27 @@ object BSPatterns {
         )
         .inside(beansXmlFile)
 
-    val BEAN_CLASS: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Bean.CLASS)
-        .withSuperParent(
-            2,
-            XmlPatterns.xmlTag()
-                .withLocalName(Beans.BEAN)
-        )
-        .inside(beansXmlFile)
+    val BEAN_CLASS: ElementPattern<XmlAttributeValue> = XmlPatterns.or(
+        XmlPatterns.xmlAttributeValue(Bean.CLASS)
+            .withSuperParent(
+                2,
+                XmlPatterns.xmlTag()
+                    .withLocalName(Beans.BEAN)
+            )
+            .inside(beansXmlFile),
+
+        XmlPatterns.xmlAttributeValue("value")
+            .withSuperParent(
+                2,
+                XmlPatterns.xmlTag()
+                    .withLocalName("property")
+                    .withAttributeValue("name", "dtoClass")
+                    .withParent(
+                        XmlPatterns.xmlTag().withLocalName("bean")
+                    )
+            )
+            .inside(springBeansXmlFile)
+    )
 
     val ENUM_CLASS: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Enum.CLASS)
         .withSuperParent(

@@ -22,7 +22,8 @@
         <dom.fileMetaData rootTagName="beans" stubVersion="9"
                           implementation="com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionContributor"/>
 
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.lang.folding.BeansXmlFoldingBuilder"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
