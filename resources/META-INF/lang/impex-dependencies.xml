@@ -115,7 +115,7 @@
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
         <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
         <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
-            <keyboard-shortcut first-keystroke="control alt s" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
 
         <group id="hybris.impex.context.actions">
@@ -132,7 +132,9 @@
             <action id="hybris.impex.table.column.add.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertLeftAction"/>
             <action id="hybris.impex.table.column.add.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertRightAction"/>
             <separator/>
-            <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction"/>
+            <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction">
+                <keyboard-shortcut first-keystroke="control alt BACK_SPACE" keymap="$default"/>
+            </action>
             <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction"/>
             <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction"/>
         </group>

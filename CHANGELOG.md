@@ -10,6 +10,7 @@
 
 ### `ImpEx` enhancements
 - Use single space after Header Mode [#761](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/761)
+- Added shortcut `control + alt + backspace` for remove column action [#775](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/775)
 
 ### `Cockpit NG` enhancements
 - Improved detection of the `config` files [#760](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/760)
