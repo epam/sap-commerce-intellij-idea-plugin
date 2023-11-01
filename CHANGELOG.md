@@ -1,3 +1,8 @@
+## [2023.2.11]
+
+### `Kotlin` enhancements
+- Introduced `ysri` live template for Spring `@Resource` declaration [#776](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/776)
+
 ## [2023.2.10]
 
 ### `Project Import` enhancements
