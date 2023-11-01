@@ -71,16 +71,16 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .bindSelected(state::importOotbModulesInReadOnlyMode)
                 }
                 row {
+                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
+                        .bindSelected(state::excludeTestSources)
+                }
+                row {
                     checkBox(message("hybris.project.import.followSymlink"))
                         .bindSelected(state::followSymlink)
                 }
                 row {
                     checkBox(message("hybris.project.import.scanExternalModules"))
                         .bindSelected(state::scanThroughExternalModule)
-                }
-                row {
-                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
-                        .bindSelected(state::excludeTestSources)
                 }
                 row {
                     checkBox(message("hybris.project.import.importCustomAntBuildFiles"))

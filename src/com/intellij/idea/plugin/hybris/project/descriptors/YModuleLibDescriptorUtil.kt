@@ -158,7 +158,7 @@ object YModuleLibDescriptorUtil {
         if (!descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode) return
         if (descriptorType == ModuleDescriptorType.CUSTOM) return
 
-        val sourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
+        val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
 
@@ -190,11 +190,9 @@ object YModuleLibDescriptorUtil {
             ?.takeIf { it.isNotEmpty() }
             ?: return
 
-        val sourceDirNames = HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES
-        val sourceFiles = sourceDirNames
+        val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
-            .toMutableList()
 
         // Attach standard sources to server jar
         val sourceJarDirectories = getStandardSourceJarDirectory(descriptor)
