@@ -85,9 +85,6 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
             configureSubModule(ySubModuleDescriptor, contentEntry);
         }
-        if (moduleDescriptor instanceof final YBackofficeSubModuleDescriptor ySubModuleDescriptor) {
-            configureSubModule(ySubModuleDescriptor, contentEntry, dirsToIgnore, appSettings);
-        }
 
         if (moduleDescriptor instanceof final PlatformModuleDescriptor platformModuleDescriptor) {
             configurePlatformRoots(platformModuleDescriptor, contentEntry, dirsToIgnore, appSettings);
@@ -205,24 +202,6 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
     ) {
         this.configureWebRoots(moduleDescriptor, contentEntry);
 //        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
-    }
-
-    protected void configureSubModule(
-        @NotNull final YBackofficeSubModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings appSettings
-    ) {
-        final File backOfficeModuleDirectory = moduleDescriptor.getModuleRootDirectory();
-
-        addSourceRoots(contentEntry, backOfficeModuleDirectory, dirsToIgnore, appSettings, TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
-
-        if (!isCustomModuleDescriptor(moduleDescriptor) && moduleDescriptor.getRootProjectDescriptor().isExcludeTestSources()) {
-            excludeDirectories(contentEntry, backOfficeModuleDirectory, TEST_SRC_DIR_NAMES);
-        }
-
-        addResourcesDirectory(contentEntry, backOfficeModuleDirectory);
-        excludeDirectory(contentEntry, new File(backOfficeModuleDirectory, CLASSES_DIRECTORY));
     }
 
     protected void configurePlatformRoots(
