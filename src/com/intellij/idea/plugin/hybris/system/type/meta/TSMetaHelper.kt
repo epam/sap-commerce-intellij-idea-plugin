@@ -105,13 +105,13 @@ object TSMetaHelper {
         ?.split(",")
         ?.map { it.trim() }
 
-    fun getAllExtends(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): Set<TSGlobalMetaItem> {
+    fun getAllExtends(metaModel: TSGlobalMetaModel, itemName: String?, extendsName: String?): Set<TSGlobalMetaItem> {
         val tempParents = LinkedHashSet<TSGlobalMetaItem>()
-        var metaItem = getExtendsMetaItem(metaModel, meta)
+        var metaItem = getExtendsMetaItem(metaModel, itemName, extendsName)
 
         while (metaItem != null) {
             tempParents.add(metaItem)
-            metaItem = getExtendsMetaItem(metaModel, metaItem)
+            metaItem = getExtendsMetaItem(metaModel, metaItem.name, metaItem.extendedMetaItemName)
         }
         return Collections.unmodifiableSet(tempParents)
     }
@@ -130,10 +130,10 @@ object TSMetaHelper {
         || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
 
 
-    private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): TSGlobalMetaItem? {
-        val realExtendedMetaItemName = meta.extendedMetaItemName
-            // prevent deadlock when type extends itself
-            ?.takeIf { it != meta.name }
+    private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, itemName: String?, extendsName: String?): TSGlobalMetaItem? {
+        val realExtendedMetaItemName = extendsName
+            // prevent deadlock when the type extends itself
+            ?.takeIf { it != itemName }
             ?: HybrisConstants.TS_TYPE_GENERIC_ITEM
 
         return metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[realExtendedMetaItemName]

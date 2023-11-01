@@ -36,7 +36,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
         ProgressManager.getInstance().progressIndicator.text2 = message("hybris.ts.access.progress.subTitle.merging")
 
         localMetaModels
-            // ideally we have to get the same dependency order as SAP Commerce
+            // ideally, we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
 
@@ -56,7 +56,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             .filter { it.type != null }
             .forEach { it.flattenType = TSMetaHelper.flattenType(it.type!!, allTypes) }
 
-        // to properly propagate `isCustom` flag we need to check every relation end defined for non directly modified Item Types
+        // to properly propagate `isCustom` flag, we need to check every relation end defined for non directly modified Item Types
         // if at least one relation end is custom Item Type will be marked as custom too
         metaItems.values
             .filterNot { it.isCustom }

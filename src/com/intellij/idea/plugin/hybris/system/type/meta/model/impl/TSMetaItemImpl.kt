@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -157,7 +157,10 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     private fun mergeCustomProperties(localMeta: TSMetaItem) = customProperties.putAll(localMeta.customProperties)
 
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
-        val extends = TSMetaHelper.getAllExtends(globalMetaModel, this)
+        val extends = this.retrieveAllDoms()
+            .mapNotNull { it.extends.stringValue }
+            .flatMap { TSMetaHelper.getAllExtends(globalMetaModel, name, it) }
+            .toSet()
         val currentRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, emptySet())
         val combinedRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)
 

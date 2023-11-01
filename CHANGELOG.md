@@ -11,6 +11,9 @@
 - Adjusted `log4j2` live template [#781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/781)
 - Adjusted `slf4j` live template [#782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/782)
 
+### Other
+- Adjust type system merge for `Product` type (it extends both `GenericItem` and `LocalizableItem`) [#785](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/785)
+
 ## [2023.2.10]
 
 ### `Project Import` enhancements
