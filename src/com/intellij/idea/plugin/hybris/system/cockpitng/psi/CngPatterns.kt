@@ -100,6 +100,15 @@ object CngPatterns {
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "attribute",
+            "compare-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
     )
 

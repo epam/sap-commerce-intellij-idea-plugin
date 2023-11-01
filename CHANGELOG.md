@@ -7,6 +7,7 @@
 ### `Cockpit NG` enhancements
 - Extend config schema namespace with `editors` type [#784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/784)
 - Added code completion and reference resolution for `y:property` : `editor` [#787](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/787)
+- Added code completion and reference resolution for `cv:attribute` : `editor` [#788](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/788)
 
 ### `Kotlin` enhancements
 - Introduced `ysri` live template for Spring `@Resource` declaration [#780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/780)
