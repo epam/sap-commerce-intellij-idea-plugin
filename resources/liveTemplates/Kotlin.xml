@@ -18,19 +18,18 @@
 
 <templateSet group="Kotlin">
     <template name="log4j2"
-              value="private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager.getLogger($CLASS$.class);"
+              value="private val LOG by lazy { org.apache.logging.log4j.LogManager.getLogger(this::class.java.name) }"
               description="Define Log4j 2 Logger" toReformat="true" toShortenFQNames="true">
-        <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
         <context>
-            <option name="KOTLIN_CLASS" value="true"/>
+            <option name="KOTLIN_OBJECT_DECLARATION" value="true"/>
         </context>
     </template>
     <template name="slf4j"
-              value="private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger($CLASS$.class);"
+              value="private val LOG = org.slf4j.LoggerFactory.getLogger($CLASS$.class);"
               description="Define Simple Logging Facade (SLF4J) Logger" toReformat="true" toShortenFQNames="true">
         <variable name="CLASS" expression="className()" alwaysStopAt="true"/>
         <context>
-            <option name="KOTLIN_CLASS" value="true"/>
+            <option name="KOTLIN_OBJECT_DECLARATION" value="true"/>
         </context>
     </template>
     <template name="ysri"
