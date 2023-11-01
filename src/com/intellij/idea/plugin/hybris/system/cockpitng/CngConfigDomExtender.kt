@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser.
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Actions
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Base
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Editors
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.framework.CockpitLocales
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.framework.Dashboard
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.gridView.GridView
@@ -55,6 +56,7 @@ class CngConfigDomExtender : DomExtender<Context>() {
         registrar.registerCollectionChildrenExtension(XmlName("flow", COCKPIT_NG_NAMESPACE_KEY), Flow::class.java)
 
         registrar.registerCollectionChildrenExtension(XmlName("actions", COCKPIT_NG_NAMESPACE_KEY), Actions::class.java)
+        registrar.registerCollectionChildrenExtension(XmlName("editors", COCKPIT_NG_NAMESPACE_KEY), Editors::class.java)
         registrar.registerCollectionChildrenExtension(XmlName("base", COCKPIT_NG_NAMESPACE_KEY), Base::class.java)
         registrar.registerCollectionChildrenExtension(XmlName("compare-view", COCKPIT_NG_NAMESPACE_KEY), CompareView::class.java)
         registrar.registerCollectionChildrenExtension(XmlName("editorArea", COCKPIT_NG_NAMESPACE_KEY), EditorArea::class.java)

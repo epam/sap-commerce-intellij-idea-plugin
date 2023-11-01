@@ -3,6 +3,9 @@
 ### `Project Import` enhancements
 - Improved classpath configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
 
+### `Cockpit NG` enhancements
+- Extend config schema namespace with `editors` type [#784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/784)
+
 ### `Kotlin` enhancements
 - Introduced `ysri` live template for Spring `@Resource` declaration [#780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/780)
 - Adjusted `log4j2` live template [#781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/781)
