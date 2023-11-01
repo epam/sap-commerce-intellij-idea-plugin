@@ -91,6 +91,15 @@ object CngPatterns {
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "editor",
+            "property",
+            "editors",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
     )
 
