@@ -69,6 +69,9 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
 
+            configuratorFactory.xsdSchemaConfigurator
+                ?.configure(project, hybrisProjectDescriptor, allHybrisModules)
+
             try {
                 configuratorFactory.dataSourcesConfigurator
                     ?.configure(project)

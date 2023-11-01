@@ -33,6 +33,9 @@ public interface ConfiguratorFactory {
     @NotNull
     SpringConfigurator getSpringConfigurator();
 
+    @Nullable
+    XsdSchemaConfigurator getXsdSchemaConfigurator();
+
     @NotNull
     ModuleDependenciesConfigurator getModulesDependenciesConfigurator();
 

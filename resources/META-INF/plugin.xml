@@ -46,6 +46,7 @@
     <depends optional="true" config-file="optional-eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="optional-gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
     <depends optional="true" config-file="optional-spring-dependencies.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="optional-javaee-dependencies.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="optional-javaee-web-dependencies.xml">com.intellij.javaee.web</depends>
     <depends optional="true" config-file="optional-java-dependencies.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="optional-diagram-dependencies.xml">com.intellij.diagram</depends>

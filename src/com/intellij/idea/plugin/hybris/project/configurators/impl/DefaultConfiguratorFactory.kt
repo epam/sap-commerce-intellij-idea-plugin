@@ -34,6 +34,8 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.instance
         ?: SpringConfigurator.dummyInstance
 
+    override fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = XsdSchemaConfigurator.instance
+
     override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator = ContentRootConfigurator.instance
     override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.instance
     override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.instance
