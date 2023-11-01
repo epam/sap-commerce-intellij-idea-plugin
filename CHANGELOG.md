@@ -1,7 +1,7 @@
 ## [2023.2.11]
 
 ### `Project Import` enhancements
-- Improved classpath for configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
+- Improved classpath configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
 
 ### `Kotlin` enhancements
 - Introduced `ysri` live template for Spring `@Resource` declaration [#780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/780)
