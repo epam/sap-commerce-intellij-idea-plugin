@@ -26,11 +26,11 @@ import com.intellij.idea.plugin.hybris.properties.PropertiesService
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.projectRoots.JavaSdk
-import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.ProjectRootManager
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
+import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
+import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 
 class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
 
@@ -68,18 +68,14 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
     private fun setKotlinJvmTarget(project: Project) {
         ApplicationManager.getApplication().runReadAction {
             val projectRootManager = ProjectRootManager.getInstance(project)
-            val sdk = projectRootManager.projectSdk ?: return@runReadAction
-            val javaSdk = sdk.sdkType as? JavaSdk ?: return@runReadAction
-            val javaSdkVersion = javaSdk.getVersion(sdk) ?: return@runReadAction
 
-            val projectJvmTarget = if (javaSdkVersion == JavaSdkVersion.JDK_1_8) {
-                "1.8"
-            } else {
-                javaSdkVersion.description
-            }
-            Kotlin2JvmCompilerArgumentsHolder.getInstance(project).update {
-                jvmTarget = projectJvmTarget
-            }
+            projectRootManager.projectSdk
+                ?.let { sdk -> getDefaultJvmTarget(sdk, KotlinPluginLayout.ideCompilerVersion) }
+                ?.let { defaultJvmTarget ->
+                    Kotlin2JvmCompilerArgumentsHolder.getInstance(project).update {
+                        jvmTarget = defaultJvmTarget.description
+                    }
+                }
         }
     }
 
