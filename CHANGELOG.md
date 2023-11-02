@@ -3,7 +3,7 @@
 ### `Project Import` enhancements
 - Introduced customization of the XSD schema for `y` namespace [#786](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/786)
 - Improved classpath configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
-- Adjusted `platformservices` source directories in readonly mode [#791](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/791)
+- Adjusted `platformservices` source directories in readonly mode [#792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/792)
 
 ### `Cockpit NG` enhancements
 - Extend config schema namespace with `editors` type [#784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/784)
