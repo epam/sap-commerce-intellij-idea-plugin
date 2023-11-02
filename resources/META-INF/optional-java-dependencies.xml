@@ -26,6 +26,7 @@
         <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.OpenHybrisProjectImportBuilder"/>
         <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
+        <nonProjectFileWritingAccessExtension implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisNonProjectFileWritingAccessExtension"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToJavaInjectorProvider"/>
 

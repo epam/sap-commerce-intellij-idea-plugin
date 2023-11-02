@@ -19,6 +19,7 @@
 - Adjusted `slf4j` live template [#782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/782)
 
 ### Other
+- Allow modification of the non-project root files [#794](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/794)
 - Adjust type system merge for `Product` type (it extends both `GenericItem` and `LocalizableItem`) [#785](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/785)
 
 ## [2023.2.10]
