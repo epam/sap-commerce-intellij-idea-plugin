@@ -17,20 +17,29 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
+import com.intellij.facet.FacetManager
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache
 import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
+import org.jetbrains.kotlin.idea.configuration.KotlinJavaModuleConfigurator
+import org.jetbrains.kotlin.idea.configuration.NotificationMessageCollector
+import org.jetbrains.kotlin.idea.facet.KotlinFacetType
+import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
+import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 
 class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
 
@@ -53,6 +62,41 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
             ?.value
             ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
         setKotlinCompilerVersion(project, compilerVersion)
+
+        registerKotlinLibrary(project)
+    }
+
+    private fun registerKotlinLibrary(project: Project) {
+        val kotlinAwareModules = ModuleManager.getInstance(project).modules
+            .filter { FacetManager.getInstance(it).getFacetByType(KotlinFacetType.TYPE_ID) != null }
+            .toSet()
+
+        if (kotlinAwareModules.isEmpty()) return
+
+        val collector = NotificationMessageCollector.create(project)
+
+        runWriteAction {
+            KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
+        }
+
+        val writeActions = mutableListOf<() -> Unit>()
+
+        ActionUtil.underModalProgress(project, KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")) {
+            val progressIndicator = ProgressManager.getGlobalProgressIndicator()
+
+            for ((index, module) in kotlinAwareModules.withIndex()) {
+                if (!isUnitTestMode()) {
+                    progressIndicator?.let {
+                        it.checkCanceled()
+                        it.fraction = index * 1.0 / kotlinAwareModules.size
+                        it.text = KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")
+                        it.text2 = KotlinProjectConfigurationBundle.message("configure.kotlin.in.module.0.progress.text", module.name)
+                    }
+                }
+                KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
+            }
+        }
+        writeActions.forEach { it() }
     }
 
     // Kotlin compiler version will be updated after project import / refresh in BGT

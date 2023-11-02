@@ -13,6 +13,7 @@
 - Added code completion and reference resolution for `cv:attribute` : `qualifier` [#789](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/789)
 
 ### `Kotlin` enhancements
+- Automatically configure `KotlinJavaRuntime` and register it for dependant modules [#793](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/793)
 - Introduced `ysri` live template for Spring `@Resource` declaration [#780](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/780)
 - Adjusted `log4j2` live template [#781](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/781)
 - Adjusted `slf4j` live template [#782](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/782)
