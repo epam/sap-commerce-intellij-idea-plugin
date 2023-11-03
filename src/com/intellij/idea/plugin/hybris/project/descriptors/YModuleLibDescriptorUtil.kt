@@ -309,10 +309,18 @@ object YModuleLibDescriptorUtil {
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
             .toMutableList()
-        File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY)
-            .takeIf { it.isDirectory }
-            ?.listFiles { it: File -> it.isDirectory }
-            ?.forEach { sourceFiles.add(it) }
+
+        listOf(
+            File(descriptor.moduleRootDirectory, HybrisConstants.ADDON_SRC_DIRECTORY),
+            File(descriptor.moduleRootDirectory, HybrisConstants.COMMON_WEB_SRC_DIRECTORY),
+        )
+            .filter { it.isDirectory }
+            .mapNotNull { srcDir ->
+                srcDir.listFiles { it: File -> it.isDirectory }
+                    ?.toList()
+            }
+            .flatten()
+            .forEach { sourceFiles.add(it) }
 
         if (descriptor.owner.name != HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
             libs.add(
