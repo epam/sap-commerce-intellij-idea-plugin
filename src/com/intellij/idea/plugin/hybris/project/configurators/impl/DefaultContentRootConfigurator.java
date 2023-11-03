@@ -241,7 +241,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         excludeSubDirectories(
             contentEntry,
             moduleDescriptor.getModuleRootDirectory(),
-            Arrays.asList(ADDON_SRC_DIRECTORY, ADDON_TESTSRC_DIRECTORY, COMMON_WEB_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY)
+            List.of(TEST_CLASSES_DIRECTORY)
         );
         configureWebInf(contentEntry, moduleDescriptor);
     }
@@ -261,16 +261,6 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
                 scope,
                 dirsToIgnore, appSettings
             );
-        }
-    }
-
-    private static void excludeDirectories(
-        @NotNull final ContentEntry contentEntry,
-        @NotNull final File dir,
-        final List<String> directories
-    ) {
-        for (String directory : directories) {
-            excludeDirectory(contentEntry, new File(dir, directory));
         }
     }
 

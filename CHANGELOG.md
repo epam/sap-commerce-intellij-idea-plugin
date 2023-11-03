@@ -6,6 +6,7 @@
 - Adjusted `platformservices` source directories in readonly mode [#792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/792)
 - Register `web.addonsrc` as source directories for `?.web - Web Classes` library [#796](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/796)
 - Ignore `addontestsrc` directory for `web` sub-module [#797](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/797)
+- Ignore only `testclasses` directory for `web` sub-module [#798](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/798)
 
 ### `Cockpit NG` enhancements
 - Extend config schema namespace with `editors` type [#784](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/784)
