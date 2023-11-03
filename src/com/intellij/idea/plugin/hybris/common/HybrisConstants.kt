@@ -132,6 +132,7 @@ object HybrisConstants {
     const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
 
     const val ADDON_SRC_DIRECTORY = "addonsrc"
+    const val ADDON_TESTSRC_DIRECTORY = "addontestsrc"
     const val TEST_CLASSES_DIRECTORY = "testclasses"
     const val CLASSES_DIRECTORY = "classes"
     const val JAR_MODELS = "models.jar"

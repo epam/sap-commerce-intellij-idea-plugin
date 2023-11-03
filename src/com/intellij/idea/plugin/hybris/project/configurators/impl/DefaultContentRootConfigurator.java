@@ -109,7 +109,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         if (customModuleDescriptor || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
             addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
-            if (!customModuleDescriptor && !rootProjectDescriptor.isExcludeTestSources()) {
+            if (customModuleDescriptor || !rootProjectDescriptor.isExcludeTestSources()) {
                 addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, TEST_SRC_DIR_NAMES, JavaSourceRootType.TEST_SOURCE);
             }
 
@@ -241,7 +241,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         excludeSubDirectories(
             contentEntry,
             moduleDescriptor.getModuleRootDirectory(),
-            Arrays.asList(ADDON_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY, COMMON_WEB_SRC_DIRECTORY)
+            Arrays.asList(ADDON_SRC_DIRECTORY, ADDON_TESTSRC_DIRECTORY, COMMON_WEB_SRC_DIRECTORY, TEST_CLASSES_DIRECTORY)
         );
         configureWebInf(contentEntry, moduleDescriptor);
     }
