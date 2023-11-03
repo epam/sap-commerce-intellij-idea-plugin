@@ -343,17 +343,17 @@ object YModuleLibDescriptorUtil {
     }
 
     private fun getCommonWebSubModuleDescriptor(
-        descriptor: YSubModuleDescriptor,
+        descriptor: YCommonWebSubModuleDescriptor,
         libName: String = "Common Web"
     ): MutableList<JavaLibraryDescriptor> {
         val libs = getWebLibraryDescriptors(descriptor, libName)
 
-        (descriptor as? YCommonWebSubModuleDescriptor)
-            ?.dependantWebExtensions
-            ?.forEach {
+        descriptor
+            .dependantWebExtensions
+            .forEach {
                 val webSourceFiles = HybrisConstants.ALL_SRC_DIR_NAMES
-                    .map { File(descriptor.moduleRootDirectory, it) }
-                    .filter { it.isDirectory }
+                    .map { dir -> File(descriptor.moduleRootDirectory, dir) }
+                    .filter { dir -> dir.isDirectory }
                 libs.add(
                     JavaLibraryDescriptor(
                         name = "${it.name} - $libName Classes",
