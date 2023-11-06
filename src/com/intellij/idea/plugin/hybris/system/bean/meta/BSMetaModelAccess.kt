@@ -17,33 +17,171 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Computable
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.ModificationTracker
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
+import java.util.*
+import java.util.concurrent.Semaphore
 
-interface BSMetaModelAccess {
+@Service(Service.Level.PROJECT)
+class BSMetaModelAccess(private val myProject: Project) {
 
     companion object {
+        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEAN_SYSTEM_MODEL_CACHE")
         val TOPIC = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
 
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 
-    fun isInitialized(): Boolean
-    fun initMetaModel()
-    fun getMetaModel(): BSGlobalMetaModel
-    fun findMetaEnumByName(name: String?): BSGlobalMetaEnum?
-    fun findMetaForDom(dom: Enum): BSGlobalMetaEnum?
-    fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean>
-    fun findMetaBeanByName(name: String?): BSGlobalMetaBean?
-    fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean>
-    fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>>
-    fun getAllBeans(): Collection<BSGlobalMetaBean>
-    fun getAllEnums(): Collection<BSGlobalMetaEnum>
-    fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T>
+    private val myGlobalMetaModel = BSGlobalMetaModel()
+    private val myMessageBus = myProject.messageBus
+
+    @Volatile
+    private var building: Boolean = false
+
+    @Volatile
+    private var initialized: Boolean = false
+    private val semaphore = Semaphore(1)
+
+    private val myGlobalMetaModelCache = CachedValuesManager.getManager(myProject).createCachedValue(
+        {
+            val localMetaModels = BSMetaModelCollector.getInstance(myProject).collectDependencies()
+                .filter { obj: PsiFile? -> Objects.nonNull(obj) }
+                .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile) }
+                .map { obj: CachedValue<BSMetaModel> -> obj.value }
+                .sortedBy { !it.custom }
+
+            val dependencies = localMetaModels
+                .map { it.psiFile }
+                .toTypedArray()
+            BSMetaModelMerger.merge(myGlobalMetaModel, localMetaModels)
+
+            CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
+        }, false
+    )
+
+    private val task = object : Task.Backgroundable(myProject, HybrisI18NBundleUtils.message("hybris.bs.access.progress.title.building")) {
+        override fun run(indicator: ProgressIndicator) {
+            indicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.waitingForIndex")
+
+            DumbService.getInstance(project).runReadActionInSmartMode(
+                Computable {
+                    val lock = semaphore.tryAcquire()
+
+                    if (lock) {
+                        try {
+                            building = true
+                            val globalMetaModel = myGlobalMetaModelCache.value
+                            building = false
+                            initialized = true
+
+                            myMessageBus.syncPublisher(BSMetaModelAccess.TOPIC).beanSystemChanged(globalMetaModel)
+                        } finally {
+                            semaphore.release();
+                        }
+                    }
+                }
+            )
+        }
+    }
+
+    fun isInitialized() = initialized
+
+    fun initMetaModel() {
+        building = true
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+    }
+
+    fun getMetaModel(): BSGlobalMetaModel {
+        if (building || !initialized || DumbService.isDumb(myProject)) throw ProcessCanceledException()
+
+        if (myGlobalMetaModelCache.hasUpToDateValue()) {
+            return myGlobalMetaModelCache.value
+        }
+
+        initMetaModel()
+
+        throw ProcessCanceledException()
+    }
+
+    fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
+        getAll(BSMetaType.META_WS_BEAN) +
+        getAll(BSMetaType.META_EVENT)
+
+    fun getAllEnums() = getAll<BSGlobalMetaEnum>(BSMetaType.META_ENUM)
+
+    fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T> = getMetaModel().getMetaType<T>(metaType).values
+
+    fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
+    fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = BSMetaModelNameProvider.extract(dom)
+        ?.let { findMetaBeansByName(it) }
+        ?: emptyList()
+
+    fun findMetaBeanByName(name: String?) = listOfNotNull(
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
+        .map { it as? BSGlobalMetaBean }
+        .firstOrNull()
+
+    fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean> = listOfNotNull(
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
+
+    fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> = listOfNotNull(
+        findMetaByName(BSMetaType.META_ENUM, name),
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
+    )
+
+    fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
+
+    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? =
+        getMetaModel().getMetaType<T>(metaType)[name]
+
+    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): CachedValue<BSMetaModel> {
+        return Optional.ofNullable(psiFile.getUserData(SINGLE_MODEL_CACHE_KEY))
+            .orElseGet {
+                val cachedValue = createSingleMetaModelCachedValue(myProject, psiFile)
+                psiFile.putUserData(SINGLE_MODEL_CACHE_KEY, cachedValue)
+                cachedValue
+            }
+    }
+
+    private fun createSingleMetaModelCachedValue(project: Project, psiFile: PsiFile): CachedValue<BSMetaModel> {
+        return CachedValuesManager.getManager(project).createCachedValue(
+            {
+                ApplicationManager.getApplication().runReadAction(
+                    Computable {
+                        CachedValueProvider.Result.create(BSMetaModelProcessor.getInstance(myProject).process(psiFile), psiFile)
+                    } as Computable<CachedValueProvider.Result<BSMetaModel>>)
+            }, false
+        )
+    }
 }

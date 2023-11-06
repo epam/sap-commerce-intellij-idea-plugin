@@ -19,11 +19,12 @@ package com.intellij.idea.plugin.hybris.system.bean.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
+import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
@@ -34,6 +35,7 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import org.jetbrains.kotlin.psi.psiUtil.parents
+import java.util.*
 
 @Service
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
@@ -53,14 +55,14 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
             ?.filter { it.localName == "property" }
             ?: return emptyArray()
         val currentLevelMappings = propertyXmlTags
-            .firstOrNull { it.getAttributeValue("name") == "levelMapping" }
+            .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING }
             ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
             ?.map { it as XmlAttribute }
             ?.mapNotNull { it.value }
             ?: return emptyArray()
 
         val meta = propertyXmlTags
-            .firstOrNull { it.getAttributeValue("name") == "dtoClass" }
+            .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_DTO_CLASS }
             ?.let { BSMetaModelAccess.getInstance(element.project).findMetaBeanByName(it.getAttributeValue("value")) }
             ?: return emptyArray()
 
@@ -68,44 +70,72 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
         return processProperties(attributeValue.value)
             .map {
-                val textRange = TextRange.from(it.key, it.value.length)
-
-                return@map if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, textRange)
-                else OccBSBeanPropertyReference(meta, attributeValue, textRange)
+                return@map if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, it)
+                else OccBSBeanPropertyReference(meta, attributeValue, it)
             }
             .toTypedArray()
     }
 
-    private fun processProperties(text: String): Map<Int, String> {
-        val properties = mutableMapOf<Int, String>()
-        var tempPropertyName = ""
-        for (i in text.indices) {
-            val c = text[i]
-            if (c == ',' || c == ' ' || c == '\n') {
-                consumeProperty(tempPropertyName, properties, i)
-                tempPropertyName = ""
-            } else if (i == text.length - 1) {
-                tempPropertyName += c
-                consumeProperty(tempPropertyName, properties, i + 1)
-            } else {
-                tempPropertyName += c
+    private fun processProperties(text: String): List<OccPropertyMapping> {
+        val parentProperties = LinkedList<OccPropertyMapping>()
+        val properties = mutableListOf<OccPropertyMapping>()
+        val textLength = text.length - 1
+        val tempPropertyName = StringBuilder("")
+        var newPropertyIndex = 0
+
+        text.withIndex().forEach { iv ->
+            val c = iv.value
+            val index = iv.index
+
+            if (tempPropertyName.isEmpty()) newPropertyIndex = index + 1
+
+            if (c != '\n' && c != '\t' && c != ' ' && c != ',' && c != '(' && c != ')') {
+                tempPropertyName.append(c)
+            }
+
+            if ((c == ',' || index == textLength) && tempPropertyName.isNotEmpty()) {
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+
+                if (parentProperties.lastOrNull() == null) properties.add(newProperty)
+                else {
+                    val lastParent = parentProperties.last()
+                    lastParent.children.add(newProperty)
+                    newProperty.parent = lastParent
+                }
+                tempPropertyName.clear()
+            } else if (c == '(') {
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+
+                if (parentProperties.lastOrNull() == null) {
+                    properties.add(newProperty)
+                    parentProperties.add(newProperty)
+                } else {
+                    val lastParent = parentProperties.last()
+                    lastParent.children.add(newProperty)
+                    newProperty.parent = lastParent
+                    parentProperties.add(newProperty)
+                }
+                tempPropertyName.clear()
+            } else if (c == ')') {
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+
+                parentProperties.lastOrNull()
+                    ?.let {
+                        it.children.add(newProperty)
+                        newProperty.parent = it
+                    }
+
+                parentProperties.removeLastOrNull()
+
+                tempPropertyName.clear()
             }
         }
+
         return properties
-    }
-
-    private fun consumeProperty(currentProperty: String, properties: MutableMap<Int, String>, lastIndexOfProperty: Int) {
-        if (currentProperty.isEmpty()) return
-
-        // TODO: also process nested properties, rely on recursion
-        val propertyName = if (currentProperty.contains('('))
-            currentProperty.substringBefore('(')
-        else currentProperty
-
-        properties[lastIndexOfProperty - currentProperty.length + 1] = propertyName
     }
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(OccBeanPropertyReferenceProvider::class.java)
     }
 }
+

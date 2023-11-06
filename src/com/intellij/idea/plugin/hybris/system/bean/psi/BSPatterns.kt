@@ -38,14 +38,14 @@ object BSPatterns {
             4,
             XmlPatterns.xmlTag()
                 .withLocalName("property")
-                .withAttributeValue("name", "levelMapping")
+                .withAttributeValue("name", BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING)
                 .withParent(
                     XmlPatterns.xmlTag()
                         .withLocalName("bean")
                         .withChild(
                             XmlPatterns.xmlTag()
                                 .withLocalName("property")
-                                .withAttributeValue("name", "dtoClass")
+                                .withAttributeValue("name", BSConstants.ATTRIBUTE_VALUE_DTO_CLASS)
                         )
                 )
         )
@@ -72,7 +72,7 @@ object BSPatterns {
                 2,
                 XmlPatterns.xmlTag()
                     .withLocalName("property")
-                    .withAttributeValue("name", "dtoClass")
+                    .withAttributeValue("name", BSConstants.ATTRIBUTE_VALUE_DTO_CLASS)
                     .withParent(
                         XmlPatterns.xmlTag().withLocalName("bean")
                     )

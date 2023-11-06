@@ -22,7 +22,8 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
-import com.intellij.openapi.util.TextRange
+import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
+import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
@@ -33,8 +34,8 @@ import org.jetbrains.kotlin.psi.psiUtil.parents
 class OccLevelMappingReference(
     private val meta: BSGlobalMetaBean,
     element: PsiElement,
-    range: TextRange
-) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
+    private val mapping: OccPropertyMapping
+) : PsiReferenceBase.Poly<PsiElement>(element, mapping.textRange, false), PsiPolyVariantReference, HighlightedReference {
 
     override fun getVariants() = BSCompletionService.getInstance(element.project)
         .getCompletions(meta)
@@ -49,7 +50,7 @@ class OccLevelMappingReference(
             .firstOrNull()
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "property" }
-            ?.firstOrNull { it.getAttributeValue("name") == "levelMapping" }
+            ?.firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING }
             ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
             ?.map { it as XmlAttribute }
             ?.mapNotNull { it.valueElement }

@@ -37,21 +37,6 @@
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
                              provider="com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemConfigurableProvider"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelAccessImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelProcessor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelProcessorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelCollector"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelCollectorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelMerger"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelMergerImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.impl.DefaultBSCompletionService"/>
-
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>
 
