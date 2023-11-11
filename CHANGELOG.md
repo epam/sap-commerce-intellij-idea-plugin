@@ -3,6 +3,9 @@
 ### `ImpEx` enhancements
 - Added colorization for `odd` and `even` user rights value lines [#802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/802)
 
+### Fixes
+- Fixed type system Item's `extends` identification [#803](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/803)
+
 ## [2023.2.11]
 
 ### `Project Import` enhancements

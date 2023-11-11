@@ -158,7 +158,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
 
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
         val extends = this.retrieveAllDoms()
-            .mapNotNull { it.extends.stringValue }
+            .map { it.extends.stringValue }
             .flatMap { TSMetaHelper.getAllExtends(globalMetaModel, name, it) }
             .toSet()
         val currentRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, emptySet())

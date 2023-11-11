@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -92,16 +91,14 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         panel.add(maxRowsSpinner)
     }
 
-    override fun execute(query: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project)
-                .executeFlexibleSearch(
-                        project,
-                        commitCheckbox.isSelected,
-                        plainSqlCheckbox.isSelected,
-                        maxRowsSpinner.value.toString(),
-                        query
-                )
-    }
+    override fun execute(query: String) = HybrisHacHttpClient.getInstance(project)
+        .executeFlexibleSearch(
+            project,
+            commitCheckbox.isSelected,
+            plainSqlCheckbox.isSelected,
+            maxRowsSpinner.value.toString(),
+            query
+        )
 
     override fun title(): String = "FlexibleSearch"
     override fun tip(): String = "FlexibleSearch Console"
