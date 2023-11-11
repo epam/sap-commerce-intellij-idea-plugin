@@ -1,7 +1,7 @@
 ## [2023.2.12]
 
 ### `ImpEx` enhancements
-- Added colorization for `odd` and `even` user rights value lines [#801](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/801)
+- Added colorization for `odd` and `even` user rights value lines [#802](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/802)
 
 ## [2023.2.11]
 
