@@ -26,4 +26,6 @@ data class OccPropertyMapping(
     val textRange: TextRange = TextRange.from(startPosition, value.length),
     val children: MutableList<OccPropertyMapping> = mutableListOf(),
     var parent: OccPropertyMapping? = null
-)
+) {
+    override fun toString() =  "$textRange - $value"
+}

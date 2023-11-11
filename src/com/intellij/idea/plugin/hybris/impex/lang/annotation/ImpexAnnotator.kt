@@ -27,7 +27,9 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviat
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.HighlighterLayer
+import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -54,20 +56,27 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
-            ImpexTypes.VALUE_LINE -> {
+            ImpexTypes.VALUE_LINE,
+            ImpexTypes.USER_RIGHTS_VALUE_LINE -> {
                 element.findExistingEditor()
-                    ?.let {
-                        val valueLine = element as? ImpexValueLine ?: return
-                        val valueLineIndex = valueLine.headerLine
-                            ?.valueLines
-                            ?.indexOf(valueLine)
-                            ?: return
-                        val lineNumber = it.document.getLineNumber(valueLine.textOffset)
+                    ?.let { editor ->
+                        when (element) {
+                            is ImpexValueLine -> {
+                                element.headerLine
+                                    ?.valueLines
+                                    ?.indexOf(element)
+                                    ?.let { highlightLine(editor, it, element.textOffset) }
+                            }
 
-                        if ((valueLineIndex + 1) % 2 == 0) {
-                            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
-                        } else {
-                            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
+                            is ImpexUserRightsValueLine -> {
+                                element.parent
+                                    .let { it as? ImpexUserRights }
+                                    ?.userRightsValueLineList
+                                    ?.indexOf(element)
+                                    ?.let { highlightLine(editor, it, element.textOffset) }
+                            }
+
+                            else -> return
                         }
                     }
             }
@@ -212,6 +221,20 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance)
                         }
                 }
             }
+        }
+    }
+
+    private fun highlightLine(
+        it: Editor,
+        valueLineIndex: Int,
+        textOffset: Int
+    ): RangeHighlighter {
+        val lineNumber = it.document.getLineNumber(textOffset)
+
+        return if ((valueLineIndex + 1) % 2 == 0) {
+            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
+        } else {
+            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
         }
     }
 }
