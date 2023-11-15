@@ -47,19 +47,18 @@ class DefaultXsdSchemaConfigurator : XsdSchemaConfigurator {
             ?.absolutePath
             ?: return
 
+        val resources = mapOf(
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS to "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
+            "http://www.hybris.com/schema/cockpitng/editor-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
+            "http://www.hybris.com/schema/cockpitng/widget-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/widget-definition.xsd"
+        )
+
         runWriteAction {
             val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
 
-            externalResourceManager.addResource(
-                CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS,
-                "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
-                project
-            )
-            externalResourceManager.addResource(
-                "http://www.hybris.com/schema/cockpitng/editor-definition.xsd",
-                "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
-                project
-            )
+            resources.forEach { (namespace, xsdLocation) ->
+                externalResourceManager.addResource(namespace, xsdLocation, project)
+            }
         }
     }
 

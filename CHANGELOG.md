@@ -1,6 +1,7 @@
 ## [2023.2.12]
 
 ### `Project Import` enhancements
+- Auto-registration of the XSD namespace for `widget-definition.xsd` [#805](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/805)
 - Auto-registration of the XSD namespace for `editor-definition.xsd` [#804](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/804)
 
 ### `ImpEx` enhancements
