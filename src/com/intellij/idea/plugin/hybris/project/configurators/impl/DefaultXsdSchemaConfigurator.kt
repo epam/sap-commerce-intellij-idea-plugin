@@ -35,23 +35,29 @@ class DefaultXsdSchemaConfigurator : XsdSchemaConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>,
     ) {
-        val cockpitConfigurationHybrisXsd = moduleDescriptors
+        val cockpitCoreJarFileSystem = moduleDescriptors
             .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE }
             ?.moduleRootDirectory
             ?.toPath()
             ?.resolve(Path.of("web", "webroot", "WEB-INF", "lib"))
             ?.takeIf { it.exists() }
             ?.toFile()
-            ?.listFiles { _, name -> name.startsWith("cockpitcore-") }
+            ?.listFiles { _, name -> name.startsWith("cockpitcore-", true) && name.endsWith(".jar", true) }
             ?.firstOrNull()
             ?.absolutePath
-            ?.let { "$it!/schemas/config/hybris/cockpit-configuration-hybris.xsd" }
             ?: return
 
         runWriteAction {
-            ExternalResourceManagerEx.getInstanceEx().addResource(
+            val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
+
+            externalResourceManager.addResource(
                 CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS,
-                cockpitConfigurationHybrisXsd,
+                "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
+                project
+            )
+            externalResourceManager.addResource(
+                "http://www.hybris.com/schema/cockpitng/editor-definition.xsd",
+                "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
                 project
             )
         }
