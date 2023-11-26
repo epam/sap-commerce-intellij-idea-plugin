@@ -1,3 +1,8 @@
+## [2023.2.13]
+
+### `Cockpit NG` enhancements
+- Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
+
 ## [2023.2.12]
 
 ### `Project Import` enhancements

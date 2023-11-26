@@ -1,10 +1,11 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.PlainXmlReferen
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
 import com.intellij.psi.PsiDocCommentOwner
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolvingHint
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
@@ -36,16 +36,16 @@ class SpringBeanReferenceConverter : CustomReferenceConverter<String>, Resolving
         value: GenericDomValue<String>,
         element: PsiElement,
         context: ConvertContext
-    ): Array<out PsiReference> {
-        val text = value.stringValue
-        if (text.isNullOrBlank()) return emptyArray()
-
-        return if (isPluginActive(SPRING_PLUGIN_ID)) {
-            arrayOf(SpringReference(element, text.trim()))
-        } else {
-            arrayOf(PlainXmlReference(element, value))
+    ) = value.stringValue
+        ?.takeIf { it.isNotBlank() }
+        ?.let {
+            if (isPluginActive(SPRING_PLUGIN_ID)) {
+                arrayOf(SpringReference(element, it.trim()))
+            } else {
+                arrayOf(PlainXmlReference(element, value))
+            }
         }
-    }
+        ?: emptyArray()
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)
 
