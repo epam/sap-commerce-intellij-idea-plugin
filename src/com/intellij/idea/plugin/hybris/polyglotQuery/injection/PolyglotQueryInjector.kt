@@ -15,20 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.polyglotQuery.injection
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
+import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToImpexInjectorProvider
+import com.intellij.psi.InjectedLanguagePlaces
+import com.intellij.psi.LanguageInjector
+import com.intellij.psi.PsiLanguageInjectionHost
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
-import com.intellij.openapi.application.ApplicationManager
+class PolyglotQueryInjector : LanguageInjector {
 
-class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
-
-    override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
-
-    companion object {
-        val instance: FlexibleSearchToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
+    override fun getLanguagesToInject(
+        host: PsiLanguageInjectionHost,
+        injectionPlacesRegistrar: InjectedLanguagePlaces
+    ) {
+        PolyglotQueryToImpexInjectorProvider.instance
+            ?.inject(host, injectionPlacesRegistrar)
     }
-
 }

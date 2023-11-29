@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,58 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjectorProvider
-import com.intellij.lang.Language
-import com.intellij.lang.java.JavaLanguage
+import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToJavaInjectorProvider
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.*
+import com.intellij.psi.PsiLiteralExpression
 
-class FlexibleSearchToJavaInjectorProvider : FlexibleSearchInjectorProvider() {
+class FlexibleSearchToJavaInjectorProvider : AbstractLanguageToJavaInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
 
-    override val language: Language = JavaLanguage.INSTANCE
-
-    override fun tryInject(
-        host: PsiLanguageInjectionHost,
-        injectionPlacesRegistrar: InjectedLanguagePlaces
-    ) {
-        val hostParent = host.parent ?: return
-
-        if (host is PsiLiteralExpression && hostParent !is PsiPolyadicExpression) {
-            inject(injectionPlacesRegistrar, host) { FxSUtils.computeExpression(host) }
-        } else if (hostParent is PsiExpressionList) {
-            val psiMethod = hostParent.parent as? PsiMethodCallExpression ?: return
-            inject(psiMethod, injectionPlacesRegistrar, host)
-        }
-    }
-
-    private fun inject(
-        injectionPlacesRegistrar: InjectedLanguagePlaces,
-        host: PsiLiteralExpression,
-        expressionProvider: () -> String
-    ) {
-        val expression = expressionProvider.invoke()
-        if (!FxSUtils.isFlexibleSearchQuery(expression)) return
-
-        val quoteLength = if (host.isTextBlock) 3 else 1
-        registerInjectionPlace(injectionPlacesRegistrar, host, quoteLength)
-    }
-
-    private fun inject(
-        psi: PsiMethodCallExpression,
-        injectionPlacesRegistrar: InjectedLanguagePlaces,
-        host: PsiLanguageInjectionHost
-    ) {
-        val method = psi.resolveMethod() ?: return
-        if (HybrisConstants.METHOD_SEARCH_NAME != method.name) return
-        val containingClass = method.containingClass ?: return
-        if (HybrisConstants.CLASS_FLEXIBLE_SEARCH_SERVICE_NAME != containingClass.name) return
-
-        registerInjectionPlace(injectionPlacesRegistrar, host)
-    }
+    override fun computeExpression(host: PsiLiteralExpression) = FxSUtils.computeExpression(host)
+    override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        val instance: FlexibleSearchInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToJavaInjectorProvider::class.java)
+        val instance: FlexibleSearchToJavaInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToJavaInjectorProvider::class.java)
     }
 }

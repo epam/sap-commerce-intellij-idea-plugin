@@ -35,7 +35,7 @@ object PolyglotQueryUtils {
     fun isPolyglotQuery(expression: String) = expression.replace("\n", "")
         .replace("\"\"\"", "")
         .trim()
-        .startsWith("GET", true)
+        .startsWith("GET ", true)
         && expression.contains(keywordsRegex)
         && expression.contains(bracesRegex)
 

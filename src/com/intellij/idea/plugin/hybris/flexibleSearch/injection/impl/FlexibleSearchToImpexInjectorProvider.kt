@@ -19,13 +19,14 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjectorProvider
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
@@ -37,7 +38,7 @@ import com.intellij.psi.util.parentOfType
 import java.util.*
 
 @Service
-class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
+class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
 
     override val language: Language = ImpexLanguage.getInstance()
 
@@ -110,6 +111,6 @@ class FlexibleSearchToImpexInjectorProvider : FlexibleSearchInjectorProvider() {
     }
 
     companion object {
-        val instance: FlexibleSearchInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToImpexInjectorProvider::class.java)
+        val instance: FlexibleSearchToImpexInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToImpexInjectorProvider::class.java)
     }
 }
