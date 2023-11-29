@@ -3,6 +3,7 @@
 ### `Polyglot Query` enhancements
 - Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
 - Inject Polyglot Query Language into `ImpEx` string literals [#811](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/811)
+- Inject Polyglot Query Language into `Java` string literals [#812](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/812)
 
 ### `Cockpit NG` enhancements
 - Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
