@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.injection
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToImpexInjectorProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToJavaInjectorProvider
+import com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
@@ -32,6 +33,8 @@ class PolyglotQueryInjector : LanguageInjector {
         PolyglotQueryToImpexInjectorProvider.instance
             ?.inject(host, injectionPlacesRegistrar)
             ?: PolyglotQueryToJavaInjectorProvider.instance
+                ?.inject(host, injectionPlacesRegistrar)
+            ?: PolyglotQueryToKotlinInjectorProvider.instance
                 ?.inject(host, injectionPlacesRegistrar)
     }
 }
