@@ -16,57 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch
+package com.intellij.idea.plugin.hybris.polyglotQuery
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.*
+import com.intellij.psi.PsiLiteralExpression
+import com.intellij.psi.PsiPolyadicExpression
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiVariable
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator
-import com.intellij.psi.util.PsiTreeUtil
 
-object FxSUtils {
+object PolyglotQueryUtils {
 
-    private val keywordsRegex = "(SELECT )|( UNION )|( DISTINCT )|( ORDER BY )|( LEFT JOIN )|( JOIN )|( FROM )|( WHERE )|( ASC )|( DESC )|( ON )"
+    private val keywordsRegex = "(GET )"
         .toRegex(RegexOption.IGNORE_CASE)
     private val bracesRegex = ".*\\{.*}.*".toRegex()
     private val whitespaceRegex = "\\s+".toRegex()
 
-    fun getColumnName(text: String) = text
-        .replace("`", "")
-        .trim()
-
-    fun getTableAliasName(text: String) = text
-        .replace("`", "")
-        .trim()
-
-    fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
-        var addComma = false
-        if (fxsSettings.completion.injectCommaAfterExpression && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
-            addComma = PsiTreeUtil
-                .getParentOfType(
-                    element,
-                    FlexibleSearchResultColumns::class.java,
-                    FlexibleSearchOrderClause::class.java,
-                    FlexibleSearchGroupByClause::class.java,
-                )
-                ?.text
-                ?.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
-                ?.trim()
-                ?.takeUnless { it.startsWith(",") }
-                ?.isNotEmpty()
-                ?: false
-        }
-        return addComma
-    }
-
-    fun isFlexibleSearchQuery(expression: String) = expression.replace("\n", "")
+    fun isPolyglotQuery(expression: String) = expression.replace("\n", "")
         .replace("\"\"\"", "")
         .trim()
-        .startsWith("SELECT", true)
+        .startsWith("GET", true)
         && expression.contains(keywordsRegex)
         && expression.contains(bracesRegex)
 

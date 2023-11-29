@@ -1,5 +1,8 @@
 ## [2023.2.13]
 
+### `Polyglot Query` enhancements
+- Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
+
 ### `Cockpit NG` enhancements
 - Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
 

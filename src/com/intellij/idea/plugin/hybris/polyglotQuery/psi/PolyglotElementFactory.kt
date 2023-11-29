@@ -16,26 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFile
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
-import com.intellij.psi.util.PsiTreeUtil
 
-object FlexibleSearchElementFactory {
+object PolyglotElementFactory {
 
-    fun createIdentifier(project: Project, name: String): PsiElement = createFile(project, name).firstChild
-
-    fun createColumnSeparator(project: Project, separator: String): PsiElement? = createFile(project, "SELECT {alias${separator}name}")
-        .let { PsiTreeUtil.findChildOfType(it, FlexibleSearchColumnSeparator::class.java) }
-        ?.firstChild
-
-    fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
+    fun createFile(project: Project, text: String): PolyglotQueryFile = PsiFileFactory.getInstance(project)
         .createFileFromText(
-            "dummy." + FlexibleSearchFileType.instance.defaultExtension,
-            FlexibleSearchFileType.instance, text
-        ) as FlexibleSearchFile
+            "dummy." + PolyglotQueryFileType.instance.defaultExtension,
+            PolyglotQueryFileType.instance, text
+        ) as PolyglotQueryFile
 }
