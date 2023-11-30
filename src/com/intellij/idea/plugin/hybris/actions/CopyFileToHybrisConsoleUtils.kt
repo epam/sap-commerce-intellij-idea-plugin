@@ -107,7 +107,7 @@ object CopyFileToHybrisConsoleUtils {
 
     private fun getSelectedTreePaths(project: Project) = ProjectView.getInstance(project)
         .currentProjectViewPane
-        .selectionPaths
+        ?.selectionPaths
 
     private fun getDialogTitleFromProperties(fileExtension: String) = messageFallback(HybrisConstants.DIALOG_TITLE + fileExtension, fileExtension)
 }
