@@ -10,7 +10,7 @@
 - Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
 
 ### Fixes
-- NPE on copy to console [#814](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/814)
+- NPE on copy to console [#815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/815)
 
 ## [2023.2.12]
 
