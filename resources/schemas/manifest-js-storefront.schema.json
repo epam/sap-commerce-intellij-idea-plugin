@@ -7,7 +7,7 @@
   "properties": {
     "nodeVersion": {
       "$ref": "#/$types/nodeVersion",
-      "description": "Global Node.js version used during the build. The available versions are 14 and 16."
+      "description": "Global Node.js version used during the build. The available versions are 14, 16 and 18."
     },
     "disableImageReuse": {
       "type": "boolean",
@@ -74,7 +74,7 @@
           },
           "nodeVersion": {
             "$ref": "#/$types/nodeVersion",
-            "description": "Node.js version used during the build. The available versions are 14 and 16."
+            "description": "Node.js version used during the build. The available versions are 14, 16 and 18."
           }
         }
       }

@@ -9,6 +9,9 @@
 ### `Cockpit NG` enhancements
 - Added Spring bean reference resolution for `wz:custom`:`handler` [#809](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/809)
 
+### `CCv2` enhancements
+- Updated commerce and js-storefront manifest [#816](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/816)
+
 ### Fixes
 - NPE on copy to console [#815](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/815)
 
@@ -27,7 +30,7 @@
 
 ## [2023.2.11]
 
-### `Project Import` enhancements
+### `Project Import` enhancements   
 - Introduced customization of the XSD schema for `y` namespace [#786](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/786)
 - Improved classpath configuration for OOTB modules and readonly mode [#783](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/783)
 - Adjusted `platformservices` source directories in readonly mode [#792](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/792)
