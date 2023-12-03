@@ -46,7 +46,7 @@ object TSPatterns {
                 .withParent(
                     XmlPatterns.xmlTag()
                         .withLocalName("bean")
-                        .withAttributeValue("class", HybrisConstants.CLASS_INTERCEPTOR_MAPPING)
+                        .withAttributeValue("class", HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING)
                 )
         )
         .inside(

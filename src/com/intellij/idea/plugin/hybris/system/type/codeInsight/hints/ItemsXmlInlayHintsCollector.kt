@@ -141,7 +141,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 psiClass.implementsListTypes
                     .mapNotNull { it.resolve() }
                     .any {
-                        it.qualifiedName == HybrisConstants.CLASS_ENUM_ROOT
+                        it.qualifiedName == HybrisConstants.CLASS_FQN_ENUM_ROOT
                     }
             }
             .toTypedArray()

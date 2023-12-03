@@ -82,11 +82,11 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
 
             val items = fileElement.rootElement
 
-            val inheritedEnumClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ENUM_ROOT)
+            val inheritedEnumClasses = findAllInheritClasses(project, HybrisConstants.CLASS_FQN_ENUM_ROOT)
             val enumTypes = items.enumTypes.enumTypes
             if (enumTypeClassValidation.validate(project, enumTypes, inheritedEnumClasses)) return true
 
-            val inheritedItemClasses = findAllInheritClasses(project, HybrisConstants.CLASS_ITEM_ROOT)
+            val inheritedItemClasses = findAllInheritClasses(project, HybrisConstants.CLASS_FQN_ITEM_ROOT)
             val filteredItemTypes = getItemTypesExcludeRelations(items)
             if (itemTypeClassValidation.validate(project, filteredItemTypes, inheritedItemClasses)) return true
 

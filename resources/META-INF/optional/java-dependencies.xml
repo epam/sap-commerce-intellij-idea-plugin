@@ -28,9 +28,6 @@
         <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
         <nonProjectFileWritingAccessExtension implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisNonProjectFileWritingAccessExtension"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToJavaInjectorProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToJavaInjectorProvider"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.services.HybrisProjectService"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.services.impl.DefaultHybrisProjectService"/>
 

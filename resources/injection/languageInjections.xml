@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<component name="LanguageInjectionConfiguration">
+    <injection language="FlexibleSearch" injector-id="java">
+        <display-name>[y] FlexibleSearch</display-name>
+        <ignore-pattern>(\\s|.)*GET(\\s|.)*\{(.*)}</ignore-pattern>
+        <place><![CDATA[psiModifierListOwner().withText(string().matches("(\\s|.)*=(\\s|.)*SELECT(\\s|.)+FROM(\\s|.)+\\{(\\s|.)*"))]]></place>
+        <place><![CDATA[psiParameter()]]></place>
+    </injection>
+    <injection language="Polyglot Query" injector-id="java">
+        <display-name>[y] Polyglot Query</display-name>
+        <ignore-pattern>(\\s|.)*SELECT(\\s|.)*FROM(\\s|.)*\{(\\s|.)*</ignore-pattern>
+        <place><![CDATA[psiModifierListOwner().withText(string().matches("(\\s|.)*=(\\s|.)*GET(\\s|.)+\\{(\\s|.)*"))]]></place>
+        <place><![CDATA[psiParameter()]]></place>
+    </injection>
+</component>

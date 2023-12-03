@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -78,12 +78,12 @@ class PopulatorsLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiClass>(
         return psiClass.fields
             .filterNot { it.modifierList?.hasModifierProperty("static") ?: false }
             .filter {
-                (it.type as? PsiClassReferenceType)?.reference?.qualifiedName == HybrisConstants.CLASS_CONVERTER
+                (it.type as? PsiClassReferenceType)?.reference?.qualifiedName == HybrisConstants.CLASS_FQN_CONVERTER
             }
     }
 
     private fun findPopulatorClass(project: Project): SmartPsiElementPointer<PsiClass>? {
-        val populatorClass = JavaPsiFacade.getInstance(project).findClass(HybrisConstants.CLASS_POPULATOR, GlobalSearchScope.allScope(project))
+        val populatorClass = JavaPsiFacade.getInstance(project).findClass(HybrisConstants.CLASS_FQN_POPULATOR, GlobalSearchScope.allScope(project))
             ?: return null
 
         return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(populatorClass)

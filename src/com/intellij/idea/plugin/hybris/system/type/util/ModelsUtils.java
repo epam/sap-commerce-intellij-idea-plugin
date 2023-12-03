@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -112,7 +112,7 @@ public final class ModelsUtils {
         if (extension.equals("class") && !virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)) return false;
 
         for (final var implementsListType : psiClass.getImplementsListTypes()) {
-            if (HybrisConstants.CLASS_ENUM_NAME.equals(implementsListType.getClassName())) {
+            if (HybrisConstants.CLASS_NAME_ENUM.equals(implementsListType.getClassName())) {
                 return true;
             }
         }

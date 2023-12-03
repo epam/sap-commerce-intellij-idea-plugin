@@ -59,7 +59,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
                 }
                 true
             }, GlobalSearchScope.fileScope(macroValue.containingFile),
-                HybrisConstants.CLASS_CONFIG_IMPORT_PROCESSOR,
+                HybrisConstants.CLASS_FQN_CONFIG_IMPORT_PROCESSOR,
                 UsageSearchContext.ANY,
                 true,
                 false)
@@ -81,7 +81,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
         override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
             val config = ImpExElementFactory.createFile(
                 project, """
-                UPDATE GenericItem[processor = ${HybrisConstants.CLASS_CONFIG_IMPORT_PROCESSOR}]; pk[unique = true]
+                UPDATE GenericItem[processor = ${HybrisConstants.CLASS_FQN_CONFIG_IMPORT_PROCESSOR}]; pk[unique = true]
 
 
             """.trimIndent()

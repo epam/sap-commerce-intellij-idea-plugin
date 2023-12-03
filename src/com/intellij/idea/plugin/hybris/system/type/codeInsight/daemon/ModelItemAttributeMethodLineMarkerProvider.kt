@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,7 @@ class ModelItemAttributeMethodLineMarkerProvider : AbstractModelAttributeLineMar
     override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.method.name")
     override fun tryCast(psi: PsiElement) = psi as? PsiMethod
 
-    override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod) = psi.getAnnotation(HybrisConstants.CLASS_ANNOTATION_ACCESSOR)
+    override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod) = psi.getAnnotation(HybrisConstants.CLASS_FQN_ANNOTATION_ACCESSOR)
         ?.parameterList
         ?.attributes
         ?.filter { it.literalValue != null && it.nameIdentifier != null }
