@@ -18,14 +18,20 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
+import org.intellij.plugins.intelliLang.Configuration
+import org.intellij.plugins.intelliLang.inject.config.InjectionPlace
 import org.intellij.plugins.intelliLang.inject.java.InjectionCache
+import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
 
 /**
  * TODO: reset Injection Cache on CRUD operation on classes related to FlexibleSearchQuery
@@ -40,6 +46,24 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                 add(HybrisConstants.CLASS_NAME_FLEXIBLE_SEARCH_QUERY)
                 addAll(findCustomExtensionsOfTheFlexibleSearch(project))
             }
+
+            val targetLanguages = setOf(FlexibleSearchLanguage.INSTANCE.id, PolyglotQueryLanguage.instance.id)
+
+            // TODO: replace with pattern declared in the XML file once https://youtrack.jetbrains.com/issue/IDEA-339624/ will be resolved.
+            // com.intellij.patterns.compiler.PatternCompiler cannot parse primitive booleans required by the pattern
+            Configuration.getInstance().getInjections(JavaLanguageInjectionSupport.JAVA_SUPPORT_ID)
+                .filter { targetLanguages.contains(it.injectedLanguageId) }
+                .forEach {
+                    val injectionPlaces = it.injectionPlaces.toMutableSet()
+                    val psiParameterInjectionPlace = InjectionPlace(
+                        PsiJavaPatterns.psiParameter().ofMethod(
+                            PsiJavaPatterns.psiMethod().definedInClass(PsiJavaPatterns.psiClass().inheritorOf(false, HybrisConstants.CLASS_FQN_FLEXIBLE_SEARCH_QUERY))
+                        ),
+                        true
+                    )
+                    injectionPlaces.add(psiParameterInjectionPlace)
+                    it.setInjectionPlaces(*injectionPlaces.toTypedArray())
+                }
         }
     }
 
