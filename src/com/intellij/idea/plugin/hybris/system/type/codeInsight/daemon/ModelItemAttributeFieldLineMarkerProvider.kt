@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,9 +46,27 @@ class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMark
 
             getPsiElementItemLineMarkerInfo(meta, name, nameIdentifier)
                 ?: getPsiElementRelationLineMarkerInfo(name, nameIdentifier)
+                ?: getPsiElementOrderingAttributeRelationLineMarkerInfo(meta, name, nameIdentifier)
         }
         ?.let { listOf(it) }
         ?: emptyList()
+
+    private fun getPsiElementOrderingAttributeRelationLineMarkerInfo(
+        meta: TSGlobalMetaItem,
+        name: String,
+        nameIdentifier: PsiIdentifier
+    ) = meta.allOrderingAttributes[name]
+        ?.retrieveDom()
+        ?.qualifier
+        ?.xmlAttributeValue
+        ?.let {
+            NavigationGutterIconBuilder
+                .create(HybrisIcons.TS_ORDERING_ATTRIBUTE)
+                .setTargets(it)
+                .setTooltipText(message("hybris.editor.gutter.ts.model.item.orderingAttribute.tooltip.text"))
+                .setAlignment(GutterIconRenderer.Alignment.LEFT)
+                .createLineMarkerInfo(nameIdentifier)
+        }
 
     private fun getPsiElementRelationLineMarkerInfo(
         name: String,

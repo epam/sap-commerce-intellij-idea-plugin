@@ -2,6 +2,7 @@
 
 ### Features
 - Rely on `intelliLang` plugin to inject `FlexibleSearch` and `Polyglot Query` languages into the Java code [#817](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/817)
+- Added navigation to the `items.xml` Ordering Attribute from the generated classes [#818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/818)
 
 ### `Polyglot Query` enhancements
 - Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
