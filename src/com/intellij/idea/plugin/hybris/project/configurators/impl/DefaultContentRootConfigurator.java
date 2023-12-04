@@ -100,7 +100,10 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
     ) {
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
-        if (customModuleDescriptor || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
+        if (customModuleDescriptor
+            || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()
+            || HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES.equals(moduleDescriptor.getName())
+        ) {
             addSourceRoots(contentEntry, moduleDescriptor.getModuleRootDirectory(), dirsToIgnore, appSettings, SRC_DIR_NAMES, JavaSourceRootType.SOURCE);
 
             if (customModuleDescriptor || !rootProjectDescriptor.isExcludeTestSources()) {

@@ -162,15 +162,17 @@ object YModuleLibDescriptorUtil {
             .map { File(descriptor.moduleRootDirectory, it) }
             .filter { it.isDirectory }
 
-        libs.add(
-            JavaLibraryDescriptor(
-                name = "${descriptor.name} - compiler output",
-                libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
-                sourceFiles = sourceFiles,
-                exported = true,
-                directoryWithClasses = true
+        if (HybrisConstants.EXTENSION_NAME_PLATFORM_SERVICES != descriptor.name) {
+            libs.add(
+                JavaLibraryDescriptor(
+                    name = "${descriptor.name} - compiler output",
+                    libraryFile = File(descriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH),
+                    sourceFiles = sourceFiles,
+                    exported = true,
+                    directoryWithClasses = true
+                )
             )
-        )
+        }
         libs.add(
             JavaLibraryDescriptor(
                 name = "${descriptor.name} - resources",
