@@ -46,7 +46,10 @@ class YAcceleratorAddonSubModuleDescriptor(
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> {
         val webNames = owner.getRequiredExtensionNames()
             .map { it + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
-        return setOf(owner.name) + webNames
+        // Strange, but acceleratoraddon may rely on another acceleratoraddon
+        val acceleratorWebNames = owner.getRequiredExtensionNames()
+            .map { it + "." + HybrisConstants.ACCELERATOR_ADDON_DIRECTORY + "." + HybrisConstants.WEB_MODULE_DIRECTORY }
+        return setOf(owner.name) + webNames + acceleratorWebNames
     }
 
     fun getTargetModules(): Set<YModuleDescriptor> = yTargetModules.unmodifiable()
