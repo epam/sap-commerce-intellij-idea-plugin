@@ -5,6 +5,10 @@
 - Inject `FlexibleSearch` language into the `FlexibleSearchQuery` and its descendants in Java code [#819](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/819)
 - Added navigation to the `items.xml` Ordering Attribute from the generated classes [#818](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/818)
 
+
+### `Project Import` enhancements
+- Register `? - Web Classes` library only for non-custom modules [#820](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/820)
+
 ### `Polyglot Query` enhancements
 - Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
 - Inject Polyglot Query Language into `ImpEx` string literals [#811](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/811)
