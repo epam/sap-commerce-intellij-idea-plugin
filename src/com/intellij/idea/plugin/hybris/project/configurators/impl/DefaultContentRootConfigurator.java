@@ -31,6 +31,7 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.JpsElement;
@@ -40,6 +41,7 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,25 +79,17 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
             contentEntry.addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY);
         }
         if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureSubModule(ySubModuleDescriptor, contentEntry);
+            configureWebRoots(ySubModuleDescriptor, contentEntry, appSettings);
         }
         if (moduleDescriptor instanceof final YCommonWebSubModuleDescriptor ySubModuleDescriptor) {
-            configureSubModule(ySubModuleDescriptor, contentEntry);
+            configureWebModuleRoots(ySubModuleDescriptor, contentEntry);
         }
         if (moduleDescriptor instanceof final YAcceleratorAddonSubModuleDescriptor ySubModuleDescriptor) {
-            configureSubModule(ySubModuleDescriptor, contentEntry);
+            configureWebModuleRoots(ySubModuleDescriptor, contentEntry);
         }
-
         if (moduleDescriptor instanceof final PlatformModuleDescriptor platformModuleDescriptor) {
             configurePlatformRoots(platformModuleDescriptor, contentEntry, dirsToIgnore, appSettings);
         }
-    }
-
-    protected void configureSubModule(
-        @NotNull final YWebSubModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
-    ) {
-        configureWebRoots(moduleDescriptor, contentEntry);
     }
 
     protected void configureCommonRoots(
@@ -181,25 +175,50 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
     }
 
     protected void configureWebRoots(
-        @NotNull final YSubModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+        @NotNull final YWebSubModuleDescriptor moduleDescriptor,
+        @NotNull final ContentEntry contentEntry,
+        @NotNull final HybrisApplicationSettings appSettings
     ) {
         configureWebModuleRoots(moduleDescriptor, contentEntry);
+
+        final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
+
+        if (isCustomModuleDescriptor(moduleDescriptor) || !rootProjectDescriptor.isImportOotbModulesInReadOnlyMode()) {
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, COMMON_WEB_SRC_DIRECTORY, JavaSourceRootType.SOURCE);
+            configureExternalModuleRoot(moduleDescriptor, contentEntry, appSettings, ADDON_SRC_DIRECTORY, JavaSourceRootType.SOURCE);
+        }
     }
 
-    protected void configureSubModule(
-        @NotNull final YCommonWebSubModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
+    private static void configureExternalModuleRoot(
+        final @NotNull YWebSubModuleDescriptor moduleDescriptor,
+        final @NotNull ContentEntry contentEntry,
+        final @NotNull HybrisApplicationSettings appSettings,
+        final String sourceRoot,
+        final JavaSourceRootType type
     ) {
-        configureWebModuleRoots(moduleDescriptor, contentEntry);
-    }
+        final var commonWebSrcDir = new File(moduleDescriptor.getModuleRootDirectory(), sourceRoot);
 
-    protected void configureSubModule(
-        @NotNull final YAcceleratorAddonSubModuleDescriptor moduleDescriptor,
-        @NotNull final ContentEntry contentEntry
-    ) {
-        this.configureWebRoots(moduleDescriptor, contentEntry);
-//        this.configureAdditionalRoots(moduleDescriptor, HMC_MODULE_DIRECTORY, contentEntry, commonWebModuleDirectory);
+        if (!commonWebSrcDir.isDirectory()) return;
+
+        final var additionalSources = commonWebSrcDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+        if (additionalSources == null || additionalSources.length == 0) return;
+
+        final var directories = Arrays.stream(additionalSources)
+            .map(File::getName)
+            .toList();
+
+        directories.stream()
+            .map(it -> new File(commonWebSrcDir, it))
+            .forEach(directory -> {
+                addSourceFolderIfNotIgnored(
+                    contentEntry,
+                    directory,
+                    type,
+                    JpsJavaExtensionService.getInstance().createSourceRootProperties("", true),
+                    Collections.emptyList(), appSettings
+                );
+            });
     }
 
     protected void configurePlatformRoots(

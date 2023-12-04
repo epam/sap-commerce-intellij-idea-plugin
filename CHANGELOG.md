@@ -8,6 +8,7 @@
 ### `Project Import` enhancements
 - Register `? - Web Classes` library only for non-custom modules [#820](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/820)
 - Register `acceleratoraddon` module dependencies on other `acceleratoraddon` modules [#821](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/821)
+- Register `commonwebsrc` and `addonsrc` as generated sources for modifiable web modules [#822](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/822)
 
 ### `Polyglot Query` enhancements
 - Added possibility to preview preformatted Polyglot Queries and copy them to Clipboard [#810](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/810)
