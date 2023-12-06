@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -29,16 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenArtifact;
 import org.jetbrains.idea.maven.model.MavenExplicitProfiles;
 import org.jetbrains.idea.maven.model.MavenId;
-import org.jetbrains.idea.maven.project.MavenArtifactDownloader;
-import org.jetbrains.idea.maven.project.MavenEmbeddersManager;
-import org.jetbrains.idea.maven.project.MavenGeneralSettings;
-import org.jetbrains.idea.maven.project.MavenProjectReader;
-import org.jetbrains.idea.maven.project.MavenProjectReaderProjectLocator;
-import org.jetbrains.idea.maven.project.MavenProjectReaderResult;
-import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import org.jetbrains.idea.maven.project.MavenProjectsTree;
-import org.jetbrains.idea.maven.project.MavenWorkspaceSettings;
-import org.jetbrains.idea.maven.project.MavenWorkspaceSettingsComponent;
+import org.jetbrains.idea.maven.project.*;
 import org.jetbrains.idea.maven.server.MavenEmbedderWrapper;
 import org.jetbrains.idea.maven.utils.MavenArtifactUtil;
 import org.jetbrains.idea.maven.utils.MavenProcessCanceledException;
@@ -89,7 +81,7 @@ public interface MavenUtils {
         final List<String> resultPathList = new ArrayList<>();
 
         final File moduleDir = moduleDescriptor.getModuleRootDirectory();
-        final File mavenDescriptorFile = new File(moduleDir, "external-dependencies.xml");
+        final File mavenDescriptorFile = new File(moduleDir, HybrisConstants.EXTERNAL_DEPENDENCIES_XML);
         if (mavenDescriptorFile.exists()) {
             final MavenProjectReader mavenProjectReader = new MavenProjectReader(modifiableRootModel.getProject());
             final VirtualFile vfsMavenDescriptor = VfsUtil.findFileByIoFile(mavenDescriptorFile, false);

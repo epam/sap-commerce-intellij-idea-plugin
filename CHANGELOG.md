@@ -1,7 +1,10 @@
 ## [2023.3.0]
 
 ### Other
-- Updated plugin dependencies [#825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/825)
+- Updated plugin dependencies for IntelliJ IDEA 2023.3 [#825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/825)
+
+### Deprecated
+- Migrate from `lang` to `lang3` [#826](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/826)
 
 ## [2023.2.13]
 

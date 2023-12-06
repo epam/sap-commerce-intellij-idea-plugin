@@ -34,7 +34,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem.TSGlobalMetaItemAttribute
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import java.util.*
 
 class DefaultTSCompletionService(private val project: Project) : TSCompletionService {

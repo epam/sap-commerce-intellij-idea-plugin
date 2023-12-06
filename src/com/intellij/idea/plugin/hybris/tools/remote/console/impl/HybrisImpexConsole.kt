@@ -36,7 +36,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
