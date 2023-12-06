@@ -5,6 +5,7 @@
 
 ### Deprecated
 - Migrate from `lang` to `lang3` [#826](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/826)
+- Migrate `ToolWindowFactory` API [#827](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/827)
 
 ## [2023.2.13]
 

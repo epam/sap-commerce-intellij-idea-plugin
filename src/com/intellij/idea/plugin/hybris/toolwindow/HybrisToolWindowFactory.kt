@@ -42,7 +42,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
-    override fun isApplicable(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override suspend fun isApplicableAsync(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun shouldBeAvailable(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
 
     private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
