@@ -2,6 +2,7 @@
 
 ### Other
 - Updated plugin dependencies for IntelliJ IDEA 2023.3 [#825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/825)
+- Execute `intelliLang` startup activity on background read thread [#829](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/829)
 
 ### Deprecated
 - Migrate from `lang` to `lang3` [#826](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/826)
