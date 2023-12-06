@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.Hybr
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.EmptyAction
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import javax.swing.Icon
 
 abstract class HybrisExecuteActionBase(
@@ -34,7 +34,7 @@ abstract class HybrisExecuteActionBase(
 ) : AnAction(null, null, icon) {
 
     init {
-        EmptyAction.setupAction(this, "Console.Execute.Immediately", null)
+        ActionUtil.mergeFrom(this, "Console.Execute.Immediately")
     }
 }
 
