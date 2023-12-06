@@ -1,3 +1,8 @@
+## [2023.3.0]
+
+### Other
+- Updated plugin dependencies [#825](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/825)
+
 ## [2023.2.13]
 
 ### Features
