@@ -32,8 +32,10 @@
     </extensions>
 
     <actions>
-        <action id="hybris.groovy.execute.commit.mode.on" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOnAction"/>
-        <action id="hybris.groovy.execute.commit.mode.off" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOffAction"/>
+        <action id="hybris.groovy.execute.commit.mode.on" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOnAction">
+            <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
+        </action>
+        <action id="hybris.groovy.execute.commit.mode.off" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOffAction"
         <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
         <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
 
