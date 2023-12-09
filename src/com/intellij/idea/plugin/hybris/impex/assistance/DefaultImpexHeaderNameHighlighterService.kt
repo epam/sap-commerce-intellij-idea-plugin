@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.codeInsight.folding.impl.FoldingUtil
 import com.intellij.codeInsight.highlighting.HighlightManager
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.util.TextRange
@@ -33,9 +33,11 @@ class DefaultImpexHeaderNameHighlighterService : AbstractImpexHighlighterService
     private val highlightedBlocks = mutableMapOf<Editor, PsiElement>()
 
     override fun highlight(editor: Editor) {
-        ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
-            ?.let { highlightArea(editor, it) }
-            ?: clearHighlightedArea(editor)
+        invokeLater {
+            ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
+                ?.let { highlightArea(editor, it) }
+                ?: clearHighlightedArea(editor)
+        }
     }
 
     private fun highlightArea(
@@ -44,13 +46,11 @@ class DefaultImpexHeaderNameHighlighterService : AbstractImpexHighlighterService
     ) {
         if (isAlreadyHighlighted(editor, impexFullHeaderParameter)) return
 
-        ApplicationManager.getApplication().invokeLater {
-            highlightedBlocks.remove(editor)
-                ?.let { modifyHighlightedArea(editor, it, true) }
+        highlightedBlocks.remove(editor)
+            ?.let { modifyHighlightedArea(editor, it, true) }
 
-            highlightedBlocks[editor] = impexFullHeaderParameter
-            modifyHighlightedArea(editor, impexFullHeaderParameter)
-        }
+        highlightedBlocks[editor] = impexFullHeaderParameter
+        modifyHighlightedArea(editor, impexFullHeaderParameter)
     }
 
     private fun clearHighlightedArea(editor: Editor) {
@@ -58,9 +58,7 @@ class DefaultImpexHeaderNameHighlighterService : AbstractImpexHighlighterService
 
         val impexFullHeaderParameter = highlightedBlocks.remove(editor) ?: return
 
-        ApplicationManager.getApplication().invokeLater {
-            modifyHighlightedArea(editor, impexFullHeaderParameter, true)
-        }
+        modifyHighlightedArea(editor, impexFullHeaderParameter, true)
     }
 
     private fun isAlreadyHighlighted(editor: Editor, fullHeaderParameter: PsiElement) =
