@@ -30,10 +30,10 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
 import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -60,7 +60,7 @@ public class ProjectRefreshAction extends AnAction {
         final DataManager dataManager = DataManager.getInstance();
         if (dataManager != null) {
             dataManager.getDataContextFromFocusAsync()
-                       .onSuccess(ProjectRefreshAction::triggerAction);
+                .onSuccess(ProjectRefreshAction::triggerAction);
         }
     }
 
@@ -145,16 +145,29 @@ public class ProjectRefreshAction extends AnAction {
             moduleModel.commit();
             libraryModel.commit();
         });
-        final GradleSupport gradleSupport = GradleSupport.getInstance();
 
-        if (gradleSupport != null) {
-            gradleSupport.clearLinkedProjectSettings(project);
-        }
-        final AntConfigurationBase antConfiguration = AntConfigurationBase.getInstance(project);
+        clearGradleProjectData(project);
+        clearAntProjectData(project);
+    }
 
-        for (AntBuildFile antBuildFile : antConfiguration.getBuildFiles()) {
+    private static void clearAntProjectData(final @NotNull Project project) {
+        if (!PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) return;
+
+        final var antConfiguration = AntConfigurationBase.getInstance(project);
+
+        if (antConfiguration == null) return;
+
+        for (final var antBuildFile : antConfiguration.getBuildFiles()) {
             antConfiguration.removeBuildFile(antBuildFile);
         }
+    }
+
+    private static void clearGradleProjectData(final @NotNull Project project) {
+        final var gradleSupport = GradleSupport.getInstance();
+
+        if (gradleSupport == null) return;
+
+        gradleSupport.clearLinkedProjectSettings(project);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {
