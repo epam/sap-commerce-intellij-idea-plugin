@@ -1,5 +1,8 @@
 ## [2023.3.1]
 
+### `ImpEx` enhancements
+- Added shortcut `control + shift + alt + backspace` for remove table action [#836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/836)
+
 ### Other
 - Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)
 - Invoke later slow operation `ImpEx Column header name Highlight` [#834](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/834)
