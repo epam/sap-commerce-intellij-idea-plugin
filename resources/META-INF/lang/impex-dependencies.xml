@@ -138,7 +138,9 @@
             <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction">
                 <keyboard-shortcut first-keystroke="control shift alt BACK_SPACE" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction"/>
+            <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction">
+                <keyboard-shortcut first-keystroke="control shift alt BACK_SLASH" keymap="$default"/>
+            </action>
         </group>
 
         <group id="hybris.impex.toolbar.left">
