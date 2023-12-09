@@ -109,7 +109,9 @@
         </action>
 
         <action id="hybris.impex.openFileInConsole" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
-        <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
+        <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction">
+            <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
+        </action>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction">
             <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
