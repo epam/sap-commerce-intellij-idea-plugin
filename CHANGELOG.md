@@ -3,6 +3,7 @@
 ### `ImpEx` enhancements
 - Added shortcut `control + shift + alt + backspace` for remove table action [#836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/836)
 - Added shortcut `control + shift + alt + backslash` for split table action [#837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/837)
+- Added shortcuts `control` + `[` | `]` for move left | right column actions [#838](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/838)
 
 ### Other
 - Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)
