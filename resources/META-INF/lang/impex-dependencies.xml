@@ -108,11 +108,12 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.impex.openFileInConsole"
-                class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
+        <action id="hybris.impex.openFileInConsole" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
-        <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
+        <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction">
+            <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
+        </action>
         <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction">
             <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
         </action>
