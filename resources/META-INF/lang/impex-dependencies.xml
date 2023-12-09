@@ -113,7 +113,9 @@
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction"/>
         <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
         <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction"/>
-        <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction"/>
+        <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction">
+            <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
+        </action>
         <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
