@@ -2,6 +2,7 @@
 
 ### `Groovy` enhancements
 - Added shortcut `control + shift + alt + enter` for execute Groovy Script with commit action [#842](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/842)
+- Added shortcut `shift + alt + enter` for execute Groovy Script action [#843](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/843)
 
 ### `Polyglot Query` enhancements
 - Added shortcut `shift + alt + enter` for execute Polyglot Query action [#841](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/841)
