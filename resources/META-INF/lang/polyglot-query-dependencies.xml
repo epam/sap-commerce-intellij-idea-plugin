@@ -55,7 +55,9 @@
         </action>
 
         <action id="hybris.pgq.openFileInConsole" class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryCopyFileAction"/>
-        <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteQueryAction"/>
+        <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteQueryAction">
+            <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
+        </action>
         <action id="hybris.pgq.openQuery" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 

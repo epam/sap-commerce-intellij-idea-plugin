@@ -1,5 +1,8 @@
 ## [2023.3.1]
 
+### `Polyglot Query` enhancements
+- Added shortcut `shift + alt + enter` for execute Polyglot Query action [#841](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/841)
+
 ### `FlexibleSearch` enhancements
 - Added shortcut `shift + alt + enter` for execute FlexibleSearch Query action [#840](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/840)
 
