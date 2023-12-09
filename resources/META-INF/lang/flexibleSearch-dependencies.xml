@@ -87,7 +87,9 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
         <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchActionsGroup">
-            <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteQueryAction"/>
+            <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteQueryAction">
+                <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
+            </action>
 
             <add-to-group group-id="CodeMenu" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>

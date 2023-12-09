@@ -1,5 +1,8 @@
 ## [2023.3.1]
 
+### `FlexibleSearch` enhancements
+- Added shortcut `shift + alt + enter` for execute FlexibleSearch Query action [#840](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/840)
+
 ### `ImpEx` enhancements
 - Added shortcut `control + shift + alt + backspace` for remove table action [#836](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/836)
 - Added shortcut `control + shift + alt + backslash` for split table action [#837](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/837)
