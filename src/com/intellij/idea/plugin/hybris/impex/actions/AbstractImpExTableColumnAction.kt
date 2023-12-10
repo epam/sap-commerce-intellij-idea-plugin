@@ -22,13 +22,18 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 
 abstract class AbstractImpExTableColumnAction() : AbstractImpExTableAction() {
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 
-    override fun getSuitableElement(element: PsiElement) = PsiTreeUtil
-        .getParentOfType(element, ImpexFullHeaderParameter::class.java, ImpexValueGroup::class.java)
+    override fun getSuitableElement(element: PsiElement): PsiElement? {
+        val targetElement = PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java, ImpexValueGroup::class.java)
+
+        return if (targetElement == null && element is PsiWhiteSpace) PsiTreeUtil.getPrevSiblingOfType(element, ImpexValueGroup::class.java)
+        else targetElement
+    }
 
 }
