@@ -62,6 +62,7 @@ object HybrisIcons {
     val LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg")
     val BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg")
     val MONITORING = getIcon("/icons/monitoring.svg")
+    val BUILD_CALLBACKS = AllIcons.Toolwindows.ToolWindowBuild
     val EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg")
     val UNMANAGED_DEPENDENCIES = getIcon("/icons/unmanagedDependencies.svg")
     val SETTINGS = getIcon("/icons/settings.svg")

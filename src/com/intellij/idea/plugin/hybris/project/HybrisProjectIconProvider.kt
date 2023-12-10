@@ -29,6 +29,7 @@ class HybrisProjectIconProvider : IconProvider() {
         val file = element.containingFile ?: return null
 
         return when {
+            file.name == HybrisConstants.BUILD_CALLBACKS_XML -> HybrisIcons.BUILD_CALLBACKS
             file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UNMANAGED_DEPENDENCIES
             file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.EXTERNAL_DEPENDENCIES
             file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME) -> HybrisIcons.PLUGIN_SETTINGS
