@@ -17,6 +17,7 @@
 - Added shortcut `shift + alt + enter` for execute ImpEx action [#839](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/839)
 - Added shortcut `control + alt + V` for Validate ImpEx action [#844](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/844)
 - Added shortcut `control + shift + alt + O` for Open ImpEx action [#845](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/845)
+- Omit slow operation on Column Highlighting under the caret [#847](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/847)
 
 ### Other
 - Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)

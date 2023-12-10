@@ -20,11 +20,9 @@
 package com.intellij.idea.plugin.hybris.project.providers;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.WritingAccessProvider;
 import com.intellij.util.ObjectUtils;
@@ -97,15 +95,7 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
             return false;
         }
 
-        return Arrays.stream(ModuleManager.getInstance(myProject).getModules())
-            .filter(module -> {
-                    for (final var contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
-                        if (VfsUtilCore.isAncestor(contentRoot, file, false)) return true;
-                    }
-                    return false;
-                }
-            )
-            .findFirst()
+        return Optional.ofNullable(ModuleUtil.findModuleForFile(file, myProject))
             .map(module -> HybrisProjectSettingsComponent.getInstance(myProject)
                 .getModuleSettings(module)
                 .getReadonly()
@@ -114,7 +104,7 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
     }
 
     private boolean isTemporarilyWritable(@NotNull final VirtualFile vFile) {
-        Boolean excluded = vFile.getUserData(KEY_TEMPORARY_WRITABLE);
+        final Boolean excluded = vFile.getUserData(KEY_TEMPORARY_WRITABLE);
         return excluded != null && excluded;
     }
 

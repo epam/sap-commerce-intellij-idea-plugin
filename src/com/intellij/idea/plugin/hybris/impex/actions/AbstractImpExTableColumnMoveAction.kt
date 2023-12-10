@@ -17,8 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService
-import com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService
+import com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexHighlightingCaretListener
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
@@ -39,6 +38,8 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
     }
 
     private fun move(editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, direction: ImpExColumnPosition) {
+        ImpexHighlightingCaretListener.instance.clearHighlightedArea(editor)
+
         val headerLine = headerParameter.headerLine ?: return
         val column = headerParameter.columnNumber
 
@@ -53,9 +54,6 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
 
         newElementAtCaret
             ?.let {
-                ImpexColumnHighlighterService.instance.releaseEditorData(editor)
-                ImpexHeaderNameHighlighterService.instance.releaseEditorData(editor)
-
                 val caretOffsetInText = previousOffset - previousElementStartOffset
                 editor.caretModel.currentCaret.moveToOffset(it.startOffset + caretOffsetInText)
             }

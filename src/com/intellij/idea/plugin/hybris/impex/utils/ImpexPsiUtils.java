@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -310,6 +311,7 @@ public final class ImpexPsiUtils {
     }
 
 
+    @Nullable
     public static PsiElement getHeaderOfValueGroupUnderCaret(@NotNull final Editor editor) {
         Validate.notNull(editor);
 
@@ -323,7 +325,8 @@ public final class ImpexPsiUtils {
         return getHeaderForValueGroup(valueGroup);
     }
 
-    public static @Nullable ImpexFullHeaderParameter getFullHeaderParameterUnderCaret(@NotNull final Editor editor) {
+    @Nullable
+    public static ImpexFullHeaderParameter getFullHeaderParameterUnderCaret(@NotNull final Editor editor) {
         final var psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
         if (psiElementUnderCaret == null) return null;
 

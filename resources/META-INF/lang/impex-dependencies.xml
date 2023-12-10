@@ -83,10 +83,6 @@
 
         <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexEditorFactoryListener"/>
 
-        <postStartupActivity order="after hybrisProjectImport"
-                             implementation="com.intellij.idea.plugin.hybris.startup.ImpexHeaderHighlighterStartupActivity"/>
-        <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiTreeChangeListener"/>
-
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
                                               isEnabledByDefault="true"
@@ -95,11 +91,6 @@
                                               bundle="i18n/HybrisBundle"
                                               nameKey="hybris.editor.impex.inlay_provider.default_value.name"
                                               descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
-
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexHeaderNameHighlighterService"/>
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.impex.assistance.DefaultImpexColumnHighlighterService"/>
     </extensions>
 
     <actions>
