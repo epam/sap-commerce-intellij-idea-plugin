@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,20 +17,25 @@
  */
 package com.intellij.idea.plugin.hybris.impex.assistance.event
 
-import com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnHighlighterService
-import com.intellij.idea.plugin.hybris.impex.assistance.ImpexHeaderNameHighlighterService
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 
 class ImpexEditorFactoryListener : EditorFactoryListener {
 
-    private val impexColumnHighlighterService = ImpexColumnHighlighterService.instance
-    private val impexHeaderNameHighlighterService = ImpexHeaderNameHighlighterService.instance
+    override fun editorCreated(editorFactoryEvent: EditorFactoryEvent) {
+        val editor = editorFactoryEvent.editor
 
-    override fun editorCreated(editorFactoryEvent: EditorFactoryEvent) {}
+        with(ImpexHighlightingCaretListener.instance) {
+            editor.caretModel.addCaretListener(this)
+        }
+    }
 
     override fun editorReleased(editorFactoryEvent: EditorFactoryEvent) {
-        impexHeaderNameHighlighterService.releaseEditorData(editorFactoryEvent.editor)
-        impexColumnHighlighterService.releaseEditorData(editorFactoryEvent.editor)
+        val editor = editorFactoryEvent.editor
+
+        with(ImpexHighlightingCaretListener.instance) {
+            this.clearHighlightedArea(editor)
+            editor.caretModel.removeCaretListener(this)
+        }
     }
 }
