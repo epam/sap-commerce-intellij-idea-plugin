@@ -28,4 +28,10 @@
         <ignore-pattern>(\\s|.)*SELECT(\\s|.)*FROM(\\s|.)*\{(\\s|.)*</ignore-pattern>
         <place><![CDATA[psiModifierListOwner().withText(string().matches("(\\s|.)*=(\\s|.)*GET(\\s|.)+\\{(\\s|.)*"))]]></place>
     </injection>
+    <injection language="JAVA" injector-id="xml">
+        <display-name>[y] items.xml</display-name>
+        <prefix>class ItemsXmlClass { private static Object itemsXmlCustomPropertyMethod() { return </prefix>
+        <suffix>;} }</suffix>
+        <place><![CDATA[xmlTag().withLocalName("value").withParent(xmlTag().withLocalName("property").withParent(xmlTag().withLocalName("custom-properties")))]]></place>
+    </injection>
 </component>

@@ -1,5 +1,8 @@
 ## [2023.3.1]
 
+### Features
+- Inject `Java` language into the `items.xml` custom properties value tags [#849](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/849)
+
 ### `Groovy` enhancements
 - Added shortcut `control + shift + alt + enter` for execute Groovy Script with commit action [#842](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/842)
 - Added shortcut `shift + alt + enter` for execute Groovy Script action [#843](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/843)
