@@ -22,6 +22,7 @@
 - Adjust optional dependency on `AntPlugin` during project refresh [#833](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/833)
 - Invoke later slow operation `ImpEx Column header name Highlight` [#834](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/834)
 - Invoke later slow operation `ImpEx Column values Highlight` [#835](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/835)
+- Omit slow operation on `HybrisWritingAccessProvider` [#846](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/846)
 
 ## [2023.3.0]
 

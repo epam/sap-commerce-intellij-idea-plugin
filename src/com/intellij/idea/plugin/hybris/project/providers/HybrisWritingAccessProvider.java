@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,19 +20,17 @@
 package com.intellij.idea.plugin.hybris.project.providers;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.WritingAccessProvider;
 import com.intellij.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class HybrisWritingAccessProvider extends WritingAccessProvider {
 
@@ -47,10 +46,10 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
     @NotNull
     public static HybrisWritingAccessProvider getInstance(@NotNull final Project project) {
         return EP.getExtensions(project).stream()
-                .map(o -> ObjectUtils.tryCast(o, HybrisWritingAccessProvider.class))
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElseThrow(IllegalStateException::new);
+            .map(o -> ObjectUtils.tryCast(o, HybrisWritingAccessProvider.class))
+            .filter(Objects::nonNull)
+            .findAny()
+            .orElseThrow(IllegalStateException::new);
     }
 
     public HybrisWritingAccessProvider(@NotNull final Project project) {
@@ -97,12 +96,21 @@ public class HybrisWritingAccessProvider extends WritingAccessProvider {
         if (isTemporarilyWritable(file)) {
             return false;
         }
-        return Optional.ofNullable(ModuleUtilCore.findModuleForFile(file, myProject))
-                       .map(module -> HybrisProjectSettingsComponent.getInstance(myProject)
-                                                                .getModuleSettings(module)
-                                                                .getReadonly())
 
-                       .orElse(false);
+        return Arrays.stream(ModuleManager.getInstance(myProject).getModules())
+            .filter(module -> {
+                    for (final var contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
+                        if (VfsUtilCore.isAncestor(contentRoot, file, false)) return true;
+                    }
+                    return false;
+                }
+            )
+            .findFirst()
+            .map(module -> HybrisProjectSettingsComponent.getInstance(myProject)
+                .getModuleSettings(module)
+                .getReadonly()
+            )
+            .orElse(false);
     }
 
     private boolean isTemporarilyWritable(@NotNull final VirtualFile vFile) {
