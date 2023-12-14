@@ -1,3 +1,8 @@
+## [2023.3.2]
+
+### Other
+- Updated [Code of Conduct](CODE_OF_CONDUCT.md) [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
+
 ## [2023.3.1]
 
 ### Features
