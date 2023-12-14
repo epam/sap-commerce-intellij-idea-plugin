@@ -69,6 +69,7 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                         it.setInjectionPlaces(*injectionPlaces.toTypedArray())
                     }
             }
+            .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
     }
 

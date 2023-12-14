@@ -3,6 +3,7 @@
 ### Other
 - Made `java`, `properties` and `xdebugger` mandatory dependencies [#855](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/855)
 - Updated [Code of Conduct](CODE_OF_CONDUCT.md) [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
+- Execute IntelliLang Startup Activity in smart mode [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
 
 ## [2023.3.1]
 
