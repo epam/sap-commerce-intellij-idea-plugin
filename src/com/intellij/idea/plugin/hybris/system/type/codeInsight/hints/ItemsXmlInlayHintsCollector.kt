@@ -61,7 +61,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     val unknown: InlayPresentation by lazy {
         val icon = factory.icon(AllIcons.General.ExclMark)
         val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Not Yet Generated", inset)
+        val tooltip = factory.withTooltip("Not yet generated", inset)
         factory.withCursorOnHover(tooltip, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
     }
 
@@ -129,14 +129,14 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         PsiShortNamesCache.getInstance(project).getClassesByName(
             element + HybrisConstants.MODEL_SUFFIX, GlobalSearchScope.allScope(project)
         )
-            .filter { it.containingFile.virtualFile.path.contains(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) }
+            .filter { it.containingFile.virtualFile.path.contains("/platform/bootstrap") }
             .toTypedArray()
 
     private fun finEnumClass(project: Project, element: String): Array<out PsiClass> =
         PsiShortNamesCache.getInstance(project).getClassesByName(
             element, GlobalSearchScope.allScope(project)
         )
-            .filter { it.containingFile.virtualFile.path.contains(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY) }
+            .filter { it.containingFile.virtualFile.path.contains("/platform/bootstrap") }
             .filter { psiClass ->
                 psiClass.implementsListTypes
                     .mapNotNull { it.resolve() }

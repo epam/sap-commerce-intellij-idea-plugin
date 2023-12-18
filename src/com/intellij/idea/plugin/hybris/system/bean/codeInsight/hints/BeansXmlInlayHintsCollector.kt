@@ -60,7 +60,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
     val unknown: InlayPresentation by lazy {
         val icon = factory.icon(AllIcons.General.ExclMark)
         val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Not Yet Generated", inset)
+        val tooltip = factory.withTooltip("Not yet generated", inset)
         factory.withCursorOnHover(tooltip, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
     }
 
@@ -141,5 +141,5 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
         .substringBefore(HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED)
         .trim()
 
-    private fun inBootstrap(psiClass: PsiClass) = psiClass.containingFile.virtualFile.path.contains(HybrisConstants.EXCLUDE_BOOTSTRAP_DIRECTORY)
+    private fun inBootstrap(psiClass: PsiClass) = psiClass.containingFile.virtualFile.path.contains("/platform/bootstrap")
 }

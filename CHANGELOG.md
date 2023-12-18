@@ -9,6 +9,9 @@
 - Updated [Code of Conduct](CODE_OF_CONDUCT.md) [#854](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/854)
 - Execute IntelliLang Startup Activity in smart mode [#856](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/856)
 
+### Fixes
+- Windows: Problems with Type System `items.xml` - Not Yet Generated Message [#860](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/860)
+
 ## [2023.3.1]
 
 ### Features

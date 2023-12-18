@@ -133,7 +133,6 @@ object HybrisConstants {
     const val COMMON_WEB_MODULE_DIRECTORY = "commonweb"
 
     const val ADDON_SRC_DIRECTORY = "addonsrc"
-    const val ADDON_TESTSRC_DIRECTORY = "addontestsrc"
     const val TEST_CLASSES_DIRECTORY = "testclasses"
     const val CLASSES_DIRECTORY = "classes"
     const val JAR_MODELS = "models.jar"
@@ -175,7 +174,6 @@ object HybrisConstants {
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
-    const val PROPERTY_TOMCAT_HTTP_PORT = "tomcat.http.port"
     const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
     const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"
     const val PROPERTY_SOLR_DEFAULT_PASSWORD = "solrserver.instances.default.password"
@@ -281,8 +279,6 @@ object HybrisConstants {
     const val CLASS_FQN_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
-
-    const val METHOD_SEARCH_NAME = "search"
 
     const val MODEL_SUFFIX = "Model"
     const val TYPECODE_FIELD_NAME = "_TYPECODE"
