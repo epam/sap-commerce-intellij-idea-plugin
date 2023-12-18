@@ -36,6 +36,6 @@
     </injection>
     <injection language="ImpEx" injector-id="xml">
         <display-name>[y] ImpEx Converter</display-name>
-        <place><![CDATA[xmlTag().withLocalName("value").withParent(xmlTag().withLocalName("property").withAttributeValue("name", "header").withParent(or(xmlTag().withLocalName("bean").withAttributeValue("class", "de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter"))))]]></place>
+        <place><![CDATA[xmlTag().withLocalName("value").withParent(xmlTag().withLocalName("property").withAttributeValue("name", "header").withParent(or(xmlTag().withLocalName("bean").withAttributeValue("class", "de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter"), xmlTag().withLocalName("bean").withAttributeValue("parent", "abstractDefaultImpexConverter"))))]]></place>
     </injection>
 </component>
