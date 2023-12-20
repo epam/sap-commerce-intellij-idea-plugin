@@ -1,5 +1,8 @@
 ## [2023.3.2]
 
+### `Project Import` enhancements
+- Do not scan `hidden` directories for extensions [#861](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/861)
+
 ### `ImpEx` enhancements
 - Inject `ImpEx` language into `header` property of the `DefaultImpexConverter` spring bean declaration [#858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/858) 
 - Inject `ImpEx` language into `header` property of the `abstractDefaultImpexConverter` spring bean declaration [#859](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/859) 

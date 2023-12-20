@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,19 +32,15 @@ public final class HybrisUtil {
     private HybrisUtil() {
     }
 
-    public static boolean isPlatformModuleRoot(@NotNull File file) {
-        return new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
-    }
-
     public static boolean isHybrisModuleRoot(@NotNull final File file) {
         return new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
     }
 
-    public static boolean isHybrisModuleRoot(@NotNull VirtualFile file) {
+    public static boolean isHybrisModuleRoot(@NotNull final VirtualFile file) {
         return file.findChild(HybrisConstants.EXTENSION_INFO_XML) != null;
     }
 
-    public static boolean isPotentialHybrisProject(@NotNull VirtualFile file) {
+    public static boolean isPotentialHybrisProject(@NotNull final VirtualFile file) {
         final Key<Boolean> key = Key.create("IS_HYBRIS_FILE");
         file.putUserData(key, false);
 

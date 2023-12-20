@@ -634,6 +634,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             }
         }
 
+        if (rootProjectDirectory.isHidden()) {
+            LOG.debug("Skipping hidden folder: ", rootProjectDirectory);
+            return;
+        }
+
         final HybrisProjectService hybrisProjectService = ApplicationManager.getApplication().getService(HybrisProjectService.class);
 
         if (hybrisProjectService.hasVCS(rootProjectDirectory)) {
