@@ -183,6 +183,8 @@ object HybrisConstants {
     const val PROPERTY_LANG_PACKS = "lang.packs"
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
 
+    const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports";
+
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
     const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
@@ -265,6 +267,7 @@ object HybrisConstants {
     const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
+    const val ADVANCED_PROPERTIES_FILE = "advanced.properties"
 
     const val CLASS_FQN_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_FQN_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
