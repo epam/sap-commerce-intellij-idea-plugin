@@ -40,7 +40,7 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
         Validate.notNull(file);
 
         return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-               && new File(file, HybrisConstants.LOCAL_PROPERTIES).isFile();
+               && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
     }
 
     @Override

@@ -95,7 +95,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     ) {
         final var commonIdeaService = CommonIdeaService.getInstance();
         final ConfigModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
+        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES_FILE, cache);
 
         if (port != null) {
             return port;
@@ -103,7 +103,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final PlatformModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
-            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES, cache);
+            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES_FILE, cache);
 
             if (port != null) {
                 return port;
