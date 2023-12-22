@@ -71,10 +71,9 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
         }
 
 
-        final IProperty macroProperty = propertiesService.findMacroProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
-        if (macroProperty != null && macroProperty.getValue() != null) {
-            final String value = macroProperty.getValue();
-            final StringTokenizer tokenizer = new StringTokenizer(value.trim());
+        final String property = propertiesService.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
+        if (property != null) {
+            final StringTokenizer tokenizer = new StringTokenizer(property.trim());
             while (tokenizer.hasMoreTokens()) {
                 final String newParam = tokenizer.nextToken().replaceAll("\"", "");
                 addVmParameterIfNotExist(vmParameters, newParam);

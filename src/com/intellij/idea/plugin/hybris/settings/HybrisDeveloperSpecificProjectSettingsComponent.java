@@ -180,8 +180,7 @@ public final class HybrisDeveloperSpecificProjectSettingsComponent implements Pe
 
     private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
         return Optional.ofNullable(PropertiesService.getInstance(project))
-            .map(it -> it.getProperty(key))
-            .map(IProperty::getValue)
+            .map(it -> it.findProperty(key))
             .orElse(fallback);
     }
 }

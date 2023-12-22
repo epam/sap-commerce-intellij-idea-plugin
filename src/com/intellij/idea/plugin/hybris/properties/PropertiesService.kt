@@ -37,6 +37,4 @@ interface PropertiesService {
         @JvmStatic
         fun getInstance(project: Project): PropertiesService? = project.getService(PropertiesService::class.java)
     }
-
-    fun getProperty(key: String): IProperty?
 }

@@ -29,6 +29,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
@@ -47,8 +48,7 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
 
     override fun getLanguages(): Set<String> {
-        val languages = findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
-            ?.value
+        val languages = findProperty(HybrisConstants.PROPERTY_LANG_PACKS)
             ?.split(",")
             ?.map { it.trim() }
             ?: emptyList()
@@ -64,14 +64,14 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     override fun containsLanguage(language: String, supportedLanguages: Set<String>) = supportedLanguages
         .contains(language.lowercase())
 
-    override fun findAutoCompleteProperties(query: String): List<IProperty> = findAllProperties()
+
+    override fun findProperty(key: String): String? = findAllProperties().filter { it.key == key }.map { it.value }.firstOrNull()
+
+    override fun findAutoCompleteProperties(query: String): List<IProperty> = findAllIProperties()
         .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
 
-    override fun getProperty(key: String): IProperty? = findAllProperties()
-        .firstOrNull { it.key != null && it.key == key }
-
     override fun findMacroProperty(query: String): IProperty? {
-        val allProps = findAllProperties()
+        val allProps = findAllIProperties()
         if (allProps.isEmpty()) {
             return null;
         }
@@ -83,49 +83,8 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-    override fun findProperty(query: String): String? = findMacroProperty(query)
-        ?.value
-        ?.replace("\\", "")
 
-    private fun resolvePropertyValue(value: String?): String {
-        return resolvePropertyValue(value, HashMap())
-    }
-
-    private fun resolvePropertyValue(value: String?, resolvedProperties: MutableMap<String, String>): String {
-        if (value == null) {
-            return ""
-        }
-        var index = 0
-        val sb = StringBuilder()
-        while (index != -1) {
-            val startIndex = value.indexOf(nestedPropertyPrefix, index)
-            val endIndex = value.indexOf(nestedPropertySuffix, startIndex)
-            if (startIndex != -1 && endIndex != -1) {
-                sb.append(value, index, startIndex)
-                val propertyKey = value.substring(startIndex + nestedPropertyPrefix.length, endIndex)
-                var resolvedValue: String? = resolvedProperties[propertyKey]
-                if (resolvedValue != null) {
-                    sb.append(resolvedValue)
-                } else {
-                    val property = findMacroProperty(propertyKey)
-                    if (property != null) {
-                        resolvedValue = resolvePropertyValue(property.value)
-                        sb.append(resolvedValue)
-                        resolvedProperties[propertyKey] = resolvedValue
-                    } else {
-                        sb.append(nestedPropertyPrefix).append(propertyKey).append(nestedPropertySuffix)
-                    }
-                }
-                index = endIndex + 1
-            } else {
-                sb.append(value, index, value.length)
-                index = startIndex
-            }
-        }
-        return sb.toString()
-    }
-
-   private fun findAllProperties(): List<IProperty> {
+    private fun findAllIProperties(): List<IProperty> {
         val result = LinkedHashMap<String, IProperty>()
         val configModule = obtainConfigModule() ?: return emptyList()
         val platformModule = obtainPlatformModule() ?: return emptyList()
@@ -134,6 +93,9 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
         var advancedPropsFile: PropertiesFile? = null
         var localPropsFile: PropertiesFile? = null
 
+        var propertieFiles = ArrayList<PropertiesFile>();
+
+        // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
         FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
             .mapNotNull { PsiManager.getInstance(project).findFile(it) }
             .mapNotNull { it as? PropertiesFile }
@@ -142,51 +104,113 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
                     "env.properties" -> envPropsFile = file
                     "advanced.properties" -> advancedPropsFile = file
                     "local.properties" -> localPropsFile = file
-                    else -> {
-                        for (property in file.properties) {
-                            if (property.key != null) {
-                                result[property.key!!] = property
-                            }
-                        }
-                    }
+                    "project.properties" -> propertieFiles.add(file)
                 }
             }
-        addPropertyFile(result, envPropsFile)
-        addPropertyFile(result, advancedPropsFile)
-        addPropertyFile(result, localPropsFile)
 
-        val optDir = result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]
-        addOptionalConfiguration(result, optDir)
+        envPropsFile?.let { propertieFiles.add(0, it) }
+        advancedPropsFile?.let { propertieFiles.add(1, it) }
+        localPropsFile?.let { propertieFiles.add(it) }
+
+        propertieFiles.forEach { file -> addPropertyFile(result, file) }
+
+        loadHybrisRuntimeProperties(result)
+        loadHybrisOptionalConfigDir(result)
 
         return ArrayList(result.values)
     }
 
+    private fun findAllProperties(): LinkedHashMap<String, String> {
 
-
-    private fun addOptionalConfiguration(result: LinkedHashMap<String, IProperty>, optDir: IProperty?) {
-        if (optDir == null) {
-            return
-        }
-        val dir = File(optDir.value)
-        if (!dir.isDirectory) {
-            return
-        }
-        val matchedFiles = dir.listFiles { _, name -> optionalPropertiesFilePattern.matcher(name).matches() }
-            ?: return
-        val propertyFiles = TreeMap<String, File>()
-        Arrays.stream(matchedFiles).forEach { file -> propertyFiles[file.name] = file }
-
-        propertyFiles.values.forEach { file ->
-            val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(file)
-            if (virtualFile == null || !virtualFile.exists()) {
-                return
+        val result = LinkedHashMap<String, String>()
+        findAllIProperties().forEach { property ->
+            property.value?.let {
+                result[property.key!!] = it
             }
-            val psiFile = PsiManager.getInstance(project).findFile(virtualFile)
-            if (psiFile is PropertiesFile) {
-                addPropertyFile(result, psiFile as PropertiesFile?)
+        }
+
+        replacePlaceholders(result)
+
+        return result
+    }
+
+    private fun replacePlaceholders(result: LinkedHashMap<String, String>) {
+        result.forEach { key, value ->
+            if (value.contains(nestedPropertyPrefix)) {
+                replacePlaceholder(result, key, value);
             }
         }
     }
+
+    private fun replacePlaceholder(result: LinkedHashMap<String, String>, key: String, value: String) {
+        val pattern = Pattern.compile("\\$\\{[^\\}]*\\}")
+        val matcher = pattern.matcher(value)
+        matcher?.let {
+            while (it.find()) {
+                val placeholder: String = it.group()
+                val nestedKey: String = placeholder.substring(nestedPropertyPrefix.length, placeholder.length - nestedPropertySuffix.length)
+                val nestedValue: String? = result[nestedKey]
+                nestedValue?.let {
+                    var newValue = nestedValue
+                    if (nestedValue.contains(nestedPropertyPrefix)) {
+                        replacePlaceholder(result, nestedKey, nestedValue)
+                        newValue = result[nestedKey]
+                    }
+
+                    result[key] = value.replace(placeholder, newValue ?: "")
+                }
+            }
+        }
+    }
+
+    private fun loadHybrisOptionalConfigDir(result: LinkedHashMap<String, IProperty>) {
+        var optDir = result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value
+
+        val envOptConfigDir = System.getenv("HYBRIS_OPT_CONFIG_DIR")
+        if (envOptConfigDir != null) {
+            optDir = envOptConfigDir;
+        }
+
+        optDir?.let {
+            val dir = File(it)
+            if (!dir.isDirectory) {
+                return
+            }
+
+            val matchedFiles = dir.listFiles { _, name -> optionalPropertiesFilePattern.matcher(name).matches() }
+                ?: return
+            val propertyFiles = TreeMap<String, File>()
+            Arrays.stream(matchedFiles).forEach { file -> propertyFiles[file.name] = file }
+
+            propertyFiles.values.forEach { file ->
+                addPropertyFile(result, toPropertiesFile(file))
+            }
+        }
+    }
+
+    private fun loadHybrisRuntimeProperties(result: LinkedHashMap<String, IProperty>) {
+        val envVar: String = System.getenv("HYBRIS_RUNTIME_PROPERTIES") ?: ""
+        if (!envVar.isBlank()) {
+            var propertiesFile = File(envVar);
+            propertiesFile?.let { file: File ->
+                addPropertyFile(result, toPropertiesFile(file))
+            }
+
+        }
+    }
+
+    private fun toPropertiesFile(file: File): PropertiesFile? {
+        val virtualFile: VirtualFile? = LocalFileSystem.getInstance().findFileByIoFile(file)
+        if (virtualFile == null || !virtualFile.exists()) {
+            return null
+        }
+        val psiFile: PsiFile? = PsiManager.getInstance(project).findFile(virtualFile)
+        if (psiFile is PropertiesFile) {
+            return psiFile
+        }
+        return null
+    }
+
 
     private fun addPropertyFile(result: LinkedHashMap<String, IProperty>, propertiesFile: PropertiesFile?) {
         if (propertiesFile == null) {
