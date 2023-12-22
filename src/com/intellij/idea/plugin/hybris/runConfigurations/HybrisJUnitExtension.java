@@ -25,28 +25,21 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.execution.junit.JUnitConfiguration;
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultAntConfigurator;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil;
+import com.intellij.idea.plugin.hybris.properties.PropertiesService;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 public class HybrisJUnitExtension extends RunConfigurationExtension {
-
-    private static final Logger LOG = Logger.getInstance(DefaultAntConfigurator.class);
 
     @Override
     public <T extends RunConfigurationBase<?>> void updateJavaParameters(final T configuration, final JavaParameters params, final RunnerSettings runnerSettings) throws ExecutionException {
@@ -54,11 +47,11 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             return;
         }
         final Project project = configuration.getProject();
+        final PropertiesService propertiesService = PropertiesService.getInstance(project);
         final ParametersList vmParameters = params.getVMParametersList();
 
-        if (!vmParameters.hasParameter("-ea")) {
-            vmParameters.add("-ea");
-        }
+        addVmParameterIfNotExist(vmParameters, "-ea");
+
         if (vmParameters.getParameters().stream().noneMatch(param -> param.startsWith("-Dplatformhome="))) {
             final VirtualFile platformRootDirectory = HybrisRootUtil.findPlatformRootDirectory(project);
 
@@ -66,6 +59,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
                 vmParameters.add("-Dplatformhome=" + platformRootDirectory.getPath());
             }
         }
+
         if (!params.getEnv().containsKey(HYBRIS_DATA_DIR_ENV)) {
             final HybrisProjectSettings settings = HybrisProjectSettingsComponent.getInstance(project).getState();
 
@@ -75,34 +69,21 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
                 params.addEnv(HYBRIS_DATA_DIR_ENV, hybrisDataDirPath);
             }
         }
-        addJdkPropertiesIfNecessary(vmParameters, project);
-    }
 
-    private void addJdkPropertiesIfNecessary(final ParametersList params, final Project project) {
-        final VirtualFile platformRootDirectory = HybrisRootUtil.findPlatformRootDirectory(project);
-        if (platformRootDirectory != null) {
-            final File advanedProperties = new File(platformRootDirectory.getPath() + "/resources", ADVANCED_PROPERTIES_FILE);
-            if (advanedProperties.exists()) {
-                final Properties properties = new Properties();
-                try (final InputStream in = new FileInputStream(advanedProperties)) {
-                    properties.load(in);
-                    final String property = properties.getProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
-                    if (property != null && !property.trim().isEmpty()) {
-                        final StringTokenizer tokenizer = new StringTokenizer(property.trim());
-                        while (tokenizer.hasMoreTokens()) {
-                            final String newParam = tokenizer.nextToken().replaceAll("\"", "");
-                            addVmParameterIfNotExist(params, newParam);
-                        }
-                    }
-                } catch (IOException e) {
-                    LOG.error("Cannot read advanced.properties File");
-                }
+
+        final IProperty macroProperty = propertiesService.findMacroProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
+        if (macroProperty != null && macroProperty.getValue() != null) {
+            final String value = macroProperty.getValue();
+            final StringTokenizer tokenizer = new StringTokenizer(value.trim());
+            while (tokenizer.hasMoreTokens()) {
+                final String newParam = tokenizer.nextToken().replaceAll("\"", "");
+                addVmParameterIfNotExist(vmParameters, newParam);
             }
         }
     }
 
     private void addVmParameterIfNotExist(ParametersList vmParameters, String newParam) {
-        if (vmParameters.getParameters().stream().noneMatch(param -> param.startsWith(newParam))) {
+        if (!vmParameters.hasParameter(newParam)) {
             vmParameters.add(newParam);
         }
     }
