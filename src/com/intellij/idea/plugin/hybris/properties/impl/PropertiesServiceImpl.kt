@@ -54,29 +54,29 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
 
     override fun getLanguages(): Set<String> {
         val languages = findProperty(HybrisConstants.PROPERTY_LANG_PACKS)
-                ?.split(",")
-                ?.map { it.trim() }
-                ?: emptyList()
+            ?.split(",")
+            ?.map { it.trim() }
+            ?: emptyList()
 
         val uniqueLanguages = languages.toMutableSet()
         uniqueLanguages.add(HybrisConstants.DEFAULT_LANGUAGE_ISOCODE)
 
         return uniqueLanguages
-                .map { it.lowercase() }
-                .toSet()
+            .map { it.lowercase() }
+            .toSet()
     }
 
     override fun containsLanguage(language: String, supportedLanguages: Set<String>) = supportedLanguages
-            .contains(language.lowercase())
+        .contains(language.lowercase())
 
 
     override fun findProperty(key: String): String? = findAllProperties()
-            .filter { it.key == key }
-            .map { it.value }
-            .firstOrNull()
+        .filter { it.key == key }
+        .map { it.value }
+        .firstOrNull()
 
     override fun findAutoCompleteProperties(query: String): List<IProperty> = findAllIProperties()
-            .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
+        .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
 
     override fun findMacroProperty(query: String): IProperty? {
         val allProps = findAllIProperties()
@@ -105,16 +105,16 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
 
         // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
         FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
-                .mapNotNull { PsiManager.getInstance(project).findFile(it) }
-                .mapNotNull { it as? PropertiesFile }
-                .forEach { file ->
-                    when (file.name) {
-                        ENV_PROPERTIES_FILE -> envPropsFile = file
-                        ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
-                        LOCAL_PROPERTIES_FILE -> localPropsFile = file
-                        PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
-                    }
+            .mapNotNull { PsiManager.getInstance(project).findFile(it) }
+            .mapNotNull { it as? PropertiesFile }
+            .forEach { file ->
+                when (file.name) {
+                    ENV_PROPERTIES_FILE -> envPropsFile = file
+                    ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
+                    LOCAL_PROPERTIES_FILE -> localPropsFile = file
+                    PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
                 }
+            }
 
         envPropsFile?.let { propertiesFiles.add(0, it) }
         advancedPropsFile?.let { propertiesFiles.add(1, it) }
@@ -129,13 +129,13 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     }
 
     private fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
-            .filter { it.value != null && it.key != null }
-            .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
-            .let { properties ->
-                properties.filter { it.value.contains(nestedPropertyPrefix) }
-                        .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
-                return properties
-            }
+        .filter { it.value != null && it.key != null }
+        .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
+        .let { properties ->
+            properties.filter { it.value.contains(nestedPropertyPrefix) }
+                .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
+            return properties
+        }
 
     private fun replacePlaceholder(result: LinkedHashMap<String, String>, key: String, visitedProperties: MutableSet<String>) {
 
@@ -175,25 +175,25 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     }
 
     private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HYBRIS_OPT_CONFIG_DIR_ENV)
-            ?: result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value)
-            ?.let { File(it) }
-            ?.takeIf { it.isDirectory }
-            ?.listFiles { _, name -> optionalPropertiesFilePattern.matcher(name).matches() }
-            ?.associateByTo(TreeMap()) { it.name }
-            ?.values
-            ?.mapNotNull { toPropertiesFile(it) }
-            ?.forEach { addPropertyFile(result, it) }
+        ?: result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value)
+        ?.let { File(it) }
+        ?.takeIf { it.isDirectory }
+        ?.listFiles { _, name -> optionalPropertiesFilePattern.matcher(name).matches() }
+        ?.associateByTo(TreeMap()) { it.name }
+        ?.values
+        ?.mapNotNull { toPropertiesFile(it) }
+        ?.forEach { addPropertyFile(result, it) }
 
     private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HYBRIS_RUNTIME_PROPERTIES_ENV)
-            ?.takeIf { it.isNotBlank() }
-            ?.let { File(it) }
-            ?.let { toPropertiesFile(it) }
-            ?.let { addPropertyFile(result, it) }
+        ?.takeIf { it.isNotBlank() }
+        ?.let { File(it) }
+        ?.let { toPropertiesFile(it) }
+        ?.let { addPropertyFile(result, it) }
 
     private fun toPropertiesFile(file: File) = LocalFileSystem.getInstance().findFileByIoFile(file)
-            ?.takeIf { it.exists() }
-            ?.let { PsiManager.getInstance(project).findFile(it) }
-            ?.let { it as? PropertiesFile }
+        ?.takeIf { it.exists() }
+        ?.let { PsiManager.getInstance(project).findFile(it) }
+        ?.let { it as? PropertiesFile }
 
     private fun addPropertyFile(result: MutableMap<String, IProperty>, propertiesFile: PropertiesFile?) {
         if (propertiesFile == null) {
@@ -208,7 +208,7 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-                .filter { it.name == "project.properties" }
+            .filter { it.name == "project.properties" }
         val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == ENV_PROPERTIES_FILE }
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == ADVANCED_PROPERTIES_FILE }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == LOCAL_PROPERTIES_FILE }
@@ -217,12 +217,12 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
     }
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
-            .modules
-            .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
+        .modules
+        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
 
     private fun obtainPlatformModule() = ModuleManager.getInstance(project)
-            .modules
-            .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+        .modules
+        .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
 
     fun GlobalSearchScope.filter(filter: (VirtualFile) -> Boolean) = object : DelegatingGlobalSearchScope(this) {
         override fun contains(file: VirtualFile): Boolean {
