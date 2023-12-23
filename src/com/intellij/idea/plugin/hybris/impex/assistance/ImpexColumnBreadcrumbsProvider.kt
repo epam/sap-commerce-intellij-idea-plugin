@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 
 class ImpexColumnBreadcrumbsProvider : BreadcrumbsProvider {
 
-    override fun getLanguages(): Array<Language> = arrayOf(ImpexLanguage.getInstance())
+    override fun getLanguages(): Array<Language> = arrayOf(ImpexLanguage)
 
     override fun acceptElement(element: PsiElement) = element is ImpexFullHeaderParameter
         || element is ImpexFullHeaderType

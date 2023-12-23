@@ -151,7 +151,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.selectSdk(project);
         this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
         this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
-        this.disableWrapOnType(ImpexLanguage.getInstance());
+        this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 

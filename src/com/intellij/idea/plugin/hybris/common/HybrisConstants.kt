@@ -17,10 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
+import com.intellij.psi.tree.IFileElementType
 
 object HybrisConstants {
 
@@ -604,5 +613,77 @@ object HybrisConstants {
             "Reformat Code",
             "Undo Reformat Code",
             "Auto-Indent Lines"
+    )
+
+    @JvmStatic
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
+
+
+    const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+    val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
+        FlexibleSearchTypes.TABLE_ALIAS_NAME,
+        FlexibleSearchTypes.COLUMN_ALIAS_NAME
+    )
+
+    val IMPEX_FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
+    val FXS_FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
+
+    val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
+    val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()
+    val PGQ_RESERVED_KEYWORDS = setOf(
+        PolyglotQueryTypes.AND,
+        PolyglotQueryTypes.ASC,
+        PolyglotQueryTypes.BY,
+        PolyglotQueryTypes.DESC,
+        PolyglotQueryTypes.GET,
+        PolyglotQueryTypes.IS,
+        PolyglotQueryTypes.NOT,
+        PolyglotQueryTypes.NULL,
+        PolyglotQueryTypes.OR,
+        PolyglotQueryTypes.ORDER,
+        PolyglotQueryTypes.WHERE
+    )
+
+
+    val FXS_RESERVED_KEYWORDS = setOf(
+        FlexibleSearchTypes.ALL,
+        FlexibleSearchTypes.AND,
+        FlexibleSearchTypes.AS,
+        FlexibleSearchTypes.ASC,
+        FlexibleSearchTypes.BETWEEN,
+        FlexibleSearchTypes.BY,
+        FlexibleSearchTypes.CASE,
+        FlexibleSearchTypes.CAST,
+        FlexibleSearchTypes.DESC,
+        FlexibleSearchTypes.DISTINCT,
+        FlexibleSearchTypes.ELSE,
+        FlexibleSearchTypes.END,
+        FlexibleSearchTypes.EXISTS,
+        FlexibleSearchTypes.FROM,
+        FlexibleSearchTypes.FULL,
+        FlexibleSearchTypes.GROUP,
+        FlexibleSearchTypes.HAVING,
+        FlexibleSearchTypes.IN,
+        FlexibleSearchTypes.INNER,
+        FlexibleSearchTypes.INTERVAL,
+        FlexibleSearchTypes.IS,
+        FlexibleSearchTypes.JOIN,
+        FlexibleSearchTypes.LEFT,
+        FlexibleSearchTypes.LIKE,
+        FlexibleSearchTypes.LIMIT,
+        FlexibleSearchTypes.NOT,
+        FlexibleSearchTypes.NULL,
+        FlexibleSearchTypes.OFFSET,
+        FlexibleSearchTypes.ON,
+        FlexibleSearchTypes.OR,
+        FlexibleSearchTypes.ORDER,
+        FlexibleSearchTypes.OUTER,
+        FlexibleSearchTypes.RIGHT,
+        FlexibleSearchTypes.SELECT,
+        FlexibleSearchTypes.THEN,
+        FlexibleSearchTypes.UNION,
+        FlexibleSearchTypes.USING,
+        FlexibleSearchTypes.WHEN,
+        FlexibleSearchTypes.WHERE,
     )
 }

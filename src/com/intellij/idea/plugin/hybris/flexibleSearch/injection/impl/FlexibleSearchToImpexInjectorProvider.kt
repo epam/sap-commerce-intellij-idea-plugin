@@ -38,9 +38,9 @@ import com.intellij.psi.util.parentOfType
 import java.util.*
 
 @Service
-class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
+class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage) {
 
-    override val language: Language = ImpexLanguage.getInstance()
+    override val language: Language = ImpexLanguage
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,

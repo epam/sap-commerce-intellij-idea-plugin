@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
@@ -45,7 +45,7 @@ object FxSUtils {
 
     fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
         var addComma = false
-        if (fxsSettings.completion.injectCommaAfterExpression && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
+        if (fxsSettings.completion.injectCommaAfterExpression && element.text == HybrisConstants.FXS_DUMMY_IDENTIFIER) {
             addComma = PsiTreeUtil
                 .getParentOfType(
                     element,
@@ -54,7 +54,7 @@ object FxSUtils {
                     FlexibleSearchGroupByClause::class.java,
                 )
                 ?.text
-                ?.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+                ?.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
                 ?.trim()
                 ?.takeUnless { it.startsWith(",") }
                 ?.isNotEmpty()

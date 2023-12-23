@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,7 +41,7 @@ class PolyglotQueryColorSettingsPage : ColorSettingsPage {
     override fun getDisplayName() = "Polyglot Query"
 
     override fun getIcon(): Icon = HybrisIcons.PGQ_FILE
-    override fun getAttributeDescriptors() =  DESCRIPTORS
+    override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getAdditionalHighlightingTagToDescriptorMap(): MutableMap<String, TextAttributesKey> = customTags
     override fun getHighlighter(): SyntaxHighlighter = PolyglotQuerySyntaxHighlighter.instance
@@ -61,32 +61,30 @@ class PolyglotQueryColorSettingsPage : ColorSettingsPage {
         */
     """.trimIndent()
 
-    companion object {
-        private fun localized(value: String) = "[<localized>$value</localized>]"
-        private fun param(value: String) = "<param>$value</param>"
-        private fun type(value: String) = "<type>$value</type>"
-        private fun attribute(value: String) = "<attribute>$value</attribute>"
+    private fun localized(value: String) = "[<localized>$value</localized>]"
+    private fun param(value: String) = "<param>$value</param>"
+    private fun type(value: String) = "<type>$value</type>"
+    private fun attribute(value: String) = "<attribute>$value</attribute>"
 
-        private val DESCRIPTORS = arrayOf(
-            AttributesDescriptor("Braces//Braces", PGQ_BRACES),
-            AttributesDescriptor("Braces//Bracket", PGQ_BRACKETS),
-            AttributesDescriptor("Braces//Paren", PGQ_PARENS),
-            AttributesDescriptor("Column//Localized `[]`", PGQ_LOCALIZED),
-            AttributesDescriptor("Column//Name", PGQ_COLUMN),
-            AttributesDescriptor("Comment", PGQ_COMMENT),
-            AttributesDescriptor("Keyword", PGQ_KEYWORD),
-            AttributesDescriptor("Parameter", PGQ_PARAMETER),
-            AttributesDescriptor("Operand", PGQ_OPERAND),
-            AttributesDescriptor("Type", PGQ_TYPE),
-        )
+    private val descriptors = arrayOf(
+        AttributesDescriptor("Braces//Braces", PGQ_BRACES),
+        AttributesDescriptor("Braces//Bracket", PGQ_BRACKETS),
+        AttributesDescriptor("Braces//Paren", PGQ_PARENS),
+        AttributesDescriptor("Column//Localized `[]`", PGQ_LOCALIZED),
+        AttributesDescriptor("Column//Name", PGQ_COLUMN),
+        AttributesDescriptor("Comment", PGQ_COMMENT),
+        AttributesDescriptor("Keyword", PGQ_KEYWORD),
+        AttributesDescriptor("Parameter", PGQ_PARAMETER),
+        AttributesDescriptor("Operand", PGQ_OPERAND),
+        AttributesDescriptor("Type", PGQ_TYPE),
+    )
 
-        private val customTags = RainbowHighlighter.createRainbowHLM()
+    private val customTags = with(RainbowHighlighter.createRainbowHLM()) {
+        this["localized"] = PGQ_LOCALIZED
+        this["param"] = PGQ_PARAMETER
+        this["type"] = PGQ_TYPE
+        this["attribute"] = PGQ_COLUMN
 
-        init {
-            customTags["localized"] = PGQ_LOCALIZED
-            customTags["param"] = PGQ_PARAMETER
-            customTags["type"] = PGQ_TYPE
-            customTags["attribute"] = PGQ_COLUMN
-         }
+        this
     }
 }

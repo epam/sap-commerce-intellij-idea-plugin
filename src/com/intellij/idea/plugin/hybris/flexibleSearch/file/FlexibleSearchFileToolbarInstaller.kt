@@ -29,7 +29,7 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.fxs.console",
     "hybris.fxs.toolbar.left",
     "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType.instance
+    FlexibleSearchFileType
 ) {
 
     companion object {

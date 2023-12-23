@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import com.intellij.openapi.application.ApplicationManager
 
-class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage.INSTANCE) {
+class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
 
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 

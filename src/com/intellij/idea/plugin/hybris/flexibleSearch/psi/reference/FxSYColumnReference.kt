@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
@@ -68,11 +67,11 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         val hasColumnAlias = isAliasedReference()
         val canFallback = canFallbackToTableName()
 
-        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && hasTableAlias) {
+        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && hasTableAlias) {
             return getSuitablePrefixes()
         }
 
-        if (!hasColumnAlias && FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
+        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
             return getSuitablePrefixes() + getColumns(type)
         }
         if ((hasColumnAlias && hasTableAlias)
@@ -98,8 +97,8 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     private fun getPostfixes(type: String): Array<LookupElementBuilder> = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
-        val text = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
-        element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        val text = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
             .takeIf { it.isBlank() && text.isNotBlank() }
             ?.let {
                 resolve(element.project, type, text)
@@ -117,9 +116,9 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
      */
     private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
         val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
-        val aliasText = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
 
-        val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+        val separators: Array<LookupElementBuilder> = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
             .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
                 arrayOf(

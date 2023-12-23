@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescri
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
-import com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -167,7 +166,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (refresh) {
             PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
         } else {
-            project.putUserData(HybrisProjectImportStartupActivity.getFinalizeProjectImportKey(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+            project.putUserData(HybrisConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
         }
         notifyImportNotFinishedYet(project);
         return modules;

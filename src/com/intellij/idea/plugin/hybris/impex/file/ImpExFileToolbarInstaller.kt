@@ -29,7 +29,7 @@ class ImpExFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.impex.console",
     "hybris.impex.toolbar.left",
     "hybris.impex.toolbar.right",
-    ImpexFileType.INSTANCE
+    ImpexFileType
 ) {
 
     companion object {

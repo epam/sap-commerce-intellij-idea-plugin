@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.structureView
 
-import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
@@ -35,9 +34,7 @@ class BSStructureTreeElement(
     private val myNavigationProvider: DomElementNavigationProvider
 ) : DomStructureTreeElement(stableCopy, myDescriptor, myNavigationProvider) {
 
-    override fun createChildElement(element: DomElement): StructureViewTreeElement {
-        return BSStructureTreeElement(element, myDescriptor, myNavigationProvider)
-    }
+    override fun createChildElement(element: DomElement) = BSStructureTreeElement(element, myDescriptor, myNavigationProvider)
 
     override fun getPresentableText(): String? {
         val resolvedValue = when (val dom = element) {

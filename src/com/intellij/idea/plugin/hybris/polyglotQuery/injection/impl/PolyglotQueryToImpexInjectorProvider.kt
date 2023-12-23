@@ -34,7 +34,7 @@ import java.util.*
 @Service
 class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(PolyglotQueryLanguage.instance) {
 
-    override val language: Language = ImpexLanguage.getInstance()
+    override val language: Language = ImpexLanguage
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,

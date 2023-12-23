@@ -51,7 +51,7 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                     addAll(it)
                 }
 
-                val targetLanguages = setOf(FlexibleSearchLanguage.INSTANCE.id, PolyglotQueryLanguage.instance.id)
+                val targetLanguages = setOf(FlexibleSearchLanguage.id, PolyglotQueryLanguage.instance.id)
 
                 // TODO: replace with pattern declared in the XML file once https://youtrack.jetbrains.com/issue/IDEA-339624/ will be resolved.
                 // com.intellij.patterns.compiler.PatternCompiler cannot parse primitive booleans required by the pattern

@@ -31,7 +31,7 @@
         <lang.braceMatcher language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
         <lang.foldingBuilder language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 
-        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="instance"
+        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
 
         <lang.parserDefinition language="Polyglot Query"

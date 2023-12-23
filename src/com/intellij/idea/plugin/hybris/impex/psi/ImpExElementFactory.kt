@@ -53,5 +53,5 @@ object ImpExElementFactory {
         ?.firstOrNull()
 
     fun createFile(project: Project, text: String): ImpexFile = PsiFileFactory.getInstance(project)
-        .createFileFromText("dummy.impex", ImpexFileType.INSTANCE, text) as ImpexFile
+        .createFileFromText("dummy.impex", ImpexFileType, text) as ImpexFile
 }

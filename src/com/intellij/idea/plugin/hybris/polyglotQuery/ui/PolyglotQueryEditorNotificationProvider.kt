@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.ui
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
@@ -46,7 +46,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
         val settings = HybrisProjectSettingsComponent.getInstance(project)
         if (!settings.isHybrisProject()) return null
-        if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType.instance)) return null
+        if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
         val pgqSettings = settings.state.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null
 
@@ -90,13 +90,14 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
     }
 
     class Collector(private val pgqSettings: PolyglotQuerySettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
+
         override fun execute(element: LeafPsiElement): Boolean {
-            if (RESERVED_KEYWORDS.contains(element.elementType)) {
+            if (HybrisConstants.PGQ_RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()
 
                 val mismatch = when (pgqSettings.defaultCaseForReservedWords) {
-                    ReservedWordsCase.UPPERCASE -> text.contains(REGEX_LOWERCASE)
-                    ReservedWordsCase.LOWERCASE -> text.contains(REGEX_UPPERCASE)
+                    ReservedWordsCase.UPPERCASE -> text.contains(HybrisConstants.CHARS_LOWERCASE_REGEX)
+                    ReservedWordsCase.LOWERCASE -> text.contains(HybrisConstants.CHARS_UPPERCASE_REGEX)
                 }
                 if (mismatch) {
                     return super.execute(element)
@@ -106,21 +107,4 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
         }
     }
 
-    companion object {
-        val REGEX_UPPERCASE = Regex("[A-Z]")
-        val REGEX_LOWERCASE = Regex("[a-z]")
-        val RESERVED_KEYWORDS = setOf(
-            AND,
-            ASC,
-            BY,
-            DESC,
-            GET,
-            IS,
-            NOT,
-            NULL,
-            OR,
-            ORDER,
-            WHERE
-        )
-    }
 }

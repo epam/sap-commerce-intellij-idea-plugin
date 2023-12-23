@@ -29,7 +29,7 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.pgq.console",
     "hybris.pgq.toolbar.left",
     "hybris.pgq.toolbar.right",
-    PolyglotQueryFileType.instance
+    PolyglotQueryFileType
 ) {
 
     companion object {

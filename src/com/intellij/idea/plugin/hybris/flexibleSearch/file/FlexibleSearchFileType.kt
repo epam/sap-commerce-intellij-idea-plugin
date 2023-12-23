@@ -23,14 +23,11 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage.INSTANCE) {
+object FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage) {
 
     override fun getName() = "FlexibleSearch file"
     override fun getDescription() = "FlexibleSearch language file"
     override fun getDefaultExtension() = "fxs"
     override fun getIcon(): Icon = HybrisIcons.FXS_FILE
 
-    companion object {
-        val instance = FlexibleSearchFileType()
-    }
 }

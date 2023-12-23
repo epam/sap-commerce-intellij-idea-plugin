@@ -42,7 +42,7 @@ import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
 
-class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage.getInstance()) {
+class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 

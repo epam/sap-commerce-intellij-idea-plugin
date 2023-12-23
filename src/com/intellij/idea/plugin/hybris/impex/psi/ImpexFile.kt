@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,9 +24,9 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.psi.FileViewProvider
 import java.io.Serial
 
-class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpexLanguage.getInstance()) {
+class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpexLanguage) {
 
-    override fun getFileType() = ImpexFileType.INSTANCE
+    override fun getFileType() = ImpexFileType
     override fun toString() = "ImpEx File"
     override fun getIcon(flags: Int) = super.getIcon(flags)
 

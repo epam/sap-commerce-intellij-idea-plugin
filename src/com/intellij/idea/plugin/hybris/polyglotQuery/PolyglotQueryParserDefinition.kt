@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,29 +25,26 @@ import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 
 class PolyglotQueryParserDefinition : ParserDefinition {
+
+    private val fileNodeType = IFileElementType(PolyglotQueryLanguage.instance)
+
     override fun createLexer(project: Project) = PolyglotQueryLexer()
     override fun createParser(project: Project) = PolyglotQueryParser()
     override fun createElement(node: ASTNode): PsiElement = PolyglotQueryTypes.Factory.createElement(node)
     override fun createFile(viewProvider: FileViewProvider) = PolyglotQueryFile(viewProvider)
 
-    override fun getFileNodeType(): IFileElementType = FILE_NODE_TYPE
-    override fun getWhitespaceTokens() = WHITE_SPACES
-    override fun getCommentTokens() = COMMENTS
-    override fun getStringLiteralElements(): TokenSet = STRING_LITERALS
+    override fun getFileNodeType(): IFileElementType = fileNodeType
+    override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
+    override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY
+    override fun getCommentTokens() = TokenSet.create(
+        PolyglotQueryTypes.COMMENT,
+        PolyglotQueryTypes.LINE_COMMENT
+    )
+
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
 
-    companion object {
-        val FILE_NODE_TYPE = IFileElementType(PolyglotQueryLanguage.instance)
-        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create(
-            PolyglotQueryTypes.COMMENT,
-            PolyglotQueryTypes.LINE_COMMENT
-        )
-        val STRING_LITERALS = TokenSet.create()
-    }
 }

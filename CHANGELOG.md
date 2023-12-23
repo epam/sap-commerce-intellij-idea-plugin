@@ -7,6 +7,9 @@
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 
+### Other
+- Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
+
 ## [2023.3.2]
 
 ### `Project Import` enhancements

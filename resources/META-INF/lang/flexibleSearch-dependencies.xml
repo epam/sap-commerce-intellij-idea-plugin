@@ -21,7 +21,7 @@
 
         <internalFileTemplate name="FlexibleSearch File"/>
 
-        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="instance"
+        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
 
         <!-- Core elements -->

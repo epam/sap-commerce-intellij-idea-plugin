@@ -17,33 +17,25 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.structureView
 
-import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider
 import com.intellij.idea.plugin.hybris.system.type.model.Attributes
 import com.intellij.idea.plugin.hybris.system.type.model.CustomProperties
 import com.intellij.idea.plugin.hybris.system.type.model.Indexes
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomService
 
 class TSXmlStructureViewBuilderProvider : XmlStructureViewBuilderProvider {
 
-    override fun createStructureViewBuilder(xmlFile: XmlFile): StructureViewBuilder? {
-        if (!TSUtils.isTypeSystemFile(xmlFile)) return null
-
-        return TSStructureViewBuilder(xmlFile, descriptor)
-    }
-
-    companion object {
-        private val descriptor = Function { dom: DomElement ->
-            return@Function when (dom) {
-                is Attributes -> DomService.StructureViewMode.SHOW_CHILDREN
-                is Indexes -> DomService.StructureViewMode.SHOW_CHILDREN
-                is CustomProperties -> DomService.StructureViewMode.SHOW_CHILDREN
-                else -> DomService.StructureViewMode.SHOW
-            }
+    override fun createStructureViewBuilder(xmlFile: XmlFile) = if (!TSUtils.isTypeSystemFile(xmlFile)) null
+    else TSStructureViewBuilder(xmlFile) { dom: DomElement ->
+        when (dom) {
+            is Attributes -> DomService.StructureViewMode.SHOW_CHILDREN
+            is Indexes -> DomService.StructureViewMode.SHOW_CHILDREN
+            is CustomProperties -> DomService.StructureViewMode.SHOW_CHILDREN
+            else -> DomService.StructureViewMode.SHOW
         }
     }
+
 }

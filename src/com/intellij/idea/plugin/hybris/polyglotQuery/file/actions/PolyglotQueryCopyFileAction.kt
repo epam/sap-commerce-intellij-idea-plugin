@@ -39,12 +39,12 @@ class PolyglotQueryCopyFileAction : AnAction(
         val project = event.project ?: return
         event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(project) && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(
             project,
-            PolyglotQueryFileType.instance.defaultExtension
+            PolyglotQueryFileType.defaultExtension
         )
     }
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryFileType.instance.defaultExtension);
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryFileType.defaultExtension);
     }
 }

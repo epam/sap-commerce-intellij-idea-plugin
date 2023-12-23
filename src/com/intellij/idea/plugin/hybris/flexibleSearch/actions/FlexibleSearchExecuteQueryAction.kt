@@ -27,7 +27,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
-    FlexibleSearchFileType.instance.defaultExtension,
+    FlexibleSearchFileType.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
 ) {
 
