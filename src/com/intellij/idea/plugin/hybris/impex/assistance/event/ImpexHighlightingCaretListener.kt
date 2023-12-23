@@ -49,7 +49,7 @@ class ImpexHighlightingCaretListener : CaretListener {
     override fun caretRemoved(e: CaretEvent) {}
 
     override fun caretPositionChanged(e: CaretEvent) {
-        if (CommonIdeaService.instance.isTypingActionInProgress()) return
+        if (CommonIdeaService.getInstance().isTypingActionInProgress()) return
 
         val editor = e.editor
         val project = editor.project ?: return
@@ -128,10 +128,10 @@ class ImpexHighlightingCaretListener : CaretListener {
 
     /**
      * IIPS-174: It seems like sometimes when we highlight code inside "Code Preview Panel" in combination with OOTB
-     * "unchanged lines" folding from IDEA it can end up in creating invalid highlighting ranges.
+     * "unchanged lines" folding from IDEA, it can end up in creating invalid highlighting ranges.
      * E.g. when you run an inspection for an impex file and in the results panel click on an inspection result
-     * on the right it shows you a preview of a snippet from that file, and if you have multiple inspection warnings in
-     * the same file when you click on them the preview panel jumps into different parts of the file, which leads to
+     * on the right, it shows you a preview of a snippet from that file, and if you have multiple inspection warnings in
+     * the same file when you click on them, the preview panel jumps into different parts of the file, which leads to
      * creation of multiple highlight ranges while the editor stays the same, but OOTB folding messes everything up by
      * folding many lines as the result highlight ranges created for the first inspection have invalid start and end
      * offsets for the editor with folded lines when you click on some other inspection from the same file.
@@ -155,7 +155,7 @@ class ImpexHighlightingCaretListener : CaretListener {
     companion object {
         private val CACHE_KEY = Key.create<List<TextRange>>("IMPEX_COLUMN_HIGHLIGHT_CACHE")
 
-        val instance: ImpexHighlightingCaretListener = ApplicationManager.getApplication().getService(ImpexHighlightingCaretListener::class.java)
+        fun getInstance(): ImpexHighlightingCaretListener = ApplicationManager.getApplication().getService(ImpexHighlightingCaretListener::class.java)
     }
 
 }

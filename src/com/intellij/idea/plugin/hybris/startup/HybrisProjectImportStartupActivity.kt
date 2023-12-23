@@ -54,7 +54,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
     private fun syncProjectSettingsForProject(project: Project) {
         runReadAction {
-            CommonIdeaService.instance.fixRemoteConnectionSettings(project)
+            CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
         }
 
         with(project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {

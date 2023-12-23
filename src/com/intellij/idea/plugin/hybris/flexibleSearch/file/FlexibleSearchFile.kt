@@ -31,6 +31,6 @@ class FlexibleSearchFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvi
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 1571628396866548247L
+        private val serialVersionUID: Long = 1571628396866548247L
     }
 }

@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
+import java.io.Serial
 import javax.swing.Icon
 
 abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
@@ -57,7 +58,8 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     }
 
     companion object {
-        private const val serialVersionUID: Long = -2700270816491881103L
+        @Serial
+        private val serialVersionUID: Long = -2700270816491881103L
     }
 
 }

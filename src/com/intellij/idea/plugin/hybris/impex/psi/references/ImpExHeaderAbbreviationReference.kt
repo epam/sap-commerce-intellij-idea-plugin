@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -42,7 +42,7 @@ class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : Psi
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
-    private fun findHeaderAbbreviation(project: Project, currentText: String) = PropertiesService.getInstance(project)
+    private fun findHeaderAbbreviation(project: Project, currentText: String) = PropertyService.getInstance(project)
         ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
         ?.firstOrNull { property ->
             property.value

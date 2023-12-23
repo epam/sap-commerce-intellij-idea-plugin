@@ -37,6 +37,6 @@ class EnumTypeClassValidation : AbstractClassesValidation<EnumType, EnumValue>()
     override fun isJavaFieldGenerationDisabled(itemAttribute: EnumValue) = false
 
     companion object {
-        val instance: EnumTypeClassValidation = ApplicationManager.getApplication().getService(EnumTypeClassValidation::class.java)
+        fun getInstance(): EnumTypeClassValidation = ApplicationManager.getApplication().getService(EnumTypeClassValidation::class.java)
     }
 }

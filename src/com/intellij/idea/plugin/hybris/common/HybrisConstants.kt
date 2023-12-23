@@ -193,7 +193,7 @@ object HybrisConstants {
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
     const val PROPERTY_ENV_PROPERTY_PREFIX = "env.properties.prefix"
 
-    const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports";
+    const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports"
 
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
@@ -250,8 +250,6 @@ object HybrisConstants {
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
     const val TS_CATALOG_VERSION_ATTRIBUTE_QUALIFIER = "catalogVersionAttributeQualifier"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE = "catalog.sync.default.root.type"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE_ORDER = "catalog.sync.default.root.type.order"
     const val TS_PRIMITIVE_BYTE = "byte"
     const val TS_PRIMITIVE_SHORT = "short"
     const val TS_PRIMITIVE_INT = "int"
@@ -262,7 +260,7 @@ object HybrisConstants {
     const val TS_PRIMITIVE_BOOLEAN = "boolean"
     val TS_PRIMITIVE_TYPES = setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
 
-    val TS_TYPECODE_MIN_ALLOWED = 10000
+    const val TS_TYPECODE_MIN_ALLOWED = 10000
     val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED..10099
     val TS_TYPECODE_RANGE_COMMONS = 13200..13299
     val TS_TYPECODE_RANGE_XPRINT = 24400..24599
@@ -371,7 +369,7 @@ object HybrisConstants {
         "node_modules",
         "apps/**/node_modules",
         "common/temp/node_modules"
-    );
+    )
 
     const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
@@ -467,15 +465,11 @@ object HybrisConstants {
     @JvmField
     val WEBROOT_WEBINF_CLASSES_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
     @JvmField
-    val WEB_SRC_PATH = FileUtilRt.toSystemDependentName("web/src")
-    @JvmField
     val WEBROOT_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
 
     @JvmField
     val ACCELERATOR_ADDON_WEB_PATH = FileUtilRt.toSystemDependentName("acceleratoraddon/web")
 
-    @JvmField
-    val COMMONWEB_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
     @JvmField
     val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
 
@@ -502,8 +496,7 @@ object HybrisConstants {
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
 
-    @JvmField
-    val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
+    const val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
     @JvmField

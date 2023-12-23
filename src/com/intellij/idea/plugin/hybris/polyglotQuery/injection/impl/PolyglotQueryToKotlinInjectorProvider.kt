@@ -28,7 +28,7 @@ class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorPr
     override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
 
     companion object {
-        val instance: PolyglotQueryToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToKotlinInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToKotlinInjectorProvider::class.java)
     }
 
 }

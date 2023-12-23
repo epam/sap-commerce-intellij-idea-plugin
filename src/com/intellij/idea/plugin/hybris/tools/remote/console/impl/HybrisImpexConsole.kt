@@ -118,6 +118,6 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -8798339041999147739L
+        private val serialVersionUID: Long = -8798339041999147739L
     }
 }

@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 class BSMetaPropertiesTable private constructor(myProject: Project) :
     AbstractTable<BSGlobalMetaBean, BSMetaProperty>(myProject) {
@@ -77,7 +78,8 @@ class BSMetaPropertiesTable private constructor(myProject: Project) :
     }
 
     companion object {
-        private const val serialVersionUID: Long = 6752572661238637911L
+        @Serial
+        private val serialVersionUID: Long = 6752572661238637911L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_DEPRECATED = "D"

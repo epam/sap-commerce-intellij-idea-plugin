@@ -106,6 +106,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -112651125533211607L
+        private val serialVersionUID: Long = -112651125533211607L
     }
 }

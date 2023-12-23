@@ -28,6 +28,6 @@ interface EclipseConfigurator {
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, project: Project, eclipseModules: List<EclipseModuleDescriptor>)
 
     companion object {
-        val instance: EclipseConfigurator? = ApplicationManager.getApplication().getService(EclipseConfigurator::class.java)
+        fun getInstance(): EclipseConfigurator? = ApplicationManager.getApplication().getService(EclipseConfigurator::class.java)
     }
 }

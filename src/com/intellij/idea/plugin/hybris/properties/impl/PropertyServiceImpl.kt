@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_PROPERTIES_F
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROJECT_PROPERTIES_FILE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
@@ -47,7 +47,7 @@ import java.util.regex.Pattern
 /*
 Improve order of the properties - https://help.sap.com/docs/SAP_COMMERCE/b490bb4e85bc42a7aa09d513d0bcb18e/8b8e13c9866910149d40b151a9196543.html?locale=en-US
  */
-class PropertiesServiceImpl(val project: Project) : PropertiesService {
+class PropertyServiceImpl(val project: Project) : PropertyService {
 
     private val nestedPropertyPrefix = "\${"
     private val nestedPropertySuffix = "}"

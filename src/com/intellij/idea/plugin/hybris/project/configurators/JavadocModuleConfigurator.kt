@@ -34,6 +34,6 @@ interface JavadocModuleConfigurator {
     )
 
     companion object {
-        val instance: JavadocModuleConfigurator = ApplicationManager.getApplication().getService(JavadocModuleConfigurator::class.java)
+        fun getInstance(): JavadocModuleConfigurator = ApplicationManager.getApplication().getService(JavadocModuleConfigurator::class.java)
     }
 }

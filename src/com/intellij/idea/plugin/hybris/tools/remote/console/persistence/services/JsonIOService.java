@@ -45,7 +45,7 @@ public final class JsonIOService {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    public static JsonIOService getInstance(@NotNull Project project) {
+    public static JsonIOService getInstance(@NotNull final Project project) {
         return project.getService(JsonIOService.class);
     }
 

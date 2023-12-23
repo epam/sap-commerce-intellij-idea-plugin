@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaI
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaItemIndex>(myProject) {
 
@@ -98,7 +99,8 @@ class TSMetaItemIndexesTable private constructor(myProject: Project) : AbstractT
     }
 
     companion object {
-        private const val serialVersionUID: Long = -6854917148686972681L
+        @Serial
+        private val serialVersionUID: Long = -6854917148686972681L
 
         private const val COLUMN_NAME = "Name"
         private const val COLUMN_CUSTOM = "C"

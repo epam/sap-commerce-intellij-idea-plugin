@@ -55,7 +55,7 @@ class FlexibleSearchColorSettingsPage : ColorSettingsPage {
     override fun getAttributeDescriptors() = descriptions
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
-    override fun getHighlighter(): SyntaxHighlighter = FlexibleSearchSyntaxHighlighter.instance
+    override fun getHighlighter(): SyntaxHighlighter = FlexibleSearchSyntaxHighlighter.getInstance()
 
     override fun getDemoText() = """
 SELECT {${tableAlias("cat")}:${column("pk")}} FROM {${table("Category")} AS ${tableAlias("cat")}} WHERE NOT EXISTS (

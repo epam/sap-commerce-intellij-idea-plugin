@@ -58,6 +58,6 @@ open class BSClassCompletionProvider(
     }
 
     companion object {
-        val instance: BSClassCompletionProvider = ApplicationManager.getApplication().getService(BSClassCompletionProvider::class.java)
+        fun getInstance(): BSClassCompletionProvider = ApplicationManager.getApplication().getService(BSClassCompletionProvider::class.java)
     }
 }

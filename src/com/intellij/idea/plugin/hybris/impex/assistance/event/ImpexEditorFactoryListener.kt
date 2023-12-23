@@ -25,7 +25,7 @@ class ImpexEditorFactoryListener : EditorFactoryListener {
     override fun editorCreated(editorFactoryEvent: EditorFactoryEvent) {
         val editor = editorFactoryEvent.editor
 
-        with(ImpexHighlightingCaretListener.instance) {
+        with(ImpexHighlightingCaretListener.getInstance()) {
             editor.caretModel.addCaretListener(this)
         }
     }
@@ -33,7 +33,7 @@ class ImpexEditorFactoryListener : EditorFactoryListener {
     override fun editorReleased(editorFactoryEvent: EditorFactoryEvent) {
         val editor = editorFactoryEvent.editor
 
-        with(ImpexHighlightingCaretListener.instance) {
+        with(ImpexHighlightingCaretListener.getInstance()) {
             this.clearHighlightedArea(editor)
             editor.caretModel.removeCaretListener(this)
         }

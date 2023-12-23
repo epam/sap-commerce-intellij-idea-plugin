@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,7 +34,7 @@ public class TypeDesc {
         CLASS, ENUM, GROUP_INTERFACE
     }
 
-    public TypeDesc(String xsName, String xsNamespace, String name, TypeEnum type) {
+    public TypeDesc(final String xsName, final String xsNamespace, final String name, final TypeEnum type) {
         this.xsName = xsName;
         this.xsNamespace = xsNamespace;
         this.name = name;
@@ -44,12 +45,12 @@ public class TypeDesc {
     final String xsName;
     final String xsNamespace;
     final String name;
-    final Map<String, FieldDesc> fdMap = new TreeMap<String, FieldDesc>();
+    final Map<String, FieldDesc> fdMap = new TreeMap<>();
     boolean duplicates;
     String documentation;
     TypeDesc[] supers;
 
     public String toString() {
-        return (type == TypeEnum.ENUM ? "enum" : "type") + ": " + name + ";" + xsName + ";";
+        return (type == TypeEnum.ENUM ? "enum" : "type") + ": " + name + ';' + xsName + ';';
     }
 }

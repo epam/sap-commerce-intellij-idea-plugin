@@ -33,7 +33,7 @@ class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     }
 
     companion object {
-        val instance: ImpExSimpleFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSimpleFoldingPlaceholderBuilder::class.java)
+        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSimpleFoldingPlaceholderBuilder::class.java)
     }
 
 }

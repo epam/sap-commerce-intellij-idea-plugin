@@ -1,6 +1,23 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.intellij.idea.plugin.hybris.jsp;
 
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
@@ -10,12 +27,7 @@ import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiInvalidElementAccessException;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.XmlRecursiveElementVisitor;
+import com.intellij.psi.*;
 import com.intellij.psi.jsp.JspFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -29,19 +41,11 @@ import com.intellij.util.SmartList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
 
-    private static List<Locale.LanguageRange> ourPriorityList = Locale.LanguageRange.parse(
+    private static final List<Locale.LanguageRange> ourPriorityList = Locale.LanguageRange.parse(
         "en-US;q=1.0,en;q=0.5,de;q=0.1"
     );
 
@@ -58,9 +62,8 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
         if (!(root instanceof XmlFile)) {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
-        if (root instanceof JspFile) {
-            JspFile jspFile = (JspFile) root;
-            List<FoldingDescriptor> results = new SmartList<>();
+        if (root instanceof final JspFile jspFile) {
+            final List<FoldingDescriptor> results = new SmartList<>();
             jspFile.accept(new XmlRecursiveElementVisitor(true) {
 
                 @Override
@@ -68,7 +71,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
                     if (!mayResolveToProperty(attribute)) {
                         return;
                     }
-                    XmlAttributeValue value = attribute.getValueElement();
+                    final XmlAttributeValue value = attribute.getValueElement();
                     if (value != null) {
                         Optional.ofNullable(JspPropertyFoldingBuilder.getResolvedProperty(value))
                                 .map(property -> createFolding(value, property))
@@ -101,11 +104,11 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     }
 
     @Override
-    public String getPlaceholderText(@NotNull ASTNode node) {
+    public String getPlaceholderText(@NotNull final ASTNode node) {
         final PsiElement element = node.getPsi();
         if (element instanceof XmlAttributeValue) {
-            IProperty property = getResolvedProperty((XmlAttributeValue) element);
-            return property == null ? element.getText() : "{" + property.getValue() + "}";
+            final IProperty property = getResolvedProperty((XmlAttributeValue) element);
+            return property == null ? element.getText() : '{' + property.getValue() + '}';
         }
         return element.getText();
     }
@@ -125,7 +128,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     @Nullable
     private static IProperty getResolvedProperty(@NotNull final XmlAttributeValue codeValue) {
         return CachedValuesManager.getCachedValue(codeValue, KEY, () -> {
-            List<IProperty> allProperties = new SmartList<>();
+            final List<IProperty> allProperties = new SmartList<>();
             for (PsiReference nextRef : codeValue.getReferences()) {
                 if (nextRef instanceof PsiPolyVariantReference) {
                     Arrays.stream(((PsiPolyVariantReference) nextRef).multiResolve(false))
@@ -141,7 +144,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
                 }
             }
 
-            IProperty theChosenOne = chooseForLocale(allProperties);
+            final IProperty theChosenOne = chooseForLocale(allProperties);
             return new CachedValueProvider.Result<>(theChosenOne, PsiModificationTracker.MODIFICATION_COUNT);
         });
     }
@@ -159,28 +162,28 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
         if (properties.isEmpty()) {
             return null;
         }
-        IProperty first = properties.get(0);
+        final IProperty first = properties.get(0);
         if (properties.size() == 1) {
             return first;
         }
         final Map<Locale, IProperty> map = new HashMap<>();
         final List<Locale> locales = new LinkedList<>();
         for (IProperty nextProperty : properties) {
-            Locale nextLocale = safeGetLocale(nextProperty);
+            final Locale nextLocale = safeGetLocale(nextProperty);
             if (nextLocale != null) {
                 map.put(nextLocale, nextProperty);
                 locales.add(nextLocale);
             }
         }
 
-        Locale best = Locale.lookup(priorityList, locales);
+        final Locale best = Locale.lookup(priorityList, locales);
         //System.err.println("found locales: " + locales + ", best: " + best + ", result: " + map.get(best));
         return Optional.ofNullable(best).map(map::get).orElse(first);
     }
 
     private static Locale safeGetLocale(final @NotNull IProperty property) {
         try {
-            PropertiesFile file = property.getPropertiesFile();
+            final PropertiesFile file = property.getPropertiesFile();
             return file == null ? null : file.getLocale();
         } catch (PsiInvalidElementAccessException e) {
             return null;

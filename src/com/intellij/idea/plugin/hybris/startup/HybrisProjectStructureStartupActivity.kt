@@ -49,7 +49,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        val commonIdeaService = CommonIdeaService.instance
+        val commonIdeaService = CommonIdeaService.getInstance()
         val settingsComponent = HybrisProjectSettingsComponent.getInstance(project)
         val isHybrisProject = settingsComponent.isHybrisProject()
 

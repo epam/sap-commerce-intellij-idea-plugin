@@ -83,7 +83,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         // grab header lines from both cloned future left and right tables
         val cloneLeftHeaderLine = cloneTableLeft.getChildOfType<ImpexHeaderLine>() ?: return
 
-        // before the actual split we have to ensure that we have enough value groups
+        // before the actual split, we have to ensure that we have enough value groups
         cloneLeftHeaderLine.valueLines
             .forEach {
                 val valueGroups = it.valueGroupList
@@ -96,7 +96,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
 
         val cloneRightHeaderLine = cloneTableRight.getChildOfType<ImpexHeaderLine>() ?: return
 
-        // before deletion of the header params we have to remove value groups
+        // before deletion of the header params, we have to remove value groups
         // delete value groups from the left table
         deleteValueGroups(cloneLeftHeaderLine) {
             it >= columnNumber && !uniqueColumns.contains(it)
@@ -117,7 +117,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
             it < columnNumber && !uniqueColumns.contains(it)
         }
 
-        // perform actual modification of the document, also inject few new lines for the right cloned table
+        // perform actual modification of the document, also inject a few new lines for the right cloned table
         val cloneLeftTableText = CodeStyleManager.getInstance(project).reformat(cloneTableLeft).text
         val cloneRightTableText = "\n" + CodeStyleManager.getInstance(project).reformat(cloneTableRight).text
 

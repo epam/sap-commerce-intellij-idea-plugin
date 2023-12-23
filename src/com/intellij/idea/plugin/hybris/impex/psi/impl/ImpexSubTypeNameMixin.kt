@@ -61,7 +61,7 @@ abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElem
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 3091595509597451013L
+        private val serialVersionUID: Long = 3091595509597451013L
     }
 
 }

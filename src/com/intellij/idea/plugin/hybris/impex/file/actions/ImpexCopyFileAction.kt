@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.file.actions;
+package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
@@ -30,7 +30,7 @@ import com.intellij.openapi.project.DumbAware
 
 class ImpexCopyFileAction : AnAction(
     "Copy to ImpEx Console",
-    "Copy ImpEx file to SAP Commerce Console",
+    "Copy ImpEx file to SAP Commerce console",
     HybrisIcons.CONSOLE_OPEN
 ), DumbAware {
 
@@ -43,6 +43,6 @@ class ImpexCopyFileAction : AnAction(
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_IMPEX, IMPEX_FILE_EXTENSION);
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_IMPEX, IMPEX_FILE_EXTENSION)
     }
 }

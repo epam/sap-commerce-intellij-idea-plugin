@@ -33,7 +33,7 @@ abstract class AbstractImpExFoldingBuilder : FoldingBuilderEx() {
             .impexSettings
             .folding
             .enabled
-        return if (!foldingEnabled) emptyArray();
-        else buildFoldRegionsInternal(psi, document, quick);
+        return if (!foldingEnabled) emptyArray()
+        else buildFoldRegionsInternal(psi, document, quick)
     }
 }

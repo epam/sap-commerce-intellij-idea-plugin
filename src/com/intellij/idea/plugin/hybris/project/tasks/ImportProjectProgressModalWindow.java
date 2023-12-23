@@ -522,12 +522,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
         final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
         if (impexLanguage != null) {
-            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
+            final CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
             langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
         }
     }
 
-    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
+    private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
         final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);

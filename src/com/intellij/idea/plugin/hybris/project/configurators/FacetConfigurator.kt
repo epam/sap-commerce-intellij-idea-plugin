@@ -40,9 +40,9 @@ interface FacetConfigurator {
     )
 
     companion object {
-        val yInstance: YFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator::class.java)
-        val springInstance: SpringFacetConfigurator? = ApplicationManager.getApplication().getService(SpringFacetConfigurator::class.java)
-        val kotlinInstance: KotlinFacetConfigurator? = ApplicationManager.getApplication().getService(KotlinFacetConfigurator::class.java)
-        val webInstance: WebFacetConfigurator? = ApplicationManager.getApplication().getService(WebFacetConfigurator::class.java)
+        fun getYInstance(): YFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator::class.java)
+        fun getSpringInstance(): SpringFacetConfigurator? = ApplicationManager.getApplication().getService(SpringFacetConfigurator::class.java)
+        fun getKotlinInstance(): KotlinFacetConfigurator? = ApplicationManager.getApplication().getService(KotlinFacetConfigurator::class.java)
+        fun getWebInstance(): WebFacetConfigurator? = ApplicationManager.getApplication().getService(WebFacetConfigurator::class.java)
     }
 }

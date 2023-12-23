@@ -506,7 +506,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (hmcModule == null) {
-            hmcSubModules.forEach((yModule, yHmcSubModule) -> yModule.removeSubModule(yHmcSubModule));
+            hmcSubModules.forEach(YModuleDescriptor::removeSubModule);
             moduleDescriptors.removeAll(hmcSubModules.values());
         }
     }

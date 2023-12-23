@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.gradle;
+package com.intellij.idea.plugin.hybris.gradle
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -30,6 +30,6 @@ class GradleSupport {
 
     companion object {
         @JvmStatic
-        val instance: GradleSupport? = ApplicationManager.getApplication().getService(GradleSupport::class.java)
+        fun getInstance(): GradleSupport? = ApplicationManager.getApplication().getService(GradleSupport::class.java)
     }
 }

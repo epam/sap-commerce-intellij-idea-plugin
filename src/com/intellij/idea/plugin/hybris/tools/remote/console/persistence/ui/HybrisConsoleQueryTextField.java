@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,9 +31,9 @@ import java.awt.event.FocusListener;
 
 public class HybrisConsoleQueryTextField extends JTextField {
 
-    private Color placeholderForeground = Gray._160;
+    private final Color placeholderForeground = Gray._160;
     private boolean textWrittenIn;
-    private String reservedPlaceholderValue;
+    private final String reservedPlaceholderValue;
 
     public HybrisConsoleQueryTextField(final String reservedPlaceholderValue) {
         this.reservedPlaceholderValue = reservedPlaceholderValue;
@@ -72,10 +72,10 @@ public class HybrisConsoleQueryTextField extends JTextField {
 
     private class QueryTextFieldDocumentListener implements DocumentListener {
 
-        private HybrisConsole hybrisConsole;
-        private JButton button;
+        private final HybrisConsole hybrisConsole;
+        private final JButton button;
 
-        public QueryTextFieldDocumentListener(HybrisConsole hybrisConsole, JButton button) {
+        public QueryTextFieldDocumentListener(final HybrisConsole hybrisConsole, final JButton button) {
             this.hybrisConsole = hybrisConsole;
             this.button = button;
         }
@@ -112,10 +112,10 @@ public class HybrisConsoleQueryTextField extends JTextField {
 
     private class QueryTextFieldFocusListener implements FocusListener {
 
-        private String placeholder;
-        private JButton button;
+        private final String placeholder;
+        private final JButton button;
 
-        public QueryTextFieldFocusListener(String placeholder, JButton button) {
+        public QueryTextFieldFocusListener(final String placeholder, final JButton button) {
             this.placeholder = placeholder;
             this.button = button;
         }

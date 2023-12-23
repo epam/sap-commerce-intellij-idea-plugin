@@ -116,7 +116,7 @@ class TSMetaModelMergerImpl(val myProject: Project) : TSMetaModelMerger {
             }
         }
 
-        globalMetaModel.getAllRelations().putAllValues(localMetaModel.getRelations());
+        globalMetaModel.getAllRelations().putAllValues(localMetaModel.getRelations())
 
         val itemTypeDeployments = localMetaModel.getMetaType<TSMetaItem>(TSMetaType.META_ITEM).values()
             .mapNotNull { it.deployment }

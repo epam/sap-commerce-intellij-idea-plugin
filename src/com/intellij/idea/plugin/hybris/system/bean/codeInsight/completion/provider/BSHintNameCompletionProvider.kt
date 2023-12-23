@@ -58,6 +58,6 @@ class BSHintNameCompletionProvider : CompletionProvider<CompletionParameters>() 
     companion object {
         val classLevelName = setOf("wsRelated", "alias")
         val propertyLevelNames = setOf("alias", "allowedValues", "example", "required")
-        val instance: BSHintNameCompletionProvider = ApplicationManager.getApplication().getService(BSHintNameCompletionProvider::class.java)
+        fun getInstance(): BSHintNameCompletionProvider = ApplicationManager.getApplication().getService(BSHintNameCompletionProvider::class.java)
     }
 }

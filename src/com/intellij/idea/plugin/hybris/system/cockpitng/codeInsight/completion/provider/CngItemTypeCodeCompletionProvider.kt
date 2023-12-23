@@ -156,6 +156,6 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
     }
 
     companion object {
-        val instance: CngItemTypeCodeCompletionProvider = ApplicationManager.getApplication().getService(CngItemTypeCodeCompletionProvider::class.java)
+        fun getInstance(): CngItemTypeCodeCompletionProvider = ApplicationManager.getApplication().getService(CngItemTypeCodeCompletionProvider::class.java)
     }
 }

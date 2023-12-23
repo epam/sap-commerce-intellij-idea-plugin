@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,5 @@ import com.intellij.openapi.editor.colors.ColorKey.createColorKeyWithFallback
 
 object ModuleDepDiagramColors {
 
-    val HEADER_CUSTOM: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CUSTOM", DiagramColors.NODE_HEADER)
-    val HEADER_NON_CUSTOM: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_NON_CUSTOM", DiagramColors.NODE_HEADER)
     val EDGE_CIRCULAR: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_EDGE_CIRCULAR", DiagramColors.BAD_EDGE)
 }

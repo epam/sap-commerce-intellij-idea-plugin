@@ -34,7 +34,7 @@ class ImpExSmartFoldingBlocksFilter : AbstractImpExFoldingFilter() {
         || element is ImpexParameters
         || ImpexPsiUtils.isLineBreak(element)
 
-    private fun isNotBlankPlaceholder(element: PsiElement) = ImpExSmartFoldingPlaceholderBuilder.instance.getPlaceholder(element)
+    private fun isNotBlankPlaceholder(element: PsiElement) = ImpExSmartFoldingPlaceholderBuilder.getInstance().getPlaceholder(element)
         .isNotBlank()
 
 }

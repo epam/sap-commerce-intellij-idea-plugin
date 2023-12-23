@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.configurations.JavaParameters;
@@ -28,16 +27,17 @@ import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.execution.junit.JUnitConfiguration;
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil;
-import com.intellij.idea.plugin.hybris.properties.PropertiesService;
+import com.intellij.idea.plugin.hybris.properties.PropertyService;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.StringTokenizer;
 
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 
 public class HybrisJUnitExtension extends RunConfigurationExtension {
 
@@ -79,7 +79,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             }
         }
 
-        final PropertiesService propertiesService = PropertiesService.getInstance(project);
+        final PropertyService propertiesService = PropertyService.getInstance(project);
         if (propertiesService != null) {
             final String property = propertiesService.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
             if (property != null) {
@@ -92,7 +92,7 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
         }
     }
 
-    private void addVmParameterIfNotExist(ParametersList vmParameters, String newParam) {
+    private void addVmParameterIfNotExist(final ParametersList vmParameters, final String newParam) {
         if (!vmParameters.hasParameter(newParam)) {
             vmParameters.add(newParam);
         }

@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 class BSMetaAnnotationsTable private constructor(myProject: Project) :
     AbstractTable<BSGlobalMetaBean, BSMetaAnnotations>(myProject) {
@@ -65,7 +66,8 @@ class BSMetaAnnotationsTable private constructor(myProject: Project) :
     }
 
     companion object {
-        private const val serialVersionUID: Long = 6752572571238631345L
+        @Serial
+        private val serialVersionUID: Long = 6752572571238631345L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_SCOPE = "Scope"

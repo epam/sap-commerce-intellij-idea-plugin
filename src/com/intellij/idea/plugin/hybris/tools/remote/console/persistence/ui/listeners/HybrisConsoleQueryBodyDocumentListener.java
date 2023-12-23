@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,11 +27,11 @@ import javax.swing.*;
 
 public class HybrisConsoleQueryBodyDocumentListener implements DocumentListener {
 
-    private HybrisConsoleQueryTextField textField;
-    private JButton button;
-    private String placeholder;
+    private final HybrisConsoleQueryTextField textField;
+    private final JButton button;
+    private final String placeholder;
 
-    public HybrisConsoleQueryBodyDocumentListener(JButton button, HybrisConsoleQueryTextField textField, String placeholder) {
+    public HybrisConsoleQueryBodyDocumentListener(final JButton button, final HybrisConsoleQueryTextField textField, final String placeholder) {
         this.button = button;
         this.textField = textField;
         this.placeholder = placeholder;
@@ -47,7 +47,7 @@ public class HybrisConsoleQueryBodyDocumentListener implements DocumentListener 
         disableButtonIfTextIsEmpty(event.getDocument().getText(), button, textField);
     }
 
-    private void disableButtonIfTextIsEmpty(String text, JButton button, HybrisConsoleQueryTextField textField) {
+    private void disableButtonIfTextIsEmpty(final String text, final JButton button, final HybrisConsoleQueryTextField textField) {
         if (!text.trim().isEmpty() && !textField.getText().equals(placeholder)) {
             button.setEnabled(true);
         } else {

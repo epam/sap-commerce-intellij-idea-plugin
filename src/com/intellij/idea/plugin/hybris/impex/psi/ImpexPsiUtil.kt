@@ -23,7 +23,7 @@ package com.intellij.idea.plugin.hybris.impex.psi
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
@@ -121,7 +121,7 @@ fun addValueGroups(element: ImpexValueLine, groupsToAdd: Int) {
 }
 
 /**
- * This method will get value of the value group and if it's empty will check for value in the default attribute
+ * This method will get the value of the value group and if it's empty will check for value in the default attribute
  */
 fun computeValue(element: ImpexValueGroup): String? {
     val computedValue = element
@@ -171,7 +171,7 @@ fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
 
     return if (DumbService.isDumb(project)) {
         element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
-    } else PropertiesService.getInstance(project)
+    } else PropertyService.getInstance(project)
         ?.findMacroProperty(propertyKey)
         ?.key
         ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
@@ -194,7 +194,7 @@ fun getAttributeName(element: ImpexParameter): String = element.text
 
 /**
  * 1. Try to get inline `MyType` type: referenceAttr(MyType.attr)
- * 2. If not present fallback to type of the `referenceAttr`: referenceAttr(attr)
+ * 2. If not present fallback to a type of the `referenceAttr`: referenceAttr(attr)
  */
 fun getItemTypeName(element: ImpexParameter): String? = element
     .inlineTypeName
@@ -262,7 +262,7 @@ fun getColumnNumber(element: ImpexUserRightsValueGroup): Int? = element
         valueLine.userRightsValueGroupList.indexOf(element)
             .takeIf { it != -1 }
             ?.let {
-                // we always have to plus one column, because first value group is not part of the list
+                // we always have to plus one column, because a first value group is not part of the list
                 it + 1
             }
     }

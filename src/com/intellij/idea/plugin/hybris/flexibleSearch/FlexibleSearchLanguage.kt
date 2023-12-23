@@ -26,5 +26,5 @@ object FlexibleSearchLanguage : Language("FlexibleSearch") {
     private fun readResolve(): Any = FlexibleSearchLanguage
 
     @Serial
-    private const val serialVersionUID: Long = 1870292616506709017L
+    private val serialVersionUID: Long = 1870292616506709017L
 }

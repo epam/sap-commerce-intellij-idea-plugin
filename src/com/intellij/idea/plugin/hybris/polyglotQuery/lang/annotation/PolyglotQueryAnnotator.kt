@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes.*
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.psi.PsiElement
@@ -30,7 +30,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 
-class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.instance) {
+class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.getInstance()) {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
@@ -41,7 +41,7 @@ class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.
                 LOCALIZED_NAME -> {
                     val language = element.text.trim()
 
-                    val propertiesService = PropertiesService.getInstance(element.project) ?: return
+                    val propertiesService = PropertyService.getInstance(element.project) ?: return
                     val supportedLanguages = propertiesService.getLanguages()
 
                     if (propertiesService.containsLanguage(language, supportedLanguages)) {

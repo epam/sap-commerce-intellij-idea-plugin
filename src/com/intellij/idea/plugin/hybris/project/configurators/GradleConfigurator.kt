@@ -28,6 +28,6 @@ interface GradleConfigurator {
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, project: Project, gradleModules: List<GradleModuleDescriptor>)
 
     companion object {
-        val instance: GradleConfigurator? = ApplicationManager.getApplication().getService(GradleConfigurator::class.java)
+        fun getInstance(): GradleConfigurator? = ApplicationManager.getApplication().getService(GradleConfigurator::class.java)
     }
 }

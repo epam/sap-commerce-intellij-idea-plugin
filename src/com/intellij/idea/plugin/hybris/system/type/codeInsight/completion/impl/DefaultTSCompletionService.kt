@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -108,7 +108,7 @@ class DefaultTSCompletionService(private val project: Project) : TSCompletionSer
             .map { PrioritizedLookupElement.withGrouping(it, 2) }
     }
 
-    override fun getHeaderAbbreviationCompletions(project: Project) = PropertiesService.getInstance(project)
+    override fun getHeaderAbbreviationCompletions(project: Project) = PropertyService.getInstance(project)
         ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
         ?.mapNotNull { it.value }
         ?.mapNotNull { abbreviation ->

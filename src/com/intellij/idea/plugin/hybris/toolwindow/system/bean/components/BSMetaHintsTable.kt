@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 class BSMetaHintsTable private constructor(myProject: Project) :
     AbstractTable<BSGlobalMetaBean, BSMetaHint>(myProject) {
@@ -65,7 +66,8 @@ class BSMetaHintsTable private constructor(myProject: Project) :
     }
 
     companion object {
-        private const val serialVersionUID: Long = 6752572571238637911L
+        @Serial
+        private val serialVersionUID: Long = 6752572571238637911L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_MODULE = "Module"

@@ -99,7 +99,7 @@ class BSMetaModelAccess(private val myProject: Project) {
 
                             myMessageBus.syncPublisher(BSMetaModelAccess.TOPIC).beanSystemChanged(globalMetaModel)
                         } finally {
-                            semaphore.release();
+                            semaphore.release()
                         }
                     }
                 }

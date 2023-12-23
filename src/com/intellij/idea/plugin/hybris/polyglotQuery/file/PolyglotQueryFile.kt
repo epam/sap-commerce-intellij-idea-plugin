@@ -29,6 +29,6 @@ class PolyglotQueryFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvid
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 7431812794135835779L
+        private val serialVersionUID: Long = 7431812794135835779L
     }
 }

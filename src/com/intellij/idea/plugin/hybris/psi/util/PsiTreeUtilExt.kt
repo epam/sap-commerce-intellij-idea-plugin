@@ -47,15 +47,4 @@ object PsiTreeUtilExt {
         elementType: IElementType
     ) = getLeafsOfAnyElementType(element, elementType)
 
-    fun <T : PsiElement?> getTopmostParentOfTypeUntil(element: PsiElement, aClass: Class<T>, untilClass: Class<*>): T? {
-        var answer = PsiTreeUtil.getParentOfType(element, aClass)
-
-
-        while (true) {
-            val next = PsiTreeUtil.getParentOfType(answer, aClass)
-                ?.takeUnless { untilClass.isInstance(it) }
-                ?: return answer
-            answer = next
-        }
-    }
 }

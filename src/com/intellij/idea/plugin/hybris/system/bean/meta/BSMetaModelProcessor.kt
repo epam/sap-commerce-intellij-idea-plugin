@@ -29,7 +29,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelProcessor(private val myProject: Project) {
+class BSMetaModelProcessor(myProject: Project) {
 
     companion object {
         fun getInstance(project: Project): BSMetaModelProcessor = project.getService(BSMetaModelProcessor::class.java)

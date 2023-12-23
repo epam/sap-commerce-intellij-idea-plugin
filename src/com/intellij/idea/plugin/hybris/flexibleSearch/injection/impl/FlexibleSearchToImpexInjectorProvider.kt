@@ -111,6 +111,6 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
     }
 
     companion object {
-        val instance: FlexibleSearchToImpexInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToImpexInjectorProvider::class.java)
+        fun getInstance(): FlexibleSearchToImpexInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToImpexInjectorProvider::class.java)
     }
 }

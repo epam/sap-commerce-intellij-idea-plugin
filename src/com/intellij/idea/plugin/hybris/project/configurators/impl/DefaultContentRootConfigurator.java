@@ -309,7 +309,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ContentEntry contentEntry,
         @NotNull final File srcDir,
         @NotNull final JpsModuleSourceRootType<P> rootType,
-        @NotNull P properties,
+        @NotNull final P properties,
         @NotNull final List<File> dirsToIgnore,
         @NotNull final HybrisApplicationSettings applicationSettings
     ) {

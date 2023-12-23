@@ -33,7 +33,7 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        val instance: PolyglotQueryFileToolbarInstaller = ApplicationManager.getApplication().getService(PolyglotQueryFileToolbarInstaller::class.java)
+        fun getInstance(): PolyglotQueryFileToolbarInstaller = ApplicationManager.getApplication().getService(PolyglotQueryFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

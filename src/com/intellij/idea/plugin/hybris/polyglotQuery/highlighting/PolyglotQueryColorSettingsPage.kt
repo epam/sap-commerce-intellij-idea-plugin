@@ -44,7 +44,7 @@ class PolyglotQueryColorSettingsPage : ColorSettingsPage {
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getAdditionalHighlightingTagToDescriptorMap(): MutableMap<String, TextAttributesKey> = customTags
-    override fun getHighlighter(): SyntaxHighlighter = PolyglotQuerySyntaxHighlighter.instance
+    override fun getHighlighter(): SyntaxHighlighter = PolyglotQuerySyntaxHighlighter.getInstance()
 
     override fun getDemoText(): String = """
         GET {${type("Title")}} 

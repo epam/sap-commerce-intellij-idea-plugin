@@ -23,9 +23,11 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType.*
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.Service
 import com.intellij.util.ProcessingContext
 
-open class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+@Service
+class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
@@ -42,7 +44,6 @@ open class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>
 
     companion object {
         @JvmStatic
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ItemCodeCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ItemCodeCompletionProvider::class.java)
     }
 }

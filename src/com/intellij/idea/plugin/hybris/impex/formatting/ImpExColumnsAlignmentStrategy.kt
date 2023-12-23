@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.formatting;
+package com.intellij.idea.plugin.hybris.impex.formatting
 
 import com.intellij.formatting.Alignment
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
@@ -45,7 +45,7 @@ open class ImpExColumnsAlignmentStrategy : ImpExAlignmentStrategy {
         }
         columnNumber++
 
-        return alignment;
+        return alignment
     }
 
     override fun processNode(currentNode: ASTNode) {
@@ -73,7 +73,7 @@ open class ImpExColumnsAlignmentStrategy : ImpExAlignmentStrategy {
 
     @Contract(pure = true)
     open fun isNewLine(currentNode: ASTNode) = isNewColumn(currentNode)
-        && isStartOfValueLine(currentNode);
+        && isStartOfValueLine(currentNode)
 
     @Contract(pure = true)
     open fun isNewColumn(currentNode: ASTNode) = ImpexTypes.VALUE_GROUP == currentNode.elementType

@@ -26,11 +26,12 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntConfigurationBase;
@@ -54,6 +55,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.ANT_OPTS;
@@ -61,6 +63,7 @@ import static java.util.Arrays.asList;
 
 public class DefaultAntConfigurator implements AntConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultAntConfigurator.class);
+    private static final Pattern PATTERN_APACHE_ANT = Pattern.compile("apache-ant.*");
 
     public final List<String> desirablePlatformTargets = new ArrayList<>(asList(
         "clean",
@@ -146,7 +149,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
 
     @Override
     public void configure(
-        @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final List<? extends ModuleDescriptor> allModules,
         @NotNull final Project project
     ) {
@@ -338,7 +341,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         try {
             antFolderUrl = Files
                 .find(Paths.get(platformDir.getAbsolutePath()), 1, (path, basicFileAttributes) ->
-                    Files.isDirectory(path) && path.toFile().getName().matches("apache-ant.*"))
+                    Files.isDirectory(path) && PATTERN_APACHE_ANT.matcher(path.toFile().getName()).matches())
                 .map(e -> e.toFile().getAbsolutePath())
                 .findAny()
                 .orElse(null);

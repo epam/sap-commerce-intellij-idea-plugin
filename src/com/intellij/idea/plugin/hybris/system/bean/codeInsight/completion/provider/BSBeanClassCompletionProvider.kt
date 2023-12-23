@@ -26,6 +26,6 @@ import java.util.*
 @Service
 class BSBeanClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_BEAN, BSMetaType.META_WS_BEAN, BSMetaType.META_EVENT)) {
     companion object {
-        val instance: BSBeanClassCompletionProvider = ApplicationManager.getApplication().getService(BSBeanClassCompletionProvider::class.java)
+        fun getInstance(): BSBeanClassCompletionProvider = ApplicationManager.getApplication().getService(BSBeanClassCompletionProvider::class.java)
     }
 }

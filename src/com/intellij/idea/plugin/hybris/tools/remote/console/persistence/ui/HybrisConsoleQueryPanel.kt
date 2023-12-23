@@ -181,7 +181,7 @@ class HybrisConsoleQueryPanel(private val project: Project, private val console:
         }
     }
 
-    private inner class HybrisConsoleQueryPanelListener() : HybrisConsoleEventListener {
+    private inner class HybrisConsoleQueryPanelListener : HybrisConsoleEventListener {
         override fun update() {
             addRegionEntitiesToComboBox()
         }

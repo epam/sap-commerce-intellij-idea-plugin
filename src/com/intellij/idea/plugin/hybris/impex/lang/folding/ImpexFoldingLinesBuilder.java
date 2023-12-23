@@ -45,13 +45,13 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegionsInternal(
-        @NotNull final PsiElement root,
+        @NotNull final PsiElement psi,
         @NotNull final Document document,
         final boolean quick
     ) {
         FoldingGroup currentLineGroup = FoldingGroup.newGroup(LINE_GROUP_NAME);
 
-        final List<PsiElement> foldingBlocks = foldingLines(root);
+        final List<PsiElement> foldingBlocks = foldingLines(psi);
 
         PsiElement startGroupElement = foldingBlocks.isEmpty() ? null : foldingBlocks.get(0);
 
@@ -123,9 +123,6 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
 
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
-        if (Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE)) {
-            return false;
-        }
-        return true;
+        return !Objects.equals(node.getElementType(), ImpexTypes.VALUE_LINE);
     }
 }

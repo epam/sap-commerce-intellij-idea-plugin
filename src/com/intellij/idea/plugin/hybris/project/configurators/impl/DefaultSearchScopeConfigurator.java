@@ -48,14 +48,16 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
     @Override
     public void configure(
-        @NotNull final ProgressIndicator indicator, @NotNull final Project project,
-        @NotNull final HybrisApplicationSettings appSettings, @NotNull final ModifiableModuleModel model
+        final @NotNull ProgressIndicator indicator,
+        final @NotNull Project project,
+        final @NotNull HybrisApplicationSettings applicationSettings,
+        final @NotNull ModifiableModuleModel model
     ) {
         indicator.setText(message("hybris.project.import.search.scope"));
-        final String customGroupName = appSettings.getGroupCustom();
-        final String commerceGroupName = appSettings.getGroupHybris();
-        final String nonHybrisGroupName = appSettings.getGroupNonHybris();
-        final String platformGroupName = appSettings.getGroupPlatform();
+        final String customGroupName = applicationSettings.getGroupCustom();
+        final String commerceGroupName = applicationSettings.getGroupHybris();
+        final String nonHybrisGroupName = applicationSettings.getGroupNonHybris();
+        final String platformGroupName = applicationSettings.getGroupPlatform();
         final List<NamedScope> newScopes = new ArrayList<>();
         NamedScope customScope = null;
         NamedScope platformScope = null;
@@ -76,7 +78,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 
             newScopes.add(new NamedScope(
                 SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.beans.impex.files"),
-                createCustomTsImpexBeansFilesPattern(appSettings)
+                createCustomTsImpexBeansFilesPattern(applicationSettings)
             ));
         }
         if (groupExists(model, platformGroupName)) {
@@ -104,7 +106,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));
 
-        NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
+        final NamedScope defaultScope = customScope != null ? customScope : hybrisScope != null ? hybrisScope : platformScope;
         if (defaultScope != null) {
             FindSettings.getInstance().setCustomScope(defaultScope.getPresentableName());
             FindSettings.getInstance().setDefaultScopeName(defaultScope.getPresentableName());

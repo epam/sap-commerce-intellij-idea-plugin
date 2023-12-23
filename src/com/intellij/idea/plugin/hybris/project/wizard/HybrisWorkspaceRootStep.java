@@ -436,7 +436,7 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         if (StringUtils.isBlank(sourceCodeDir) || StringUtils.isBlank(hybrisApiVersion)) {
             return null;
         }
-        File sourceCodeDirectory = new File(sourceCodeDir);
+        final File sourceCodeDirectory = new File(sourceCodeDir);
         if (!sourceCodeDirectory.isDirectory()) {
             return null;
         }

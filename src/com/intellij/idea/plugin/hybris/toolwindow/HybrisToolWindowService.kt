@@ -43,7 +43,7 @@ class HybrisToolWindowService(val project: Project) {
                 val contentManager = it.contentManager
                 contentManager.findContent(id)
                     ?.let { tab ->
-                        contentManager.setSelectedContent(tab);
+                        contentManager.setSelectedContent(tab)
                     }
             }
     }

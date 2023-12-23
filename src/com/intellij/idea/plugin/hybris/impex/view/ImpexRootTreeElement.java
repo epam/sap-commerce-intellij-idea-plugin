@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class ImpexRootTreeElement extends PsiTreeElementBase<ImpexFile> implements ItemPresentation {
@@ -40,8 +42,11 @@ public class ImpexRootTreeElement extends PsiTreeElementBase<ImpexFile> implemen
     @NotNull
     @Override
     public Collection<StructureViewTreeElement> getChildrenBase() {
+        final var element = getElement();
+        if (element == null) return Collections.emptyList();
+
         return Arrays.stream(getElement().getChildren())
-                     .filter(e -> e instanceof ImpexHeaderLine)
+                     .filter(ImpexHeaderLine.class::isInstance)
                      .map(e -> new ImpexHeaderTreeElement((ImpexHeaderLine) e))
                      .collect(Collectors.toList());
     }
@@ -54,7 +59,7 @@ public class ImpexRootTreeElement extends PsiTreeElementBase<ImpexFile> implemen
 
     @Override
     @Nullable
-    public Icon getIcon(boolean unused) {
+    public Icon getIcon(final boolean open) {
         return null;
     }
 }

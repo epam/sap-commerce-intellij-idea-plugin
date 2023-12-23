@@ -16,19 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi
+package com.intellij.idea.plugin.hybris.properties
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.patterns.PlatformPatterns
+import com.intellij.lang.properties.IProperty
+import com.intellij.openapi.project.Project
 
-object FlexibleSearchPatterns {
+interface PropertyService {
 
-    val COLUMN = PlatformPatterns.psiElement(FlexibleSearchTypes.COLUMN_NAME)
-        .inside(PlatformPatterns.psiElement(FlexibleSearchTypes.COLUMN_REF_Y_EXPRESSION))
-        .withLanguage(FlexibleSearchLanguage)
+    fun getLanguages(): Set<String>
 
-    val TABLE = PlatformPatterns.psiElement(FlexibleSearchTypes.DEFINED_TABLE_NAME)
-        .inside(PlatformPatterns.psiElement(FlexibleSearchTypes.COLUMN_REF_Y_EXPRESSION))
-        .withLanguage(FlexibleSearchLanguage)
+    fun containsLanguage(language: String, supportedLanguages: Set<String>): Boolean
 
+    fun findProperty(query: String): String?
+
+    fun findMacroProperty(query: String): IProperty?
+
+    fun findAutoCompleteProperties(query: String): List<IProperty>
+
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): PropertyService? = project.getService(PropertyService::class.java)
+    }
 }

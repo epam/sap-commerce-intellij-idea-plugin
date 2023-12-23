@@ -10,6 +10,9 @@
 ### Other
 - Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
 
+### Fixes
+- Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
+
 ## [2023.3.2]
 
 ### `Project Import` enhancements

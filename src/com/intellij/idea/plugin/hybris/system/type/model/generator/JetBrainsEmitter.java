@@ -43,9 +43,9 @@ public class JetBrainsEmitter implements Emitter {
     private boolean myUseQualifiedClassNames = false;
 
 
-    public void emit(FileManager fileManager, ModelDesc model, File outputRoot) {
+    public void emit(final FileManager fileManager, final ModelDesc model, final File outputRoot) {
         final NamespaceDesc nsdDef = model.nsdMap.get("");
-        final Set<String> simpleTypes = new TreeSet<String>();
+        final Set<String> simpleTypes = new TreeSet<>();
         for (TypeDesc td : model.jtMap.values()) {
             generateClass(fileManager, td, model, outputRoot, simpleTypes);
         }
@@ -64,11 +64,11 @@ public class JetBrainsEmitter implements Emitter {
     }
 
     public void generateClass(
-        FileManager fileManager,
-        TypeDesc td,
-        ModelDesc model,
-        File outDir,
-        Set<String> simpleTypes
+        final FileManager fileManager,
+        final TypeDesc td,
+        final ModelDesc model,
+        final File outDir,
+        final Set<String> simpleTypes
     ) {
         final Map<String, TypeDesc> jtMap = model.jtMap;
         final Map<String, NamespaceDesc> nsdMap = model.nsdMap;
@@ -83,10 +83,10 @@ public class JetBrainsEmitter implements Emitter {
         final File outFile = fileManager.getOutputFile(new File(outDir, toJavaFileName(typeQName)));
         PrintWriter out = null;
         try {
-            TreeSet<String> externalClasses = new TreeSet<String>();
+            final TreeSet<String> externalClasses = new TreeSet<>();
             if (td.type != TypeDesc.TypeEnum.ENUM) {
                 if (nsd.imports != null) {
-                    StringTokenizer st = new StringTokenizer(nsd.imports, ";");
+                    final StringTokenizer st = new StringTokenizer(nsd.imports, ";");
                     while (st.hasMoreTokens()) {
                         externalClasses.add(st.nextToken());
                     }
@@ -101,8 +101,8 @@ public class JetBrainsEmitter implements Emitter {
                 }
                 if (td.supers != null) {
                     for (TypeDesc tds : td.supers) {
-                        String pkg1 = model.getNSDPrefix(tds);
-                        String pkg2 = model.getNSDPrefix(td);
+                        final String pkg1 = model.getNSDPrefix(tds);
+                        final String pkg2 = model.getNSDPrefix(td);
                         if (!pkg1.equals(pkg2)) {
                             externalClasses.add(model.getNSDPrefix(tds) + tds.name);
                         }
@@ -113,7 +113,7 @@ public class JetBrainsEmitter implements Emitter {
                         externalClasses.add("com.intellij.psi.PsiClass");
                     }
                     if (fd.contentQualifiedName != null && fd.contentQualifiedName.indexOf('.') > 0) {
-                        String pkgNameFD = fd.contentQualifiedName.substring(
+                        final String pkgNameFD = fd.contentQualifiedName.substring(
                             0,
                             fd.contentQualifiedName.lastIndexOf('.')
                         );
@@ -137,7 +137,7 @@ public class JetBrainsEmitter implements Emitter {
             }
             out.println("");
             if (NOT_COMPARE_MODE && pkgName != null && pkgName.length() > 0) {
-                out.println("package " + pkgName + ";");
+                out.println("package " + pkgName + ';');
             }
             out.println();
             if (td.type != TypeDesc.TypeEnum.ENUM) {
@@ -149,7 +149,7 @@ public class JetBrainsEmitter implements Emitter {
                         continue;
                     }
                     external = true;
-                    out.println("import " + s + ";");
+                    out.println("import " + s + ';');
                 }
                 if (javaLang) {
                     if (external) {
@@ -159,7 +159,7 @@ public class JetBrainsEmitter implements Emitter {
                         if (!s.startsWith("java.")) {
                             continue;
                         }
-                        out.println("import " + s + ";");
+                        out.println("import " + s + ';');
                     }
                 }
                 out.println();
@@ -174,7 +174,7 @@ public class JetBrainsEmitter implements Emitter {
                 }
                 if (NOT_COMPARE_MODE) {
                     out.println(JDOC_OPEN);
-                    out.println(JDOC_CONT + td.xsNamespace + ":" + td.xsName + " enumeration.");
+                    out.println(JDOC_CONT + td.xsNamespace + ':' + td.xsName + " enumeration.");
                     if (AUTHOR != null) {
                         out.println(JDOC_CONT + AUTHOR);
                     }
@@ -190,37 +190,37 @@ public class JetBrainsEmitter implements Emitter {
                 out.print(" {");
                 boolean first = true;
                 for (Map.Entry<String, FieldDesc> e : td.fdMap.entrySet()) {
-                    String val = e.getKey();
-                    FieldDesc id = e.getValue();
+                    final String val = e.getKey();
+                    final FieldDesc id = e.getValue();
                     if (first) {
                         first = false;
                         out.println("");
                     } else {
-                        out.println(",");
+                        out.println(',');
                     }
                     if (text) {
-                        out.print("\t" + id.name + " (\"" + val + "\")");
+                        out.print('\t' + id.name + " (\"" + val + "\")");
                     } else {
-                        out.print("\t" + id.name);
+                        out.print('\t' + id.name);
                     }
                 }
                 if (text) {
-                    out.println(";");
+                    out.println(';');
                     out.println();
                     out.println("\tprivate final " + stringClass + " value;");
-                    out.println("\tprivate " + typeName + "(" + stringClass + " value) { this.value = value; }");
+                    out.println("\tprivate " + typeName + '(' + stringClass + " value) { this.value = value; }");
                     out.println("\tpublic " + stringClass + " getValue() { return value; }");
                 }
                 out.println();
-                out.println("}");
+                out.println('}');
                 return;
             }
             if (NOT_COMPARE_MODE) {
                 out.println(JDOC_OPEN);
                 if (td.type == TypeDesc.TypeEnum.GROUP_INTERFACE) {
-                    out.println(JDOC_CONT + td.xsNamespace + ":" + td.xsName + " model group interface.");
+                    out.println(JDOC_CONT + td.xsNamespace + ':' + td.xsName + " model group interface.");
                 } else {
-                    out.println(JDOC_CONT + td.xsNamespace + ":" + td.xsName + " interface.");
+                    out.println(JDOC_CONT + td.xsNamespace + ':' + td.xsName + " interface.");
                 }
                 printDocumentation(out, td.documentation, JDOC_CONT);
                 if (AUTHOR != null) {
@@ -253,28 +253,28 @@ public class JetBrainsEmitter implements Emitter {
             }
             out.println(" {");
 
-            FieldDesc[] fields = td.fdMap.values().toArray(new FieldDesc[td.fdMap.size()]);
+            final FieldDesc[] fields = td.fdMap.values().toArray(new FieldDesc[td.fdMap.size()]);
             if (fields.length == 0) {
                 Util.logwarn("no fields in: " + td.xsName);
             }
             Arrays.sort(fields, (o1, o2) -> o1.realIndex - o2.realIndex);
             out.println("");
             for (FieldDesc field : fields) {
-                String tagName = field.tagName;
-                String type = myUseQualifiedClassNames ? pkgName + "." + field.type : field.type;
-                String elementType = myUseQualifiedClassNames ? pkgName + "." + field.elementType : field.elementType;
+                final String tagName = field.tagName;
+                String type = myUseQualifiedClassNames ? pkgName + '.' + field.type : field.type;
+                String elementType = myUseQualifiedClassNames ? pkgName + '.' + field.elementType : field.elementType;
                 String name = field.name;
-                String paramName = toJavaIdName(field.clType > 0 ? name : field.elementName);
-                String javaDocTagName = field.clType < 0
+                final String paramName = toJavaIdName(field.clType > 0 ? name : field.elementName);
+                final String javaDocTagName = field.clType < 0
                     ? tagName + " children"
                     : tagName != null ? tagName + " child" : "simple content";
-                boolean isAttr = field.clType == FieldDesc.ATTR;
-                boolean isList = field.clType < 0;
+                final boolean isAttr = field.clType == FieldDesc.ATTR;
+                final boolean isList = field.clType < 0;
 
                 if (name.equals("class")) { // getClass method prohibited
                     name = "clazz";
                 }
-                boolean nameChanged = field.tagName != null &&
+                final boolean nameChanged = field.tagName != null &&
                                       !name
                                           .equals(isList
                                                       ? Util.pluralize(Util.toJavaFieldName(field.tagName))
@@ -283,7 +283,7 @@ public class JetBrainsEmitter implements Emitter {
                 // annotations
                 // types replacement
                 String newType = field.clType < 0 ? elementType : type;
-                String converterString = null;
+                final String converterString = null;
                 if (field.simpleTypesString != null) {
                     if (field.simpleTypesString.indexOf(":fully-qualified-classType;") != -1) { // localType, remoteType, etc.
                         newType = "PsiClass";
@@ -323,7 +323,7 @@ public class JetBrainsEmitter implements Emitter {
                 if (REPLACE_TYPES_WITH_INTERFACES) {
                     switch (Math.abs(field.clType)) {
                         case FieldDesc.ATTR:
-                            newType = "GenericAttributeValue<" + newType + ">";
+                            newType = "GenericAttributeValue<" + newType + '>';
                             break;
                         case FieldDesc.BOOL:
                             newType = "GenericDomValue<Boolean>";
@@ -331,12 +331,12 @@ public class JetBrainsEmitter implements Emitter {
                         case FieldDesc.SIMPLE:
                             break;
                         case FieldDesc.STR:
-                            newType = "GenericDomValue<" + newType + ">";
+                            newType = "GenericDomValue<" + newType + '>';
                             break;
                         case FieldDesc.OBJ: {
-                            TypeDesc ftd = jtMap.get(field.contentQualifiedName);
+                            final TypeDesc ftd = jtMap.get(field.contentQualifiedName);
                             if (ftd != null && ftd.type == TypeDesc.TypeEnum.ENUM) {
-                                newType = "GenericDomValue<" + ftd.name + ">";
+                                newType = "GenericDomValue<" + ftd.name + '>';
                             }
                             break;
                         }
@@ -348,10 +348,10 @@ public class JetBrainsEmitter implements Emitter {
                     type = newType;
                 }
                 if (isList) {
-                    type = "java.util.List<" + elementType + ">";
+                    type = "java.util.List<" + elementType + '>';
                 }
 
-                StringBuffer sbAnnotations = new StringBuffer();
+                final StringBuffer sbAnnotations = new StringBuffer();
                 if (field.clType == FieldDesc.SIMPLE) {
                     //  sbAnnotations.append((JB_OFF ? "//" : "") +"\t@TagValue");
                 }
@@ -374,7 +374,7 @@ public class JetBrainsEmitter implements Emitter {
                     if (field.duplicateIndex >= 0) {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (value = \"").append(tagName).append(
                             "\", index = ")
-                                     .append(field.duplicateIndex - 1).append(")");
+                                     .append(field.duplicateIndex - 1).append(')');
                     } else if (field.clType == FieldDesc.BOOL) {
                         sbAnnotations.append((JB_OFF ? "//" : "") + "\t@SubTag (value = \"").append(tagName).append(
                             "\", indicator = true)");
@@ -384,20 +384,20 @@ public class JetBrainsEmitter implements Emitter {
                     }
                 }
                 if (converterString != null) {
-                    sbAnnotations.append("\n").append(converterString);
+                    sbAnnotations.append('\n').append(converterString);
                 }
                 if (NOT_COMPARE_MODE && td.type != TypeDesc.TypeEnum.GROUP_INTERFACE) {
-                    out.println("\t" + JDOC_OPEN);
+                    out.println('\t' + JDOC_OPEN);
                     final String text;
                     if (isList) {
                         text = "the list of " + javaDocTagName;
                     } else {
                         text = "the value of the " + javaDocTagName;
                     }
-                    out.println("\t" + JDOC_CONT + "Returns " + text + ".");
-                    printDocumentation(out, field.documentation, "\t" + JDOC_CONT);
-                    out.println("\t" + JDOC_CONT + "@return " + text + ".");
-                    out.println("\t" + JDOC_CLOSE);
+                    out.println('\t' + JDOC_CONT + "Returns " + text + '.');
+                    printDocumentation(out, field.documentation, '\t' + JDOC_CONT);
+                    out.println('\t' + JDOC_CONT + "@return " + text + '.');
+                    out.println('\t' + JDOC_CLOSE);
                 }
                 out.println((JB_OFF ? "//" : "") + "\t@NotNull");
                 if (sbAnnotations.length() > 0) {
@@ -411,10 +411,10 @@ public class JetBrainsEmitter implements Emitter {
                         out.println((JB_OFF ? "//" : "") + "\t@Required");
                     }
                 }
-                out.print("\t");
+                out.print('\t');
                 //out.print("public ");
                 out.print(type);
-                out.print(" ");
+                out.print(' ');
                 out.print("get");
                 out.print(Util.capitalize(name));
                 out.println("();");
@@ -423,42 +423,42 @@ public class JetBrainsEmitter implements Emitter {
                 if (!genAddRemoveInsteadOfSet || field.clType > 0) {
                     if (field.clType == FieldDesc.SIMPLE) {
                         if (NOT_COMPARE_MODE && td.type != TypeDesc.TypeEnum.GROUP_INTERFACE) {
-                            out.println("\t" + JDOC_OPEN);
+                            out.println('\t' + JDOC_OPEN);
                             if (field.clType < 0) {
-                                out.println("\t" + JDOC_CONT + "Sets the list of " + javaDocTagName + ".");
+                                out.println('\t' + JDOC_CONT + "Sets the list of " + javaDocTagName + '.');
                             } else {
-                                out.println("\t" + JDOC_CONT + "Sets the value of the " + javaDocTagName + ".");
+                                out.println('\t' + JDOC_CONT + "Sets the value of the " + javaDocTagName + '.');
                             }
-                            out.println("\t" + JDOC_CONT + "@param " + paramName + " the new value to set");
-                            out.println("\t" + JDOC_CLOSE);
+                            out.println('\t' + JDOC_CONT + "@param " + paramName + " the new value to set");
+                            out.println('\t' + JDOC_CLOSE);
                             if (sbAnnotations.length() > 0) {
                                 out.println(sbAnnotations);
                             }
                         }
-                        out.print("\t");
+                        out.print('\t');
                         //out.print("public ");
                         out.print("void set");
                         out.print(Util.capitalize(name));
-                        out.print("(");
+                        out.print('(');
                         if (field.required) {
                             out.print((JB_OFF ? "" : "@NotNull "));
                         }
                         out.print(type);
-                        out.print(" ");
+                        out.print(' ');
                         out.print(paramName);
                         out.println(");");
                     }
                 } else {
                     if (NOT_COMPARE_MODE && td.type != TypeDesc.TypeEnum.GROUP_INTERFACE) {
-                        out.println("\t" + JDOC_OPEN);
-                        out.println("\t" + JDOC_CONT + "Adds new child to the list of " + javaDocTagName + ".");
-                        out.println("\t" + JDOC_CONT + "@return created child");
-                        out.println("\t" + JDOC_CLOSE);
+                        out.println('\t' + JDOC_OPEN);
+                        out.println('\t' + JDOC_CONT + "Adds new child to the list of " + javaDocTagName + '.');
+                        out.println('\t' + JDOC_CONT + "@return created child");
+                        out.println('\t' + JDOC_CLOSE);
                         if (sbAnnotations.length() > 0) {
                             out.println(sbAnnotations);
                         }
                     }
-                    out.print("\t");
+                    out.print('\t');
                     //out.print("public ");
                     out.print(elementType + " add");
                     out.print(Util.capitalize(field.elementName));
@@ -468,7 +468,7 @@ public class JetBrainsEmitter implements Emitter {
                 out.println("");
                 out.println("");
             }
-            out.println("}");
+            out.println('}');
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -480,7 +480,7 @@ public class JetBrainsEmitter implements Emitter {
         }
     }
 
-    private static boolean isBadTagName(String tagName) {
+    private static boolean isBadTagName(final String tagName) {
         if (Character.isUpperCase(tagName.charAt(0))) {
             return false;
         }
@@ -493,13 +493,13 @@ public class JetBrainsEmitter implements Emitter {
         return false;
     }
 
-    private void generateSuper(FileManager fileManager, NamespaceDesc nsd, ModelDesc model, File outDir) {
+    private void generateSuper(final FileManager fileManager, final NamespaceDesc nsd, final ModelDesc model, final File outDir) {
         if (nsd.superClass == null || nsd.superClass.length() == 0) {
             return;
         }
         final String typeName = nsd.superClass.substring(nsd.superClass.lastIndexOf(".") + 1);
         final String typeQName = model.toJavaQualifiedTypeName("", nsd.superClass, false);
-        String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
+        final String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
         File outFile = new File(outDir, toJavaFileName(typeQName));
         outFile = fileManager.getOutputFile(outFile);
         PrintWriter out = null;
@@ -510,7 +510,7 @@ public class JetBrainsEmitter implements Emitter {
             out.println("// DTD/Schema  :    " + nsd.name);
             out.println("");
             if (pkgName != null) {
-                out.println("package " + pkgName + ";");
+                out.println("package " + pkgName + ';');
             }
             out.println("");
             out.println("");
@@ -520,11 +520,11 @@ public class JetBrainsEmitter implements Emitter {
                 out.println(JDOC_CONT + AUTHOR);
             }
             out.println(JDOC_CLOSE);
-            out.print("public interface " + typeName + " ");
-            out.println("{");
+            out.print("public interface " + typeName + ' ');
+            out.println('{');
 
 
-            out.println("}");
+            out.println('}');
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -538,13 +538,13 @@ public class JetBrainsEmitter implements Emitter {
         }
     }
 
-    private void generateHelper(FileManager fileManager, NamespaceDesc nsd, ModelDesc model, File outDir) {
+    private void generateHelper(final FileManager fileManager, final NamespaceDesc nsd, final ModelDesc model, final File outDir) {
         final Map<String, TypeDesc> jtMap = model.jtMap;
         final Map<String, NamespaceDesc> nsdMap = model.nsdMap;
         if (nsd.helperClass == null || nsd.helperClass.length() == 0) {
             return;
         }
-        ArrayList<TypeDesc> jtList = new ArrayList<TypeDesc>();
+        final ArrayList<TypeDesc> jtList = new ArrayList<>();
         for (TypeDesc td : jtMap.values()) {
             if (td.type != TypeDesc.TypeEnum.CLASS) {
                 continue;
@@ -559,9 +559,9 @@ public class JetBrainsEmitter implements Emitter {
         }
 
         final String stringClass = getStringClassName();
-        String typeName = nsd.helperClass.substring(nsd.helperClass.lastIndexOf(".") + 1);
+        final String typeName = nsd.helperClass.substring(nsd.helperClass.lastIndexOf(".") + 1);
         final String typeQName = model.toJavaQualifiedTypeName("", nsd.helperClass, false);
-        String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
+        final String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
         File outFile = new File(outDir, toJavaFileName(typeQName));
         outFile = fileManager.getOutputFile(outFile);
         PrintWriter out = null;
@@ -572,7 +572,7 @@ public class JetBrainsEmitter implements Emitter {
             out.println("// DTD/Schema  :    " + nsd.name);
             out.println("");
             if (pkgName != null) {
-                out.println("package " + pkgName + ";");
+                out.println("package " + pkgName + ';');
             }
             out.println("");
             out.println("");
@@ -582,15 +582,15 @@ public class JetBrainsEmitter implements Emitter {
                 out.println(JDOC_CONT + AUTHOR);
             }
             out.println(JDOC_CLOSE);
-            out.print("public class " + typeName + " ");
-            out.println("{");
+            out.print("public class " + typeName + ' ');
+            out.println('{');
             out.println("");
             out.println("\tprivate interface GetName { " + stringClass + " getName(Object o); }");
             out.println("\tprivate static java.util.HashMap<Class, GetName> nameMap = new java.util.HashMap();");
             out.println("\tstatic {");
 
             for (TypeDesc td : jtList) {
-                ArrayList<FieldDesc> fields = new ArrayList<FieldDesc>(td.fdMap.values());
+                final ArrayList<FieldDesc> fields = new ArrayList<>(td.fdMap.values());
                 Collections.sort(fields, (o1, o2) -> o1.realIndex - o2.realIndex);
                 int guessPriority = 0;
                 FieldDesc guessedField = null;
@@ -621,13 +621,13 @@ public class JetBrainsEmitter implements Emitter {
                     }
                 }
                 out.println();
-                String qname = model.getNSDPrefix(td) + td.name;
-                String tdNameString = "\"" + toPresentationName(td.name) + "\"";
+                final String qname = model.getNSDPrefix(td) + td.name;
+                final String tdNameString = '"' + toPresentationName(td.name) + '"';
                 out.println("\t\tnameMap.put(" + qname + ".class, new GetName() {");
                 out.println("\t\t\tpublic " + stringClass + " getName(Object o) {");
                 if (guessedField != null) {
                     out.println("\t\t\t\t" + qname + " my = (" + qname + ") o;");
-                    String getter = "my.get" + Util.capitalize(guessedField.name) + "()";
+                    final String getter = "my.get" + Util.capitalize(guessedField.name) + "()";
                     if (guessedField.clType > 0) {
                         out.println("\t\t\t\t" + stringClass + " s = o==null? null:" + getter +
                                     (guessedField.clType == FieldDesc.STR || guessedField.clType == FieldDesc.ATTR
@@ -636,10 +636,10 @@ public class JetBrainsEmitter implements Emitter {
                         out.println("\t\t\t\treturn s==null?" + tdNameString + ":s;");
                     } else {
                         out.println("\t\t\t\treturn (o!=null && " + getter + "!=null && " + getter + ".size()>0)?");
-                        out.println("\t\t\t\t\tgetPresentationName(" + getter + ".get(0), null):" + tdNameString + ";");
+                        out.println("\t\t\t\t\tgetPresentationName(" + getter + ".get(0), null):" + tdNameString + ';');
                     }
                 } else {
-                    out.println("\t\t\t\treturn " + tdNameString + ";");
+                    out.println("\t\t\t\treturn " + tdNameString + ';');
                 }
                 out.println("\t\t\t}");
                 out.println("\t\t});");
@@ -650,7 +650,7 @@ public class JetBrainsEmitter implements Emitter {
             out.println("\t\tGetName g = o!=null? nameMap.get(o.getClass().getInterfaces()[0]):null;");
             out.println("\t\treturn g != null?g.getName(o):def;");
             out.println("\t}");
-            out.println("}");
+            out.println('}');
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -662,22 +662,22 @@ public class JetBrainsEmitter implements Emitter {
         }
     }
 
-    public static void printDocumentation(PrintWriter out, String str, String prefix) {
+    public static void printDocumentation(final PrintWriter out, final String str, final String prefix) {
         if (str == null) {
             return;
         }
-        StringTokenizer st = new StringTokenizer(str, "\n\r");
+        final StringTokenizer st = new StringTokenizer(str, "\n\r");
         while (st.hasMoreTokens()) {
-            String line = prefix + st.nextToken();
+            final String line = prefix + st.nextToken();
             out.println(line);
         }
     }
 
-    public static String toPresentationName(String typeName) {
-        StringBuffer sb = new StringBuffer(typeName.length() + 10);
+    public static String toPresentationName(final String typeName) {
+        final StringBuffer sb = new StringBuffer(typeName.length() + 10);
         boolean prevUp = true;
         for (int i = 0; i < typeName.length(); i++) {
-            char c = typeName.charAt(i);
+            final char c = typeName.charAt(i);
             if (Character.isUpperCase(c) && !prevUp) {
                 sb.append(' ');
             }
@@ -687,7 +687,7 @@ public class JetBrainsEmitter implements Emitter {
         return sb.toString();
     }
 
-    private static String toJavaFileName(String typeName) {
+    private static String toJavaFileName(final String typeName) {
         return typeName.replace('.', File.separatorChar) + ".java";
     }
 
@@ -705,7 +705,7 @@ public class JetBrainsEmitter implements Emitter {
     }
 
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         AUTHOR = "@author " + author;
     }
 

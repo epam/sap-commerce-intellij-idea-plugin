@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,7 +47,7 @@ class FlexibleSearchDocumentationTarget(val element: PsiElement, private val ori
         val virtualFile = element.containingFile.virtualFile
         return TargetPresentation.builder(element.text)
             .locationText(virtualFile.name, virtualFile.fileType.icon)
-            .presentation();
+            .presentation()
     }
 
     override fun computeDocumentationHint() = computeLocalDocumentation(element)

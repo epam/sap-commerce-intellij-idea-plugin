@@ -53,9 +53,9 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
             .toList();
 
         final var mavenProjectBuilders = mavenProjectFiles.stream()
-                                                          .map(mavenProjectBuilderFunction(project))
-                                                          .filter(isProjectPathValid(mavenModules))
-                                                          .toList();
+            .map(mavenProjectBuilderFunction(project))
+            .filter(isProjectPathValid(mavenModules))
+            .toList();
 
         mavenProjectBuilders.forEach(builder -> {
             try {
@@ -82,12 +82,12 @@ public class DefaultMavenConfigurator implements MavenConfigurator {
     private Predicate<MavenProjectBuilder> isProjectPathValid(final @NotNull List<MavenModuleDescriptor> mavenModules) {
         return builder -> {
             final var path = builder.getRootPath()
-                                    .toAbsolutePath()
-                                    .toString();
+                .toAbsolutePath()
+                .toString();
             return mavenModules.stream()
-                               .anyMatch(module -> module.getModuleRootDirectory()
-                                                         .getAbsolutePath()
-                                                         .equals(path));
+                .anyMatch(module -> module.getModuleRootDirectory()
+                    .getAbsolutePath()
+                    .equals(path));
         };
     }
 

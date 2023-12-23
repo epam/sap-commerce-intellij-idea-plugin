@@ -33,17 +33,17 @@ import java.util.Map;
 public class ModelGen {
 
     private final ModelDesc model = new ModelDesc();
-    private final Map<String, String> schemaLocationMap = new HashMap<String, String>();
+    private final Map<String, String> schemaLocationMap = new HashMap<>();
     private final ModelLoader loader;
     private final Emitter emitter;
     private final FileManager fileManager;
 
 
-    public ModelGen(ModelLoader loader) {
+    public ModelGen(final ModelLoader loader) {
         this(loader, new JetBrainsEmitter(), new MergingFileManager());
     }
 
-    public ModelGen(ModelLoader loader, Emitter emitter, FileManager fileManager) {
+    public ModelGen(final ModelLoader loader, final Emitter emitter, final FileManager fileManager) {
         this.loader = loader;
         this.emitter = emitter;
         this.fileManager = fileManager;
@@ -53,15 +53,15 @@ public class ModelGen {
         return model;
     }
 
-    public static Element loadXml(File configXml) throws Exception {
+    public static Element loadXml(final File configXml) throws Exception {
         return JDOMUtil.load(configXml);
     }
 
-    public void loadConfig(File configXml) throws Exception {
+    public void loadConfig(final File configXml) throws Exception {
         loadConfig(loadXml(configXml));
     }
 
-    public void setConfig(String schema, String location, NamespaceDesc desc, String... schemasToSkip) {
+    public void setConfig(final String schema, final String location, final NamespaceDesc desc, final String... schemasToSkip) {
         schemaLocationMap.put(schema, location);
         for (String sch : schemasToSkip) {
             if (sch != null && sch.length() > 0) {
@@ -72,7 +72,7 @@ public class ModelGen {
         model.nsdMap.put(desc.name, desc);
     }
 
-    public void loadConfig(Element element) {
+    public void loadConfig(final Element element) {
         final Element namespaceEl = element.getChild("namespaces");
         for (Element e : namespaceEl.getChildren("schemaLocation")) {
             final String name = e.getAttributeValue("name");
@@ -96,7 +96,7 @@ public class ModelGen {
             final String packageS = nsElement.getAttributeValue("package");
             final String packageEnumS = nsElement.getAttributeValue("enums");
             final String interfaces = nsElement.getAttributeValue("interfaces");
-            final ArrayList<String> list = new ArrayList<String>();
+            final ArrayList<String> list = new ArrayList<>();
             for (Element pkgElement : nsElement.getChildren("package")) {
                 final String pkgName = pkgElement.getAttributeValue("name");
                 final String fileName = pkgElement.getAttributeValue("file");
@@ -148,7 +148,7 @@ public class ModelGen {
     }
 
     public void loadModel(final File... modelRoots) throws Exception {
-        XMLEntityResolver resolver = xmlResourceIdentifier -> {
+        final XMLEntityResolver resolver = xmlResourceIdentifier -> {
             String esid = xmlResourceIdentifier.getExpandedSystemId();
             if (esid == null) {
                 final String location = schemaLocationMap.get(xmlResourceIdentifier.getNamespace());
@@ -178,7 +178,7 @@ public class ModelGen {
             esid = f.getPath();
             return new XMLInputSource(null, esid, null);
         };
-        ArrayList<File> files = new ArrayList<File>();
+        final ArrayList<File> files = new ArrayList<>();
         for (File root : modelRoots) {
             if (null != root.listFiles()) {
                 //noinspection ConstantConditions

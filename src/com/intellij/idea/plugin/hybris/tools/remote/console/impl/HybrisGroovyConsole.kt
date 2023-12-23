@@ -62,7 +62,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
         panel.add(commitLabel)
         panel.add(commitCheckbox)
         add(panel, BorderLayout.NORTH)
-        initTimeoutSpinner();
+        initTimeoutSpinner()
         isEditable = true
     }
 
@@ -89,6 +89,6 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -3858827004057439840L
+        private val serialVersionUID: Long = -3858827004057439840L
     }
 }

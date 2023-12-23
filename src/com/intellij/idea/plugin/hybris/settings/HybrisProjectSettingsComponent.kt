@@ -34,7 +34,7 @@ import com.intellij.util.text.VersionComparatorUtil
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisProjectSettings", storages = [Storage(STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)])
-@Service
+@Service(Service.Level.PROJECT)
 class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSettings> {
     private val hybrisProjectSettings = HybrisProjectSettings()
 

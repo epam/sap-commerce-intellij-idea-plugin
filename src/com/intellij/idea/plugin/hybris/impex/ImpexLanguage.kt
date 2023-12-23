@@ -26,5 +26,5 @@ object ImpexLanguage : Language("ImpEx") {
     private fun readResolve(): Any = ImpexLanguage
 
     @Serial
-    private const val serialVersionUID: Long = -2880559174275047908L
+    private val serialVersionUID: Long = -2880559174275047908L
 }

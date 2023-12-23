@@ -115,7 +115,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 5761094275961283320L
+        private val serialVersionUID: Long = 5761094275961283320L
     }
 }
 

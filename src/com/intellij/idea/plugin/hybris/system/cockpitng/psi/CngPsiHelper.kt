@@ -48,7 +48,7 @@ object CngPsiHelper {
             ?.find { it.localName == "initialize" && it.getAttributeValue("property") == newItemName }
 
         // ignore code completion and reference resolution for template-bean properties, corresponding Inspection will suggest conversion into plain type
-        if (initializeProperty?.getAttributeValue("template-bean") != null) return null;
+        if (initializeProperty?.getAttributeValue("template-bean") != null) return null
 
         val newItemType = initializeProperty?.getAttributeValue("type")
             ?: return resolveContextType(element)

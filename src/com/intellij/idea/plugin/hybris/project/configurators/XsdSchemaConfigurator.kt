@@ -33,6 +33,6 @@ interface XsdSchemaConfigurator {
     )
 
     companion object {
-        val instance: DefaultXsdSchemaConfigurator? = ApplicationManager.getApplication().getService(DefaultXsdSchemaConfigurator::class.java)
+        fun getInstance(): DefaultXsdSchemaConfigurator? = ApplicationManager.getApplication().getService(DefaultXsdSchemaConfigurator::class.java)
     }
 }

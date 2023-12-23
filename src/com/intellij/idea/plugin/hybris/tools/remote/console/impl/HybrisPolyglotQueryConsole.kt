@@ -99,7 +99,7 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -1330953384857131472L
+        private val serialVersionUID: Long = -1330953384857131472L
         const val ID = "hybris.polyglot.query.shell"
     }
 }

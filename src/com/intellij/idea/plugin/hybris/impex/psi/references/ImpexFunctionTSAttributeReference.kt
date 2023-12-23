@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
@@ -34,14 +33,19 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
 import com.intellij.idea.plugin.hybris.system.type.model.MapType
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.MapResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.*
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.ParameterizedCachedValue
+import com.intellij.psi.util.ParameterizedCachedValueProvider
 
 class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
@@ -51,7 +55,7 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
     }
 
     override fun getVariants(): Array<LookupElement> {
-        // if inline type already present we should not suggest any other types
+        // if an inline type already present, we should not suggest any other types
         if (element.inlineTypeName != null) return emptyArray()
         return TSCompletionService.getInstance(element.project)
             .getImpexInlineTypeCompletions(element.project, element)
@@ -94,7 +98,7 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
             metaService: TSMetaModelAccess,
             recursionLevel: Int = 0
         ): ResolveResult? {
-            // If we've entered this method 2+ times it may sound like a bi-directional relation, return right away
+            // If we've entered this method, 2+ times it may sound like a bidirectional relation, return right away
             if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return null
             return metaService.findMetaClassifierByName(typeName)
                 ?.let { meta ->
@@ -132,25 +136,6 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
                 }
         }
 
-        private fun findItemTypeName(element: PsiElement) = (
-            PsiTreeUtil.getParentOfType(element, ImpexParameter::class.java)
-                ?: PsiTreeUtil.getParentOfType(element, ImpexFullHeaderParameter::class.java)
-                    ?.anyHeaderParameterName
-            )
-            ?.reference
-            ?.let { it as PsiPolyVariantReference }
-            ?.multiResolve(false)
-            ?.firstOrNull()
-            ?.let {
-                when (it) {
-                    is AttributeResolveResult -> it.meta.type
-                    is EnumResolveResult -> it.meta.name
-                    is ItemResolveResult -> it.meta.name
-                    is RelationResolveResult -> it.meta.name
-                    is RelationEndResolveResult -> it.meta.type
-                    else -> null
-                }
-            }
     }
 
 }

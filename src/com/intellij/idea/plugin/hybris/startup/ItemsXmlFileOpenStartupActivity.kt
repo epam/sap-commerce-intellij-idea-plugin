@@ -45,7 +45,7 @@ class ItemsXmlFileOpenStartupActivity : ProjectActivity {
                 ApplicationManager.getApplication().runReadAction {
                     val validation = ItemsXmlFileValidation.getInstance(project)
                     val isOutdated = FileTypeIndex.getFiles(
-                        HybrisItemsXmlFileType.INSTANCE,
+                        HybrisItemsXmlFileType,
                         GlobalSearchScope.projectScope(project)
                     )
                         .any { file -> validation.isFileOutOfDate(file) }

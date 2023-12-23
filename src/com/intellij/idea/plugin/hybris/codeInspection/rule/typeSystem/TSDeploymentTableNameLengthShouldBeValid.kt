@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.deployments
@@ -48,7 +48,7 @@ class TSDeploymentTableNameLengthShouldBeValid : AbstractCustomOnlyTSInspection(
         severity: HighlightSeverity
     ) {
         val tableName = dom.table.stringValue ?: return
-        val maxLength = PropertiesService.getInstance(project)
+        val maxLength = PropertyService.getInstance(project)
             ?.findMacroProperty(HybrisConstants.PROPERTY_DEPLOYMENT_TABLENAME_MAXLENGTH)
             ?.value
             ?.toIntOrNull()

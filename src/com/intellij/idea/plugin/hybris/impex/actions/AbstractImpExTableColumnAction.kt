@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 
-abstract class AbstractImpExTableColumnAction() : AbstractImpExTableAction() {
+abstract class AbstractImpExTableColumnAction : AbstractImpExTableAction() {
 
     override fun isActionAllowed(project: Project, editor: Editor, element: PsiElement) = getSuitableElement(element) != null
 

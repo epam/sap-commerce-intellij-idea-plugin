@@ -33,7 +33,7 @@ class ImpExFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        val instance: ImpExFileToolbarInstaller = ApplicationManager.getApplication().getService(ImpExFileToolbarInstaller::class.java)
+        fun getInstance(): ImpExFileToolbarInstaller = ApplicationManager.getApplication().getService(ImpExFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ public enum Lang implements com.intellij.util.xml.NamedEnum {
 	ZUL ("zul");
 
 	private final String value;
-	private Lang(String value) { this.value = value; }
+	private Lang(final String value) { this.value = value; }
 	@Override
 	public String getValue() { return value; }
 

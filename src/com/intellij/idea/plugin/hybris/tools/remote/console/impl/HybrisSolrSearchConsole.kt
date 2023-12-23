@@ -175,6 +175,6 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -2047695844446905788L
+        private val serialVersionUID: Long = -2047695844446905788L
     }
 }

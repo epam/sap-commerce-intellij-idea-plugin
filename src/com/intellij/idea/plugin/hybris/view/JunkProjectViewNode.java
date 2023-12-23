@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,9 +38,9 @@ public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode<?
     public JunkProjectViewNode(
         final Project project,
         final List<AbstractTreeNode<?>> children,
-        final ViewSettings settings
+        final ViewSettings viewSettings
     ) {
-        super(project, children, settings);
+        super(project, children, viewSettings);
     }
 
     @Override
@@ -51,8 +52,7 @@ public class JunkProjectViewNode extends ProjectViewNode<List<AbstractTreeNode<?
     @Override
     public boolean contains(@NotNull final VirtualFile file) {
         for (AbstractTreeNode abstractTreeNode : this.getValue()) {
-            if (abstractTreeNode instanceof ProjectViewNode) {
-                final ProjectViewNode projectViewNode = (ProjectViewNode) abstractTreeNode;
+            if (abstractTreeNode instanceof final ProjectViewNode projectViewNode) {
 
                 if (null == projectViewNode.getVirtualFile()) {
                     continue;

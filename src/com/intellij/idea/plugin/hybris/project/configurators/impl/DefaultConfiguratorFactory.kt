@@ -24,34 +24,34 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 class DefaultConfiguratorFactory : ConfiguratorFactory {
 
     override fun getFacetConfigurators() = with(mutableListOf<FacetConfigurator>()) {
-        add(FacetConfigurator.yInstance)
-        FacetConfigurator.springInstance?.let { add(it) }
-        FacetConfigurator.kotlinInstance?.let { add(it) }
-        FacetConfigurator.webInstance?.let { add(it) }
+        add(FacetConfigurator.getYInstance())
+        FacetConfigurator.getSpringInstance()?.let { add(it) }
+        FacetConfigurator.getKotlinInstance()?.let { add(it) }
+        FacetConfigurator.getWebInstance()?.let { add(it) }
         this
     }
 
-    override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.instance
-        ?: SpringConfigurator.dummyInstance
+    override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.getInstance()
+        ?: SpringConfigurator.getDummyInstance()
 
-    override fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = XsdSchemaConfigurator.instance
+    override fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = XsdSchemaConfigurator.getInstance()
 
     override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator = ContentRootConfigurator.instance
-    override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.instance
-    override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.instance
-    override fun getLibRootsConfigurator(): LibRootsConfigurator = LibRootsConfigurator.instance
-    override fun getGroupModuleConfigurator(): GroupModuleConfigurator = GroupModuleConfigurator.instance
-    override fun getJavadocModuleConfigurator(): JavadocModuleConfigurator = JavadocModuleConfigurator.instance
-    override fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ModuleSettingsConfigurator.instance
-    override fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = VersionControlSystemConfigurator.instance
+    override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.getInstance()
+    override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.getInstance()
+    override fun getLibRootsConfigurator(): LibRootsConfigurator = LibRootsConfigurator.getInstance()
+    override fun getGroupModuleConfigurator(): GroupModuleConfigurator = GroupModuleConfigurator.getInstance()
+    override fun getJavadocModuleConfigurator(): JavadocModuleConfigurator = JavadocModuleConfigurator.getInstance()
+    override fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ModuleSettingsConfigurator.getInstance()
+    override fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = VersionControlSystemConfigurator.getInstance()
     override fun getDebugRunConfigurationConfigurator(): RunConfigurationConfigurator = RunConfigurationConfigurator.instance
-    override fun getAntConfigurator(): AntConfigurator? = AntConfigurator.instance
-    override fun getMavenConfigurator(): MavenConfigurator? = MavenConfigurator.instance
-    override fun getEclipseConfigurator(): EclipseConfigurator? = EclipseConfigurator.instance
-    override fun getGradleConfigurator(): GradleConfigurator? = GradleConfigurator.instance
-    override fun getSearchScopeConfigurator(): SearchScopeConfigurator = SearchScopeConfigurator.instance
-    override fun getDataSourcesConfigurator(): DataSourcesConfigurator? = DataSourcesConfigurator.instance
-    override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.instance
-    override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.instance
-    override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.instance
+    override fun getAntConfigurator(): AntConfigurator? = AntConfigurator.getInstance()
+    override fun getMavenConfigurator(): MavenConfigurator? = MavenConfigurator.getInstance()
+    override fun getEclipseConfigurator(): EclipseConfigurator? = EclipseConfigurator.getInstance()
+    override fun getGradleConfigurator(): GradleConfigurator? = GradleConfigurator.getInstance()
+    override fun getSearchScopeConfigurator(): SearchScopeConfigurator = SearchScopeConfigurator.getInstance()
+    override fun getDataSourcesConfigurator(): DataSourcesConfigurator? = DataSourcesConfigurator.getInstance()
+    override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.getInstance()
+    override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.getInstance()
+    override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.getInstance()
 }

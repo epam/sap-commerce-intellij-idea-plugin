@@ -17,9 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -31,7 +31,7 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
 
     override fun createConfigurable() = SettingsConfigurable()
 
-    class SettingsConfigurable() : BoundSearchableConfigurable(
+    class SettingsConfigurable : BoundSearchableConfigurable(
         message("hybris.settings.application.project_import.title"), "[y] SAP Commerce plugin project import configuration."
     ) {
 

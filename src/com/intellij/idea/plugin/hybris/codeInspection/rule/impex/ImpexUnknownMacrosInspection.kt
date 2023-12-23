@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,8 +25,6 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor
-import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroUtils
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -120,13 +118,6 @@ private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder, p
         declarations.forEach { declaration -> cachedMacros[declaration.firstChild.text] = true }
         val impString = PsiTreeUtil.findChildrenOfAnyType(referencedPsi, ImpexString::class.java)
         impString.forEach { resolveIncludeExternalData(it) }
-    }
-
-    private fun preventRecursion(impexString: ImpexString) {
-        val cache = ImpexMacroUtils.getFileCache(impexString.containingFile).value
-        if (cache.isEmpty()) {
-            cache["!"] = ImpexMacroDescriptor("!", "!", impexString)
-        }
     }
 
 

@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,14 +31,14 @@ import java.util.Map;
 public class NamespaceDesc {
 
     public NamespaceDesc(
-        String name,
-        String pkgName,
-        String superClass,
-        String prefix,
-        String factoryClass,
-        String helperClass,
-        String imports,
-        String intfs
+        final String name,
+        final String pkgName,
+        final String superClass,
+        final String prefix,
+        final String factoryClass,
+        final String helperClass,
+        final String imports,
+        final String intfs
     ) {
         this.name = name;
         this.pkgName = pkgName;
@@ -49,13 +50,13 @@ public class NamespaceDesc {
         this.intfs = intfs;
     }
 
-    public NamespaceDesc(String name) {
+    public NamespaceDesc(final String name) {
         this(name, "generated", "java.lang.Object", "", null, null, null, null);
         skip = true;
     }
 
 
-    public NamespaceDesc(String name, NamespaceDesc def) {
+    public NamespaceDesc(final String name, final NamespaceDesc def) {
         this.name = name;
         this.pkgName = def.pkgName;
         this.superClass = def.superClass;
@@ -66,7 +67,7 @@ public class NamespaceDesc {
         this.intfs = def.intfs;
     }
 
-    final Map<String, String> props = new HashMap<String, String>();
+    final Map<String, String> props = new HashMap<>();
     final String name;
     String pkgName;
     String superClass;
@@ -81,6 +82,6 @@ public class NamespaceDesc {
 
 
     public String toString() {
-        return "NS:" + name + " " + (skip ? "skip" : "") + pkgName;
+        return "NS:" + name + ' ' + (skip ? "skip" : "") + pkgName;
     }
 }

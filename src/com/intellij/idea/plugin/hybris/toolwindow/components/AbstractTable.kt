@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,6 +30,7 @@ import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.ListTableModel
 import java.awt.Dimension
 import java.awt.Rectangle
+import java.io.Serial
 import javax.swing.JTable
 import javax.swing.SwingConstants
 import javax.swing.table.DefaultTableCellRenderer
@@ -46,7 +47,7 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
         model = createModel()
 
         setShowGrid(false)
-        setDefaultRenderer(Boolean::class.java, BooleanTableCellRenderer());
+        setDefaultRenderer(Boolean::class.java, BooleanTableCellRenderer())
 
         getSearchableColumnNames()
             .map { getColumn(it) }
@@ -85,13 +86,13 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
     protected open fun getAutoWidthColumnNames(): List<String> = emptyList()
 
     protected fun selectRowWithValue(value: String?, columnName: String) {
-        var row = 0;
+        var row = 0
         val column = getColumn(columnName).modelIndex
         do {
             if (value == getValueAt(row, column)) {
                 setRowSelectionInterval(row, row)
-                scrollRectToVisible(Rectangle(getCellRect(row, 0, true)));
-                break;
+                scrollRectToVisible(Rectangle(getCellRect(row, 0, true)))
+                break
             }
             row++
         } while (row != rowCount)
@@ -164,11 +165,13 @@ abstract class AbstractTable<Owner : Any, Item>(val myProject: Project) : JBTabl
         }
 
         companion object {
-            private const val serialVersionUID: Long = -6158496130634687619L
+            @Serial
+            private val serialVersionUID: Long = -6158496130634687619L
         }
     }
 
     companion object {
-        private const val serialVersionUID: Long = -8940844594498853578L
+        @Serial
+        private val serialVersionUID: Long = -8940844594498853578L
     }
 }

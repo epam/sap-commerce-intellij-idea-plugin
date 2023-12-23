@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class ImpexHeaderTreeElement extends PsiTreeElementBase<ImpexHeaderLine> implements ItemPresentation {
@@ -40,19 +42,23 @@ public class ImpexHeaderTreeElement extends PsiTreeElementBase<ImpexHeaderLine> 
     @NotNull
     @Override
     public Collection<StructureViewTreeElement> getChildrenBase() {
+        final var element = getElement();
+        if (element == null) return Collections.emptyList();
+
         return getElement().getFullHeaderParameterList()
-                           .stream()
-                           .map(e -> new ImpexHeaderParameterElement(e))
-                           .collect(Collectors.toList());
+            .stream()
+            .map(ImpexHeaderParameterElement::new)
+            .collect(Collectors.toList());
     }
 
     @Nullable
     @Override
     public String getPresentableText() {
+        final var element = getElement();
+        if (element == null) return null;
+
         final ImpexFullHeaderType fullHeaderType = getElement().getFullHeaderType();
-        if (fullHeaderType == null) {
-            return null;
-        }
+        if (fullHeaderType == null) return null;
 
         return fullHeaderType.getText();
     }
@@ -60,16 +66,17 @@ public class ImpexHeaderTreeElement extends PsiTreeElementBase<ImpexHeaderLine> 
     @Nullable
     @Override
     public String getLocationString() {
-        final ImpexAnyHeaderMode mode = getElement().getAnyHeaderMode();
-        if (mode == null) {
-            return null;
-        }
+        final var element = getElement();
+
+        if (element == null) return null;
+
+        final ImpexAnyHeaderMode mode = element.getAnyHeaderMode();
         return mode.getText();
     }
 
     @Override
     @Nullable
-    public Icon getIcon(boolean unused) {
+    public Icon getIcon(final boolean open) {
         return null;
     }
 }

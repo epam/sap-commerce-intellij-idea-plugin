@@ -29,6 +29,6 @@ class RegionEntityFIFOCache<T>(private val maxNumberEntities: Int) : LinkedHashM
 
     companion object {
         @Serial
-        private const val serialVersionUID = 2873734604163564844L
+        private val serialVersionUID = 2873734604163564844L
     }
 }

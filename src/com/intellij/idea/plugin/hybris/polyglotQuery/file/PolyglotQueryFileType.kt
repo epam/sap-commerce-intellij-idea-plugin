@@ -26,7 +26,7 @@ import javax.swing.Icon
 object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage.instance) {
 
     override fun getName() = "Polyglot Query File"
-    override fun getDescription() = "Polyglot Query Language File"
+    override fun getDescription() = "Polyglot Query language file"
     override fun getDefaultExtension() = "pgq"
     override fun getIcon(): Icon = HybrisIcons.PGQ_FILE
 

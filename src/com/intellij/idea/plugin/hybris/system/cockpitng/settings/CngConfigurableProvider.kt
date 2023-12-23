@@ -34,7 +34,7 @@ class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.cng.title"), "[y] SAP Commerce plugin Cockpit NG configuration."
     ) {
 

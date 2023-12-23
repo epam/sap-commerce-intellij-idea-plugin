@@ -42,8 +42,7 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.impl.TSDiagramToolbarActionsProviderImpl"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
 
         <projectConfigurable id="hybris.project.diagram.ts.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectDiagramTSSettingsConfigurableProvider"/>

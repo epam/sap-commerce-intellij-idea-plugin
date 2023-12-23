@@ -114,7 +114,7 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
         private const val COLUMN_DESCRIPTION = "Description"
 
         @Serial
-        private const val serialVersionUID: Long = -3549248270797403106L
+        private val serialVersionUID: Long = -3549248270797403106L
 
         @JvmStatic
         fun getInstance(project: Project): TSMetaRelationElementsTable = with(TSMetaRelationElementsTable(project)) {

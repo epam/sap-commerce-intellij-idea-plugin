@@ -29,7 +29,7 @@ import com.intellij.openapi.project.DumbAware
 
 class PolyglotQueryCopyFileAction : AnAction(
     "Copy to Polyglot Query Console",
-    "Copy Polyglot Query file to SAP Commerce Console",
+    "Copy Polyglot Query file to SAP Commerce console",
     HybrisIcons.CONSOLE_OPEN
 ), DumbAware {
 
@@ -45,6 +45,6 @@ class PolyglotQueryCopyFileAction : AnAction(
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryFileType.defaultExtension);
+        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryFileType.defaultExtension)
     }
 }

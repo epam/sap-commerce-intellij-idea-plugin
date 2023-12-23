@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import org.jetbrains.annotations.Contract
+import java.io.Serial
 
 /**
  * We need to override addElement method to ensure that Node will be re-added when Type System Diagram generated from the DiagramState (2nd+ generation)
@@ -91,7 +92,8 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
     }
 
     companion object {
-        private const val serialVersionUID: Long = 4148393944331345630L
+        @Serial
+        private val serialVersionUID: Long = 4148393944331345630L
     }
 
 }

@@ -31,7 +31,7 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 
-class FxSSpacingBuilder(private val settings: CodeStyleSettings) : SpacingBuilder(settings, FlexibleSearchLanguage) {
+class FxSSpacingBuilder(settings: CodeStyleSettings) : SpacingBuilder(settings, FlexibleSearchLanguage) {
 
     init {
         this

@@ -24,8 +24,8 @@
                              implementationClass="com.intellij.idea.plugin.hybris.jsp.JspPropertyFoldingBuilder"/>
 
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.properties.PropertiesService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.properties.impl.PropertiesServiceImpl"/>
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.properties.PropertyService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.properties.impl.PropertyServiceImpl"/>
 
     </extensions>
 

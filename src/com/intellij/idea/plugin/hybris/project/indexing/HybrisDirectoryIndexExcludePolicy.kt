@@ -62,7 +62,7 @@ class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexEx
     ) : VirtualFileVisitor<VirtualFile>(*options) {
 
         companion object {
-            private val VIRTUAL_FILE_POINTER_MANAGER = VirtualFilePointerManager.getInstance()
+            private fun getInstance() = VirtualFilePointerManager.getInstance()
         }
 
         private val pathFragments: List<String> = excludedFolderPath.split("/")
@@ -106,7 +106,7 @@ class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexEx
         }
 
         private fun createVirtualFilePointer(folder: VirtualFile): VirtualFilePointer {
-            return VIRTUAL_FILE_POINTER_MANAGER.create(folder.url, project, null)
+            return getInstance().create(folder.url, project, null)
         }
     }
 }

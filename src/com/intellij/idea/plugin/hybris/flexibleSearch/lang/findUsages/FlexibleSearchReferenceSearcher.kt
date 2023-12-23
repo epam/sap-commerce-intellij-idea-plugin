@@ -33,7 +33,7 @@ import com.intellij.util.Processor
 class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
-        val elementToSearch = queryParameters.elementToSearch;
+        val elementToSearch = queryParameters.elementToSearch
         if (!elementToSearch.isValid) return
         if (!HybrisConstants.FXS_SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return
 
@@ -45,7 +45,7 @@ class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, Referenc
     }
 
     private fun processTableAlias(elementToSearch: PsiElement, consumer: Processor<in PsiReference>) {
-        val file = elementToSearch.containingFile;
+        val file = elementToSearch.containingFile
 
         PsiTreeUtil.collectElements(file) {
             it is FlexibleSearchSelectedTableName && it.textMatches(elementToSearch)
@@ -55,7 +55,7 @@ class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, Referenc
     }
 
     private fun processColumnAlias(elementToSearch: PsiElement, consumer: Processor<in PsiReference>) {
-        val file = elementToSearch.containingFile;
+        val file = elementToSearch.containingFile
 
         PsiTreeUtil.collectElements(file) {
             it is FlexibleSearchColumnName && it.textMatches(elementToSearch)

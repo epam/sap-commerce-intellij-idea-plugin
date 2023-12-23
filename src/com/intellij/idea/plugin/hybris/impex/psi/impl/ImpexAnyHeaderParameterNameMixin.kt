@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.references.*
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiReference
@@ -79,7 +79,7 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
         return result
     }
 
-    private fun isHeaderAbbreviation() = PropertiesService.getInstance(project)
+    private fun isHeaderAbbreviation() = PropertyService.getInstance(project)
         ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
         ?.asSequence()
         ?.mapNotNull { it.value }
@@ -96,6 +96,6 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -914083395962819287L
+        private val serialVersionUID: Long = -914083395962819287L
     }
 }

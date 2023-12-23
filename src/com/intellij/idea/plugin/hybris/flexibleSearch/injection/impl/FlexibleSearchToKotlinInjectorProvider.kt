@@ -28,7 +28,7 @@ class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorP
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        val instance: FlexibleSearchToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
+        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
     }
 
 }

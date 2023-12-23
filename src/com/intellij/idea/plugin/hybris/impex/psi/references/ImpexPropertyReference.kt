@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReference
@@ -46,7 +46,7 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertiesService = PropertiesService.getInstance(element.project)
+        val propertiesService = PropertyService.getInstance(element.project)
             ?: return emptyArray()
 
         return getPropertyKey()

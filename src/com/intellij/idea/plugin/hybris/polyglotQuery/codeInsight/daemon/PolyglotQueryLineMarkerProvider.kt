@@ -94,7 +94,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     internal class PolyglotQueryLineMarkerInfo(
         element: PsiElement,
         icon: Icon,
-        tooltipProvider: com.intellij.util.Function<in PsiElement?, String>,
+        tooltipProvider: Function<in PsiElement?, String>,
         val action: AnAction
     ) :
         MergeableLineMarkerInfo<PsiElement?>(element, element.textRange, icon, tooltipProvider, null, GutterIconRenderer.Alignment.CENTER,

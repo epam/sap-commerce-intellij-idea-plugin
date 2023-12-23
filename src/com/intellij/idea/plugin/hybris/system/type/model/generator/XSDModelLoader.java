@@ -50,16 +50,16 @@ public class XSDModelLoader implements ModelLoader {
 
     private ModelDesc model;
 
-    public void loadModel(ModelDesc model, Collection<File> files, XMLEntityResolver resolver) throws Exception {
+    public void loadModel(final ModelDesc model, final Collection<File> files, final XMLEntityResolver resolver) throws Exception {
         this.model = model;
         processSchemas(files, resolver);
     }
 
-    public static boolean checkComplexType(XSTypeDefinition td) {
+    public static boolean checkComplexType(final XSTypeDefinition td) {
         if (td.getTypeCategory() != XSTypeDefinition.COMPLEX_TYPE) {
             return false;
         }
-        XSComplexTypeDefinition ctd = (XSComplexTypeDefinition) td;
+        final XSComplexTypeDefinition ctd = (XSComplexTypeDefinition) td;
         if (ctd.getContentType() == XSComplexTypeDefinition.CONTENTTYPE_ELEMENT) {
             return true;
         }
@@ -71,7 +71,7 @@ public class XSDModelLoader implements ModelLoader {
         }
         if (ctd.getAttributeUses() != null) {
             for (int i = 0; i < ctd.getAttributeUses().getLength(); i++) {
-                XSSimpleTypeDefinition xsstd = ((XSAttributeUse) ctd.getAttributeUses().item(i)).getAttrDeclaration()
+                final XSSimpleTypeDefinition xsstd = ((XSAttributeUse) ctd.getAttributeUses().item(i)).getAttrDeclaration()
                                                                                                 .getTypeDefinition();
                 if ("ID".equals(xsstd.getName())) {
                     continue;
@@ -82,16 +82,16 @@ public class XSDModelLoader implements ModelLoader {
         return false;
     }
 
-    public static boolean checkEnumType(XSTypeDefinition td) {
+    public static boolean checkEnumType(final XSTypeDefinition td) {
         final XSSimpleTypeDefinition st;
         if (td.getTypeCategory() == XSTypeDefinition.COMPLEX_TYPE) {
-            XSComplexTypeDefinition ctd = (XSComplexTypeDefinition) td;
+            final XSComplexTypeDefinition ctd = (XSComplexTypeDefinition) td;
             if (ctd.getContentType() != XSComplexTypeDefinition.CONTENTTYPE_SIMPLE) {
                 return false;
             }
             if (ctd.getAttributeUses() != null) {
                 for (int i = 0; i < ctd.getAttributeUses().getLength(); i++) {
-                    XSSimpleTypeDefinition xsstd = ((XSAttributeUse) ctd.getAttributeUses()
+                    final XSSimpleTypeDefinition xsstd = ((XSAttributeUse) ctd.getAttributeUses()
                                                                         .item(i)).getAttrDeclaration()
                                                                                  .getTypeDefinition();
                     if ("ID".equals(xsstd.getName())) {
@@ -109,7 +109,7 @@ public class XSDModelLoader implements ModelLoader {
         return st.getLexicalEnumeration() != null && st.getLexicalEnumeration().getLength() != 0;
     }
 
-    private static boolean checkBooleanType(XSTypeDefinition td) {
+    private static boolean checkBooleanType(final XSTypeDefinition td) {
         if (td.getTypeCategory() != XSTypeDefinition.SIMPLE_TYPE) {
             return false;
         }
@@ -127,21 +127,21 @@ public class XSDModelLoader implements ModelLoader {
     }
 
 
-    private XSModel loadSchema(File schemaFile, XMLEntityResolver resolver) throws Exception {
+    private XSModel loadSchema(final File schemaFile, final XMLEntityResolver resolver) throws Exception {
         // get DOM Implementation using DOM Registry
         System.setProperty(
             DOMImplementationRegistry.PROPERTY,
             "org.apache.xerces.dom.DOMXSImplementationSourceImpl"
         );
-        DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-        XSImplementation impl = (XSImplementation) registry.getDOMImplementation("XS-Loader");
-        XSLoader schemaLoader = impl.createXSLoader(null);
-        DOMConfiguration config = schemaLoader.getConfig();
+        final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+        final XSImplementation impl = (XSImplementation) registry.getDOMImplementation("XS-Loader");
+        final XSLoader schemaLoader = impl.createXSLoader(null);
+        final DOMConfiguration config = schemaLoader.getConfig();
 
         // create Error Handler
-        DOMErrorHandler errorHandler = domError -> {
+        final DOMErrorHandler errorHandler = domError -> {
             Util.log("DOMError: " + domError.getMessage());
-            Object relatedException = domError.getRelatedException();
+            final Object relatedException = domError.getRelatedException();
             if (relatedException != null) {
                 Util.log("DOMError: " + relatedException);
                 if (relatedException instanceof Throwable) {
@@ -158,35 +158,35 @@ public class XSDModelLoader implements ModelLoader {
         config.setParameter("error-handler", errorHandler);
         config.setParameter("http://apache.org/xml/properties/internal/entity-resolver", resolver);
 
-        XSModel model = schemaLoader.loadURI(schemaFile.getAbsolutePath());
+        final XSModel model = schemaLoader.loadURI(schemaFile.getAbsolutePath());
         if (model == null) {
             return null;
         }
         XSNamedMap components = model.getComponents(XSConstants.ELEMENT_DECLARATION);
         for (int i = 0; i < components.getLength(); i++) {
-            XSObject obj = components.item(i);
-            QName qname = new QName(obj.getNamespace(), obj.getName());
-            String file = this.model.qname2FileMap.get(qname);
-            this.model.qname2FileMap.put(qname, (file == null ? "" : file + ";") + schemaFile.getName());
+            final XSObject obj = components.item(i);
+            final QName qname = new QName(obj.getNamespace(), obj.getName());
+            final String file = this.model.qname2FileMap.get(qname);
+            this.model.qname2FileMap.put(qname, (file == null ? "" : file + ';') + schemaFile.getName());
         }
         components = model.getComponents(XSConstants.TYPE_DEFINITION);
         for (int i = 0; i < components.getLength(); i++) {
-            XSObject obj = components.item(i);
-            QName qname = new QName(obj.getNamespace(), obj.getName());
-            String file = this.model.qname2FileMap.get(qname);
-            this.model.qname2FileMap.put(qname, (file == null ? "" : file) + ":" + schemaFile.getName() + ":");
+            final XSObject obj = components.item(i);
+            final QName qname = new QName(obj.getNamespace(), obj.getName());
+            final String file = this.model.qname2FileMap.get(qname);
+            this.model.qname2FileMap.put(qname, (file == null ? "" : file) + ':' + schemaFile.getName() + ':');
         }
         return model;
     }
 
-    public void processSchemas(Collection<File> schemas, XMLEntityResolver resolver) throws Exception {
-        Map<String, NamespaceDesc> nsdMap = model.nsdMap;
-        Map<String, TypeDesc> jtMap = model.jtMap;
+    public void processSchemas(final Collection<File> schemas, final XMLEntityResolver resolver) throws Exception {
+        final Map<String, NamespaceDesc> nsdMap = model.nsdMap;
+        final Map<String, TypeDesc> jtMap = model.jtMap;
         final NamespaceDesc nsdDef = nsdMap.get("");
-        final ArrayList<XSModel> models = new ArrayList<XSModel>();
-        final HashMap<String, XSTypeDefinition> types = new HashMap<String, XSTypeDefinition>();
+        final ArrayList<XSModel> models = new ArrayList<>();
+        final HashMap<String, XSTypeDefinition> types = new HashMap<>();
         for (File schemaFile : schemas) {
-            String fileName = schemaFile.getPath();
+            final String fileName = schemaFile.getPath();
             if (schemaFile.isDirectory() || !fileName.endsWith(".xsd")) {
                 Util.log("skipping " + fileName);
                 continue;
@@ -200,46 +200,46 @@ public class XSDModelLoader implements ModelLoader {
 
             final StringList namespaceList = model.getNamespaces();
             for (int i = 0; i < namespaceList.getLength(); i++) {
-                String ns = namespaceList.item(i);
+                final String ns = namespaceList.item(i);
                 if (!nsdMap.containsKey(ns)) {
                     Util.log("Adding default namespace desc for: " + ns);
-                    NamespaceDesc nsd = new NamespaceDesc(ns, nsdDef);
+                    final NamespaceDesc nsd = new NamespaceDesc(ns, nsdDef);
                     nsdMap.put(ns, nsd);
                 }
             }
             models.add(model);
             final XSNamedMap typeDefMap = model.getComponents(XSConstants.TYPE_DEFINITION);
             for (int i = 0; i < typeDefMap.getLength(); i++) {
-                XSTypeDefinition o = (XSTypeDefinition) typeDefMap.item(i);
-                NamespaceDesc nsd = nsdMap.get(o.getNamespace());
+                final XSTypeDefinition o = (XSTypeDefinition) typeDefMap.item(i);
+                final NamespaceDesc nsd = nsdMap.get(o.getNamespace());
                 if (nsd != null && nsd.skip) {
                     continue;
                 }
-                final String key = o.getName() + "," + o.getNamespace();
+                final String key = o.getName() + ',' + o.getNamespace();
                 types.put(key, o);
             }
             final XSNamedMap elementDeclMap = model.getComponents(XSConstants.ELEMENT_DECLARATION);
             for (int i = 0; i < elementDeclMap.getLength(); i++) {
-                XSElementDeclaration o = (XSElementDeclaration) elementDeclMap.item(i);
+                final XSElementDeclaration o = (XSElementDeclaration) elementDeclMap.item(i);
                 if (o.getTypeDefinition()
                      .getAnonymous() && (o.getTypeDefinition() instanceof XSComplexTypeDefinition)) {
                     //types.put(o.getName() + "," + o.getNamespace(), o);
-                    XSComplexTypeDefinition ctd = makeTypeFromAnonymous(o);
-                    NamespaceDesc nsd = nsdMap.get(o.getNamespace());
+                    final XSComplexTypeDefinition ctd = makeTypeFromAnonymous(o);
+                    final NamespaceDesc nsd = nsdMap.get(o.getNamespace());
                     if (nsd != null && nsd.skip) {
                         continue;
                     }
-                    final String key = ctd.getName() + "," + ctd.getNamespace();
+                    final String key = ctd.getName() + ',' + ctd.getNamespace();
                     types.put(key, ctd);
                 }
             }
         }
         Util.log(types.size() + " elements loaded, processing..");
-        ArrayList<XSTypeDefinition> toProcess = new ArrayList<XSTypeDefinition>(types.values());
-        ArrayList<XSComplexTypeDefinition> toAdd = new ArrayList<XSComplexTypeDefinition>();
-        for (ListIterator<XSTypeDefinition> it = toProcess.listIterator(); it.hasNext(); ) {
-            XSTypeDefinition td = it.next();
-            Util.log("processing " + td.getName() + "," + td.getNamespace() + "");
+        final ArrayList<XSTypeDefinition> toProcess = new ArrayList<>(types.values());
+        final ArrayList<XSComplexTypeDefinition> toAdd = new ArrayList<>();
+        for (final ListIterator<XSTypeDefinition> it = toProcess.listIterator(); it.hasNext(); ) {
+            final XSTypeDefinition td = it.next();
+            Util.log("processing " + td.getName() + ',' + td.getNamespace() + "");
             if (checkComplexType(td)) {
                 processType((XSComplexTypeDefinition) td, models, jtMap, nsdMap, toAdd);
             } else if (checkEnumType(td)) {
@@ -247,9 +247,9 @@ public class XSDModelLoader implements ModelLoader {
             }
             if (toAdd.size() != 0) {
                 for (XSComplexTypeDefinition o : toAdd) {
-                    final String key = o.getName() + "," + o.getNamespace();
+                    final String key = o.getName() + ',' + o.getNamespace();
                     if (!types.containsKey(key)) {
-                        Util.log("  adding " + o.getName() + "," + o.getNamespace());
+                        Util.log("  adding " + o.getName() + ',' + o.getNamespace());
                         types.put(key, o);
                         it.add(o);
                         it.previous();
@@ -262,10 +262,9 @@ public class XSDModelLoader implements ModelLoader {
         }
     }
 
-    private XSComplexTypeDefinition makeTypeFromAnonymous(XSObject o) {
+    private XSComplexTypeDefinition makeTypeFromAnonymous(final XSObject o) {
         final XSComplexTypeDecl ctd = new XSComplexTypeDecl();
-        if (o instanceof XSElementDeclaration && ((XSElementDeclaration) o).getTypeDefinition() instanceof XSComplexTypeDecl) {
-            final XSComplexTypeDecl ctd1 = (XSComplexTypeDecl) ((XSElementDeclaration) o).getTypeDefinition();
+        if (o instanceof XSElementDeclaration && ((XSElementDeclaration) o).getTypeDefinition() instanceof final XSComplexTypeDecl ctd1) {
             final XSObjectListImpl annotations = ctd1.getAnnotations() instanceof XSObjectListImpl
                 ? (XSObjectListImpl) ctd1.getAnnotations()
                 : new XSObjectListImpl();
@@ -296,11 +295,11 @@ public class XSDModelLoader implements ModelLoader {
     }
 
     public void processEnumType(
-        XSTypeDefinition def,
-        Map<String, TypeDesc> jtMap,
-        Map<String, NamespaceDesc> nsdMap
+        final XSTypeDefinition def,
+        final Map<String, TypeDesc> jtMap,
+        final Map<String, NamespaceDesc> nsdMap
     ) throws Exception {
-        boolean complexType = def instanceof XSComplexTypeDefinition;
+        final boolean complexType = def instanceof XSComplexTypeDefinition;
         if (!nsdMap.containsKey(def.getNamespace())) {
             Util.log("Namespace desc not found for: " + def);
         }
@@ -318,7 +317,7 @@ public class XSDModelLoader implements ModelLoader {
         final XSObjectList anns = complexType ? ct.getAnnotations() : st.getAnnotations();
 
         td.documentation = parseAnnotationString(
-            "Enumeration " + def.getNamespace() + ":" + def.getName() + " documentation",
+            "Enumeration " + def.getNamespace() + ':' + def.getName() + " documentation",
             anns != null && anns.getLength() > 0
                 ? ((XSAnnotation) anns.item(0)).getAnnotationString()
                 : null
@@ -327,16 +326,16 @@ public class XSDModelLoader implements ModelLoader {
     }
 
     public void processType(
-        XSComplexTypeDefinition def,
-        List<XSModel> models,
-        Map<String, TypeDesc> jtMap,
-        Map<String, NamespaceDesc> nsdMap,
-        ArrayList<XSComplexTypeDefinition> toAdd
+        final XSComplexTypeDefinition def,
+        final List<XSModel> models,
+        final Map<String, TypeDesc> jtMap,
+        final Map<String, NamespaceDesc> nsdMap,
+        final ArrayList<XSComplexTypeDefinition> toAdd
     ) throws Exception {
         if (!nsdMap.containsKey(def.getNamespace())) {
             Util.log("Namespace desc not found for: " + def);
         }
-        String typeName = toJavaTypeName(def, nsdMap);
+        final String typeName = toJavaTypeName(def, nsdMap);
         TypeDesc td = jtMap.get(model.toJavaQualifiedTypeName(def, nsdMap, false));
         if (td != null) {
             if (td.fdMap.size() == 0) {
@@ -347,15 +346,15 @@ public class XSDModelLoader implements ModelLoader {
         } else {
             td = new TypeDesc(def.getName(), def.getNamespace(), typeName, TypeDesc.TypeEnum.CLASS);
         }
-        XSObjectList anns = def.getAnnotations();
+        final XSObjectList anns = def.getAnnotations();
         td.documentation = parseAnnotationString(
-            "Type " + def.getNamespace() + ":" + def.getName() + " documentation",
+            "Type " + def.getNamespace() + ':' + def.getName() + " documentation",
             anns != null && anns.getLength() > 0 ? ((XSAnnotation) anns.item(0)).getAnnotationString() : null
         );
         TypeDesc tdBase = null;
         if (checkComplexType(def.getBaseType())) {
-            XSComplexTypeDefinition base = (XSComplexTypeDefinition) def.getBaseType();
-            String typeNameBase = toJavaTypeName(base, nsdMap);
+            final XSComplexTypeDefinition base = (XSComplexTypeDefinition) def.getBaseType();
+            final String typeNameBase = toJavaTypeName(base, nsdMap);
             if ((tdBase = jtMap.get(model.toJavaQualifiedTypeName(base, nsdMap, false))) == null) {
                 // logwarn("forward decl: "+et);
                 tdBase = new TypeDesc(base.getName(), base.getNamespace(), typeNameBase, TypeDesc.TypeEnum.CLASS);
@@ -363,18 +362,18 @@ public class XSDModelLoader implements ModelLoader {
             }
         }
         if (def.getSimpleType() != null || def.getContentType() == XSComplexTypeDefinition.CONTENTTYPE_MIXED) {
-            FieldDesc fd = new FieldDesc(FieldDesc.SIMPLE, "value", "String", null, "null", true);
+            final FieldDesc fd = new FieldDesc(FieldDesc.SIMPLE, "value", "String", null, "null", true);
             fd.realIndex = td.fdMap.size();
             td.fdMap.put(fd.name, fd);
         }
-        XSObjectList attrs = def.getAttributeUses();
+        final XSObjectList attrs = def.getAttributeUses();
         for (int i = 0; i < attrs.getLength(); i++) {
-            XSAttributeUse au = (XSAttributeUse) attrs.item(i);
-            XSAttributeDeclaration ad = au.getAttrDeclaration();
-            XSSimpleTypeDefinition atd = ad.getTypeDefinition();
-            XSAnnotation ann = ad.getAnnotation();
-            String documentation = parseAnnotationString(
-                "Attribute " + ad.getNamespace() + ":" + ad.getName() + " documentation",
+            final XSAttributeUse au = (XSAttributeUse) attrs.item(i);
+            final XSAttributeDeclaration ad = au.getAttrDeclaration();
+            final XSSimpleTypeDefinition atd = ad.getTypeDefinition();
+            final XSAnnotation ann = ad.getAnnotation();
+            final String documentation = parseAnnotationString(
+                "Attribute " + ad.getNamespace() + ':' + ad.getName() + " documentation",
                 ann != null ? ann.getAnnotationString() : null
             );
             // skip "ID" and "FIXED"
@@ -385,7 +384,7 @@ public class XSDModelLoader implements ModelLoader {
             if (ad.getConstraintType() == XSConstants.VC_FIXED) {
                 continue;
             }
-            FieldDesc fd1 = new FieldDesc(
+            final FieldDesc fd1 = new FieldDesc(
                 FieldDesc.ATTR,
                 Util.toJavaFieldName(ad.getName()),
                 "String",
@@ -411,7 +410,7 @@ public class XSDModelLoader implements ModelLoader {
                 // forward decl
                 if (jtMap.get(fd1.contentQualifiedName) == null) {
                     // logwarn("forward decl: "+et);
-                    TypeDesc ftd = new TypeDesc(
+                    final TypeDesc ftd = new TypeDesc(
                         etRoot.getName(),
                         etRoot.getNamespace(),
                         fd1.type,
@@ -427,7 +426,7 @@ public class XSDModelLoader implements ModelLoader {
                 fd1.simpleTypesString = getSimpleTypesString(ad.getTypeDefinition());
             }
         }
-        LinkedList<PEntry> plist = new LinkedList<PEntry>();
+        final LinkedList<PEntry> plist = new LinkedList<>();
         if (def.getParticle() != null) {
             plist.add(new PEntry(def.getParticle(), false));
         }
@@ -435,29 +434,28 @@ public class XSDModelLoader implements ModelLoader {
         jtMap.put(model.toJavaQualifiedTypeName(def, nsdMap, false), td);
         if (td.fdMap.size() == 1 && def.getSimpleType() != null) {
             // calc type hierarchy for simple content
-            FieldDesc fd = td.fdMap.get("value");
+            final FieldDesc fd = td.fdMap.get("value");
             fd.simpleTypesString = getSimpleTypesString(def);
         }
     }
 
     private static String getSimpleTypesString(XSTypeDefinition et) {
-        StringBuffer typesHierarchy = new StringBuffer();
+        final StringBuffer typesHierarchy = new StringBuffer();
         while (et != null && !"anySimpleType".equals(et.getName()) && !"anyType".equals(et.getName()) && et.getNamespace() != null) {
             typesHierarchy.append(et.getNamespace().substring(et.getNamespace().lastIndexOf("/") + 1))
-                          .append(":")
+                          .append(':')
                           .append(et.getName())
-                          .append(";");
-            if (et instanceof XSSimpleType) {
-                XSSimpleType simpleType = (XSSimpleType) et;
+                          .append(';');
+            if (et instanceof final XSSimpleType simpleType) {
                 if (simpleType.getVariety() == XSSimpleTypeDefinition.VARIETY_LIST
                     || simpleType.getVariety() == XSSimpleTypeDefinition.VARIETY_UNION) {
-                    XSObjectList list = simpleType.getMemberTypes();
+                    final XSObjectList list = simpleType.getMemberTypes();
                     if (list.getLength() > 0) {
-                        typesHierarchy.append("{");
+                        typesHierarchy.append('{');
                         for (int i = 0; i < list.getLength(); i++) {
                             typesHierarchy.append(getSimpleTypesString((XSTypeDefinition) list.item(i)));
                         }
-                        typesHierarchy.append("}");
+                        typesHierarchy.append('}');
                     }
                 }
             }
@@ -467,16 +465,16 @@ public class XSDModelLoader implements ModelLoader {
     }
 
     private TypeDesc processGroup(
-        XSModelGroup modelGroup,
-        List<XSModel> models,
-        Map<String, TypeDesc> jtMap,
-        Map<String, NamespaceDesc> nsdMap
+        final XSModelGroup modelGroup,
+        final List<XSModel> models,
+        final Map<String, TypeDesc> jtMap,
+        final Map<String, NamespaceDesc> nsdMap
     ) {
         XSModelGroupDefinition def = null;
         for (XSModel xsModel : models) {
-            XSNamedMap map = xsModel.getComponents(XSConstants.MODEL_GROUP_DEFINITION);
+            final XSNamedMap map = xsModel.getComponents(XSConstants.MODEL_GROUP_DEFINITION);
             for (int i = 0; i < map.getLength(); i++) {
-                XSModelGroupDefinition mg = (XSModelGroupDefinition) map.item(i);
+                final XSModelGroupDefinition mg = (XSModelGroupDefinition) map.item(i);
                 final XSModelGroup xsModelGroup = mg.getModelGroup();
                 if (xsModelGroup == modelGroup || xsModelGroup.toString().equals(modelGroup.toString())) {
                     def = mg;
@@ -490,7 +488,7 @@ public class XSDModelLoader implements ModelLoader {
         if (!nsdMap.containsKey(def.getNamespace())) {
             Util.log("Namespace desc not found for: " + def);
         }
-        String typeName = toJavaTypeName(def, nsdMap);
+        final String typeName = toJavaTypeName(def, nsdMap);
         final String typeQName = model.toJavaQualifiedTypeName(def, nsdMap, false);
         TypeDesc td = jtMap.get(typeQName);
         if (td != null) {
@@ -504,15 +502,15 @@ public class XSDModelLoader implements ModelLoader {
             td = new TypeDesc(def.getName(), def.getNamespace(), typeName, TypeDesc.TypeEnum.GROUP_INTERFACE);
         }
 
-        XSAnnotation ann = def.getAnnotation();
+        final XSAnnotation ann = def.getAnnotation();
         td.documentation = parseAnnotationString(
-            "Type " + def.getNamespace() + ":" + def.getName() + " documentation",
+            "Type " + def.getNamespace() + ':' + def.getName() + " documentation",
             ann == null ? null : ann.getAnnotationString()
         );
         td.type = TypeDesc.TypeEnum.GROUP_INTERFACE;
-        LinkedList<PEntry> plist = new LinkedList<PEntry>();
+        final LinkedList<PEntry> plist = new LinkedList<>();
         for (int i = 0; i < def.getModelGroup().getParticles().getLength(); i++) {
-            XSParticle p = (XSParticle) def.getModelGroup().getParticles().item(i);
+            final XSParticle p = (XSParticle) def.getModelGroup().getParticles().item(i);
             plist.add(new PEntry(p, false));
         }
         processParticles(def, plist, nsdMap, jtMap, td, models, null, null);
@@ -521,31 +519,30 @@ public class XSDModelLoader implements ModelLoader {
     }
 
     private void processParticles(
-        XSObject def,
-        LinkedList<PEntry> plist,
-        Map<String, NamespaceDesc> nsdMap,
-        Map<String, TypeDesc> jtMap,
-        TypeDesc td,
-        List<XSModel> models,
-        ArrayList<XSComplexTypeDefinition> toAdd,
-        TypeDesc baseClass
+        final XSObject def,
+        final LinkedList<PEntry> plist,
+        final Map<String, NamespaceDesc> nsdMap,
+        final Map<String, TypeDesc> jtMap,
+        final TypeDesc td,
+        final List<XSModel> models,
+        final ArrayList<XSComplexTypeDefinition> toAdd,
+        final TypeDesc baseClass
     ) {
         final boolean globalMerge = jtMap.containsKey(model.toJavaQualifiedTypeName(
             def,
             nsdMap,
             td.type == TypeDesc.TypeEnum.ENUM
         ));
-        final HashMap<XSParticle, String> globalChoice = new HashMap<XSParticle, String>();
-        final ArrayList<XSObjectList> choiceList = new ArrayList<XSObjectList>();
-        final ArrayList<TypeDesc> supers = new ArrayList<TypeDesc>();
+        final HashMap<XSParticle, String> globalChoice = new HashMap<>();
+        final ArrayList<XSObjectList> choiceList = new ArrayList<>();
+        final ArrayList<TypeDesc> supers = new ArrayList<>();
         if (baseClass != null) {
             supers.add(baseClass);
         }
         while (!plist.isEmpty()) {
             final PEntry pentry = plist.removeFirst();
             final XSParticle p = pentry.p;
-            if (p.getTerm() instanceof XSElementDecl) {
-                final XSElementDecl el = (XSElementDecl) p.getTerm();
+            if (p.getTerm() instanceof final XSElementDecl el) {
                 if (el.getConstraintType() == XSConstants.VC_FIXED) {
                     continue;
                 }
@@ -553,7 +550,7 @@ public class XSDModelLoader implements ModelLoader {
                 XSTypeDefinition et = etRoot;
                 XSAnnotation ann = el.getAnnotation();
                 String documentation = parseAnnotationString(
-                    "Element " + el.getNamespace() + ":" + el.getName() + " documentation",
+                    "Element " + el.getNamespace() + ':' + el.getName() + " documentation",
                     ann != null ? ann.getAnnotationString() : null
                 );
                 final FieldDesc fd1 = new FieldDesc(
@@ -584,7 +581,7 @@ public class XSDModelLoader implements ModelLoader {
                     // forward decl
                     if (!jtMap.containsKey(fd1.contentQualifiedName)) {
                         // logwarn("forward decl: "+et);
-                        TypeDesc ftd = new TypeDesc(
+                        final TypeDesc ftd = new TypeDesc(
                             etRoot.getName(),
                             etRoot.getNamespace(),
                             fd1.type,
@@ -619,20 +616,19 @@ public class XSDModelLoader implements ModelLoader {
                     fd1.type = "boolean";
                     fd1.clType = FieldDesc.BOOL;
                 } else {
-                    if (etRoot instanceof XSComplexTypeDefinition) {
-                        final XSComplexTypeDefinition ct = (XSComplexTypeDefinition) etRoot;
+                    if (etRoot instanceof final XSComplexTypeDefinition ct) {
                         // XXX xerces2.7.1 wierd annotation inheritance bug fix
                         //ann = (XSAnnotation) (ct.getAnnotations()!=null && ct.getAnnotations().getLength()>0?ct.getAnnotations().item(0):null);
                         ann = (XSAnnotation) (ct.getAnnotations() != null && ct.getAnnotations().getLength() > 0
                                                   ? ct.getAnnotations().item(ct.getAnnotations().getLength() - 1)
                                                   : null);
                         documentation = parseAnnotationString(
-                            "Type " + ct.getNamespace() + ":" + ct.getName() + " documentation",
+                            "Type " + ct.getNamespace() + ':' + ct.getName() + " documentation",
                             ann != null ? ann.getAnnotationString() : null
                         );
                         if (documentation != null) {
                             fd1.documentation = fd1.documentation != null
-                                ? fd1.documentation + "\n" + documentation
+                                ? fd1.documentation + '\n' + documentation
                                 : documentation;
                         }
                     }
@@ -681,28 +677,28 @@ public class XSDModelLoader implements ModelLoader {
                 if ((pentry.many || p.getMaxOccursUnbounded() || p.getMaxOccurs() > 1) && fd1.clType != FieldDesc.BOOL) {
                     fd1.elementType = fd1.type;
                     fd1.elementName = fd1.name;
-                    fd1.type = "List<" + fd1.elementType + ">";
+                    fd1.type = "List<" + fd1.elementType + '>';
                     fd1.name = Util.pluralize(fd1.name);
                     fd1.def = "new ArrayList(0)";
                     fd1.clType = -fd1.clType;
                     fd1.comment = "array of " + fd1.elementType;
                 }
                 fd1.realIndex = td.fdMap.size();
-                boolean merge = globalMerge || globalChoice.containsKey(p) && globalChoice.values().contains(fd1.name);
+                final boolean merge = globalMerge || globalChoice.containsKey(p) && globalChoice.values().contains(fd1.name);
                 td.duplicates = Util.addToNameMap(td.fdMap, fd1, merge) || td.duplicates;
                 globalChoice.put(p, fd1.name);
             } else if (p.getTerm() instanceof XSModelGroup) {
                 boolean addToGlobalChoice = false;
-                boolean many = p.getMaxOccursUnbounded() || p.getMaxOccurs() > 1;
-                XSObjectList l = ((XSModelGroup) p.getTerm()).getParticles();
+                final boolean many = p.getMaxOccursUnbounded() || p.getMaxOccurs() > 1;
+                final XSObjectList l = ((XSModelGroup) p.getTerm()).getParticles();
                 if (!many) {
                     if (((XSModelGroup) p.getTerm()).getCompositor() == XSModelGroup.COMPOSITOR_CHOICE) {
                         addToGlobalChoice = true;
                         choiceList.add(l);
                     } else {
                         // generate group interface???
-                        XSModelGroup groupDef = (XSModelGroup) p.getTerm();
-                        TypeDesc gtd = processGroup(groupDef, models, jtMap, nsdMap);
+                        final XSModelGroup groupDef = (XSModelGroup) p.getTerm();
+                        final TypeDesc gtd = processGroup(groupDef, models, jtMap, nsdMap);
                         if (gtd != null) {
                             supers.add(gtd);
                         }
@@ -721,20 +717,20 @@ public class XSDModelLoader implements ModelLoader {
             }
         }
         int i = 0;
-        for (Iterator<FieldDesc> it = td.fdMap.values().iterator(); it.hasNext(); i++) {
-            FieldDesc fd = it.next();
+        for (final Iterator<FieldDesc> it = td.fdMap.values().iterator(); it.hasNext(); i++) {
+            final FieldDesc fd = it.next();
             fd.idx = i;
         }
         for (XSObjectList l : choiceList) {
-            final ArrayList<XSParticle> clist = new ArrayList<XSParticle>();
-            final LinkedList<XSParticle> elist = new LinkedList<XSParticle>();
+            final ArrayList<XSParticle> clist = new ArrayList<>();
+            final LinkedList<XSParticle> elist = new LinkedList<>();
             for (i = 0; i < l.getLength(); i++) {
                 elist.add((XSParticle) l.item(i));
             }
             while (!elist.isEmpty()) {
                 final XSParticle p = elist.removeFirst();
                 if (p.getTerm() instanceof XSModelGroup) {
-                    XSObjectList l2 = ((XSModelGroup) p.getTerm()).getParticles();
+                    final XSObjectList l2 = ((XSModelGroup) p.getTerm()).getParticles();
                     for (int i2 = 0; i2 < l2.getLength(); i2++) {
                         elist.addFirst((XSParticle) l2.item(i2));
                     }
@@ -743,10 +739,10 @@ public class XSDModelLoader implements ModelLoader {
                 }
             }
             boolean choiceOpt = true;
-            FieldDesc[] choice = new FieldDesc[clist.size()];
+            final FieldDesc[] choice = new FieldDesc[clist.size()];
             for (i = 0; i < choice.length; i++) {
-                XSParticle p = clist.get(i);
-                XSElementDecl el = (XSElementDecl) p.getTerm();
+                final XSParticle p = clist.get(i);
+                final XSElementDecl el = (XSElementDecl) p.getTerm();
                 String s = Util.toJavaFieldName(el.getName());
                 if (p.getMaxOccursUnbounded() || p.getMaxOccurs() > 1) {
                     s = Util.pluralize(s);
@@ -776,7 +772,7 @@ public class XSDModelLoader implements ModelLoader {
         td.supers = supers.toArray(new TypeDesc[supers.size()]);
     }
 
-    public static String parseAnnotationString(String title, String str) {
+    public static String parseAnnotationString(final String title, String str) {
         if (str == null) {
             return null;
         }
@@ -807,7 +803,7 @@ public class XSDModelLoader implements ModelLoader {
         return "<pre>\n<h3>" + title + "</h3>\n" + str + "\n</pre>";
     }
 
-    public String toJavaTypeName(XSObject xs, Map<String, NamespaceDesc> nsdMap) {
+    public String toJavaTypeName(final XSObject xs, final Map<String, NamespaceDesc> nsdMap) {
         String name = xs.getName();
         if (name == null) {
             if (xs instanceof TypeInfo) {
@@ -822,7 +818,7 @@ public class XSDModelLoader implements ModelLoader {
 
     public static class PEntry {
 
-        public PEntry(XSParticle p, boolean many) {
+        public PEntry(final XSParticle p, final boolean many) {
             this.p = p;
             this.many = many;
         }

@@ -209,7 +209,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     private List<File> getModulesChosenForImportFiles(final Iterable<ModuleDescriptor> modulesChosenForImport) {
-        List<File> alreadyExistingModuleFiles = new ArrayList<>();
+        final List<File> alreadyExistingModuleFiles = new ArrayList<>();
         for (ModuleDescriptor moduleDescriptor : modulesChosenForImport) {
             final File ideaModuleFile = moduleDescriptor.ideaModuleFile();
             if (ideaModuleFile.exists()) {
@@ -316,7 +316,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     @Override
     public void setList(final List<ModuleDescriptor> list) throws ConfigurationException {
 
-        final List<ModuleDescriptor> chosenForImport = new ArrayList<ModuleDescriptor>(list);
+        final List<ModuleDescriptor> chosenForImport = new ArrayList<>(list);
 
         chosenForImport.removeAll(this.getHybrisProjectDescriptor().getAlreadyOpenedModules());
 

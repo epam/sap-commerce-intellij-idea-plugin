@@ -42,6 +42,6 @@ class ItemTypeClassValidation : AbstractClassesValidation<ItemType, Attribute>()
         || !itemAttribute.model.generate.value
 
     companion object {
-        val instance: ItemTypeClassValidation = ApplicationManager.getApplication().getService(ItemTypeClassValidation::class.java)
+        fun getInstance(): ItemTypeClassValidation = ApplicationManager.getApplication().getService(ItemTypeClassValidation::class.java)
     }
 }

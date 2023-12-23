@@ -157,8 +157,9 @@ class CommonIdeaService {
     }
 
     companion object {
-        private val regex = Regex("https?://")
+        private val regex = "https?://".toRegex()
+
         @JvmStatic
-        val instance: CommonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        fun getInstance(): CommonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
     }
 }

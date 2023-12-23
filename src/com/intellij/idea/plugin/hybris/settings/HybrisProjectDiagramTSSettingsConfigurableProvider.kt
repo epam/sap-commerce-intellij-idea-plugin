@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,9 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.ToolbarDecorator
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.util.minimumHeight
 import com.intellij.util.ui.JBUI
 
@@ -33,17 +35,17 @@ class HybrisProjectDiagramTSSettingsConfigurableProvider(val project: Project) :
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.diagram.ts.title"), "[y] SAP Commerce plugin Type System Diagram configuration."
     ) {
 
-        private val tsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.typeSystemDiagramSettings;
+        private val tsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.typeSystemDiagramSettings
 
         private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
         private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
             .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
-            .createPanel();
+            .createPanel()
 
         init {
             excludedTypeNamesPane.minimumHeight = 400
@@ -57,33 +59,33 @@ class HybrisProjectDiagramTSSettingsConfigurableProvider(val project: Project) :
                 }
 
                 row {
-                    checkBox("Show OOTB Map Nodes")
+                    checkBox("Show OOTB Map nodes")
                         .comment("One of the OOTB Map example is `localized:java.lang.String`")
                         .bindSelected(tsSettings::showOOTBMapNodes)
                 }
 
                 row {
-                    checkBox("Show Custom Atomic Nodes")
+                    checkBox("Show custom Atomic nodes")
                         .bindSelected(tsSettings::showCustomAtomicNodes)
                 }
 
                 row {
-                    checkBox("Show Custom Collection Nodes")
+                    checkBox("Show custom Collection nodes")
                         .bindSelected(tsSettings::showCustomCollectionNodes)
                 }
 
                 row {
-                    checkBox("Show Custom Enum Nodes")
+                    checkBox("Show custom Enum nodes")
                         .bindSelected(tsSettings::showCustomEnumNodes)
                 }
 
                 row {
-                    checkBox("Show Custom Map Nodes")
+                    checkBox("Show custom Map nodes")
                         .bindSelected(tsSettings::showCustomMapNodes)
                 }
 
                 row {
-                    checkBox("Show Custom Relation Nodes")
+                    checkBox("Show custom Relation nodes")
                         .comment("Relations with Deployment details are not affected by this flag")
                         .bindSelected(tsSettings::showCustomRelationNodes)
                 }

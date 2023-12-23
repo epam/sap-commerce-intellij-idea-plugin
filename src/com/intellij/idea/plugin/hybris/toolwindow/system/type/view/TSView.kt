@@ -37,6 +37,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import java.awt.GridBagLayout
+import java.io.Serial
 
 class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
@@ -145,7 +146,8 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     companion object {
-        private const val serialVersionUID: Long = 74100584202830949L
+        @Serial
+        private val serialVersionUID: Long = 74100584202830949L
     }
 
 }

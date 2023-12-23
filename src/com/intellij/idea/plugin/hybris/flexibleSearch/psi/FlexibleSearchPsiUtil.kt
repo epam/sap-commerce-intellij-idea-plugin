@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -68,7 +68,7 @@ fun setName(element: FlexibleSearchPsiNamedElement, newName: String): PsiElement
 }
 
 fun getName(element: FlexibleSearchPsiNamedElement): String? = element.text
-fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement? = element
+fun getNameIdentifier(element: FlexibleSearchPsiNamedElement): PsiElement = element
 
 fun getTable(element: FlexibleSearchTableAliasName) = element.backwardSiblings()
     .firstOrNull { it is FlexibleSearchDefinedTableName } as? FlexibleSearchDefinedTableName
@@ -102,14 +102,14 @@ fun getTableAliases(element: PsiElement): Collection<FlexibleSearchTableAliasNam
             ?: emptyList()
     }
 
-    // Where case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
+    // Where a case also may contain sub-queries, in such a case visibility to aliases will be from top-most available select
     val topWhereClauseTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchWhereClause::class.java)
         ?.let { topWhereClause ->
             PsiTreeUtil.getParentOfType(topWhereClause, FlexibleSearchSelectCoreSelect::class.java)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
         }
         ?: emptyList()
-    // Case when we're in the Result column, we may have nested selects in the result column, so have to find top one
+    // Case when we're in the Result column, we may have nested selects in the result column, so have to find the top one
     val topResultColumnsTableAliases = PsiTreeUtil.getTopmostParentOfType(element, FlexibleSearchResultColumns::class.java)
         ?.let { topResultColumns ->
             PsiTreeUtil.getParentOfType(topResultColumns, FlexibleSearchSelectStatement::class.java)
@@ -126,10 +126,6 @@ fun getTableAliases(element: PsiElement): Collection<FlexibleSearchTableAliasNam
         ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchTableAliasName::class.java) }
         ?: emptyList()
 }
-
-private fun getAliases(element: FlexibleSearchFromClause) = PsiTreeUtil
-    .findChildrenOfType(element, FlexibleSearchTableAliasName::class.java)
-    .filter { it.parentOfType<FlexibleSearchFromClause>() == element }
 
 /*
  Order clause is not part of the CoreSelect, so we have to go upper to Statement itself

@@ -77,10 +77,10 @@ object TSDiagramRefresher {
     }
 
     /**
-     * Additional dependency nodes will be shown only if User selected "Show Dependencies".
+     * Additional dependency nodes will be shown only if the User selected "Show Dependencies".
      * Each Node field will be traversed and corresponding new Node (`transitiveNode` = true) will be created.
-     * Nested dependencies will not be created as we're not interested at this stage in complete picture.
-     * If All possible dependencies will be needed, another Type Specific filter can be introduced with Scope = "All"
+     * Nested dependencies will not be created as we're not interested at this stage in the complete picture.
+     * If All possible dependencies are needed, another Type-Specific filter can be introduced with Scope = "All"
      */
     private fun collectNodesDependencies(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         if (!model.isShowDependencies) return
@@ -115,11 +115,11 @@ object TSDiagramRefresher {
     }
 
     /**
-     * This collector will create special type of the GraphNode with flag `transitiveNode` = true.
+     * This collector will create a special type of the GraphNode with flag `transitiveNode` = true.
      * It is required to not produce too many non-custom `extends` nodes.
      * Such nodes will be shown only in case of Scope level: "Custom with Extends" or "All"
      *
-     * Also, it is possible to specify STOP Types for extends names to limit down amount of created "shared" Edges
+     * Also, it is possible to specify STOP Types for extent names to limit down amount of created "shared" Edges
      */
     private fun collectNodesExtends(model: TSDiagramDataModel, nodesMap: MutableMap<String, TSDiagramNode>, settings: TSDiagramSettings) {
         nodesMap.values

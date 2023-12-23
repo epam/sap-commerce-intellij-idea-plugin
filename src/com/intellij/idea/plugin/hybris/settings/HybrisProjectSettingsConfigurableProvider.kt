@@ -29,7 +29,7 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.title"), "hybris.project.settings"
     ) {
 

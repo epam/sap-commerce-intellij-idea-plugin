@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
@@ -56,7 +56,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                     ProblemHighlightType.ERROR
                 )
             } else {
-                val propertiesService = PropertiesService.getInstance(usage.project) ?: return
+                val propertiesService = PropertyService.getInstance(usage.project) ?: return
                 val property = propertiesService.findMacroProperty(propertyName)
 
                 if (property == null) {

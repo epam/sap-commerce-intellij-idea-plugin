@@ -83,8 +83,8 @@ public class ProjectRefreshAction extends AnAction {
     }
 
     @Override
-    public void actionPerformed(final @NotNull AnActionEvent anActionEvent) {
-        final Project project = getEventProject(anActionEvent);
+    public void actionPerformed(final @NotNull AnActionEvent e) {
+        final Project project = getEventProject(e);
 
         if (project == null) {
             return;
@@ -99,10 +99,10 @@ public class ProjectRefreshAction extends AnAction {
                 ((AbstractHybrisProjectImportBuilder) projectBuilder).setRefresh(true);
             }
             projectBuilder.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER);
-        } catch (final ConfigurationException e) {
+        } catch (final ConfigurationException ex) {
             Messages.showErrorDialog(
                 project,
-                e.getMessage(),
+                ex.getMessageHtml().toString(),
                 HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
             );
         }

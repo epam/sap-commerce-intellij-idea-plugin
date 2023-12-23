@@ -62,9 +62,9 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
     private JLabel projectIpLabel;
     private OnOffButton sslButton;
     private JLabel sslLabel;
-    private Project myProject;
-    private HybrisRemoteConnectionSettings mySettings;
-    private HybrisRemoteConnectionSettings setting;
+    private final Project myProject;
+    private final HybrisRemoteConnectionSettings mySettings;
+    private final HybrisRemoteConnectionSettings setting;
 
     public RemoteSolrConnectionDialog(
             @Nullable final Project project,

@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,49 +25,26 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
-import com.wutka.dtd.DTD;
-import com.wutka.dtd.DTDAny;
-import com.wutka.dtd.DTDAttribute;
-import com.wutka.dtd.DTDCardinal;
-import com.wutka.dtd.DTDChoice;
-import com.wutka.dtd.DTDComment;
-import com.wutka.dtd.DTDContainer;
-import com.wutka.dtd.DTDDecl;
-import com.wutka.dtd.DTDElement;
-import com.wutka.dtd.DTDEmpty;
-import com.wutka.dtd.DTDEntity;
-import com.wutka.dtd.DTDItem;
-import com.wutka.dtd.DTDMixed;
-import com.wutka.dtd.DTDName;
-import com.wutka.dtd.DTDOutput;
-import com.wutka.dtd.DTDParser;
+import com.wutka.dtd.*;
 import org.apache.xerces.xni.parser.XMLEntityResolver;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 public class DTDModelLoader implements ModelLoader {
 
     private ModelDesc model;
 
-    public void loadModel(ModelDesc model, Collection<File> schemas, XMLEntityResolver resolver) throws Exception {
+    public void loadModel(final ModelDesc model, final Collection<File> schemas, final XMLEntityResolver resolver) throws Exception {
         this.model = model;
         for (File dtdFile : schemas) {
-            String fileName = dtdFile.getPath();
+            final String fileName = dtdFile.getPath();
             if (dtdFile.isDirectory() || !fileName.endsWith(".dtd") || fileName.endsWith("datatypes.dtd")) {
                 Util.log("skipping " + fileName);
                 continue;
             }
             Util.log("loading " + fileName + "");
-            String ns = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
+            final String ns = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
             //loadDTDByXerces(ns, dtdFile, resolver);
 
             loadDTDByWutka(ns, dtdFile);
@@ -74,35 +52,35 @@ public class DTDModelLoader implements ModelLoader {
         }
     }
 
-    private NamespaceDesc ensureNamespaceExists(String ns) {
+    private NamespaceDesc ensureNamespaceExists(final String ns) {
         if (!model.nsdMap.containsKey(ns)) {
             Util.log("Adding default ns desc for: " + ns);
-            NamespaceDesc nsd = new NamespaceDesc(ns, model.nsdMap.get(""));
+            final NamespaceDesc nsd = new NamespaceDesc(ns, model.nsdMap.get(""));
             model.nsdMap.put(ns, nsd);
         }
         return model.nsdMap.get(ns);
     }
 
 
-    private void loadDTDByWutka(String ns, File dtdFile) throws Exception {
-        DTDParser parser = new DTDParser(dtdFile, false);
+    private void loadDTDByWutka(final String ns, final File dtdFile) throws Exception {
+        final DTDParser parser = new DTDParser(dtdFile, false);
         // Parse the DTD and ask the parser to guess the root element
-        DTD dtd = parser.parse(true);
+        final DTD dtd = parser.parse(true);
         checkDTDRootElement(dtd);
         processDTD(ns, dtd, model.jtMap, model.nsdMap);
     }
 
 
-    private void processDTD(String namespace, DTD dtd, Map<String, TypeDesc> jtMap, Map<String, NamespaceDesc> nsdMap) {
+    private void processDTD(final String namespace, final DTD dtd, final Map<String, TypeDesc> jtMap, final Map<String, NamespaceDesc> nsdMap) {
         final NamespaceDesc nsd = ensureNamespaceExists(namespace);
         if (nsd.skip) {
             return;
         }
-        final ArrayList<String> resultQNames = new ArrayList<String>();
+        final ArrayList<String> resultQNames = new ArrayList<>();
         final DTDElement[] elements = new DTDElement[dtd.elements.size()];
         int ptr = 1;
 
-        final HashSet<DTDElement> visitedElements = new HashSet<DTDElement>();
+        final HashSet<DTDElement> visitedElements = new HashSet<>();
         elements[0] = dtd.rootElement;
 
         while (--ptr > -1) {
@@ -118,18 +96,18 @@ public class DTDModelLoader implements ModelLoader {
             final TypeDesc td = new TypeDesc(el.name, namespace, typeName, TypeDesc.TypeEnum.CLASS);
             boolean duplicates = false;
             if ((el.content instanceof DTDAny) || (el.content instanceof DTDMixed)) {
-                FieldDesc fd = new FieldDesc(FieldDesc.SIMPLE, "value", "String", null, "null", false);
+                final FieldDesc fd = new FieldDesc(FieldDesc.SIMPLE, "value", "String", null, "null", false);
                 fd.realIndex = td.fdMap.size();
                 td.fdMap.put(fd.name, fd);
             }
             for (Object o : el.attributes.keySet()) {
-                String attrName = (String) o;
-                DTDAttribute attr = (DTDAttribute) el.attributes.get(attrName);
+                final String attrName = (String) o;
+                final DTDAttribute attr = (DTDAttribute) el.attributes.get(attrName);
                 if (attr.decl == DTDDecl.FIXED || "ID".equals(attr.type)) {
                     continue;
                 }
-                boolean required = attr.decl == DTDDecl.REQUIRED;
-                FieldDesc fd1 = new FieldDesc(
+                final boolean required = attr.decl == DTDDecl.REQUIRED;
+                final FieldDesc fd1 = new FieldDesc(
                     FieldDesc.ATTR,
                     Util.toJavaFieldName(attrName),
                     "String",
@@ -142,8 +120,8 @@ public class DTDModelLoader implements ModelLoader {
                 fd1.realIndex = td.fdMap.size();
                 duplicates = Util.addToNameMap(td.fdMap, fd1, false) || duplicates;
             }
-            final ArrayList<List<DTDItem>> choiceList = new ArrayList<List<DTDItem>>();
-            final LinkedList<Entry> plist = new LinkedList<Entry>();
+            final ArrayList<List<DTDItem>> choiceList = new ArrayList<>();
+            final LinkedList<Entry> plist = new LinkedList<>();
             if (el.content instanceof DTDContainer) {
                 //if ((el.content instanceof DTDChoice) || (el.content instanceof DTDSequence)) {
                 plist.add(new Entry(el.content, false, true));
@@ -153,8 +131,7 @@ public class DTDModelLoader implements ModelLoader {
 
                 final DTDItem p = pentry.p;
 
-                if (p instanceof DTDName) {
-                    final DTDName n = (DTDName) p;
+                if (p instanceof final DTDName n) {
                     final DTDElement nel = (DTDElement) dtd.elements.get(n.value);
                     final String pName = n.value;
                     final FieldDesc fd1 = new FieldDesc(
@@ -173,9 +150,9 @@ public class DTDModelLoader implements ModelLoader {
                         fd1.type = model.toJavaTypeName(fd1.tagName, namespace);
                     } else if (nel.content instanceof DTDEmpty || nel.content instanceof DTDAny) {
                         boolean hasAttrFields = false;
-                        boolean hasTextContents = nel.content instanceof DTDAny;
+                        final boolean hasTextContents = nel.content instanceof DTDAny;
                         for (Object o : nel.attributes.values()) {
-                            DTDAttribute attr = (DTDAttribute) o;
+                            final DTDAttribute attr = (DTDAttribute) o;
                             if (attr.decl != DTDDecl.FIXED && !"ID".equals(attr.type)) {
                                 hasAttrFields = true;
                                 break;
@@ -227,7 +204,7 @@ public class DTDModelLoader implements ModelLoader {
                     if ((pentry.many || n.cardinal.type >= 2) && fd1.clType != FieldDesc.BOOL) {
                         fd1.elementType = fd1.type;
                         fd1.elementName = fd1.name;
-                        fd1.type = "List<" + fd1.elementType + ">";
+                        fd1.type = "List<" + fd1.elementType + '>';
                         fd1.name = Util.pluralize(fd1.name);
                         fd1.def = "new ArrayList(0)";
                         fd1.clType = -fd1.clType;
@@ -235,13 +212,12 @@ public class DTDModelLoader implements ModelLoader {
                     }
                     fd1.realIndex = td.fdMap.size();
                     duplicates = Util.addToNameMap(td.fdMap, fd1, false) || duplicates;
-                } else if (p instanceof DTDContainer) {
-                    final DTDContainer cont = (DTDContainer) p;
+                } else if (p instanceof final DTDContainer cont) {
                     final boolean isChoice = cont instanceof DTDChoice;
                     // 0 - NONE, 1 - OPT, 2 - ZEROMANY, 3 - ONEMANY
                     final boolean required = !isChoice && pentry.required && p.cardinal != DTDCardinal.ZEROMANY && p.cardinal != DTDCardinal.OPTIONAL;
                     final boolean many = p.cardinal == DTDCardinal.ONEMANY || p.cardinal == DTDCardinal.ZEROMANY;
-                    List<DTDItem> l = cont.getItemsVec();
+                    final List<DTDItem> l = cont.getItemsVec();
                     if (!many && isChoice) {
                         choiceList.add(l);
                     }
@@ -260,15 +236,15 @@ public class DTDModelLoader implements ModelLoader {
                 fd.idx = i++;
             }
             for (List<DTDItem> l : choiceList) {
-                ArrayList<DTDItem> clist = new ArrayList<DTDItem>();
-                LinkedList<DTDItem> elist = new LinkedList<DTDItem>();
+                final ArrayList<DTDItem> clist = new ArrayList<>();
+                final LinkedList<DTDItem> elist = new LinkedList<>();
                 for (i = 0; i < l.size(); i++) {
                     elist.add(l.get(i));
                 }
                 while (!elist.isEmpty()) {
-                    DTDItem p = elist.removeFirst();
+                    final DTDItem p = elist.removeFirst();
                     if (p instanceof DTDContainer) {
-                        List<DTDItem> l2 = ((DTDContainer) p).getItemsVec();
+                        final List<DTDItem> l2 = ((DTDContainer) p).getItemsVec();
                         for (DTDItem aL2 : l2) {
                             elist.addFirst(aL2);
                         }
@@ -277,10 +253,10 @@ public class DTDModelLoader implements ModelLoader {
                     }
                 }
                 boolean choiceOpt = true;
-                FieldDesc[] choice = new FieldDesc[clist.size()];
+                final FieldDesc[] choice = new FieldDesc[clist.size()];
                 for (i = 0; i < choice.length; i++) {
-                    DTDName p = (DTDName) clist.get(i);
-                    String s = Util.toJavaFieldName(p.value);
+                    final DTDName p = (DTDName) clist.get(i);
+                    final String s = Util.toJavaFieldName(p.value);
                     FieldDesc fd = td.fdMap.get(s);
                     if (fd == null) {
                         fd = td.fdMap.get(Util.pluralize(s));
@@ -300,15 +276,15 @@ public class DTDModelLoader implements ModelLoader {
                 }
             }
         }
-        List<DTDEntity> entList = dtd.getItemsByType(DTDEntity.class);
+        final List<DTDEntity> entList = dtd.getItemsByType(DTDEntity.class);
         for (DTDEntity entity : entList) {
-            String value = entity.value;
+            final String value = entity.value;
             if (!value.startsWith("(") || !value.endsWith(")")) {
                 continue;
             }
-            String typeName = model.toJavaTypeName(entity.name, namespace);
-            TypeDesc td = new TypeDesc(entity.name, namespace, typeName, TypeDesc.TypeEnum.ENUM);
-            StringTokenizer st = new StringTokenizer(value, "(|)");
+            final String typeName = model.toJavaTypeName(entity.name, namespace);
+            final TypeDesc td = new TypeDesc(entity.name, namespace, typeName, TypeDesc.TypeEnum.ENUM);
+            final StringTokenizer st = new StringTokenizer(value, "(|)");
             while (st.hasMoreTokens()) {
                 final String s = st.nextToken();
                 td.fdMap.put(s, new FieldDesc(Util.computeEnumConstantName(s, td.name), s));
@@ -318,17 +294,16 @@ public class DTDModelLoader implements ModelLoader {
         }
     }
 
-    private static String parseDTDItemDocumentation(DTD dtd, DTDOutput obj, String title) {
-        int elementIndex = dtd.items.indexOf(obj);
+    private static String parseDTDItemDocumentation(final DTD dtd, final DTDOutput obj, final String title) {
+        final int elementIndex = dtd.items.indexOf(obj);
         if (elementIndex < 1) {
             return null;
         }
-        Object prev = dtd.items.get(elementIndex - 1);
-        if (!(prev instanceof DTDComment)) {
+        final Object prev = dtd.items.get(elementIndex - 1);
+        if (!(prev instanceof final DTDComment comment)) {
             return null;
         }
-        DTDComment comment = (DTDComment) prev;
-        return title + "\n" + "<pre>\n" + comment.getText() + "\n</pre>";
+        return title + '\n' + "<pre>\n" + comment.getText() + "\n</pre>";
     }
 
     static class Entry {
@@ -337,7 +312,7 @@ public class DTDModelLoader implements ModelLoader {
         boolean many;
         DTDItem p;
 
-        Entry(DTDItem p, boolean many, boolean required) {
+        Entry(final DTDItem p, final boolean many, final boolean required) {
             this.required = required;
             this.many = many;
             this.p = p;
@@ -348,7 +323,7 @@ public class DTDModelLoader implements ModelLoader {
         Vector choice;
         int num;
 
-        Entry(Entry parent, DTDItem it, Vector choice, int num) {
+        Entry(final Entry parent, final DTDItem it, final Vector choice, final int num) {
             this.parent = parent;
             this.it = it;
             this.choice = choice;
@@ -357,12 +332,12 @@ public class DTDModelLoader implements ModelLoader {
     }
 
 
-    private static void checkDTDRootElement(DTD dtd) throws Exception {
+    private static void checkDTDRootElement(final DTD dtd) throws Exception {
         if (dtd.rootElement == null) {
-            StringBuffer sb = new StringBuffer("Empty root: possible elements: ");
-            HashMap map = new HashMap(dtd.elements);
+            final StringBuffer sb = new StringBuffer("Empty root: possible elements: ");
+            final HashMap map = new HashMap(dtd.elements);
             for (Object o : dtd.elements.values()) {
-                DTDElement el = (DTDElement) o;
+                final DTDElement el = (DTDElement) o;
                 if (el.content instanceof DTDContainer) {
                     for (Object obj : ((DTDContainer) el.content).getItemsVec()) {
                         if (obj instanceof DTDName) {

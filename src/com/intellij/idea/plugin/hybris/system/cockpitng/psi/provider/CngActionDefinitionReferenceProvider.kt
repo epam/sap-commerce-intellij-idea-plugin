@@ -33,6 +33,5 @@ class CngActionDefinitionReferenceProvider : PsiReferenceProvider() {
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngActionDefinitionReferenceProvider::class.java)
-        private val regex = "(\\{)(.*?)(})|([,)\"])".toRegex()
     }
 }

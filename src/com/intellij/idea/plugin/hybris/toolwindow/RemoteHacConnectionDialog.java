@@ -62,9 +62,9 @@ public class RemoteHacConnectionDialog extends DialogWrapper {
     private JComboBox sslProtocol;
     private JLabel sslProtocolLabel;
 
-    private Project myProject;
-    private HybrisRemoteConnectionSettings mySettings;
-    private HybrisRemoteConnectionSettings setting;
+    private final Project myProject;
+    private final HybrisRemoteConnectionSettings mySettings;
+    private final HybrisRemoteConnectionSettings setting;
 
     public RemoteHacConnectionDialog(
         @Nullable final Project project,
@@ -127,7 +127,7 @@ public class RemoteHacConnectionDialog extends DialogWrapper {
 
     private void testConnection() {
         saveSettings(setting);
-        HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
+        final HybrisHacHttpClient hybrisHacHttpClient = HybrisHacHttpClient.getInstance(myProject);
         final String errorMessage = hybrisHacHttpClient.login(myProject, setting);
         final String testedHacURL = hybrisHacHttpClient.getHostHacURL(myProject, setting);
 

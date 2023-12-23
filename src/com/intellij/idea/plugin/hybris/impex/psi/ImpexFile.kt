@@ -32,6 +32,6 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 5112646813557523662L
+        private val serialVersionUID: Long = 5112646813557523662L
     }
 }

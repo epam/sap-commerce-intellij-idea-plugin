@@ -32,6 +32,6 @@ interface AntConfigurator {
     )
 
     companion object {
-        val instance: AntConfigurator? = ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+        fun getInstance(): AntConfigurator? = ApplicationManager.getApplication().getService(AntConfigurator::class.java)
     }
 }

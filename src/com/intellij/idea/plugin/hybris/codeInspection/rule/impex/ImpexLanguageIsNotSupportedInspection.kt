@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.*
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.psi.util.PsiTreeUtil
 
 class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
@@ -33,7 +33,7 @@ class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = object : ImpexVisitor() {
 
         override fun visitAnyAttributeValue(psi: ImpexAnyAttributeValue) {
-            val propertiesService = PropertiesService.getInstance(psi.project) ?: return
+            val propertiesService = PropertyService.getInstance(psi.project) ?: return
 
             PsiTreeUtil.getPrevSiblingOfType(psi, ImpexAnyAttributeName::class.java)
                 ?.takeIf { AttributeModifier.LANG.modifierName == it.text }

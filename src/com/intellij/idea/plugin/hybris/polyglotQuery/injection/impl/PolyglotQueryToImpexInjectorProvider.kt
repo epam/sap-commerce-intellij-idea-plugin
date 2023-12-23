@@ -53,6 +53,6 @@ class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(Po
     }
 
     companion object {
-        val instance: PolyglotQueryToImpexInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToImpexInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToImpexInjectorProvider::class.java)
     }
 }

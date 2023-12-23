@@ -55,16 +55,16 @@ object PolyglotQueryUtils {
                     val probableDefinition = operand.resolve()
                     if (probableDefinition is PsiVariable) {
                         probableDefinition.initializer?.let { initializer ->
-                            val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true);
+                            val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true)
                             if (value is String || value is Char) {
-                                computedValue += value;
+                                computedValue += value
                             }
                         }
                     }
                 } else {
-                    val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true);
+                    val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true)
                     if (value is String || value is Char) {
-                        computedValue += value;
+                        computedValue += value
                     }
                 }
             }

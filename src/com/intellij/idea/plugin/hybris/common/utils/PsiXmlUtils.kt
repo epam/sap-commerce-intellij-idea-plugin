@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.common.utils
 
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
+import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.xml.XmlTag
 
@@ -32,7 +33,7 @@ object PsiXmlUtils {
         rootTag: String,
         tagName: String,
         attributeName: String
-    ) = XmlPatterns.xmlAttributeValue()
+    ): XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue()
         .withAncestor(6, XmlPatterns.xmlTag().withLocalName(rootTag))
         .withParent(
             XmlPatterns.xmlAttribute(attributeName)

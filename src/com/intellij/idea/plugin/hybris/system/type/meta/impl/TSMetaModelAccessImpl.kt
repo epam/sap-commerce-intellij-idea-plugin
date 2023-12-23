@@ -102,7 +102,7 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
                             initialized = true
                             myMessageBus.syncPublisher(TSMetaModelAccess.TOPIC).typeSystemChanged(globalMetaModel)
                         } finally {
-                            semaphore.release();
+                            semaphore.release()
                         }
                     }
                 }

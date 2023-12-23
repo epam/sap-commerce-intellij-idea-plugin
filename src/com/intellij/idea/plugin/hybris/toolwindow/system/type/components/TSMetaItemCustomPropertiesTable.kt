@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.project.Project
+import java.io.Serial
 
 class TSMetaItemCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSGlobalMetaItem>(myProject) {
 
@@ -32,7 +33,8 @@ class TSMetaItemCustomPropertiesTable private constructor(myProject: Project) : 
         .toMutableList()
 
     companion object {
-        private const val serialVersionUID: Long = 1373538655259801277L
+        @Serial
+        private val serialVersionUID: Long = 1373538655259801277L
 
         @JvmStatic
         fun getInstance(project: Project): TSMetaItemCustomPropertiesTable = with(TSMetaItemCustomPropertiesTable(project)) {

@@ -26,6 +26,6 @@ import java.util.*
 @Service
 class BSEnumClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_ENUM)) {
     companion object {
-        val instance: BSEnumClassCompletionProvider = ApplicationManager.getApplication().getService(BSEnumClassCompletionProvider::class.java)
+        fun getInstance(): BSEnumClassCompletionProvider = ApplicationManager.getApplication().getService(BSEnumClassCompletionProvider::class.java)
     }
 }

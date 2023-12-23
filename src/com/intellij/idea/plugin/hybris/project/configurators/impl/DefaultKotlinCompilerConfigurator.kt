@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache
 import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
@@ -57,7 +57,7 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
             .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
         if (!hasKotlinnatureExtension) return
 
-        val compilerVersion = PropertiesService.getInstance(project)
+        val compilerVersion = PropertyService.getInstance(project)
             ?.findMacroProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
             ?.value
             ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
@@ -100,7 +100,7 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
     }
 
     // Kotlin compiler version will be updated after project import / refresh in BGT
-    // we have to have indexes ready to be able to get correct value of the project property responsible for custom Kotlin compiler version
+    // we have to have indexes ready to be able to get the correct value of the project property responsible for a custom Kotlin compiler version
     private fun setKotlinCompilerVersion(project: Project, compilerVersion: String) {
         ApplicationManager.getApplication().runReadAction {
             KotlinJpsPluginSettings.getInstance(project).update {
