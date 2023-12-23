@@ -26,9 +26,11 @@ public class PgQCodeStyleSettings extends CustomCodeStyleSettings {
 
     public static boolean SPACES_INSIDE_BRACES = false;
     public static boolean SPACES_INSIDE_BRACKETS = false;
+    public static boolean SPACES_INSIDE_DOUBLE_BRACES = true;
     public static boolean SPACE_AROUND_OP = true;
 
     public static boolean WRAP_WHERE_CLAUSE = true;
+    public static boolean WRAP_ORDER_CLAUSE = true;
 
     public PgQCodeStyleSettings(final CodeStyleSettings container) {
         super("PgQCodeStyleSettings", container);
