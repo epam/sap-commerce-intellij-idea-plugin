@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.properties.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ADVANCED_PROPERTIES_FILE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ENV_PROPERTIES_FILE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_OPT_CONFIG_DIR_ENV
@@ -132,10 +133,25 @@ class PropertiesServiceImpl(val project: Project) : PropertiesService {
         .filter { it.value != null && it.key != null }
         .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
         .let { properties ->
+            addEnvironmentProperties(properties)
             properties.filter { it.value.contains(nestedPropertyPrefix) }
                 .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
             return properties
         }
+
+    private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
+        properties[PROPERTY_ENV_PROPERTY_PREFIX]?.let { prefix ->
+         System.getenv()
+             .filter { it.key.startsWith(prefix) }
+             .forEach() {
+                 val envPropertyKey = it.key.substring(prefix.length)
+                 val key = envPropertyKey.replace("__", "##")
+                     .replace("_",".")
+                     .replace("##","_")
+                 properties[key] = it.value
+             }
+        }
+    }
 
     private fun replacePlaceholder(result: LinkedHashMap<String, String>, key: String, visitedProperties: MutableSet<String>) {
 
