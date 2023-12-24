@@ -36,15 +36,6 @@
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionService"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.RegionEntityService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultRegionEntityService"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.HybrisConsoleRegionsCache"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.cache.impl.HybrisConsoleInMemoryRegionsCache"/>
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.impl.DefaultConsolePersistenceService"/>
-
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.view.impl.HybrisProjectViewDirectoryHelper"
                         order="last"

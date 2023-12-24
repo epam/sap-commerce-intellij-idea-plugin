@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
@@ -54,8 +53,6 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
 
     private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
-    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "POLYGLOT_QUERY")
-
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, ID, this).install()
@@ -65,7 +62,6 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
         initCommitElements()
         initMaxRowsElements()
 
-        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
     }

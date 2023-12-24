@@ -28,8 +28,6 @@
     <projectListeners>
         <listener class="com.intellij.idea.plugin.hybris.startup.event.ItemsXmlFileEditorManagerListener"
                   topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-        <listener class="com.intellij.idea.plugin.hybris.startup.event.HybrisConsoleProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
 
     <extensions defaultExtensionNs="com.intellij">

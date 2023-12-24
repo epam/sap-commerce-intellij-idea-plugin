@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.services.ConsolePersistenceService
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
@@ -99,8 +98,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         resetSpringGeneralSettings(project)
         fixBackOfficeJRebelSupport(project)
-
-        ConsolePersistenceService.getInstance(project).loadPersistedQueries()
     }
 
     private fun resetSpringGeneralSettings(project: Project) {

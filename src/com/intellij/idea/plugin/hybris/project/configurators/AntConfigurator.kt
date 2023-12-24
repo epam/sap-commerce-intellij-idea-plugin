@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
@@ -32,6 +33,8 @@ interface AntConfigurator {
     )
 
     companion object {
-        fun getInstance(): AntConfigurator? = ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+        fun getInstance(): AntConfigurator? =
+            if (PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+            else null
     }
 }

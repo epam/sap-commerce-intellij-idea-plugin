@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
@@ -70,8 +69,6 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
-    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "SOLR")
-
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
@@ -85,7 +82,6 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         initDocsElements()
         initMaxRowsElements()
 
-        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
         prompt = "q="

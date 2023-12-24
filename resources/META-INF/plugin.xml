@@ -27,6 +27,7 @@
     <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
         EPAM_Systems
     </vendor>
+    <!-- Naming convention - https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html#optional-plugin-dependencies -->
 
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml">com.intellij.modules.lang</depends>
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml">com.intellij.modules.lang</depends>
