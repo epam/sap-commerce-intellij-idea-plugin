@@ -79,9 +79,9 @@ public class HybrisJUnitExtension extends RunConfigurationExtension {
             }
         }
 
-        final PropertyService propertiesService = PropertyService.getInstance(project);
-        if (propertiesService != null) {
-            final String property = propertiesService.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
+        final PropertyService propertyService = PropertyService.getInstance(project);
+        if (propertyService != null) {
+            final String property = propertyService.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS);
             if (property != null) {
                 final StringTokenizer tokenizer = new StringTokenizer(property.trim());
                 while (tokenizer.hasMoreTokens()) {

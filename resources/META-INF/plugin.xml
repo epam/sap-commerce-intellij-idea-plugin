@@ -28,37 +28,38 @@
         EPAM_Systems
     </vendor>
 
-    <depends config-file="lang-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/beanSystem-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/businessProcess-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/ccv2-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/cockpitng-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/extensioninfo-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/flexibleSearch-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/impex-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/localextensions-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/polyglot-query-dependencies.xml">com.intellij.modules.lang</depends>
-    <depends config-file="lang/typeSystem-dependencies.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-businessProcess.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ccv2.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cockpitng.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-extensioninfo.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-flexibleSearch.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml">com.intellij.modules.lang</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml">com.intellij.modules.lang</depends>
 
-    <depends config-file="java-dependencies.xml">com.intellij.modules.java</depends>
-    <depends config-file="xdebugger-dependencies.xml">com.intellij.modules.xdebugger</depends>
-    <depends config-file="properties-dependencies.xml">com.intellij.properties</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml">com.intellij.modules.xdebugger</depends>
+    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-properties.xml">com.intellij.properties</depends>
 
-    <depends optional="true" config-file="optional/junit-dependencies.xml">JUnit</depends>
-    <depends optional="true" config-file="optional/ant-dependencies.xml">AntSupport</depends>
-    <depends optional="true" config-file="optional/maven-dependencies.xml">org.jetbrains.idea.maven</depends>
-    <depends optional="true" config-file="optional/eclipse-dependencies.xml">org.jetbrains.idea.eclipse</depends>
-    <depends optional="true" config-file="optional/gradle-dependencies.xml">org.jetbrains.plugins.gradle</depends>
-    <depends optional="true" config-file="optional/spring-dependencies.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="optional/javaee-dependencies.xml">com.intellij.javaee</depends>
-    <depends optional="true" config-file="optional/javaee-web-dependencies.xml">com.intellij.javaee.web</depends>
-    <depends optional="true" config-file="optional/diagram-dependencies.xml">com.intellij.diagram</depends>
-    <depends optional="true" config-file="optional/groovy-dependencies.xml">org.intellij.groovy</depends>
-    <depends optional="true" config-file="optional/javascript-dependencies.xml">JavaScript</depends>
-    <depends optional="true" config-file="optional/copyright-impex-dependencies.xml">com.intellij.copyright</depends>
-    <depends optional="true" config-file="optional/kotlin-dependencies.xml">org.jetbrains.kotlin</depends>
-    <depends optional="true" config-file="optional/database-dependencies.xml">com.intellij.database</depends>
-    <depends optional="true" config-file="optional/intelliLang-dependencies.xml">org.intellij.intelliLang</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-junit.xml">JUnit</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ant.xml">AntSupport</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-maven.xml">org.jetbrains.idea.maven</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-eclipse.xml">org.jetbrains.idea.eclipse</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-gradle.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee.xml">com.intellij.javaee</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee-web.xml">com.intellij.javaee.web</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-diagram.xml">com.intellij.diagram</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-copyright.xml">com.intellij.copyright</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-kotlin.xml">org.jetbrains.kotlin</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-database.xml">com.intellij.database</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-jrebel.xml">JRebelPlugin</depends>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>

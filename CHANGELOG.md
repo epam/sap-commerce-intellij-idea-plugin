@@ -1,5 +1,8 @@
 ## [2023.3.3]
 
+### `Project Import` enhancements
+- Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
+
 ### `Tests` enhancements
 - Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
 - Load Properties from Files and Environment [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)

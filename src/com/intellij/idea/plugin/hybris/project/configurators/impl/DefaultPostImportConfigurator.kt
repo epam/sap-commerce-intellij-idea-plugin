@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
+import com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
@@ -81,6 +82,9 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
 
             configuratorFactory.kotlinCompilerConfigurator
                 ?.configureAfterImport(project)
+
+            JRebelConfigurator.getInstance()
+                ?.configure(project, allHybrisModules)
 
             configuratorFactory.mavenConfigurator
                 ?.let {

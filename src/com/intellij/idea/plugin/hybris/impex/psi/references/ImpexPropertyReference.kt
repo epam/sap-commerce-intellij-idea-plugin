@@ -46,11 +46,11 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertiesService = PropertyService.getInstance(element.project)
+        val propertyService = PropertyService.getInstance(element.project)
             ?: return emptyArray()
 
         return getPropertyKey()
-            ?.let { propertiesService.findMacroProperty(it) }
+            ?.let { propertyService.findMacroProperty(it) }
             ?.let { PsiElementResolveResult.createResults(it.psiElement) }
             ?: ResolveResult.EMPTY_ARRAY
     }

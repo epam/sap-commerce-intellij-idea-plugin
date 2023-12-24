@@ -120,10 +120,10 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
             COLUMN_LOCALIZED_NAME -> {
                 val language = element.text.trim()
 
-                val propertiesService = PropertyService.getInstance(element.project) ?: return
-                val supportedLanguages = propertiesService.getLanguages()
+                val propertyService = PropertyService.getInstance(element.project) ?: return
+                val supportedLanguages = propertyService.getLanguages()
 
-                if (!propertiesService.containsLanguage(language, supportedLanguages)) {
+                if (!propertyService.containsLanguage(language, supportedLanguages)) {
                     highlightError(
                         holder, element,
                         message(

@@ -56,8 +56,8 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                     ProblemHighlightType.ERROR
                 )
             } else {
-                val propertiesService = PropertyService.getInstance(usage.project) ?: return
-                val property = propertiesService.findMacroProperty(propertyName)
+                val propertyService = PropertyService.getInstance(usage.project) ?: return
+                val property = propertyService.findMacroProperty(propertyName)
 
                 if (property == null) {
                     cachedProperties[propertyName] = false

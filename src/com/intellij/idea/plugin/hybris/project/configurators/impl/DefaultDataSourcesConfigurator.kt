@@ -43,7 +43,7 @@ import com.intellij.util.ui.classpath.SingleRootClasspathElement
 class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
     override fun configure(project: Project) {
-        val propertiesService = PropertyService.getInstance(project) ?: return
+        val propertyService = PropertyService.getInstance(project) ?: return
 
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
@@ -51,9 +51,9 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(propertiesService.findProperty("db.url"))
-            .withUser(propertiesService.findProperty("db.username"))
-            .withPassword(propertiesService.findProperty("db.password"))
+            .withUrl(propertyService.findProperty("db.url"))
+            .withUser(propertyService.findProperty("db.username"))
+            .withPassword(propertyService.findProperty("db.password"))
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {

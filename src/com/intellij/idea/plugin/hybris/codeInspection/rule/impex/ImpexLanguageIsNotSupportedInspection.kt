@@ -33,7 +33,7 @@ class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = object : ImpexVisitor() {
 
         override fun visitAnyAttributeValue(psi: ImpexAnyAttributeValue) {
-            val propertiesService = PropertyService.getInstance(psi.project) ?: return
+            val propertyService = PropertyService.getInstance(psi.project) ?: return
 
             PsiTreeUtil.getPrevSiblingOfType(psi, ImpexAnyAttributeName::class.java)
                 ?.takeIf { AttributeModifier.LANG.modifierName == it.text }
@@ -49,9 +49,9 @@ class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
             }
                 .trim()
 
-            val supportedLanguages = propertiesService.getLanguages()
+            val supportedLanguages = propertyService.getLanguages()
 
-            if (propertiesService.containsLanguage(language, supportedLanguages)) return
+            if (propertyService.containsLanguage(language, supportedLanguages)) return
 
             holder.registerProblem(
                 psi,
