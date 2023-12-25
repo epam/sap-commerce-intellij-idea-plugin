@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
@@ -81,10 +82,17 @@ tasks {
     }
 
     runIde {
-        jvmArgs = listOf(properties("intellij.jvm.args").get())
+        jvmArgs = mutableListOf<String>().apply {
+            add(properties("intellij.jvm.args").get())
+
+            if (OperatingSystem.current().isMacOsX) {
+                add("-Xdock:name=SAP-Commerce-Developers-Toolset")
+                add("-Xdock:icon=${project.rootDir}/resources/META-INF/pluginIcon_dark.svg")
+            }
+        }
         maxHeapSize = "3g"
         /*
-        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify absolute path to the Application
+        To be able to start IDEA Community edition one has to uncomment `ideDir` property and specify an absolute path to the Application
         references:
          - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
          - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute

@@ -15,6 +15,7 @@
 - Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
 - Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
 - Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
+- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
