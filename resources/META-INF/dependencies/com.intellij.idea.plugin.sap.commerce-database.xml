@@ -21,7 +21,7 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultDataSourcesConfigurator"/>
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DataSourcesConfigurator"/>
 
     </extensions>
 

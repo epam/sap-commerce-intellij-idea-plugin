@@ -21,8 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultMavenConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator"/>
 
         <dom.fileMetaData rootTagName="project" stubVersion="1" order="first"
                           implementation="com.intellij.idea.plugin.hybris.system.externalDependencies.EDDomFileDescription"/>

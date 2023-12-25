@@ -21,7 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultXsdSchemaConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.XsdSchemaConfigurator"/>
 
     </extensions>
 

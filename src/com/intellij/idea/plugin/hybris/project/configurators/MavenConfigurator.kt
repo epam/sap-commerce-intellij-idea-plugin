@@ -19,17 +19,67 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.vfs.VfsUtil
+import org.jetbrains.idea.maven.model.MavenConstants
+import org.jetbrains.idea.maven.project.MavenProjectsManager
+import org.jetbrains.idea.maven.wizards.MavenProjectBuilder
+import java.io.File
 
-interface MavenConfigurator {
+class MavenConfigurator {
 
     fun configureAfterImport(
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor
-    ): List<() -> Unit>
+    ): List<() -> Unit> {
+        val mavenModules = hybrisProjectDescriptor.modulesChosenForImport
+            .filterIsInstance<MavenModuleDescriptor>()
+            .takeIf { it.isNotEmpty() }
+            ?: return emptyList()
+
+        val actions = mavenModules
+            .asSequence()
+            .map { it.moduleRootDirectory }
+            .map { File(it, MavenConstants.POM_XML) }
+            .filter { it.exists() && it.isFile }
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .map {
+                val builder = MavenProjectBuilder()
+                builder.isUpdate = MavenProjectsManager.getInstance(project).isMavenizedProject
+                builder.setFileToImport(it)
+                builder
+            }
+            .filter {
+                val path = it.rootPath
+                    ?.toAbsolutePath()
+                    ?.toString()
+
+                mavenModules.any { module: MavenModuleDescriptor -> module.moduleRootDirectory.absolutePath == path }
+            }
+            .map {
+                {
+                    try {
+                        it.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
+                    } finally {
+                        it.cleanup()
+                    }
+                    Unit
+                }
+            }
+            .toMutableList()
+
+        actions.add() {
+            MavenProjectsManager.getInstance(project).importProjects()
+        }
+
+        return actions
+    }
 
     companion object {
         fun getInstance(): MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
     }
+
 }

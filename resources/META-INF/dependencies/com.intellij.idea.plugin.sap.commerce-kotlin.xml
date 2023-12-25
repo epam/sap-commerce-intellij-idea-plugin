@@ -21,8 +21,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="liveTemplates/Kotlin.xml"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultKotlinCompilerConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.KotlinFacetConfigurator"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider"/>
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider"/>

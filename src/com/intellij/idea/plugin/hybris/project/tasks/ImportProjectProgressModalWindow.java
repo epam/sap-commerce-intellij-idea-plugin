@@ -316,7 +316,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         if (compilerConfigurator == null) return;
 
         indicator.setText(message("hybris.project.import.compiler.kotlin"));
-        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+        compilerConfigurator.configure(hybrisProjectDescriptor, project);
     }
 
     private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {

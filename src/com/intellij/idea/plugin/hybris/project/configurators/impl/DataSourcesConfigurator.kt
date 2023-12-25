@@ -29,8 +29,8 @@ import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.configurators.DataSourcesConfigurator
 import com.intellij.idea.plugin.hybris.properties.PropertyService
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -39,10 +39,9 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 
+class DataSourcesConfigurator {
 
-class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
-
-    override fun configureAfterImport(project: Project): List<() -> Unit> {
+    fun configureAfterImport(project: Project): List<() -> Unit> {
         val propertyService = PropertyService.getInstance(project) ?: return emptyList()
 
         val projectProperties = propertyService.findAllProperties()
@@ -102,6 +101,10 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
         dataSource.resolveDriver()
         dataSource.ensureDriverConfigured()
+    }
+
+    companion object {
+        fun getInstance(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
     }
 
 }

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+// TODO: dispose after project import / refresh
 public class HybrisConfiguratorCache {
 
     private static final Logger LOG = Logger.getInstance(HybrisConfiguratorCache.class);
