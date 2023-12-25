@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 
 interface DataSourcesConfigurator {
 
-    fun configure(project: Project)
+    fun configureAfterImport(project: Project): List<() -> Unit>
 
     companion object {
         fun getInstance(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)

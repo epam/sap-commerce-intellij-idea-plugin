@@ -42,19 +42,20 @@ import com.intellij.util.ui.classpath.SingleRootClasspathElement
 
 class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
-    override fun configure(project: Project) {
-        val propertyService = PropertyService.getInstance(project) ?: return
+    override fun configureAfterImport(project: Project): List<() -> Unit> {
+        val propertyService = PropertyService.getInstance(project) ?: return emptyList()
 
-        val properties = propertyService.findAllProperties()
+        val projectProperties = propertyService.findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
+
         dataSourceRegistry.setImportedFlag(false)
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(properties["db.url"])
-            .withUser(properties["db.username"])
-            .withPassword(properties["db.password"])
+            .withUrl(projectProperties["db.url"])
+            .withUser(projectProperties["db.username"])
+            .withPassword(projectProperties["db.password"])
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {
@@ -65,15 +66,20 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
             })
             .commit()
 
-        DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
+        val actions = mutableListOf<() -> Unit>()
 
-        for (dataSource in dataSources) {
-            LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
-            DataSourceUtil.performAutoSyncTask(project, dataSource)
-            loadDatabaseDriver(project, dataSource)
+        actions.add() {
+            DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
+
+            for (dataSource in dataSources) {
+                LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
+                DataSourceUtil.performAutoSyncTask(project, dataSource)
+                loadDatabaseDriver(project, dataSource)
+            }
         }
-    }
 
+        return actions
+    }
 
     private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {
         if (DbImplUtil.hasDriverFiles(dataSource)) return
@@ -82,7 +88,7 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
 
         if (driver.additionalClasspathElements.isNotEmpty()) return
 
-        // let's try to pickup suitable driver located in the Database Drivers library
+        // let's try to pick up a suitable driver located in the Database Drivers library
         ModuleManager.getInstance(project).modules
             .firstOrNull { it.name.endsWith(HybrisConstants.EXTENSION_NAME_PLATFORM) }
             ?.let { LibraryUtil.findLibrary(it, HybrisConstants.PLATFORM_DATABASE_DRIVER_LIBRARY) }

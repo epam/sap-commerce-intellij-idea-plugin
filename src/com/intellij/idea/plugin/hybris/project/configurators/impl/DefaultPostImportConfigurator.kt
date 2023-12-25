@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
-import com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
@@ -46,6 +43,9 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         ReadAction
             .nonBlocking<List<() -> Unit>> {
                 KotlinCompilerConfigurator.getInstance()
+                    ?.configureAfterImport(project)
+
+                DataSourcesConfigurator.getInstance()
                     ?.configureAfterImport(project)
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
@@ -84,13 +84,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
 
             configuratorFactory.xsdSchemaConfigurator
                 ?.configure(project, hybrisProjectDescriptor, allHybrisModules)
-
-            try {
-                configuratorFactory.dataSourcesConfigurator
-                    ?.configure(project)
-            } catch (e: Exception) {
-                LOG.error("Can not import data sources due to an error.", e)
-            }
 
             JRebelConfigurator.getInstance()
                 ?.configure(project, allHybrisModules)
