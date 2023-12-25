@@ -23,13 +23,9 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 
@@ -58,7 +54,10 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
                         ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
 
                     JRebelConfigurator.getInstance()
-                        ?.configureAfterImport(project, allHybrisModules)
+                        ?.configureAfterImport(project, allHybrisModules),
+
+                    MavenConfigurator.getInstance()
+                        ?.configureAfterImport(project, hybrisProjectDescriptor)
                 )
                     .flatten()
             }
@@ -71,44 +70,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
             }
             .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
-
-        DumbService.getInstance(project).runWhenSmart {
-            finishImport(
-                project,
-                hybrisProjectDescriptor,
-                allHybrisModules
-            ) { notifyImportFinished(project, refresh) }
-        }
-    }
-
-    private fun finishImport(
-        project: Project,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allHybrisModules: List<ModuleDescriptor>,
-        callback: Runnable
-    ) {
-        val configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactory::class.java)
-
-        // invokeLater is needed to avoid a problem with transaction validation:
-        // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
-        ApplicationManager.getApplication().invokeLater {
-            if (project.isDisposed) return@invokeLater
-
-            configuratorFactory.mavenConfigurator
-                ?.let {
-                    try {
-                        val mavenModules = hybrisProjectDescriptor.modulesChosenForImport
-                            .filterIsInstance<MavenModuleDescriptor>()
-                        if (mavenModules.isNotEmpty()) {
-                            it.configure(hybrisProjectDescriptor, project, mavenModules, configuratorFactory)
-                        }
-                    } catch (e: Exception) {
-                        LOG.error("Can not import Maven modules due to an error.", e)
-                    } finally {
-                        callback.run()
-                    }
-                } ?: callback.run()
-        }
     }
 
     private fun notifyImportFinished(project: Project, refresh: Boolean) {
@@ -117,12 +78,9 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         val notificationTitle = if (refresh) message("hybris.notification.project.refresh.title")
         else message("hybris.notification.project.import.title")
 
-        Notifications.create(NotificationType.INFORMATION, notificationTitle, notificationContent)
-            .notify(project)
-        Notifications.showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
-    }
-
-    companion object {
-        private val LOG = Logger.getInstance(DefaultPostImportConfigurator::class.java)
+        with(Notifications) {
+            create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)
+            showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
+        }
     }
 }

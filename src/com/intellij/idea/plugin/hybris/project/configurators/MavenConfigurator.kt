@@ -19,18 +19,15 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
 interface MavenConfigurator {
 
-    fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+    fun configureAfterImport(
         project: Project,
-        mavenModules: List<MavenModuleDescriptor?>,
-        configuratorFactory: ConfiguratorFactory
-    )
+        hybrisProjectDescriptor: HybrisProjectDescriptor
+    ): List<() -> Unit>
 
     companion object {
         fun getInstance(): MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
