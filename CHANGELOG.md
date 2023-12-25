@@ -9,7 +9,10 @@
 - Load Properties from Files and Environment [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
 
 ### `Ant` enhancements
-- Allow common ant targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
+- Allow common targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
+
+### `FlexibleSearch` enhancements
+- Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
 
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)

@@ -58,6 +58,6 @@ abstract class AbstractFxSEditorNotificationProvider : EditorNotificationProvide
         file: VirtualFile
     ): Function<FileEditor, EditorNotificationPanel>
 
-    protected abstract fun collect(fxsSettings: FlexibleSearchSettings, psiFile: PsiFile): MutableCollection<LeafPsiElement>
+    protected abstract fun collect(fxsSettings: FlexibleSearchSettings, psiFile: PsiFile): Collection<LeafPsiElement>
 
 }

@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
@@ -32,6 +34,7 @@ import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
+import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.function.Function
 
 class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {
@@ -43,38 +46,39 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
         project: Project,
         psiFile: PsiFile,
         file: VirtualFile
-    ): Function<FileEditor, EditorNotificationPanel> {
-        return Function { fileEditor ->
-            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-            panel.icon(HybrisIcons.Y_LOGO_BLUE)
-            panel.text = message(
-                "hybris.fxs.notification.provider.keywords.text",
-                message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
-            )
-            panel.createActionLabel(message("hybris.fxs.notification.provider.keywords.action.unify")) {
-                WriteCommandAction.runWriteCommandAction(project) {
-                    collect(fxsSettings, psiFile).distinct().reversed()
-                        .forEach {
+    ) = Function<FileEditor, EditorNotificationPanel> { fileEditor ->
+        val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
+        panel.icon(HybrisIcons.Y_LOGO_BLUE)
+        panel.text = message(
+            "hybris.fxs.notification.provider.keywords.text",
+            message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
+        )
+        panel.createActionLabel(message("hybris.fxs.notification.provider.keywords.action.unify")) {
+            ReadAction
+                .nonBlocking<Collection<LeafPsiElement>> { collect(fxsSettings, psiFile).distinct().reversed() }
+                .finishOnUiThread(ModalityState.defaultModalityState()) {
+                    WriteCommandAction.runWriteCommandAction(project, null, null, {
+                        it.forEach {
                             when (fxsSettings.defaultCaseForReservedWords) {
                                 ReservedWordsCase.UPPERCASE -> it.replaceWithText(it.text.uppercase())
                                 ReservedWordsCase.LOWERCASE -> it.replaceWithText(it.text.lowercase())
                             }
                         }
-                }
+                    }, psiFile)
 
-                EditorNotifications.getInstance(project).updateNotifications(file)
-            }
-            panel
+                    EditorNotifications.getInstance(project).updateNotifications(file)
+                }
+                .submit(AppExecutorUtil.getAppExecutorService())
         }
+        panel
     }
 
     override fun collect(
         fxsSettings: FlexibleSearchSettings,
         psiFile: PsiFile
-    ): MutableCollection<LeafPsiElement> {
-        val processor = Collector(fxsSettings)
-        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, processor)
-        return processor.collection
+    ): Collection<LeafPsiElement> = with(Collector(fxsSettings)) {
+        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, this)
+        this.collection
     }
 
     class Collector(private val fxsSettings: FlexibleSearchSettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
