@@ -29,7 +29,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 
@@ -46,29 +45,32 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
                     KotlinCompilerConfigurator.getInstance()
                         ?.configureAfterImport(project)
                         ?: emptyList(),
+
                     DataSourcesConfigurator.getInstance()
                         ?.configureAfterImport(project)
                         ?: emptyList(),
+
+                    AntConfigurator.getInstance()
+                        ?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project)
+                        ?: emptyList()
                 )
                     .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
                 actions.forEach { it() }
 
-                AntConfigurator.getInstance()
-                    ?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project)
-                    ?: emptyList()
+                notifyImportFinished(project, refresh)
             }
             .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
 
-        DumbService.getInstance(project).runWhenSmart {
-            finishImport(
-                project,
-                hybrisProjectDescriptor,
-                allHybrisModules
-            ) { notifyImportFinished(project, refresh) }
-        }
+//        DumbService.getInstance(project).runWhenSmart {
+//            finishImport(
+//                project,
+//                hybrisProjectDescriptor,
+//                allHybrisModules
+//            ) { notifyImportFinished(project, refresh) }
+//        }
     }
 
     private fun finishImport(

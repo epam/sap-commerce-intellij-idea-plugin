@@ -66,9 +66,7 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
             })
             .commit()
 
-        val actions = mutableListOf<() -> Unit>()
-
-        actions.add() {
+        return listOf {
             DataSourceConfigUtil.configureDetectedDataSources(project, dataSourceRegistry, false, true, DatabaseCredentials.getInstance())
 
             for (dataSource in dataSources) {
@@ -77,8 +75,6 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
                 loadDatabaseDriver(project, dataSource)
             }
         }
-
-        return actions
     }
 
     private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {

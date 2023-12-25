@@ -36,9 +36,12 @@ import com.intellij.lang.ant.config.execution.AntRunConfigurationType
 import com.intellij.lang.ant.config.impl.*
 import com.intellij.lang.ant.config.impl.AntBuildFileImpl.*
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.util.concurrency.AppExecutorUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -140,52 +143,65 @@ class DefaultAntConfigurator : AntConfigurator {
             }
         }
 
-        val antInstallation = createAntInstallation(platformDescriptor) ?: return emptyList()
+        val antInstallation = createAntInstallation(platformDescriptor)
+            ?: return emptyList()
 
         val classPaths = createAntClassPath(platformDescriptor, extHybrisModuleDescriptors)
-        val antConfiguration = AntConfigurationBase.getInstance(project)
-        antConfiguration.isFilterTargets = true
-
-        val platformBuildFile =
-            registerAntInstallation(hybrisProjectDescriptor, antInstallation, antConfiguration, classPaths, platformDescriptor.moduleRootDirectory, desirablePlatformTargets)
-
-        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles) {
-            customHybrisModuleDescriptors
-                .map { it.moduleRootDirectory }
-                .forEach { registerAntInstallation(hybrisProjectDescriptor, antInstallation, antConfiguration, classPaths, it, desirableCustomTargets) }
+        val antConfiguration = AntConfigurationBase.getInstance(project).apply {
+            isFilterTargets = true
         }
-        saveAntInstallation(antInstallation)
-        removeMake(project)
-        createMetaTargets(antConfiguration, platformBuildFile)
 
-        return emptyList()
+        return listOf {
+            val antBuildFiles = mutableListOf<Pair<AntBuildFileBase, List<String>>>()
+
+            findBuildFile(antConfiguration, platformDescriptor.moduleRootDirectory)
+                ?.apply {
+                    metaTargets
+                        .map { ExecuteCompositeTargetEvent(it) }
+                        .filter { antConfiguration.getTargetForEvent(it) == null }
+                        .forEach { antConfiguration.setTargetForEvent(this, it.metaTargetName, it) }
+                }
+                ?.let { it to desirablePlatformTargets }
+
+            if (hybrisProjectDescriptor.isImportCustomAntBuildFiles) {
+                customHybrisModuleDescriptors
+                    .map { it.moduleRootDirectory }
+                    .mapNotNull { findBuildFile(antConfiguration, it) }
+                    .map { it to desirableCustomTargets }
+                    .forEach { antBuildFiles.add(it) }
+            }
+
+            antBuildFiles.forEach { (antBuildFile, desirabTargets) ->
+                registerAntInstallation(hybrisProjectDescriptor, antInstallation, classPaths, antBuildFile)
+
+                ReadAction
+                    .nonBlocking<EditPropertyContainer> {
+                        val allOptions = antBuildFile.allOptions
+
+                        EditPropertyContainer(allOptions).apply {
+                            TARGET_FILTERS[this] = getFilteredTargets(antConfiguration, antBuildFile, desirabTargets)
+                        }
+                    }
+                    .finishOnUiThread(ModalityState.defaultModalityState()) {
+                        it.apply()
+                    }
+                    .submit(AppExecutorUtil.getAppExecutorService())
+            }
+
+            saveAntInstallation(antInstallation)
+            removeMake(project)
+        }
     }
-
-    private fun createMetaTargets(antConfiguration: AntConfigurationBase, buildFile: AntBuildFileBase?) {
-        if (buildFile == null) return
-
-        metaTargets
-            .map { ExecuteCompositeTargetEvent(it) }
-            .filter { antConfiguration.getTargetForEvent(it) == null }
-            .forEach { antConfiguration.setTargetForEvent(buildFile, it.metaTargetName, it) }
-    }
-
-    private fun getFilteredTargets(
-        antConfiguration: AntConfigurationBase, antBuildFile: AntBuildFileBase,
-        desirableTargets: List<String>
-    ) = antConfiguration.getModel(antBuildFile).targets
-        .map { TargetFilter.fromTarget(it) }
-        .onEach { it.isVisible = desirableTargets.contains(it.targetName) }
 
     private fun registerAntInstallation(
-        hybrisProjectDescriptor: HybrisProjectDescriptor, antInstallation: AntInstallation, antConfiguration: AntConfigurationBase, classPaths: List<AntClasspathEntry>,
-        extensionDir: File,
-        desiredTargets: List<String>
-    ): AntBuildFileBase? {
-        val antBuildFile = findBuildFile(antConfiguration, extensionDir)
-            ?: return null
-
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        antInstallation: AntInstallation,
+        classPaths: List<AntClasspathEntry>,
+        antBuildFile: AntBuildFileBase
+    ) {
         val platformDir = hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory
+        val externalConfigDirectory = hybrisProjectDescriptor.externalConfigDirectory
+        val configDescriptor = hybrisProjectDescriptor.configHybrisModuleDescriptor
         val allOptions = antBuildFile.allOptions
 
         with(EditPropertyContainer(allOptions)) {
@@ -200,12 +216,11 @@ class DefaultAntConfigurator : AntConfigurator {
             MAX_STACK_SIZE[this] = HybrisConstants.ANT_STACK_SIZE_MB
             RUN_IN_BACKGROUND[this] = false
             VERBOSE[this] = false
-            TARGET_FILTERS[this] = getFilteredTargets(antConfiguration, antBuildFile, desiredTargets)
 
             val properties = ANT_PROPERTIES
             properties.getModifiableList(this).clear()
 
-            hybrisProjectDescriptor.externalConfigDirectory
+            externalConfigDirectory
                 ?.absolutePath
                 ?.let { HybrisConstants.ANT_HYBRIS_CONFIG_DIR + it }
                 ?.let { ANT_COMMAND_LINE_PARAMETERS[this] = it }
@@ -222,7 +237,7 @@ class DefaultAntConfigurator : AntConfigurator {
 
             val antOptsProperty = BuildFileProperty().apply {
                 this.propertyName = HybrisConstants.ANT_OPTS
-                this.propertyValue = getAntOpts(hybrisProjectDescriptor.configHybrisModuleDescriptor)
+                this.propertyValue = getAntOpts(configDescriptor)
             }
 
             val buildFileProperties = mutableListOf(
@@ -235,9 +250,18 @@ class DefaultAntConfigurator : AntConfigurator {
 
             apply()
         }
-
-        return antBuildFile
     }
+
+    /*
+    Slow Operation - must be invoked from the BGT
+     */
+    private fun getFilteredTargets(
+        antConfiguration: AntConfigurationBase,
+        antBuildFile: AntBuildFileBase,
+        desirableTargets: List<String>
+    ) = antConfiguration.getModel(antBuildFile).targets
+        .map { TargetFilter.fromTarget(it) }
+        .onEach { it.isVisible = desirableTargets.contains(it.targetName) }
 
     private fun getAntOpts(configDescriptor: ConfigModuleDescriptor?): String {
         if (configDescriptor != null) {
