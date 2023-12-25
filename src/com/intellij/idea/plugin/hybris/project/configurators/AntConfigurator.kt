@@ -121,7 +121,14 @@ class AntConfigurator {
         "yunitupdate"
     )
 
-    private val desirableCustomTargets = listOf("build")
+    private val desirableCustomTargets = listOf(
+        "clean",
+        "build",
+        "deploy",
+        "all",
+        "gensource",
+        "dist"
+    )
     private val metaTargets = listOf(
         listOf("clean", "all"),
         listOf("clean", "customize", "all", "initialize"),
@@ -155,7 +162,7 @@ class AntConfigurator {
         return listOf {
             val antBuildFiles = mutableListOf<Pair<AntBuildFileBase, List<String>>>()
 
-            findBuildFile(antConfiguration, platformDescriptor.moduleRootDirectory)
+            findBuildFile(antConfiguration, platformDescriptor)
                 ?.apply {
                     metaTargets
                         .map { ExecuteCompositeTargetEvent(it) }
@@ -163,10 +170,10 @@ class AntConfigurator {
                         .forEach { antConfiguration.setTargetForEvent(this, it.metaTargetName, it) }
                 }
                 ?.let { it to desirablePlatformTargets }
+                ?.let { antBuildFiles.add(it) }
 
             if (hybrisProjectDescriptor.isImportCustomAntBuildFiles) {
                 customHybrisModuleDescriptors
-                    .map { it.moduleRootDirectory }
                     .mapNotNull { findBuildFile(antConfiguration, it) }
                     .map { it to desirableCustomTargets }
                     .forEach { antBuildFiles.add(it) }
@@ -302,7 +309,8 @@ class AntConfigurator {
         return classPaths
     }
 
-    private fun findBuildFile(antConfiguration: AntConfigurationBase, dir: File): AntBuildFileBase? {
+    private fun findBuildFile(antConfiguration: AntConfigurationBase, moduleDescriptor: ModuleDescriptor): AntBuildFileBase? {
+        val dir = moduleDescriptor.moduleRootDirectory
         val buildFile = File(dir, HybrisConstants.ANT_BUILD_XML)
             .takeIf { it.exists() }
             ?.let { VfsUtil.findFileByIoFile(it, true) }
