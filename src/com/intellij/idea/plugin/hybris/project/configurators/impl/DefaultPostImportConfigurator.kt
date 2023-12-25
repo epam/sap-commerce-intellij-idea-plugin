@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.project.configurators.*
+import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
+import com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
@@ -29,6 +31,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 
@@ -41,22 +44,19 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     ) {
         ReadAction
             .nonBlocking<List<() -> Unit>> {
-                listOf(
-                    KotlinCompilerConfigurator.getInstance()
-                        ?.configureAfterImport(project)
-                        ?: emptyList(),
-
-                    DataSourcesConfigurator.getInstance()
-                        ?.configureAfterImport(project)
-                        ?: emptyList(),
-
-                    AntConfigurator.getInstance()
-                        ?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project)
-                        ?: emptyList()
-                )
+                with(ApplicationManager.getApplication().getService(ConfiguratorFactory::class.java)) {
+                    listOfNotNull(
+                        this.kotlinCompilerConfigurator?.configureAfterImport(project),
+                        this.dataSourcesConfigurator?.configureAfterImport(project),
+                        this.antConfigurator?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project),
+                        this.xsdSchemaConfigurator?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules)
+                    )
+                }
                     .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
+                if (project.isDisposed) return@finishOnUiThread
+
                 actions.forEach { it() }
 
                 notifyImportFinished(project, refresh)
@@ -64,13 +64,13 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
             .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
 
-//        DumbService.getInstance(project).runWhenSmart {
-//            finishImport(
-//                project,
-//                hybrisProjectDescriptor,
-//                allHybrisModules
-//            ) { notifyImportFinished(project, refresh) }
-//        }
+        DumbService.getInstance(project).runWhenSmart {
+            finishImport(
+                project,
+                hybrisProjectDescriptor,
+                allHybrisModules
+            ) { notifyImportFinished(project, refresh) }
+        }
     }
 
     private fun finishImport(
@@ -85,9 +85,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
-
-            configuratorFactory.xsdSchemaConfigurator
-                ?.configure(project, hybrisProjectDescriptor, allHybrisModules)
 
             JRebelConfigurator.getInstance()
                 ?.configure(project, allHybrisModules)

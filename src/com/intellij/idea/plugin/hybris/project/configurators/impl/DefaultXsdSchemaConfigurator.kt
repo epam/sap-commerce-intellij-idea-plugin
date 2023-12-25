@@ -30,11 +30,11 @@ import kotlin.io.path.exists
 
 class DefaultXsdSchemaConfigurator : XsdSchemaConfigurator {
 
-    override fun configure(
+    override fun configureAfterImport(
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>,
-    ) {
+    ): List<() -> Unit> {
         val cockpitCoreJarFileSystem = moduleDescriptors
             .firstOrNull { it.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE }
             ?.moduleRootDirectory
@@ -45,18 +45,20 @@ class DefaultXsdSchemaConfigurator : XsdSchemaConfigurator {
             ?.listFiles { _, name -> name.startsWith("cockpitcore-", true) && name.endsWith(".jar", true) }
             ?.firstOrNull()
             ?.absolutePath
-            ?: return
+            ?: return emptyList()
 
-        runWriteAction {
-            val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
+        return listOf() {
+            runWriteAction {
+                val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
 
-            mapOf(
-                CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS to "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
-                "http://www.hybris.com/schema/cockpitng/editor-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
-                "http://www.hybris.com/schema/cockpitng/widget-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/widget-definition.xsd",
-                "http://www.hybris.com/schema/cockpitng/action-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/action-definition.xsd"
-            ).forEach { (namespace, xsdLocation) ->
-                externalResourceManager.addResource(namespace, xsdLocation, project)
+                mapOf(
+                    CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS to "$cockpitCoreJarFileSystem!/schemas/config/hybris/cockpit-configuration-hybris.xsd",
+                    "http://www.hybris.com/schema/cockpitng/editor-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/editor-definition.xsd",
+                    "http://www.hybris.com/schema/cockpitng/widget-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/widget-definition.xsd",
+                    "http://www.hybris.com/schema/cockpitng/action-definition.xsd" to "$cockpitCoreJarFileSystem!/schemas/action-definition.xsd"
+                ).forEach { (namespace, xsdLocation) ->
+                    externalResourceManager.addResource(namespace, xsdLocation, project)
+                }
             }
         }
     }

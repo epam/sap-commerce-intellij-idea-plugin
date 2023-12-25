@@ -26,11 +26,11 @@ import com.intellij.openapi.project.Project
 
 interface XsdSchemaConfigurator {
 
-    fun configure(
+    fun configureAfterImport(
         project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>,
-    )
+    ): List<() -> Unit>
 
     companion object {
         fun getInstance(): DefaultXsdSchemaConfigurator? = ApplicationManager.getApplication().getService(DefaultXsdSchemaConfigurator::class.java)
