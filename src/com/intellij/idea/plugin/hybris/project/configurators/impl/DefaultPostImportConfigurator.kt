@@ -42,14 +42,22 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     ) {
         ReadAction
             .nonBlocking<List<() -> Unit>> {
-                KotlinCompilerConfigurator.getInstance()
-                    ?.configureAfterImport(project)
-
-                DataSourcesConfigurator.getInstance()
-                    ?.configureAfterImport(project)
+                listOf(
+                    KotlinCompilerConfigurator.getInstance()
+                        ?.configureAfterImport(project)
+                        ?: emptyList(),
+                    DataSourcesConfigurator.getInstance()
+                        ?.configureAfterImport(project)
+                        ?: emptyList(),
+                )
+                    .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
                 actions.forEach { it() }
+
+                AntConfigurator.getInstance()
+                    ?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project)
+                    ?: emptyList()
             }
             .inSmartMode(project)
             .submit(AppExecutorUtil.getAppExecutorService())
@@ -71,12 +79,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     ) {
         val configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactory::class.java)
 
-        try {
-            configuratorFactory.antConfigurator
-                ?.configure(hybrisProjectDescriptor, allHybrisModules, project)
-        } catch (e: Exception) {
-            LOG.error("Can not configure Ant due to an error.", e)
-        }
         // invokeLater is needed to avoid a problem with transaction validation:
         // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
         ApplicationManager.getApplication().invokeLater {

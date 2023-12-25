@@ -20,8 +20,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.execution.BeforeRunTask;
-import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.RunManagerImpl;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
@@ -32,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDesc
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor;
-import com.intellij.lang.ant.config.AntBuildFile;
 import com.intellij.lang.ant.config.AntBuildFileBase;
 import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.lang.ant.config.AntNoFileException;
@@ -43,16 +40,17 @@ import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.config.AbstractProperty;
-import com.intellij.util.config.ListProperty;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -138,106 +136,88 @@ public class DefaultAntConfigurator implements AntConfigurator {
         {"clean", "customize", "all", "production"}
     };
 
-    private HybrisProjectDescriptor hybrisProjectDescriptor;
-    private PlatformModuleDescriptor platformDescriptor;
-    private ConfigModuleDescriptor configDescriptor;
-    private List<YPlatformExtModuleDescriptor> extHybrisModuleDescriptorList;
-    private List<YCustomRegularModuleDescriptor> customHybrisModuleDescriptorList;
-    private AntInstallation antInstallation;
-    private AntConfigurationBase antConfiguration;
-    private List<AntClasspathEntry> classPaths;
-
     @Override
-    public void configure(
+    public List<Function0<Unit>> configureAfterImport(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
         @NotNull final List<? extends ModuleDescriptor> allModules,
         @NotNull final Project project
     ) {
-        this.hybrisProjectDescriptor = hybrisProjectDescriptor;
-        parseModules(allModules);
-        if (platformDescriptor == null) {
-            return;
+        final var platformDescriptor = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor();
+        final var extHybrisModuleDescriptorList = new ArrayList<YPlatformExtModuleDescriptor>();
+        final var customHybrisModuleDescriptorList = new ArrayList<YCustomRegularModuleDescriptor>();
+
+        for (final var descriptor : allModules) {
+            if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
+                extHybrisModuleDescriptorList.add(myDescriptor);
+            } else if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
+                customHybrisModuleDescriptorList.add(myDescriptor);
+            }
         }
-        final File platformDir = platformDescriptor.getModuleRootDirectory();
-        createAntInstallation(platformDir);
-        if (antInstallation == null) {
-            return;
-        }
-        createAntClassPath(platformDir);
-        antConfiguration = AntConfigurationBase.getInstance(project);
+
+        final var antInstallation = createAntInstallation(platformDescriptor);
+        if (antInstallation == null) return Collections.emptyList();
+
+        final var classPaths = createAntClassPath(platformDescriptor, extHybrisModuleDescriptorList);
+        final var antConfiguration = AntConfigurationBase.getInstance(project);
         antConfiguration.setFilterTargets(true);
-        final var buildFile = registerAntInstallation(platformDir, platformDir, desirablePlatformTargets);
+
+        final var buildFile = registerAntInstallation(hybrisProjectDescriptor, antInstallation, antConfiguration, classPaths, platformDescriptor.getModuleRootDirectory(), desirablePlatformTargets);
 
         if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
             customHybrisModuleDescriptorList.forEach(
-                e -> registerAntInstallation(platformDir, e.getModuleRootDirectory(), desirableCustomTargets)
+                e -> registerAntInstallation(hybrisProjectDescriptor, antInstallation, antConfiguration, classPaths, e.getModuleRootDirectory(), desirableCustomTargets)
             );
         }
         saveAntInstallation(antInstallation);
         removeMake(project);
-        createMetaTargets(buildFile);
+        createMetaTargets(antConfiguration, buildFile);
+
+        return Collections.emptyList();
     }
 
-    private void createMetaTargets(final AntBuildFileBase buildFile) {
+    private void createMetaTargets(final AntConfigurationBase antConfiguration, final AntBuildFileBase buildFile) {
         Arrays.stream(metaTargets).forEach(meta -> {
-            final ExecuteCompositeTargetEvent event = new ExecuteCompositeTargetEvent(Arrays.asList(meta));
+            final var event = new ExecuteCompositeTargetEvent(Arrays.asList(meta));
             if (antConfiguration.getTargetForEvent(event) == null) {
                 antConfiguration.setTargetForEvent(buildFile, event.getMetaTargetName(), event);
             }
         });
     }
 
-    private void parseModules(final List<? extends ModuleDescriptor> allModules) {
-        platformDescriptor = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor();
-        configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        extHybrisModuleDescriptorList = new ArrayList<>();
-        customHybrisModuleDescriptorList = new ArrayList<>();
-
-        if (hybrisProjectDescriptor.isImportCustomAntBuildFiles()) {
-            for (final var descriptor : allModules) {
-                if (descriptor instanceof final YPlatformExtModuleDescriptor myDescriptor) {
-                    extHybrisModuleDescriptorList.add(myDescriptor);
-                }
-                if (descriptor instanceof final YCustomRegularModuleDescriptor myDescriptor) {
-                    customHybrisModuleDescriptorList.add(myDescriptor);
-                }
-            }
-        }
-    }
-
     private List<TargetFilter> getFilteredTargets(
-        final AntBuildFileBase antBuildFile,
+        final AntConfigurationBase antConfiguration, final AntBuildFileBase antBuildFile,
         final List<String> desirableTargets
     ) {
         return Arrays.stream(antConfiguration.getModel(antBuildFile).getTargets())
-                     .map(TargetFilter::fromTarget)
-                     .peek(e -> e.setVisible(desirableTargets.contains(e.getTargetName())))
-                     .collect(Collectors.toList());
+            .map(TargetFilter::fromTarget)
+            .peek(e -> e.setVisible(desirableTargets.contains(e.getTargetName())))
+            .collect(Collectors.toList());
     }
 
     private AntBuildFileBase registerAntInstallation(
-        final File platformDir,
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, final AntInstallation antInstallation, final AntConfigurationBase antConfiguration, final List<AntClasspathEntry> classPaths,
         final File extensionDir,
         final List<String> desiredTargets
     ) {
 
-        final AntBuildFileBase antBuildFile = findBuildFile(extensionDir);
+        final AntBuildFileBase antBuildFile = findBuildFile(antConfiguration, extensionDir);
         if (antBuildFile == null) {
             return null;
         }
-        final List<TargetFilter> filterList = getFilteredTargets(antBuildFile, desiredTargets);
-        final AbstractProperty.AbstractPropertyContainer allOptions = antBuildFile.getAllOptions();
-        final EditPropertyContainer editPropertyContainer = new EditPropertyContainer(allOptions);
-        setAntProperties(editPropertyContainer, platformDir, filterList);
+        final var filterList = getFilteredTargets(antConfiguration, antBuildFile, desiredTargets);
+        final var allOptions = antBuildFile.getAllOptions();
+        final var editPropertyContainer = new EditPropertyContainer(allOptions);
+        setAntProperties(hybrisProjectDescriptor, antInstallation, classPaths, editPropertyContainer, filterList);
         editPropertyContainer.apply();
         return antBuildFile;
     }
 
     private void setAntProperties(
-        final EditPropertyContainer editPropertyContainer,
-        final File platformDir,
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor, final AntInstallation antInstallation, final List<AntClasspathEntry> classPaths, final EditPropertyContainer editPropertyContainer,
         final List<TargetFilter> filterList
     ) {
+        final var platformDir = hybrisProjectDescriptor.getPlatformHybrisModuleDescriptor().getModuleRootDirectory();
+
         AntBuildFileImpl.ADDITIONAL_CLASSPATH.set(editPropertyContainer, classPaths);
         AntBuildFileImpl.TREE_VIEW.set(editPropertyContainer, true);
         AntBuildFileImpl.TREE_VIEW_ANSI_COLOR.set(editPropertyContainer, true);
@@ -250,25 +230,26 @@ public class DefaultAntConfigurator implements AntConfigurator {
         AntBuildFileImpl.RUN_IN_BACKGROUND.set(editPropertyContainer, false);
         AntBuildFileImpl.VERBOSE.set(editPropertyContainer, false);
 
-        final ListProperty<BuildFileProperty> properties = AntBuildFileImpl.ANT_PROPERTIES;
+        final var properties = AntBuildFileImpl.ANT_PROPERTIES;
         properties.getModifiableList(editPropertyContainer).clear();
 
-        final BuildFileProperty platformHomeProperty = new BuildFileProperty();
+        final var platformHomeProperty = new BuildFileProperty();
         platformHomeProperty.setPropertyName(HybrisConstants.ANT_PLATFORM_HOME);
         platformHomeProperty.setPropertyValue(platformDir.getAbsolutePath());
 
-        final BuildFileProperty antHomeProperty = new BuildFileProperty();
+        final var antHomeProperty = new BuildFileProperty();
         antHomeProperty.setPropertyName(HybrisConstants.ANT_HOME);
         antHomeProperty.setPropertyValue(antInstallation.getHomeDir());
 
-        final BuildFileProperty antOptsProperty = new BuildFileProperty();
+        final var antOptsProperty = new BuildFileProperty();
         antOptsProperty.setPropertyName(HybrisConstants.ANT_OPTS);
-        antOptsProperty.setPropertyValue(getAntOpts());
+        antOptsProperty.setPropertyValue(getAntOpts(hybrisProjectDescriptor.getConfigHybrisModuleDescriptor()));
 
-        final List<BuildFileProperty> buildFileProperties = new ArrayList<>();
-        buildFileProperties.add(platformHomeProperty);
-        buildFileProperties.add(antHomeProperty);
-        buildFileProperties.add(antOptsProperty);
+        final var buildFileProperties = List.of(
+            platformHomeProperty,
+            antHomeProperty,
+            antOptsProperty
+        );
 
         AntBuildFileImpl.ANT_PROPERTIES.set(editPropertyContainer, buildFileProperties);
         if (hybrisProjectDescriptor.getExternalConfigDirectory() != null) {
@@ -278,7 +259,7 @@ public class DefaultAntConfigurator implements AntConfigurator {
         AntBuildFileImpl.TARGET_FILTERS.set(editPropertyContainer, filterList);
     }
 
-    private String getAntOpts() {
+    private String getAntOpts(final @Nullable ConfigModuleDescriptor configDescriptor) {
         if (configDescriptor != null) {
             final File propertiesFile = new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
             if (propertiesFile.exists()) {
@@ -297,86 +278,83 @@ public class DefaultAntConfigurator implements AntConfigurator {
         return HybrisConstants.ANT_XMX + HybrisConstants.ANT_HEAP_SIZE_MB + "m " + HybrisConstants.ANT_ENCODING;
     }
 
-    private void createAntClassPath(final File platformDir) {
-        classPaths = new ArrayList<>();
-        final File platformLibDir = new File(platformDir, HybrisConstants.LIB_DIRECTORY);
+    private List<AntClasspathEntry> createAntClassPath(final PlatformModuleDescriptor platformDescriptor, final ArrayList<YPlatformExtModuleDescriptor> extHybrisModuleDescriptorList) {
+        final var directory = platformDescriptor.getModuleRootDirectory();
+        final var classPaths = new ArrayList<AntClasspathEntry>();
+        final var libDir = new File(directory, HybrisConstants.ANT_LIB_DIR);
+        final var platformLibDir = new File(directory, HybrisConstants.LIB_DIRECTORY);
+        final var entries = extHybrisModuleDescriptorList
+            .parallelStream()
+            .map(e -> new AllJarsUnderDirEntry(new File(e.getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
+            .toList();
+
         classPaths.add(new AllJarsUnderDirEntry(platformLibDir));
-        classPaths.addAll(
-            extHybrisModuleDescriptorList
-                .parallelStream()
-                .map(e -> new AllJarsUnderDirEntry(new File(e.getModuleRootDirectory(), HybrisConstants.LIB_DIRECTORY)))
-                .toList()
-        );
-        final File libDir = new File(platformDir, HybrisConstants.ANT_LIB_DIR);
         classPaths.add(new AllJarsUnderDirEntry(libDir));
+        classPaths.addAll(entries);
+
+        return classPaths;
     }
 
-    private AntBuildFileBase findBuildFile(final File dir) {
-        final File buildxml = new File(dir, HybrisConstants.ANT_BUILD_XML);
-        if (!buildxml.exists()) {
-            return null;
-        }
+    private AntBuildFileBase findBuildFile(final AntConfigurationBase antConfiguration, final File dir) {
+        final var buildXml = new File(dir, HybrisConstants.ANT_BUILD_XML);
+        if (!buildXml.exists()) return null;
 
-        final VirtualFile buildFile = VfsUtil.findFileByIoFile(buildxml, true);
-        if (buildFile == null) {
-            return null;
-        }
+        final var buildFile = VfsUtil.findFileByIoFile(buildXml, true);
+        if (buildFile == null) return null;
 
-        final AntBuildFile antBuildFile;
         try {
-            antBuildFile = antConfiguration.addBuildFile(buildFile);
-        } catch (AntNoFileException e) {
-            return null;
+            final var antBuildFile = antConfiguration.addBuildFile(buildFile);
+
+            if (antBuildFile instanceof final AntBuildFileBase antBuildFileBase) {
+                return antBuildFileBase;
+            }
+        } catch (final AntNoFileException ignored) {
         }
 
-        if (antBuildFile instanceof AntBuildFileBase) {
-            return (AntBuildFileBase) antBuildFile;
+        return null;
+    }
+
+    @Nullable
+    private AntInstallation createAntInstallation(final PlatformModuleDescriptor platformDescriptor) {
+        final String antFolderUrl;
+        try {
+            final var directory = platformDescriptor.getModuleRootDirectory().getAbsolutePath();
+            antFolderUrl = Files
+                .find(Paths.get(directory), 1, (path, basicFileAttributes) -> Files.isDirectory(path) && PATTERN_APACHE_ANT.matcher(path.toFile().getName()).matches())
+                .map(Path::toFile)
+                .map(File::getAbsolutePath)
+                .findAny()
+                .orElse(null);
+        } catch (IOException e) {
+            return null;
+        }
+        if (antFolderUrl == null) {
+            return null;
+        }
+        try {
+            return AntInstallation.fromHome(antFolderUrl);
+        } catch (AntInstallation.ConfigurationException ignored) {
         }
         return null;
     }
 
-    private void createAntInstallation(final File platformDir) {
-        antInstallation = null;
-        final String antFolderUrl;
-        try {
-            antFolderUrl = Files
-                .find(Paths.get(platformDir.getAbsolutePath()), 1, (path, basicFileAttributes) ->
-                    Files.isDirectory(path) && PATTERN_APACHE_ANT.matcher(path.toFile().getName()).matches())
-                .map(e -> e.toFile().getAbsolutePath())
-                .findAny()
-                .orElse(null);
-        } catch (IOException e) {
-            return;
-        }
-        if (antFolderUrl == null) {
-            return;
-        }
-        try {
-            antInstallation = AntInstallation.fromHome(antFolderUrl);
-        } catch (AntInstallation.ConfigurationException ignored) {
-        }
-    }
-
     private void saveAntInstallation(final AntInstallation antInstallation) {
-        final GlobalAntConfiguration globalAntConfiguration = GlobalAntConfiguration.getInstance();
-        if (globalAntConfiguration == null) {
-            return;
-        }
-        globalAntConfiguration.removeConfiguration(globalAntConfiguration.getConfiguredAnts()
-                                                                         .get(antInstallation.getReference()));
+        final var globalAntConfiguration = GlobalAntConfiguration.getInstance();
+        if (globalAntConfiguration == null) return;
+
+        final var configuration = globalAntConfiguration.getConfiguredAnts().get(antInstallation.getReference());
+        globalAntConfiguration.removeConfiguration(configuration);
         globalAntConfiguration.addConfiguration(antInstallation);
     }
 
     private void removeMake(final Project project) {
-        final RunManagerImpl runManager = RunManagerImpl.getInstanceImpl(project);
-        if (runManager == null) {
-            return;
-        }
-        final AntRunConfigurationType antRunConfigurationType = ConfigurationTypeUtil.findConfigurationType(
-            AntRunConfigurationType.class);
-        final ConfigurationFactory configurationFactory = antRunConfigurationType.getConfigurationFactories()[0];
-        final RunnerAndConfigurationSettings template = runManager.getConfigurationTemplate(configurationFactory);
-        final AntRunConfiguration runConfiguration = (AntRunConfiguration) template.getConfiguration();
+        final var runManager = RunManagerImpl.getInstanceImpl(project);
+        if (runManager == null) return;
+
+        final var antRunConfigurationType = ConfigurationTypeUtil.findConfigurationType(AntRunConfigurationType.class);
+        final var configurationFactory = antRunConfigurationType.getConfigurationFactories()[0];
+        final var template = runManager.getConfigurationTemplate(configurationFactory);
+        final var runConfiguration = (AntRunConfiguration) template.getConfiguration();
         runManager.setBeforeRunTasks(runConfiguration, Collections.<BeforeRunTask>emptyList());
     }
 }

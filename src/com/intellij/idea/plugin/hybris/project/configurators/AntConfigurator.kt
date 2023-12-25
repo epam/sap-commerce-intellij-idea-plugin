@@ -26,11 +26,11 @@ import com.intellij.openapi.project.Project
 
 interface AntConfigurator {
 
-    fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor?,
-        allModules: List<ModuleDescriptor?>,
+    fun configureAfterImport(
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        allModules: List<ModuleDescriptor>,
         project: Project
-    )
+    ): List<() -> Unit>
 
     companion object {
         fun getInstance(): AntConfigurator? =
