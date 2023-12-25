@@ -14,6 +14,9 @@
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
 
+### `Polyglot Query` enhancements
+- Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
+
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 

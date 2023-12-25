@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
@@ -38,6 +40,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
+import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -62,18 +65,21 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
                 message("hybris.pgq.notification.provider.keywords.case.${pgqSettings.defaultCaseForReservedWords}")
             )
             panel.createActionLabel(message("hybris.pgq.notification.provider.keywords.action.unify")) {
-                WriteCommandAction.runWriteCommandAction(project) {
-                    collect(pgqSettings, psiFile).distinct().reversed()
-                        .forEach {
-                            when (pgqSettings.defaultCaseForReservedWords) {
-                                ReservedWordsCase.UPPERCASE -> it.replaceWithText(it.text.uppercase())
-                                ReservedWordsCase.LOWERCASE -> it.replaceWithText(it.text.lowercase())
+                ReadAction
+                    .nonBlocking<Collection<LeafPsiElement>> { collect(pgqSettings, psiFile).distinct().reversed() }
+                    .finishOnUiThread(ModalityState.defaultModalityState()) {
+                        WriteCommandAction.runWriteCommandAction(project, null, null, {
+                            it.forEach {
+                                when (pgqSettings.defaultCaseForReservedWords) {
+                                    ReservedWordsCase.UPPERCASE -> it.replaceWithText(it.text.uppercase())
+                                    ReservedWordsCase.LOWERCASE -> it.replaceWithText(it.text.lowercase())
+                                }
                             }
-                        }
+                        }, psiFile)
 
-                }
-
-                EditorNotifications.getInstance(project).updateNotifications(file)
+                        EditorNotifications.getInstance(project).updateNotifications(file)
+                    }
+                    .submit(AppExecutorUtil.getAppExecutorService())
             }
             panel.createActionLabel(message("hybris.pgq.notification.provider.keywords.action.settings"), "hybris.pgq.openSettings")
             panel
@@ -83,10 +89,9 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
     private fun collect(
         pgqSettings: PolyglotQuerySettings,
         psiFile: PsiFile
-    ): MutableCollection<LeafPsiElement> {
-        val processor = Collector(pgqSettings)
-        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, processor)
-        return processor.collection
+    ) = with(Collector(pgqSettings)) {
+        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, this)
+        this.collection
     }
 
     class Collector(private val pgqSettings: PolyglotQuerySettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
