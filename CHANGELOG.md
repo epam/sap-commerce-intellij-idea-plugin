@@ -9,7 +9,7 @@
 - Load Properties from Files and Environment [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
 
 ### `External Dependencies` enhancements
-- Automatically download missing external dependencies via `Ant` [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
+- Automatically download missing external dependencies via `Ant` [#876](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/876)
 
 ### `Ant` enhancements
 - Allow common targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
