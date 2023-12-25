@@ -338,6 +338,8 @@ object HybrisConstants {
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
 
+    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
+
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
         ".directory",
@@ -610,7 +612,7 @@ object HybrisConstants {
 
     @JvmStatic
     val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
-
+    val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(

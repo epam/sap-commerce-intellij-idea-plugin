@@ -20,10 +20,10 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator"/>
-
+        <editorNotificationProvider id="antUpdateMavenDependenciesNotificationProvider"
+                                    implementation="com.intellij.idea.plugin.hybris.ant.ui.AntUpdateMavenDependenciesNotificationProvider"/>
     </extensions>
 
 </idea-plugin>
