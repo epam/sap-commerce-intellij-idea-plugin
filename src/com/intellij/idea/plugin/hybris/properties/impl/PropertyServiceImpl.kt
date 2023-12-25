@@ -70,10 +70,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
     override fun containsLanguage(language: String, supportedLanguages: Set<String>) = supportedLanguages
         .contains(language.lowercase())
 
-    override fun findProperty(query: String): String? = findAllProperties()
-        .filter { it.key == query }
-        .map { it.value }
-        .firstOrNull()
+    override fun findProperty(query: String): String? = findAllProperties()[query]
 
     override fun findAutoCompleteProperties(query: String): List<IProperty> = findAllIProperties()
         .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
@@ -125,7 +122,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         return ArrayList(result.values)
     }
 
-    private fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
+    override fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
         .filter { it.value != null && it.key != null }
         .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
         .let { properties ->

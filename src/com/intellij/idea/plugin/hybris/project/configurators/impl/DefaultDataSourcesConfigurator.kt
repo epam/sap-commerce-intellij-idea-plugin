@@ -45,15 +45,16 @@ class DefaultDataSourcesConfigurator : DataSourcesConfigurator {
     override fun configure(project: Project) {
         val propertyService = PropertyService.getInstance(project) ?: return
 
+        val properties = propertyService.findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
         dataSourceRegistry.setImportedFlag(false)
         dataSourceRegistry.builder
             .withName("[y] local")
             .withGroupName("[y] SAP Commerce")
-            .withUrl(propertyService.findProperty("db.url"))
-            .withUser(propertyService.findProperty("db.username"))
-            .withPassword(propertyService.findProperty("db.password"))
+            .withUrl(properties["db.url"])
+            .withUser(properties["db.username"])
+            .withPassword(properties["db.password"])
             .withAuthProviderId(DatabaseAuthProviderNames.CREDENTIALS_ID)
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {

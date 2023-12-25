@@ -52,51 +52,53 @@ class DefaultKotlinCompilerConfigurator : KotlinCompilerConfigurator {
         setKotlinJvmTarget(project)
     }
 
-    override fun configureAfterImport(project: Project) {
+    override fun configureAfterImport(project: Project): List<() -> Unit> {
         val hasKotlinnatureExtension = ModuleManager.getInstance(project).modules
             .any { HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == it.yExtensionName() }
-        if (!hasKotlinnatureExtension) return
+        if (!hasKotlinnatureExtension) return emptyList()
 
         val compilerVersion = PropertyService.getInstance(project)
-            ?.findMacroProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
-            ?.value
+            ?.findProperty(HybrisConstants.KOTLIN_COMPILER_VERSION_PROPERTY_KEY)
             ?: HybrisConstants.KOTLIN_COMPILER_FALLBACK_VERSION
         setKotlinCompilerVersion(project, compilerVersion)
 
-        registerKotlinLibrary(project)
+        return registerKotlinLibrary(project)
     }
 
-    private fun registerKotlinLibrary(project: Project) {
+    private fun registerKotlinLibrary(project: Project): List<() -> Unit> {
         val kotlinAwareModules = ModuleManager.getInstance(project).modules
             .filter { FacetManager.getInstance(it).getFacetByType(KotlinFacetType.TYPE_ID) != null }
             .toSet()
 
-        if (kotlinAwareModules.isEmpty()) return
+        if (kotlinAwareModules.isEmpty()) return emptyList()
 
         val collector = NotificationMessageCollector.create(project)
 
-        runWriteAction {
-            KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
-        }
-
+        val actions = mutableListOf<() -> Unit>()
         val writeActions = mutableListOf<() -> Unit>()
 
-        ActionUtil.underModalProgress(project, KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")) {
-            val progressIndicator = ProgressManager.getGlobalProgressIndicator()
+        actions.add() {
+            runWriteAction {
+                KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
+            }
 
-            for ((index, module) in kotlinAwareModules.withIndex()) {
-                if (!isUnitTestMode()) {
-                    progressIndicator?.let {
-                        it.checkCanceled()
-                        it.fraction = index * 1.0 / kotlinAwareModules.size
-                        it.text = KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")
-                        it.text2 = KotlinProjectConfigurationBundle.message("configure.kotlin.in.module.0.progress.text", module.name)
+            ActionUtil.underModalProgress(project, KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")) {
+                val progressIndicator = ProgressManager.getGlobalProgressIndicator()
+
+                for ((index, module) in kotlinAwareModules.withIndex()) {
+                    if (!isUnitTestMode()) {
+                        progressIndicator?.let {
+                            it.checkCanceled()
+                            it.fraction = index * 1.0 / kotlinAwareModules.size
+                            it.text = KotlinProjectConfigurationBundle.message("configure.kotlin.in.modules.progress.text")
+                            it.text2 = KotlinProjectConfigurationBundle.message("configure.kotlin.in.module.0.progress.text", module.name)
+                        }
                     }
+                    KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
                 }
-                KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
             }
         }
-        writeActions.forEach { it() }
+        return actions
     }
 
     // Kotlin compiler version will be updated after project import / refresh in BGT

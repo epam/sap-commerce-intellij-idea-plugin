@@ -22,15 +22,19 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.util.concurrency.AppExecutorUtil
 
 class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurator {
 
@@ -39,6 +43,17 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         allHybrisModules: List<ModuleDescriptor>,
         refresh: Boolean,
     ) {
+        ReadAction
+            .nonBlocking<List<() -> Unit>> {
+                KotlinCompilerConfigurator.getInstance()
+                    ?.configureAfterImport(project)
+            }
+            .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
+                actions.forEach { it() }
+            }
+            .inSmartMode(project)
+            .submit(AppExecutorUtil.getAppExecutorService())
+
         DumbService.getInstance(project).runWhenSmart {
             finishImport(
                 project,
@@ -76,9 +91,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
             } catch (e: Exception) {
                 LOG.error("Can not import data sources due to an error.", e)
             }
-
-            configuratorFactory.kotlinCompilerConfigurator
-                ?.configureAfterImport(project)
 
             JRebelConfigurator.getInstance()
                 ?.configure(project, allHybrisModules)

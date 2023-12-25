@@ -33,6 +33,8 @@ interface PropertyService {
 
     fun findAutoCompleteProperties(query: String): List<IProperty>
 
+    fun findAllProperties(): LinkedHashMap<String, String>
+
     companion object {
         @JvmStatic
         fun getInstance(project: Project): PropertyService? = project.getService(PropertyService::class.java)
