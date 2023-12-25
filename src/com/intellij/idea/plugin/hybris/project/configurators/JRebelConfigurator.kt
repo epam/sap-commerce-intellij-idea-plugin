@@ -33,26 +33,24 @@ import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
 
 class JRebelConfigurator {
 
-    fun configure(project: Project, moduleDescriptors: List<ModuleDescriptor>) {
-        moduleDescriptors
-            .filter {
-                it is YCustomRegularModuleDescriptor
-                    || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
-            }
-            .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-            .forEach { configure(it) }
-    }
+    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>) = moduleDescriptors
+        .filter {
+            it is YCustomRegularModuleDescriptor
+                || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
+        }
+        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+        .mapNotNull { configure(it) }
 
-    private fun configure(javaModule: Module) {
+    private fun configure(javaModule: Module): (() -> Unit)? {
         val facet = JRebelFacet.getInstance(javaModule)
 
-        if (facet != null) return
+        if (facet != null) return null
 
         val facetType = FacetType.findInstance(JRebelFacetType::class.java)
 
-        if (!facetType.isSuitableModuleType(ModuleType.get(javaModule))) return
+        if (!facetType.isSuitableModuleType(ModuleType.get(javaModule))) return null
 
-        ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
+        return { ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false) }
     }
 
     companion object {

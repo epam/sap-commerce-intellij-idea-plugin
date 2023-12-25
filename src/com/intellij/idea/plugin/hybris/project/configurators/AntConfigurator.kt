@@ -27,9 +27,9 @@ import com.intellij.openapi.project.Project
 interface AntConfigurator {
 
     fun configureAfterImport(
+        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allModules: List<ModuleDescriptor>,
-        project: Project
+        allModules: List<ModuleDescriptor>
     ): List<() -> Unit>
 
     companion object {

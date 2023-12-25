@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
-import com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.*
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
@@ -44,14 +42,24 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
     ) {
         ReadAction
             .nonBlocking<List<() -> Unit>> {
-                with(ApplicationManager.getApplication().getService(ConfiguratorFactory::class.java)) {
-                    listOfNotNull(
-                        this.kotlinCompilerConfigurator?.configureAfterImport(project),
-                        this.dataSourcesConfigurator?.configureAfterImport(project),
-                        this.antConfigurator?.configureAfterImport(hybrisProjectDescriptor, allHybrisModules, project),
-                        this.xsdSchemaConfigurator?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules)
-                    )
-                }
+                if (project.isDisposed) return@nonBlocking emptyList()
+
+                listOfNotNull(
+                    KotlinCompilerConfigurator.getInstance()
+                        ?.configureAfterImport(project),
+
+                    DataSourcesConfigurator.getInstance()
+                        ?.configureAfterImport(project),
+
+                    AntConfigurator.getInstance()
+                        ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
+
+                    XsdSchemaConfigurator.getInstance()
+                        ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
+
+                    JRebelConfigurator.getInstance()
+                        ?.configureAfterImport(project, allHybrisModules)
+                )
                     .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
@@ -85,9 +93,6 @@ class DefaultPostImportConfigurator(val project: Project) : PostImportConfigurat
         // "Write-unsafe context!...", "Do not use API that changes roots from roots events..."
         ApplicationManager.getApplication().invokeLater {
             if (project.isDisposed) return@invokeLater
-
-            JRebelConfigurator.getInstance()
-                ?.configure(project, allHybrisModules)
 
             configuratorFactory.mavenConfigurator
                 ?.let {

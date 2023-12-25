@@ -34,8 +34,6 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.getInstance()
         ?: SpringConfigurator.getDummyInstance()
 
-    override fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = XsdSchemaConfigurator.getInstance()
-
     override fun getContentRootConfigurator(moduleDescriptor: ModuleDescriptor): ContentRootConfigurator = ContentRootConfigurator.instance
     override fun getModulesDependenciesConfigurator(): ModuleDependenciesConfigurator = ModuleDependenciesConfigurator.getInstance()
     override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.getInstance()
@@ -45,13 +43,10 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ModuleSettingsConfigurator.getInstance()
     override fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = VersionControlSystemConfigurator.getInstance()
     override fun getDebugRunConfigurationConfigurator(): RunConfigurationConfigurator = RunConfigurationConfigurator.instance
-    override fun getAntConfigurator(): AntConfigurator? = AntConfigurator.getInstance()
     override fun getMavenConfigurator(): MavenConfigurator? = MavenConfigurator.getInstance()
     override fun getEclipseConfigurator(): EclipseConfigurator? = EclipseConfigurator.getInstance()
     override fun getGradleConfigurator(): GradleConfigurator? = GradleConfigurator.getInstance()
     override fun getSearchScopeConfigurator(): SearchScopeConfigurator = SearchScopeConfigurator.getInstance()
-    override fun getDataSourcesConfigurator(): DataSourcesConfigurator? = DataSourcesConfigurator.getInstance()
     override fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = JavaCompilerConfigurator.getInstance()
-    override fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = KotlinCompilerConfigurator.getInstance()
     override fun getLoadedConfigurator(): LoadedConfigurator = LoadedConfigurator.getInstance()
 }

@@ -128,9 +128,9 @@ class DefaultAntConfigurator : AntConfigurator {
     )
 
     override fun configureAfterImport(
+        project: Project,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allModules: List<ModuleDescriptor>,
-        project: Project
+        allModules: List<ModuleDescriptor>
     ): List<() -> Unit> {
         val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()

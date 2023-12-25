@@ -311,7 +311,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
+        final var compilerConfigurator = KotlinCompilerConfigurator.Companion.getInstance();
 
         if (compilerConfigurator == null) return;
 
