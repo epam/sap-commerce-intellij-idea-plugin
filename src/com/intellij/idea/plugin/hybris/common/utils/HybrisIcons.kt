@@ -182,6 +182,7 @@ object HybrisIcons {
     val CONSOLE_SOLR = getIcon("/icons/console/solr.svg")
     val CONSOLE_OPEN = getIcon("/icons/console/open.svg")
     val CONSOLE_EXECUTE = AllIcons.Actions.Execute
+    val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
 
     val TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg")

@@ -20,6 +20,9 @@
 ### `Polyglot Query` enhancements
 - Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
 
+### `Business Process` enhancements
+- `ScriptAction` should not expect `bean` attribute [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
+
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 

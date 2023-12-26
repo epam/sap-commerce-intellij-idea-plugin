@@ -14,9 +14,9 @@
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [IntelliJ IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
 ## References
-- Overview of the releases [2022.2.0 - 2022.3.1](https://hybrismart.com/2023/05/08/sap-commerce-dev-toolset-2022-3-1-updates).
-- Overview of the releases [2022.3.1 - 2023.1.0](https://hybrismart.com/2023/08/24/part-ii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin).
 - Overview of the releases [2023.1.0 - 2023.2.7](https://hybrismart.com/2023/09/04/part-iii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin/).
+- Overview of the releases [2022.3.1 - 2023.1.0](https://hybrismart.com/2023/08/24/part-ii-sap-commerce-developers-toolset-v-2023-1-0-intellij-idea-plugin).
+- Overview of the releases [2022.2.0 - 2022.3.1](https://hybrismart.com/2023/05/08/sap-commerce-dev-toolset-2022-3-1-updates).
 - Complete change log can be found [here](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md).
 
 ## Features

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -38,7 +38,7 @@ abstract class HybrisExecuteActionBase(
     }
 }
 
-class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, AllIcons.Actions.Execute) {
+class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.CONSOLE_EXECUTE) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -58,7 +58,7 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
     }
 }
 
-class HybrisSuspendAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, AllIcons.Actions.Suspend) {
+class HybrisSuspendAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.CONSOLE_SUSPEND) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
