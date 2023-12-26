@@ -21,7 +21,7 @@
 - Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
 
 ### `Business Process` enhancements
-- `ScriptAction` should not expect `bean` attribute [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
+- `ScriptAction` should not expect `bean` attribute [#881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/881)
 
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
@@ -30,11 +30,11 @@
 - Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
 - Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
 - Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
-- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/878)
+- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/880)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
-- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/877)
+- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
 
 ## [2023.3.2]
 
