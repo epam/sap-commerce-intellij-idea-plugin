@@ -110,16 +110,17 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
                 }
             }
 
-        envPropsFile?.let { propertiesFiles.add(0, it) }
-        advancedPropsFile?.let { propertiesFiles.add(1, it) }
         localPropsFile?.let { propertiesFiles.add(it) }
+        advancedPropsFile?.let { propertiesFiles.add(0, it) }
+        envPropsFile?.let { propertiesFiles.add(0, it) }
 
-        propertiesFiles.forEach { file -> addPropertyFile(result, file) }
+        propertiesFiles.forEach { addPropertyFile(result, it) }
 
         loadHybrisRuntimeProperties(result)
         loadHybrisOptionalConfigDir(result)
 
-        return ArrayList(result.values)
+        return result.values
+            .toList()
     }
 
     override fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
