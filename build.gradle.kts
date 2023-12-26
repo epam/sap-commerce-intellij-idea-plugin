@@ -87,7 +87,8 @@ tasks {
 
             if (OperatingSystem.current().isMacOsX) {
                 add("-Xdock:name=SAP-Commerce-Developers-Toolset")
-                add("-Xdock:icon=${project.rootDir}/resources/META-INF/pluginIcon_dark.svg")
+                // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+                add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
             }
         }
         maxHeapSize = "3g"
