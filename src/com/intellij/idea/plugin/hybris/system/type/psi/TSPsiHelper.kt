@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
@@ -67,19 +67,19 @@ object TSPsiHelper {
         messageTitleKey: String,
         messageContentKey: String,
     ) {
-        meta.retrieveDom()
+        val xmlTag = meta.retrieveDom()
             ?.xmlTag
-            ?.let { xmlTag ->
-                WriteCommandAction.runWriteCommandAction(project) {
-                    xmlTag.delete()
+            ?: return
 
-                    Notifications.create(
-                        NotificationType.INFORMATION,
-                        HybrisI18NBundleUtils.message(messageTitleKey),
-                        HybrisI18NBundleUtils.message(messageContentKey, ownerName ?: "?", meta.name ?: "?")
-                    )
-                        .notify(project)
-                }
-            }
+        WriteCommandAction.runWriteCommandAction(project, null, null, {
+            xmlTag.delete()
+
+            Notifications.create(
+                NotificationType.INFORMATION,
+                message(messageTitleKey),
+                message(messageContentKey, ownerName ?: "?", meta.name ?: "?")
+            )
+                .notify(project)
+        }, xmlTag.containingFile)
     }
 }

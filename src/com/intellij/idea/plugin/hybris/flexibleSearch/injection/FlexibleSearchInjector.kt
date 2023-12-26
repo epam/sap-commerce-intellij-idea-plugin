@@ -29,9 +29,9 @@ class FlexibleSearchInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        FlexibleSearchToImpexInjectorProvider.instance
+        FlexibleSearchToImpexInjectorProvider.getInstance()
             ?.inject(host, injectionPlacesRegistrar)
-            ?: FlexibleSearchToKotlinInjectorProvider.instance
+            ?: FlexibleSearchToKotlinInjectorProvider.getInstance()
                 ?.inject(host, injectionPlacesRegistrar)
     }
 

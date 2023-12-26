@@ -1,0 +1,92 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<idea-plugin>
+
+    <!--  Nice references:
+    Intellij Flash:     https://github.com/JetBrains/intellij-plugins/blob/master/flex/src/com/intellij/lang/javascript/uml
+    Intellij Angular:   https://github.com/JetBrains/intellij-plugins/tree/master/AngularJS/src/org/angularjs/diagram
+    jHipster:           https://github.com/jreznot/jdl-intellij-plugin
+
+     -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <additionalTextAttributes scheme="Default" file="colorSchemes/HybrisDiagramDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/HybrisDiagramDarcula.xml"/>
+
+        <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"/>
+
+        <diagram.Provider id="HybrisModuleDependencies"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
+
+        <diagram.Provider id="HybrisTypeSystemDependencies"
+                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>
+
+        <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
+                        serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
+
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
+
+        <projectConfigurable id="hybris.project.diagram.ts.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectDiagramTSSettingsConfigurableProvider"/>
+
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
+    </extensions>
+
+    <actions>
+        <action id="ShowBusinessProcessDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.businessProcess.actions.ShowBusinessProcessDiagramAction"
+                text="Show Business Process Diagram">
+        </action>
+        <action id="ShowTypeSystemDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
+                text="Show Type System Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
+        <action id="ShowModuleDependencyDiagram"
+                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowModuleDependencyDiagramAction"
+                text="Show Module Dependency Diagram"
+                icon="AllIcons.FileTypes.Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
+
+        <group id="Diagram.Hybris.TypeSystem.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
+            <separator/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.RestoreRemovedNodes"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.RestoreRemovedNodesDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExpandAllDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
+        </group>
+
+        <group id="Diagram.Hybris.TypeSystem.Node.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
+                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExcludeTypeNameDiagramAction">
+                <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
+            </action>
+        </group>
+    </actions>
+
+</idea-plugin>

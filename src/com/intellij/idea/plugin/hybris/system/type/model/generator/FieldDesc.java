@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,12 +34,12 @@ public class FieldDesc implements Comparable<FieldDesc> {
     final static int DOUBLE = 5;
     final static int SIMPLE = 6;
 
-    public FieldDesc(String name, String def) {
+    public FieldDesc(final String name, final String def) {
         this.name = name;
         this.def = def;
     }
 
-    public FieldDesc(int clType, String name, String type, String elementType, String def, boolean required) {
+    public FieldDesc(final int clType, final String name, final String type, final String elementType, final String def, final boolean required) {
         this.clType = clType;
         this.name = name;
         this.type = type;
@@ -67,12 +68,12 @@ public class FieldDesc implements Comparable<FieldDesc> {
     int realIndex;
     String contentQualifiedName;
 
-    public int compareTo(FieldDesc o) {
+    public int compareTo(final FieldDesc o) {
         return name.compareTo(o.name);
     }
 
     public String toString() {
-        return "Field: " + name + ";" + type + ";" + elementName + ";" + elementType;
+        return "Field: " + name + ';' + type + ';' + elementName + ';' + elementType;
     }
 
 }

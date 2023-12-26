@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,8 +44,8 @@ class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
     override fun isRelayoutNeeded() = true
 
     companion object {
-        const val ONLY_CUSTOM_FIELDS = "ONLY_CUSTOM_FIELDS"
-        const val ALL_FIELDS = "ALL_FIELDS"
+        private const val ONLY_CUSTOM_FIELDS = "ONLY_CUSTOM_FIELDS"
+        private const val ALL_FIELDS = "ALL_FIELDS"
 
         private val LEVEL_ONLY_CUSTOM_FIELDS = VisibilityLevel(ONLY_CUSTOM_FIELDS, message("hybris.diagram.ts.provider.visibility.only_custom_fields"))
         private val LEVEL_ALL_FIELDS = VisibilityLevel(ALL_FIELDS, message("hybris.diagram.ts.provider.visibility.all_fields"))

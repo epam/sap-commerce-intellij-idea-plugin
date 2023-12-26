@@ -39,7 +39,7 @@ abstract class AbstractHybrisFileToolbarInstaller(
 
     abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
 
-    fun install(project: Project, editor: EditorEx) {
+    private fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
         val headerComponent = EditorHeaderComponent()
         val leftGroup = actionManager.getAction(leftGroupId) as ActionGroup

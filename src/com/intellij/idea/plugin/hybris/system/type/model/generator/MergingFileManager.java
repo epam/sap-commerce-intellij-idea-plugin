@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,19 +27,14 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 
 import com.intellij.util.ArrayUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 
 public class MergingFileManager implements FileManager {
 
-    public File getOutputFile(File target) {
+    public File getOutputFile(final File target) {
         File outFile = target;
         if (!outFile.getParentFile().exists() && !outFile.getParentFile().mkdirs()) {
             Util.logerr("parent mkdirs failed: " + outFile);
@@ -50,14 +46,14 @@ public class MergingFileManager implements FileManager {
         return outFile;
     }
 
-    public File releaseOutputFile(File outFile) {
-        int idx = outFile.getName().indexOf(".tmp.");
+    public File releaseOutputFile(final File outFile) {
+        final int idx = outFile.getName().indexOf(".tmp.");
         File target = outFile;
         if (idx > -1) {
             target = new File(outFile.getParentFile(), outFile.getName().substring(0, idx));
-            String[] curLines = loadFile(outFile);
-            String[] prevLines = loadFile(target);
-            String[] mergedLines = mergeLines(curLines, prevLines);
+            final String[] curLines = loadFile(outFile);
+            final String[] prevLines = loadFile(target);
+            final String[] mergedLines = mergeLines(curLines, prevLines);
             if (mergedLines != prevLines) {
                 if (mergedLines == curLines) {
                     if (target.exists() && !target.delete()) {
@@ -83,11 +79,11 @@ public class MergingFileManager implements FileManager {
         return target;
     }
 
-    private static String[] mergeLines(String[] curLines, String[] prevLines) {
+    private static String[] mergeLines(final String[] curLines, final String[] prevLines) {
         if (prevLines.length == 0) {
             return curLines;
         }
-        ArrayList<String> merged = new ArrayList<String>();
+        final ArrayList<String> merged = new ArrayList<>();
         int curIdx = 0, prevIdx = 0;
         String cur, prev;
         boolean classScope = false;
@@ -103,7 +99,7 @@ public class MergingFileManager implements FileManager {
                     continue;
                 }
                 importMerged = true;
-                int[] indices = new int[]{curIdx, prevIdx};
+                final int[] indices = new int[]{curIdx, prevIdx};
                 mergeImports(merged, curLines, prevLines, indices);
                 curIdx = indices[0];
                 prevIdx = indices[1];
@@ -140,7 +136,7 @@ public class MergingFileManager implements FileManager {
                 prevIdx++;
             }
         }
-        String[] mergedLines = ArrayUtil.toStringArray(merged);
+        final String[] mergedLines = ArrayUtil.toStringArray(merged);
         if (compareLines(mergedLines, prevLines, 2) == 0) {
             return prevLines;
         } else if (compareLines(mergedLines, curLines, 2) == 0) {
@@ -150,10 +146,10 @@ public class MergingFileManager implements FileManager {
         }
     }
 
-    private static void mergeImports(ArrayList<String> merged, String[] curLines, String[] prevLines, int[] indices) {
-        TreeSet<String> externalClasses = new TreeSet<String>();
+    private static void mergeImports(final ArrayList<String> merged, final String[] curLines, final String[] prevLines, final int[] indices) {
+        final TreeSet<String> externalClasses = new TreeSet<>();
         for (int i = 0; i < curLines.length; i++) {
-            String line = curLines[i].trim();
+            final String line = curLines[i].trim();
             if (line.startsWith("import ") && line.endsWith(";")) {
                 indices[0] = i + 1;
                 final String name = line.substring("import ".length(), line.length() - 1).trim();
@@ -164,7 +160,7 @@ public class MergingFileManager implements FileManager {
             }
         }
         for (int i = 0; i < prevLines.length; i++) {
-            String line = prevLines[i].trim();
+            final String line = prevLines[i].trim();
             if (line.startsWith("import ") && line.endsWith(";")) {
                 indices[1] = i + 1;
                 final String name = line.substring("import ".length(), line.length() - 1).trim();
@@ -180,7 +176,7 @@ public class MergingFileManager implements FileManager {
                 javaLang = true;
                 continue;
             }
-            merged.add("import " + s + ";");
+            merged.add("import " + s + ';');
         }
         if (javaLang) {
             merged.add("");
@@ -188,12 +184,12 @@ public class MergingFileManager implements FileManager {
                 if (!s.startsWith("java.")) {
                     continue;
                 }
-                merged.add("import " + s + ";");
+                merged.add("import " + s + ';');
             }
         }
     }
 
-    private static int addAllStringsUpTo(ArrayList<String> merged, String[] lines, int startIdx, String upTo) {
+    private static int addAllStringsUpTo(final ArrayList<String> merged, final String[] lines, int startIdx, final String upTo) {
         String str;
         do {
             str = startIdx < lines.length ? lines[startIdx] : upTo;
@@ -205,7 +201,7 @@ public class MergingFileManager implements FileManager {
         return startIdx;
     }
 
-    private static int compareLines(String[] mergedLines, String[] curLines, int start) {
+    private static int compareLines(final String[] mergedLines, final String[] curLines, final int start) {
         if (mergedLines.length < curLines.length) {
             return -1;
         }
@@ -222,7 +218,7 @@ public class MergingFileManager implements FileManager {
     }
 
 
-    private static void writeFile(File target, String[] mergedLines) {
+    private static void writeFile(final File target, final String[] mergedLines) {
         PrintWriter out = null;
         try {
             int lineCount = mergedLines.length;
@@ -231,7 +227,7 @@ public class MergingFileManager implements FileManager {
             }
             out = new PrintWriter(new FileWriter(target));
             for (int i = 0; i < lineCount; i++) {
-                String mergedLine = mergedLines[i];
+                final String mergedLine = mergedLines[i];
                 out.println(mergedLine);
             }
         } catch (Exception ex) {
@@ -247,11 +243,11 @@ public class MergingFileManager implements FileManager {
     }
 
 
-    private static String[] loadFile(File f1) {
+    private static String[] loadFile(final File f1) {
         if (!f1.exists()) {
             return ArrayUtil.EMPTY_STRING_ARRAY;
         }
-        ArrayList<String> list = new ArrayList<String>();
+        final ArrayList<String> list = new ArrayList<>();
         BufferedReader in = null;
         try {
             in = new BufferedReader(new FileReader(f1));

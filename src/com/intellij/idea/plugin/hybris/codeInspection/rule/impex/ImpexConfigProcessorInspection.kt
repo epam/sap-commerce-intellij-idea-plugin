@@ -25,7 +25,6 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
@@ -53,7 +52,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
         var isExist = false
         PsiSearchHelper.getInstance(macroValue.project)
             .processElementsWithWord({ element, _ ->
-                if (element.node.elementType != ImpexParserDefinition.FILE_NODE_TYPE
+                if (element.node.elementType != HybrisConstants.IMPEX_FILE_NODE_TYPE
                     && element.node.elementType != ImpexTypes.LINE_COMMENT) {
                     isExist = true
                 }

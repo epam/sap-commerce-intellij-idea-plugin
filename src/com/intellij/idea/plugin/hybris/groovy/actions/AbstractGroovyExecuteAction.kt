@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyCon
 import org.jetbrains.plugins.groovy.GroovyFileType
 import javax.swing.Icon
 
-abstract class AbstractGroovyExecuteAction(controlText: String, controlDescription: String, controlIcon: Icon, val commitMode: Boolean) : AbstractExecuteAction(
+abstract class AbstractGroovyExecuteAction(controlText: String, controlDescription: String, controlIcon: Icon, private val commitMode: Boolean) : AbstractExecuteAction(
     GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_GROOVY
 ) {

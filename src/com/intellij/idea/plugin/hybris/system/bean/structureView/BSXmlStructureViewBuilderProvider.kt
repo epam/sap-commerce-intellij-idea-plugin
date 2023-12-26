@@ -17,26 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.structureView
 
-import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider
 import com.intellij.idea.plugin.hybris.system.bean.BSUtils
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomService
 
 class BSXmlStructureViewBuilderProvider : XmlStructureViewBuilderProvider {
 
-    override fun createStructureViewBuilder(xmlFile: XmlFile): StructureViewBuilder? {
-        if (!BSUtils.isBeansXmlFile(xmlFile)) return null
-
-        return BSStructureViewBuilder(xmlFile, descriptor)
-    }
-
-    companion object {
-        private val descriptor = Function { _: DomElement ->
-            return@Function DomService.StructureViewMode.SHOW
-        }
-    }
+    override fun createStructureViewBuilder(xmlFile: XmlFile) = if (!BSUtils.isBeansXmlFile(xmlFile)) null
+    else  BSStructureViewBuilder(xmlFile) { _: DomElement -> DomService.StructureViewMode.SHOW }
 
 }

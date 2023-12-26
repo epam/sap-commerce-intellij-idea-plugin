@@ -76,7 +76,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
             ?.text
             ?: ""
         if (previousSibling == HybrisConstants.BS_SIGN_LESS_THAN || previousSibling == HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED) {
-            return true;
+            return true
         }
 
         retrievePresentation(parent, attribute, project, element)

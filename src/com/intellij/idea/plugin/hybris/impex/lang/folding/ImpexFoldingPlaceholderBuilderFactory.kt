@@ -24,8 +24,8 @@ import com.intellij.openapi.project.Project
 
 object ImpexFoldingPlaceholderBuilderFactory {
 
-    fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.instance
-    else ImpExSimpleFoldingPlaceholderBuilder.instance
+    fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
+    else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
 
     private fun isUseSmartFolding(project: Project) = HybrisProjectSettingsComponent.getInstance(project).getState()
         .impexSettings

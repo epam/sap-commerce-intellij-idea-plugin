@@ -94,13 +94,10 @@ class TSStructureTreeElement(
 
     private fun resolveLocationString(dom: CollectionType) = dom.type.value.toString() + (dom.elementType.stringValue?.let { " of $it" } ?: "")
 
-    private fun resolveLocationString(dom: Description): String? {
-        val xmlElement = dom.xmlElement
-        if (xmlElement is XmlTag) {
-            return xmlElement.value.trimmedText
-        }
-        return null
-    }
+    private fun resolveLocationString(dom: Description) = dom.xmlElement
+        ?.let { it as? XmlTag }
+        ?.value
+        ?.trimmedText
 
     private fun resolveLocationString(dom: Deployment) = listOfNotNull(
         dom.table.stringValue,
@@ -159,6 +156,13 @@ class TSStructureTreeElement(
 
     override fun getIcon(open: Boolean) = when (element) {
         is Description -> AllIcons.Windows.Help
+        is AtomicTypes -> HybrisIcons.TS_GROUP_ATOMIC
+        is CollectionTypes -> HybrisIcons.TS_GROUP_COLLECTION
+        is MapTypes -> HybrisIcons.TS_GROUP_MAP
+        is Relations -> HybrisIcons.TS_GROUP_RELATION
+        is ItemTypes -> HybrisIcons.TS_GROUP_ITEM
+        is TypeGroup -> HybrisIcons.TS_GROUP_ITEM
+        is EnumTypes -> HybrisIcons.TS_GROUP_ENUM
         is AtomicType -> HybrisIcons.TS_ATOMIC
         is EnumType -> HybrisIcons.TS_ENUM
         is EnumValue -> HybrisIcons.TS_ENUM_VALUE
@@ -174,15 +178,4 @@ class TSStructureTreeElement(
         else -> null
     }
 
-//    : Icon? {
-//        val dom = element
-//        // TODO: add icons
-//        if (dom is Attribute) {
-//            val value = resolveValue(dom.type)
-//            if (StringUtils.startsWith(value, TS_ATTRIBUTE_LOCALIZED_PREFIX)) {
-//                return HybrisIcons.LOCALIZED
-//            }
-//        }
-//        return null
-//    }
 }

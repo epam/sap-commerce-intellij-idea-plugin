@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -38,12 +38,12 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         val psiElementUnderCaret = parameters.position
         val project = psiElementUnderCaret.project
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
-        val propertiesService = PropertiesService.getInstance(project) ?: return
+        val propertyService = PropertyService.getInstance(project) ?: return
 
         if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val query = getQuery(position)
-            propertiesService.findAutoCompleteProperties(query)
+            propertyService.findAutoCompleteProperties(query)
                 .mapNotNull { it.key }
                 .map { TSLookupElementFactory.buildCustomProperty(it) }
                 .forEach { result.addElement(it) }
@@ -55,7 +55,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
             val query = position.text
                 .substring(prefix.length)
                 .replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
-            propertiesService.findAutoCompleteProperties(query)
+            propertyService.findAutoCompleteProperties(query)
                 .mapNotNull { it.key }
                 .map { it }
                 .map { TSLookupElementFactory.buildCustomProperty(it) }

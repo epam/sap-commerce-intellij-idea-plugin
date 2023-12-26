@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +29,7 @@ public class DomGenDialog extends DialogWrapper {
     final DomGenPanel panel;
     final JComponent comp;
 
-    protected DomGenDialog(Project project) {
+    protected DomGenDialog(final Project project) {
         super(project);
         panel = new DomGenPanel(project);
         comp = panel.getComponent();
@@ -49,7 +50,7 @@ public class DomGenDialog extends DialogWrapper {
             return;
         }
         final String location = panel.getLocation();
-        ModelLoader loader = location.toLowerCase().endsWith(".xsd") ? new XSDModelLoader() : new DTDModelLoader();
+        final ModelLoader loader = location.toLowerCase().endsWith(".xsd") ? new XSDModelLoader() : new DTDModelLoader();
         final JetBrainsEmitter emitter = new JetBrainsEmitter();
         final MergingFileManager fileManager = new MergingFileManager();
         if (panel.getAuthor().trim().length() > 0) {

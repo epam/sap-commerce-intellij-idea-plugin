@@ -41,7 +41,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderType.class)
                 .inside(ImpexModifiers.class),
@@ -52,7 +52,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderParameter.class)
                 .inside(ImpexModifiers.class),
@@ -63,7 +63,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderType.class)
                 .inside(ImpexModifiers.class),
@@ -74,7 +74,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderParameter.class)
                 .inside(ImpexModifiers.class),
@@ -87,7 +87,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.HEADER_TYPE),
             ItemCodeCompletionProvider.getInstance()
         );
@@ -96,7 +96,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.HEADER_PARAMETER_NAME)
                 .andNot(psiElement().withParent(psiElement().withElementType(ImpexTypes.PARAMETER))),
             ImpexHeaderItemTypeAttributeNameCompletionProvider.getInstance()
@@ -105,7 +105,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withParent(psiElement().withElementType(ImpexTypes.PARAMETER))
                 .and(psiElement().withElementType(ImpexTypes.HEADER_PARAMETER_NAME)),
             ImpexHeaderItemTypeParameterNameCompletionProvider.getInstance()
@@ -128,7 +128,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .withElementType(ImpexTypes.MACRO_USAGE),
             ImpexMacrosCompletionProvider.getInstance()
         );
@@ -136,7 +136,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
         extend(
             CompletionType.BASIC,
             psiElement()
-                .withLanguage(ImpexLanguage.getInstance())
+                .withLanguage(ImpexLanguage.INSTANCE)
                 .inside(psiElement().withElementType(TokenSet.create(ImpexTypes.MACRO_USAGE, ImpexTypes.MACRO_DECLARATION))),
             ImpexMacrosConfigCompletionProvider.getInstance()
         );
@@ -145,7 +145,7 @@ public class ImpexCompletionContributor extends CompletionContributor {
 
     private static PsiElementPattern.Capture<PsiElement> topLevel() {
         return psiElement()
-            .withLanguage(ImpexLanguage.getInstance())
+            .withLanguage(ImpexLanguage.INSTANCE)
             .andNot(psiElement()
                         // FIXME bad code, but working
                         .andOr(

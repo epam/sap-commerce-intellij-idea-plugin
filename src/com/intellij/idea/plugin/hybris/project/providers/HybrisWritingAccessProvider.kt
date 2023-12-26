@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 
-class HybrisWritingAccessProvider(private val myProject: Project) : WritingAccessProvider() {
+class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
 
     private val ootbReadOnlyMode = HybrisProjectSettingsComponent.getInstance(myProject).state.importOotbModulesInReadOnlyMode
 

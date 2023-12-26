@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -30,8 +30,8 @@ class TSGlobalMetaModel : ModificationTracker, Disposable {
     private var modificationTracker = 0L
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
-    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>();
-    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>();
+    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
+    private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>()
 
     fun clear() {
         cleanup()
@@ -55,11 +55,11 @@ class TSGlobalMetaModel : ModificationTracker, Disposable {
     fun getMetaItem(name: String?) = getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[name]
     fun getMetaCollection(name: String?) = getMetaType<TSGlobalMetaCollection>(TSMetaType.META_COLLECTION)[name]
 
-    fun getMetaTypes() = myMetaCache;
+    fun getMetaTypes() = myMetaCache
 
     fun getRelations(name: String?): Collection<TSMetaRelation.TSMetaRelationElement>? = name?.let { getAllRelations()[it] }
 
-    fun getAllRelations() = myReferencesBySourceTypeName;
+    fun getAllRelations() = myReferencesBySourceTypeName
     fun getDeploymentTypeCodes() = myDeploymentTypeCodes
 
     fun addDeployment(deployment: TSMetaDeployment) {

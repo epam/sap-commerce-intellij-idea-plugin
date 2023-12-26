@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.TSMetaRelationElement
 import com.intellij.openapi.project.Project
+import java.io.Serial
 
 class TSMetaRelationElementCustomPropertiesTable private constructor(myProject: Project) : AbstractTSMetaCustomPropertiesTable<TSMetaRelationElement>(myProject) {
 
@@ -32,7 +33,8 @@ class TSMetaRelationElementCustomPropertiesTable private constructor(myProject: 
         .toMutableList()
 
     companion object {
-        private const val serialVersionUID: Long = -7138215848626018593L
+        @Serial
+        private val serialVersionUID: Long = -7138215848626018593L
 
         @JvmStatic
         fun getInstance(project: Project): TSMetaRelationElementCustomPropertiesTable = with(TSMetaRelationElementCustomPropertiesTable(project)) {

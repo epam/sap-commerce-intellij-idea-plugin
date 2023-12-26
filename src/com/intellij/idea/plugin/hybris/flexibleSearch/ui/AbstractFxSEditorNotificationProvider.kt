@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ abstract class AbstractFxSEditorNotificationProvider : EditorNotificationProvide
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
         val settings = HybrisProjectSettingsComponent.getInstance(project)
         if (!settings.isHybrisProject()) return null
-        if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType.instance)) return null
+        if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType)) return null
         val fxsSettings = settings.state.flexibleSearchSettings
         if (!shouldCollect(fxsSettings)) return null
 
@@ -58,6 +58,6 @@ abstract class AbstractFxSEditorNotificationProvider : EditorNotificationProvide
         file: VirtualFile
     ): Function<FileEditor, EditorNotificationPanel>
 
-    protected abstract fun collect(fxsSettings: FlexibleSearchSettings, psiFile: PsiFile): MutableCollection<LeafPsiElement>
+    protected abstract fun collect(fxsSettings: FlexibleSearchSettings, psiFile: PsiFile): Collection<LeafPsiElement>
 
 }

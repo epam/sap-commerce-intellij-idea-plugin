@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +32,7 @@ public class PgQCodeStyleSettings extends CustomCodeStyleSettings {
     public static boolean WRAP_WHERE_CLAUSE = true;
     public static boolean WRAP_ORDER_CLAUSE = true;
 
-    public PgQCodeStyleSettings(final CodeStyleSettings settings) {
-        super("PgQCodeStyleSettings", settings);
+    public PgQCodeStyleSettings(final CodeStyleSettings container) {
+        super("PgQCodeStyleSettings", container);
     }
 }

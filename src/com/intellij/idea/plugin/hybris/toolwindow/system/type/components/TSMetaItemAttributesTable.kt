@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaPersistence
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 class TSMetaItemAttributesTable private constructor(myProject: Project) : AbstractTable<TSGlobalMetaItem, TSMetaItemAttribute>(myProject) {
 
@@ -113,7 +114,8 @@ class TSMetaItemAttributesTable private constructor(myProject: Project) : Abstra
     }
 
     companion object {
-        private const val serialVersionUID: Long = 6652572661218637911L
+        @Serial
+        private val serialVersionUID: Long = 6652572661218637911L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_DEPRECATED = "D"

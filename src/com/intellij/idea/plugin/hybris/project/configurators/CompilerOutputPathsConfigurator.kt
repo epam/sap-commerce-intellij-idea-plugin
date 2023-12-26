@@ -31,6 +31,6 @@ interface CompilerOutputPathsConfigurator {
     )
 
     companion object {
-        val instance: CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
+        fun getInstance(): CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
     }
 }

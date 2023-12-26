@@ -41,10 +41,10 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
         if (!projectSettings.isHybrisProject()) return
 
         val toolbarInstaller = when (file.fileType) {
-            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.instance
-            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.instance
-            is ImpexFileType -> ImpExFileToolbarInstaller.instance
-            is GroovyFileType -> GroovyFileToolbarInstaller.instance
+            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
+            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
+            is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
+            is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
             else -> null
         } ?: return
 

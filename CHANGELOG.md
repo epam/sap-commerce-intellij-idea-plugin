@@ -1,3 +1,38 @@
+## [2023.3.3]
+
+### `Project Import` enhancements
+- Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
+- Omit slow operations after project import [#871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/871)
+
+### `Tests` enhancements
+- Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
+- Load Properties from Files and Environment [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
+
+### `External Dependencies` enhancements
+- Automatically download missing external dependencies via `Ant` [#876](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/876)
+
+### `Ant` enhancements
+- Allow common targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
+
+### `FlexibleSearch` enhancements
+- Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
+
+### `Polyglot Query` enhancements
+- Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
+
+### `items.xml` enhancements
+- Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
+
+### Other
+- Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
+- Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
+- Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
+- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/878)
+
+### Fixes
+- Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
+- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/877)
+
 ## [2023.3.2]
 
 ### `Project Import` enhancements
@@ -453,7 +488,7 @@
 ### Other
 - Adjusted inline documentation for Type System [#539](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/539)
 - Hide custom module libraries in the Project View [#569](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/569)
-- Added slack badge to README.md [#577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/577)
+- Added Slack badge to README.md [#577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/577)
 - Do not show `resources` folders in the `External Libraries` [#589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/589)
 - Use `HAC` project properties during first project import for remote connections [#623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/623)
 

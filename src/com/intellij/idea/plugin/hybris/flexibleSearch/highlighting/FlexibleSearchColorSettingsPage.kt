@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,10 +52,10 @@ class FlexibleSearchColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = "FlexibleSearch"
     override fun getIcon(): Icon = HybrisIcons.FXS_FILE
-    override fun getAttributeDescriptors() = DESCRIPTORS
+    override fun getAttributeDescriptors() = descriptions
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
-    override fun getHighlighter(): SyntaxHighlighter = FlexibleSearchSyntaxHighlighter.instance
+    override fun getHighlighter(): SyntaxHighlighter = FlexibleSearchSyntaxHighlighter.getInstance()
 
     override fun getDemoText() = """
 SELECT {${tableAlias("cat")}:${column("pk")}} FROM {${table("Category")} AS ${tableAlias("cat")}} WHERE NOT EXISTS (
@@ -99,51 +100,49 @@ SELECT ${tableAlias("tableAlias")}.${column("PK")} FROM (
 @@@@@
 """
 
-    companion object {
-        private fun localized(value: String) = "[<localized>$value</localized>]"
-        private fun param(value: String) = "<param>$value</param>"
-        private fun table(value: String) = "<table>$value</table>"
-        private fun tableTail(value: String) = "<tableTail>$value</tableTail>"
-        private fun tableAlias(value: String) = "<tableAlias>$value</tableAlias>"
-        private fun column(value: String) = "<column>$value</column>"
-        private fun columnAlias(value: String) = "<columnAlias>$value</columnAlias>"
-        private fun function(value: String) = "<function>$value</function>"
+    private fun localized(value: String) = "[<localized>$value</localized>]"
+    private fun param(value: String) = "<param>$value</param>"
+    private fun table(value: String) = "<table>$value</table>"
+    private fun tableTail(value: String) = "<tableTail>$value</tableTail>"
+    private fun tableAlias(value: String) = "<tableAlias>$value</tableAlias>"
+    private fun column(value: String) = "<column>$value</column>"
+    private fun columnAlias(value: String) = "<columnAlias>$value</columnAlias>"
+    private fun function(value: String) = "<function>$value</function>"
 
-        private val DESCRIPTORS = arrayOf(
-            AttributesDescriptor("Keyword", FXS_KEYWORD),
-            AttributesDescriptor("Symbol", FXS_SYMBOL),
-            AttributesDescriptor("Braces//Single braces", FXS_BRACES),
-            AttributesDescriptor("Braces//Double braces", FXS_DBRACES),
-            AttributesDescriptor("Braces//Bracket", FXS_BRACKETS),
-            AttributesDescriptor("Braces//Paren", FXS_PARENS),
-            AttributesDescriptor("Column//Name", FXS_COLUMN),
-            AttributesDescriptor("Column//Outer Join `:o`", FXS_OUTER_JOIN),
-            AttributesDescriptor("Column//Separator `.` or `:`", FXS_COLUMN_SEPARATOR),
-            AttributesDescriptor("Column//Localized `[]`", FXS_LOCALIZED),
-            AttributesDescriptor("Column//Alias", FXS_COLUMN_ALIAS),
-            AttributesDescriptor("Table//Name", FXS_TABLE),
-            AttributesDescriptor("Table//Tail `!` or `*`", FXS_TABLE_TAIL),
-            AttributesDescriptor("Table//Alias", FXS_TABLE_ALIAS),
-            AttributesDescriptor("Parameter", FXS_PARAMETER),
-            AttributesDescriptor("Function", FXS_FUNCTION_CALL),
-            AttributesDescriptor("Comment", FXS_COMMENT),
-            AttributesDescriptor("Tokens//String", FXS_STRING),
-            AttributesDescriptor("Tokens//Number", FXS_NUMBER),
-            AttributesDescriptor("Tokens//Star", FXS_STAR),
-            AttributesDescriptor("Operation sign", FXS_OPERATION_SIGN),
-        )
+    private val descriptions = arrayOf(
+        AttributesDescriptor("Keyword", FXS_KEYWORD),
+        AttributesDescriptor("Symbol", FXS_SYMBOL),
+        AttributesDescriptor("Braces//Single braces", FXS_BRACES),
+        AttributesDescriptor("Braces//Double braces", FXS_DBRACES),
+        AttributesDescriptor("Braces//Bracket", FXS_BRACKETS),
+        AttributesDescriptor("Braces//Paren", FXS_PARENS),
+        AttributesDescriptor("Column//Name", FXS_COLUMN),
+        AttributesDescriptor("Column//Outer Join `:o`", FXS_OUTER_JOIN),
+        AttributesDescriptor("Column//Separator `.` or `:`", FXS_COLUMN_SEPARATOR),
+        AttributesDescriptor("Column//Localized `[]`", FXS_LOCALIZED),
+        AttributesDescriptor("Column//Alias", FXS_COLUMN_ALIAS),
+        AttributesDescriptor("Table//Name", FXS_TABLE),
+        AttributesDescriptor("Table//Tail `!` or `*`", FXS_TABLE_TAIL),
+        AttributesDescriptor("Table//Alias", FXS_TABLE_ALIAS),
+        AttributesDescriptor("Parameter", FXS_PARAMETER),
+        AttributesDescriptor("Function", FXS_FUNCTION_CALL),
+        AttributesDescriptor("Comment", FXS_COMMENT),
+        AttributesDescriptor("Tokens//String", FXS_STRING),
+        AttributesDescriptor("Tokens//Number", FXS_NUMBER),
+        AttributesDescriptor("Tokens//Star", FXS_STAR),
+        AttributesDescriptor("Operation sign", FXS_OPERATION_SIGN),
+    )
 
-        private val customTags = RainbowHighlighter.createRainbowHLM()
+    private val customTags = with(RainbowHighlighter.createRainbowHLM()) {
+        this["table"] = FXS_TABLE
+        this["tableTail"] = FXS_TABLE_TAIL
+        this["tableAlias"] = FXS_TABLE_ALIAS
+        this["column"] = FXS_COLUMN
+        this["columnAlias"] = FXS_COLUMN_ALIAS
+        this["localized"] = FXS_LOCALIZED
+        this["param"] = FXS_PARAMETER
+        this["function"] = FXS_FUNCTION_CALL
 
-        init {
-            customTags["table"] = FXS_TABLE
-            customTags["tableTail"] = FXS_TABLE_TAIL
-            customTags["tableAlias"] = FXS_TABLE_ALIAS
-            customTags["column"] = FXS_COLUMN
-            customTags["columnAlias"] = FXS_COLUMN_ALIAS
-            customTags["localized"] = FXS_LOCALIZED
-            customTags["param"] = FXS_PARAMETER
-            customTags["function"] = FXS_FUNCTION_CALL
-        }
+        this
     }
 }

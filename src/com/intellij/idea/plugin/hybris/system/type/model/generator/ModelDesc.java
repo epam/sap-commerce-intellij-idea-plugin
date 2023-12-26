@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,11 +29,7 @@ import org.apache.xerces.xs.XSObject;
 
 import javax.xml.namespace.QName;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ModelDesc {
 
@@ -52,25 +49,25 @@ public class ModelDesc {
         }
         final NamespaceDesc nsd = getNSD(namespace);
         if (isEnum && nsd.enumPkg != null) {
-            return nsd.enumPkg + ".";
+            return nsd.enumPkg + '.';
         }
         if (nsd.pkgNames != null) {
             final QName qname = new QName(namespace, name);
             final String files = qname2FileMap.get(qname);
             if (files != null) {
                 for (int i = 0; i < nsd.pkgNames.length; i += 2) {
-                    String file = nsd.pkgNames[i];
-                    String pkg = nsd.pkgNames[i + 1];
-                    if (files.contains(":" + file + ":")) {
-                        return pkg + ".";
+                    final String file = nsd.pkgNames[i];
+                    final String pkg = nsd.pkgNames[i + 1];
+                    if (files.contains(':' + file + ':')) {
+                        return pkg + '.';
                     }
                 }
             }
         }
-        return nsd.pkgName != null && nsd.pkgName.length() > 0 ? nsd.pkgName + "." : "";
+        return nsd.pkgName != null && nsd.pkgName.length() > 0 ? nsd.pkgName + '.' : "";
     }
 
-    public NamespaceDesc getNSD(String namespace) {
+    public NamespaceDesc getNSD(final String namespace) {
         NamespaceDesc nsd = nsdMap.get(namespace);
         if (nsd == null) {
             nsd = nsdMap.get("");
@@ -79,10 +76,10 @@ public class ModelDesc {
     }
 
 
-    public String toJavaTypeName(String tname, String ns) {
+    public String toJavaTypeName(final String tname, final String ns) {
         final int lastIndex = tname.lastIndexOf('.');
         String xmlName = lastIndex > -1 ? tname.substring(lastIndex + 1) : tname;
-        NamespaceDesc nsd = getNSD(ns);
+        final NamespaceDesc nsd = getNSD(ns);
         if (ns == null || !ns.endsWith(".dtd")) {
             if (xmlName.endsWith(Util.ANONYMOUS_ELEM_TYPE_SUFFIX)) {
                 xmlName = xmlName.substring(
@@ -118,12 +115,12 @@ public class ModelDesc {
         return rc;
     }
 
-    public String toJavaQualifiedTypeName(XSObject xs, Map<String, NamespaceDesc> nsdMap, boolean isEnum) {
-        String typeName = toJavaTypeName(xs.getName(), xs.getNamespace());
+    public String toJavaQualifiedTypeName(final XSObject xs, final Map<String, NamespaceDesc> nsdMap, final boolean isEnum) {
+        final String typeName = toJavaTypeName(xs.getName(), xs.getNamespace());
         return getNSDPrefix(xs.getNamespace(), xs.getName(), isEnum) + typeName;
     }
 
-    public String toJavaQualifiedTypeName(String namespace, String xmlname, boolean isEnum) {
+    public String toJavaQualifiedTypeName(final String namespace, final String xmlname, final boolean isEnum) {
         return getNSDPrefix(namespace, xmlname, isEnum) + toJavaTypeName(xmlname, namespace);
     }
 
@@ -142,10 +139,10 @@ public class ModelDesc {
         }
     }
 
-    private void dumpTypeDesc(TypeDesc td, PrintWriter out) {
+    private void dumpTypeDesc(final TypeDesc td, final PrintWriter out) {
         final ArrayList<String> superList;
         if (td.supers != null) {
-            superList = new ArrayList<String>();
+            superList = new ArrayList<>();
             for (TypeDesc aSuper : td.supers) {
                 superList.add(getNSDPrefix(aSuper) + aSuper.name);
             }
@@ -165,14 +162,14 @@ public class ModelDesc {
         }
     }
 
-    private void dumpFieldDesc(TypeDesc td, FieldDesc fd, PrintWriter out) {
+    private void dumpFieldDesc(final TypeDesc td, final FieldDesc fd, final PrintWriter out) {
         out.println("    name      " + fd.name);
         if (td.type == TypeDesc.TypeEnum.ENUM) {
             return;
         }
         out.println("    clType    " + fd.clType);
         out.println("    required  " + fd.required);
-        out.println("    index     " + fd.idx + "/" + fd.realIndex);
+        out.println("    index     " + fd.idx + '/' + fd.realIndex);
         out.println("    choiceOpt " + fd.choiceOpt);
         out.println("    choice    " + (fd.choice != null ? fd.choice.length : "null"));
         out.println("    content   " + fd.contentQualifiedName);
@@ -183,7 +180,7 @@ public class ModelDesc {
         out.println("    doc       " + (fd.documentation != null ? fd.documentation.length() : "null"));
     }
 
-    private void dumpNamespace(NamespaceDesc value, PrintWriter out) {
+    private void dumpNamespace(final NamespaceDesc value, final PrintWriter out) {
         if (value.skip) {
             return;
         }

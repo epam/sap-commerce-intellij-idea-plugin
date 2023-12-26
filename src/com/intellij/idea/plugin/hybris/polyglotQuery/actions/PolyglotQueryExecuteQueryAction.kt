@@ -26,7 +26,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 
 class PolyglotQueryExecuteQueryAction : AbstractExecuteAction(
-    PolyglotQueryFileType.instance.defaultExtension,
+    PolyglotQueryFileType.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY
 ) {
 

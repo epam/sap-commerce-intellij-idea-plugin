@@ -92,7 +92,7 @@ abstract class AbstractModuleDescriptor(
     override fun getRelativePath(): String {
         val projectRootDir: File = rootProjectDescriptor.rootDirectory
             ?: return moduleRootDirectory.path
-        val virtualFileSystemService = VirtualFileSystemService.instance
+        val virtualFileSystemService = VirtualFileSystemService.getInstance()
 
         return if (virtualFileSystemService.fileContainsAnother(projectRootDir, moduleRootDirectory)) {
             virtualFileSystemService.getRelativePath(projectRootDir, moduleRootDirectory)

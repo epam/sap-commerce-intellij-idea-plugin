@@ -35,7 +35,7 @@ object FlexibleSearchElementFactory {
 
     fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
         .createFileFromText(
-            "dummy." + FlexibleSearchFileType.instance.defaultExtension,
-            FlexibleSearchFileType.instance, text
+            "dummy." + FlexibleSearchFileType.defaultExtension,
+            FlexibleSearchFileType, text
         ) as FlexibleSearchFile
 }

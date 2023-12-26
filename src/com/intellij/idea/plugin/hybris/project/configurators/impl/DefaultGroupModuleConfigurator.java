@@ -97,7 +97,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groupPathOverride.clone();
         }
 
-        String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList, groups);
+        final String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList, groups);
         if (groupPath == null) {
             return null;
         }

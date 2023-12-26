@@ -41,3 +41,4 @@
 - Oleksandr Dihtiar 
 - Andrei Lisetskii
 - Eugeni Kalenchuk
+- Stefan Kruk

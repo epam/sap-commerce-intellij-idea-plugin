@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,8 +34,8 @@ class ModuleDepDiagramVisibilityManager : AbstractUmlVisibilityManager() {
 
     companion object {
         val ONLY_CUSTOM_MODULES = VisibilityLevel("Only Custom")
-        val CUSTOM_WITH_DEPENDENCIES = VisibilityLevel("Custom with Dependencies")
         val ALL_MODULES = VisibilityLevel("All")
+        private val CUSTOM_WITH_DEPENDENCIES = VisibilityLevel("Custom with Dependencies")
         private val LEVELS = arrayOf(ONLY_CUSTOM_MODULES, CUSTOM_WITH_DEPENDENCIES, ALL_MODULES)
         private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel? -> ArrayUtil.indexOf(LEVELS, level) }
     }

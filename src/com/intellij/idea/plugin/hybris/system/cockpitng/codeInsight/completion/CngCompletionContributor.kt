@@ -29,7 +29,7 @@ class CngCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.ITEM_TYPE),
-            CngItemTypeCodeCompletionProvider.instance
+            CngItemTypeCodeCompletionProvider.getInstance()
         )
         extend(
             CompletionType.BASIC,

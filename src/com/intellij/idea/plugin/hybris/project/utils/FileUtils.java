@@ -37,8 +37,8 @@ public final class FileUtils {
     }
 
     public static boolean isFileUnder(@NotNull final File child, @NotNull final File parent) {
-        String parentPath = FileUtil.toCanonicalPath(parent.getPath())+"/";
-        String childPath = FileUtil.toCanonicalPath(child.getPath())+"/";
+        final String parentPath = FileUtil.toCanonicalPath(parent.getPath())+ '/';
+        final String childPath = FileUtil.toCanonicalPath(child.getPath())+ '/';
 
         return childPath.startsWith(parentPath);
     }
@@ -49,7 +49,7 @@ public final class FileUtils {
         @NotNull final File parentDirectory
     ) throws IOException {
         if (!FileUtils.isFileUnder(file, parentDirectory)) {
-            throw new IOException("File '" + file + "' is not under '" + parentDirectory + "'");
+            throw new IOException("File '" + file + "' is not under '" + parentDirectory + '\'');
         }
 
         final List<String> path = new ArrayList<>();
@@ -70,21 +70,21 @@ public final class FileUtils {
         return toFile(path, false);
     }
 
-    public static File toFile(String path, boolean checkExists) {
+    public static File toFile(String path, final boolean checkExists) {
         if (path == null) {
             return null;
         }
         // this does not expand symlinks
         path = FileUtil.toCanonicalPath(path);
-        File file = new File(path);
+        final File file = new File(path);
         if (checkExists && !file.exists()) {
             return null;
         }
         return file;
     }
 
-    public static File toFile(String parent, String child) {
-        File file = new File(parent, child);
+    public static File toFile(final String parent, final String child) {
+        final File file = new File(parent, child);
         return toFile(file.getPath(), false);
     }
 }

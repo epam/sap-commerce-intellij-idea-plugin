@@ -18,17 +18,73 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DataSourcesConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.util.concurrency.AppExecutorUtil
 
-interface PostImportConfigurator {
+@Service(Service.Level.PROJECT)
+class PostImportConfigurator(val project: Project) {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         allHybrisModules: List<ModuleDescriptor>,
         refresh: Boolean,
-    )
+    ) {
+        ReadAction
+            .nonBlocking<List<() -> Unit>> {
+                if (project.isDisposed) return@nonBlocking emptyList()
+
+                listOfNotNull(
+                    KotlinCompilerConfigurator.getInstance()
+                        ?.configureAfterImport(project),
+
+                    DataSourcesConfigurator.getInstance()
+                        ?.configureAfterImport(project),
+
+                    AntConfigurator.getInstance()
+                        ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
+
+                    XsdSchemaConfigurator.getInstance()
+                        ?.configureAfterImport(project, allHybrisModules),
+
+                    JRebelConfigurator.getInstance()
+                        ?.configureAfterImport(project, allHybrisModules),
+
+                    MavenConfigurator.getInstance()
+                        ?.configureAfterImport(project, hybrisProjectDescriptor)
+                )
+                    .flatten()
+            }
+            .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
+                if (project.isDisposed) return@finishOnUiThread
+
+                actions.forEach { it() }
+
+                notifyImportFinished(project, refresh)
+            }
+            .inSmartMode(project)
+            .submit(AppExecutorUtil.getAppExecutorService())
+    }
+
+    private fun notifyImportFinished(project: Project, refresh: Boolean) {
+        val notificationContent = if (refresh) message("hybris.notification.project.refresh.finished.content")
+        else message("hybris.notification.project.import.finished.content")
+        val notificationTitle = if (refresh) message("hybris.notification.project.refresh.title")
+        else message("hybris.notification.project.import.title")
+
+        with(Notifications) {
+            create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)
+            showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
+        }
+    }
 
     companion object {
         @JvmStatic

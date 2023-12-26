@@ -99,8 +99,8 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract("null, _ -> null")
     public static <T extends PsiElement> T getNextSiblingOfAnyType(
-        @Nullable PsiElement sibling,
-        @NotNull Class... aClasses
+        @Nullable final PsiElement sibling,
+        @NotNull final Class... aClasses
     ) {
         if (sibling == null) {
             return null;

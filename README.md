@@ -1,5 +1,5 @@
 [![Email](https://img.shields.io/badge/Help-Contact%20us-blue)](mailto:hybrisideaplugin@epam.com)
-[![slack](https://img.shields.io/badge/slack-join-blueviolet.svg?logo=slack)](https://join.slack.com/t/newworkspace-gnh9580/shared_invite/zt-216ofxbl2-vtEwJVBg71UtDz9y4oDfpg)
+[![slack](https://img.shields.io/badge/slack-join-blueviolet.svg?logo=slack)](https://join.slack.com/t/sapcommercede-0kz9848/shared_invite/zt-29gnz3fd2-mz_69mla52NOFqGGsG1Zjw)
 ![Rating](https://img.shields.io/jetbrains/plugin/r/rating/12867-sap-commerce-developers-toolset)
 ![Downloads](https://img.shields.io/jetbrains/plugin/d/12867-sap-commerce-developers-toolset)
 [![Version](https://img.shields.io/jetbrains/plugin/v/12867-sap-commerce-developers-toolset)](https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset)
@@ -34,20 +34,21 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 - Preview for Type and Bean Systems.
 - Enhanced Debugger for Model classes with lazy evaluation.
 - Enhanced project view tree.
-- Execution of FlexibleSearch queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.
+- Execution of FlexibleSearch or Polyglot queries, Groovy scripts, ImpEx files though IDE using HAC Integration tool.
 - Execution of queries on remote Solr instances.
 - Override module grouping via `hybris4intellij.properties`.
 
 ## Contribution guidelines ##
 
+* Join [Slack channel](https://join.slack.com/t/sapcommercede-0kz9848/shared_invite/zt-29gnz3fd2-mz_69mla52NOFqGGsG1Zjw)
 * Please read [Contributor License Agreement](https://developercertificate.org)
 * Available tasks are in our [project board](https://github.com/epam/sap-commerce-intellij-idea-plugin/projects/1) 
 * [How to Configure Project Environment For Plugin Developers](https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html)
 * We are working with [Pull Requests](https://help.github.com/articles/about-pull-requests/). You need to fork this repository, implement a feature in a separate branch, then send us a pull request.
-* Be sure to include into your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
+* Be sure to include in your pull request and all commit messages the following line: "Signed-off-by: Your Real Name your.email@email.com" otherwise it can not be accepted. Use your real name (sorry, no pseudonyms or anonymous contributions).
 * Start with official [JetBrains Plugin SDK](https://plugins.jetbrains.com/docs/intellij)
 * Checkout plugin development [community support](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development) for common question
-* For additional questions you can send an [email](mailto:hybrisideaplugin@epam.com).
+* For additional questions, you can send an [email](mailto:hybrisideaplugin@epam.com).
 
 <!-- Plugin description end -->
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.diagram.DiagramEdgeBase
 import com.intellij.diagram.DiagramNode
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
+import java.io.Serial
 
 class TSDiagramEdge(
     from: DiagramNode<TSGraphNode>,
@@ -30,6 +31,7 @@ class TSDiagramEdge(
     val type: TSDiagramEdgeType = TSDiagramEdgeType.DEFAULT
 ) : DiagramEdgeBase<TSGraphNode>(from, to, relationship) {
     companion object {
-        private const val serialVersionUID: Long = -6563151123755071622L
+        @Serial
+        private val serialVersionUID: Long = -6563151123755071622L
     }
 }

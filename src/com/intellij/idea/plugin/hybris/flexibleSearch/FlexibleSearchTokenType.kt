@@ -21,7 +21,7 @@ import com.intellij.psi.tree.IElementType
 import org.jetbrains.annotations.NonNls
 import java.util.regex.Pattern
 
-class FlexibleSearchTokenType(debugName: @NonNls String) : IElementType(debugName, FlexibleSearchLanguage.INSTANCE) {
+class FlexibleSearchTokenType(debugName: @NonNls String) : IElementType(debugName, FlexibleSearchLanguage) {
 
     override fun toString() = super.toString()
         .takeIf { it.isNotBlank() }

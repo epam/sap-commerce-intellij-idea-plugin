@@ -254,7 +254,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         if (!expectedConfigDir.isDirectory()) {
             return null;
         }
-        final File propertiesFile = new File(expectedConfigDir, HybrisConstants.LOCAL_PROPERTIES);
+        final File propertiesFile = new File(expectedConfigDir, HybrisConstants.LOCAL_PROPERTIES_FILE);
         if (!propertiesFile.exists()) {
             return expectedConfigDir;
         }
@@ -266,7 +266,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return expectedConfigDir;
         }
 
-        String hybrisConfig = (String) properties.get(HybrisConstants.HYBRIS_CONFIG_DIR_KEY);
+        String hybrisConfig = (String) properties.get(HybrisConstants.HYBRIS_CONFIG_DIR_ENV);
         if (hybrisConfig == null) {
             return expectedConfigDir;
         }
@@ -506,7 +506,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (hmcModule == null) {
-            hmcSubModules.forEach((yModule, yHmcSubModule) -> yModule.removeSubModule(yHmcSubModule));
+            hmcSubModules.forEach(YModuleDescriptor::removeSubModule);
             moduleDescriptors.removeAll(hmcSubModules.values());
         }
     }

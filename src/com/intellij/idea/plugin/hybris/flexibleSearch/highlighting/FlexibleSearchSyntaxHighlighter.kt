@@ -38,7 +38,7 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
 
     companion object {
 
-        val instance: FlexibleSearchSyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
+        fun getInstance(): FlexibleSearchSyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
 
         private val CASE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_KEYWORD)
         private val PARAMETER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARAMETER)

@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +20,9 @@
 package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-
-import static com.intellij.psi.util.PsiTreeUtil.findSiblingBackward;
 
 public final class CommonAstUtils {
 
@@ -36,17 +33,6 @@ public final class CommonAstUtils {
     @Contract(pure = true)
     public static IElementType getNullSafeElementType(@Nullable final ASTNode node) {
         return node == null ? null : node.getElementType();
-    }
-
-    @Contract(pure = true)
-    public static ASTNode getPrevSibling(@Nullable final ASTNode node, final IElementType type) {
-        if (node != null) {
-            final PsiElement siblingBackward = findSiblingBackward(node.getPsi(), type, null);
-            if (siblingBackward != null) {
-                return siblingBackward.getNode();
-            }
-        }
-        return null;
     }
 
 }

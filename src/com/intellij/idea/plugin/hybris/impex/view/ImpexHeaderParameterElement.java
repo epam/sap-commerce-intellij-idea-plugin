@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,12 +46,15 @@ public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHea
     @Nullable
     @Override
     public String getPresentableText() {
-        return getElement().getText();
+        final var element = getElement();
+        if (element == null) return null;
+
+        return element.getText();
     }
 
     @Override
     @Nullable
-    public Icon getIcon(boolean unused) {
+    public Icon getIcon(final boolean open) {
         return null;
     }
 }

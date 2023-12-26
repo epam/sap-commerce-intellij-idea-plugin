@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.extensioninfo.file.MetaKeyConverte
 import com.intellij.idea.plugin.hybris.system.extensioninfo.file.MetaValueConverter;
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
-import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

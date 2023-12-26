@@ -36,7 +36,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import org.jetbrains.kotlin.idea.codeinsight.utils.findExistingEditor
 
-class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.instance) {
+class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
 
     private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
     private val userRightsParameters = mapOf(

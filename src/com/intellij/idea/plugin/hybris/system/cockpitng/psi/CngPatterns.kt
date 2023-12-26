@@ -221,9 +221,6 @@ object CngPatterns {
         .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().oneOfIgnoreCase(Context.PARENT_AUTO, ".")))
         .inFile(cngConfigFile)
 
-    val CONTEXT_MERGE_BY = PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.MERGE_BY)
-        .inFile(cngConfigFile)
-
     val ITEM_TYPE = XmlPatterns.or(
         PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.TYPE)
             .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))

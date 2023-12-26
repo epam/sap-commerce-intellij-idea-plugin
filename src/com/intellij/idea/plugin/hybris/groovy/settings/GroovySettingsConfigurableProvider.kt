@@ -20,18 +20,13 @@ package com.intellij.idea.plugin.hybris.groovy.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.editor.ex.util.EditorUtil
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
-import org.jetbrains.plugins.groovy.GroovyFileType
 import javax.swing.JCheckBox
 
 class GroovySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
@@ -52,7 +47,7 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                     enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
                         .bindSelected(state::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
-                        .onApply { GroovyFileToolbarInstaller.instance?.toggleToolbarForAllEditors(project) }
+                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
                         .component
                 }
                 row {
@@ -60,7 +55,7 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
                         .enabledIf(enableActionToolbar.selected)
-                        .onApply { GroovyFileToolbarInstaller.instance?.toggleToolbarForAllEditors(project) }
+                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
                 }
             }
         }

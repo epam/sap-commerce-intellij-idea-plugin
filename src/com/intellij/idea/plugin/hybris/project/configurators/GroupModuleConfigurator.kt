@@ -30,6 +30,6 @@ interface GroupModuleConfigurator {
     )
 
     companion object {
-        val instance: GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
+        fun getInstance(): GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
     }
 }

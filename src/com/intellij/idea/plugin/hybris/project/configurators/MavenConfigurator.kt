@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,17 +22,64 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.vfs.VfsUtil
+import org.jetbrains.idea.maven.model.MavenConstants
+import org.jetbrains.idea.maven.project.MavenProjectsManager
+import org.jetbrains.idea.maven.wizards.MavenProjectBuilder
+import java.io.File
 
-interface MavenConfigurator {
+class MavenConfigurator {
 
-    fun configure(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
+    fun configureAfterImport(
         project: Project,
-        mavenModules: List<MavenModuleDescriptor?>,
-        configuratorFactory: ConfiguratorFactory
-    )
+        hybrisProjectDescriptor: HybrisProjectDescriptor
+    ): List<() -> Unit> {
+        val mavenModules = hybrisProjectDescriptor.modulesChosenForImport
+            .filterIsInstance<MavenModuleDescriptor>()
+            .takeIf { it.isNotEmpty() }
+            ?: return emptyList()
+
+        val actions = mavenModules
+            .asSequence()
+            .map { it.moduleRootDirectory }
+            .map { File(it, MavenConstants.POM_XML) }
+            .filter { it.exists() && it.isFile }
+            .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
+            .map {
+                val builder = MavenProjectBuilder()
+                builder.isUpdate = MavenProjectsManager.getInstance(project).isMavenizedProject
+                builder.setFileToImport(it)
+                builder
+            }
+            .filter {
+                val path = it.rootPath
+                    ?.toAbsolutePath()
+                    ?.toString()
+
+                mavenModules.any { module: MavenModuleDescriptor -> module.moduleRootDirectory.absolutePath == path }
+            }
+            .map {
+                {
+                    try {
+                        it.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
+                    } finally {
+                        it.cleanup()
+                    }
+                    Unit
+                }
+            }
+            .toMutableList()
+
+        actions.add() {
+            MavenProjectsManager.getInstance(project).importProjects()
+        }
+
+        return actions
+    }
 
     companion object {
-        val instance: MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
+        fun getInstance(): MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
     }
+
 }

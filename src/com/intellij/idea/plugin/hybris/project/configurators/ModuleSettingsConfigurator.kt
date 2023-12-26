@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +27,6 @@ interface ModuleSettingsConfigurator {
     fun configure(moduleDescriptor: ModuleDescriptor, javaModule: Module)
 
     companion object {
-        val instance: ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
+        fun getInstance(): ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
     }
 }

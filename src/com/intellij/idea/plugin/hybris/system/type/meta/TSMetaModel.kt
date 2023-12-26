@@ -49,8 +49,8 @@ class TSMetaModel(
     fun <T : TSMetaClassifier<out DomElement>> getMetaType(metaType: TSMetaType): MultiMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
-    fun getMetaTypes() = myMetaCache;
-    fun getRelations() = myRelationsBySourceTypeName;
+    fun getMetaTypes() = myMetaCache
+    fun getRelations() = myRelationsBySourceTypeName
 
     override fun dispose() {
         myMetaCache.clear()

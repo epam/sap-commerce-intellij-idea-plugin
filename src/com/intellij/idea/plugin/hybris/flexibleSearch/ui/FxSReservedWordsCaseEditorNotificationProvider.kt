@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,11 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
@@ -32,6 +34,7 @@ import com.intellij.psi.search.PsiElementProcessor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
+import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.function.Function
 
 class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {
@@ -43,48 +46,49 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
         project: Project,
         psiFile: PsiFile,
         file: VirtualFile
-    ): Function<FileEditor, EditorNotificationPanel> {
-        return Function { fileEditor ->
-            val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
-            panel.icon(HybrisIcons.Y_LOGO_BLUE)
-            panel.text = message(
-                "hybris.fxs.notification.provider.keywords.text",
-                message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
-            )
-            panel.createActionLabel(message("hybris.fxs.notification.provider.keywords.action.unify")) {
-                WriteCommandAction.runWriteCommandAction(project) {
-                    collect(fxsSettings, psiFile).distinct().reversed()
-                        .forEach {
+    ) = Function<FileEditor, EditorNotificationPanel> { fileEditor ->
+        val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
+        panel.icon(HybrisIcons.Y_LOGO_BLUE)
+        panel.text = message(
+            "hybris.fxs.notification.provider.keywords.text",
+            message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
+        )
+        panel.createActionLabel(message("hybris.fxs.notification.provider.keywords.action.unify")) {
+            ReadAction
+                .nonBlocking<Collection<LeafPsiElement>> { collect(fxsSettings, psiFile).distinct().reversed() }
+                .finishOnUiThread(ModalityState.defaultModalityState()) {
+                    WriteCommandAction.runWriteCommandAction(project, null, null, {
+                        it.forEach {
                             when (fxsSettings.defaultCaseForReservedWords) {
                                 ReservedWordsCase.UPPERCASE -> it.replaceWithText(it.text.uppercase())
                                 ReservedWordsCase.LOWERCASE -> it.replaceWithText(it.text.lowercase())
                             }
                         }
-                }
+                    }, psiFile)
 
-                EditorNotifications.getInstance(project).updateNotifications(file)
-            }
-            panel
+                    EditorNotifications.getInstance(project).updateNotifications(file)
+                }
+                .submit(AppExecutorUtil.getAppExecutorService())
         }
+        panel
     }
 
     override fun collect(
         fxsSettings: FlexibleSearchSettings,
         psiFile: PsiFile
-    ): MutableCollection<LeafPsiElement> {
-        val processor = Collector(fxsSettings)
-        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, processor)
-        return processor.collection
+    ): Collection<LeafPsiElement> = with(Collector(fxsSettings)) {
+        PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, this)
+        this.collection
     }
 
     class Collector(private val fxsSettings: FlexibleSearchSettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
         override fun execute(element: LeafPsiElement): Boolean {
-            if (RESERVED_KEYWORDS.contains(element.elementType)) {
+            if (HybrisConstants.FXS_RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()
 
                 val mismatch = when (fxsSettings.defaultCaseForReservedWords) {
-                    ReservedWordsCase.UPPERCASE -> text.contains(REGEX_LOWERCASE)
-                    ReservedWordsCase.LOWERCASE -> text.contains(REGEX_UPPERCASE)
+                    ReservedWordsCase.UPPERCASE -> text.contains(HybrisConstants.CHARS_LOWERCASE_REGEX)
+                    ReservedWordsCase.LOWERCASE -> text.contains(HybrisConstants.CHARS_UPPERCASE_REGEX)
                 }
                 if (mismatch) {
                     return super.execute(element)
@@ -94,16 +98,4 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
         }
     }
 
-    companion object {
-        val REGEX_UPPERCASE = Regex("[A-Z]")
-        val REGEX_LOWERCASE = Regex("[a-z]")
-        val RESERVED_KEYWORDS = setOf(
-            ALL, AND, AS, ASC, BETWEEN, BY,
-            CASE, CAST, DESC, DISTINCT, ELSE, END,
-            EXISTS, FROM, FULL, GROUP, HAVING, IN,
-            INNER, INTERVAL, IS, JOIN, LEFT, LIKE, LIMIT, NOT,
-            NULL, OFFSET, ON, OR, ORDER, OUTER, RIGHT,
-            SELECT, THEN, UNION, USING, WHEN, WHERE,
-        )
-    }
 }

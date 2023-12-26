@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class ImpExExecuteAction : AbstractExecuteAction(
-    ImpexFileType.INSTANCE.defaultExtension,
+    ImpexFileType.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_IMPEX
 ) {
 

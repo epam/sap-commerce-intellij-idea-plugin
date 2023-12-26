@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,14 +23,11 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage.instance) {
+object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage.instance) {
 
     override fun getName() = "Polyglot Query File"
-    override fun getDescription() = "Polyglot Query Language File"
+    override fun getDescription() = "Polyglot Query language file"
     override fun getDefaultExtension() = "pgq"
     override fun getIcon(): Icon = HybrisIcons.PGQ_FILE
 
-    companion object {
-        val instance = PolyglotQueryFileType()
-    }
 }

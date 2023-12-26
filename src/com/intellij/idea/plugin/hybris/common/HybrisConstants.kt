@@ -17,10 +17,19 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
+import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
+import com.intellij.psi.tree.IFileElementType
 
 object HybrisConstants {
 
@@ -182,6 +191,9 @@ object HybrisConstants {
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
     const val PROPERTY_LANG_PACKS = "lang.packs"
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
+    const val PROPERTY_ENV_PROPERTY_PREFIX = "env.properties.prefix"
+
+    const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports"
 
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
@@ -238,8 +250,6 @@ object HybrisConstants {
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
     const val TS_CATALOG_ITEM_TYPE = "catalogItemType"
     const val TS_CATALOG_VERSION_ATTRIBUTE_QUALIFIER = "catalogVersionAttributeQualifier"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE = "catalog.sync.default.root.type"
-    const val TS_CATALOG_SYNC_DEFAULT_ROOT_TYPE_ORDER = "catalog.sync.default.root.type.order"
     const val TS_PRIMITIVE_BYTE = "byte"
     const val TS_PRIMITIVE_SHORT = "short"
     const val TS_PRIMITIVE_INT = "int"
@@ -250,7 +260,7 @@ object HybrisConstants {
     const val TS_PRIMITIVE_BOOLEAN = "boolean"
     val TS_PRIMITIVE_TYPES = setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
 
-    val TS_TYPECODE_MIN_ALLOWED = 10000
+    const val TS_TYPECODE_MIN_ALLOWED = 10000
     val TS_TYPECODE_RANGE_B2BCOMMERCE = TS_TYPECODE_MIN_ALLOWED..10099
     val TS_TYPECODE_RANGE_COMMONS = 13200..13299
     val TS_TYPECODE_RANGE_XPRINT = 24400..24599
@@ -301,13 +311,17 @@ object HybrisConstants {
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"
     const val RESOURCES_DIRECTORY = "resources"
-    const val LOCAL_PROPERTIES = "local.properties"
-    const val PROJECT_PROPERTIES = "project.properties"
+    const val LOCAL_PROPERTIES_FILE = "local.properties"
+    const val PROJECT_PROPERTIES_FILE = "project.properties"
+    const val ENV_PROPERTIES_FILE = "env.properties"
+    const val ADVANCED_PROPERTIES_FILE = "advanced.properties"
     const val SPRING_WEB_FILE_SET_NAME = "web application context"
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
     const val GLOBAL_CONTEXT_SPRING_FILES = "global-context"
-    const val HYBRIS_CONFIG_DIR_KEY = "HYBRIS_CONFIG_DIR"
+    const val HYBRIS_CONFIG_DIR_ENV = "HYBRIS_CONFIG_DIR"
+    const val HYBRIS_RUNTIME_PROPERTIES_ENV = "HYBRIS_RUNTIME_PROPERTIES"
+    const val HYBRIS_OPT_CONFIG_DIR_ENV = "HYBRIS_OPT_CONFIG_DIR"
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
     const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
@@ -323,6 +337,8 @@ object HybrisConstants {
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
+
+    const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
@@ -355,7 +371,7 @@ object HybrisConstants {
         "node_modules",
         "apps/**/node_modules",
         "common/temp/node_modules"
-    );
+    )
 
     const val KOTLIN_SRC_DIRECTORY = "kotlinsrc"
     private const val SRC_DIRECTORY = "src"
@@ -451,15 +467,11 @@ object HybrisConstants {
     @JvmField
     val WEBROOT_WEBINF_CLASSES_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/classes")
     @JvmField
-    val WEB_SRC_PATH = FileUtilRt.toSystemDependentName("web/src")
-    @JvmField
     val WEBROOT_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("webroot/WEB-INF/lib")
 
     @JvmField
     val ACCELERATOR_ADDON_WEB_PATH = FileUtilRt.toSystemDependentName("acceleratoraddon/web")
 
-    @JvmField
-    val COMMONWEB_WEBINF_LIB_PATH = FileUtilRt.toSystemDependentName("commonweb/webroot/WEB-INF/lib")
     @JvmField
     val DOC_SOURCES_JAR_PATH = FileUtilRt.toSystemDependentName("doc/sources")
 
@@ -486,8 +498,7 @@ object HybrisConstants {
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
 
-    @JvmField
-    val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
+    const val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
     @JvmField
@@ -597,5 +608,77 @@ object HybrisConstants {
             "Reformat Code",
             "Undo Reformat Code",
             "Auto-Indent Lines"
+    )
+
+    @JvmStatic
+    val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
+    val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
+
+    const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
+    val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
+        FlexibleSearchTypes.TABLE_ALIAS_NAME,
+        FlexibleSearchTypes.COLUMN_ALIAS_NAME
+    )
+
+    val IMPEX_FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
+    val FXS_FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
+
+    val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
+    val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()
+    val PGQ_RESERVED_KEYWORDS = setOf(
+        PolyglotQueryTypes.AND,
+        PolyglotQueryTypes.ASC,
+        PolyglotQueryTypes.BY,
+        PolyglotQueryTypes.DESC,
+        PolyglotQueryTypes.GET,
+        PolyglotQueryTypes.IS,
+        PolyglotQueryTypes.NOT,
+        PolyglotQueryTypes.NULL,
+        PolyglotQueryTypes.OR,
+        PolyglotQueryTypes.ORDER,
+        PolyglotQueryTypes.WHERE
+    )
+
+
+    val FXS_RESERVED_KEYWORDS = setOf(
+        FlexibleSearchTypes.ALL,
+        FlexibleSearchTypes.AND,
+        FlexibleSearchTypes.AS,
+        FlexibleSearchTypes.ASC,
+        FlexibleSearchTypes.BETWEEN,
+        FlexibleSearchTypes.BY,
+        FlexibleSearchTypes.CASE,
+        FlexibleSearchTypes.CAST,
+        FlexibleSearchTypes.DESC,
+        FlexibleSearchTypes.DISTINCT,
+        FlexibleSearchTypes.ELSE,
+        FlexibleSearchTypes.END,
+        FlexibleSearchTypes.EXISTS,
+        FlexibleSearchTypes.FROM,
+        FlexibleSearchTypes.FULL,
+        FlexibleSearchTypes.GROUP,
+        FlexibleSearchTypes.HAVING,
+        FlexibleSearchTypes.IN,
+        FlexibleSearchTypes.INNER,
+        FlexibleSearchTypes.INTERVAL,
+        FlexibleSearchTypes.IS,
+        FlexibleSearchTypes.JOIN,
+        FlexibleSearchTypes.LEFT,
+        FlexibleSearchTypes.LIKE,
+        FlexibleSearchTypes.LIMIT,
+        FlexibleSearchTypes.NOT,
+        FlexibleSearchTypes.NULL,
+        FlexibleSearchTypes.OFFSET,
+        FlexibleSearchTypes.ON,
+        FlexibleSearchTypes.OR,
+        FlexibleSearchTypes.ORDER,
+        FlexibleSearchTypes.OUTER,
+        FlexibleSearchTypes.RIGHT,
+        FlexibleSearchTypes.SELECT,
+        FlexibleSearchTypes.THEN,
+        FlexibleSearchTypes.UNION,
+        FlexibleSearchTypes.USING,
+        FlexibleSearchTypes.WHEN,
+        FlexibleSearchTypes.WHERE,
     )
 }

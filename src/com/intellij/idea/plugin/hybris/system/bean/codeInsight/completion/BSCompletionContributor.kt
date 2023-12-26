@@ -33,27 +33,27 @@ class BSCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.BEAN_CLASS),
-            BSBeanClassCompletionProvider.instance
+            BSBeanClassCompletionProvider.getInstance()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.ENUM_CLASS),
-            BSEnumClassCompletionProvider.instance
+            BSEnumClassCompletionProvider.getInstance()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.BEAN_EXTENDS),
-            BSBeanClassCompletionProvider.instance
+            BSBeanClassCompletionProvider.getInstance()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.BEAN_PROPERTY_TYPE),
-            BSBeanPropertyTypeCompletionProvider.instance
+            BSBeanPropertyTypeCompletionProvider.getInstance()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.HINT_NAME),
-            BSHintNameCompletionProvider.instance
+            BSHintNameCompletionProvider.getInstance()
         )
     }
 }

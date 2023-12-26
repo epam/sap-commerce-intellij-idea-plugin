@@ -1,10 +1,10 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -31,6 +31,10 @@ import org.jetbrains.plugins.groovy.GroovyLanguage
 
 class GroovyLanguageInjector : LanguageInjector {
 
+    private val groovyMarker = "#%groovy%"
+    private val quoteSymbolLength = 1
+    private val offset = "\"#%groovy%".count()
+
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
@@ -51,10 +55,10 @@ class GroovyLanguageInjector : LanguageInjector {
             ?: return
 
         val hostString = StringUtil.unquoteString(impexString.text).lowercase()
-        if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(GROOVY_MARKER)) {
-            injectLanguage(injectionPlacesRegistrar, impexString.textLength - OFFSET - QUOTE_SYMBOL_LENGTH, OFFSET)
+        if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(groovyMarker)) {
+            injectLanguage(injectionPlacesRegistrar, impexString.textLength - offset - quoteSymbolLength, offset)
         } else if (LanguageInjectionUtil.getLanguageForInjection(impexString) == ScriptType.GROOVY) {
-            injectLanguage(injectionPlacesRegistrar, impexString.textLength - QUOTE_SYMBOL_LENGTH - 1, QUOTE_SYMBOL_LENGTH)
+            injectLanguage(injectionPlacesRegistrar, impexString.textLength - quoteSymbolLength - 1, quoteSymbolLength)
         }
     }
 
@@ -73,9 +77,6 @@ class GroovyLanguageInjector : LanguageInjector {
     }
 
     companion object {
-        private const val GROOVY_MARKER = "#%groovy%"
-        private const val QUOTE_SYMBOL_LENGTH = 1
-        private val OFFSET = "\"#%groovy%".count()
         private val LOG = Logger.getInstance(GroovyLanguageInjector::class.java)
     }
 }

@@ -86,7 +86,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, classes, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, false)
-                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP,)
+                    YModuleLibDescriptorUtil.addRootProjectLibrary(modifiableModelsProvider, library, HybrisConstants.BACKOFFICE_LIBRARY_GROUP)
                 }
             }
         }
@@ -146,7 +146,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         val libraryModifiableModel = modifiableModelsProvider.getModifiableLibraryModel(library)
         libraryModifiableModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(javaLibraryDescriptor.libraryFile), true)
         // we have to add each jar file explicitly, otherwise Spring will not recognise `classpath:/META-INF/my.xml` in the jar files
-        // Jetbrains Intellij IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
+        // Jetbrains IntelliJ IDEA issue - https://youtrack.jetbrains.com/issue/IDEA-257819
         javaLibraryDescriptor.jarFiles.forEach {
             libraryModifiableModel.addRoot(VfsUtil.getUrlForLibraryRoot(it), OrderRootType.CLASSES)
         }

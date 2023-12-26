@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,28 +42,6 @@ public final class CommonPsiUtils {
         throw new IllegalAccessException("Should never be accessed.");
     }
 
-
-    @Nullable
-    @Contract("null, _ -> null")
-    public static <T extends PsiElement> T getNextSiblingOfAnyType(
-        @Nullable final PsiElement sibling,
-        @NotNull final Class<?>... aClasses
-    ) {
-        if (sibling == null) {
-            return null;
-        }
-        for (PsiElement child = sibling.getNextSibling(); child != null; child = child.getNextSibling()) {
-            for (final Class<?> aClass : aClasses) {
-                if (aClass.isInstance(child)) {
-                    //noinspection unchecked
-                    return (T) child;
-                }
-            }
-        }
-        return null;
-    }
-
-
     @Nullable
     @Contract(pure = true)
     public static IElementType getNullSafeElementType(@Nullable final PsiElement element) {
@@ -98,7 +77,7 @@ public final class CommonPsiUtils {
         while (child != null) {
             if (elementType == child.getElementType()) {
                 if (result.isEmpty()) {
-                    result = new ArrayList<PsiElement>();
+                    result = new ArrayList<>();
                 }
                 result.add(child.getPsi());
             }

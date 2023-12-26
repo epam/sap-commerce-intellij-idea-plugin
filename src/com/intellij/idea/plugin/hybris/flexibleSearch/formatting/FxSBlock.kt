@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,9 +32,9 @@ import com.intellij.psi.util.elementType
 
 class FxSBlock internal constructor(
     private val node: ASTNode,
-    private val alignment: Alignment?,
+    alignment: Alignment?,
     private val indent: Indent?,
-    private val wrap: Wrap?,
+    wrap: Wrap?,
     private val codeStyleSettings: CodeStyleSettings,
     private val spacingBuilder: FxSSpacingBuilder
 ) : AbstractBlock(node, wrap, alignment) {
@@ -64,7 +65,7 @@ class FxSBlock internal constructor(
         }
 
 
-        return blocks;
+        return blocks
     }
 
     private fun calculateAlignment(child: ASTNode) = when (child.elementType) {

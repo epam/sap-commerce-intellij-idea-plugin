@@ -63,11 +63,11 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
         final ConfigModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();
 
         if (configDescriptor != null) {
-            propertyFiles.add(new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES));
+            propertyFiles.add(new File(configDescriptor.getModuleRootDirectory(), HybrisConstants.LOCAL_PROPERTIES_FILE));
         }
         final PlatformModuleDescriptor platformDescriptor = descriptor.getPlatformHybrisModuleDescriptor();
         propertyFiles.add(new File(platformDescriptor.getModuleRootDirectory(), HybrisConstants.ADVANCED_PROPERTIES));
-        propertyFiles.add(new File(platformDescriptor.getModuleRootDirectory(), HybrisConstants.PROJECT_PROPERTIES));
+        propertyFiles.add(new File(platformDescriptor.getModuleRootDirectory(), HybrisConstants.PROJECT_PROPERTIES_FILE));
 
         return cache.findPropertyInFiles(propertyFiles, HybrisConstants.PROPERTY_BUILD_COMPILER);
     }

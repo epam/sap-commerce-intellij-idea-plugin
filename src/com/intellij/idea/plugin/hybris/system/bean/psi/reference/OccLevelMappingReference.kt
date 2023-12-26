@@ -34,7 +34,7 @@ import org.jetbrains.kotlin.psi.psiUtil.parents
 class OccLevelMappingReference(
     private val meta: BSGlobalMetaBean,
     element: PsiElement,
-    private val mapping: OccPropertyMapping
+    mapping: OccPropertyMapping
 ) : PsiReferenceBase.Poly<PsiElement>(element, mapping.textRange, false), PsiPolyVariantReference, HighlightedReference {
 
     override fun getVariants() = BSCompletionService.getInstance(element.project)

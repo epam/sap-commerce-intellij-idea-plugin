@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
@@ -61,8 +60,8 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
     private fun getPostfixes(type: String) = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
-        val text = element.text.replace(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
-        element.text.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER, "")
+        val text = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
             .takeIf { it.isBlank() && text.isNotBlank() }
             ?.let {
                 resolve(element.project, type, text)

@@ -1,10 +1,11 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -30,8 +31,6 @@ import com.intellij.psi.PsiLanguageInjectionHost
 
 class ImpexXmlLanguageInjector : LanguageInjector {
 
-    private val XML_MARKER = "<"
-    private val QUOTE_SYMBOL_LENGTH = 1
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
@@ -57,6 +56,7 @@ class ImpexXmlLanguageInjector : LanguageInjector {
     }
 
     companion object {
+        private const val QUOTE_SYMBOL_LENGTH = 1
         private val LOG = Logger.getInstance(ImpexXmlLanguageInjector::class.java)
     }
 
@@ -65,12 +65,11 @@ class ImpexXmlLanguageInjector : LanguageInjector {
      * return true if the String passed in is something like XML
      *
      *
-     * @param inString a string that might be XML
      * @return true of the string is XML, false otherwise
      */
-    val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
+    private val xmlPatternRegExp = "<(\\S+?)(.*?)>(.*?)</\\1>".toRegex()
 
-    fun String.isXmlLike(): Boolean {
+    private fun String.isXmlLike(): Boolean {
         if (this.trim { it <= ' ' }.isNotEmpty()) {
             if (this.trim { it <= ' ' }.startsWith("<")) {
                 return xmlPatternRegExp.containsMatchIn(this)

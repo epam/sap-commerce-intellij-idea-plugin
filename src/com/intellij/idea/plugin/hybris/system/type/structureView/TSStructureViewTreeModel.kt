@@ -38,12 +38,8 @@ class TSStructureViewTreeModel(
     editor
 ), StructureViewModel.ElementInfoProvider, StructureViewModel.ExpandInfoProvider {
 
-    private val myNavigationProvider: DomElementNavigationProvider
-
-    init {
-        myNavigationProvider = DomElementsNavigationManager.getManager(file.project)
-            .getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME)
-    }
+    private val myNavigationProvider: DomElementNavigationProvider = DomElementsNavigationManager.getManager(file.project)
+        .getDomElementsNavigateProvider(DomElementsNavigationManager.DEFAULT_PROVIDER_NAME)
 
     override fun getRoot(): StructureViewTreeElement {
         val myFile = psiFile
@@ -59,10 +55,7 @@ class TSStructureViewTreeModel(
     }
 
     override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = false
-
     override fun isAlwaysLeaf(element: StructureViewTreeElement) = false
-
     override fun isAutoExpand(element: StructureViewTreeElement) = false
-
     override fun isSmartExpand() = true
 }

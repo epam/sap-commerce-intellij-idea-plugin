@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree
 
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.TSNode
+import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 
 class TreeNode(private val node: TSNode) : DefaultMutableTreeNode(node) {
@@ -26,6 +27,7 @@ class TreeNode(private val node: TSNode) : DefaultMutableTreeNode(node) {
     override fun toString() = node.toString()
 
     companion object {
-        private const val serialVersionUID: Long = -4729552031003080261L
+        @Serial
+        private val serialVersionUID: Long = -4729552031003080261L
     }
 }

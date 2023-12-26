@@ -38,7 +38,7 @@ abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExCo
     }
 
     private fun move(editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, direction: ImpExColumnPosition) {
-        ImpexHighlightingCaretListener.instance.clearHighlightedArea(editor)
+        ImpexHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
 
         val headerLine = headerParameter.headerLine ?: return
         val column = headerParameter.columnNumber

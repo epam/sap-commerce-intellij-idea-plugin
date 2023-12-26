@@ -106,7 +106,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
     }
 
-    private List<BasicNameValuePair> createParamsList(Map<String, String> requestParams) {
+    private List<BasicNameValuePair> createParamsList(final Map<String, String> requestParams) {
         return requestParams.entrySet().stream()
                             .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
                             .collect(Collectors.toList());
@@ -195,7 +195,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                 .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
                 .build();
         } else {
-            TableBuilder tableBuilder = new TableBuilder();
+            final TableBuilder tableBuilder = new TableBuilder();
 
             final List<String> headers = (List<String>) json.get("headers");
             final List<List<String>> resultList = (List<List<String>>) json.get("resultList");

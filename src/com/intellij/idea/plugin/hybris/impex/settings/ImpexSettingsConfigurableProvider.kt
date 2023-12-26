@@ -33,7 +33,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 

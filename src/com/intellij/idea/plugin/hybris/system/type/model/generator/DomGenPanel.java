@@ -55,7 +55,7 @@ public class DomGenPanel {
     private JBCheckBox myUseQualifiedClassNames;
     private final Project myProject;
 
-    public DomGenPanel(Project project) {
+    public DomGenPanel(final Project project) {
         myProject = project;
     }
 
@@ -81,7 +81,7 @@ public class DomGenPanel {
                             final XmlTag rootTag = xml.getRootTag();
                             if (rootTag != null) {
                                 String target = null;
-                                ArrayList<String> ns = new ArrayList<String>();
+                                final ArrayList<String> ns = new ArrayList<>();
                                 for (XmlAttribute attr : rootTag.getAttributes()) {
                                     if ("targetNamespace".equals(attr.getName())) {
                                         target = attr.getValue();
@@ -102,7 +102,7 @@ public class DomGenPanel {
             }
         });
         myOutputDir = new TextFieldWithBrowseButton();
-        FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
         myOutputDir.addBrowseFolderListener("Select Output Directory For Generated Files", "", myProject, descriptor);
     }
 
@@ -147,11 +147,11 @@ public class DomGenPanel {
         myUseQualifiedClassNames.setSelected(getValue("useFQNs", "false").equals("true"));
     }
 
-    private static String getValue(String name, String defaultValue) {
+    private static String getValue(final String name, final String defaultValue) {
         return PropertiesComponent.getInstance().getValue(PREFIX + name, defaultValue);
     }
 
-    private static void setValue(String name, String value) {
+    private static void setValue(final String name, final String value) {
         PropertiesComponent.getInstance().setValue(PREFIX + name, value);
     }
 

@@ -46,7 +46,7 @@ class BSMetaModel(
     fun <T : BSMetaClassifier<out DomElement>> getMetaType(metaType: BSMetaType): MultiMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
-    fun getMetaTypes() = myMetaCache;
+    fun getMetaTypes() = myMetaCache
 
     override fun dispose() {
         myMetaCache.clear()

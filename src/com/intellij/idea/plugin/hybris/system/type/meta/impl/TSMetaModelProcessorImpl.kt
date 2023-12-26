@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import java.util.stream.Collectors
 
-class TSMetaModelProcessorImpl(private val myProject: Project) : TSMetaModelProcessor {
+class TSMetaModelProcessorImpl(myProject: Project) : TSMetaModelProcessor {
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
     override fun process(psiFile: PsiFile): TSMetaModel? {

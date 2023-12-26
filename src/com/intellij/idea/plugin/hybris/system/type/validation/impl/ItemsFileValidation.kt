@@ -64,9 +64,9 @@ class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation
 
     private fun isFileOutOfDateWithGeneratedClasses(file: VirtualFile): Boolean {
         try {
-            val enumTypeClassValidation = EnumTypeClassValidation.instance
-            val itemTypeClassValidation = ItemTypeClassValidation.instance
-            val relationValidation = RelationValidation.instance
+            val enumTypeClassValidation = EnumTypeClassValidation.getInstance()
+            val itemTypeClassValidation = ItemTypeClassValidation.getInstance()
+            val relationValidation = RelationValidation.getInstance()
             val indicator = ProgressManager.getInstance().progressIndicator
             if (indicator != null) {
                 indicator.text2 = message(

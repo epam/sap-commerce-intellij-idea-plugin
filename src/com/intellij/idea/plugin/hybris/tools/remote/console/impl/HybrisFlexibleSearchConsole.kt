@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.persistence.ui.HybrisConsoleQueryPanel
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
@@ -39,7 +38,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 import javax.swing.border.EmptyBorder
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage.INSTANCE) {
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
@@ -56,8 +55,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     private val labelInsets = JBUI.insets(0, 10, 0, 1)
 
-    private val queryConsolePanel = HybrisConsoleQueryPanel(project, this, "FLEXIBLE_SEARCH")
-
     init {
         createUI()
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
@@ -68,7 +65,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         initPlainSqlElements()
         initMaxRowsElements()
 
-        panel.add(queryConsolePanel)
         add(panel, BorderLayout.NORTH)
         isEditable = true
     }
@@ -106,6 +102,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -112651125533211607L
+        private val serialVersionUID: Long = -112651125533211607L
     }
 }

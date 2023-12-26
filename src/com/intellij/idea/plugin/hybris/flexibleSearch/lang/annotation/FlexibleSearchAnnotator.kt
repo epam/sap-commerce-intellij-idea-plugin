@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearc
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
-import com.intellij.idea.plugin.hybris.properties.PropertiesService
+import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
@@ -39,7 +39,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 
-class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.instance) {
+class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.getInstance()) {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
@@ -120,10 +120,10 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
             COLUMN_LOCALIZED_NAME -> {
                 val language = element.text.trim()
 
-                val propertiesService = PropertiesService.getInstance(element.project) ?: return
-                val supportedLanguages = propertiesService.getLanguages()
+                val propertyService = PropertyService.getInstance(element.project) ?: return
+                val supportedLanguages = propertyService.getLanguages()
 
-                if (!propertiesService.containsLanguage(language, supportedLanguages)) {
+                if (!propertyService.containsLanguage(language, supportedLanguages)) {
                     highlightError(
                         holder, element,
                         message(

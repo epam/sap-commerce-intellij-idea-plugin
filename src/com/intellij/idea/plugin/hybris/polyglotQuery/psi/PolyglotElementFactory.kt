@@ -27,7 +27,7 @@ object PolyglotElementFactory {
 
     fun createFile(project: Project, text: String): PolyglotQueryFile = PsiFileFactory.getInstance(project)
         .createFileFromText(
-            "dummy." + PolyglotQueryFileType.instance.defaultExtension,
-            PolyglotQueryFileType.instance, text
+            "dummy." + PolyglotQueryFileType.defaultExtension,
+            PolyglotQueryFileType, text
         ) as PolyglotQueryFile
 }

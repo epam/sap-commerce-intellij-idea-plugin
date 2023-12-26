@@ -29,9 +29,9 @@ class PolyglotQueryInjector : LanguageInjector {
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        PolyglotQueryToImpexInjectorProvider.instance
+        PolyglotQueryToImpexInjectorProvider.getInstance()
             ?.inject(host, injectionPlacesRegistrar)
-            ?: PolyglotQueryToKotlinInjectorProvider.instance
+            ?: PolyglotQueryToKotlinInjectorProvider.getInstance()
                 ?.inject(host, injectionPlacesRegistrar)
     }
 }

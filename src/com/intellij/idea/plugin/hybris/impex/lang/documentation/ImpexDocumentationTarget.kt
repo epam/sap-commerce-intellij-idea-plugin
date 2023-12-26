@@ -50,7 +50,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
         val virtualFile = element.containingFile.virtualFile
         return TargetPresentation.builder(element.text)
             .locationText(virtualFile.name, virtualFile.fileType.icon)
-            .presentation();
+            .presentation()
     }
 
     override fun computeDocumentationHint() = computeLocalDocumentation(element)

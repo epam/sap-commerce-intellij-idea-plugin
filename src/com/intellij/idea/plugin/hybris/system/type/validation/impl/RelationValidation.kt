@@ -96,6 +96,6 @@ class RelationValidation : ItemsXmlDomValidator<Relation> {
     }
 
     companion object {
-        val instance: RelationValidation = ApplicationManager.getApplication().getService(RelationValidation::class.java)
+        fun getInstance(): RelationValidation = ApplicationManager.getApplication().getService(RelationValidation::class.java)
     }
 }

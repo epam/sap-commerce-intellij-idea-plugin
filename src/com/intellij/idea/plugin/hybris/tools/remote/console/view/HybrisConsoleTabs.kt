@@ -50,6 +50,6 @@ class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Ar
 
     fun activeConsole() = consoles[selectedIndex]
     fun setActiveConsole(console: HybrisConsole) {
-        selectedIndex = consoles.indexOf(console);
+        selectedIndex = consoles.indexOf(console)
     }
 }

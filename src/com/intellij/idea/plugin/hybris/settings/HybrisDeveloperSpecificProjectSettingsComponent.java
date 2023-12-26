@@ -20,9 +20,8 @@ package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.properties.PropertiesService;
+import com.intellij.idea.plugin.hybris.properties.PropertyService;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
-import com.intellij.lang.properties.IProperty;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBus;
@@ -179,9 +178,8 @@ public final class HybrisDeveloperSpecificProjectSettingsComponent implements Pe
     }
 
     private static String getPropertyOrDefault(final Project project, final String key, final String fallback) {
-        return Optional.ofNullable(PropertiesService.getInstance(project))
-            .map(it -> it.getProperty(key))
-            .map(IProperty::getValue)
+        return Optional.ofNullable(PropertyService.getInstance(project))
+            .map(it -> it.findProperty(key))
             .orElse(fallback);
     }
 }

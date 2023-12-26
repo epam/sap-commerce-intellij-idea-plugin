@@ -80,13 +80,13 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.START_USERRIGHTS,
             ImpexTypes.END_USERRIGHTS -> USER_RIGHTS_KEYS
 
-            ImpexTypes.PERMISSION, -> USER_RIGHTS_HEADER_PERMISSION_PARAMETER_KEYS
+            ImpexTypes.PERMISSION -> USER_RIGHTS_HEADER_PERMISSION_PARAMETER_KEYS
 
             ImpexTypes.TYPE,
             ImpexTypes.PASSWORD,
             ImpexTypes.UID,
             ImpexTypes.MEMBEROFGROUPS,
-            ImpexTypes.TARGET, -> USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS
+            ImpexTypes.TARGET -> USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS
 
             ImpexTypes.PERMISSION_ALLOWED -> USER_RIGHTS_PERMISSION_ALLOWED_KEYS
             ImpexTypes.PERMISSION_DENIED -> USER_RIGHTS_PERMISSION_DENIED_KEYS
@@ -101,7 +101,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
     }
 
     companion object {
-        val instance: DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
+        fun getInstance(): DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
 
         val PROPERTY_COMMENT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.PROPERTY_COMMENT)
         val COLLECTION_APPEND_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX)

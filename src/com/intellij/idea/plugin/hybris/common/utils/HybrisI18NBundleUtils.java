@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,14 +23,13 @@ import com.intellij.AbstractBundle;
 import com.intellij.BundleBase;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.PropertyKey;
 
 public final class HybrisI18NBundleUtils extends AbstractBundle {
 
     public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";
 
-    private static final HybrisI18NBundleUtils BUNDLE = new HybrisI18NBundleUtils();
+    private static final AbstractBundle BUNDLE = new HybrisI18NBundleUtils();
 
     private HybrisI18NBundleUtils() {
         super(PATH_TO_BUNDLE);
@@ -49,7 +49,7 @@ public final class HybrisI18NBundleUtils extends AbstractBundle {
         return StringUtils.isBlank(message) ? key : message;
     }
 
-    @Nullable
+    @NotNull
     public static String messageFallback(
         @NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) final String key,
         @NotNull final String fallback,

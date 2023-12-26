@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class ImpexFileType : LanguageFileType(ImpexLanguage.getInstance()) {
+object ImpexFileType : LanguageFileType(ImpexLanguage) {
 
     override fun getName() = HybrisConstants.IMPEX
     override fun getDescription() = "ImpEx language file"
@@ -31,7 +32,4 @@ class ImpexFileType : LanguageFileType(ImpexLanguage.getInstance()) {
 
     override fun getIcon(): Icon = HybrisIcons.IMPEX_FILE
 
-    companion object {
-        val INSTANCE = ImpexFileType()
-    }
 }

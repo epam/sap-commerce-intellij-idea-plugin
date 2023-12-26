@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 import javax.swing.JPanel
 
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR, ImpexLanguage.getInstance()) {
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR, ImpexLanguage) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 
@@ -95,6 +95,6 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 4809264328611290133L
+        private val serialVersionUID: Long = 4809264328611290133L
     }
 }

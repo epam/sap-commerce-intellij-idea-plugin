@@ -64,7 +64,7 @@ public final class PsiUtils {
 
         if (descriptorType == ModuleDescriptorType.NONE) {
             if (shouldCheckFilesWithoutHybrisSettings(project)) {
-                return estimateIsCustomExtension(module, file) == ModuleDescriptorType.CUSTOM;
+                return estimateIsCustomExtension(file) == ModuleDescriptorType.CUSTOM;
             }
             return false;
         }
@@ -73,11 +73,11 @@ public final class PsiUtils {
     }
 
     private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
-        // at least it needs to have hybris flag
+        // at least it needs to have a hybris flag
         return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject();
     }
 
-    private static ModuleDescriptorType estimateIsCustomExtension(final Module module, @NotNull final VirtualFile file) {
+    private static ModuleDescriptorType estimateIsCustomExtension(@NotNull final VirtualFile file) {
         final File itemsFile = VfsUtilCore.virtualToIoFile(file);
         final String filePath = normalize(itemsFile.getAbsolutePath());
 

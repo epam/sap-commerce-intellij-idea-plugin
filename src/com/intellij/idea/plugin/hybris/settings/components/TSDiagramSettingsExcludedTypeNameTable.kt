@@ -61,7 +61,7 @@ class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Projec
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = -3601797303539315993L
+        private val serialVersionUID: Long = -3601797303539315993L
 
         fun getInstance(project: Project): TSDiagramSettingsExcludedTypeNameTable = with(TSDiagramSettingsExcludedTypeNameTable(project)) {
             init()
@@ -78,7 +78,7 @@ class MyListTableModel : ListTableModel<TSTypeNameHolder>() {
 
     companion object {
         @Serial
-        private const val serialVersionUID: Long = 2743342735794887335L
+        private val serialVersionUID: Long = 2743342735794887335L
     }
 }
 

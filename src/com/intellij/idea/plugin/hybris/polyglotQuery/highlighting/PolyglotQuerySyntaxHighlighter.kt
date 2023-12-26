@@ -37,7 +37,7 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        val instance: PolyglotQuerySyntaxHighlighter = ApplicationManager.getApplication().getService(PolyglotQuerySyntaxHighlighter::class.java)
+        fun getInstance(): PolyglotQuerySyntaxHighlighter = ApplicationManager.getApplication().getService(PolyglotQuerySyntaxHighlighter::class.java)
 
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 

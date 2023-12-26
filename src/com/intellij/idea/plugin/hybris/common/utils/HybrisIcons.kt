@@ -40,7 +40,6 @@ object HybrisIcons {
 
     val PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg")
 
-    val IMPEX = getIcon("/icons/impex.svg")
     val FLEXIBLE_SEARCH = getIcon("/icons/flexibleSearch.svg")
 
     val DECLARATION = getIcon("/icons/declaration.svg")

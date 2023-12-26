@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lang.ASTNode
@@ -24,7 +26,6 @@ import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 
@@ -35,19 +36,14 @@ class FlexibleSearchParserDefinition : ParserDefinition {
     override fun createElement(node: ASTNode): PsiElement = FlexibleSearchTypes.Factory.createElement(node)
     override fun createFile(viewProvider: FileViewProvider) = FlexibleSearchFile(viewProvider)
 
-    override fun getFileNodeType(): IFileElementType = FILE_NODE_TYPE
-    override fun getWhitespaceTokens() = WHITE_SPACES
-    override fun getCommentTokens() = COMMENTS
-    override fun getStringLiteralElements(): TokenSet = STRING_LITERALS
+    override fun getFileNodeType(): IFileElementType = HybrisConstants.FXS_FILE_NODE_TYPE
+    override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
+    override fun getCommentTokens() = TokenSet.create(FlexibleSearchTypes.COMMENT, FlexibleSearchTypes.LINE_COMMENT)
+    override fun getStringLiteralElements(): TokenSet = TokenSet.create(
+        FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL,
+        FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL
+    )
+
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY
 
-    companion object {
-        val FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage.INSTANCE)
-        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create(FlexibleSearchTypes.COMMENT, FlexibleSearchTypes.LINE_COMMENT)
-        val STRING_LITERALS = TokenSet.create(
-            FlexibleSearchTypes.SINGLE_QUOTE_STRING_LITERAL,
-            FlexibleSearchTypes.DOUBLE_QUOTE_STRING_LITERAL
-        )
-    }
-}
+}  

@@ -34,7 +34,7 @@ class TypeSystemConfigurableProvider(val project: Project) : ConfigurableProvide
     override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
-    class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
+    class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.ts.title"), "[y] SAP Commerce plugin Type System configuration."
     ) {
 

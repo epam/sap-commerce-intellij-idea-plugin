@@ -151,7 +151,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.selectSdk(project);
         this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
         this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
-        this.disableWrapOnType(ImpexLanguage.getInstance());
+        this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
 
@@ -311,12 +311,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
+        final var compilerConfigurator = KotlinCompilerConfigurator.Companion.getInstance();
 
         if (compilerConfigurator == null) return;
 
         indicator.setText(message("hybris.project.import.compiler.kotlin"));
-        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
+        compilerConfigurator.configure(hybrisProjectDescriptor, project);
     }
 
     private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {
@@ -522,12 +522,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final CodeStyleScheme currentScheme = CodeStyleSchemes.getInstance().getCurrentScheme();
         final CodeStyleSettings codeStyleSettings = currentScheme.getCodeStyleSettings();
         if (impexLanguage != null) {
-            CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
+            final CommonCodeStyleSettings langSettings = codeStyleSettings.getCommonSettings(impexLanguage);
             langSettings.WRAP_ON_TYPING = CommonCodeStyleSettings.WrapOnTyping.NO_WRAP.intValue;
         }
     }
 
-    private void excludeFrameworkDetection(final Project project, FacetTypeId facetTypeId) {
+    private void excludeFrameworkDetection(final Project project, final FacetTypeId facetTypeId) {
         final DetectionExcludesConfiguration configuration = DetectionExcludesConfiguration.getInstance(project);
         final FacetType facetType = FacetTypeRegistry.getInstance().findFacetType(facetTypeId);
         final FrameworkType frameworkType = FrameworkDetectionUtil.findFrameworkTypeForFacetDetector(facetType);

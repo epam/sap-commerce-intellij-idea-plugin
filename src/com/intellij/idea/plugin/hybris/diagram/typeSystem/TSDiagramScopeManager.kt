@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,10 +47,10 @@ class TSDiagramScopeManager(project: Project) : DiagramScopeManager<TSGraphNode>
     }
 
     companion object {
-        const val SCOPE_ID_CUSTOM = "Custom"
-        const val SCOPE_ID_CUSTOM_WITH_EXTENDS = "CustomWithExtends"
-        const val SCOPE_ID_OOTB = "OOTB"
-        const val SCOPE_ID_ALL = "All"
+        private const val SCOPE_ID_CUSTOM = "Custom"
+        private const val SCOPE_ID_CUSTOM_WITH_EXTENDS = "CustomWithExtends"
+        private const val SCOPE_ID_OOTB = "OOTB"
+        private const val SCOPE_ID_ALL = "All"
 
         private val scopeCustom = NamedScope(SCOPE_ID_CUSTOM, { message("hybris.diagram.ts.provider.scope.custom.only_custom") }, HybrisIcons.EXTENSION_CUSTOM, null)
         private val scopeCustomExtends = NamedScope(SCOPE_ID_CUSTOM_WITH_EXTENDS, { message("hybris.diagram.ts.provider.scope.custom.custom_with_extends") }, HybrisIcons.EXTENSION_CUSTOM, null)

@@ -96,11 +96,6 @@ object TSMetaHelper {
         "java.lang.Boolean.TRUE" == customProperty.value.rawText
             || "Boolean.TRUE" == customProperty.value.rawText
 
-    fun parseIntValue(customProperty: CustomProperty) = customProperty.value.rawText
-        ?.replace("Integer.valueOf(", "")
-        ?.replace(")", "")
-        ?.toIntOrNull()
-
     fun parseCommaSeparatedStringValue(customProperty: CustomProperty) = parseStringValue(customProperty)
         ?.split(",")
         ?.map { it.trim() }

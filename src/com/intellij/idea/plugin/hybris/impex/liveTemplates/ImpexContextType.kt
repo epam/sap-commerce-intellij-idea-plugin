@@ -23,7 +23,7 @@ import com.intellij.codeInsight.template.TemplateActionContext
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 
-class ImpexContextType : FileTypeBasedContextType("ImpEx", ImpexFileType.INSTANCE) {
+class ImpexContextType : FileTypeBasedContextType("ImpEx", ImpexFileType) {
 
     override fun isInContext(templateActionContext: TemplateActionContext) = templateActionContext.file is ImpexFile
 }

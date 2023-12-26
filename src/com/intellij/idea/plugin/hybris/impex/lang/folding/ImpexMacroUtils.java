@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,11 +29,14 @@ import com.intellij.psi.util.CachedValuesManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImpexMacroUtils {
+public final class ImpexMacroUtils {
 
     private static final Key<CachedValue<Map<String, ImpexMacroDescriptor>>> FILE_IMPEX_FOLDING_CACHE_KEY = Key.create("FILE_IMPEX_FOLDING_CACHE");
 
-    public static CachedValue<Map<String, ImpexMacroDescriptor>> getFileCache(PsiFile impexFile) {
+    private ImpexMacroUtils() {
+    }
+
+    public static CachedValue<Map<String, ImpexMacroDescriptor>> getFileCache(final PsiFile impexFile) {
         CachedValue<Map<String, ImpexMacroDescriptor>> fileModelCache = impexFile.getUserData(FILE_IMPEX_FOLDING_CACHE_KEY);
 
         if (fileModelCache == null) {

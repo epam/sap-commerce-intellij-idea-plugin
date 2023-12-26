@@ -17,10 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.codeInspection.rule.externalDependencies
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.ui.EditorNotifications
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
@@ -39,6 +41,8 @@ class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
             .parent
             ?.findSubdirectory("lib") ?: return
 
+        var unresolvedDependenciesFound = false
+
         dom.dependencies.dependencies
             .forEach {
                 val artifactId = it.artifactId.stringValue ?: return@forEach
@@ -46,13 +50,21 @@ class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
                 val library = "$artifactId-$version.jar"
 
                 if (libDirectory.findFile(library) == null) {
+                    unresolvedDependenciesFound = true
+
                     holder.createProblem(
                         it,
                         severity,
-                        HybrisI18NBundleUtils.message("hybris.inspections.ed.EdDependencyIsNotYetDownloaded.problem", library),
+                        message("hybris.inspections.ed.EdDependencyIsNotYetDownloaded.problem", library),
                         TextRange.from(0, it.xmlTag?.textLength!! - 1)
                     )
                 }
             }
+
+        holder.fileElement.file.virtualFile
+            .putUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES, unresolvedDependenciesFound)
+
+        EditorNotifications.getInstance(project).updateNotifications(holder.fileElement.file.virtualFile)
+
     }
 }

@@ -26,7 +26,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 class ImpExSpacingBuilder(
     settings: CodeStyleSettings,
     impexSettings: ImpexCodeStyleSettings
-) : SpacingBuilder(settings, ImpexLanguage.getInstance()) {
+) : SpacingBuilder(settings, ImpexLanguage) {
 
     init {
         this

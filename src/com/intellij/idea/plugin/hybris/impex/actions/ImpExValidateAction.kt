@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class ImpExValidateAction : AbstractExecuteAction(
-    ImpexFileType.INSTANCE.defaultExtension,
+    ImpexFileType.defaultExtension,
     HybrisConstants.CONSOLE_TITLE_IMPEX
 ) {
 

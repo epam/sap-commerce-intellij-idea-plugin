@@ -49,7 +49,7 @@ class ImpexHeaderTypeModifierValueCompletionProvider : CompletionProvider<Comple
             impexModifier.getLookupElements(project)
                 .forEach { result.addElement(it) }
         } else {
-            // show error message when not defined within hybris API
+            // show an error message when not defined within hybris API
             Notifications.create(
                 NotificationType.WARNING,
                 HybrisI18NBundleUtils.message("hybris.completion.error.impex.title"),

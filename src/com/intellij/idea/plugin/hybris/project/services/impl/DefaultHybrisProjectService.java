@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
-import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
@@ -33,14 +32,12 @@ import java.io.File;
 
 public class DefaultHybrisProjectService implements HybrisProjectService {
 
-    private static final Logger LOG = Logger.getInstance(DefaultHybrisProjectService.class);
-
     @Override
     public boolean isConfigModule(@NotNull final File file) {
         Validate.notNull(file);
 
         return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
-               && new File(file, HybrisConstants.LOCAL_PROPERTIES).isFile();
+               && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
     }
 
     @Override
@@ -104,21 +101,21 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     }
 
     @Override
-    public boolean isMavenModule(@NotNull final File file) {
-        Validate.notNull(file);
-        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+    public boolean isMavenModule(final File rootProjectDirectory) {
+        Validate.notNull(rootProjectDirectory);
+        if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
-        return new File(file, MavenConstants.POM_XML).isFile();
+        return new File(rootProjectDirectory, MavenConstants.POM_XML).isFile();
     }
 
     @Override
-    public boolean isEclipseModule(@NotNull final File file) {
-        Validate.notNull(file);
-        if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
+    public boolean isEclipseModule(final File rootProjectDirectory) {
+        Validate.notNull(rootProjectDirectory);
+        if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
-        return new File(file, HybrisConstants.DOT_PROJECT).isFile();
+        return new File(rootProjectDirectory, HybrisConstants.DOT_PROJECT).isFile();
     }
 
     @Override

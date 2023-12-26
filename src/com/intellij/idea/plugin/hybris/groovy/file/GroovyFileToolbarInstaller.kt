@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyFileType
 
@@ -34,7 +33,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        val instance: GroovyFileToolbarInstaller? = ApplicationManager.getApplication().getService(GroovyFileToolbarInstaller::class.java)
+        fun getInstance(): GroovyFileToolbarInstaller? = ApplicationManager.getApplication().getService(GroovyFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {

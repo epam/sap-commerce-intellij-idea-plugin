@@ -49,9 +49,10 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
     @Override
     public void configure(
-        final @NotNull ProgressIndicator indicator, final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final Project project,
-        final HybrisConfiguratorCache cache
+        final @NotNull ProgressIndicator indicator,
+        final @NotNull HybrisProjectDescriptor hybrisProjectDescriptor,
+        final @NotNull Project project,
+        final @NotNull HybrisConfiguratorCache cache
     ) {
         indicator.setText(message("hybris.project.import.runconfiguration.debug"));
         final RunManager runManager = RunManager.getInstance(project);
@@ -91,11 +92,11 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
 
     private String getDebugPort(
         @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull HybrisConfiguratorCache cache
+        @NotNull final HybrisConfiguratorCache cache
     ) {
         final var commonIdeaService = CommonIdeaService.getInstance();
         final ConfigModuleDescriptor configDescriptor = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor();
-        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES, cache);
+        String port = findPortProperty(configDescriptor, HybrisConstants.LOCAL_PROPERTIES_FILE, cache);
 
         if (port != null) {
             return port;
@@ -103,7 +104,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final PlatformModuleDescriptor platformDescriptor = commonIdeaService.getPlatformDescriptor(hybrisProjectDescriptor);
 
         if (platformDescriptor != null) {
-            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES, cache);
+            port = findPortProperty(platformDescriptor, HybrisConstants.PROJECT_PROPERTIES_FILE, cache);
 
             if (port != null) {
                 return port;
@@ -116,7 +117,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
     private String findPortProperty(
         final AbstractModuleDescriptor moduleDescriptor,
         final String fileName,
-        HybrisConfiguratorCache cache
+        final HybrisConfiguratorCache cache
     ) {
         if (moduleDescriptor == null) {
             return null;

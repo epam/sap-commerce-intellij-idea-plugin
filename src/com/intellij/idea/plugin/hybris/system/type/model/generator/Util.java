@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -58,7 +59,7 @@ public class Util {
     public static final HashMap<String, String> RESERVED_NAMES_MAP;
 
     static {
-        RESERVED_NAMES_MAP = new HashMap<String, String>();
+        RESERVED_NAMES_MAP = new HashMap<>();
         for (String aRESERVED_NAMES_TABLE : RESERVED_NAMES_TABLE) {
             // RESERVED_NAMES_MAP.put(RESERVED_NAMES_TABLE[i], RESERVED_NAMES_TABLE[i]+"_");
             // as far as there is no actual field but setters/getters:
@@ -68,15 +69,15 @@ public class Util {
     }
 
 
-    static void log(String str) {
+    static void log(final String str) {
         System.out.println(str);
     }
 
-    static void logwarn(String str) {
+    static void logwarn(final String str) {
         System.out.println("[warn] " + str);
     }
 
-    static void logerr(String str) {
+    static void logerr(final String str) {
         System.out.println("[error] " + str);
     }
 
@@ -87,7 +88,7 @@ public class Util {
             suggestion.endsWith("ch")) {
             suggestion += "es";
         } else {
-            int len = suggestion.length();
+            final int len = suggestion.length();
             if (suggestion.endsWith("y") && len > 1 && VOWELS.indexOf(suggestion.charAt(len - 2)) < 0) {
                 suggestion = suggestion.substring(0, len - 1) + "ies";
             } else {
@@ -97,7 +98,7 @@ public class Util {
         return suggestion;
     }
 
-    public static String toJavaFieldName(String xmlName) {
+    public static String toJavaFieldName(final String xmlName) {
         String rc = toJavaName(xmlName);
         if (RESERVED_NAMES_MAP.containsKey(rc)) {
             rc = RESERVED_NAMES_MAP.get(rc);
@@ -106,43 +107,43 @@ public class Util {
     }
 
 
-    public static String computeEnumConstantName(String val, String typeName) {
+    public static String computeEnumConstantName(final String val, final String typeName) {
         String id = val;
         for (int i = 1; i < id.length(); i++) {
             if (Character.isUpperCase(id.charAt(i))
                 && Character.isLowerCase(id.charAt(i - 1))) {
-                id = id.substring(0, i) + "_" + id.substring(i);
+                id = id.substring(0, i) + '_' + id.substring(i);
                 i++;
             }
         }
         id = id.toUpperCase();
         id = id.replace('.', '_').replace('-', '_');
         if (id.length() < 2 || !Character.isJavaIdentifierStart(id.charAt(0))) {
-            id = typeName + "_" + id;
+            id = typeName + '_' + id;
         }
         return id;
     }
 
 
-    public static String capitalize(String str) {
+    public static String capitalize(final String str) {
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
 
-    public static String decapitalize(String str) {
+    public static String decapitalize(final String str) {
         return Character.toLowerCase(str.charAt(0)) + str.substring(1);
     }
 
     public static String toJavaName(String xmlName) {
         xmlName = xmlName.substring(xmlName.lastIndexOf(':') + 1);
-        StringTokenizer st = new StringTokenizer(xmlName, "-");
-        StringBuffer sb = new StringBuffer(st.nextToken());
+        final StringTokenizer st = new StringTokenizer(xmlName, "-");
+        final StringBuffer sb = new StringBuffer(st.nextToken());
         while (st.hasMoreTokens()) {
             sb.append(capitalize(st.nextToken()));
         }
         return sb.toString();
     }
 
-    public static String toDefXmlTagName(XSObject xs) {
+    public static String toDefXmlTagName(final XSObject xs) {
         String xmlName = xs.getName();
         if (xmlName.endsWith(TYPE_SUFFIX)) {
             xmlName = xmlName.substring(0, xmlName.length() - 4);
@@ -150,14 +151,14 @@ public class Util {
         return xmlName;
     }
 
-    public static String toDefXmlTagName(String tname) {
+    public static String toDefXmlTagName(final String tname) {
         String xmlName = tname;
         xmlName = StringUtil.trimEnd(xmlName, TYPE_SUFFIX);
         return xmlName;
     }
 
 
-    public static boolean addToNameMap(Map<String, FieldDesc> fdMap, FieldDesc fd1, boolean merge) {
+    public static boolean addToNameMap(final Map<String, FieldDesc> fdMap, final FieldDesc fd1, final boolean merge) {
         boolean duplicates = false;
         FieldDesc fd2;
         if ((fd2 = fdMap.remove(fd1.name)) != null) {
@@ -170,13 +171,13 @@ public class Util {
                 return false;
             } else {
                 duplicates = true;
-                fd2.name = fd1.name + "1";
+                fd2.name = fd1.name + '1';
                 fd2.duplicateIndex = 1;
                 fdMap.put(fd2.name, fd2);
-                fd1.name = fd1.name + "2";
+                fd1.name = fd1.name + '2';
                 fd1.duplicateIndex = 2;
             }
-        } else if ((fd2 = fdMap.get(fd1.name + "1")) != null) {
+        } else if ((fd2 = fdMap.get(fd1.name + '1')) != null) {
             int id = 2;
             while (fdMap.containsKey(fd1.name + id)) {
                 id++;

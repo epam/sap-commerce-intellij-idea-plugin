@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import java.io.Serial
 import java.io.Serializable
 
 class HybrisRemoteConnectionSettings : Serializable {
@@ -58,7 +59,8 @@ class HybrisRemoteConnectionSettings : Serializable {
     }
 
     companion object {
-        private const val serialVersionUID: Long = -5898943547737648391L
+        @Serial
+        private val serialVersionUID: Long = -5898943547737648391L
     }
 
     enum class Type {

@@ -29,11 +29,11 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.fxs.console",
     "hybris.fxs.toolbar.left",
     "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType.instance
+    FlexibleSearchFileType
 ) {
 
     companion object {
-        val instance: FlexibleSearchFileToolbarInstaller = ApplicationManager.getApplication().getService(FlexibleSearchFileToolbarInstaller::class.java)
+        fun getInstance(): FlexibleSearchFileToolbarInstaller = ApplicationManager.getApplication().getService(FlexibleSearchFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

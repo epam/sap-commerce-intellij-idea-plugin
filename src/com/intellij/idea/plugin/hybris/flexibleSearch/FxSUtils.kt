@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
@@ -45,7 +45,7 @@ object FxSUtils {
 
     fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
         var addComma = false
-        if (fxsSettings.completion.injectCommaAfterExpression && element.text == FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER) {
+        if (fxsSettings.completion.injectCommaAfterExpression && element.text == HybrisConstants.FXS_DUMMY_IDENTIFIER) {
             addComma = PsiTreeUtil
                 .getParentOfType(
                     element,
@@ -54,7 +54,7 @@ object FxSUtils {
                     FlexibleSearchGroupByClause::class.java,
                 )
                 ?.text
-                ?.substringAfter(FlexibleSearchCompletionContributor.DUMMY_IDENTIFIER)
+                ?.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
                 ?.trim()
                 ?.takeUnless { it.startsWith(",") }
                 ?.isNotEmpty()
@@ -86,16 +86,16 @@ object FxSUtils {
                     val probableDefinition = operand.resolve()
                     if (probableDefinition is PsiVariable) {
                         probableDefinition.initializer?.let { initializer ->
-                            val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true);
+                            val value = JavaConstantExpressionEvaluator.computeConstantExpression(initializer, true)
                             if (value is String || value is Char) {
-                                computedValue += value;
+                                computedValue += value
                             }
                         }
                     }
                 } else {
-                    val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true);
+                    val value = JavaConstantExpressionEvaluator.computeConstantExpression(operand, true)
                     if (value is String || value is Char) {
-                        computedValue += value;
+                        computedValue += value
                     }
                 }
             }

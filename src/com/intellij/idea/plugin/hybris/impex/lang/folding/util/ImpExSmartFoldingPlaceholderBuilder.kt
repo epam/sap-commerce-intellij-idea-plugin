@@ -124,6 +124,6 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         const val IMPEX_PARAMETERS_PLACEHOLDER = "()"
         private val QUOTES_PATTERN = Pattern.compile("[\"\']")
 
-        val instance: ImpExSmartFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSmartFoldingPlaceholderBuilder::class.java);
+        fun getInstance(): ImpExSmartFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSmartFoldingPlaceholderBuilder::class.java)
     }
 }

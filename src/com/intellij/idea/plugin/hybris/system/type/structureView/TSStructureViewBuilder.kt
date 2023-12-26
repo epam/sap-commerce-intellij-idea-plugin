@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.structureView
 
-import com.intellij.ide.structureView.StructureView
-import com.intellij.ide.structureView.StructureViewModel
 import com.intellij.ide.structureView.newStructureView.StructureViewComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -34,15 +32,12 @@ class TSStructureViewBuilder(
     private val myDescriptor: Function<DomElement, DomService.StructureViewMode>
 ) : DomStructureViewBuilder(myFile, myDescriptor) {
 
-    override fun createStructureViewModel(editor: Editor?): StructureViewModel {
-        return TSStructureViewTreeModel(myFile, myDescriptor, editor)
-    }
+    override fun createStructureViewModel(editor: Editor?) = TSStructureViewTreeModel(myFile, myDescriptor, editor)
 
-    override fun createStructureView(fileEditor: FileEditor?, project: Project): StructureView {
-        val structureView = super.createStructureView(fileEditor, project)
-        if (structureView is StructureViewComponent) {
-            structureView.tree.isRootVisible = false
-        }
-        return structureView
+    override fun createStructureView(fileEditor: FileEditor?, project: Project) = with(super.createStructureView(fileEditor, project)) {
+        (this as? StructureViewComponent)
+            ?.tree
+            ?.isRootVisible = false
+        this
     }
 }

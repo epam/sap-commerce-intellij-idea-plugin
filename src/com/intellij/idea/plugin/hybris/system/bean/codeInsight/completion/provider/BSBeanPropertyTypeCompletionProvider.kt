@@ -58,7 +58,7 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
             ?.map { BSLookupElementFactory.buildPropertyType(it, 6.0, 6, HybrisIcons.TYPE_GENERIC, "Bean Generic") }
             ?.let { result.addAllElements(it) }
 
-        BSClassCompletionProvider.instance.addCompletionVariants(parameters, context, result)
+        BSClassCompletionProvider.getInstance().addCompletionVariants(parameters, context, result)
     }
 
     companion object {
@@ -67,6 +67,6 @@ class BSBeanPropertyTypeCompletionProvider : CompletionProvider<CompletionParame
         val primitives = setOf("boolean", "int", "long", "float", "double", "char", "short", "byte")
         val maps = setOf("java.util.Map", "java.util.SortedMap")
         val collections = setOf("java.util.Collection", "java.util.Set", "java.util.List", "java.util.Enumeration")
-        val instance: BSBeanPropertyTypeCompletionProvider = ApplicationManager.getApplication().getService(BSBeanPropertyTypeCompletionProvider::class.java)
+        fun getInstance(): BSBeanPropertyTypeCompletionProvider = ApplicationManager.getApplication().getService(BSBeanPropertyTypeCompletionProvider::class.java)
     }
 }

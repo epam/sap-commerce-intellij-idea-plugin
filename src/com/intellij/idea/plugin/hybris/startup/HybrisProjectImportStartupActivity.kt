@@ -18,20 +18,16 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
-
-private const val FINALIZE_PROJECT_IMPORT = "hybrisProjectImportFinalize"
 
 class HybrisProjectImportStartupActivity : ProjectActivity {
 
@@ -41,9 +37,9 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
             HybrisToolWindowService.getInstance(project).activateToolWindow()
 
-            project.getUserData(finalizeProjectImportKey)
+            project.getUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
                 ?.let {
-                    project.removeUserData(finalizeProjectImportKey)
+                    project.removeUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
                     syncProjectSettingsForProject(project)
 
                     PostImportConfigurator.getInstance(project).configure(
@@ -58,18 +54,13 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
     private fun syncProjectSettingsForProject(project: Project) {
         runReadAction {
-            CommonIdeaService.instance.fixRemoteConnectionSettings(project)
+            CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
         }
 
-        with (project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
+        with(project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
             hacConnectionSettingsChanged()
             solrConnectionSettingsChanged()
         }
     }
 
-
-    companion object {
-        @JvmStatic
-        val finalizeProjectImportKey: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create(FINALIZE_PROJECT_IMPORT);
-    }
 }

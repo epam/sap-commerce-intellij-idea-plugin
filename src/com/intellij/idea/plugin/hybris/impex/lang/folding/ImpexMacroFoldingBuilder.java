@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
-import com.intellij.idea.plugin.hybris.properties.PropertiesService;
+import com.intellij.idea.plugin.hybris.properties.PropertyService;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -112,7 +112,6 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (!(referencedPsi instanceof ImpexFile)) {
             return;
         }
-        ;
         Map<String, ImpexMacroDescriptor> referencedCache = ImpexMacroUtils.getFileCache(referencedPsi).getValue();
         if (referencedCache.isEmpty()) {
             final Document document = FileDocumentManager.getInstance().getDocument(referencedFile);
@@ -144,8 +143,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroLine.getContainingFile()).getValue();
         PsiElement anchor = macroLine;
         for (PsiElement child : lineElements) {
-            if (child instanceof LeafPsiElement) {
-                final LeafPsiElement leafPsiElement = (LeafPsiElement) child;
+            if (child instanceof final LeafPsiElement leafPsiElement) {
                 if (leafPsiElement.getElementType() == ImpexTypes.ASSIGN_VALUE) {
                     continue;
                 }
@@ -215,11 +213,11 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         ImpexMacroDescriptor descriptor = cache.get(text);
         if (descriptor == null) {
             final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
-            final var propertiesService = PropertiesService.getInstance(macroUsage.getProject());
+            final var propertyService = PropertyService.getInstance(macroUsage.getProject());
 
-            if (propertiesService == null) return;
+            if (propertyService == null) return;
 
-            final var iProperty = propertiesService.findMacroProperty(propertyName);
+            final var iProperty = propertyService.findMacroProperty(propertyName);
 
             if (iProperty == null) return;
 

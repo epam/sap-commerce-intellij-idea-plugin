@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCustomProper
 import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
+import java.io.Serial
 
 abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) : AbstractTable<T, TSMetaCustomProperty>(myProject) {
 
@@ -58,7 +59,8 @@ abstract class AbstractTSMetaCustomPropertiesTable<T : Any>(myProject: Project) 
     }
 
     companion object {
-        private const val serialVersionUID: Long = -6204398733396273020L
+        @Serial
+        private val serialVersionUID: Long = -6204398733396273020L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_NAME = "Name"

@@ -32,6 +32,6 @@ interface JavaCompilerConfigurator {
     )
 
     companion object {
-        val instance: JavaCompilerConfigurator = ApplicationManager.getApplication().getService(JavaCompilerConfigurator::class.java)
+        fun getInstance(): JavaCompilerConfigurator = ApplicationManager.getApplication().getService(JavaCompilerConfigurator::class.java)
     }
 }
