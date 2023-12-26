@@ -10,6 +10,7 @@
 
 ## SAP Commerce Developers Toolset ##
 
+
 <!-- Plugin description -->
 This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-platforms.html) <sup>(Hybris)</sup> integration into [IntelliJ IDEA](https://www.jetbrains.com/idea/) and another IDE based on it.
 
