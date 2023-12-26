@@ -31,7 +31,7 @@
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
-- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
+- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/877)
 
 ## [2023.3.2]
 
