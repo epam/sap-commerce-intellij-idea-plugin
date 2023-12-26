@@ -21,10 +21,14 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.idea.maven.buildtool.MavenSyncConsole
 import org.jetbrains.idea.maven.execution.SoutMavenConsole
+import org.jetbrains.idea.maven.model.MavenArtifact
+import org.jetbrains.idea.maven.model.MavenExplicitProfiles
 import org.jetbrains.idea.maven.model.MavenId
 import org.jetbrains.idea.maven.project.*
 import org.jetbrains.idea.maven.utils.MavenArtifactUtil
@@ -68,19 +72,8 @@ interface MavenUtils {
                 val project = modifiableRootModel.project
 
                 VfsUtil.findFileByIoFile(mavenDescriptorFile, false)?.let { mavenFile ->
-                    val embeddersManager = MavenEmbeddersManager(project)
-                    val mavenProjectsTree = MavenProjectsTree(project)
-                    val mavenConsole: MavenConsole = SoutMavenConsole()
-                    val mavenSyncConsole = MavenSyncConsole(project)
-
-                    val mavenArtifactDownloader = MavenArtifactDownloader(project, mavenProjectsTree, null, progressIndicator, mavenSyncConsole)
-                    val downloadResult: MavenArtifactDownloader.DownloadResult = mavenArtifactDownloader.downloadSourcesAndJavadocs(
-                        listOf(MavenProject(mavenFile)),
-                        downloadSources,
-                        downloadDocs,
-                        embeddersManager,
-                        mavenConsole
-                    )
+                    val downloadResult: MavenArtifactDownloader.DownloadResult =
+                        getDownloadResult(project, downloadSources, downloadDocs, mavenFile, progressIndicator)
                     val manager = MavenProjectsManager.getInstance(project)
 
                     if (downloadDocs) {
@@ -94,6 +87,47 @@ interface MavenUtils {
                 resultPathList.sortBy { it }
             }
             return resultPathList
+        }
+
+        private fun getDownloadResult(
+            project: Project,
+            downloadSources: Boolean,
+            downloadDocs: Boolean,
+            mavenFile: VirtualFile,
+            progressIndicator: ProgressIndicator
+        ): MavenArtifactDownloader.DownloadResult {
+
+            val embeddersManager = MavenEmbeddersManager(project)
+            val mavenProjectsTree = MavenProjectsTree(project)
+            val mavenConsole: MavenConsole = SoutMavenConsole()
+            val mavenSyncConsole = MavenSyncConsole(project)
+
+            val settings = MavenWorkspaceSettingsComponent.getInstance(project).settings
+            val generalSettings = settings.generalSettings
+            generalSettings.isNonRecursive = true
+
+            val mavenProjectReaderResult =
+                MavenProjectReader(project).readProject(generalSettings, mavenFile, mavenProjectsTree.explicitProfiles, mavenProjectsTree.projectLocator)
+
+            val dependencies: List<MavenArtifact> = mavenProjectReaderResult.mavenModel.getDependencies()
+
+            mavenProjectsTree.resetManagedFilesAndProfiles(
+                listOf(mavenFile),
+                MavenExplicitProfiles.NONE
+            )
+            mavenProjectsTree.updateAll(false, generalSettings, progressIndicator)
+
+            mavenProjectsTree.projects[0].dependencies.addAll(dependencies)
+            val mavenArtifactDownloader = MavenArtifactDownloader(project, mavenProjectsTree, null, progressIndicator, mavenSyncConsole)
+
+
+            return mavenArtifactDownloader.downloadSourcesAndJavadocs(
+                mavenProjectsTree.projects,
+                downloadSources,
+                downloadDocs,
+                embeddersManager,
+                mavenConsole
+            )
         }
 
         private fun getArtifactLibs(manager: MavenProjectsManager, mavenIds: MutableSet<MavenId>, suffix: String) =
