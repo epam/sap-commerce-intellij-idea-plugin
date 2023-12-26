@@ -65,6 +65,7 @@ object FxSUtils {
 
     fun isFlexibleSearchQuery(expression: String) = expression.replace("\n", "")
         .replace("\"\"\"", "")
+        .replace("\"", "")
         .trim()
         .startsWith("SELECT", true)
         && expression.contains(keywordsRegex)
