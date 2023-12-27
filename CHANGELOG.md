@@ -23,6 +23,9 @@
 ### `Business Process` enhancements
 - `ScriptAction` should not expect `bean` attribute [#881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/881)
 
+### `Groovy` enhancements
+- Disable actions toolbar for the test `.groovy` files located in the `groovytestsrc` folder [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
+
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 
@@ -299,7 +302,7 @@
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 - Added local fix for missing Config import processor [#711](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/711)
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
 - Dynamically toggle the actions toolbar for the opened `.groovy` files in case of settings change [#705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/705)
 - Replace the action 'Execute Groovy Script' by two actions `Execute: Commit Mode ON` and `Execute: Commit Mode OFF` [#713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/713)
@@ -373,7 +376,7 @@
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
 - Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
 - Added `Open Groovy Script` action
 - Added `Execute Groovy Script` action [#565](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/565)
