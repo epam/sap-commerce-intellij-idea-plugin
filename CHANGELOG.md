@@ -24,7 +24,7 @@
 - `ScriptAction` should not expect `bean` attribute [#881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/881)
 
 ### `Groovy` enhancements
-- Disable actions toolbar for the test `.groovy` files located in the `groovytestsrc` folder [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
+- Disable actions toolbar for the test `.groovy` files located in the `groovytestsrc` folder [#883](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/883)
 
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
