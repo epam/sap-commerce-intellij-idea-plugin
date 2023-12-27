@@ -39,6 +39,7 @@
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
 - Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
 - FlexibleSearch is not injected into Kotlin simple string literals [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
+- IntelliLang pattern fix applied multiple times on each project re-openning during the same session [#884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/884)
 
 ## [2023.3.2]
 

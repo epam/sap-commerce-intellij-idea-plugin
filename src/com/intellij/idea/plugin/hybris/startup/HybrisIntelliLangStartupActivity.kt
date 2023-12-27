@@ -59,6 +59,9 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                     .filter { targetLanguages.contains(it.injectedLanguageId) }
                     .forEach {
                         val injectionPlaces = it.injectionPlaces.toMutableSet()
+
+                        if (injectionPlaces.any { place -> place.text.contains(HybrisConstants.CLASS_FQN_FLEXIBLE_SEARCH_QUERY) }) return@forEach
+
                         val psiParameterInjectionPlace = InjectionPlace(
                             PsiJavaPatterns.psiParameter().ofMethod(
                                 PsiJavaPatterns.psiMethod().definedInClass(PsiJavaPatterns.psiClass().inheritorOf(false, HybrisConstants.CLASS_FQN_FLEXIBLE_SEARCH_QUERY))
