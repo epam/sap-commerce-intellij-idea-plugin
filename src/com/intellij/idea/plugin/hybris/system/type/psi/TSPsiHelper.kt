@@ -41,13 +41,13 @@ object TSPsiHelper {
     fun resolveItemType(element: PsiElement): XmlTag? = PsiTreeUtil.findFirstParent(element, true)
     { e -> return@findFirstParent e is XmlTag && e.name == ItemTypes.ITEMTYPE } as? XmlTag?
 
-    fun resolveAttributeHandlerId(persistanceXmlTag: XmlTag): String? {
-        val explicitAttributeHandler = persistanceXmlTag.getAttributeValue(Persistence.ATTRIBUTE_HANDLER)
+    fun resolveAttributeHandlerId(persistenceXmlTag: XmlTag): String? {
+        val explicitAttributeHandler = persistenceXmlTag.getAttributeValue(Persistence.ATTRIBUTE_HANDLER)
 
         if (explicitAttributeHandler != null) return explicitAttributeHandler
 
-        val typecode = resolveTypeCode(persistanceXmlTag) ?: return null
-        val attributeQualifier = persistanceXmlTag.parentTag?.getAttributeValue(Attribute.QUALIFIER) ?: return null
+        val typecode = resolveTypeCode(persistenceXmlTag) ?: return null
+        val attributeQualifier = persistenceXmlTag.parentTag?.getAttributeValue(Attribute.QUALIFIER) ?: return null
 
         // Magic starts here, see official documentation: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/8bb46096866910149208fae7c4ec7596.html?locale=en-US
         return typecode + "_" + attributeQualifier + "AttributeHandler"
