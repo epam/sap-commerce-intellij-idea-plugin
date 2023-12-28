@@ -28,6 +28,7 @@
 
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
+- Added alternative dynamic handler Spring bean resolution as Gutter icon [#886](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/886)
 
 ### Other
 - Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,38 +21,33 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.Persistence
+import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.xml.XmlAttribute
-import com.intellij.psi.xml.XmlAttributeValue
-import com.intellij.psi.xml.XmlToken
-import com.intellij.psi.xml.XmlTokenType
+import com.intellij.psi.util.firstLeaf
+import com.intellij.psi.xml.XmlTag
 import com.intellij.spring.SpringManager
 import com.intellij.spring.model.utils.SpringModelSearchers
-import com.intellij.util.xml.DomManager
 import javax.swing.Icon
 
-class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
+class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlTag>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.items.item.attributeHandler.name")
     override fun getIcon(): Icon = HybrisIcons.SPRING_BEAN
-    override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
-        ?.takeIf {
-            val attribute = psi.parent as? XmlAttribute ?: return@takeIf false
-            return@takeIf attribute.name == Persistence.ATTRIBUTE_HANDLER
-                && DomManager.getDomManager(psi.project).getDomElement(attribute.parent) is Persistence
-        }
+    override fun tryCast(psi: PsiElement) = (psi as? XmlTag)
+        ?.takeIf { it.localName == Attribute.PERSISTENCE }
+        ?.takeIf { it.getAttributeValue(Persistence.TYPE) == PersistenceType.DYNAMIC.value }
 
-    override fun collectDeclarations(psi: XmlAttributeValue): Collection<LineMarkerInfo<PsiElement>> {
-        val leaf = psi.childrenOfType<XmlToken>()
-            .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN } ?: return emptyList()
+    override fun collectDeclarations(psi: XmlTag): Collection<LineMarkerInfo<PsiElement>> {
         val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return emptyList()
+        val attributeHandlerId = TSPsiHelper.resolveAttributeHandlerId(psi) ?: return emptyList()
 
         val springBeans = SpringManager.getInstance(psi.project).getAllModels(module)
-            .mapNotNull { SpringModelSearchers.findBean(it, psi.value) }
+            .mapNotNull { SpringModelSearchers.findBean(it, attributeHandlerId) }
             .map { it.springBean }
             .map { it.xmlTag }
 
@@ -63,7 +58,7 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
             .setTargets(springBeans)
             .setTooltipText(message("hybris.editor.gutter.ts.items.item.attributeHandler.tooltip.text"))
             .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-            .createLineMarkerInfo(leaf)
+            .createLineMarkerInfo(psi.firstLeaf)
         return listOf(marker)
     }
 

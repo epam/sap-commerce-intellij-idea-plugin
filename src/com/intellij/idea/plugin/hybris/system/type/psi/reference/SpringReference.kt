@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,16 +35,12 @@ class SpringReference(
 
     override fun getRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
-
-        val springModels = SpringManager.getInstance(project).getAllModels(module)
-        val pointer = findBean(springModels, name) ?: return ResolveResult.EMPTY_ARRAY
-
-        pointer.beanClass ?: return ResolveResult.EMPTY_ARRAY
-
-        return PsiElementResolveResult.createResults(pointer.beanClass)
-    }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = ModuleUtilCore.findModuleForPsiElement(element)
+        ?.let { SpringManager.getInstance(project).getAllModels(it) }
+        ?.let { findBean(it, name) }
+        ?.beanClass
+        ?.let { PsiElementResolveResult.createResults(it) }
+        ?: ResolveResult.EMPTY_ARRAY
 
     override fun resolve(): PsiElement? {
         val resolveResults = multiResolve(false)

@@ -37,12 +37,13 @@ class SpringBeanReferenceConverter : CustomReferenceConverter<String>, Resolving
         element: PsiElement,
         context: ConvertContext
     ) = value.stringValue
+        ?.trim()
         ?.takeIf { it.isNotBlank() }
         ?.let {
             if (isPluginActive(SPRING_PLUGIN_ID)) {
-                arrayOf(SpringReference(element, it.trim()))
+                arrayOf(SpringReference(element, it))
             } else {
-                arrayOf(PlainXmlReference(element, value))
+                arrayOf(PlainXmlReference(element, it))
             }
         }
         ?: emptyArray()

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
+import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.impl.PsiClassImplUtil
@@ -28,8 +28,6 @@ import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.MethodSignatureUtil
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.xml.XmlTag
 
 class ModelAttributeReference(
     element: PsiElement
@@ -43,7 +41,7 @@ class ModelAttributeReference(
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val itemName = findItemTag(element).getAttributeValue("code")
+        val itemName = TSPsiHelper.resolveTypeCode(element)
             ?.takeIf { it.isNotEmpty() } ?: return ResolveResult.EMPTY_ARRAY
         val searchFieldName = (element as XmlAttributeValueImpl).value
         val project = element.project
@@ -64,9 +62,6 @@ class ModelAttributeReference(
     }
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
-
-    private fun findItemTag(element: PsiElement) = PsiTreeUtil.findFirstParent(element, true)
-    { e -> return@findFirstParent e is XmlTag && e.name == ItemTypes.ITEMTYPE } as XmlTag
 
     private fun findGetter(psiClass: PsiClass, itemName: String, searchFieldName: String): PsiMethod? {
         val methodName = if (isBooleanProperty(itemName, searchFieldName))

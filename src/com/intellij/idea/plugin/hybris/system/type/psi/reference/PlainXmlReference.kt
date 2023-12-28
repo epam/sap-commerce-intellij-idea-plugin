@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,11 +28,10 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.xml.XmlAttribute
-import com.intellij.util.xml.GenericDomValue
 
 class PlainXmlReference(
     element: PsiElement,
-    val value: GenericDomValue<String>,
+    val name: String,
     private val project: Project = element.project
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
 
@@ -41,15 +40,17 @@ class PlainXmlReference(
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val psiSearchHelper = PsiSearchHelper.getInstance(project)
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
-        val searchText = value.stringValue?.trim() ?: return ResolveResult.EMPTY_ARRAY
         val foundEls = mutableListOf<PsiElement>()
 
         psiSearchHelper.processElementsWithWord({ el, _ ->
             if (el.containingFile.name.contains("-spring") && el is XmlAttribute && el.name == "id") foundEls.add(el)
             true
         },
-            GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.moduleScope(module), XmlFileType.INSTANCE), searchText,
-            UsageSearchContext.ANY, true)
+            GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.moduleScope(module), XmlFileType.INSTANCE),
+            name,
+            UsageSearchContext.ANY,
+            true
+        )
 
         return if (foundEls.isEmpty()) ResolveResult.EMPTY_ARRAY else PsiElementResolveResult.createResults(foundEls)
     }
