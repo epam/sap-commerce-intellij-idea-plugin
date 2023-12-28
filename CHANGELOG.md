@@ -20,6 +20,12 @@
 ### `Polyglot Query` enhancements
 - Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
 
+### `Business Process` enhancements
+- `ScriptAction` should not expect `bean` attribute [#881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/881)
+
+### `Groovy` enhancements
+- Disable actions toolbar for the test `.groovy` files located in the `groovytestsrc` folder [#883](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/883)
+
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 
@@ -28,11 +34,14 @@
 - Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
 - Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
 - Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/878)
+- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/880)
 - Removed no longer working Maven Javadoc and Source downloading [#885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/885)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
-- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/877)
+- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
+- FlexibleSearch is not injected into Kotlin simple string literals [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
+- IntelliLang pattern fix applied multiple times on each project re-opening during the same session [#884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/884)
 
 ## [2023.3.2]
 
@@ -296,7 +305,7 @@
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 - Added local fix for missing Config import processor [#711](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/711)
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
 - Dynamically toggle the actions toolbar for the opened `.groovy` files in case of settings change [#705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/705)
 - Replace the action 'Execute Groovy Script' by two actions `Execute: Commit Mode ON` and `Execute: Commit Mode OFF` [#713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/713)
@@ -370,7 +379,7 @@
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
 - Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
 - Added `Open Groovy Script` action
 - Added `Execute Groovy Script` action [#565](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/565)

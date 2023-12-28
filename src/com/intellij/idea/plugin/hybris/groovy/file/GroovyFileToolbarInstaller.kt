@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.file
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
@@ -39,7 +40,9 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
         val settings = HybrisProjectSettingsComponent.getInstance(project).state
         val file = editor.virtualFile
-        val isTestFile = file.path.contains("testsrc", true)
+        val path = file.path
+        val isTestFile = path.contains(HybrisConstants.TEST_SRC_DIRECTORY, true)
+            || path.contains(HybrisConstants.GROOVY_TEST_SRC_DIRECTORY, true)
         val enabledForGroovyTestOrAllGroovyFiles = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
         return PluginCommon.isPluginActive(PluginCommon.GROOVY_PLUGIN_ID)
             && fileType == file.fileType

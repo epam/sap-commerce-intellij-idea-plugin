@@ -28,6 +28,6 @@ enum class ScriptType {
         private val cache = entries
             .associateBy { it.name }
 
-        fun byName(name: String) = cache.get(name.uppercase())
+        fun byName(name: String) = cache[name.uppercase()]
     }
 }

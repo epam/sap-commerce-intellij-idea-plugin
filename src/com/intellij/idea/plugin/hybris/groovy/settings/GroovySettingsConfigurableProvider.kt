@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.groovy.settings
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
@@ -53,7 +54,7 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                 row {
                     checkBox("Enable actions toolbar for a Test Groovy file")
                         .bindSelected(state::enableActionsToolbarForGroovyTest)
-                        .comment("Enables Actions toolbar for the groovy files located in the testsrc folder.")
+                        .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.TEST_SRC_DIRECTORY}</strong> or <strong>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</strong> directory.")
                         .enabledIf(enableActionToolbar.selected)
                         .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
                 }
