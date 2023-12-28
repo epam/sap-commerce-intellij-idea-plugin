@@ -38,7 +38,7 @@ object TSSpringHelper {
     fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
 
-        return if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) springResolveBean(module, beanId)
+        return if (PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) springResolveBean(module, beanId)
             ?.springBean
             ?.xmlTag
         else plainResolveBean(module, beanId)
@@ -48,7 +48,7 @@ object TSSpringHelper {
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
         val project = module.project
 
-        return if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) springResolveBean(module, beanId)
+        return if (PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) springResolveBean(module, beanId)
             ?.beanClass
         else plainResolveBean(module, beanId)
             ?.getAttributeValue("class")
