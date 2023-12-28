@@ -92,10 +92,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
     private JCheckBox scanThroughExternalModuleCheckbox;
     private JCheckBox excludeTestSourcesCheckBox;
     private JLabel excludeTestSourcesLabel;
-    private JCheckBox withMavenSources;
-    private JCheckBox withMavenJavadocs;
-    private JLabel withMavenJavadocsLabel;
-    private JLabel withMavenSourcesLabel;
     private JCheckBox withStandardProvidedSources;
     private JLabel withStandardProvidedSourcesLabel;
     private JCheckBox customProjectIconCheckBox;
@@ -275,8 +271,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
             ? FileUtils.toFile(this.dbDriversDirOverrideFileChooser.getText())
             : null
         );
-        projectDescriptor.setWithMavenSources(withMavenSources.isSelected());
-        projectDescriptor.setWithMavenJavadocs(withMavenJavadocs.isSelected());
         projectDescriptor.setIgnoreNonExistingSourceDirectories(ignoreNonExistingSourceDirectories.isSelected());
         projectDescriptor.setWithStandardProvidedSources(withStandardProvidedSources.isSelected());
         projectDescriptor.setJavadocUrl(this.javadocUrlTextField.getText());
@@ -345,8 +339,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         );
         hybrisProjectDescriptor.setExcludeTestSources(appSettings.getExcludeTestSources());
         hybrisProjectDescriptor.setImportCustomAntBuildFiles(appSettings.getImportCustomAntBuildFiles());
-        hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
-        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
         hybrisProjectDescriptor.setIgnoreNonExistingSourceDirectories(appSettings.getIgnoreNonExistingSourceDirectories());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
         this.importOotbModulesInReadOnlyModeCheckBox.setSelected(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
@@ -575,8 +567,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
         hybrisProjectDescriptor.setScanThroughExternalModule(settings.getScanThroughExternalModule());
 
         final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
-        hybrisProjectDescriptor.setWithMavenSources(appSettings.getWithMavenSources());
-        hybrisProjectDescriptor.setWithMavenJavadocs(appSettings.getWithMavenJavadocs());
         hybrisProjectDescriptor.setIgnoreNonExistingSourceDirectories(appSettings.getIgnoreNonExistingSourceDirectories());
         hybrisProjectDescriptor.setWithStandardProvidedSources(appSettings.getWithStandardProvidedSources());
 

@@ -283,7 +283,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
         configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
-        configuratorFactory.getJavadocModuleConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
         for (final FacetConfigurator facetConfigurator : configuratorFactory.getFacetConfigurators()) {
@@ -464,8 +463,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             appSettings.setExternalDbDriversDirectory("");
         }
 
-        appSettings.setWithMavenSources(hybrisProjectDescriptor.isWithMavenSources());
-        appSettings.setWithMavenJavadocs(hybrisProjectDescriptor.isWithMavenJavadocs());
         appSettings.setIgnoreNonExistingSourceDirectories(hybrisProjectDescriptor.isIgnoreNonExistingSourceDirectories());
         appSettings.setWithStandardProvidedSources(hybrisProjectDescriptor.isWithStandardProvidedSources());
 

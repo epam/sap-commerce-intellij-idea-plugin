@@ -52,14 +52,6 @@ class HybrisApplicationSettingsConfigurableProvider : ConfigurableProvider() {
                     .bindSelected(state::hideEmptyMiddleFolders)
             }
             row {
-                checkBox(message("hybris.project.maven.download.sources.folders"))
-                    .bindSelected(state::withMavenSources)
-            }
-            row {
-                checkBox(message("hybris.project.maven.download.javadocs.folders"))
-                    .bindSelected(state::withMavenJavadocs)
-            }
-            row {
                 checkBox(message("hybris.project.import.ignore.non.existing.sources"))
                     .bindSelected(state::ignoreNonExistingSourceDirectories)
             }

@@ -114,9 +114,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean excludeTestSources;
     protected boolean importCustomAntBuildFiles;
     protected boolean scanThroughExternalModule;
-    private boolean withMavenSources;
     private boolean withStandardProvidedSources;
-    private boolean withMavenJavadocs;
     private boolean ignoreNonExistingSourceDirectories;
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -1044,16 +1042,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public boolean isWithMavenSources() {
-        return withMavenSources;
-    }
-
-    @Override
-    public void setWithMavenSources(final boolean withMavenSources) {
-        this.withMavenSources = withMavenSources;
-    }
-
-    @Override
     public boolean isWithStandardProvidedSources() {
         return withStandardProvidedSources;
     }
@@ -1061,16 +1049,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
         this.withStandardProvidedSources = withStandardProvidedSources;
-    }
-
-    @Override
-    public boolean isWithMavenJavadocs() {
-        return withMavenJavadocs;
-    }
-
-    @Override
-    public void setWithMavenJavadocs(final boolean withMavenJavadocs) {
-        this.withMavenJavadocs = withMavenJavadocs;
     }
 
     @Override

@@ -49,9 +49,6 @@ public interface ConfiguratorFactory {
     GroupModuleConfigurator getGroupModuleConfigurator();
 
     @NotNull
-    JavadocModuleConfigurator getJavadocModuleConfigurator();
-
-    @NotNull
     ModuleSettingsConfigurator getModuleSettingsConfigurator();
 
     @NotNull

@@ -28,8 +28,6 @@ data class HybrisApplicationSettings(
     var followSymlink: Boolean = true,
     var sourceZipUsed: Boolean = true,
     var warnIfGeneratedItemsAreOutOfDate: Boolean = true,
-    var withMavenSources: Boolean = false,
-    var withMavenJavadocs: Boolean = false,
     var ignoreNonExistingSourceDirectories: Boolean = false,
     var withStandardProvidedSources: Boolean = true,
     var scanThroughExternalModule: Boolean = true,
