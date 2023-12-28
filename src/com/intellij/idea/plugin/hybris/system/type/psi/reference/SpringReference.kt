@@ -19,26 +19,18 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.module.ModuleUtilCore
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
-import com.intellij.spring.SpringManager
-import com.intellij.spring.contexts.model.SpringModel
-import com.intellij.spring.model.utils.SpringModelSearchers
 
 class SpringReference(
     element: PsiElement,
     val name: String,
-    private val project: Project = element.project
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
 
     override fun getRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = ModuleUtilCore.findModuleForPsiElement(element)
-        ?.let { SpringManager.getInstance(project).getAllModels(it) }
-        ?.let { findBean(it, name) }
-        ?.beanClass
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = TSSpringHelper.resolveBeanClass(element, name)
         ?.let { PsiElementResolveResult.createResults(it) }
         ?: ResolveResult.EMPTY_ARRAY
 
@@ -49,5 +41,4 @@ class SpringReference(
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    private fun findBean(springModels: Set<SpringModel>, name: String) = springModels.firstNotNullOfOrNull { SpringModelSearchers.findBean(it, name) }
 }

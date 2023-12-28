@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
@@ -49,8 +50,7 @@ object TSPsiHelper {
         val typecode = resolveTypeCode(persistenceXmlTag) ?: return null
         val attributeQualifier = persistenceXmlTag.parentTag?.getAttributeValue(Attribute.QUALIFIER) ?: return null
 
-        // Magic starts here, see official documentation: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/8bb46096866910149208fae7c4ec7596.html?locale=en-US
-        return typecode + "_" + attributeQualifier + "AttributeHandler"
+        return TSMetaHelper.getAttributeHandlerId(typecode, attributeQualifier)
     }
 
     fun delete(project: Project, owner: TSGlobalMetaEnum, meta: TSMetaEnum.TSMetaEnumValue) = delete(

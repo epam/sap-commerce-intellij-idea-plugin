@@ -25,13 +25,11 @@ import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.Persistence
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.editor.markup.GutterIconRenderer
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.xml.XmlTag
-import com.intellij.spring.SpringManager
-import com.intellij.spring.model.utils.SpringModelSearchers
 import javax.swing.Icon
 
 class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlTag>() {
@@ -43,19 +41,12 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
         ?.takeIf { it.getAttributeValue(Persistence.TYPE) == PersistenceType.DYNAMIC.value }
 
     override fun collectDeclarations(psi: XmlTag): Collection<LineMarkerInfo<PsiElement>> {
-        val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return emptyList()
         val attributeHandlerId = TSPsiHelper.resolveAttributeHandlerId(psi) ?: return emptyList()
-
-        val springBeans = SpringManager.getInstance(psi.project).getAllModels(module)
-            .mapNotNull { SpringModelSearchers.findBean(it, attributeHandlerId) }
-            .map { it.springBean }
-            .map { it.xmlTag }
-
-        if (springBeans.isEmpty()) return emptyList()
+        val springBeanDeclaration = TSSpringHelper.resolveBeanDeclaration(psi, attributeHandlerId) ?: return emptyList()
 
         val marker = NavigationGutterIconBuilder
             .create(icon)
-            .setTargets(springBeans)
+            .setTargets(springBeanDeclaration)
             .setTooltipText(message("hybris.editor.gutter.ts.items.item.attributeHandler.tooltip.text"))
             .setAlignment(GutterIconRenderer.Alignment.RIGHT)
             .createLineMarkerInfo(psi.firstLeaf)
