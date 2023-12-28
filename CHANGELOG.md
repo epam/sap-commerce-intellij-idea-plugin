@@ -28,7 +28,7 @@
 - Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
 - Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
 - Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/878)
-- Remove no longer working Maven Javadoc and Source downloading [#885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/885)
+- Removed no longer working Maven Javadoc and Source downloading [#885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/885)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
