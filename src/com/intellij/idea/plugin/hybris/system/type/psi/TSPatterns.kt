@@ -52,6 +52,6 @@ object TSPatterns {
         .inside(
             XmlPatterns.xmlTag()
                 .withLocalName("beans")
-                .withNamespace("http://www.springframework.org/schema/beans")
+                .withNamespace(HybrisConstants.SPRING_NAMESPACE)
         )
 }

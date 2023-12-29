@@ -327,6 +327,8 @@ object HybrisConstants {
     const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
     const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
 
+    const val SPRING_NAMESPACE = "http://www.springframework.org/schema/beans"
+
     const val QUOTE_LENGTH = 2
     // see: de.hybris.bootstrap.config.PlatformConfig -> readMaxDepthAttribute(..)
     const val DEFAULT_EXTENSIONS_PATH_DEPTH = 10

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.spring
 
 import com.intellij.ide.highlighter.XmlFileType
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
@@ -28,7 +29,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlAttribute
+import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.spring.SpringManager
 import com.intellij.spring.model.utils.SpringModelSearchers
@@ -59,23 +62,24 @@ object TSSpringHelper {
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
     private fun plainResolveBean(module: Module, beanId: String): XmlTag? {
-        val foundEls = mutableListOf<PsiElement>()
+        var foundXmlTag: XmlTag? = null
 
         val project = module.project
         PsiSearchHelper.getInstance(project).processElementsWithWord(
             { el, _ ->
-                if (el.containingFile.name.contains("-spring") && el is XmlAttribute && el.name == "id") foundEls.add(el)
+                if (el is XmlAttribute && el.name == "id" && el.parentOfType<XmlFile>()?.rootTag?.getAttributeValue("xmlns") == HybrisConstants.SPRING_NAMESPACE) {
+                    foundXmlTag = el.parent
+                    return@processElementsWithWord false
+                }
                 true
             },
-            GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.moduleScope(module), XmlFileType.INSTANCE),
+            GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.allScope(project), XmlFileType.INSTANCE),
             beanId,
             UsageSearchContext.ANY,
             true
         )
 
-        return foundEls.firstOrNull()
-            ?.let { it as? XmlAttribute }
-            ?.parent
+        return foundXmlTag
     }
 
 }
