@@ -22,18 +22,26 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
+import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
 import com.intellij.openapi.project.Project
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
  * <br></br>
  * Service-Layer Direct (SLD) mode -> https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US
+ * <br>
+ * Interceptors in the ImpEx -> https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex
  */
 enum class TypeModifier(
     override val modifierName: String,
     private val modifierValues: Set<String> = emptySet()
 ) : ImpexModifier {
 
+    DISABLE_INTERCEPTOR_TYPES("disable.interceptor.types") {
+        override fun getLookupElements(project: Project) = InterceptorType.entries
+            .map { ImpExLookupElementFactory.buildModifierValue(it.code, it.code, it.title) }
+            .toSet()
+    },
     BATCH_MODE("batchmode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     SLD_ENABLED("sld.enabled", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     CACHE_UNIQUE("cacheUnique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),

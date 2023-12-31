@@ -59,6 +59,12 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
 
     private fun getPlaceholder(impexAttribute: ImpexAttribute): String {
         val text = impexAttribute.anyAttributeName.text
+        if (quoteAwareStringEquals(text, TypeModifier.DISABLE_INTERCEPTOR_TYPES)) {
+            val foldedText = impexAttribute.anyAttributeValue
+                ?.text
+                ?: impexAttribute.text
+            return "!$foldedText"
+        }
         if (quoteAwareStringEquals(text,
                 AttributeModifier.LANG,
                 AttributeModifier.DATE_FORMAT,

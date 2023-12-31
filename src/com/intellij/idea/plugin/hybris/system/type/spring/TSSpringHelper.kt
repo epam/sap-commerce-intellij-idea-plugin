@@ -61,6 +61,7 @@ object TSSpringHelper {
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
+    // TODO: introduce custom cache logic for plain Spring Context
     private fun plainResolveBean(module: Module, beanId: String): XmlTag? {
         var foundXmlTag: XmlTag? = null
 

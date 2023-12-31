@@ -73,6 +73,19 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
+                TypeModifier.DISABLE_INTERCEPTOR_TYPES.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.interceptor.types (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_TYPES constant)",
+                        "This attribute takes a set of interceptor types (de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType) that you want to disable."
+                    )
+                    example("[disable.interceptor.types=validate]")
+                }.build()
+
                 TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
                     typeModifier(element.text)
                     externalLink(
