@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,6 @@
 package com.intellij.idea.plugin.hybris.properties.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ADVANCED_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ENV_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_OPT_CONFIG_DIR_ENV
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_RUNTIME_PROPERTIES_ENV
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROJECT_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
@@ -103,10 +96,10 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
             .mapNotNull { it as? PropertiesFile }
             .forEach { file ->
                 when (file.name) {
-                    ENV_PROPERTIES_FILE -> envPropsFile = file
-                    ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
-                    LOCAL_PROPERTIES_FILE -> localPropsFile = file
-                    PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
+                    HybrisConstants.ENV_PROPERTIES_FILE -> envPropsFile = file
+                    HybrisConstants.ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
+                    HybrisConstants.LOCAL_PROPERTIES_FILE -> localPropsFile = file
+                    HybrisConstants.PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
                 }
             }
 
@@ -135,7 +128,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         }
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
-        properties[PROPERTY_ENV_PROPERTY_PREFIX]
+        properties[HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX]
             ?.let { prefix ->
                 System.getenv()
                     .filter { it.key.startsWith(prefix) }
@@ -186,7 +179,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         result[key] = replacedValue
     }
 
-    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HYBRIS_OPT_CONFIG_DIR_ENV)
+    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HybrisConstants.HYBRIS_OPT_CONFIG_DIR_ENV)
         ?: result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value)
         ?.let { File(it) }
         ?.takeIf { it.isDirectory }
@@ -196,7 +189,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         ?.mapNotNull { toPropertiesFile(it) }
         ?.forEach { addPropertyFile(result, it) }
 
-    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HYBRIS_RUNTIME_PROPERTIES_ENV)
+    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HybrisConstants.HYBRIS_RUNTIME_PROPERTIES_ENV)
         ?.takeIf { it.isNotBlank() }
         ?.let { File(it) }
         ?.let { toPropertiesFile(it) }
@@ -217,10 +210,10 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == "project.properties" }
-        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == ENV_PROPERTIES_FILE }
-        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == ADVANCED_PROPERTIES_FILE }
-        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == LOCAL_PROPERTIES_FILE }
+            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE }
+        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
+        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
+        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
 
         return projectPropertiesScope.or(envPropertiesScope.or(advancedPropertiesScope.or(localPropertiesScope)))
     }

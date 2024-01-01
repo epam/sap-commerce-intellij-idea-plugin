@@ -21,6 +21,7 @@
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
 - Added `disable.interceptor.beans` type modifier [#890](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/890)
 - Added `disable.UniqueAttributesValidator.for.types` type modifier [#891](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/891)
+- Added reference resolution for not quoted value of the `disable.interceptor.beans` [#893](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/893)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
