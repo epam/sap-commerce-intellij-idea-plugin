@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,20 +22,17 @@ import com.intellij.codeInsight.navigation.DomGotoRelatedItem
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.navigation.GotoRelatedItem
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.spring.SpringBundle
 import com.intellij.spring.gutter.SpringBeansPsiElementCellRenderer
 import com.intellij.spring.gutter.groups.SpringGutterIconBuilder
-import com.intellij.spring.java.SpringJavaClassInfo
 import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.xml.DomSpringBean
-import com.intellij.spring.model.xml.beans.SpringBean
 import com.intellij.util.NotNullFunction
 
 /**
@@ -82,33 +79,13 @@ object TSInterceptorSpringBuilderFactory {
             gotoRelatedItemProvider
         )
         builder
-            .setTargets(getBeansLazy(clazz, typeCode))
+            .setTargets(TSSpringHelper.getBeansLazy(clazz, typeCode))
             .setEmptyPopupText(message("hybris.editor.gutter.ts.interceptor.no.matches"))
             .setPopupTitle(message("hybris.editor.gutter.ts.interceptor.choose.title"))
             .setTooltipText(message("hybris.editor.gutter.ts.interceptor.tooltip.text"))
             .setTargetRenderer { SpringBeansPsiElementCellRenderer() }
 
         return builder
-    }
-
-
-    private fun getBeansLazy(
-        clazz: PsiClass,
-        name: String?
-    ): NotNullLazyValue<MutableCollection<out SpringBeanPointer<*>>> = NotNullLazyValue.lazy {
-        SpringJavaClassInfo.getSpringJavaClassInfo(clazz).resolve().mappedDomBeans
-            .asSequence()
-            .map { it.springBean }
-            .filterIsInstance<SpringBean>()
-            .filter { bean ->
-                bean.properties.find { property ->
-                    property.propertyName == "typeCode" && name.equals(property.valueAsString, true)
-                } != null
-            }
-            .mapNotNull { bean -> bean.properties.find { property -> property.propertyName == "interceptor" } }
-            .mapNotNull { interceptor -> interceptor.refValue }
-            .sortedWith(SpringBeanPointer.DISPLAY_COMPARATOR)
-            .toMutableList()
     }
 
 }

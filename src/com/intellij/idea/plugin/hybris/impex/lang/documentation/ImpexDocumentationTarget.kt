@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,6 +73,19 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
+                TypeModifier.DISABLE_INTERCEPTOR_BEANS.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.interceptor.beans (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_BEANS constant).",
+                        "This attribute takes a set of Spring bean IDs."
+                    )
+                    example("[disable.interceptor.beans='validateCurrencyDataInterceptor']")
+                }.build()
+
                 TypeModifier.DISABLE_INTERCEPTOR_TYPES.modifierName -> impexDoc {
                     typeModifier(element.text)
                     externalLink(

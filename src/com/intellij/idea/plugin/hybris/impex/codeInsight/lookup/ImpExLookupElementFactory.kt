@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,12 @@ object ImpExLookupElementFactory {
     fun buildModifierValue(lookupElement: String, typeText: String, presentableText: String = lookupElement) = LookupElementBuilder.create(lookupElement)
         .withPresentableText(presentableText)
         .withTypeText(typeText, true)
+
+    fun buildInterceptor(lookupElement: String, beanClass: String? = "?") = LookupElementBuilder.create("'$lookupElement'")
+        .withPresentableText(lookupElement)
+        .withIcon(HybrisIcons.INTERCEPTOR)
+        .withTypeIconRightAligned(true)
+        .withTypeText(beanClass, HybrisIcons.SPRING_BEAN, true)
 
     fun buildUserRights() = LookupElementBuilder.create(
         """

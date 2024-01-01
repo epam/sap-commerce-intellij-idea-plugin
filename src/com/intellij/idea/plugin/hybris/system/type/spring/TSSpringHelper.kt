@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
+import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -34,7 +35,10 @@ import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.spring.SpringManager
+import com.intellij.spring.java.SpringJavaClassInfo
+import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
+import com.intellij.spring.model.xml.beans.SpringBean
 
 object TSSpringHelper {
 
@@ -56,6 +60,25 @@ object TSSpringHelper {
         else plainResolveBean(module, beanId)
             ?.getAttributeValue("class")
             ?.let { JavaPsiFacade.getInstance(project).findClass(it, GlobalSearchScope.allScope(project)) }
+    }
+
+    fun getBeansLazy(
+        clazz: PsiClass,
+        name: String? = null
+    ): NotNullLazyValue<MutableCollection<out SpringBeanPointer<*>>> = NotNullLazyValue.lazy {
+        SpringJavaClassInfo.getSpringJavaClassInfo(clazz).resolve().mappedDomBeans
+            .asSequence()
+            .map { it.springBean }
+            .filterIsInstance<SpringBean>()
+            .filter { bean ->
+                bean.properties.find { property ->
+                    property.propertyName == "typeCode" && (name?.equals(property.valueAsString, true) ?: true)
+                } != null
+            }
+            .mapNotNull { bean -> bean.properties.find { property -> property.propertyName == "interceptor" } }
+            .mapNotNull { interceptor -> interceptor.refValue }
+            .sortedWith(SpringBeanPointer.DISPLAY_COMPARATOR)
+            .toMutableList()
     }
 
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)

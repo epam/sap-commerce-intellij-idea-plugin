@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.search.GlobalSearchScope
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US
@@ -37,6 +41,22 @@ enum class TypeModifier(
     private val modifierValues: Set<String> = emptySet()
 ) : ImpexModifier {
 
+    DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
+        override fun getLookupElements(project: Project): Set<LookupElement> {
+            if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) return emptySet()
+
+            val interceptorClass = JavaPsiFacade.getInstance(project)
+                .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
+                ?: return emptySet()
+
+            return TSSpringHelper.getBeansLazy(interceptorClass).value
+                .mapNotNull {
+                    it.springBean.beanName
+                        ?.let { lookupElement -> ImpExLookupElementFactory.buildInterceptor(lookupElement, it.beanClass?.name) }
+                }
+                .toSet()
+        }
+    },
     DISABLE_INTERCEPTOR_TYPES("disable.interceptor.types") {
         override fun getLookupElements(project: Project) = InterceptorType.entries
             .map { ImpExLookupElementFactory.buildModifierValue(it.code, it.code, it.title) }

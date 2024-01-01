@@ -16,6 +16,7 @@
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
+- Added `disable.interceptor.beans` type modifier [#890](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/890)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
