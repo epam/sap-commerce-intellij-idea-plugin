@@ -314,7 +314,10 @@ attribute ::= any_attribute_name ASSIGN_VALUE any_attribute_value
 {pin = 1}
 
 any_attribute_name ::= (ATTRIBUTE_NAME | string)+
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeNameMixin"}
+{
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeNameMixin"
+    methods=[getAnyAttributeValue]
+}
 
 any_attribute_value ::= (
   ATTRIBUTE_VALUE
@@ -323,7 +326,10 @@ any_attribute_value ::= (
   | string
   | macro_usage_dec
 )+
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"}
+{
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"
+    methods=[getAnyAttributeName]
+}
 
 sub_type_name ::= VALUE_SUBTYPE {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubTypeNameMixin"

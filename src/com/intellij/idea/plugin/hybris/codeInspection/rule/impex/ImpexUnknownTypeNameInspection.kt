@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,9 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
@@ -38,6 +40,19 @@ class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
     private class ImpexHeaderTypeVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
 
         override fun visitHeaderTypeName(parameter: ImpexHeaderTypeName) {
+            validateReference(parameter)
+        }
+
+        override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
+            element.anyAttributeName
+                ?.text
+                ?.takeIf { it == TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES.modifierName }
+                ?: return
+
+            validateReference(element)
+        }
+
+        private fun validateReference(parameter: PsiElement) {
             if (isDocumentId(parameter.firstChild)) return
 
             val firstReference = parameter.references.firstOrNull() ?: return
@@ -48,7 +63,7 @@ class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
 
             problemsHolder.registerProblem(
                 parameter,
-                HybrisI18NBundleUtils.message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
+                message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
                 ProblemHighlightType.ERROR
             )
         }

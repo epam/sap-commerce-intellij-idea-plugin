@@ -21,16 +21,13 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.extapi.psi.ASTDelegatePsiElement
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.lang.ASTNode
-import com.intellij.psi.util.parentOfType
 import java.io.Serial
 
 abstract class ImpexAttributeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeName {
 
     override fun subtreeChanged() {
-        parentOfType<ImpexAttribute>()
-            ?.anyAttributeValue
+        anyAttributeValue
             ?.let { it as? ASTDelegatePsiElement }
             ?.subtreeChanged()
     }

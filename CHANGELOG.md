@@ -25,6 +25,9 @@
 - Added reference resolution for not quoted value of the `disable.interceptor.types` [#894](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/894)
 - Added reference resolution for not quoted value of the `disable.UniqueAttributesValidator.for.types` [#895](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/895)
 
+### `ImpEx` inspection rules
+- Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
+
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
 

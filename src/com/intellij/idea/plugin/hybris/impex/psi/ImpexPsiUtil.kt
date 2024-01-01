@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,6 +59,12 @@ fun getValueGroup(element: ImpexValueLine, columnNumber: Int): ImpexValueGroup? 
 
 fun getValueLine(element: PsiElement): ImpexValueLine? = PsiTreeUtil
     .getParentOfType(element, ImpexValueLine::class.java)
+
+fun getAnyAttributeName(element: ImpexAnyAttributeValue): ImpexAnyAttributeName? = PsiTreeUtil
+    .getPrevSiblingOfType(element, ImpexAnyAttributeName::class.java)
+
+fun getAnyAttributeValue(element: ImpexAnyAttributeName): ImpexAnyAttributeValue? = PsiTreeUtil
+    .getNextSiblingOfType(element, ImpexAnyAttributeValue::class.java)
 
 fun getFullHeaderParameter(element: ImpexValueGroup): ImpexFullHeaderParameter? = ImpexPsiUtils
     .getHeaderForValueGroup(element) as? ImpexFullHeaderParameter

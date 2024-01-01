@@ -48,4 +48,10 @@ public class ImpexAnyAttributeNameImpl extends ImpexAttributeNameMixin implement
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexString.class);
   }
 
+  @Override
+  @Nullable
+  public ImpexAnyAttributeValue getAnyAttributeValue() {
+    return ImpexPsiUtil.getAnyAttributeValue(this);
+  }
+
 }
