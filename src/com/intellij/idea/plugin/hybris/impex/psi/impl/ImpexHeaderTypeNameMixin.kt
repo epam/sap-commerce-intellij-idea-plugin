@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSSubTypeItemReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.util.PsiTreeUtil
 import java.io.Serial
 
@@ -32,7 +33,7 @@ abstract class ImpexHeaderTypeNameMixin(astNode: ASTNode) : ASTWrapperReferenceP
     override fun createReference() = ImpexTSItemReference(this)
 
     override fun subtreeChanged() {
-        putUserData(ImpexTSItemReference.CACHE_KEY, null)
+        removeUserData(ImpexTSItemReference.CACHE_KEY)
 
         val headerLine = PsiTreeUtil.getParentOfType(this, ImpexHeaderLine::class.java) ?: return
 
@@ -40,12 +41,12 @@ abstract class ImpexHeaderTypeNameMixin(astNode: ASTNode) : ASTWrapperReferenceP
         headerLine
             .fullHeaderParameterList
             .map { it.anyHeaderParameterName }
-            .forEach { it.putUserData(ImpexTSAttributeReference.CACHE_KEY, null) }
+            .forEach { it.removeUserData(ImpexTSAttributeReference.CACHE_KEY) }
 
         // reset cache for subtypes
         headerLine.valueLines
             .mapNotNull { it.subTypeName }
-            .forEach { it.putUserData(ImpexTSSubTypeItemReference.CACHE_KEY, null) }
+            .forEach { it.removeUserData(ImpexTSSubTypeItemReference.CACHE_KEY) }
     }
 
     companion object {

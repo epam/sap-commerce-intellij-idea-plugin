@@ -16,24 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCollection
-import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
+import com.intellij.extapi.psi.ASTDelegatePsiElement
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
+import com.intellij.lang.ASTNode
+import com.intellij.psi.util.parentOfType
+import java.io.Serial
 
-class CollectionResolveResult(
-    val meta: TSMetaCollection,
-    private val navigateTo: String = CollectionType.CODE
-) : TSResolveResult {
-    private val myDom: CollectionType? = meta.retrieveDom()
-    override fun getElement() = myDom
-        ?.let {
-            when (navigateTo) {
-                CollectionType.CODE -> it.code.xmlAttributeValue
-                CollectionType.ELEMENTTYPE -> it.elementType.xmlAttributeValue
-                else -> null
-            }
-        }
+abstract class ImpexAttributeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeName {
 
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
+    override fun subtreeChanged() {
+        parentOfType<ImpexAttribute>()
+            ?.anyAttributeValue
+            ?.let { it as? ASTDelegatePsiElement }
+            ?.subtreeChanged()
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 481839820107011480L
+    }
 }

@@ -15,25 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCollection
-import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
+import com.intellij.psi.ResolveResult
 
-class CollectionResolveResult(
-    val meta: TSMetaCollection,
-    private val navigateTo: String = CollectionType.CODE
-) : TSResolveResult {
-    private val myDom: CollectionType? = meta.retrieveDom()
-    override fun getElement() = myDom
-        ?.let {
-            when (navigateTo) {
-                CollectionType.CODE -> it.code.xmlAttributeValue
-                CollectionType.ELEMENTTYPE -> it.elementType.xmlAttributeValue
-                else -> null
-            }
-        }
-
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
-}
+interface TSResolveResult : ResolveResult

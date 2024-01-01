@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.*
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import java.io.Serial
@@ -37,13 +38,13 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
     private var myReference: PsiReference? = null
 
     override fun subtreeChanged() {
-        putUserData(ImpexTSAttributeReference.CACHE_KEY, null)
+        removeUserData(ImpexTSAttributeReference.CACHE_KEY)
         PsiTreeUtil.getParentOfType(this, ImpexFullHeaderParameter::class.java)
             ?.getParametersList()
             ?.flatMap { it.getParameterList() }
             ?.forEach {
-                it.putUserData(ImpexFunctionTSItemReference.CACHE_KEY, null)
-                it.putUserData(ImpexFunctionTSAttributeReference.CACHE_KEY, null)
+                it.removeUserData(ImpexFunctionTSItemReference.CACHE_KEY)
+                it.removeUserData(ImpexFunctionTSAttributeReference.CACHE_KEY)
             }
     }
 

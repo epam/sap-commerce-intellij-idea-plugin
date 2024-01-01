@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSSubTypeItemRe
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import java.io.Serial
 
 abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexSubTypeName {
@@ -56,7 +57,7 @@ abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElem
     }
 
     override fun subtreeChanged() {
-        putUserData(ImpexTSSubTypeItemReference.CACHE_KEY, null)
+        removeUserData(ImpexTSSubTypeItemReference.CACHE_KEY)
     }
 
     companion object {

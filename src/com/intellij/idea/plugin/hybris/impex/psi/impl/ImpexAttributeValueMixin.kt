@@ -27,9 +27,11 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaEnumValueReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import java.io.Serial
@@ -44,6 +46,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
     private var myReference: PsiReference? = null
 
     override fun getReferences(): Array<PsiReference> = myReference
+        ?.takeIf { it.rangeInElement.length == node.textLength }
         ?.let { arrayOf(it) }
         ?: computeReference()
 
@@ -74,6 +77,9 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
             TypeModifier.DISABLE_INTERCEPTOR_BEANS -> if (node.text.contains(disableInterceptorExclusionRegex)) return null
             else SpringReference(this, node.text)
 
+            TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES -> if (node.text.contains(disableInterceptorExclusionRegex)) return null
+            else ImpexTSItemReference(this)
+
             else -> null
         }
     }
@@ -94,6 +100,12 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
             LANG -> LanguageReference(this)
             else -> null
         }
+    }
+
+    override fun subtreeChanged() {
+        removeUserData(ImpexTSItemReference.CACHE_KEY)
+
+        myReference = null
     }
 
     override fun clone(): Any {
