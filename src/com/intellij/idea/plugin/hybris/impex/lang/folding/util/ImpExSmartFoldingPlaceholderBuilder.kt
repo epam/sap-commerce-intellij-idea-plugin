@@ -22,12 +22,12 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.firstLeaf
 import org.apache.commons.lang3.StringUtils
 import java.util.regex.Pattern
 
@@ -37,6 +37,7 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     override fun getPlaceholder(psiElement: PsiElement): String = when (psiElement) {
         is ImpexAttribute -> getPlaceholder(psiElement)
         is ImpexParameters -> getParametersPlaceholder(psiElement.parameterList)
+        is ImpexUserRightsPermissionValue -> getPlaceholder(psiElement)
         else -> psiElement.text
     }
 
@@ -55,6 +56,12 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
                 .substringBefore("[")
                 .trim() + subParameters
         }
+    }
+
+    private fun getPlaceholder(element: ImpexUserRightsPermissionValue) = when (element.firstLeaf.elementType) {
+        ImpexTypes.PERMISSION_DENIED -> "❌"
+        ImpexTypes.PERMISSION_ALLOWED -> "✅"
+        else -> StringUtils.EMPTY
     }
 
     private fun getPlaceholder(impexAttribute: ImpexAttribute) = with(impexAttribute.anyAttributeName.text) {

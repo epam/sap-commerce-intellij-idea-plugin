@@ -24,6 +24,7 @@
 - Added reference resolution for not quoted value of the `disable.interceptor.beans` [#893](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/893)
 - Added reference resolution for not quoted value of the `disable.interceptor.types` [#894](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/894)
 - Added reference resolution for not quoted value of the `disable.UniqueAttributesValidator.for.types` [#895](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/895)
+- Customized folding for `User Rights` permission flags [#897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/897)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)

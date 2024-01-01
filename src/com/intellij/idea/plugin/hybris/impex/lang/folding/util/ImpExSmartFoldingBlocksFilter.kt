@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding.util
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsPermissionValue
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
@@ -32,6 +33,7 @@ class ImpExSmartFoldingBlocksFilter : AbstractImpExFoldingFilter() {
 
     private fun isSupportedType(element: PsiElement) = element is ImpexAttribute
         || element is ImpexParameters
+        || element is ImpexUserRightsPermissionValue
         || ImpexPsiUtils.isLineBreak(element)
 
     private fun isNotBlankPlaceholder(element: PsiElement) = ImpExSmartFoldingPlaceholderBuilder.getInstance().getPlaceholder(element)
