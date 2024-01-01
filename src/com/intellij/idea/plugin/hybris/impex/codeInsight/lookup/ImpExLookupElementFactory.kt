@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
@@ -40,15 +39,14 @@ object ImpExLookupElementFactory {
 
     fun buildJavaClass(qualifiedName: String, presentableText: String) = LookupElementBuilder.create(qualifiedName)
         .withPresentableText(presentableText)
-        .withIcon(AllIcons.FileTypes.JavaClass)
+        .withIcon(HybrisIcons.JAVA_CLASS)
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
     fun buildModifierValue(lookupElement: String, typeText: String, presentableText: String = lookupElement) = LookupElementBuilder.create(lookupElement)
         .withPresentableText(presentableText)
         .withTypeText(typeText, true)
 
-    fun buildInterceptor(lookupElement: String, beanClass: String? = "?") = LookupElementBuilder.create("'$lookupElement'")
-        .withPresentableText(lookupElement)
+    fun buildInterceptor(lookupElement: String, beanClass: String? = "?") = LookupElementBuilder.create(lookupElement)
         .withIcon(HybrisIcons.INTERCEPTOR)
         .withTypeIconRightAligned(true)
         .withTypeText(beanClass, HybrisIcons.SPRING_BEAN, true)

@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupEleme
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
@@ -41,6 +43,11 @@ enum class TypeModifier(
     private val modifierValues: Set<String> = emptySet()
 ) : ImpexModifier {
 
+    DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES("disable.UniqueAttributesValidator.for.types") {
+        override fun getLookupElements(project: Project) = TSCompletionService.getInstance(project)
+            .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+            .toSet()
+    },
     DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
         override fun getLookupElements(project: Project): Set<LookupElement> {
             if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) return emptySet()

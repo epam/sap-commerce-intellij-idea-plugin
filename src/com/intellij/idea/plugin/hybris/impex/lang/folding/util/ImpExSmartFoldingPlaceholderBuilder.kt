@@ -57,58 +57,60 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         }
     }
 
-    private fun getPlaceholder(impexAttribute: ImpexAttribute): String {
-        val text = impexAttribute.anyAttributeName.text
-        if (quoteAwareStringEquals(text, TypeModifier.DISABLE_INTERCEPTOR_TYPES)) {
-            val foldedText = impexAttribute.anyAttributeValue
-                ?.text
-                ?: impexAttribute.text
-            return "!$foldedText"
-        } else if (quoteAwareStringEquals(text, TypeModifier.DISABLE_INTERCEPTOR_BEANS)) {
-            return impexAttribute.anyAttributeValue
-                ?.text
-                ?: impexAttribute.text
-        } else if (quoteAwareStringEquals(
-                text,
+    private fun getPlaceholder(impexAttribute: ImpexAttribute) = with(impexAttribute.anyAttributeName.text) {
+        when {
+            quoteAwareStringEquals(this, TypeModifier.DISABLE_INTERCEPTOR_TYPES) -> {
+                val foldedText = impexAttribute.anyAttributeValue
+                    ?.text
+                    ?: impexAttribute.text
+                "!$foldedText"
+            }
+
+            quoteAwareStringEquals(
+                this,
                 AttributeModifier.LANG,
                 AttributeModifier.DATE_FORMAT,
                 AttributeModifier.MODE,
-                AttributeModifier.NUMBER_FORMAT
-            )
-        ) {
-            return impexAttribute.anyAttributeValue
-                ?.text
-                ?: impexAttribute.text
-        } else if (quoteAwareStringEquals(
-                text,
+                AttributeModifier.NUMBER_FORMAT,
+                TypeModifier.DISABLE_INTERCEPTOR_BEANS,
+                TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES
+            ) -> {
+                impexAttribute.anyAttributeValue
+                    ?.text
+                    ?: impexAttribute.text
+            }
+
+            quoteAwareStringEquals(
+                this,
                 AttributeModifier.TRANSLATOR,
                 AttributeModifier.CELL_DECORATOR,
                 TypeModifier.PROCESSOR
-            )
-        ) {
+            ) -> {
+                val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
+                val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
 
-            val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
-            val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
+                clearedString.substringAfterLast(".")
+                    .ifBlank { value }
+            }
 
-            return clearedString.substringAfterLast(".")
-                .ifBlank { value }
-        } else {
-            return isBooleanAttributeModifier(
-                impexAttribute,
-                AttributeModifier.UNIQUE,
-                AttributeModifier.DEFAULT,
-                AttributeModifier.VIRTUAL,
-                AttributeModifier.ALLOW_NULL,
-                AttributeModifier.FORCE_WRITE,
-                AttributeModifier.IGNORE_NULL,
-                AttributeModifier.IGNORE_KEY_CASE,
-                TypeModifier.BATCH_MODE,
-                TypeModifier.SLD_ENABLED,
-                TypeModifier.IMPEX_LEGACY_MODE,
-                TypeModifier.BATCH_MODE,
-                TypeModifier.CACHE_UNIQUE
-            )
-                ?: return StringUtils.EMPTY
+            else -> {
+                isBooleanAttributeModifier(
+                    impexAttribute,
+                    AttributeModifier.UNIQUE,
+                    AttributeModifier.DEFAULT,
+                    AttributeModifier.VIRTUAL,
+                    AttributeModifier.ALLOW_NULL,
+                    AttributeModifier.FORCE_WRITE,
+                    AttributeModifier.IGNORE_NULL,
+                    AttributeModifier.IGNORE_KEY_CASE,
+                    TypeModifier.BATCH_MODE,
+                    TypeModifier.SLD_ENABLED,
+                    TypeModifier.IMPEX_LEGACY_MODE,
+                    TypeModifier.BATCH_MODE,
+                    TypeModifier.CACHE_UNIQUE
+                )
+                    ?: StringUtils.EMPTY
+            }
         }
     }
 

@@ -73,6 +73,25 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
+                TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.UniqueAttributesValidator.for.types (InterceptorExecutionPolicy#DISABLED_UNIQUE_ATTRIBUTE_VALIDATOR_FOR_ITEM_TYPES).",
+                        "This attribute takes a set of item types for which you want to disable UniqueAttributesValidator.",
+                        "To disable UniqueAttributesValidator, specify a comma-separated item types for which you want to disable it:",
+                        "The following impex specifies only one such interceptor:"
+                    )
+                    example("""
+                        INSERT_UPDATE Currency[disable.UniqueAttributesValidator.for.types='Currency'];isocode[unique=true];digits;
+                        ;EUR_Test;-2;
+                    """.trimIndent())
+                    texts("If you want to specify more than one ID, put the bean IDs in apostrophes: <'beanID'>.")
+                }.build()
+
                 TypeModifier.DISABLE_INTERCEPTOR_BEANS.modifierName -> impexDoc {
                     typeModifier(element.text)
                     externalLink(
@@ -81,9 +100,14 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                     )
                     texts(
                         "disable.interceptor.beans (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_BEANS constant).",
-                        "This attribute takes a set of Spring bean IDs."
+                        "This attribute takes a set of Spring bean IDs.",
+                        "To disable specific interceptors, specify a comma-separated bean-IDs list for the disable.interceptor.beans header attribute.",
+                        "The following impex specifies only one such interceptor:"
                     )
-                    example("[disable.interceptor.beans='validateCurrencyDataInterceptor']")
+                    example("""
+                        INSERT_UPDATE Currency[disable.interceptor.beans='validateCurrencyDataInterceptor'];isocode[unique=true];digits;
+                        ;EUR_Test;-2;
+                    """.trimIndent())
                 }.build()
 
                 TypeModifier.DISABLE_INTERCEPTOR_TYPES.modifierName -> impexDoc {
@@ -96,7 +120,10 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                         "disable.interceptor.types (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_TYPES constant)",
                         "This attribute takes a set of interceptor types (de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType) that you want to disable."
                     )
-                    example("[disable.interceptor.types=validate]")
+                    example("""
+                        INSERT_UPDATE Currency[disable.interceptor.types=validate];isocode[unique=true];digits;
+                        ;EUR_Test2;-2;
+                    """.trimIndent())
                 }.build()
 
                 TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
