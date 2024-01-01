@@ -19,12 +19,14 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier.*
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassBaseReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaEnumValueReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassReference
 import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
 import com.intellij.lang.ASTNode
@@ -35,7 +37,10 @@ import javax.lang.model.SourceVersion
 
 abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeValue {
 
-    private val disableInterceptorBeansExclusionRegex = "[,'\"]".toRegex()
+    // TODO: multi values and wrapped strings are not yet supported.
+    // see https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex
+    private val disableInterceptorExclusionRegex = "[,'\"]".toRegex()
+
     private var myReference: PsiReference? = null
 
     override fun getReferences(): Array<PsiReference> = myReference
@@ -60,15 +65,14 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
 
         return when (modifierName) {
             TypeModifier.PROCESSOR -> if (SourceVersion.isName(text)) {
-                ImpexJavaClassBaseReference(this)
+                ImpexJavaClassReference(this)
             } else null
 
-            // TODO: multi values and wrapped strings are not yet supported.
-            // see https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex
-            TypeModifier.DISABLE_INTERCEPTOR_BEANS -> {
-                if (node.text.contains(disableInterceptorBeansExclusionRegex)) return null
-                else SpringReference(this, node.text)
-            }
+            TypeModifier.DISABLE_INTERCEPTOR_TYPES -> if (node.text.contains(disableInterceptorExclusionRegex)) return null
+            else ImpExJavaEnumValueReference(this, HybrisConstants.CLASS_FQN_INTERCEPTOR_TYPE)
+
+            TypeModifier.DISABLE_INTERCEPTOR_BEANS -> if (node.text.contains(disableInterceptorExclusionRegex)) return null
+            else SpringReference(this, node.text)
 
             else -> null
         }
@@ -84,7 +88,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
         return when (modifierName) {
             TRANSLATOR,
             CELL_DECORATOR -> if (SourceVersion.isName(text)) {
-                ImpexJavaClassBaseReference(this)
+                ImpexJavaClassReference(this)
             } else null
 
             LANG -> LanguageReference(this)

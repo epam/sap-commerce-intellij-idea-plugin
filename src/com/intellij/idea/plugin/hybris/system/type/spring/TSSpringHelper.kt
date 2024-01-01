@@ -85,6 +85,7 @@ object TSSpringHelper {
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
     // TODO: introduce custom cache logic for plain Spring Context
+    // current implementation leads to SLOW operations warnings.
     private fun plainResolveBean(module: Module, beanId: String): XmlTag? {
         var foundXmlTag: XmlTag? = null
 

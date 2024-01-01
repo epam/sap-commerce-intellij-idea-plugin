@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -279,6 +279,7 @@ object HybrisConstants {
     const val CLASS_FQN_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_FQN_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_NAME_ENUM = "HybrisEnumValue"
+    const val CLASS_FQN_INTERCEPTOR_TYPE = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType"
     const val CLASS_FQN_INTERCEPTOR_MAPPING = "de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping"
     const val CLASS_FQN_ANNOTATION_ACCESSOR = "de.hybris.bootstrap.annotations.Accessor"
     const val CLASS_FQN_CONFIG_IMPORT_PROCESSOR = "de.hybris.platform.commerceservices.impex.impl.ConfigPropertyImportProcessor"
