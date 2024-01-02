@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,20 +37,17 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
     }
 
     override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        if (element is ImpexUserRights) {
-            element.delete()
-            return
-        }
-
-        val header = when (element) {
-            is ImpexHeaderLine -> element
+        val tableRange = when (element) {
+            is ImpexUserRights -> element.textRange
+            is ImpexHeaderLine -> element.tableRange
             is ImpexValueLine -> PsiTreeUtil.getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
+                ?.tableRange
                 ?: return
 
             else -> return
         }
 
-        with(header.tableRange) {
+        with(tableRange) {
             editor.selectionModel.setSelection(startOffset, endOffset)
         }
     }
