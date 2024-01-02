@@ -119,6 +119,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidProcessorValueInspection" displayName="[y] Invalid processor modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidProcessorValueInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>

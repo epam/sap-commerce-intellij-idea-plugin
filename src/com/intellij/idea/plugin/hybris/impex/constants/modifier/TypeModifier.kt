@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -86,6 +88,13 @@ enum class TypeModifier(
     companion object {
         private val CACHE = entries.associateBy { it.modifierName }
 
-        fun getByModifierName(modifierName: String) = CACHE[modifierName]
+        fun getModifier(modifierName: String) = CACHE[modifierName]
+        fun getModifier(modifierValue: ImpexAnyAttributeValue?) = modifierValue
+            ?.anyAttributeName
+            ?.let { getModifier(it) }
+
+        fun getModifier(modifierName: ImpexAnyAttributeName?) = modifierName
+            ?.text
+            ?.let { CACHE[it] }
     }
 }
