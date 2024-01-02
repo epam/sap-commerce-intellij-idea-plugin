@@ -123,6 +123,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidProcessorValueInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidTranslatorValueInspection" displayName="[y] Invalid translator modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidTranslatorValueInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>

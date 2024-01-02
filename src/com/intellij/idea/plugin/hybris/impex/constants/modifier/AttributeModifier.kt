@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,8 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.openapi.project.Project
 
 /**
@@ -75,6 +77,13 @@ enum class AttributeModifier(
     companion object {
         private val CACHE = entries.associateBy { it.modifierName }
 
-        fun getByModifierName(modifierName: String) = CACHE[modifierName]
+        fun getModifier(modifierName: String) = CACHE[modifierName]
+        fun getModifier(modifierValue: ImpexAnyAttributeValue?) = modifierValue
+            ?.anyAttributeName
+            ?.let { getModifier(it) }
+
+        fun getModifier(modifierName: ImpexAnyAttributeName?) = modifierName
+            ?.text
+            ?.let { CACHE[it] }
     }
 }

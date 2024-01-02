@@ -30,6 +30,7 @@
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
 - Use inverted comma for attribute modifiers [#899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/899)
 - Inspect a value set for `processor` modifier [#900](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/900)
+- Inspect a value set for `translator` modifier [#901](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/901)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)

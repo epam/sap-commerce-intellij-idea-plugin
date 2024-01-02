@@ -90,7 +90,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
         val modifierName = (parent as? ImpexAttribute)
             ?.anyAttributeName
             ?.text
-            ?.let { AttributeModifier.getByModifierName(it) }
+            ?.let { AttributeModifier.getModifier(it) }
             ?: return null
 
         return when (modifierName) {

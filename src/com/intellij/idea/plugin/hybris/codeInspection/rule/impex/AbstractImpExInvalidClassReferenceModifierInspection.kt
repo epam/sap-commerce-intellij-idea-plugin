@@ -24,42 +24,64 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassReference
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.impl.PsiClassImplUtil
 
-abstract class AbstractImpExInvalidClassReferenceModifierInspection(private val typeModifier: TypeModifier, private val targetInterface: String) : LocalInspectionTool() {
+abstract class AbstractImpExInvalidClassReferenceModifierInspection(
+    private val modifier: ImpexModifier,
+    private val targetType: String,
+) : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
 
         override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
-            if (TypeModifier.getModifier(element) != typeModifier) return
+            if (modifier.modifierName != element.anyAttributeName?.text) return
             val reference = element.reference
 
-            if (reference == null) {
+            if (reference == null) unresolvedReference(element)
+            else if (reference is ImpexJavaClassReference) {
+                val psiClass = reference.resolve() as? PsiClass
+
+                if (psiClass == null) {
+                    unresolvedReference(element)
+                    return
+                }
+
+                val superClass = PsiClassImplUtil.getAllSuperClassesRecursively(psiClass)
+                    .firstOrNull { it.qualifiedName == targetType }
+
+                if (superClass != null) return
+
                 holder.registerProblem(
                     element,
-                    message("hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.unresolved", typeModifier.modifierName, element.text),
+                    message(
+                        "hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.wrongImplementation",
+                        modifier.modifierName,
+                        element.text,
+                        targetType
+                    ),
                     ProblemHighlightType.ERROR
                 )
-            } else if (reference is ImpexJavaClassReference) {
-                val psiClass = reference.resolve() as? PsiClass ?: return
-                val interfaceType = psiClass.implementsListTypes
-                    .firstOrNull { it.internalCanonicalText == targetInterface }
-                if (interfaceType == null) {
-                    holder.registerProblem(
-                        element,
-                        message("hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.wrongImplementation", typeModifier.modifierName, element.text, targetInterface),
-                        ProblemHighlightType.ERROR
-                    )
-                }
             }
+        }
+
+        private fun unresolvedReference(element: ImpexAnyAttributeValue) {
+            holder.registerProblem(
+                element,
+                message("hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.unresolved", modifier.modifierName, element.text),
+                ProblemHighlightType.ERROR
+            )
         }
     }
 }
 
 class ImpExInvalidProcessorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(TypeModifier.PROCESSOR, HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
+class ImpExInvalidTranslatorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(AttributeModifier.TRANSLATOR, HybrisConstants.CLASS_FQN_IMPEX_TRANSLATOR)
