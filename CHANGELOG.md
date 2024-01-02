@@ -28,6 +28,7 @@
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
+- Use inverted comma for attribute modifiers [#899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/899)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
