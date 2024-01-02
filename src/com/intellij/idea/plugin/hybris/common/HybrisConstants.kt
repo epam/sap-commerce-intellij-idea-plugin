@@ -394,6 +394,8 @@ object HybrisConstants {
     val RESERVED_TYPE_CODES_FILE = FileUtilRt.toSystemDependentName("resources/core/unittest/reservedTypecodes.txt")
     @JvmField
     val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
+    @JvmField
+    val HYBRIS_SERVER_BASH_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.bat")
 
     @JvmField
     val PLATFORM_MODULE = FileUtilRt.toSystemDependentName("hybris/bin/platform")

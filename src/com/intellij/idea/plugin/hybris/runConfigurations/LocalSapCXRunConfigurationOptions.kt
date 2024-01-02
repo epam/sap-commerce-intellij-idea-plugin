@@ -20,12 +20,17 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.components.StoredProperty
+import com.intellij.openapi.project.Project
+import org.apache.commons.lang3.SystemUtils
 
 
-class LocalSapCXRunConfigurationOptions : RunConfigurationOptions() {
+class LocalSapCXRunConfigurationOptions() : RunConfigurationOptions() {
+
 
     fun getScriptName(): String {
-        return HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        val hybrisServerScript: String = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
+
+        return hybrisServerScript
     }
 }

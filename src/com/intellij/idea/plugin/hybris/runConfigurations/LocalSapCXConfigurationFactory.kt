@@ -21,15 +21,24 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.project.Project
 
 class LocalSapCXConfigurationFactory(type: ConfigurationType) : ConfigurationFactory(type) {
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
-        TODO("Not yet implemented")
+        return LocalSapCXRunConfiguration(project, this, "SAP CX Start")
     }
 
-    override fun getOptionsClass(): Class<out BaseState>? {
+    override fun getOptionsClass(): Class<out BaseState> {
         return LocalSapCXRunConfigurationOptions::class.java
+    }
+
+    override fun getId(): String {
+        return super.getName()
+    }
+
+    override fun isApplicable(project: Project): Boolean {
+        return HybrisProjectSettingsComponent.getInstance(project).isHybrisProject();
     }
 }

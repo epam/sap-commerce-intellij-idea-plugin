@@ -25,11 +25,14 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.util.ui.FormBuilder
+import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -41,8 +44,21 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
         return super.getOptions() as LocalSapCXRunConfigurationOptions
     }
 
-    fun getScriptName(): String {
-        return options.getScriptName()
+    fun getScriptPath(): String {
+        val basePath = project.basePath!!
+        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val hybrisDirectory = settings.hybrisDirectory!!
+        val script = options.getScriptName()
+
+        return Paths.get(basePath, hybrisDirectory, script).toString()
+    }
+
+    fun getWorkDirectory(): String {
+        val basePath = project.basePath!!
+        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val hybrisDirectory = settings.hybrisDirectory!!
+
+        return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> {
@@ -52,11 +68,12 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     override fun getState(
         executor: Executor,
         environment: ExecutionEnvironment
-    ): RunProfileState? {
+    ): RunProfileState {
         return object : CommandLineState(environment) {
             @Throws(ExecutionException::class)
             override fun startProcess(): ProcessHandler {
-                val commandLine = GeneralCommandLine(options.getScriptName())
+                val commandLine = GeneralCommandLine(getScriptPath())
+                commandLine.setWorkDirectory(getWorkDirectory())
                 val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
                 ProcessTerminatedListener.attach(processHandler)
                 return processHandler
@@ -82,7 +99,7 @@ private class LocalSapCXRunSettingsEditor : SettingsEditor<LocalSapCXRunConfigur
     }
 
     override fun resetEditorFrom(runConfiguration: LocalSapCXRunConfiguration) {
-        scriptPathField.text = runConfiguration.getScriptName()
+        scriptPathField.text = runConfiguration.getScriptPath()
     }
 
     override fun applyEditorTo(runConfiguration: LocalSapCXRunConfiguration) {
