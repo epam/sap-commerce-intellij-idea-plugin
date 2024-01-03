@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import com.intellij.execution.configurations.RunConfigurationOptions
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.execution.configurations.RunConfigurationModule
 import com.intellij.openapi.project.Project
-import org.apache.commons.lang3.SystemUtils
+import org.jetbrains.annotations.NotNull
 
-
-class LocalSapCXRunConfigurationOptions() : RunConfigurationOptions() {
-
-
-    fun getScriptName(): String {
-
-        val hybrisServerScript: String = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
-
-        return hybrisServerScript
-    }
+class LocalSapCXConfigurationModule(@NotNull project: Project) : RunConfigurationModule(project) {
 }

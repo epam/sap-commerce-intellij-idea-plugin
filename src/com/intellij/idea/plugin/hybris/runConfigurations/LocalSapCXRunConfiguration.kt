@@ -25,30 +25,36 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.target.LanguageRuntimeType
+import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
+import com.intellij.execution.target.TargetEnvironmentConfiguration
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.util.ui.FormBuilder
+import org.apache.commons.lang3.SystemUtils
+import org.jdom.Element
 import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JPanel
 
 
-class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory, name: String) : RunConfigurationBase<LocalSapCXConfigurationType>(project, factory, name) {
+class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory) :
+    ModuleBasedConfiguration<LocalSapCXConfigurationModule, Element>(LocalSapCXConfigurationModule(project), factory), TargetEnvironmentAwareRunProfile {
 
-
-    override fun getOptions(): LocalSapCXRunConfigurationOptions {
-        return super.getOptions() as LocalSapCXRunConfigurationOptions
+    override fun getValidModules(): MutableCollection<Module> {
+        return allModules
     }
 
     fun getScriptPath(): String {
         val basePath = project.basePath!!
         val settings = HybrisProjectSettingsComponent.getInstance(project).state
         val hybrisDirectory = settings.hybrisDirectory!!
-        val script = options.getScriptName()
+        val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
         return Paths.get(basePath, hybrisDirectory, script).toString()
     }
@@ -69,6 +75,7 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
         executor: Executor,
         environment: ExecutionEnvironment
     ): RunProfileState {
+        TODO("Change to TargetEnvironmentAwareRunProfileState")
         return object : CommandLineState(environment) {
             @Throws(ExecutionException::class)
             override fun startProcess(): ProcessHandler {
@@ -81,6 +88,21 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
         }
     }
 
+    override fun canRunOn(target: TargetEnvironmentConfiguration): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDefaultLanguageRuntimeType(): LanguageRuntimeType<*>? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDefaultTargetName(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun setDefaultTargetName(targetName: String?) {
+        TODO("Not yet implemented")
+    }
 
 }
 

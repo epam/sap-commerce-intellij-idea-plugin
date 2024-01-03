@@ -18,17 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import com.intellij.execution.configurations.ConfigurationTypeBase
-import com.intellij.icons.AllIcons
+import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.SimpleConfigurationType
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NotNullLazyValue
 
 
 class LocalSapCXConfigurationType :
-    ConfigurationTypeBase("SAPCX", "SAP CX Start", "Start local SAP CX Platform Configuration Type", NotNullLazyValue.createValue { HybrisIcons.Y_LOGO_BLUE }) {
+    SimpleConfigurationType("SAPCX", "SAP CX Start", "Start local SAP CX Platform Configuration Type", NotNullLazyValue.createValue { HybrisIcons.Y_LOGO_BLUE }) {
 
-    init {
-        addFactory(LocalSapCXConfigurationFactory(this))
+    override fun createTemplateConfiguration(project: Project): RunConfiguration {
+        return LocalSapCXRunConfiguration(project, this)
     }
+
+
 
 }
