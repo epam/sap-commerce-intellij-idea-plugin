@@ -131,9 +131,13 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidCellDecoratorValueInspection"/>
 
-        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidModeValueInspection" displayName="[y] Invalid mode modifier value"
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidModeModifierValueInspection" displayName="[y] Invalid mode modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidModeValueInspection"/>
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidModeModifierValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidBooleanModifierValueInspection" displayName="[y] Invalid boolean modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidBooleanModifierValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"

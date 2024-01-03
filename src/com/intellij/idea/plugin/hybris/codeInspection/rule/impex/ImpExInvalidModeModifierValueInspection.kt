@@ -28,7 +28,9 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.psi.PsiElementVisitor
 
-class ImpExInvalidModeValueInspection : LocalInspectionTool() {
+class ImpExInvalidModeModifierValueInspection : LocalInspectionTool() {
+
+    private val allowedValues = setOf("append", "merge", "remove")
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
@@ -38,7 +40,7 @@ class ImpExInvalidModeValueInspection : LocalInspectionTool() {
 
             val text = element.text
 
-            if (text in setOf("append", "merge", "remove")) return
+            if (text in allowedValues) return
 
             holder.registerProblem(
                 element,
