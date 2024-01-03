@@ -33,7 +33,8 @@
 - Inspect a value set for `translator` modifier [#901](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/901)
 - Inspect a value set for `cellDecorator` modifier [#902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/902)
 - Inspect a value set for `mode` modifier [#903](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/903)
-- Inspect a value set for modifier of boolean type [#904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/904)
+- Inspect a value set for modifier of a boolean type [#904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/904)
+- Disable `Unique attribute without an index` for `pk` attribute [#905](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/905)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
