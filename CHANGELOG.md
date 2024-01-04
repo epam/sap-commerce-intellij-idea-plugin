@@ -4,7 +4,7 @@
 - Added `extends` information for Type System Item completion results [#892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/892)
 
 ### `Project Build` enhancements
-- Re-generate the code and `models.jar` during the `Build` -> `Rebuild Project` [#907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/907)
+- Re-generate the code and `models.jar` before the `Build` -> `Rebuild Project` [#907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/907)
 
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
