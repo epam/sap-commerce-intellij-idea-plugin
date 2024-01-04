@@ -226,7 +226,7 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         val bootstrapDir = (System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
-            ?: platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY).resolve("bin"))
+            ?: platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY).resolve(HybrisConstants.BIN_DIRECTORY))
 
         val modelsFile = bootstrapDir.resolve(HybrisConstants.JAR_MODELS).toFile()
         if (modelsFile.exists()) modelsFile.delete()

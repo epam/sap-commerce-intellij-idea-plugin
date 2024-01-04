@@ -21,6 +21,7 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <compiler.task execute="BEFORE" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectBeforeCompilerTask"/>
+        <compiler.task execute="AFTER" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectAfterCompilerTask"/>
 
         <defaultLiveTemplates file="liveTemplates/Java.xml"/>
 
