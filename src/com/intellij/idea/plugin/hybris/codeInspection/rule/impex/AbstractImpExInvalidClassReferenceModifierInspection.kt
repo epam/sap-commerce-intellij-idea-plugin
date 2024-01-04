@@ -39,7 +39,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
     private val targetTypes: Set<String>,
     private val targetShortTypes: String = targetTypes
         .map { it.substringAfterLast(".") }
-        .joinToString { "'$it'" }
+        .joinToString(" or ") { "'$it'" }
 ) : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
