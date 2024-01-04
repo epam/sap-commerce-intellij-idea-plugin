@@ -87,7 +87,8 @@ class GroovyLanguageInjector : LanguageInjector {
                     import de.hybris.platform.jalo.c2l.* 
                     import de.hybris.platform.jalo.user.*
                     import de.hybris.platform.jalo.flexiblesearch.* 
-                    import de.hybris.platform.jalo.product.ProductManager;
+                    import de.hybris.platform.jalo.product.ProductManager
+                    def impex = new de.hybris.platform.impex.jalo.imp.ImpExImportReader(null);
                     
                 """.trimIndent(), null
             )
