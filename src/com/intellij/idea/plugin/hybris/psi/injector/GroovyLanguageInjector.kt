@@ -56,7 +56,13 @@ class GroovyLanguageInjector : LanguageInjector {
 
         val hostString = StringUtil.unquoteString(impexString.text).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(groovyMarker)) {
-            injectLanguage(injectionPlacesRegistrar, impexString.textLength - offset - quoteSymbolLength, offset)
+            val markerOffset = setOf("beforeeach:", "aftereach:", "if:")
+                .map { it to impexString.text.indexOf(it, 0, true) }
+                .firstOrNull { it.second > -1 }
+                ?.let { it.first.length + it.second }
+                ?: offset
+
+            injectLanguage(injectionPlacesRegistrar, impexString.textLength - markerOffset - quoteSymbolLength, markerOffset)
         } else if (LanguageInjectionUtil.getLanguageForInjection(impexString) == ScriptType.GROOVY) {
             injectLanguage(injectionPlacesRegistrar, impexString.textLength - quoteSymbolLength - 1, quoteSymbolLength)
         }
