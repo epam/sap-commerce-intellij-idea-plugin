@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -68,12 +68,28 @@ class GroovyLanguageInjector : LanguageInjector {
         }
     }
 
+    /**
+     * Imports are taken from official docs: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/640172cbde9149ab8eb818180544020a.html?locale=en-US
+     */
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
         val language = GroovyLanguage
         try {
             injectionPlacesRegistrar.addPlace(
                 language,
-                TextRange.from(offset, length), null, null
+                TextRange.from(offset, length), """
+                    import de.hybris.platform.core.*
+                    import de.hybris.platform.core.model.user.* 
+                    import de.hybris.platform.core.HybrisEnumValue
+                    import de.hybris.platform.util.* 
+                    import de.hybris.platform.impex.jalo.* 
+                    import de.hybris.platform.jalo.*
+                    import de.hybris.platform.jalo.c2l.Currency
+                    import de.hybris.platform.jalo.c2l.* 
+                    import de.hybris.platform.jalo.user.*
+                    import de.hybris.platform.jalo.flexiblesearch.* 
+                    import de.hybris.platform.jalo.product.ProductManager;
+                    
+                """.trimIndent(), null
             )
         } catch (e: ProcessCanceledException) {
             // ignore
