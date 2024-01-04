@@ -47,6 +47,7 @@
 - Inspect a value set for `disable.interceptor.types` modifier [#916](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/916)
 - Inspect a value set for modifier of a boolean type [#904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/904)
 - Disable `Unique attribute without an index` for `pk` attribute [#905](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/905)
+- Allow various Translators for `translator` modifier [#917](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/917)
 
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)

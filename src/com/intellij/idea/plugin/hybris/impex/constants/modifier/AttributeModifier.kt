@@ -66,7 +66,7 @@ enum class AttributeModifier(
     },
     TRANSLATOR("translator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            ?.getImplementationsForClass(HybrisConstants.CLASS_FQN_IMPEX_TRANSLATOR)
+            ?.getImplementationsForClass(HybrisConstants.CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR)
             ?: emptySet()
     };
 

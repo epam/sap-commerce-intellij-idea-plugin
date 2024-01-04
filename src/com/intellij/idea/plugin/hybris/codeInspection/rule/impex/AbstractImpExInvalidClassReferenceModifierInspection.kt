@@ -36,7 +36,10 @@ import com.intellij.psi.impl.PsiClassImplUtil
 
 abstract class AbstractImpExInvalidClassReferenceModifierInspection(
     private val modifier: ImpexModifier,
-    private val targetType: String,
+    private val targetTypes: Set<String>,
+    private val targetShortTypes: String = targetTypes
+        .map { it.substringAfterLast(".") }
+        .joinToString { "'$it'" }
 ) : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -56,7 +59,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
                 }
 
                 val superClass = PsiClassImplUtil.getAllSuperClassesRecursively(psiClass)
-                    .firstOrNull { it.qualifiedName == targetType }
+                    .firstOrNull { targetTypes.contains(it.qualifiedName) }
 
                 if (superClass != null) return
 
@@ -66,7 +69,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
                         "hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.wrongImplementation",
                         modifier.modifierName,
                         element.text,
-                        targetType
+                        targetShortTypes
                     ),
                     ProblemHighlightType.ERROR
                 )
@@ -83,6 +86,21 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
     }
 }
 
-class ImpExInvalidProcessorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(TypeModifier.PROCESSOR, HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
-class ImpExInvalidTranslatorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(AttributeModifier.TRANSLATOR, HybrisConstants.CLASS_FQN_IMPEX_TRANSLATOR)
-class ImpExInvalidCellDecoratorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(AttributeModifier.CELL_DECORATOR, HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
+class ImpExInvalidProcessorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
+    TypeModifier.PROCESSOR,
+    setOf(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
+)
+
+class ImpExInvalidCellDecoratorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
+    AttributeModifier.CELL_DECORATOR,
+    setOf(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
+)
+
+class ImpExInvalidTranslatorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
+    AttributeModifier.TRANSLATOR,
+    setOf(
+        HybrisConstants.CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR,
+        HybrisConstants.CLASS_FQN_IMPEX_HEADER_TRANSLATOR,
+        HybrisConstants.CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR
+    )
+)
