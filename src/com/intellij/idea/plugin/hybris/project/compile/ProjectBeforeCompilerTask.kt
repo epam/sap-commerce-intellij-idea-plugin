@@ -46,6 +46,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.jar.JarOutputStream
+import kotlin.io.path.exists
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
@@ -91,6 +92,9 @@ class ProjectBeforeCompilerTask : CompileTask {
         coreModuleRoot: Path,
         vmExecutablePath: String,
     ): Boolean {
+        val pathToBeDeleted = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY).resolve(HybrisConstants.GEN_SRC_DIRECTORY)
+        cleanDirectory(context, pathToBeDeleted)
+
         val classpath = setOf(
             coreModuleRoot.resolve("lib").resolve("*"),
             platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY).resolve(HybrisConstants.BIN_DIRECTORY).resolve("ybootstrap.jar")
@@ -137,12 +141,28 @@ class ProjectBeforeCompilerTask : CompileTask {
         return result
     }
 
+    private fun cleanDirectory(context: CompileContext, pathToBeDeleted: Path) {
+        if (!pathToBeDeleted.exists()) return
+
+        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started cleaning the: $pathToBeDeleted", null, -1, -1)
+
+        Files.walk(pathToBeDeleted)
+            .sorted(Comparator.reverseOrder())
+            .map(Path::toFile)
+            .forEach(File::delete)
+
+        context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Cleaned: $pathToBeDeleted", null, -1, -1)
+    }
+
     private fun invokeCodeCompilation(
         context: CompileContext,
         platformModuleRoot: Path,
         platformModule: Module,
         sdkVersion: JavaSdkVersion
     ): Boolean {
+        val pathToBeDeleted = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY).resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY)
+        cleanDirectory(context, pathToBeDeleted)
+
         try {
             context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started compilation of the generated code...", null, -1, -1)
             val sourceFiles = mutableSetOf<File>()
