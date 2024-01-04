@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.projectRoots.JavaSdk
 import com.intellij.openapi.projectRoots.JavaSdkType
 import com.intellij.openapi.projectRoots.JavaSdkVersion
@@ -53,7 +52,10 @@ import kotlin.io.path.name
 class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
-        if (!context.isRebuild) return true
+        val modules = context.compileScope.affectedModules
+        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+            ?: return true
+
         val settings = HybrisProjectSettingsComponent.getInstance(context.project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) {
@@ -61,9 +63,6 @@ class ProjectBeforeCompilerTask : CompileTask {
             return true
         }
 
-        val modules = ModuleManager.getInstance(context.project).modules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
-            ?: return true
         val platformModuleRoot = platformModule.root()
             ?: return true
         val coreModuleRoot = modules

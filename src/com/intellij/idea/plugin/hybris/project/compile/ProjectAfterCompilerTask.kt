@@ -23,20 +23,21 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.vfs.LocalFileSystem
 
 class ProjectAfterCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
-        if (!context.isRebuild) return true
+        val modules = context.compileScope.affectedModules
+        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+            ?: return true
+
         val settings = HybrisProjectSettingsComponent.getInstance(context.project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) return true
 
-        val bootstrapDirectory = ModuleManager.getInstance(context.project).modules
-            .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
-            ?.root()
+        val bootstrapDirectory = platformModule
+            .root()
             ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
             ?: return true
 

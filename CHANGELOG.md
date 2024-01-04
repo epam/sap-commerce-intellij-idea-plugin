@@ -8,6 +8,7 @@
 - Added configurable setting to toggle automatic re-generation of the code [#907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/907)
 - Clean `modelclasses` and `gensrc` directories before the code generation [#909](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/909)
 - Trigger file system change after the code generation [#910](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/910)
+- Trigger code generation even if there are modules of various types [#911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/911)
 
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
