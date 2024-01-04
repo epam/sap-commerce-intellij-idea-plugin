@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -81,6 +81,9 @@ object ImpexHighlighterColors {
     val COLLECTION_APPEND_PREFIX = key("IMPEX_COLLECTION_APPEND_PREFIX", HighlighterColors.TEXT)
     val COLLECTION_REMOVE_PREFIX = key("IMPEX_COLLECTION_REMOVE_PREFIX", HighlighterColors.TEXT)
     val COLLECTION_MERGE_PREFIX = key("IMPEX_COLLECTION_MERGE_PREFIX", HighlighterColors.TEXT)
+    val FIELD_VALUE_JAR_PREFIX = key("IMPEX_FIELD_VALUE_JAR_PREFIX", HighlighterColors.TEXT)
+    val FIELD_VALUE_FILE_PREFIX = key("IMPEX_FIELD_VALUE_FILE_PREFIX", HighlighterColors.TEXT)
+    val FIELD_VALUE_ZIP_PREFIX = key("IMPEX_FIELD_VALUE_ZIP_PREFIX", HighlighterColors.TEXT)
 
     private fun key(externalName: String, fallbackAttributeKey: TextAttributesKey) = TextAttributesKey.createTextAttributesKey(externalName, fallbackAttributeKey)
 }

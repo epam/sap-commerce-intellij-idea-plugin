@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -170,8 +170,25 @@
     </option>
     <option name="IMPEX_MULTI_LINE_SEPARATOR">
         <value>
-            <option name="FOREGROUND" value="CF8E6D"/>
             <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+    <option name="IMPEX_FIELD_VALUE_JAR_PREFIX">
+        <value>
+            <option name="FONT_TYPE" value="1"/>
+            <option name="FOREGROUND" value="FFFFFF"/>
+        </value>
+    </option>
+    <option name="IMPEX_FIELD_VALUE_FILE_PREFIX">
+        <value>
+            <option name="FONT_TYPE" value="1"/>
+            <option name="FOREGROUND" value="FFFFFF"/>
+        </value>
+    </option>
+    <option name="IMPEX_FIELD_VALUE_ZIP_PREFIX">
+        <value>
+            <option name="FONT_TYPE" value="1"/>
+            <option name="FOREGROUND" value="FFFFFF"/>
         </value>
     </option>
 </list>

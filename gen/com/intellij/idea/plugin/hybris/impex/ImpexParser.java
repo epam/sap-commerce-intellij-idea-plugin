@@ -1,6 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ *
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -1573,6 +1577,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // FIELD_VALUE
+  //     | FIELD_VALUE_JAR_PREFIX
+  //     | FIELD_VALUE_FILE_PREFIX
+  //     | FIELD_VALUE_ZIP_PREFIX
   //     | FIELD_VALUE_URL
   //     | BOOLEAN
   //     | DIGIT
@@ -1589,6 +1596,9 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_dec")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_JAR_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_FILE_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_ZIP_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_URL);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);

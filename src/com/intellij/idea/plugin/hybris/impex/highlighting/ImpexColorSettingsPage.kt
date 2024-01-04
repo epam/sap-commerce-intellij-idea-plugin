@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -86,6 +86,9 @@ remove Address; firstname; owner(Principal.uid | AbstractOrder.code); Hans; admi
 
 INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.MediaDataTranslator]; mime[default = 'image/png']
 ; ; ${"$"}contentResource/images/logo.png
+; jar:/impex/testfiles/import/media/dummymedia/img_05.jpg ;
+; zip:ext/impex/resources/impex/testfiles/import/media/dummymedia/test_9-10.zip&img_09.jpg ;
+; file:ext/impex/resources/impex/testfiles/import/media/dummymedia/img 02.jpg ;
 
 @@@@@
 """
@@ -134,6 +137,9 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Value//Digit", ImpexHighlighterColors.DIGIT),
         AttributesDescriptor("Value//<null> value", ImpexHighlighterColors.FIELD_VALUE_NULL),
         AttributesDescriptor("Value//<ignore> value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
+        AttributesDescriptor("Value//jar: prefix", ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX),
+        AttributesDescriptor("Value//file: prefix", ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
+        AttributesDescriptor("Value//zip: prefix", ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
 
         AttributesDescriptor("Bean shell//Marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
         AttributesDescriptor("Bean shell//Body", ImpexHighlighterColors.BEAN_SHELL_BODY),

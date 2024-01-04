@@ -222,6 +222,9 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <FIELD_VALUE> {
+    "zip:"                                             { return ImpexTypes.FIELD_VALUE_ZIP_PREFIX; }
+    "file:"                                             { return ImpexTypes.FIELD_VALUE_FILE_PREFIX; }
+    "jar:"                                             { return ImpexTypes.FIELD_VALUE_JAR_PREFIX; }
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpexTypes.MULTILINE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
