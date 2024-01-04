@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -108,9 +108,10 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 ?: return null
 
             return finEnumClass(project, enumName)
-                .takeIf { it.isNotEmpty() }
-                ?.mapNotNull { it.allFields.find { field -> field.name.equals(name, true) } }
-                ?.toTypedArray()
+                .firstOrNull()
+                ?.allFields
+                ?.find { it.name.equals(name, true) }
+                ?.let { arrayOf(it) }
                 ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it) }
                 ?: unknown
         }

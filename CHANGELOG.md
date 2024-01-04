@@ -74,6 +74,7 @@
 - FlexibleSearch is not injected into Kotlin simple string literals [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
 - IntelliLang pattern fix applied multiple times on each project re-opening during the same session [#884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/884)
 - `Select ImpEx Statement` removes User Rights block [#898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/898)
+- Fixed `items.xml` Enum value inlay icon when value is not yet generated [#908](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/908)
 
 ## [2023.3.2]
 
