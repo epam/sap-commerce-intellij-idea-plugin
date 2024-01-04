@@ -135,6 +135,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidModeModifierValueInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidDisableInterceptorTypesModifierValueInspection" displayName="[y] Invalid disable.interceptor.types modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidDisableInterceptorTypesModifierValueInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidBooleanModifierValueInspection" displayName="[y] Invalid boolean modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidBooleanModifierValueInspection"/>
