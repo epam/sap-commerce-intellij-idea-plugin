@@ -18,27 +18,22 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import com.intellij.execution.ExecutionException
 import com.intellij.execution.Executor
-import com.intellij.execution.configurations.*
-import com.intellij.execution.process.ProcessHandler
-import com.intellij.execution.process.ProcessHandlerFactory
-import com.intellij.execution.process.ProcessTerminatedListener
+import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.ModuleBasedConfiguration
+import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.target.LanguageRuntimeType
 import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
 import com.intellij.execution.target.TargetEnvironmentConfiguration
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.util.ui.FormBuilder
-import org.apache.commons.lang3.SystemUtils
 import org.jdom.Element
-import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -50,23 +45,6 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
         return allModules
     }
 
-    fun getScriptPath(): String {
-        val basePath = project.basePath!!
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
-        val hybrisDirectory = settings.hybrisDirectory!!
-        val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
-
-        return Paths.get(basePath, hybrisDirectory, script).toString()
-    }
-
-    fun getWorkDirectory(): String {
-        val basePath = project.basePath!!
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
-        val hybrisDirectory = settings.hybrisDirectory!!
-
-        return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
-    }
-
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> {
         return LocalSapCXRunSettingsEditor()
     }
@@ -75,35 +53,23 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
         executor: Executor,
         environment: ExecutionEnvironment
     ): RunProfileState {
-        TODO("Change to TargetEnvironmentAwareRunProfileState")
-        return object : CommandLineState(environment) {
-            @Throws(ExecutionException::class)
-            override fun startProcess(): ProcessHandler {
-                val commandLine = GeneralCommandLine(getScriptPath())
-                commandLine.setWorkDirectory(getWorkDirectory())
-                val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
-                ProcessTerminatedListener.attach(processHandler)
-                return processHandler
-            }
-        }
+        return LocalSapCXRunProfileState(executor, environment, project)
     }
 
     override fun canRunOn(target: TargetEnvironmentConfiguration): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun getDefaultLanguageRuntimeType(): LanguageRuntimeType<*>? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun getDefaultTargetName(): String? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun setDefaultTargetName(targetName: String?) {
-        TODO("Not yet implemented")
     }
-
 }
 
 private class LocalSapCXRunSettingsEditor : SettingsEditor<LocalSapCXRunConfiguration>() {
@@ -121,11 +87,11 @@ private class LocalSapCXRunSettingsEditor : SettingsEditor<LocalSapCXRunConfigur
     }
 
     override fun resetEditorFrom(runConfiguration: LocalSapCXRunConfiguration) {
-        scriptPathField.text = runConfiguration.getScriptPath()
+        // do Nothing
     }
 
     override fun applyEditorTo(runConfiguration: LocalSapCXRunConfiguration) {
-//        runConfiguration.setScriptName(scriptPathField.text)
+        // runConfiguration.setScriptName(scriptPathField.text)
     }
 
     override fun createEditor(): JComponent {
