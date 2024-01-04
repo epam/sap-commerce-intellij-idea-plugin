@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -54,8 +54,8 @@ import javax.swing.Icon
  */
 class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
 
-    val fileLabel = "Navigate to the Generated File"
-    val propertyLabel = "Navigate to the Generated Property"
+    private val fileLabel = "Navigate to the Generated File"
+    private val propertyLabel = "Navigate to the Generated Property"
 
     val unknown: InlayPresentation by lazy {
         val icon = factory.icon(AllIcons.General.ExclMark)
@@ -104,7 +104,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
             ?.let { finEnumClass(project, it) }
             ?.let { it.allFields.find { field -> field.name.equals(element.text, true) } }
             ?.let { arrayOf(it) }
-            ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it, fileLabel) }
+            ?.let { inlayPresentation(HybrisIcons.BS_ENUM_VALUE, it, fileLabel) }
             ?: unknown
 
         parent.name == Bean.PROPERTY && attribute == Property.NAME -> element.parentOfType<XmlTag>()

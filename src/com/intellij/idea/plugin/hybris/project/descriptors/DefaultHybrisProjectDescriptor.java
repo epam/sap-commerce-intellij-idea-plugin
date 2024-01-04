@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -264,7 +264,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return expectedConfigDir;
         }
 
-        String hybrisConfig = (String) properties.get(HybrisConstants.HYBRIS_CONFIG_DIR_ENV);
+        String hybrisConfig = (String) properties.get(HybrisConstants.ENV_HYBRIS_CONFIG_DIR);
         if (hybrisConfig == null) {
             return expectedConfigDir;
         }

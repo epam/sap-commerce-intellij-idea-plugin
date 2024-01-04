@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -272,7 +272,6 @@ object HybrisConstants {
     const val HYBRIS = "[y]"
     const val DEBUG_MODEL_RENDERER_PREFIX = HYBRIS
     const val SEARCH_SCOPE_Y_PREFIX = HYBRIS
-    const val HYBRIS_DATA_DIR_ENV = "HYBRIS_DATA_DIR"
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
 
@@ -289,6 +288,7 @@ object HybrisConstants {
     const val CLASS_FQN_IMPEX_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.AbstractValueTranslator"
     const val CLASS_FQN_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
+    const val CLASS_FQN_CODE_GENERATOR = "de.hybris.bootstrap.codegenerator.CodeGenerator"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"
 
     const val MODEL_SUFFIX = "Model"
@@ -320,9 +320,13 @@ object HybrisConstants {
     const val APPLICATION_CONTEXT_SPRING_FILES = "application-context"
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
     const val GLOBAL_CONTEXT_SPRING_FILES = "global-context"
-    const val HYBRIS_CONFIG_DIR_ENV = "HYBRIS_CONFIG_DIR"
-    const val HYBRIS_RUNTIME_PROPERTIES_ENV = "HYBRIS_RUNTIME_PROPERTIES"
-    const val HYBRIS_OPT_CONFIG_DIR_ENV = "HYBRIS_OPT_CONFIG_DIR"
+
+    const val ENV_HYBRIS_CONFIG_DIR = "HYBRIS_CONFIG_DIR"
+    const val ENV_HYBRIS_RUNTIME_PROPERTIES = "HYBRIS_RUNTIME_PROPERTIES"
+    const val ENV_HYBRIS_OPT_CONFIG_DIR = "HYBRIS_OPT_CONFIG_DIR"
+    const val ENV_HYBRIS_DATA_DIR = "HYBRIS_DATA_DIR"
+    const val ENV_HYBRIS_BOOTSTRAP_BIN_DIR = "HYBRIS_BOOTSTRAP_BIN_DIR"
+
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
     const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,9 @@ package com.intellij.idea.plugin.hybris.common
 
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.toNioPathOrNull
+import java.nio.file.Path
 
 infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
 
@@ -28,3 +31,8 @@ fun Module.yExtensionName(): String = YFacet.get(this)
     ?.state
     ?.name
     ?: this.name.substringAfterLast(".")
+
+fun Module.root(): Path? = this
+    .let { ModuleRootManager.getInstance(it).contentRoots }
+    .firstOrNull()
+    ?.toNioPathOrNull()

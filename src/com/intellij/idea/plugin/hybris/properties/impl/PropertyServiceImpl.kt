@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -179,7 +179,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         result[key] = replacedValue
     }
 
-    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HybrisConstants.HYBRIS_OPT_CONFIG_DIR_ENV)
+    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HybrisConstants.ENV_HYBRIS_OPT_CONFIG_DIR)
         ?: result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value)
         ?.let { File(it) }
         ?.takeIf { it.isDirectory }
@@ -189,7 +189,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         ?.mapNotNull { toPropertiesFile(it) }
         ?.forEach { addPropertyFile(result, it) }
 
-    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HybrisConstants.HYBRIS_RUNTIME_PROPERTIES_ENV)
+    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HybrisConstants.ENV_HYBRIS_RUNTIME_PROPERTIES)
         ?.takeIf { it.isNotBlank() }
         ?.let { File(it) }
         ?.let { toPropertiesFile(it) }
