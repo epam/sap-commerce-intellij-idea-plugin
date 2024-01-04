@@ -69,7 +69,8 @@ class GroovyLanguageInjector : LanguageInjector {
     }
 
     /**
-     * Imports are taken from official docs: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/640172cbde9149ab8eb818180544020a.html?locale=en-US
+     * Imports are taken from official docs: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/640172cbde9149ab8eb818180544020a.html?locale=en-US.<br>
+     * `line` is actually a Map returned by the de.hybris.platform.impex.jalo.AbstractCodeLine.
      */
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
         val language = GroovyLanguage
@@ -88,6 +89,8 @@ class GroovyLanguageInjector : LanguageInjector {
                     import de.hybris.platform.jalo.user.*
                     import de.hybris.platform.jalo.flexiblesearch.* 
                     import de.hybris.platform.jalo.product.ProductManager
+
+                    def line = new java.util.HashMap<>();
                     def impex = new de.hybris.platform.impex.jalo.imp.ImpExImportReader(null);
                     
                 """.trimIndent(), null

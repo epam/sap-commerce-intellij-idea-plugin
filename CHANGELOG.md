@@ -35,6 +35,7 @@
 - Improved Groovy language injection based on control markers [#912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/912)
 - Prepend default imports for injected Groovy language [#913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/913)
 - Inject `impex` variable type of `ImpExImportReader` into Groovy language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
+- Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
