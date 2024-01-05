@@ -87,7 +87,10 @@ class ProjectBeforeCompilerTask : CompileTask {
             ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }
-        if (!invokeModelsJarCreation(context, bootstrapDirectory)) return false
+        if (!invokeModelsJarCreation(context, bootstrapDirectory)) {
+            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+            return false
+        }
 
         return true;
     }
