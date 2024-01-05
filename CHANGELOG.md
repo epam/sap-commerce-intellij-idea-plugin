@@ -67,6 +67,9 @@
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 - Added alternative dynamic attribute handler Spring bean resolution as Gutter icon [#886](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/886)
 
+### `beans.xml` enhancements
+- Added inlay hints for enum values [#920](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/920)
+
 ### `Spring Framework` enhancements
 - Improved Spring bean resolution in IntelliJ IDEA Ultimate [#887](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/887)
 - Improved Spring bean resolution in IntelliJ IDEA Community [#888](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/888)
