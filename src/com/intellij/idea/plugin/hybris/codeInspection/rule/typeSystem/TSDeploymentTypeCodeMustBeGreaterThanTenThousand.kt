@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.openapi.project.Project
 
@@ -24,7 +25,7 @@ class TSDeploymentTypeCodeMustBeGreaterThanTenThousand : AbstractTSDeploymentTyp
 
     override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
         ?.toIntOrNull()
-        ?.let { it in 1..10000 }
+        ?.let { it in 1..HybrisConstants.TS_TYPECODE_MIN_ALLOWED }
         ?: false
 
 }
