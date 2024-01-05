@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.BaseDiagramProvider
 import com.intellij.diagram.DiagramPresentationModel
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class ModuleDepDiagramProvider : BaseDiagramProvider<ModuleDepGraphNode>() {
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisModuleDependencies"
     override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name")
-    override fun getActionIcon(isPopup: Boolean): Icon = AllIcons.Actions.DiagramDiff
+    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.DIAGRAM_DIFF
 
     override fun createVisibilityManager() = ModuleDepDiagramVisibilityManager()
     override fun createNodeContentManager() = ModuleDepDiagramNodeContentManager()

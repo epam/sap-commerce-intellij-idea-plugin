@@ -18,10 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.hints
 
-import com.intellij.codeInsight.hints.FactoryInlayHintsCollector
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
-import com.intellij.icons.AllIcons
+import com.intellij.idea.plugin.hybris.codeInsight.hints.AbstractSystemAwareInlayHintsCollector
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
@@ -31,7 +30,6 @@ import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.pom.Navigatable
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -42,26 +40,13 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.refactoring.suggested.startOffset
-import com.intellij.util.OpenSourceUtil
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
-import java.awt.Cursor
-import javax.swing.Icon
 
 /**
  * use com.intellij.codeInsight.hints.presentation.PresentationFactory#referenceOnHover and show popup from clickListener
  */
-class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(editor) {
-
-    private val fileLabel = "Navigate to the Generated File"
-    private val propertyLabel = "Navigate to the Generated Property"
-
-    val unknown: InlayPresentation by lazy {
-        val icon = factory.icon(AllIcons.General.ExclMark)
-        val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip("Not yet generated", inset)
-        factory.withCursorOnHover(tooltip, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
-    }
+class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHintsCollector(editor) {
 
     override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
         val project = editor.project ?: return false
@@ -96,17 +81,17 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 ?.allFields
                 ?.find { it.name.equals(element.text, true) }
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_ENUM_VALUE, it, fileLabel) }
+                ?.let { inlayPresentation(HybrisIcons.BS_ENUM_VALUE, it, "Navigate to the Generated Enum Value") }
                 ?: unknown
 
             parent.localName == Beans.ENUM && attribute?.name == Bean.CLASS -> finEnumClass(project, element.text)
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it, fileLabel) }
+                ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it) }
                 ?: unknown
 
             parent.localName == Beans.BEAN && attribute?.name == Bean.CLASS -> findItemClass(project, element.text)
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it, fileLabel) }
+                ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it) }
                 ?: unknown
 
             parent.localName == Bean.PROPERTY && attribute?.name == Property.NAME -> element.parentOfType<XmlTag>()
@@ -116,19 +101,11 @@ class BeansXmlInlayHintsCollector(editor: Editor) : FactoryInlayHintsCollector(e
                 ?.allFields
                 ?.find { it.name == parent.getAttributeValue(Property.NAME) }
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_PROPERTY, it, propertyLabel) }
+                ?.let { inlayPresentation(HybrisIcons.BS_PROPERTY, it, "Navigate to the Generated Bean Property") }
                 ?: unknown
 
             else -> null
         }
-    }
-
-    private fun inlayPresentation(i: Icon, navigatables: Array<out Navigatable>, label: String): InlayPresentation {
-        val icon = factory.icon(i)
-        val inset = factory.inset(icon, right = 5, top = 3)
-        val tooltip = factory.withTooltip(label, inset)
-
-        return factory.referenceOnHover(tooltip) { _, _ -> OpenSourceUtil.navigate(*navigatables) }
     }
 
     private fun findItemClass(project: Project, classFqn: String) = JavaPsiFacade.getInstance(project)
