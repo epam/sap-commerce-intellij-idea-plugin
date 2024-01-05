@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,15 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -42,6 +45,8 @@ import com.intellij.util.xml.DomElement
 import org.apache.commons.collections4.CollectionUtils
 import java.util.*
 import java.util.concurrent.Semaphore
+import kotlin.io.path.exists
+import kotlin.io.path.inputStream
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only single Thread can perform its initialization/update
@@ -60,9 +65,30 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
 
     private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
+    private val myReservedTypeCodes by lazy {
+        ModuleManager.getInstance(myProject)
+            .modules
+            .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CORE }
+            ?.root()
+            ?.resolve(HybrisConstants.RESERVED_TYPE_CODES_FILE)
+            ?.takeIf { it.exists() }
+            ?.let {
+                it.inputStream().use { fis ->
+                    Properties().also { p -> p.load(fis) }
+                }
+            }
+            ?.entries
+            ?.mapNotNull {
+                val key = it.key.toString().toIntOrNull() ?: return@mapNotNull null
+                key to it.value.toString()
+            }
+            ?.associate { it.first to it.second }
+            ?: emptyMap()
+    }
 
     @Volatile
     private var building: Boolean = false
+
     @Volatile
     private var initialized: Boolean = false
     private val semaphore = Semaphore(1)
@@ -163,12 +189,14 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
     override fun getNextAvailableTypeCode(): Int = getMetaModel().getDeploymentTypeCodes().keys
         .asSequence()
         .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
-        .filter { it !in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
+        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
+        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
+        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
+        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
+        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
         .maxOf { it } + 1
+
+    override fun getReservedTypeCodes() = myReservedTypeCodes
 
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]

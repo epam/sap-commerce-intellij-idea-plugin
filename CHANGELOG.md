@@ -67,6 +67,9 @@
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
 - Added alternative dynamic attribute handler Spring bean resolution as Gutter icon [#886](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/886)
 
+### `items.xml` inspection rules
+- Inspect deployment code according to `reservedTypecodes.txt` [#922](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/922)
+
 ### `beans.xml` enhancements
 - Added inlay hints for enum values [#920](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/920)
 

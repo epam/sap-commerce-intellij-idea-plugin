@@ -372,6 +372,11 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForProcessingExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.key"
+                         shortName="TSDeploymentTypeCodeReservedInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedInspection"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTypeCodeReservedForLegacyXPrintExtension.key"
                          shortName="DeploymentTypeCodeReservedForLegacyXPrintExtension" level="ERROR"
