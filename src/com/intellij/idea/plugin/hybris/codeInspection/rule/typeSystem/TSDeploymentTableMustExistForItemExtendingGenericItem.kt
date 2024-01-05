@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddTagQuickFix
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
@@ -49,7 +50,7 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
         severity: HighlightSeverity
     ) {
         // skip non-ComposedType
-        if ("ViewType".equals(dom.metaType.stringValue, true) || "ComposedType".equals(dom.metaType.stringValue, true)) return
+        if (HybrisConstants.TS_META_VIEW_TYPE.equals(dom.metaType.stringValue, true) || HybrisConstants.TS_META_COMPOSED_TYPE.equals(dom.metaType.stringValue, true)) return
 
         val itemTypeCode = dom.code.stringValue ?: return
 
@@ -76,21 +77,28 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
 
         if (countDeploymentTablesInParents > 0) return
 
-        val attributes = sortedMapOf(
-            Deployment.TABLE to itemTypeCode,
-            Deployment.TYPE_CODE to TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString(),
-        )
+        val fix = getOptionalFix(project, itemTypeCode)
 
-        holder.createProblem(
-            dom,
-            severity,
-            displayName,
-            getTextRange(dom),
+        if (fix == null) {
+            holder.createProblem(dom, severity, displayName, getTextRange(dom))
+        } else {
+            holder.createProblem(dom, severity, displayName, getTextRange(dom), fix)
+        }
+    }
+
+    private fun getOptionalFix(project: Project, itemTypeCode: String) = TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode()
+        ?.toString()
+        ?.let {
+            sortedMapOf(
+                Deployment.TABLE to itemTypeCode,
+                Deployment.TYPE_CODE to it,
+            )
+        }
+        ?.let {
             XmlAddTagQuickFix(
                 tagName = ItemType.DEPLOYMENT,
                 insertAfterTag = ItemType.DESCRIPTION,
-                attributes = attributes
+                attributes = it
             )
-        )
-    }
+        }
 }

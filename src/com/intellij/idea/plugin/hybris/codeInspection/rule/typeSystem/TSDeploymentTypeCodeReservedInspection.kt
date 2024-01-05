@@ -17,52 +17,25 @@
  */
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.model.deployments
-import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
-import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSDeploymentTypeCodeReservedInspection : AbstractCustomOnlyTSInspection() {
+class TSDeploymentTypeCodeReservedInspection : AbstractTSDeploymentTypeCodeInspection() {
 
-    override fun inspect(
-        project: Project,
-        dom: Items,
-        holder: DomElementAnnotationHolder,
-        helper: DomHighlightingHelper,
-        severity: HighlightSeverity
-    ) {
-        dom.deployments.forEach { check(it, project, holder, severity) }
-    }
+    override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
+        ?.toIntOrNull()
+        ?.let { TSMetaModelAccess.getInstance(project).getReservedTypeCodes().containsKey(it) }
+        ?: false
 
-    private fun check(
-        dom: Deployment,
-        project: Project,
-        holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
-    ) {
-        val typeCode = dom.typeCode.stringValue?.toIntOrNull() ?: return
-
-        val reservedTypeCodes = TSMetaModelAccess.getInstance(project).getReservedTypeCodes()
-        val reservedType = reservedTypeCodes[typeCode] ?: return
-
-        holder.createProblem(
-            dom.typeCode,
-            severity,
-            message(
-                "hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.text",
-                typeCode.toString(),
-                reservedType
-            ),
-            XmlUpdateAttributeQuickFix(
-                Deployment.TYPE_CODE,
-                TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString()
-            )
-        )
+    override fun customMessage(project: Project, dom: Deployment): String? {
+        val typeCode = dom.typeCode.stringValue
+            ?: return null
+        val typeCodeInt = typeCode.toIntOrNull()
+            ?: return null
+        val reservedType = TSMetaModelAccess.getInstance(project).getReservedTypeCodes()[typeCodeInt]
+            ?: return null
+        return message("hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.text", typeCode, reservedType)
     }
 }

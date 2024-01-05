@@ -186,15 +186,19 @@ class TSMetaModelAccessImpl(private val myProject: Project) : TSMetaModelAccess 
         ?: findMetaMapByName(name)
         ?: findMetaAtomicByName(name)
 
-    override fun getNextAvailableTypeCode(): Int = getMetaModel().getDeploymentTypeCodes().keys
-        .asSequence()
-        .filter { it < HybrisConstants.TS_TYPECODE_RANGE_PROCESSING.first }
-        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_B2BCOMMERCE }
-        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
-        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
-        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
-        .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
-        .maxOf { it } + 1
+    override fun getNextAvailableTypeCode(): Int? {
+        val projectTypeCodes = getMetaModel().getDeploymentTypeCodes().keys
+        val reservedTypesCodes = getReservedTypeCodes().keys
+        val keys = projectTypeCodes + reservedTypesCodes
+
+        return (10100 .. Short.MAX_VALUE)
+            .asSequence()
+            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_COMMONS }
+            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_XPRINT }
+            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PRINT }
+            .filterNot { it in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
+            .firstOrNull { !keys.contains(it) }
+    }
 
     override fun getReservedTypeCodes() = myReservedTypeCodes
 

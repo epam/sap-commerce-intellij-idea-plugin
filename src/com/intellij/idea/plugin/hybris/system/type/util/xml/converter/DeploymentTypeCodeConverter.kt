@@ -15,16 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
+package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.model.Deployment
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.util.xml.ConvertContext
+import com.intellij.util.xml.ResolvingConverter
 
-class TSDeploymentTypeCodeReservedForProcessingExtension : AbstractTSDeploymentTypeCodeInspection() {
+class DeploymentTypeCodeConverter : ResolvingConverter<String>() {
 
-    override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
-        ?.toIntOrNull()
-        ?.let { it in HybrisConstants.TS_TYPECODE_RANGE_PROCESSING }
-        ?: false
+    override fun toString(t: String?, context: ConvertContext?) = t
+    override fun fromString(s: String?, context: ConvertContext?) = s
+
+    override fun getVariants(context: ConvertContext?): MutableCollection<out String> = context?.project
+        ?.let { TSMetaModelAccess.getInstance(it).getNextAvailableTypeCode() }
+        ?.toString()
+        ?.let { mutableListOf(it) }
+        ?: mutableListOf()
+
 }

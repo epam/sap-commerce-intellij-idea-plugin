@@ -38,6 +38,7 @@
 - Inject `impex` variable type of `ImpExImportReader` into Groovy language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
 - Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
 - Style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
+- Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
