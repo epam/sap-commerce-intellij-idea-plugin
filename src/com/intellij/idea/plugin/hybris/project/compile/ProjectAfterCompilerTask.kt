@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
-import com.intellij.openapi.vfs.LocalFileSystem
 
 class ProjectAfterCompilerTask : CompileTask {
 
@@ -41,13 +40,7 @@ class ProjectAfterCompilerTask : CompileTask {
             ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
             ?: return true
 
-        LocalFileSystem.getInstance().refreshNioFiles(
-            listOf(
-                bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY),
-                bootstrapDirectory.resolve(HybrisConstants.PLATFORM_MODEL_CLASSES_DIRECTORY),
-                bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY).resolve(HybrisConstants.JAR_MODELS),
-            ), true, true, null
-        )
+        ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
 
         return true
     }
