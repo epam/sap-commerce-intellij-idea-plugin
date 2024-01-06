@@ -58,6 +58,7 @@ class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
         }
         ?.map {
             JavaLookupElementBuilder.forField(it, it.name, it.containingClass)
+                .withTypeText(it.type.presentableText, true)
         }
         ?.toTypedArray()
         ?: emptyArray()

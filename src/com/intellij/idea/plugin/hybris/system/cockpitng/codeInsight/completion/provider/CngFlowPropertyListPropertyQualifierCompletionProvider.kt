@@ -65,6 +65,7 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
             }
             ?.map {
                 JavaLookupElementBuilder.forField(it, it.name, it.containingClass)
+                    .withTypeText(it.type.presentableText, true)
             }
             ?.forEach { result.addElement(it) }
     }
