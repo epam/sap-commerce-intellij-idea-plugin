@@ -86,6 +86,7 @@
 - Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/880)
 - Removed no longer working Maven Javadoc and Source downloading [#885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/885)
 - Updated icons usage [#921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/921)
+- Improved performance by addeding properties files aware cache for properties [#924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/924)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)

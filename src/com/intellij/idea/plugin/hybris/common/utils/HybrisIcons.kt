@@ -25,6 +25,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
 import icons.OpenapiIcons
+import org.jetbrains.kotlin.idea.KotlinIcons
 
 /**
  * Please follow Intellij Platform UI style and naming convention for icons.
@@ -87,6 +88,7 @@ object HybrisIcons {
     val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
     val EXTENSION_HMC = AllIcons.Nodes.Folder
     val EXTENSION_HAC = AllIcons.Nodes.Folder
+    val EXTENSION_KOTLIN_NATURE = KotlinIcons.SMALL_LOGO
 
     val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
     val SPRING_BEAN = getIcon("icons/springBean.svg")
