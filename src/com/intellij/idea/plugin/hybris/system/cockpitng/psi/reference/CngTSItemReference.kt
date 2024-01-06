@@ -50,6 +50,9 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
             ?.let { _ ->
                 val offset = element.text.indexOfLast { it == '(' } + 1
                 val length = element.text.indexOfFirst { it == ')' } - offset
+
+                // invalid value, can be due `List()List(Product)`
+                if (length < 0) return@let super.calculateDefaultRangeInElement()
                 TextRange.from(offset, length)
             }
             ?: if (element.textLength == 0) super.calculateDefaultRangeInElement()
