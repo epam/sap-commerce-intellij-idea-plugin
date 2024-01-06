@@ -28,6 +28,7 @@
 ### `Cockpit NG` enhancements
 - Added code completion for Editor wrapping types [#925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/925)
 - Improved Editor wrapping type text range identification [#926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/926)
+- Respect all fields of the DTO as a type [#927](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/927)
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
