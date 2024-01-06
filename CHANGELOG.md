@@ -25,6 +25,9 @@
 ### `Ant` enhancements
 - Allow common targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
 
+### `Cockpit NG` enhancements
+- Added code completion for Editor wrapping types [#925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/925)
+
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
 - Added `disable.interceptor.beans` type modifier [#890](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/890)
