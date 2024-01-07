@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -26,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.settings.ImpexCompletionSettings
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
@@ -37,9 +39,8 @@ object ImpExLookupElementFactory {
 
     fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpexCompletionSettings) = build(element, modifier.modifierName, completionSettings)
 
-    fun buildJavaClass(qualifiedName: String, presentableText: String) = LookupElementBuilder.create(qualifiedName)
+    fun buildJavaClass(psiClass: PsiClass, presentableText: String) = JavaLookupElementBuilder.forClass(psiClass, psiClass.qualifiedName, true)
         .withPresentableText(presentableText)
-        .withIcon(HybrisIcons.JAVA_CLASS)
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
     fun buildModifierValue(lookupElement: String, typeText: String, presentableText: String = lookupElement) = LookupElementBuilder.create(lookupElement)

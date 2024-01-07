@@ -77,8 +77,7 @@ enum class TypeModifier(
     IMPEX_LEGACY_MODE("impex.legacy.mode", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
     PROCESSOR("processor") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            ?.getImplementationsForClass(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
-            ?: emptySet()
+            .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
     };
 
     override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues

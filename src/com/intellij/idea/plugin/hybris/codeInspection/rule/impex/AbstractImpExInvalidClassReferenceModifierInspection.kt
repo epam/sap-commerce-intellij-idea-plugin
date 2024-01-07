@@ -36,7 +36,7 @@ import com.intellij.psi.impl.PsiClassImplUtil
 
 abstract class AbstractImpExInvalidClassReferenceModifierInspection(
     private val modifier: ImpexModifier,
-    private val targetTypes: Set<String>,
+    private vararg val targetTypes: String,
     private val targetShortTypes: String = targetTypes
         .map { it.substringAfterLast(".") }
         .joinToString(" or ") { "'$it'" }
@@ -88,19 +88,15 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
 
 class ImpExInvalidProcessorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
     TypeModifier.PROCESSOR,
-    setOf(HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR)
+    HybrisConstants.CLASS_FQN_IMPEX_PROCESSOR
 )
 
 class ImpExInvalidCellDecoratorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
     AttributeModifier.CELL_DECORATOR,
-    setOf(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
+    HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR
 )
 
 class ImpExInvalidTranslatorValueInspection : AbstractImpExInvalidClassReferenceModifierInspection(
     AttributeModifier.TRANSLATOR,
-    setOf(
-        HybrisConstants.CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR,
-        HybrisConstants.CLASS_FQN_IMPEX_HEADER_TRANSLATOR,
-        HybrisConstants.CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR
-    )
+    *HybrisConstants.CLASS_FQN_IMPEX_TRANSLATORS
 )

@@ -61,13 +61,11 @@ enum class AttributeModifier(
     POS("pos"),
     CELL_DECORATOR("cellDecorator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            ?.getImplementationsForClass(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
-            ?: emptySet()
+            .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
     },
     TRANSLATOR("translator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
-            ?.getImplementationsForClass(HybrisConstants.CLASS_FQN_IMPEX_ABSTRACT_TRANSLATOR)
-            ?: emptySet()
+            .getImplementationsForClasses(*HybrisConstants.CLASS_FQN_IMPEX_TRANSLATORS)
     };
 
     override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues

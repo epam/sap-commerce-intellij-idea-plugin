@@ -72,9 +72,6 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
-
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
