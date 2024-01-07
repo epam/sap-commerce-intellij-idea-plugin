@@ -110,6 +110,7 @@ field_value        = ({not_crlf}|{identifier}+)
 //field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
+field_value_prefix_password_encoding = "*:" | "plain:" | "sha-256:" | "sha-512:" | "md5:" | "pbkdf2:"
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -222,6 +223,7 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <FIELD_VALUE> {
+    {field_value_prefix_password_encoding}                  { return ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX; }
     "zip:"                                                  { return ImpexTypes.FIELD_VALUE_ZIP_PREFIX; }
     "file:"                                                 { return ImpexTypes.FIELD_VALUE_FILE_PREFIX; }
     "jar:"                                                  { return ImpexTypes.FIELD_VALUE_JAR_PREFIX; }

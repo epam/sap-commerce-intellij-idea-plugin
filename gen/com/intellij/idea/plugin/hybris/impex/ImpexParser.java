@@ -1577,6 +1577,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // FIELD_VALUE
+  //     | FIELD_VALUE_PASSWORD_ENCODING_PREFIX
   //     | FIELD_VALUE_JAR_PREFIX
   //     | FIELD_VALUE_EXPLODED_JAR_PREFIX
   //     | FIELD_VALUE_FILE_PREFIX
@@ -1598,6 +1599,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "value_dec")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE);
+    if (!r) r = consumeToken(b, FIELD_VALUE_PASSWORD_ENCODING_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_JAR_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_EXPLODED_JAR_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_FILE_PREFIX);

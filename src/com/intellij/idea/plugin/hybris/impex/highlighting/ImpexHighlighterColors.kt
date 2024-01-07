@@ -87,6 +87,7 @@ object ImpexHighlighterColors {
     val FIELD_VALUE_FILE_PREFIX = key("IMPEX_FIELD_VALUE_FILE_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_ZIP_PREFIX = key("IMPEX_FIELD_VALUE_ZIP_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_HTTP_PREFIX = key("IMPEX_FIELD_VALUE_HTTP_PREFIX", FIELD_VALUE_PREFIX)
+    val FIELD_VALUE_PASSWORD_ENCODING_PREFIX = key("IMPEX_FIELD_VALUE_PASSWORD_ENCODING_PREFIX", FIELD_VALUE_PREFIX)
 
     private fun key(externalName: String, fallbackAttributeKey: TextAttributesKey) = TextAttributesKey.createTextAttributesKey(externalName, fallbackAttributeKey)
 }

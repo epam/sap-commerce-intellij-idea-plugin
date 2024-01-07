@@ -100,6 +100,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.FIELD_VALUE_FILE_PREFIX -> FIELD_VALUE_FILE_PREFIX
             ImpexTypes.FIELD_VALUE_ZIP_PREFIX -> FIELD_VALUE_ZIP_PREFIX
             ImpexTypes.FIELD_VALUE_HTTP_PREFIX -> FIELD_VALUE_HTTP_PREFIX
+            ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX -> FIELD_VALUE_PASSWORD_ENCODING_PREFIX
 
             TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
             else -> EMPTY_KEYS
@@ -118,6 +119,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val FIELD_VALUE_FILE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX)
         val FIELD_VALUE_ZIP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX)
         val FIELD_VALUE_HTTP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX)
+        val FIELD_VALUE_PASSWORD_ENCODING_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX)
         val MACRO_NAME_DECLARATION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION)
         val MACRO_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_VALUE)
         val MACRO_USAGE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_USAGE)

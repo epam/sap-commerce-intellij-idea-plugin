@@ -92,6 +92,10 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 ; http:http://site.org/picture.png ;
 ; /medias/fromjar/demo5.jpg ;
 
+INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex.jalo.translators.UserPasswordTranslator] 
+; fritz ; md5:a7c15c415c37626de8fa648127ba1ae5
+; max ; *:plainPassword
+
 @@@@@
 """
     }
@@ -144,6 +148,7 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Value//file: prefix", ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
         AttributesDescriptor("Value//zip: prefix", ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
         AttributesDescriptor("Value//http: prefix", ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
+        AttributesDescriptor("Value//password encoding prefix", ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
 
         AttributesDescriptor("Bean shell//Marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
         AttributesDescriptor("Bean shell//Body", ImpexHighlighterColors.BEAN_SHELL_BODY),
