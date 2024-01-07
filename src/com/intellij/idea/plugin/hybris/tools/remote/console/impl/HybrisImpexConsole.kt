@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,20 +23,14 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.CatalogVersionOption
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessorCatalogVersion
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import org.apache.commons.lang3.StringUtils
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
@@ -47,17 +41,6 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
     private val panel = JPanel(WrappedFlowLayout(0, 0))
-    private val catalogVersionLabel = JBLabel("Catalog Version")
-
-    val catalogVersionComboBox = ComboBox(arrayOf(
-            CatalogVersionOption("doesn't change", StringUtils.EMPTY),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_STAGED}",
-                HybrisConstants.IMPEX_CATALOG_VERSION_STAGED
-            ),
-            CatalogVersionOption("changes to ${HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE}",
-                HybrisConstants.IMPEX_CATALOG_VERSION_ONLINE
-            )
-    ))
 
     private val legacyModeCheckbox = JBCheckBox()
     private val legacyModeLabel = JBLabel("Legacy mode: ")
@@ -67,7 +50,6 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
 
-    override fun preProcessors() = listOf(HybrisConsolePreProcessorCatalogVersion())
     override fun title(): String = HybrisConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
     override fun icon(): Icon = HybrisIcons.IMPEX_FILE
@@ -83,18 +65,9 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     }
 
     private fun createUI() {
-        catalogVersionComboBox.renderer = SimpleListCellRenderer.create("...") { it.name }
-        catalogVersionComboBox.addItemListener {
-            preProcessors().forEach { processor ->
-                ApplicationManager.getApplication().invokeLater { this.setInputText(processor.process(this)) }
-            }
-        }
-        catalogVersionLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
         legacyModeLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
         legacyModeCheckbox.border = JBUI.Borders.emptyRight(5)
 
-        panel.add(catalogVersionLabel)
-        panel.add(catalogVersionComboBox)
         panel.add(legacyModeLabel)
         panel.add(legacyModeCheckbox)
 
@@ -105,10 +78,14 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     private fun getRequestParams(query: String): MutableMap<String, String> {
         val requestParams = mutableMapOf(
             "scriptContent" to query,
-            "validationEnum" to "IMPORT_STRICT",
+            "validationEnum" to "IMPORT_STRICT", // IMPORT_RELAXED
             "encoding" to "UTF-8",
-            "maxThreads" to "4",
-            "_legacyMode" to "on"
+            "maxThreads" to "4", // Max Threads
+            "_legacyMode" to "on", // Legacy Mode
+            "enableCodeExecution" to "true", // Enable code execution
+            "_enableCodeExecution" to "on", // Enable code execution
+            "_distributedMode" to "on", // Distributed mode
+            "_sldEnabled" to "on", // Direct Persistence
         )
         if (legacyModeCheckbox.isSelected) {
             requestParams["legacyMode"] = "true"

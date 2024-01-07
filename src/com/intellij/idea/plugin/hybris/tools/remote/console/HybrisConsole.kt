@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.tools.remote.console.preprocess.HybrisConsolePreProcessor
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
@@ -41,8 +40,6 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     abstract fun tip(): String
 
     open fun icon(): Icon? = null
-
-    open fun preProcessors(): List<HybrisConsolePreProcessor> = listOf()
 
     open fun printDefaultText() = setInputText("")
 

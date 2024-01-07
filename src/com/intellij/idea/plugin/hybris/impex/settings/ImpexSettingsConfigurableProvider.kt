@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,7 +37,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
         message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val state = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings
+        private val projectSettings = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox
@@ -46,12 +46,12 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(state.folding::enabled)
+                        .bindSelected(projectSettings.folding::enabled)
                         .component
                 }
                 row {
                     checkBox("Use smart folding")
-                        .bindSelected(state.folding::useSmartFolding)
+                        .bindSelected(projectSettings.folding::useSmartFolding)
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
             }
@@ -64,7 +64,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                             Sample: <code>principal(<strong>Principal.</strong>uid)</code>
                             """.trimIndent()
                         )
-                        .bindSelected(state.completion::showInlineTypes)
+                        .bindSelected(projectSettings.completion::showInlineTypes)
                 }
                 row {
                     checkBox("Automatically add '.' char after inline type")
@@ -73,7 +73,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                             When enabled and '.' char is not present, it will be injected automatically
                             """.trimIndent()
                         )
-                        .bindSelected(state.completion::addCommaAfterInlineType)
+                        .bindSelected(projectSettings.completion::addCommaAfterInlineType)
                 }
                 row {
                     checkBox("Automatically add '=' char after type and attribute modifier")
@@ -83,13 +83,13 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                             In addition to that, code completion will be automatically triggered for modifier values.
                             """.trimIndent()
                         )
-                        .bindSelected(state.completion::addEqualsAfterModifier)
+                        .bindSelected(projectSettings.completion::addEqualsAfterModifier)
                 }
             }
             group("Documentation") {
                 row {
                     documentationEnableCheckBox = checkBox("Enable documentation")
-                        .bindSelected(state.documentation::enabled)
+                        .bindSelected(projectSettings.documentation::enabled)
                         .component
                 }
                 row {
@@ -99,7 +99,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                             When enabled short description of the type will be shown on-hover as a tooltip for type in the header or sub-type in the value line.
                         """.trimIndent()
                         )
-                        .bindSelected(state.documentation::showTypeDocumentation)
+                        .bindSelected(projectSettings.documentation::showTypeDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
                 row {
@@ -109,7 +109,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
                             When enabled short description of the modifier will be shown on-hover as a tooltip for type or attribute modifier in the header.
                         """.trimIndent()
                         )
-                        .bindSelected(state.documentation::showModifierDocumentation)
+                        .bindSelected(projectSettings.documentation::showModifierDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
             }
